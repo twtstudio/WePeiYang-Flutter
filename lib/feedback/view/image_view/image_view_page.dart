@@ -6,12 +6,8 @@ import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
-import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
-
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
@@ -121,15 +117,31 @@ class _ImageViewPageState extends State<ImageViewPage> {
                               alignment: Alignment.bottomRight,
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(0, 0, 15.h, 30.h),
-                                child: WButton(
-                                  child: Icon(
-                                    CupertinoIcons.share,
-                                    color: Colors.white,
-                                    size: 30.h,
-                                  ),
-                                  onPressed: () {
-                                    if (show) showSaveImageBottomSheet(context);
-                                  },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    WButton(
+                                      child: Icon(
+                                        CupertinoIcons.square_arrow_down,
+                                        color: Colors.white,
+                                        size: 30.h,
+                                      ),
+                                      onPressed: () {
+                                        if (show) saveImage();
+                                      },
+                                    ),
+                                    SizedBox(width: 30.w),
+                                    WButton(
+                                      child: Icon(
+                                        CupertinoIcons.share,
+                                        color: Colors.white,
+                                        size: 30.h,
+                                      ),
+                                      onPressed: () {
+                                        if (show) showSaveImageBottomSheet();
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ))
                         ],
@@ -141,11 +153,17 @@ class _ImageViewPageState extends State<ImageViewPage> {
         ));
   }
 
-  void showSaveImageBottomSheet(BuildContext context) async {
+  void saveImage() async {
+    ToastProvider.running('保存中');
+    await GallerySaver.saveImage(baseUrl + urlList[indexNow], albumName: "微北洋");
+    ToastProvider.success('保存成功');
+  }
+
+  void showSaveImageBottomSheet() async {
+    ToastProvider.running('请稍后');
     final path = await StorageUtil.saveTempFileFromNetwork(
         baseUrl + urlList[indexNow],
         filename: urlList[indexNow]);
     Share.shareFiles([path]);
-    return;
   }
 }
