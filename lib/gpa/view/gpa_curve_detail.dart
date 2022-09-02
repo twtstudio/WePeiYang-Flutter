@@ -1,11 +1,13 @@
 // @dart = 2.12
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -18,23 +20,24 @@ class GPAPreview extends StatelessWidget {
     var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
     if (hideGPA) return Container();
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
+    if (stats.isEmpty)
+      return
+
+          ///去掉周围padding的懒方法
+          Column(
+        children: [
+          Image.asset("assets/images/schedule_empty.png"),
+        ],
+      );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
-      child: stats.isEmpty
-          ? GestureDetector(
-              onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Image.asset("assets/images/schedule_empty.png"),
-              ),
-            )
-          : Column(children: <Widget>[
-              //_CurveText(),
-              SizedBox(height: 45.h),
-              _GPAIntro(),
-              GPACurve(FavorColors.gpaColor, isPreview: true),
-            ]),
+      child: Column(children: <Widget>[
+        //_CurveText(),
+        SizedBox(height: 45.h),
+        _GPAIntro(),
+        GPACurve(FavorColors.gpaColor, isPreview: true),
+      ]),
     );
   }
 }
@@ -275,8 +278,12 @@ class _GPACurveState extends State<GPACurve>
                                             : BoxDecoration(),
                                     child: CustomPaint(
                                       painter: _GPAPopupPainter(
-                                          widget._gpaColors,
-                                          isPreview: widget.isPreview),
+                                        widget._gpaColors,
+                                        points,
+                                        _newTaped,
+                                        widget.isPreview,
+                                        isPreview: widget.isPreview,
+                                      ),
                                       size: const Size(80, 30),
                                     ),
                                   ),
@@ -298,7 +305,7 @@ class _GPACurveState extends State<GPACurve>
                     width: 300.w,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: points.length,
+                      itemCount: terms.length,
                       itemBuilder: (context, index) {
                         return Row(
                           children: [
@@ -379,6 +386,13 @@ class _GPAPopupPainter extends CustomPainter {
   /// 是否在wpy中显示
   final bool isPreview;
 
+  ///点坐标
+  final List<Point<double>> points;
+  final int taped;
+
+  ///是否为外侧组件
+  final bool isPre;
+
   /// 在wpy_page显示的颜色
   static const Color _outerPreview = Colors.white10;
   static const Color _innerPreview = Color(0xFF2C7EDF);
@@ -390,7 +404,8 @@ class _GPAPopupPainter extends CustomPainter {
   final Paint _innerPaint;
   final Paint _outerPaint;
 
-  _GPAPopupPainter(List<Color> gpaColors, {required this.isPreview})
+  _GPAPopupPainter(List<Color> gpaColors, this.points, this.taped, this.isPre,
+      {required this.isPreview})
       : _innerPaint = Paint()
           ..color = isPreview ? _innerPreview : gpaColors[0]
           ..style = PaintingStyle.fill,
@@ -403,6 +418,11 @@ class _GPAPopupPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawCircle(size.center(Offset.zero), _innerRadius, _innerPaint);
     canvas.drawCircle(size.center(Offset.zero), _outerRadius, _outerPaint);
+    if (isPre)
+      canvas.drawLine(
+          size.center(Offset.zero),
+          Offset(size.center(Offset.zero).dx, 240 - points[taped].y),
+          _innerPaint);
   }
 
   @override
@@ -459,8 +479,8 @@ class _GPACurvePainter extends CustomPainter {
       if (i == selected) {
         canvas.drawCircle(
             Offset(points[i].x, points[i].y), radius + 2.0, _pointPaint);
-        canvas.drawLine(Offset(points[i].x, points[i].y),
-            Offset(points[i].x, 230), _downPaint);
+        // canvas.drawLine(Offset(points[i].x, points[i].y),
+        //     Offset(points[i].x, 230), _downPaint);
       }
     }
   }
