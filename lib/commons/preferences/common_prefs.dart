@@ -34,6 +34,8 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
   static final themeToken = PrefsBean<String>('themeToken');
 
+  static final lastShownYearMonthDay = PrefsBean<int>('lastShownDaySinceStart', 20220901);
+
   /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken');
   static final lakeUid = PrefsBean<String>('feedbackUid');

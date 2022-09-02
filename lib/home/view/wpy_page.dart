@@ -20,6 +20,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -39,6 +40,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   bool useRound = true;
 
   ScrollController _sc = ScrollController();
+  SwiperController _swc = SwiperController();
   TabController _tc;
 
   List<CardBean> cards;
@@ -68,63 +70,55 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         future: ThemeService.getBanner(),
         builder: (context, AsyncSnapshot<List<BannerPic>> snapshot) {
           if (snapshot.hasData) {
-            return Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                child: Container(
-                  height: 0.75.sh,
-                  width: 0.75.sw,
-                  color: Colors.white,
-                  child: Swiper(
-                    autoplay: true,
-                    autoplayDelay: 5000,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (snapshot.data.length == 0) return SizedBox();
-                      return GestureDetector(
+            return Column(
+              children: [
+                Spacer(),
+                Swiper(
+                  controller: _swc,
+                  layout: SwiperLayout.TINDER,
+                  loop: true,
+                  autoplay: true,
+                  autoplayDelay: 4000,
+                  itemWidth: 0.81.sw,
+                  itemHeight: 1.08.sw,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (snapshot.data.length == 0) return SizedBox();
+                    return ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      child: GestureDetector(
                         onTap: () {
-                          // 这里应该改为跳转到对应的网址，而不是目前的print index
-                          // 网址储存在 snapshot.data[index].url
-                          print(index);
+                          Navigator.pushNamed(context, FeedbackRouter.haitang,
+                              arguments:
+                                  FestivalArgs(snapshot.data[index].url, '活动'));
                         },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            WpyPic(
-                              //这里的 waterGod[index] 应该改为 snapshot.data[index].picUrl
-                              waterGod[index],
-                              withHolder: true,
-                            ),
-                            //这里的 Text 应该删去，目前只是为了便于调试显示网址
-                            Text(
-                              snapshot.data[index].picUrl,
-                              style: TextUtil.base.sp(30),
-                            ),
-                            Spacer(),
-                            Divider(
-                              indent: 15.w,
-                              endIndent: 15.w,
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                '确定',
-                                style: TextUtil.base.bold.NotoSansSC.black2A
-                                    .sp(14),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                          ],
+                        child: WpyPic(
+                          snapshot.data[index].picUrl,
+                          fit: BoxFit.cover,
+                          withHolder: true,
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: SizedBox(
+                      width: 1.sw,
+                      height: 0.55.sh - 0.54.sw,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Image.asset(
+                          'assets/images/lake_butt_icons/x.png',
+                          width: 50.w,
+                          height: 100.w,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ))
+              ],
             );
           } else {
             return Loading();
@@ -191,7 +185,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               return AgreementAndPrivacyDialog(md);
             });
       }
-      showHomeDialog();
+      int showYearMonthDay = int.parse(
+          '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
+      if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
+        showHomeDialog();
+        CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
+      }
     });
   }
 

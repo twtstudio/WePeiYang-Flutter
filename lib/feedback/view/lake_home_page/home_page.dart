@@ -89,7 +89,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   // firstInLake();
     // });
-    initPage();
     context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);
     super.initState();

@@ -11,8 +11,10 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
@@ -92,12 +94,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       } else {
         CommonPreferences.reportTime.value = "";
       }
+      initLake();
       // 检查当前是否有未处理的事件
       context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
       initLoungeFavourDataAtMainPage(context);
+    });
+  }
+
+  initLake() {
+    context.read<LakeModel>().checkTokenAndGetTabList(success: () {
+      context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
+        ToastProvider.error(e.error.toString());
+      });
+      context.read<FbHotTagsProvider>().initHotTags();
+      FeedbackService.getUserInfo(
+          onSuccess: () {},
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          });
     });
   }
 
