@@ -117,7 +117,6 @@ class IntentEvent {
 class WePeiYangApp extends StatefulWidget {
   static double screenWidth;
   static double screenHeight;
-  static double paddingTop;
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
@@ -145,7 +144,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
-      WePeiYangApp.paddingTop = mediaQueryData.padding.top;
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
       ToastProvider.init(baseContext);
