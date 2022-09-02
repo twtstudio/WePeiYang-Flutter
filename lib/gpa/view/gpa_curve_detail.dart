@@ -290,45 +290,47 @@ class _GPACurveState extends State<GPACurve>
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 40, right: 20, top: 80),
-                child: Container(
-                  height: 40.h,
-                  width: 300.w,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        children: [
-                          Container(
-                            width: 48.w,
-                            height: 27.h,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: notifier.index == index
-                                    ? Color(0xFF2C7EDF)
-                                    : Colors.white),
-                            child: Center(
-                              child: Text(
-                                terms[index],
-                                style: notifier.index == index
-                                    ? TextUtil.base.white.bold.w700.sp(11)
-                                    : TextUtil.base.greyA6.bold.w700.sp(11),
+              if (widget.isPreview)
+                Padding(
+                  padding: const EdgeInsets.only(left: 40, right: 20, top: 80),
+                  child: Container(
+                    height: 40.h,
+                    width: 300.w,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: points.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          children: [
+                            Container(
+                              width: 48.w,
+                              height: 27.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: notifier.index == index
+                                      ? Color(0xFF2C7EDF)
+                                      : Colors.white),
+                              child: Center(
+                                child: Text(
+                                  terms[index],
+                                  style: notifier.index == index
+                                      ? TextUtil.base.white.bold.w700.sp(11)
+                                      : TextUtil.base.greyA6.bold.w700.sp(11),
+                                ),
                               ),
                             ),
-                          ),
-                          if (index < 3)
-                            SizedBox(
-                              width:
-                                  points[index + 1].x - points[index].x - 48.w,
-                            ),
-                        ],
-                      );
-                    },
+                            if (index < 3)
+                              SizedBox(
+                                width: points[index + 1].x -
+                                    points[index].x -
+                                    48.w,
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                ),
-              )
+                )
             ],
           ));
     });

@@ -280,8 +280,11 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   onEnd: () => setState(() => useRound = showSchedule),
                   child: SizedBox(
                     width: 1.sw - 60.w,
-                    child:
-                        Text('HELLO, ${CommonPreferences.lakeNickname.value}'),
+                    child: Text(
+                      'HELLO, ${CommonPreferences.lakeNickname.value}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),

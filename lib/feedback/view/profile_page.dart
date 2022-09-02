@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
@@ -151,7 +152,16 @@ class _ProfilePageState extends State<ProfilePage> {
             });
           },
         );
-        return post;
+        return Column(
+          children: [
+            post,
+            Divider(
+              color: Color(0xFFE5E5E5),
+              thickness: 1.h,
+              height: 1.h,
+            )
+          ],
+        );
       },
       itemCount: _postList.length,
     ));
@@ -163,7 +173,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
     } else {
       postListShow = Column(
-        children: [postLists, SizedBox(height: 20.w)],
+        children: [
+          postLists,
+          SizedBox(height: 20.w),
+        ],
       );
     }
 //静态header，头像和资料以及appbar
@@ -172,6 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SliverToBoxAdapter(
           child: Container(
             color: Colors.white,
+            height: 110.h,
             child: Row(
               children: [
                 Spacer(),
@@ -182,12 +196,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     Navigator.pushNamed(context, FeedbackRouter.mailbox);
                   },
                 ),
+                SizedBox(
+                  width: 10.w,
+                ),
                 CustomCard(
                   image: 'assets/images/mylike.png',
                   text: '我的点赞',
                   onPressed: () {
                     Navigator.pushNamed(context, FeedbackRouter.mailbox);
                   },
+                ),
+                SizedBox(
+                  width: 10.w,
                 ),
                 CustomCard(
                   image: 'assets/images/myfav.png',
@@ -245,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               // 在0.7停止同理
-              stops: [0, 0.23, 0.7])),
+              stops: [0, 0.23, 0.4])),
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
@@ -339,53 +359,41 @@ class CustomCard extends StatelessWidget {
       onTap: () {
         onPressed?.call();
       },
-      child: SizedBox(
-        width: 125.w,
+      child: Container(
+        width: 113.w,
         height: 90.h,
-        child: Card(
-          elevation: 1,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 7),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Image.asset(
-                    image,
-                    width: 24.w,
-                  ),
-                ],
-              ),
-              SizedBox(height: 7.h),
-              Text(text,
-                  maxLines: 1, style: TextUtil.base.w400.black2A.sp(12).medium),
-            ],
-          ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          // border: Border.all(),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 10,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  image,
+                  width: 24.w,
+                ),
+              ],
+            ),
+            SizedBox(height: 7.h),
+            Text(text,
+                maxLines: 1, style: TextUtil.base.w400.black2A.sp(12).medium),
+          ],
         ),
       ),
     );
   }
-}
-
-class CustomScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return GlowingOverscrollIndicator(
-      child: child,
-      showLeading: false,
-      showTrailing: true,
-      color: Color(0XFF62677B),
-      axisDirection: AxisDirection.down,
-    );
-  }
-
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) =>
-      ClampingScrollPhysics();
 }
 
 class ExpandablePageView extends StatefulWidget {

@@ -60,7 +60,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
             children: [
               Column(
                 children: [
-                  SizedBox(height: 114.h),
+                  SizedBox(height: 138.h),
                   ClipRRect(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20.r),
@@ -70,7 +70,7 @@ class ProfileHeaderState extends State<ProfileHeader> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(4, 80, 4, 0),
+                padding: EdgeInsets.fromLTRB(4, 80.h, 4, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
