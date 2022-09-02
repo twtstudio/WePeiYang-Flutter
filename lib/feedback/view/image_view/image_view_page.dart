@@ -1,12 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/size_extension.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -30,62 +35,120 @@ class _ImageViewPageState extends State<ImageViewPage> {
     urlListLength = obj['urlListLength'];
     indexNow = obj['indexNow'];
     isLongPic = obj['isLongPic'] ?? false;
+    // 显示toolbar及透明遮罩
+    ValueNotifier<bool> _showToolBar = ValueNotifier(true);
+    double _dragX = 0.0;
+    double _dragY = 0.0;
 
     return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      onLongPress: () {
-        //ToastProvider.error('当前暂时无法保存图片');
-        showSaveImageBottomSheet(context);
-      },
-      child: Container(
-          // child: new Image(
-          //     image: NetworkImageSSL(baseUrl + urlList[indexNow]),
-          //     width: double.infinity,
-          //     height: double.infinity,
-          //     fit: BoxFit.contain),
-          child: PhotoViewGallery.builder(
-              loadingBuilder: (context, event) => Center(
-                  child: Container(
-                      width: 20.0,
-                      height: 20.0,
-                      child: CircularProgressIndicator(
-                        value: event == null
-                            ? 0
-                            : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes,
-                      ))),
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: (BuildContext context, int index) {
-                return PhotoViewGalleryPageOptions(
-                  basePosition:
-                      isLongPic ? Alignment.topCenter : Alignment.center,
-                  imageProvider: NetworkImage(baseUrl + urlList[index]),
-                  maxScale: isLongPic
-                      ? PhotoViewComputedScale.contained * 20
-                      : PhotoViewComputedScale.contained * 5.0,
-                  minScale: PhotoViewComputedScale.contained * 1.0,
-                  initialScale: isLongPic
-                      ? PhotoViewComputedScale.covered
-                      : PhotoViewComputedScale.contained,
-                );
+        onTap: () {
+          _showToolBar.value = !_showToolBar.value;
+        },
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            PhotoViewGallery.builder(
+                loadingBuilder: (context, event) => Center(
+                    child: Container(
+                        width: 20.0,
+                        height: 20.0,
+                        child: CircularProgressIndicator(
+                          value: event == null
+                              ? 0
+                              : event.cumulativeBytesLoaded /
+                                  event.expectedTotalBytes,
+                        ))),
+                scrollPhysics: const BouncingScrollPhysics(),
+                builder: (BuildContext context, int index) {
+                  return PhotoViewGalleryPageOptions(
+                    basePosition:
+                        isLongPic ? Alignment.topCenter : Alignment.center,
+                    imageProvider: NetworkImage(baseUrl + urlList[index]),
+                    maxScale: isLongPic
+                        ? PhotoViewComputedScale.contained * 20
+                        : PhotoViewComputedScale.contained * 5.0,
+                    minScale: PhotoViewComputedScale.contained * 1.0,
+                    initialScale: isLongPic
+                        ? PhotoViewComputedScale.covered
+                        : PhotoViewComputedScale.contained,
+                  );
+                },
+                scrollDirection: Axis.horizontal,
+                itemCount: urlListLength,
+                backgroundDecoration: BoxDecoration(color: Colors.black),
+                pageController: PageController(
+                  initialPage: indexNow,
+                ),
+                onPageChanged: (index) => setState(() {
+                      tempSelect = index;
+                    })),
+            ValueListenableBuilder(
+              valueListenable: _showToolBar,
+              builder: (BuildContext context, bool show, Widget child) {
+                return AnimatedOpacity(
+                    curve: Curves.easeInOut,
+                    opacity: show ? 1 : 0,
+                    duration: Duration(milliseconds: 300),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withOpacity(0.3),
+                          Colors.black.withOpacity(0),
+                          Colors.black.withOpacity(0.3),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      )),
+                      child: Stack(
+                        children: [
+                          Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(15.h, 35.h, 0, 0),
+                                child: WButton(
+                                  child: Icon(
+                                    CupertinoIcons.back,
+                                    color: Colors.white,
+                                    size: 30.h,
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              )),
+                          Align(
+                              alignment: Alignment.bottomRight,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 15.h, 30.h),
+                                child: WButton(
+                                  child: Icon(
+                                    CupertinoIcons.share,
+                                    color: Colors.white,
+                                    size: 30.h,
+                                  ),
+                                  onPressed: () =>
+                                      showSaveImageBottomSheet(context),
+                                ),
+                              ))
+                        ],
+                      ),
+                    ));
               },
-              scrollDirection: Axis.horizontal,
-              itemCount: urlListLength,
-              backgroundDecoration: BoxDecoration(color: Colors.black),
-              pageController: PageController(
-                initialPage: indexNow,
-              ),
-              onPageChanged: (index) => setState(() {
-                    tempSelect = index;
-                  }))),
-    );
+            ),
+          ],
+        ));
   }
 
   void showSaveImageBottomSheet(BuildContext context) {
+    Share.share('check out my website https://example.com');
+    return;
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        // <-- SEE HERE
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
       builder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,

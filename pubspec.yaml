@@ -63,6 +63,10 @@ dependencies:
   flutter_smart_dialog: ^3.3.5
   # 升级到flutter 2.2.1后，checkbox自带shape属性
   circular_check_box: ^1.0.4
+  share_plus: ^4.0.10+1
+
+dependency_overrides:
+  meta: ^1.7.0
 
 dev_dependencies:
   flutter_test:

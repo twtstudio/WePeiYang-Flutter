@@ -27,7 +27,6 @@ class AuthDio extends DioAbstract {
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.token.value;
-      // options.headers['Cookie'] = CommonPreferences.captchaCookie.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['error_code'] ?? -1;
@@ -116,12 +115,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnRegister', () async {
       try {
-        var response = await authDio
+        await authDio
             .post("register/phone/msg", queryParameters: {"phone": phone});
-        // var cookie = response.headers.map['set-cookie'];
-        // if (cookie != null) {
-        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -134,12 +129,7 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
       try {
-        var response = await authDio
-            .post("user/phone/msg", queryParameters: {"phone": phone});
-        // var cookie = response.headers.map['set-cookie'];
-        // if (cookie != null) {
-        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        // }
+        await authDio.post("user/phone/msg", queryParameters: {"phone": phone});
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -152,12 +142,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnReset', () async {
       try {
-        var response = await authDio
+        await authDio
             .post("password/reset/msg", queryParameters: {"phone": phone});
-        // var cookie = response.headers.map['set-cookie'];
-        // if (cookie != null) {
-        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -170,12 +156,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('verifyOnReset', () async {
       try {
-        var response = await authDio.post("password/reset/verify",
+        await authDio.post("password/reset/verify",
             queryParameters: {"phone": phone, "code": code});
-        // var cookie = response.headers.map['set-cookie'];
-        // if (cookie != null) {
-        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        // }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -279,12 +261,7 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {
       try {
-        var response = await authDio
-            .post("auth/phone/msg", queryParameters: {"phone": phone});
-        // var cookie = response.headers.map['set-cookie'];
-        // if (cookie != null) {
-        //   CommonPreferences.captchaCookie.value = cookie[0].match(r'\S+(?=\;)');
-        // }
+        await authDio.post("auth/phone/msg", queryParameters: {"phone": phone});
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -485,7 +462,8 @@ class AuthService with AsyncTimer {
 
   /// 获取cid
   static updateCid(BuildContext context,
-      {@required OnResult<String> onResult, @required OnFailure onFailure}) async {
+      {@required OnResult<String> onResult,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('updateCid', () async {
       try {
         final manager = context.read<PushManager>();

@@ -75,15 +75,15 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }
     ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      // Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-      //   onFailure: (e) => ToastProvider.error(e.error.toString()),
-      // );
+      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
       Provider.of<CourseProvider>(context, listen: false).refreshCourse(
         onFailure: (e) => ToastProvider.error(e.error.toString()),
       );
-      // Provider.of<ExamProvider>(context, listen: false).refreshExam(
-      //   onFailure: (e) => ToastProvider.error(e.error.toString()),
-      // );
+      Provider.of<ExamProvider>(context, listen: false).refreshExam(
+        onFailure: (e) => ToastProvider.error(e.error.toString()),
+      );
       setState(() {
         tjuuname = "";
         tjupasswd = "";
@@ -425,11 +425,7 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: refresh,
-        child: data == null ? CupertinoActivityIndicator() : Image.memory(data)
-        // Image.network("https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=$_index",
-        //     key: ValueKey(_index),
-        //     // headers: {"Cookie": map['session']},
-        //     fit: BoxFit.fill),
-        );
+        child:
+            data == null ? CupertinoActivityIndicator() : Image.memory(data));
   }
 }

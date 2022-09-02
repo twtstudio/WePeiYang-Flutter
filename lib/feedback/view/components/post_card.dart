@@ -205,31 +205,21 @@ class _PostCardState extends State<PostCard> {
         child: new FutureBuilder<ui.Image>(
           future: completer.future,
           builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-            return snapshot.connectionState == ConnectionState.done
-                ? snapshot.data.height / snapshot.data.width > 2.0
-                    ? InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, FeedbackRouter.imageView,
-                              arguments: {
-                                "urlList": post.imageUrls,
-                                "urlListLength": post.imageUrls.length,
-                                "indexNow": 0,
-                                "isLongPic": true
-                              });
-                        },
-                        child: limitedImage)
-                    : InkWell(
-                        onTap: () {
-                          Navigator.pushNamed(context, FeedbackRouter.imageView,
-                              arguments: {
-                                "urlList": post.imageUrls,
-                                "urlListLength": post.imageUrls.length,
-                                "indexNow": 0,
-                                "isLongPic": false
-                              });
-                        },
-                        child: image)
-                : Loading();
+            if (snapshot.connectionState != ConnectionState.done)
+              return Loading();
+
+            return GestureDetector(
+                onTap: () => Navigator.pushNamed(
+                        context, FeedbackRouter.imageView, arguments: {
+                      "urlList": post.imageUrls,
+                      "urlListLength": post.imageUrls.length,
+                      "indexNow": 0,
+                      "isLongPic":
+                          snapshot.data.height / snapshot.data.width > 2.0
+                    }),
+                child: snapshot.data.height / snapshot.data.width > 2.0
+                    ? limitedImage
+                    : image);
           },
         ),
       );
@@ -400,7 +390,9 @@ class _PostCardState extends State<PostCard> {
               children: [
                 if (post.eTag != '' && post.eTag != null)
                   Center(
-                      child: ETagWidget(entry: widget.post.eTag, full: widget.type == PostCardType.detail)),
+                      child: ETagWidget(
+                          entry: widget.post.eTag,
+                          full: widget.type == PostCardType.detail)),
                 Expanded(
                   child: InkWell(
                     onLongPress: () {
@@ -762,13 +754,13 @@ class _PostCardState extends State<PostCard> {
 
     var body = GestureDetector(
         onTap: () async {
-          await FeedbackService.visitPost(
-            id: post.id,
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-            },
-          );
           if (widget.type == PostCardType.simple) {
+            await FeedbackService.visitPost(
+              id: post.id,
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            );
             Navigator.pushNamed(
               context,
               FeedbackRouter.detail,
