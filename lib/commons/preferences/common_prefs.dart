@@ -15,7 +15,7 @@ class CommonPreferences {
   static final isLogin = PrefsBean<bool>('login');
   static final token = PrefsBean<String>('token');
   static final nickname = PrefsBean<String>('nickname', '未登录');
-  static final lakeNickname = PrefsBean<String>('lakeNickname', '无昵称');
+  static final lakeNickname = PrefsBean<String>('lakeNickname', '');
   static final userNumber = PrefsBean<String>('userNumber');
   static final phone = PrefsBean<String>('phone');
   static final email = PrefsBean<String>('email');
@@ -46,7 +46,7 @@ class CommonPreferences {
   static final isUser = PrefsBean<bool>('isUser', true);
 
   ///等级系统
-  static final levelPoint = PrefsBean<int>('levelPoint');
+  static final levelPoint = PrefsBean<int>('levelPoint', 0);
   static final levelName = PrefsBean<String>('levelName');
   static final level = PrefsBean<int>('level');
   static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
@@ -141,7 +141,7 @@ class CommonPreferences {
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   static final updateTime = PrefsBean<String>('updateTime');
 
-  /// 是否为初次使用此app
+  /// 是否为初次使用此app（重新登陆也算）
   static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
@@ -190,6 +190,8 @@ class CommonPreferences {
     skinColorD.clear();
     skinColorE.clear();
     skinColorF.clear();
+    lastShownYearMonthDay.clear();
+    isFirstUse.clear();
   }
 
   /// 清除办公网缓存

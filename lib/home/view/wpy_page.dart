@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/animation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
@@ -31,8 +30,6 @@ import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
-
-import '../../lounge/main_page_widget.dart';
 
 const _APRIL_FOOL_LABEL = '愚人节模式？';
 
@@ -229,14 +226,17 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             return time.isBefore(end)
                                 ? Text(
                                     '距检测${before ? '开始' : '结束'}还有$hr时$min分',
-                                    style: TextUtil.base.PingFangSC.grey126.normal.sp(16),
+                                    style: TextUtil
+                                        .base.PingFangSC.grey126.normal
+                                        .sp(16),
                                   )
                                 : Text(
                                     '今日核酸已结束',
-                                    style: TextUtil.base.PingFangSC.grey126.normal.sp(16),
+                                    style: TextUtil
+                                        .base.PingFangSC.grey126.normal
+                                        .sp(16),
                                   );
                           }),
-
                       SizedBox(height: 20.w),
                     ],
                   ),
@@ -331,16 +331,18 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               return AgreementAndPrivacyDialog(md);
             });
       }
-      // int showYearMonthDay = int.parse(
-      //     '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
-      // if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
-      // showHomeDialog();
-      // CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
-      // }
       var info = await acidInfo;
-      if (info.id != -1 && hasShow == false && DateTime.now().isBefore(info.endTime.add(Duration(hours: 1)))){
+      if (info.id != -1 &&
+          hasShow == false &&
+          DateTime.now().isBefore(info.endTime.add(Duration(hours: 1)))) {
         showNCDialog();
         hasShow = true;
+      }
+      int showYearMonthDay = int.parse(
+          '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
+      if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
+        showHomeDialog();
+        CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
       }
     });
   }
@@ -432,7 +434,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   child: SizedBox(
                     width: 1.sw - 60.w,
                     child: Text(
-                      'HELLO, ${CommonPreferences.lakeNickname.value}',
+                      'HELLO${CommonPreferences.lakeNickname.value == '' ? ' ' : ', '}${CommonPreferences.lakeNickname.value == '' ? ' ' : CommonPreferences.lakeNickname.value}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

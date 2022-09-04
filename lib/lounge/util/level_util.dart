@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class LevelUtil extends StatelessWidget {
   final String level;
@@ -60,23 +61,22 @@ class LevelUtil extends StatelessWidget {
 }
 
 class LevelProgress extends StatelessWidget {
-  final Color strColor;
-  final Color endColor;
   final double value;
 
-  const LevelProgress({Key key, this.strColor, this.endColor, this.value})
+  LevelProgress({Key key, this.value})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 100.w,
-      height: 3.h,
+      height: 4.w,
       decoration: BoxDecoration(
+        border: Border.all(width: 0.8, color: ColorUtil.greyEAColor),
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [strColor, Colors.white],
+            colors: [ColorUtil.blue2CColor, Colors.white],
             stops: [value, value]),
         borderRadius: BorderRadius.circular(5),
         boxShadow: [

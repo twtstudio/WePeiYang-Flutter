@@ -53,14 +53,10 @@ class _HotCardState extends State<HotCard> {
           SizedBox(height: 8),
           Consumer<FbHotTagsProvider>(
             builder: (_, data, __) => data.hotTagsList.length > 0
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: data.hotTagsList.length <= 5
+                ? Column(
+                    children:List.generate(data.hotTagsList.length <= 5
                         ? data.hotTagsList.length
-                        : 5,
-                    itemBuilder: (context, index) {
-                      return InkWell(
+                        : 5, (index) => InkWell(
                         onTap: () => Navigator.pushNamed(
                           context,
                           FeedbackRouter.searchResult,
@@ -106,8 +102,7 @@ class _HotCardState extends State<HotCard> {
                             ],
                           ),
                         ),
-                      );
-                    },
+                      ))
                   )
                 : Text(
                     '     loading...',

@@ -23,7 +23,6 @@ import '../feedback_router.dart';
 import '../util/color_util.dart';
 import 'components/change_nickname_dialog.dart';
 import 'components/post_card.dart';
-import 'components/profile_header.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -54,19 +53,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
   //刷新
   _onRefresh() {
-    FeedbackService.getUserInfo(onSuccess: () {
-      setState(() {});
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
+    FeedbackService.getUserInfo(
+        onSuccess: () {},
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+    _postList.clear();
     currentPage = 1;
     _refreshController.resetNoData();
     _getMyPosts(onSuccess: (list) {
-      _postList = list;
+      _postList.addAll(list);
       _refreshController.refreshCompleted();
     }, onFail: () {
       _refreshController.refreshFailed();
     });
+    setState(() {});
   }
 
 //下拉加载
@@ -89,12 +90,11 @@ class _ProfilePageState extends State<ProfilePage> {
   _deletePostOnLongPressed(int index) {
     showDialog<bool>(
       context: context,
-      builder: (context) =>
-          ProfileDialog(
-            post: _postList[index],
-            onConfirm: () => Navigator.pop(context, true),
-            onCancel: () => Navigator.pop(context, false),
-          ),
+      builder: (context) => ProfileDialog(
+        post: _postList[index],
+        onConfirm: () => Navigator.pop(context, true),
+        onCancel: () => Navigator.pop(context, false),
+      ),
     ).then((confirm) {
       if (confirm) {
         FeedbackService.deletePost(
@@ -124,9 +124,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     var postLists = (List.generate(
       _postList.length,
-          (index) {
-        Widget post =
-        PostCard.simple(
+      (index) {
+        Widget post = PostCard.simple(
           _postList[index],
           onContentLongPressed: () => _deletePostOnLongPressed(index),
           showBanner: true,
@@ -210,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style:
-                              TextUtil.base.ProductSans.white.w700.sp(20))),
+                                  TextUtil.base.ProductSans.white.w700.sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
                         width: 40,
@@ -220,12 +219,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       SizedBox(width: 5.w),
                       InkWell(
-                        onTap: () =>
-                            showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) =>
-                                    ChangeNicknameDialog()),
+                        onTap: () => showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (BuildContext context) =>
+                                ChangeNicknameDialog()),
                         child: Padding(
                           padding: EdgeInsets.all(4.w),
                           child: SvgPicture.asset(
@@ -258,19 +256,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(width: 30.w + 0.25.sw),
-                        Text(CommonPreferences.userNumber.value,
-                            textAlign: TextAlign.start,
-                            style:
-                            TextUtil.base.ProductSans.black4E.w900.sp(
-                                14)),
-                        SizedBox(width: 20.w),
-                        Text(
-                            "MPID: ${CommonPreferences.lakeUid.value
-                                .toString().padLeft(6, '0')}",
-                            textAlign: TextAlign.start,
-                            style:
-                            TextUtil.base.ProductSans.black4E.w900.sp(
-                                14)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(CommonPreferences.userNumber.value,
+                                    textAlign: TextAlign.start,
+                                    style: TextUtil
+                                        .base.ProductSans.black4E.w900
+                                        .sp(14)),
+                                SizedBox(width: 20.w),
+                                Text(
+                                    "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
+                                    textAlign: TextAlign.start,
+                                    style: TextUtil
+                                        .base.ProductSans.black4E.w900
+                                        .sp(14)),
+                              ],
+                            ),
+                            SizedBox(height: 6.h),
+                            LevelProgress(
+                              value: CommonPreferences.curLevelPoint.value
+                                      .toDouble() /
+                                  (CommonPreferences.curLevelPoint.value +
+                                          CommonPreferences
+                                              .nextLevelPoint.value)
+                                      .toDouble(),
+                            )
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -281,8 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         image: 'assets/images/mymsg.png',
                         text: '消息中心',
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, FeedbackRouter.mailbox);
+                          Navigator.pushNamed(context, FeedbackRouter.mailbox);
                         },
                       ),
                       SizedBox(width: 10.w),
@@ -290,8 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         image: 'assets/images/mylike.png',
                         text: '我的点赞',
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, FeedbackRouter.mailbox);
+                          Navigator.pushNamed(context, FeedbackRouter.mailbox);
                         },
                       ),
                       SizedBox(
@@ -308,7 +323,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Spacer(),
                     ],
                   ),
-                  SizedBox(height: 10.h)
+                  SizedBox(height: 16.h)
                 ],
               ),
             ),
@@ -318,17 +333,18 @@ class _ProfilePageState extends State<ProfilePage> {
           top: 148.h - 0.125.sw,
           child: GestureDetector(
             onTap: () {
+              // 进之前request出来之后就可以刷新
               Navigator.pushNamed(context, AuthRouter.avatarCrop)
-                  .then((_) => this.setState(() {}));
+                  .then((_) => _refreshController.requestRefresh());
             },
             child: Container(
               decoration: CommonPreferences.isAprilFoolHead.value
                   ? BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-                        'assets/images/lake_butt_icons/jokers.png'),
-                    fit: BoxFit.contain),
-              )
+                      image: DecorationImage(
+                          image: AssetImage(
+                              'assets/images/lake_butt_icons/jokers.png'),
+                          fit: BoxFit.contain),
+                    )
                   : BoxDecoration(),
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Hero(
@@ -411,7 +427,7 @@ class CustomCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
-              blurRadius: 10,
+              blurRadius: 8,
               color: Colors.black.withOpacity(0.1),
             ),
           ],
@@ -430,9 +446,7 @@ class CustomCard extends StatelessWidget {
             ),
             SizedBox(height: 7.h),
             Text(text,
-                maxLines: 1, style: TextUtil.base.w400.black2A
-                    .sp(12)
-                    .medium),
+                maxLines: 1, style: TextUtil.base.w400.black2A.sp(12).medium),
           ],
         ),
       ),
