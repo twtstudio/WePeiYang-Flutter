@@ -29,7 +29,7 @@ class _LinkTextState extends State<LinkText> {
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
         textStyle: widget.style.NotoSansSC.w400.sp(14),
-        linkStyle: widget.style.linkBlue.w500, onTap: (link) async {
+        linkStyle: widget.style.linkBlue.w500.sp(14), onTap: (link) async {
       //粗暴地解决了，但是肯定不是个长久之计
       if (link.value.startsWith('#MP') &&
           RegExp(r'^-?[0-9]+').hasMatch(link.value.substring(3))) {
