@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../commons/widgets/wpy_pic.dart';
 
 class UserAvatarImage extends StatelessWidget {
   final double size;
@@ -16,14 +19,16 @@ class UserAvatarImage extends StatelessWidget {
     return avatar == ''
         //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
         ? ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            child: Image.asset(
+            borderRadius: BorderRadius.all(Radius.circular(20.r)),
+            child: WpyPic(
               'assets/images/default_image.png',
+              withHolder: true,
             ))
         : ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            child: Image.network(
+            borderRadius: BorderRadius.all(Radius.circular(20.r)),
+            child: WpyPic(
               'https://qnhdpic.twt.edu.cn/download/origin/' + avatar,
+              withHolder: true,
               width: size,
               height: size,
             ),

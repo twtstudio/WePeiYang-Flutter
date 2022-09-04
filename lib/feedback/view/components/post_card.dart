@@ -738,20 +738,6 @@ class _PostCardState extends State<PostCard> {
 
     var bottomWidget = Row(children: bottomList);
 
-    var decoration = BoxDecoration(
-      borderRadius: BorderRadius.circular(15),
-      color: CommonPreferences.isSkinUsed.value
-          ? Color(CommonPreferences.skinColorE.value)
-          : Colors.white,
-      boxShadow: [
-        BoxShadow(
-            blurRadius: 1.6,
-            color: Colors.black12,
-            offset: Offset(0, 0),
-            spreadRadius: -1),
-      ],
-    );
-
     var body = GestureDetector(
         onTap: () async {
           if (widget.type == PostCardType.simple) {
@@ -776,23 +762,29 @@ class _PostCardState extends State<PostCard> {
           showBanner: widget.showBanner,
           questionId: post.id,
           builder: (tap) => Container(
-            padding: EdgeInsets.fromLTRB(5.w, 14.w, 5.w, 10.w),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                mainWidget(tap),
-                SizedBox(height: 8.w),
-                ...imagesWidget,
-                if (widget.type != PostCardType.detail) bottomWidget,
-                if (widget.type == PostCardType.detail) visitWidget,
-              ],
-            ),
-            decoration: decoration,
-          ),
+              decoration: BoxDecoration(
+                  color: CommonPreferences.isSkinUsed.value
+                      ? Color(CommonPreferences.skinColorE.value)
+                      : Colors.white,
+                  border: widget.type == PostCardType.simple
+                      ? Border(bottom: BorderSide(color: ColorUtil.greyEAColor))
+                      : Border()),
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  mainWidget(tap),
+                  SizedBox(height: 8.w),
+                  ...imagesWidget,
+                  if (widget.type != PostCardType.detail) bottomWidget,
+                  if (widget.type == PostCardType.detail) visitWidget,
+                  SizedBox(height: 15.w),
+                ],
+              )),
         ));
     return widget.type != PostCardType.outSide
         ? Padding(
-            padding: EdgeInsets.fromLTRB(12.w, 12.w, 12.w, 2.w),
+            padding: EdgeInsets.fromLTRB(0, 12.w, 0, 2.w),
             child: body,
           )
         : Row(

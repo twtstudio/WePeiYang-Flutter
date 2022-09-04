@@ -81,34 +81,55 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             return Column(
               children: [
                 Spacer(),
-                Swiper(
-                  controller: _swc,
-                  layout: SwiperLayout.TINDER,
-                  loop: true,
-                  autoplay: true,
-                  autoplayDelay: 4000,
-                  itemWidth: 0.81.sw,
-                  itemHeight: 1.08.sw,
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (snapshot.data.length == 0) return SizedBox();
-                    return ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, FeedbackRouter.haitang,
-                              arguments:
-                                  FestivalArgs(snapshot.data[index].url, '活动'));
-                        },
-                        child: WpyPic(
-                          snapshot.data[index].picUrl,
-                          fit: BoxFit.cover,
-                          withHolder: true,
+                snapshot.data.length == 1
+                    ? SizedBox(
+                        width: 0.81.sw,
+                        height: 1.08.sw,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, FeedbackRouter.haitang,
+                                  arguments:
+                                      FestivalArgs(snapshot.data[0].url, '活动'));
+                            },
+                            child: WpyPic(
+                              snapshot.data[0].picUrl,
+                              fit: BoxFit.cover,
+                              withHolder: true,
+                            ),
+                          ),
                         ),
+                      )
+                    : Swiper(
+                        controller: _swc,
+                        loop: true,
+                        autoplay: true,
+                        autoplayDelay: 4000,
+                        itemWidth: 0.81.sw,
+                        itemHeight: 1.08.sw,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (snapshot.data.length == 0) return SizedBox();
+                          return ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.haitang,
+                                    arguments: FestivalArgs(
+                                        snapshot.data[index].url, '活动'));
+                              },
+                              child: WpyPic(
+                                snapshot.data[index].picUrl,
+                                fit: BoxFit.cover,
+                                withHolder: false,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
                 GestureDetector(
                     onTap: () {
                       Navigator.pop(context);

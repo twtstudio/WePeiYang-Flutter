@@ -1,7 +1,9 @@
 // @dart = 2.12
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
@@ -10,10 +12,11 @@ class WpyPic extends StatefulWidget {
   WpyPic(
     this.res, {
     Key? key,
-    this.withHolder = false,
     this.width,
     this.height,
     this.fit = BoxFit.contain,
+    this.withHolder = false,
+    this.withCache = true,
   }) : super(key: key);
 
   final String res;
@@ -21,6 +24,7 @@ class WpyPic extends StatefulWidget {
   final double? height;
   final BoxFit fit;
   final bool withHolder;
+  final bool withCache;
 
   @override
   _WpyPicState createState() => _WpyPicState();
@@ -69,11 +73,16 @@ class _WpyPicState extends State<WpyPic> {
                       loadingProgress.expectedTotalBytes!;
                 }
                 return Container(
-                  height: 40,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(4),
+                  width: widget.width,
+                  height: widget.height,
+                  color: Colors.black26,
                   child: Center(
-                    child: CircularProgressIndicator(value: value),
+                    child: SizedBox(
+                        width:
+                            widget.width == null ? 20 : widget.width! * 0.25,
+                        height:
+                        widget.width == null ? 20 : widget.width! * 0.25,
+                        child: CircularProgressIndicator(value: value)),
                   ),
                 );
               }
@@ -86,10 +95,26 @@ class _WpyPicState extends State<WpyPic> {
     }
   }
 
+  Widget get cachedNetwork => SizedBox(
+        width: widget.width,
+        height: widget.height,
+        child: OptimizedCacheImage(
+          imageUrl: widget.res,
+          placeholder: (context, url) => CupertinoActivityIndicator(),
+          errorWidget: (context, url, error) {
+            print('v_image error: $error');
+            return Icon(Icons.error);
+          },
+          fit: widget.fit,
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     if (widget.res.startsWith('assets')) {
       return asset;
+      // } else if (widget.withCache) {
+      //   return cachedNetwork;
     } else {
       return network;
     }
