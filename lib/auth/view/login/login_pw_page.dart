@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -15,15 +14,17 @@ class LoginPwWidget extends StatefulWidget {
 
 class _LoginPwWidgetState extends State<LoginPwWidget> {
   final checkNotifier = ValueNotifier<bool>(false); // 是否勾选隐私政策
+  bool _usePwLogin = false;
 
   _login() async {
-    if (CommonPreferences.usePwLogin.value) {
+    if (_usePwLogin) {
       _passwordFocus.unfocus();
       if (account == "" || password == "")
         ToastProvider.error('账号密码不能为空');
       else if (!checkNotifier.value)
         ToastProvider.error('请同意用户协议与隐私政策并继续');
-      else
+      else {
+        ToastProvider.running('登录中');
         AuthService.pwLogin(account, password,
             onResult: (result) {
               if (result['telephone'] == null || result['email'] == null) {
@@ -34,6 +35,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               }
             },
             onFailure: (e) => ToastProvider.error(e.error.toString()));
+      }
     } else {
       if (account == "") {
         ToastProvider.error('手机号码不能为空');
@@ -41,7 +43,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         ToastProvider.error('短信验证码不能为空');
       } else if (!checkNotifier.value)
         ToastProvider.error('请同意用户协议与隐私政策并继续');
-      else
+      else {
+        ToastProvider.running('登录中');
         AuthService.codeLogin(account, code,
             onResult: (result) {
               if (result['telephone'] == null || result['email'] == null) {
@@ -52,6 +55,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               }
             },
             onFailure: (e) => ToastProvider.error(e.error.toString()));
+      }
     }
   }
 
@@ -93,9 +97,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 50),
-                      CommonPreferences.usePwLogin.value
-                          ? _pwWidget
-                          : _codeWidget,
+                      _usePwLogin ? _pwWidget : _codeWidget,
                       Spacer(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -115,6 +117,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               );
                             },
                           ),
+                          SizedBox(width: 10),
                           Text.rich(TextSpan(
                               text: "我已阅读并同意",
                               style: TextUtil.base.normal.NotoSansSC.w400
@@ -271,8 +274,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               onPressed: _login,
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style:
-                      TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+                  style: TextUtil.base.bold.NotoSansSC.w400.sp(16).blue2C)),
               style: ButtonStyle(
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
@@ -295,14 +297,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   text: "短信登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
               onTap: () {
-                if (CommonPreferences.usePwLogin.value) {
+                if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences.usePwLogin.value = false;
+                  _usePwLogin = false;
                 } else {
                   code = '';
-                  CommonPreferences.usePwLogin.value = true;
+                  _usePwLogin = true;
                 }
                 setState(() {});
               },
@@ -428,14 +430,12 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             // 这样的地方改了，便于屏幕适配
             width: width - 60,
             child: ElevatedButton(
-              onPressed: () {
-                _login();
-              },
+              onPressed: _login,
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style:
-                      TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
               style: ButtonStyle(
+                elevation: MaterialStateProperty.all(0),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
@@ -478,14 +478,14 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   text: "密码登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
               onTap: () {
-                if (CommonPreferences.usePwLogin.value) {
+                if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
                   password = '';
-                  CommonPreferences.usePwLogin.value = false;
+                  _usePwLogin = false;
                 } else {
                   code = '';
-                  CommonPreferences.usePwLogin.value = true;
+                  _usePwLogin = true;
                 }
                 setState(() {});
               },

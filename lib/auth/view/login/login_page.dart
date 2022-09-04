@@ -29,7 +29,6 @@ class LoginHomeWidget extends StatelessWidget {
         ),
         child: Column(
           children: [
-
             Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
@@ -42,7 +41,9 @@ class LoginHomeWidget extends StatelessWidget {
                     style: TextUtil.base.normal.NotoSansSC.sp(40).w400.white),
               ])),
             ),
-            Spacer(flex: 6,),
+            Spacer(
+              flex: 6,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -54,14 +55,10 @@ class LoginHomeWidget extends StatelessWidget {
                         Navigator.pushNamed(context, AuthRouter.loginPw),
                     child: Text.rich(TextSpan(
                         text: "登录",
-                        style: TextUtil.base.normal.NotoSansSC
-                            .sp(16)
-                            .w400
-                            .blue2C)),
-                    /*Text(S.current.login,
-                        style: FontManager.YaHeiRegular.copyWith(
-                            color: Colors.white, fontSize: 13)),*/
+                        style:
+                            TextUtil.base.bold.NotoSansSC.sp(16).w400.blue2C)),
                     style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(0),
                       //水波纹颜色暂时没确定
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
@@ -70,14 +67,13 @@ class LoginHomeWidget extends StatelessWidget {
                         return MyColors.deepBlue;
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24))),
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 30),
                 SizedBox(
                   height: 48,
                   width: 120,
@@ -86,19 +82,17 @@ class LoginHomeWidget extends StatelessWidget {
                         Navigator.pushNamed(context, AuthRouter.register1),
                     child: Text.rich(TextSpan(
                         text: "注册",
-                        style: TextUtil.base.normal.NotoSansSC
-                            .sp(16)
-                            .w400
-                            .blue2C)),
+                        style:
+                            TextUtil.base.bold.NotoSansSC.sp(16).w400.blue2C)),
                     style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(0),
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
                           return MyColors.brightBlue;
                         return MyColors.deepBlue;
                       }),
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                      backgroundColor: MaterialStateProperty.all(Colors.white),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                     ),

@@ -34,7 +34,8 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
   static final themeToken = PrefsBean<String>('themeToken');
 
-  static final lastShownYearMonthDay = PrefsBean<int>('lastShownDaySinceStart', 20220901);
+  static final lastShownYearMonthDay =
+      PrefsBean<int>('lastShownDaySinceStart', 20220901);
 
   /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken');
@@ -51,14 +52,14 @@ class CommonPreferences {
   static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
   static final curLevelPoint = PrefsBean<int>('curLevelPoint');
 
-
   static final feedbackSearchHistory =
       PrefsBean<List<String>>('feedbackSearchHistory');
 
   // 1 -> 按时间排序; 2 -> 按热度排序
   static final feedbackSearchType =
       PrefsBean<String>('feedbackSearchType', '1');
-  static final feedbackFloorSortType = PrefsBean<int>('feedbackFloorSortType', 0);
+  static final feedbackFloorSortType =
+      PrefsBean<int>('feedbackFloorSortType', 0);
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
   static final isFirstLogin = PrefsBean<bool>('firstLogin', true);
 
@@ -92,7 +93,8 @@ class CommonPreferences {
   static final gpaData = PrefsBean<String>('gpaData');
   static final courseData = PrefsBean<String>('courseData');
   static final examData = PrefsBean<String>('examData');
-  static final customUpdatedAt = PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
+  static final customUpdatedAt =
+      PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
   static final isBindTju = PrefsBean<bool>('bindtju');
   static final tjuuname = PrefsBean<String>('tjuuname');
   static final tjupasswd = PrefsBean<String>('tjupasswd');
@@ -129,8 +131,8 @@ class CommonPreferences {
   static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
 
   /// 自习室
-  static final  loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
-  static final  lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
+  static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
+  static final lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
 
   /// 健康信息提交时间
   static final reportTime = PrefsBean<String>('reportTime');
@@ -141,9 +143,6 @@ class CommonPreferences {
 
   /// 是否为初次使用此app
   static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
-
-  /// 是否使用账密登陆（false则为短信登陆）
-  static final usePwLogin = PrefsBean<bool>('pwLogin', true);
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');

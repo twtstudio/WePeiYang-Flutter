@@ -5,10 +5,14 @@ import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
+import 'package:path/path.dart' as p;
 
 class _SpiderDio extends DioAbstract {
+  static final cookieJar = PersistCookieJar(
+      storage: FileStorage(p.join(StorageUtil.tempDir.path, 'cookie')));
   @override
-  List<InterceptorsWrapper> interceptors = [CookieManager(CookieJar())];
+  List<InterceptorsWrapper> interceptors = [CookieManager(cookieJar)];
 }
 
 class ClassesService {
@@ -35,6 +39,7 @@ class ClassesService {
 
   /// 退出登录
   static void logout() async {
+    await _SpiderDio.cookieJar.deleteAll();
     await fetch("http://classes.tju.edu.cn/eams/logoutExt.action");
   }
 

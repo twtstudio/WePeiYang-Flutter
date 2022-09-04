@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:convert' show utf8, base64Encode;
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext, Navigator, required;
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
@@ -25,6 +27,7 @@ class AuthDio extends DioAbstract {
 
   @override
   List<InterceptorsWrapper> interceptors = [
+    CookieManager(CookieJar()),
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.token.value;
       return handler.next(options);

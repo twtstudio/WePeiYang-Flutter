@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 
 class _RoomPlanData extends LoungeDataChangeNotifier {
   final Classroom _room;
@@ -333,14 +334,14 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
           MapEntry(Time.week[key - 1], DataFactory.splitPlan(value)),
     );
 
-    return Stack(
-      children: _generatePositioned(
-        context,
-        singleCourseHeight,
-        statuses,
-        dayCount,
-      ),
+    List<Widget> courses = _generatePositioned(
+      context,
+      singleCourseHeight,
+      statuses,
+      dayCount,
     );
+
+    return Stack(children: courses);
   }
 
   @override
@@ -381,7 +382,7 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
         index = index + c.length;
         int end = index - 1;
         double top = (start == 1) ? 0 : (start - 1) * (courseHeight + cardStep);
-        if(start > 3) top += middleStep + cardStep;
+        if (start > 3) top += middleStep + cardStep;
         double left = (day == 1) ? 0 : (day - 1) * (cardWidth + cardStep);
         double height =
             (end - start + 1) * courseHeight + (end - start) * cardStep;
@@ -420,22 +421,24 @@ class CourseDisplayWidget extends LoadStateListener<_RoomPlanData> {
       }
       d++;
     }
-    var lunch = Positioned(
-      left: 0,
-      top: 4 * (courseHeight + cardStep),
-      height: middleStep,
-      width: 1.sw - 30.w,
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        margin: EdgeInsets.symmetric(vertical: 5.h),
-        child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
-      ),
-    );
-    list.add(lunch);
+
+    list.add(Positioned(
+        left: 0,
+        top: 4 * (courseHeight + cardStep),
+        height: middleStep,
+        width: 1.sw - 30.w,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 5.h),
+          child: list.isEmpty
+              ? Text("全部空闲", style: TextUtil.base.w900.white.sp(16))
+              : Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+        )));
+
     return list;
   }
 }
