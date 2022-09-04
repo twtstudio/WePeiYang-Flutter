@@ -10,9 +10,9 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
 
-  String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
+  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [

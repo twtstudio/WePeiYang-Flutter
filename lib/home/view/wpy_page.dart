@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +9,11 @@ import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
+import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -46,6 +52,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   List<CardBean> cards;
   var md = '';
   dynamic result;
+  Future<NAcidInfo> acidInfo;
+  bool hasShow = false;
 
   Future<String> _loadFromAssets() async {
     String filePath = 'privacy/privacy_content.md';
@@ -134,10 +142,127 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  Timer _timer;
+  ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());
+
+  /// 核酸检测提醒弹窗
+  Widget NCCheckDialog(BuildContext context) => FutureBuilder(
+        future: acidInfo,
+        builder: (context, AsyncSnapshot<NAcidInfo> snapshot) {
+          if (snapshot.hasData) {
+            final start = snapshot.data.startTime;
+            final end = snapshot.data.endTime;
+
+            return Column(
+              children: [
+                Spacer(),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
+                  width: 0.7.sw,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.r),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Image.asset(
+                          'assets/images/schedule/notify.png',
+                          height: 25.h,
+                          width: 25.w,
+                        ),
+                      ),
+                      SizedBox(height: 20.w),
+                      Text(
+                        '#${snapshot.data.title}',
+                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(18),
+                      ),
+                      SizedBox(height: 20.w),
+                      Text(
+                        '${snapshot.data.content}',
+                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
+                      ),
+                      SizedBox(height: 10.w),
+                      Text(
+                        '${snapshot.data.campus}校区',
+                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
+                      ),
+                      SizedBox(height: 10.w),
+                      Text(
+                        '${DateFormat('HH:mm').format(start?.toLocal())} - ${DateFormat('HH:mm').format(end?.toLocal())}',
+                        style: TextUtil.base.PingFangSC.blue2C.w500.sp(20),
+                      ),
+                      SizedBox(height: 10.w),
+                      ValueListenableBuilder(
+                          valueListenable: _now,
+                          builder: (_, DateTime time, __) {
+                            final before = time.isBefore(start);
+                            Duration dur = before
+                                ? start.difference(time)
+                                : end.difference(time);
+                            final hr = dur.inHours.toString().padLeft(2, '0');
+                            final min =
+                                (dur.inMinutes % 60).toString().padLeft(2, '0');
+                            return time.isBefore(end)
+                                ? Text(
+                                    '距检测${before ? '开始' : '结束'}还有$hr时$min分',
+                                    style: TextUtil.base.PingFangSC.grey126.normal.sp(16),
+                                  )
+                                : Text(
+                                    '今日核酸已结束',
+                                    style: TextUtil.base.PingFangSC.grey126.normal.sp(16),
+                                  );
+                          }),
+
+                      SizedBox(height: 20.w),
+                    ],
+                  ),
+                ),
+                Spacer()
+              ],
+            );
+          } else {
+            return Loading();
+          }
+        },
+      );
+
+  void showNCDialog() {
+    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      _now.value = DateTime.now();
+    });
+
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      useSafeArea: false,
+      builder: (context) {
+        var dialog = NCCheckDialog(context);
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                  child: ColoredBox(color: Colors.black38),
+                ),
+              ),
+            ),
+            Center(child: dialog),
+          ],
+        );
+      },
+    ).then((_) => _timer.cancel());
+  }
+
   @override
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
+    acidInfo = AuthService.checkNuclearAcid();
     if (CommonPreferences.isFirstUse.value == true) setAsserts();
     cards = [
       CardBean(
@@ -185,11 +310,16 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               return AgreementAndPrivacyDialog(md);
             });
       }
-      int showYearMonthDay = int.parse(
-          '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
-      if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
-        showHomeDialog();
-        CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
+      // int showYearMonthDay = int.parse(
+      //     '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
+      // if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
+      // showHomeDialog();
+      // CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
+      // }
+      var info = await acidInfo;
+      if (info.id != -1 && hasShow == false && DateTime.now().isBefore(info.endTime.add(Duration(hours: 1)))){
+        showNCDialog();
+        hasShow = true;
       }
     });
   }
@@ -325,7 +455,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               ]),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height - 362.h,
+          height: MediaQuery.of(context).size.height - 370.h,
           child: TabBarView(
               controller: _tc,
               physics: BouncingScrollPhysics(),
