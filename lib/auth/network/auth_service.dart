@@ -4,11 +4,12 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext, Navigator, required;
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -48,6 +49,18 @@ class AuthDio extends DioAbstract {
               (route) => false);
           error = "登录失效，请重新登录";
           break;
+        case 50001:
+        // error = "数据库错误";
+        // break;
+        case 50002:
+        // error = "逻辑错误或数据库错误";
+        // break;
+        case 50003:
+        // error = "未绑定的url，请联系管理员";
+        // break;
+        case 50004:
+        // error = "错误的app_key或app_secret";
+        // break;
         case 50005:
           error = "学号和身份证号不匹配";
           break;
@@ -95,12 +108,8 @@ class AuthDio extends DioAbstract {
           break;
         case 40001:
         case 40003:
-        case 50001:
-        case 50002:
-        case 50003:
-        case 50004:
         case 50010:
-          error = "发生未知错误，请重新尝试 $code";
+          error = "发生未知错误，请重新尝试或联系管理员：错误码$code";
       }
       if (error == "")
         return handler.next(response);
@@ -478,5 +487,19 @@ class AuthService with AsyncTimer {
         onFailure(e);
       }
     });
+  }
+
+  static Future<NAcidInfo> checkNuclearAcid() async {
+    try {
+      var rsp = await authDio.get('checkHeSuan');
+      print(rsp.data['result']);
+      if (rsp.data['result'] == '无核酸')
+        return NAcidInfo(id: -1);
+      else
+        return NAcidInfo.fromJson(rsp.data['result']);
+    } on DioError catch (e) {
+      ToastProvider.error(e.message);
+    }
+    return NAcidInfo(id: -1);
   }
 }
