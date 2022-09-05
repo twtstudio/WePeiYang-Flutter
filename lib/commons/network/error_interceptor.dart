@@ -27,25 +27,18 @@ class ClassesErrorInterceptor extends InterceptorsWrapper {
     if (e.type == DioErrorType.response) {
       switch (e.response?.statusCode) {
         case 500:
-          {
-            e.error = "服务器发生了未知错误";
-          }
+          e.error = "服务器发生了未知错误";
           break;
         case 401:
-          {
-            if ((e.response?.data.toString().contains("验证码错误") ?? false) ||
-                (e.response?.data.toString().contains("Mismatch") ?? false))
-              e.error = "验证码输入错误";
-            else
-              e.error = "密码输入错误";
-          }
+          if ((e.response?.data.toString().contains("验证码错误") ?? false) ||
+              (e.response?.data.toString().contains("Mismatch") ?? false))
+            e.error = "验证码输入错误";
+          else
+            e.error = "密码输入错误";
           break;
         case 302:
-          {
-            e.error = "办公网绑定失效，请重新绑定";
-            // 清空cookie
-            await ClassesService.cookieJar.deleteAll();
-          }
+          // e.error = "办公网绑定失效，请重新绑定";
+          e.error = '';
           break;
       }
     }

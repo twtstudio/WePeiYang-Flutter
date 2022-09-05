@@ -80,44 +80,57 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }
     ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网绑定成功");
+      ToastProvider.running('数据加载中');
+      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      var examProvider = Provider.of<ExamProvider>(context, listen: false);
       Future.sync(() async {
         var mtx = Mutex();
         await mtx.acquire();
+        // TODO: 重定向错误不知道怎么忽略，多请求一次课程表是可以的，同时把GPA放在课程表
+        // 前面，防止刷到辅修成绩的bug情况。此外在判断是否刷新时，去掉了来自课程表页面的
+        // 多刷新课程表总能刷出来，所以不判断了，之后要重新对一遍办公网的登录流程
+        // 这里provider先拿出来，页面pop掉就没了
         if (widget.routeAfterBind != GPARouter.gpa) {
-          Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+          gpaProvider.refreshGPA(
             onSuccess: () {
               mtx.release();
             },
             onFailure: (e) {
-              ToastProvider.error(e.error.toString());
               mtx.release();
             },
           );
         }
         await mtx.acquire();
-        if (widget.routeAfterBind != ScheduleRouter.course) {
-          Provider.of<CourseProvider>(context, listen: false).refreshCourse(
-            onSuccess: () {
-              mtx.release();
-            },
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-              mtx.release();
-            },
-          );
-        }
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            mtx.release();
+          },
+        );
+
         await mtx.acquire();
         if (widget.routeAfterBind != ScheduleRouter.exam) {
-          Provider.of<ExamProvider>(context, listen: false).refreshExam(
+          examProvider.refreshExam(
             onSuccess: () {
               mtx.release();
             },
             onFailure: (e) {
-              ToastProvider.error(e.error.toString());
               mtx.release();
             },
           );
         }
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            mtx.release();
+          },
+        );
       });
       if (widget.routeAfterBind != null) {
         Navigator.pushReplacementNamed(context, widget.routeAfterBind);
@@ -438,6 +451,9 @@ class CaptchaWidget extends StatefulWidget {
 class CaptchaWidgetState extends State<CaptchaWidget> {
   void refresh() async {
     id += 0.001;
+    try {
+      await ClassesService.cookieJar.deleteAll();
+    } catch (_) {}
     var res = await ClassesService.fetch(
         "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
         options: Options(responseType: ResponseType.bytes));

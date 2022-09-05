@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
-
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -8,8 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuRebindDialog extends Dialog {
   final String reason;
@@ -88,15 +88,52 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     }
     ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
-      Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      );
-      Provider.of<CourseProvider>(context, listen: false).refreshCourse(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      );
-      Provider.of<ExamProvider>(context, listen: false).refreshExam(
-        onFailure: (e) => ToastProvider.error(e.error.toString()),
-      );
+      Future.sync(() async {
+        var mtx = Mutex();
+        // 这里既然第一次课程表有问题，那么最后多请求一次
+        await mtx.acquire();
+
+        Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+        await mtx.acquire();
+        Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+
+        await mtx.acquire();
+        Provider.of<ExamProvider>(context, listen: false).refreshExam(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+        await mtx.acquire();
+        Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+      });
       Navigator.pop(context);
     }, onFailure: (e) {
       if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';

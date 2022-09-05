@@ -43,6 +43,7 @@ class ScheduleService {
         // 获取辅修课程
         final minorCourses = await _getDetailTable(true);
         courseList.addAll(minorCourses);
+        await Future.delayed(Duration(milliseconds: 500));
         // 切换为主修，防止gpa获取辅修成绩
         await _getDetailTable(false);
       }
@@ -74,6 +75,19 @@ class ScheduleService {
         "http://classes.tju.edu.cn/eams/dataQuery.action",
         isPost: true,
         params: {"dataType": "semesterCalendar"});
+
+    // 这里最开始两次会跳转错误
+    // 舍弃掉，重新开始请求
+    await Future.delayed(Duration(milliseconds: 300));
+    // 初始化学期查询
+    await ClassesService.fetch(
+        "http://classes.tju.edu.cn/eams/dataQuery.action");
+    // 查询学期
+    res = await ClassesService.fetch(
+        "http://classes.tju.edu.cn/eams/dataQuery.action",
+        isPost: true,
+        params: {"dataType": "semesterCalendar"});
+
     final html = res.data.toString();
     final allSemester = html.findArrays(
         "id:([0-9]+),schoolYear:\"([0-9]+)-([0-9]+)\",name:\"(1|2)\"");

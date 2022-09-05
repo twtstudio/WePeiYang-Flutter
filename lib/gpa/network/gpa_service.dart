@@ -15,20 +15,21 @@ class GPAService {
         "http://classes.tju.edu.cn/eams/stdDetail.action",
       );
 
-      var infoDetail =
-          info.data.toString().match(r'(?<=项目：</td>)[\s\S]*?</td>');
+      var html = info.data.toString();
+      var s = html.find(r"项目：</td>(.+?)</td>");
+      if (s.isEmpty) s = html;
+      var isMaster = s.contains("研究");
 
-      /// 判断是否为硕士研究生
-      bool isMaster = false;
-
-      if (infoDetail != '' && infoDetail.contains('研究')) isMaster = true;
-
-      if (isMaster) {
-        /// 如果是研究生，切换至研究生成绩
+      if (isMaster)
+        // 如果是研究生，切换至研究生成绩
         await ClassesService.fetch(
             "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-            params: {'projectId': '2'});
-      }
+            params: {'projectId': '22'});
+      else
+        await ClassesService.fetch(
+            "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+            cookieList: CommonPreferences.cookies,
+            params: {'projectId': '1'});
       var response = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
       onResult(_data2GPABean(response.data.toString(), isMaster));

@@ -42,8 +42,8 @@ class ClassesService {
 
   /// 退出登录
   static void logout() async {
-    await _SpiderDio.cookieJar.deleteAll();
     await fetch("http://classes.tju.edu.cn/eams/logoutExt.action");
+    await _SpiderDio.cookieJar.deleteAll();
   }
 
   /// 获取包含 session、execution 的 map
@@ -77,8 +77,15 @@ class ClassesService {
       bool isPost = false,
       Options? options}) {
     if (isPost) {
-      final formdata = FormData.fromMap(params ?? Map());
-      return _spiderDio.post(url, formData: formdata, options: options);
+      if (options == null)
+        options = Options(
+            contentType: Headers.formUrlEncodedContentType,
+            followRedirects: false);
+      else {
+        options.contentType = Headers.formUrlEncodedContentType;
+        options.followRedirects = false;
+      }
+      return _spiderDio.post(url, data: params, options: options);
     } else
       return _spiderDio.get(url, queryParameters: params, options: options);
   }

@@ -1,8 +1,8 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show AsyncTimer;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -15,9 +15,6 @@ class ToastProvider with AsyncTimer {
   static void init(BuildContext context) {
     _fToast = FToast().init(context);
   }
-
-
-
 
   /// 自定义 Toast
   /// [child] 显示内容
@@ -76,6 +73,7 @@ class ToastProvider with AsyncTimer {
 
   /// 新版本的 error 调整了报错的底部弹窗的位置，还加入了图标
   static void error(String msg) {
+    if (msg == '') return;
     ToastProvider.custom(
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
@@ -86,9 +84,14 @@ class ToastProvider with AsyncTimer {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset('assets/svg_pics/lake_butt_icons/error_background.svg',width: 15),
+            SvgPicture.asset(
+                'assets/svg_pics/lake_butt_icons/error_background.svg',
+                width: 15),
             SizedBox(width: 10),
-            Text(msg,style: TextUtil.base.NotoSansSC.bold.sp(14).redD9,),
+            Text(
+              msg,
+              style: TextUtil.base.NotoSansSC.bold.sp(14).redD9,
+            ),
           ],
         ),
       ),
@@ -111,8 +114,10 @@ class ToastProvider with AsyncTimer {
           color: Color.fromRGBO(0x21, 0x96, 0xf3, 0.4),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(msg,style: TextUtil.base.NotoSansSC.regular.sp(14).white,),
-
+        child: Text(
+          msg,
+          style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+        ),
       ),
       positionedToastBuilder: (context, child) {
         return Positioned(
@@ -124,15 +129,19 @@ class ToastProvider with AsyncTimer {
       },
     );
   }
+
   static success(String msg) {
     ToastProvider.custom(
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0x4C,0xAF,0x50,0.4),
+          color: Color.fromRGBO(0x4C, 0xAF, 0x50, 0.4),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(msg,style: TextUtil.base.NotoSansSC.regular.sp(14).white,),
+        child: Text(
+          msg,
+          style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+        ),
       ),
       positionedToastBuilder: (context, child) {
         return Positioned(
