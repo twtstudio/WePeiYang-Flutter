@@ -16,49 +16,7 @@ class ToastProvider with AsyncTimer {
     _fToast = FToast().init(context);
   }
 
-  static success(String msg) {
-    AsyncTimer.runRepeatChecked(msg, () async {
-      print('ToastProvider success: $msg');
-      _fToast.showToast(
-        gravity: ToastGravity.BOTTOM,
-        toastDuration: const Duration(seconds: 2),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-          decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Text(
-            msg,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ),
-      );
-      await Future.delayed(const Duration(seconds: 2));
-    });
-  }
 
-  static running(String msg) {
-    AsyncTimer.runRepeatChecked(msg, () async {
-      print('ToastProvider running: $msg');
-      _fToast.showToast(
-        gravity: ToastGravity.BOTTOM,
-        toastDuration: const Duration(seconds: 2),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Text(
-            msg,
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ),
-      );
-      await Future.delayed(const Duration(seconds: 2));
-    });
-  }
 
 
   /// 自定义 Toast
@@ -130,9 +88,51 @@ class ToastProvider with AsyncTimer {
           children: [
             SvgPicture.asset('assets/svg_pics/lake_butt_icons/error_background.svg',width: 15),
             SizedBox(width: 10),
-            Text(msg,style: TextUtil.base.NotoSansSC.bold.sp(12).redD9,),
+            Text(msg,style: TextUtil.base.NotoSansSC.bold.sp(14).redD9,),
           ],
         ),
+      ),
+      positionedToastBuilder: (context, child) {
+        return Positioned(
+          left: 16.0, // 左右填一样的值可以居中
+          right: 16.0,
+          bottom: 0.1.sh,
+          child: child,
+        );
+      },
+    );
+  }
+
+  static running(String msg) {
+    ToastProvider.custom(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(0x21, 0x96, 0xf3, 0.4),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(msg,style: TextUtil.base.NotoSansSC.regular.sp(14).white,),
+
+      ),
+      positionedToastBuilder: (context, child) {
+        return Positioned(
+          left: 16.0, // 左右填一样的值可以居中
+          right: 16.0,
+          bottom: 0.1.sh,
+          child: child,
+        );
+      },
+    );
+  }
+  static success(String msg) {
+    ToastProvider.custom(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(0x4C,0xAF,0x50,0.4),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(msg,style: TextUtil.base.NotoSansSC.regular.sp(14).white,),
       ),
       positionedToastBuilder: (context, child) {
         return Positioned(
