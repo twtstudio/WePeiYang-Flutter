@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
@@ -79,21 +80,45 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }
     ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      if (widget.routeAfterBind != GPARouter.gpa) {
-        Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-          onFailure: (e) => ToastProvider.error(e.error.toString()),
-        );
-      }
-      if (widget.routeAfterBind != ScheduleRouter.course) {
-        Provider.of<CourseProvider>(context, listen: false).refreshCourse(
-          onFailure: (e) => ToastProvider.error(e.error.toString()),
-        );
-      }
-      if (widget.routeAfterBind != ScheduleRouter.exam) {
-        Provider.of<ExamProvider>(context, listen: false).refreshExam(
-          onFailure: (e) => ToastProvider.error(e.error.toString()),
-        );
-      }
+      Future.sync(() async {
+        var mtx = Mutex();
+        await mtx.acquire();
+        if (widget.routeAfterBind != GPARouter.gpa) {
+          Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+            onSuccess: () {
+              mtx.release();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+              mtx.release();
+            },
+          );
+        }
+        await mtx.acquire();
+        if (widget.routeAfterBind != ScheduleRouter.course) {
+          Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+            onSuccess: () {
+              mtx.release();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+              mtx.release();
+            },
+          );
+        }
+        await mtx.acquire();
+        if (widget.routeAfterBind != ScheduleRouter.exam) {
+          Provider.of<ExamProvider>(context, listen: false).refreshExam(
+            onSuccess: () {
+              mtx.release();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+              mtx.release();
+            },
+          );
+        }
+      });
       if (widget.routeAfterBind != null) {
         Navigator.pushReplacementNamed(context, widget.routeAfterBind);
         return;

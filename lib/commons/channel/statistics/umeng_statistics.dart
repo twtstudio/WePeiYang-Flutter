@@ -12,6 +12,7 @@ class UmengCommonSdk {
   static Future<void> initCommon() async {
     if (Platform.isAndroid)
       await _channel.invokeMethod('initCommon').catchError(printError);
+    // iOS自动初始化
   }
 
   static void onEvent(String event, Map<String, dynamic> properties) {

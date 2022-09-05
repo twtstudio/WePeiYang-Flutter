@@ -61,6 +61,7 @@ dependencies:
   extended_image: ^4.0.0
   flutter_native_image: ^0.0.6+1
   flutter_smart_dialog: ^3.3.5
+  mutex: ^3.0.0
 
   share_plus: ^4.0.10+1
   gallery_saver: ^2.3.2

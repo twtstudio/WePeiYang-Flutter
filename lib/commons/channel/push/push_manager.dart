@@ -214,7 +214,7 @@ class PushManager extends ChangeNotifier {
   void _gotCidFromIOS(arguments) async {
     final list = jsonDecode(jsonEncode(arguments));
     AuthService.updateCid(list['cid'], onResult: (_) {
-      debugPrint('cid 更新成功');
+      debugPrint('cid 更新成功 ${list['cid']}');
     }, onFailure: (_) {});
   }
 }
