@@ -480,8 +480,8 @@ class AuthService with AsyncTimer {
       try {
         final manager = context.read<PushManager>();
         final cid = await manager.getCid();
-        await authDio.post("notification/cid",
-            formData: FormData.fromMap({'cid': cid}));
+        final res = await authDio
+            .post("notification/cid", queryParameters: {'cid': cid});
         onResult(cid);
       } on DioError catch (e) {
         onFailure(e);
@@ -492,7 +492,6 @@ class AuthService with AsyncTimer {
   static Future<NAcidInfo> checkNuclearAcid() async {
     try {
       var rsp = await authDio.get('checkHeSuan');
-      print(rsp.data['result']);
       if (rsp.data['result'] == '无核酸')
         return NAcidInfo(id: -1);
       else

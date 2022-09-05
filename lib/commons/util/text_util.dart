@@ -15,15 +15,20 @@ class TextUtil {
 
 extension TextStyleAttr on TextStyle {
   /// 粗细
-  TextStyle get w100 => this.copyWith(fontWeight: FontWeight.w100); // Thin, the least thick
-  TextStyle get w200 => this.copyWith(fontWeight: FontWeight.w200); // Extra-light
+  TextStyle get w100 =>
+      this.copyWith(fontWeight: FontWeight.w100); // Thin, the least thick
+  TextStyle get w200 =>
+      this.copyWith(fontWeight: FontWeight.w200); // Extra-light
   TextStyle get w300 => this.copyWith(fontWeight: FontWeight.w300); // Light
-  TextStyle get w400 => this.copyWith(fontWeight: FontWeight.w400); // Normal / regular / plain
+  TextStyle get w400 =>
+      this.copyWith(fontWeight: FontWeight.w400); // Normal / regular / plain
   TextStyle get w500 => this.copyWith(fontWeight: FontWeight.w500); // Medium
   TextStyle get w600 => this.copyWith(fontWeight: FontWeight.w600); // Semi-bold
   TextStyle get w700 => this.copyWith(fontWeight: FontWeight.w700); // Bold
-  TextStyle get w800 => this.copyWith(fontWeight: FontWeight.w800); // Extra-bold
-  TextStyle get w900 => this.copyWith(fontWeight: FontWeight.w900); // Black, the most thick
+  TextStyle get w800 =>
+      this.copyWith(fontWeight: FontWeight.w800); // Extra-bold
+  TextStyle get w900 =>
+      this.copyWith(fontWeight: FontWeight.w900); // Black, the most thick
   TextStyle get regular => w400;
   TextStyle get normal => w400;
   TextStyle get medium => w500;
@@ -53,14 +58,16 @@ extension TextStyleAttr on TextStyle {
   TextStyle get blue363C => this.copyWith(color: const Color(0xFF363C54));
   TextStyle get black00 => this.copyWith(color: const Color(0xFF000000));
   TextStyle get black4E => this.copyWith(color: const Color(0xFF4E4E4E));
-  TextStyle get grey126 => this.copyWith(color: const Color.fromARGB(255, 126, 126, 126));
+  TextStyle get grey126 =>
+      this.copyWith(color: const Color.fromARGB(255, 126, 126, 126));
   TextStyle get black2A => this.copyWith(color: const Color(0xFF2A2A2A));
   TextStyle get green1B => this.copyWith(color: const Color(0xFF1B7457));
   TextStyle get green5C => this.copyWith(color: const Color(0xFF5CB85C));
   TextStyle get yellowD9 => this.copyWith(color: const Color(0xFFD9621F));
   TextStyle get redD9 => this.copyWith(color: const Color(0xFFD9534F));
   TextStyle get orange6B => this.copyWith(color: const Color(0xFFFFBC6B));
-  TextStyle get mainColor => this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
+  TextStyle get mainColor =>
+      this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
   TextStyle get blue2C => this.copyWith(color: const Color(0xFF2C7EDF));
   TextStyle get transParent => this.copyWith(color: const Color(0x00000000));
 
@@ -69,12 +76,14 @@ extension TextStyleAttr on TextStyle {
   TextStyle get NotoSansSC => this.copyWith(fontFamily: 'NotoSansSC');
   TextStyle get PingFangSC => this.copyWith(fontFamily: 'PingFangSC');
   TextStyle get ProductSans => this.copyWith(fontFamily: 'ProductSans');
-  TextStyle get Bauhaus => this.copyWith(fontFamily: 'Bauhaus');
+  TextStyle get Fourche => this.copyWith(fontFamily: 'Fourche');
 
   /// 装饰
-  TextStyle get lineThrough => this.copyWith(decoration: TextDecoration.lineThrough);
+  TextStyle get lineThrough =>
+      this.copyWith(decoration: TextDecoration.lineThrough);
   TextStyle get overLine => this.copyWith(decoration: TextDecoration.overline);
-  TextStyle get underLine => this.copyWith(decoration: TextDecoration.underline);
+  TextStyle get underLine =>
+      this.copyWith(decoration: TextDecoration.underline);
   TextStyle get noLine => this.copyWith(decoration: TextDecoration.none);
   TextStyle get italic => this.copyWith(fontStyle: FontStyle.italic);
 

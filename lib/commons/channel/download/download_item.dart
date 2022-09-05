@@ -2,9 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-
-import '../../util/storage_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 
 class DownloadTask {
   final String url;
@@ -54,7 +54,7 @@ class DownloadTask {
     String? title,
     String? description,
   }) {
-    fileName ??= url.split("/").last;
+    fileName ??= p.split(url).last;
     type ??= DownloadType.other;
     showNotification ??= false;
     String id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";

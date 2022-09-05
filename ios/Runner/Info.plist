@@ -23,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -43,10 +43,15 @@
 	<string>我们将使用您的相册权限以获取照片，如果不愿意您将无法上传图片</string>
 	<key>NSSiriUsageDescription</key>
 	<string>允许使用Siri以询问课表考表等</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>ConfigurationIntent</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

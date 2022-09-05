@@ -83,10 +83,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       CommonPreferences.isAprilFoolGen.value = true;
       CommonPreferences.isAprilFoolHead.value = false;
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // WbyFontLoader.initFonts();
       context.read<PushManager>().initGeTuiSdk();
-      context.read<UpdateManager>().checkUpdate();
       AuthService.updateCid(context, onResult: (_) {}, onFailure: (_) {});
       var hasReport = await reportDio.getTodayHasReported();
       if (hasReport) {

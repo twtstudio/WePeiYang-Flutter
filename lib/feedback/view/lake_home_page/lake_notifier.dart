@@ -211,6 +211,7 @@ class LakeModel extends ChangeNotifier {
     await FeedbackService.getToken(
       onResult: (token) {
         initTabList();
+        success?.call();
       },
       onFailure: (e) {
         ToastProvider.error('获取分区失败');

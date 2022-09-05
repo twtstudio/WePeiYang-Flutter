@@ -1,5 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -38,7 +39,6 @@ class _ExamPageState extends State<ExamPage> {
   Widget build(BuildContext context) {
     var appBar = AppBar(
       backgroundColor: Colors.white,
-      brightness: Brightness.light,
       elevation: 0,
       leading: GestureDetector(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
@@ -66,6 +66,7 @@ class _ExamPageState extends State<ExamPage> {
         ),
         SizedBox(width: 10.w),
       ],
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return Scaffold(
@@ -236,7 +237,7 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                 right: 0,
                 bottom: 1.h,
                 child: Text(remain,
-                    style: TextUtil.base.Bauhaus.bold.italic
+                    style: TextUtil.base.Fourche.bold.italic
                         .h(0)
                         .sp(55)
                         .customColor(Colors.white38)),

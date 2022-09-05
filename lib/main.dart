@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
@@ -47,8 +48,8 @@ final _entry = WePeiYangApp();
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
-    /// 初始化环境变量
+    // TODO: 统一化管理初始化
+    // 初始化环境变量
     EnvConfig.init();
     StorageUtil.init();
 
@@ -148,9 +149,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
       ToastProvider.init(baseContext);
-      if (CommonPreferences.token != '') {
-        FeedbackService.getToken(forceRefresh: true);
-      }
     });
   }
 
@@ -162,6 +160,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   checkEventList() async {
+    if (Platform.isIOS) return;
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
     await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
       switch (eventMap['event']) {
@@ -249,6 +248,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         context.read<RemoteConfig>().getRemoteConfig();
 
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -341,7 +341,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     /// 初始化友盟
     UmengCommonSdk.initCommon();
 
-    /// 恢复截屏和亮度默认值
+    // 检查更新
+    context.read<UpdateManager>().checkUpdate();
+
+    // 恢复截屏和亮度默认值
     LocalSetting.changeBrightness(-1);
     LocalSetting.changeSecurity(false);
 

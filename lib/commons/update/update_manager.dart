@@ -63,26 +63,30 @@ class UpdateManager extends UpdateStatusListener {
         debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
         debugPrint("remoteVersionCode ${v.versionCode}");
 
-        await InstallManager.getCanGoToMarket();
+        if (Platform.isAndroid) {
+          await InstallManager.getCanGoToMarket();
 
-        if (v.versionCode <= EnvConfig.VERSIONCODE) {
-          // 如果新获取到的版本不高于现在的版本，那么就不更新
-          setIdle();
-          if (!_auto) ToastProvider.success('已是最新版本');
-        } else {
-          //如果新获取到的版本高于当前版本，则更新
-          // 1.删除原来的（不是当前版本的）apk和so
-          await _deleteOriginalFile();
-          // 2.判断是否有当前文件可用
-          if (await _checkIfFileCanUse()) return;
-          // 3.如果没有的话先判断是否 强制更新 或 手动更新 或 不能使用热修复
-          if (version.isForced || !_auto || !version.canHotFix) {
-            // 如果不能热修复 或 强制更新 或 手动更新，则弹窗对话框
-            UpdateDialog.message.show();
+          if (v.versionCode <= EnvConfig.VERSIONCODE) {
+            // 如果新获取到的版本不高于现在的版本，那么就不更新
+            setIdle();
+            if (!_auto) ToastProvider.success('已是最新版本');
           } else {
-            // 否则，就优先热更新
-            setDownload();
+            //如果新获取到的版本高于当前版本，则更新
+            // 1.删除原来的（不是当前版本的）apk和so
+            await _deleteOriginalFile();
+            // 2.判断是否有当前文件可用
+            if (await _checkIfFileCanUse()) return;
+            // 3.如果没有的话先判断是否 强制更新 或 手动更新 或 不能使用热修复
+            if (version.isForced || !_auto || !version.canHotFix) {
+              // 如果不能热修复 或 强制更新 或 手动更新，则弹窗对话框
+              UpdateDialog.message.show();
+            } else {
+              // 否则，就优先热更新
+              setDownload();
+            }
           }
+        } else if (Platform.isIOS) {
+          // TODO: iOS逻辑
         }
         break;
       case UpdateStatus.getVersion:

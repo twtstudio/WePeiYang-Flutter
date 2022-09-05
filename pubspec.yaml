@@ -96,9 +96,9 @@ flutter:
     - privacy/
 
   fonts:
-    - family: Bauhaus
+    - family: Fourche
       fonts:
-        - asset: assets/fonts/en/Bauhaus-Bold-Italic_6276.ttf
+        - asset: assets/fonts/en/SFFourcheBoldItalic.ttf
           style: italic
 
     - family: Swis

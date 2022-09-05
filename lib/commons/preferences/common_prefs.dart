@@ -167,6 +167,7 @@ class CommonPreferences {
     avatar.clear();
     lakeToken.clear();
     lakeUid.clear();
+    lakeNickname.clear();
     isSuper.clear();
     isSchAdmin.clear();
     isStuAdmin.clear();

@@ -14,9 +14,8 @@ fileprivate struct KGTInfo {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
       
-//      let userDefaults = UserDefaults.init(suiteName: "group.com.weipeiyang")
-//      userDefaults!.setValue("defaultID", forKey: "id")
-//      userDefaults!.setValue("defauleName", forKey: "name")
+      let controller = window.rootViewController as! FlutterViewController
+      configureChannels(controller: controller)
       
       // [ GTSDK ]：使用APPID/APPKEY/APPSECRENT启动个推
       GeTuiSdk.start(withAppId: KGTInfo.kGtAppId, appKey: KGTInfo.kGtAppKey, appSecret: KGTInfo.kGtAppSecret, delegate: self)
@@ -78,6 +77,30 @@ extension AppDelegate {
 //        log.info("APNS 回调")
     }
     
+}
+
+extension AppDelegate {
+    // channel
+    func configureChannels(controller: FlutterViewController) {
+        let localSettingChannel = FlutterMethodChannel(name: "com.twt.service/local_setting", binaryMessenger: controller.binaryMessenger)
+        
+        localSettingChannel.setMethodCallHandler { call, result in
+            var dict: [String: Any] = [:]
+            if let callDict = call.arguments {
+                dict = callDict as? [String: Any] ?? [:]
+            }
+            switch call.method {
+            case "changeWindowBrightness":
+                var brightness = dict["brightness"] as! Double
+                if !(brightness >= 0 && brightness <= 1) {
+                    brightness = 0.3
+                }
+                UIScreen.main.brightness = brightness
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
+    }
 }
 
 

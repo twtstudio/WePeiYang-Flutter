@@ -17,8 +17,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
   bool _usePwLogin = false;
 
   _login() async {
+    // 隐藏键盘
+    FocusScope.of(context).requestFocus(FocusNode());
     if (_usePwLogin) {
-      _passwordFocus.unfocus();
       if (account == "" || password == "")
         ToastProvider.error('账号密码不能为空');
       else if (!checkNotifier.value)
@@ -276,6 +277,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                   text: "登录",
                   style: TextUtil.base.bold.NotoSansSC.w400.sp(16).blue2C)),
               style: ButtonStyle(
+                elevation: MaterialStateProperty.all(0),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))

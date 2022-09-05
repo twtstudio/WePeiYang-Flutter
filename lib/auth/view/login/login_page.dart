@@ -11,9 +11,6 @@ class LoginHomeWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<UpdateManager>().checkUpdate();
-    });
     return Scaffold(
       body: Container(
         width: width,
