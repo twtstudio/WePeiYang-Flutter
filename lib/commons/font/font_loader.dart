@@ -6,9 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
-import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
