@@ -16,7 +16,8 @@ class ChangeNicknameDialog extends StatefulWidget {
 }
 
 class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
-  var _textEditingController = TextEditingController();
+  final _textEditingController = TextEditingController();
+  final _focus = FocusNode();
   String _commentLengthIndicator = '0/20';
 
   @override
@@ -31,7 +32,8 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
       title: '修改你的昵称',
       titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).black00,
       confirmButtonColor: Color.fromRGBO(44, 126, 223, 1),
-      confirmFun: () => FeedbackService.changeNickname(
+      confirmFun: () {
+        FeedbackService.changeNickname(
           onSuccess: () {
             ToastProvider.success('修改成功喵');
             FeedbackService.getUserInfo(
@@ -43,9 +45,11 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             Navigator.popAndPushNamed(context, FeedbackRouter.profile);
           },
           onFailure: (e) {
+            _focus.unfocus();
             ToastProvider.error(e.error.toString());
           },
-          nickName: _textEditingController.text),
+          nickName: _textEditingController.text);
+      },
       confirmTextStyle: TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).white,
       confirmText: '确定',
       cancelText: '取消',
@@ -54,6 +58,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
           TextField(
             style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
             controller: _textEditingController,
+            focusNode: _focus,
             maxLength: 20,
             textInputAction: TextInputAction.newline,
             decoration: InputDecoration(
