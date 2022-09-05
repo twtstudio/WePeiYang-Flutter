@@ -214,42 +214,43 @@ class TagShowWidget extends StatelessWidget {
         height: 20,
         child: (tag != null && tag != "")
             ? Row(
-          children: [
-            Container(
-              height: 14,
-              width: 14,
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-              padding: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: type == 0
-                    ? Color(0xffeaeaea)
-                    : type == 1
-                        ? ColorUtil.mainColor
-                        : Colors.white,
-              ),
-              child: SvgPicture.asset(
-                type == 0
-                    ? "assets/svg_pics/lake_butt_icons/districts.svg"
-                    : type == 1
-                        ? "assets/svg_pics/lake_butt_icons/flag.svg"
-                        : "assets/svg_pics/lake_butt_icons/hashtag.svg",
-              ),
-            ),
-            SizedBox(width: type == 0 ? 0 : 2),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: width - 30),
-              child: Text(
-                tag ?? '',
-                style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(width: 8)
-          ],
-        ) : SizedBox(),
+                children: [
+                  Container(
+                    height: 14,
+                    width: 14,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: type == 0
+                          ? Color(0xffeaeaea)
+                          : type == 1
+                              ? ColorUtil.mainColor
+                              : Colors.white,
+                    ),
+                    child: SvgPicture.asset(
+                      type == 0
+                          ? "assets/svg_pics/lake_butt_icons/districts.svg"
+                          : type == 1
+                              ? "assets/svg_pics/lake_butt_icons/flag.svg"
+                              : "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                    ),
+                  ),
+                  SizedBox(width: type == 0 ? 0 : 2),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: width - 30),
+                    child: Text(
+                      tag ?? '',
+                      style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(width: 8)
+                ],
+              )
+            : SizedBox(),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1080),
         ),
@@ -282,7 +283,8 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
   final String avatar;
   final String nickName;
 
-  ProfileImageWithDetailedPopup(this.type, this.avatar, this.uid, this.nickName);
+  ProfileImageWithDetailedPopup(
+      this.type, this.avatar, this.uid, this.nickName);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -391,7 +393,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                         placeholderBuilder: defaultPlaceholderBuilder,
                       )
                     : Image.network(
-                        'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                        'https://qnhdpic.twt.edu.cn/download/thumb/${avatar}',
                         width:
                             DateTime.now().month == 4 && DateTime.now().day == 1
                                 ? 36
@@ -419,7 +421,8 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
         ),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+        // 保证圆角
+        borderRadius: BorderRadius.all(Radius.circular(100)),
         child: avatar == ""
             ? SvgPicture.network(
                 '${EnvConfig.QNHD}avatar/beam/20/${avatar}',

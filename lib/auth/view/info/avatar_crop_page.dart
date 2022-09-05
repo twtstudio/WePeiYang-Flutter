@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
@@ -49,6 +51,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     );
     if (croppedFile == null) return; // 取消裁剪图片的情况
     List<File> update = [croppedFile];
+    // 弹出sheet
+    Navigator.pop(context);
     FeedbackService.postPic(
         images: update,
         onResult: (result) {
@@ -148,24 +152,34 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: Column(
-        children: [
-          Spacer(),
-          Hero(tag: 'avatar', child: getAvatar()),
-          Spacer(),
-          Divider(height: 1.0, color: Colors.white),
-          TextButton(
-            onPressed: () => showActionButtons(context),
-            child: Text(
-              '修改个人头像',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: WButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Icon(CupertinoIcons.back, color: Colors.white),
           ),
-          SizedBox(height: 10),
-        ],
-      ),
-    );
+          elevation: 0,
+        ),
+        body: Container(
+          color: Colors.black,
+          child: Column(
+            children: [
+              Spacer(),
+              Hero(tag: 'avatar', child: getAvatar()),
+              Spacer(),
+              Divider(height: 1.0, color: Colors.white),
+              TextButton(
+                onPressed: () => showActionButtons(context),
+                child: Text(
+                  '修改个人头像',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ));
   }
 }

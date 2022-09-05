@@ -182,7 +182,6 @@ class MessageService {
 final messageDio = MessageDio();
 
 class MessageDio extends DioAbstract {
-
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/message/';
 
@@ -191,7 +190,8 @@ class MessageDio extends DioAbstract {
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
-    }), ApiInterceptor()
+    }),
+    ApiInterceptor()
   ];
 
   /// 这里不能改，因为下面手动解析的字符串

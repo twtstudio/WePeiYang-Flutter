@@ -1,12 +1,12 @@
 // @dart = 2.12
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext;
+import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
-import 'package:path/path.dart' as p;
 
 class _SpiderDio extends DioAbstract {
   static final cookieJar = PersistCookieJar(
@@ -63,6 +63,8 @@ class ClassesService {
   }
 
   static final _spiderDio = _SpiderDio();
+
+  static CookieJar get cookieJar => _SpiderDio.cookieJar;
 
   /// 负责爬虫请求的方法
   static Future<Response<dynamic>> fetch(String url,

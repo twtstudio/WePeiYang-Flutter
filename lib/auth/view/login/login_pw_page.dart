@@ -266,19 +266,20 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ),
         ),
         SizedBox(height: 50),
-        SizedBox(
-          height: 48,
-          //这样的地方改了，便于屏幕适配
-          width: width - 60,
-          child: WButton(
-            onPressed: _login,
+        WButton(
+          onPressed: _login,
+          child: Container(
+            width: width - 60,
+            height: 48,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: Text.rich(TextSpan(
-                text: "登录",
-                style: TextUtil.base.bold.NotoSansSC.w400.sp(16).blue2C)),
+            child: Center(
+              child: Text.rich(TextSpan(
+                  text: "登录",
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+            ),
           ),
         ),
         SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登陆等位置在同一个水平线上
@@ -419,19 +420,20 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           ],
         ),
         SizedBox(height: 11), // 这里的数值调整是为了两个界面的登录按钮对齐
-        SizedBox(
-          height: 48,
-          // 这样的地方改了，便于屏幕适配
-          width: width - 60,
-          child: WButton(
-            onPressed: _login,
+        WButton(
+          onPressed: _login,
+          child: Container(
+            width: width - 60,
+            height: 48,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(24),
             ),
-            child: Text.rich(TextSpan(
-                text: "登录",
-                style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+            child: Center(
+              child: Text.rich(TextSpan(
+                  text: "登录",
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+            ),
           ),
         ),
         const SizedBox(height: 9),

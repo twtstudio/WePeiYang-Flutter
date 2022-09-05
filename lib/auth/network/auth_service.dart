@@ -1,5 +1,6 @@
-import 'dart:io';
 import 'dart:convert' show utf8, base64Encode;
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext, Navigator, required;
 import 'package:http_parser/http_parser.dart';
@@ -7,12 +8,11 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class AuthDio extends DioAbstract {
   static const APP_KEY = "banana";
@@ -141,7 +141,9 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
       try {
-        await authDio.post("user/phone/msg", queryParameters: {"phone": phone});
+        await authDio.post("user/phone/msg",
+            data: {"phone": phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -169,7 +171,8 @@ class AuthService with AsyncTimer {
     AsyncTimer.runRepeatChecked('verifyOnReset', () async {
       try {
         await authDio.post("password/reset/verify",
-            queryParameters: {"phone": phone, "code": code});
+            data: {"phone": phone, "code": code},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -183,7 +186,8 @@ class AuthService with AsyncTimer {
     AsyncTimer.runRepeatChecked('resetPwByPhone', () async {
       try {
         await authDio.post("password/reset",
-            queryParameters: {"phone": phone, "password": password});
+            data: {"phone": phone, "password": password},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -212,15 +216,17 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('register', () async {
       try {
-        await authDio.post("register", queryParameters: {
-          "userNumber": userNumber,
-          "nickname": nickname,
-          "phone": phone,
-          "verifyCode": verifyCode,
-          "password": password,
-          "email": email,
-          "idNumber": idNumber
-        });
+        await authDio.post("register",
+            data: {
+              "userNumber": userNumber,
+              "nickname": nickname,
+              "phone": phone,
+              "verifyCode": verifyCode,
+              "password": password,
+              "email": email,
+              "idNumber": idNumber
+            },
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -234,7 +240,8 @@ class AuthService with AsyncTimer {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
         var rsp = await authDio.post("auth/common",
-            queryParameters: {"account": account, "password": password});
+            data: {"account": account, "password": password},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         var result = rsp.data['result'];
         CommonPreferences.token.value = result['token'] ?? "";
         if (CommonPreferences.account.value != account &&
@@ -274,7 +281,9 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {
       try {
-        await authDio.post("auth/phone/msg", queryParameters: {"phone": phone});
+        await authDio.post("auth/phone/msg",
+            data: {"phone": phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -288,7 +297,8 @@ class AuthService with AsyncTimer {
     AsyncTimer.runRepeatChecked('codeLogin', () async {
       try {
         var rsp = await authDio.post("auth/phone",
-            queryParameters: {"phone": phone, "code": code});
+            data: {"phone": phone, "code": code},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         var result = rsp.data['result'];
         CommonPreferences.token.value = result['token'] ?? "";
         if (CommonPreferences.phone.value != phone &&
@@ -420,11 +430,9 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkInfo2', () async {
       try {
-        await authDio.post("register/checking", queryParameters: {
-          'idNumber': idNumber,
-          'email': email,
-          'phone': phone
-        });
+        await authDio.post("register/checking",
+            data: {'idNumber': idNumber, 'email': email, 'phone': phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -484,7 +492,10 @@ class AuthService with AsyncTimer {
       try {
         final manager = context.read<PushManager>();
         final cid = await manager.getCid();
-        await authDio.post("notification/cid", queryParameters: {'cid': cid});
+        await authDio.post("notification/cid",
+            data: {'cid': cid},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
+
         onResult(cid);
       } on DioError catch (e) {
         onFailure(e);
