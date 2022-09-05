@@ -247,8 +247,8 @@ class Floor {
         subFloorCnt: json["sub_floor_cnt"],
         isLike: json["is_like"],
         isDis: json["is_dis"],
-        avatar: json["user_info"]["avatar"],
-        level: json["user_info"]["level"],
+        avatar: json["user_info"] == null ? null : json["user_info"]["avatar"],
+        level: json["user_info"] == null ? null : json["user_info"]["level"],
         isOwner: json["is_owner"],
       );
 

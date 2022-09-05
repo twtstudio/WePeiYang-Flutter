@@ -32,8 +32,8 @@ abstract class DioAbstract {
     _dio_debug = Dio()
       ..options = options
       ..interceptors.add(NetCheckInterceptor())
-      ..interceptors.addAll(interceptors)
       ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
+      ..interceptors.addAll(interceptors)
       ..interceptors.add(ErrorInterceptor());
   }
 

@@ -44,7 +44,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
