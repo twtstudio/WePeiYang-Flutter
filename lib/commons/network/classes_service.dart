@@ -12,7 +12,10 @@ class _SpiderDio extends DioAbstract {
   static final cookieJar = PersistCookieJar(
       storage: FileStorage(p.join(StorageUtil.tempDir.path, 'cookie')));
   @override
-  List<InterceptorsWrapper> interceptors = [CookieManager(cookieJar)];
+  List<InterceptorsWrapper> interceptors = [
+    CookieManager(cookieJar),
+    ClassesErrorInterceptor()
+  ];
 }
 
 class ClassesService {
