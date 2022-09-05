@@ -151,6 +151,7 @@ class _DetailPageState extends State<DetailPage>
   _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
+        if (widget.post.type == 1)
         _getOfficialComment(onFail: onFail);
         _getComments(
           onSuccess: onSuccess,
