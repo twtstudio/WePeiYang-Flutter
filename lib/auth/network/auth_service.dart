@@ -484,8 +484,7 @@ class AuthService with AsyncTimer {
       try {
         final manager = context.read<PushManager>();
         final cid = await manager.getCid();
-        final res = await authDio
-            .post("notification/cid", queryParameters: {'cid': cid});
+        await authDio.post("notification/cid", queryParameters: {'cid': cid});
         onResult(cid);
       } on DioError catch (e) {
         onFailure(e);

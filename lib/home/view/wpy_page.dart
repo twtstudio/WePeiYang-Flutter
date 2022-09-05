@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
