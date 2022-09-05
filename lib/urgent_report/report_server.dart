@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -31,13 +30,15 @@ class ReportDataModel {
   }
 }
 
-final reportDio = ReportDio();
-
-class ReportDio extends DioAbstract with AsyncTimer {
+class ReportDio extends DioAbstract {
   @override
   String baseUrl = "https://api.twt.edu.cn/api/returnSchool/";
+}
 
-  Future<void> report(
+final _reportDio = ReportDio();
+
+class ReportService with AsyncTimer {
+  static Future<void> report(
       {@required UnmodifiableMapView<ReportPart, dynamic> data,
       @required Function onResult,
       @required OnFailure onFailure}) async {
@@ -71,7 +72,7 @@ class ReportDio extends DioAbstract with AsyncTimer {
           'curStatus': state.index,
           'temperature': data[ReportPart.temperature],
         });
-        var result = await dio.post(
+        var result = await _reportDio.post(
           "record",
           options: Options(
             headers: {
@@ -94,10 +95,10 @@ class ReportDio extends DioAbstract with AsyncTimer {
     });
   }
 
-  Future<List<ReportItem>> getReportHistoryList() async {
+  static Future<List<ReportItem>> getReportHistoryList() async {
     try {
       var token = CommonPreferences.token.value;
-      var response = await dio.get(
+      var response = await _reportDio.get(
         "record",
         options: Options(
           headers: {
@@ -114,10 +115,10 @@ class ReportDio extends DioAbstract with AsyncTimer {
     }
   }
 
-  Future<bool> getTodayHasReported() async {
+  static Future<bool> getTodayHasReported() async {
     try {
       var token = CommonPreferences.token.value;
-      var response = await dio.get(
+      var response = await _reportDio.get(
         "status",
         options: Options(
           headers: {
@@ -199,12 +200,6 @@ class ReportState {
       result: json['result'],
     );
   }
-
-  Map toJson() => {
-        "errorCode": errorCode,
-        "message": message,
-        "result": result,
-      };
 }
 
 class ReportList {
@@ -265,18 +260,4 @@ class ReportItem {
       state: json['curStatus'],
     );
   }
-
-  Map toJson() => {
-        "longitude": longitude,
-        "latitude": latitude,
-        "province": province,
-        "city": city,
-        "district": district,
-        "address": address,
-        "time": time,
-        "temperature": temperature,
-        "healthCode": healthCode,
-        "travelCode": travelCode,
-        "state": state,
-      };
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -12,7 +11,7 @@ class LevelUtil extends StatelessWidget {
   LevelUtil({Key key, this.level, this.width, this.height, this.style})
       : super(key: key);
 
-  List<Color> colors = [
+  static const List<Color> colors = [
     Color.fromRGBO(94, 192, 91, 1),
     Color.fromRGBO(91, 150, 222, 1),
     Color.fromRGBO(159, 105, 237, 1),

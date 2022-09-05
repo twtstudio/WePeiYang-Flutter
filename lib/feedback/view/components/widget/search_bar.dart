@@ -239,7 +239,6 @@ class _SearchBarState extends State<SearchBar>
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
-            vsync: this,
             child: _showSearch
                 ? Container(
                     padding: EdgeInsets.only(bottom: 10),

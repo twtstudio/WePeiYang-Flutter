@@ -117,7 +117,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
-      reportDio.report(
+      ReportService.report(
           data: model.data,
           onResult: () async {
             CommonPreferences.reportTime.value = DateTime.now().toString();
@@ -222,7 +222,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
         break;
       case _Page.list:
         body = FutureBuilder<List<ReportItem>>(
-            future: reportDio.getReportHistoryList(),
+            future: ReportService.getReportHistoryList(),
             builder: (_, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data.length == 0) {

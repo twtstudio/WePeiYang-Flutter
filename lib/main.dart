@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,17 +47,19 @@ final _entry = WePeiYangApp();
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // TODO: 统一化管理初始化
-    // 初始化环境变量
+
+    /// 初始化环境变量
     EnvConfig.init();
     StorageUtil.init();
+
+    /// 初始化友盟
+    await UmengCommonSdk.initCommon();
 
     /// 初始化sharedPreference
     await CommonPreferences.init();
 
     /// 初始化Connectivity
     await NetStatusListener.init();
-    DioAbstract.logEnabled = true;
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
@@ -147,6 +148,10 @@ class WePeiYangAppState extends State<WePeiYangApp>
       LoungeDB.initDB();
       WbyFontLoader.initFonts();
       ToastProvider.init(baseContext);
+      TextUtil.init(baseContext);
+      if (CommonPreferences.token.value != '') {
+        FeedbackService.getToken(forceRefresh: true);
+      }
     });
   }
 
@@ -286,13 +291,14 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   Widget _builder(BuildContext context, Widget child) {
+    // 设置标准设计图尺寸
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
-    TextUtil.init(context);
+    // 点击空白区域取消TextField焦点
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
@@ -342,7 +348,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     // 检查更新
     context.read<UpdateManager>().checkUpdate();
 
-    // 恢复截屏和亮度默认值
+    // 恢复截屏和亮度默认值，这两句代码不能放在更早的地方
     LocalSetting.changeBrightness(-1);
     LocalSetting.changeSecurity(false);
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -227,7 +226,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             builder: (BuildContext context, value, Widget child) {
           return AnimatedSize(
             clipBehavior: Clip.antiAlias,
-            vsync: this,
             duration: Duration(milliseconds: 300),
             curve: Curves.easeOutSine,
             child: Container(

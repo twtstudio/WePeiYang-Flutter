@@ -1,6 +1,5 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -213,7 +212,6 @@ class _SearchTagCardState extends State<SearchTagCard>
             offstage: _controller.text == '',
             child: AnimatedSize(
                 duration: Duration(milliseconds: 300),
-                vsync: this,
                 curve: Curves.easeInOut,
                 child: Column(children: tagList ?? [SizedBox()])),
           ),

@@ -12,30 +12,22 @@ class CookieManager extends InterceptorsWrapper {
 
   CookieManager(this.cookieJar);
 
-  String _getBaseUrl(String url) {
-    final headerIdx = url.indexOf("//");
-    if (headerIdx == -1) return url;
-    final firstSlashIdx = url.indexOf("/", headerIdx + 2);
-    if (firstSlashIdx == -1) return url.substring(headerIdx + 2);
-    return url.substring(headerIdx + 2, firstSlashIdx);
-  }
-
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    Set<Cookie> cookielist = {};
+    Set<Cookie> cookieList = {};
 
     if (options.uri.host.contains("tju.edu.cn")) {
       try {
         final cookies = await cookieJar
             .loadForRequest(Uri.parse('https://sso.tju.edu.cn/cas/login'));
-        cookielist.addAll(cookies);
+        cookieList.addAll(cookies);
       } catch (_) {}
     }
     cookieJar.loadForRequest(options.uri).then((cookies) {
-      cookielist.addAll(cookies);
+      cookieList.addAll(cookies);
 
-      var cookie = getCookies(cookielist.toList());
+      var cookie = getCookies(cookieList.toList());
       if (cookie.isNotEmpty) {
         options.headers[HttpHeaders.cookieHeader] = cookie;
       }

@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // WbyFontLoader.initFonts();
       context.read<PushManager>().initGeTuiSdk();
       AuthService.updateCid(context, onResult: (_) {}, onFailure: (_) {});
-      var hasReport = await reportDio.getTodayHasReported();
+      var hasReport = await ReportService.getTodayHasReported();
       if (hasReport) {
         CommonPreferences.reportTime.value = DateTime.now().toString();
       } else {

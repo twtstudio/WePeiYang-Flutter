@@ -1,6 +1,5 @@
 import 'dart:convert' show jsonDecode;
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';

@@ -1,8 +1,6 @@
 import 'package:extended_tabs/extended_tabs.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -56,19 +54,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           .then((value) => scroll = false);
     }
   }
-
-  ///初次进入湖底的告示
-  // firstInLake() {
-  //   final checkedNotifier = ValueNotifier(true);
-  //   if (CommonPreferences.isFirstLogin.value) {
-  //     showDialog(
-  //         context: context,
-  //         barrierDismissible: false,
-  //         builder: (BuildContext context) {
-  //           return FirstInLakeDialog(checkedNotifier: checkedNotifier);
-  //         });
-  //   }
-  // }
 
   initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(success: () {
@@ -575,7 +560,6 @@ class FbTagsWrapState extends State<FbTagsWrap>
       child: AnimatedSize(
         curve: Curves.easeOutCirc,
         duration: Duration(milliseconds: 400),
-        vsync: this,
         child: Offstage(offstage: !_tagsWrapIsShow, child: tagsWrap),
       ),
     );

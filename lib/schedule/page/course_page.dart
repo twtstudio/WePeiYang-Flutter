@@ -1,6 +1,4 @@
 // @dart = 2.12
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -183,7 +181,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             ),
-            isDismissible: false,
+            isDismissible: true,
             enableDrag: false,
             isScrollControlled: true,
             builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),

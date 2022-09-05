@@ -16,7 +16,6 @@ import 'package:we_pei_yang_flutter/lounge/util/data_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
 import 'package:we_pei_yang_flutter/lounge/view/widget/base_page.dart';
-import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 
 class _RoomPlanData extends LoungeDataChangeNotifier {
   final Classroom _room;

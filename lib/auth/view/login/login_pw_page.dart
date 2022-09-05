@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -25,7 +26,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       else if (!checkNotifier.value)
         ToastProvider.error('请同意用户协议与隐私政策并继续');
       else {
-        ToastProvider.running('登录中');
         AuthService.pwLogin(account, password,
             onResult: (result) {
               if (result['telephone'] == null || result['email'] == null) {
@@ -45,7 +45,6 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       } else if (!checkNotifier.value)
         ToastProvider.error('请同意用户协议与隐私政策并继续');
       else {
-        ToastProvider.running('登录中');
         AuthService.codeLogin(account, code,
             onResult: (result) {
               if (result['telephone'] == null || result['email'] == null) {
@@ -268,27 +267,20 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         ),
         SizedBox(height: 50),
         SizedBox(
-            height: 48,
-            //这样的地方改了，便于屏幕适配
-            width: width - 60,
-            child: ElevatedButton(
-              onPressed: _login,
-              child: Text.rich(TextSpan(
-                  text: "登录",
-                  style: TextUtil.base.bold.NotoSansSC.w400.sp(16).blue2C)),
-              style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(255, 255, 255, 0.1);
-                  return Color.fromRGBO(255, 255, 255, 1);
-                }),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24))),
-              ),
-            )),
+          height: 48,
+          //这样的地方改了，便于屏幕适配
+          width: width - 60,
+          child: WButton(
+            onPressed: _login,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Text.rich(TextSpan(
+                text: "登录",
+                style: TextUtil.base.bold.NotoSansSC.w400.sp(16).blue2C)),
+          ),
+        ),
         SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登陆等位置在同一个水平线上
         Row(
           children: [
@@ -428,27 +420,20 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         ),
         SizedBox(height: 11), // 这里的数值调整是为了两个界面的登录按钮对齐
         SizedBox(
-            height: 48,
-            // 这样的地方改了，便于屏幕适配
-            width: width - 60,
-            child: ElevatedButton(
-              onPressed: _login,
-              child: Text.rich(TextSpan(
-                  text: "登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
-              style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(255, 255, 255, 0.1);
-                  return Color.fromRGBO(255, 255, 255, 1);
-                }),
-                backgroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24))),
-              ),
-            )),
+          height: 48,
+          // 这样的地方改了，便于屏幕适配
+          width: width - 60,
+          child: WButton(
+            onPressed: _login,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Text.rich(TextSpan(
+                text: "登录",
+                style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+          ),
+        ),
         const SizedBox(height: 9),
         Row(
           children: [

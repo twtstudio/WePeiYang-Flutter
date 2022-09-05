@@ -34,9 +34,6 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
   static final themeToken = PrefsBean<String>('themeToken');
 
-  static final lastShownYearMonthDay =
-      PrefsBean<int>('lastShownDaySinceStart', 20220901);
-
   /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken');
   static final lakeUid = PrefsBean<String>('feedbackUid');
@@ -44,26 +41,18 @@ class CommonPreferences {
   static final isSchAdmin = PrefsBean<bool>('isSchAdmin', false);
   static final isStuAdmin = PrefsBean<bool>('isStuAdmin', false);
   static final isUser = PrefsBean<bool>('isUser', true);
+  static final feedbackFloorSortType =
+      PrefsBean<int>('feedbackFloorSortType', 0);
+  static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
 
-  ///等级系统
-  static final levelPoint = PrefsBean<int>('levelPoint', 0);
+  /// 求实论坛--等级系统
+  static final levelPoint = PrefsBean<int>('levelPoint');
   static final levelName = PrefsBean<String>('levelName');
   static final level = PrefsBean<int>('level');
   static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
   static final curLevelPoint = PrefsBean<int>('curLevelPoint');
 
-  static final feedbackSearchHistory =
-      PrefsBean<List<String>>('feedbackSearchHistory');
-
-  // 1 -> 按时间排序; 2 -> 按热度排序
-  static final feedbackSearchType =
-      PrefsBean<String>('feedbackSearchType', '1');
-  static final feedbackFloorSortType =
-      PrefsBean<int>('feedbackFloorSortType', 0);
-  static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
-  static final isFirstLogin = PrefsBean<bool>('firstLogin', true);
-
-  /// 愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
+  /// 愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像，课表
   static final isAprilFoolGen = PrefsBean<bool>('aprilFoolGen', true);
   static final isAprilFool = PrefsBean<bool>('aprilFool', false);
   static final isAprilFoolGPA = PrefsBean<bool>('aprilFoolGpa', false);
@@ -85,10 +74,6 @@ class CommonPreferences {
   static final skinColorF = PrefsBean<int>('skinColorF', 1);
   static final skinColorG = PrefsBean<int>('skinColorG', 1);
 
-  /// 这里说明一下GPA和课程表的逻辑：
-  /// 1. 进入主页时先从缓存中读取数据
-  /// 2. 进入 gpa / 课程表 / 考表 页面时再尝试用缓存中办公网的cookie爬取最新数据
-  ///
   /// 办公网
   static final gpaData = PrefsBean<String>('gpaData');
   static final courseData = PrefsBean<String>('courseData');
@@ -104,7 +89,6 @@ class CommonPreferences {
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
 
   /// 学期信息
-  /// 由于好奇心搜了一下，这个时间戳大概2038年才会int32范围溢出，懒得改了哈哈
   /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
   static final termStart = PrefsBean<int>('termStart', 1660492800);
   static final termName = PrefsBean<String>('termName', '22231');
@@ -151,9 +135,11 @@ class CommonPreferences {
 
   /// 清除天外天账号系统缓存
   static void clearUserPrefs() {
+    /// 天外天账号系统
     isLogin.clear();
     token.clear();
     nickname.clear();
+    lakeNickname.clear();
     userNumber.clear();
     phone.clear();
     email.clear();
@@ -165,20 +151,31 @@ class CommonPreferences {
     major.clear();
     stuType.clear();
     avatar.clear();
-    lakeToken.clear();
-    lakeUid.clear();
-    lakeNickname.clear();
-    isSuper.clear();
-    isSchAdmin.clear();
-    isStuAdmin.clear();
-    isUser.clear();
-    canPush.clear();
-    lastCheckUpdateTime.clear();
     area.clear();
     building.clear();
     floor.clear();
     room.clear();
     bed.clear();
+    themeToken.clear();
+
+    /// 求实论坛相关
+    lakeToken.clear();
+    lakeUid.clear();
+    isSuper.clear();
+    isSchAdmin.clear();
+    isStuAdmin.clear();
+    isUser.clear();
+    feedbackFloorSortType.clear();
+    feedbackLastWeCo.clear();
+
+    /// 等级系统
+    levelPoint.clear();
+    levelName.clear();
+    level.clear();
+    nextLevelPoint.clear();
+    curLevelPoint.clear();
+
+    /// 皮肤
     isSkinUsed.clear();
     isDarkMode.clear();
     skinProfile.clear();
@@ -190,6 +187,10 @@ class CommonPreferences {
     skinColorD.clear();
     skinColorE.clear();
     skinColorF.clear();
+    skinColorG.clear();
+
+    lastCheckUpdateTime.clear();
+    canPush.clear();
     lastShownYearMonthDay.clear();
     isFirstUse.clear();
   }
@@ -199,6 +200,7 @@ class CommonPreferences {
     gpaData.clear();
     courseData.clear();
     examData.clear();
+    customUpdatedAt.clear();
     isBindTju.clear();
     tjuuname.clear();
     tjupasswd.clear();

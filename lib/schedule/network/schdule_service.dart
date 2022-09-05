@@ -1,5 +1,4 @@
 // @dart = 2.12
-import 'package:dio/dio.dart' show DioError;
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';

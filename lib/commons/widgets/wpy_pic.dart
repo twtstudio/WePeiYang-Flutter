@@ -1,7 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';

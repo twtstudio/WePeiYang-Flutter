@@ -233,8 +233,9 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
-        var result = await authDio.postRst("auth/common",
+        var rsp = await authDio.post("auth/common",
             queryParameters: {"account": account, "password": password});
+        var result = rsp.data['result'];
         CommonPreferences.token.value = result['token'] ?? "";
         if (CommonPreferences.account.value != account &&
             CommonPreferences.account.value != "") {
@@ -286,8 +287,9 @@ class AuthService with AsyncTimer {
       {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('codeLogin', () async {
       try {
-        var result = await authDio.postRst("auth/phone",
+        var rsp = await authDio.post("auth/phone",
             queryParameters: {"phone": phone, "code": code});
+        var result = rsp.data['result'];
         CommonPreferences.token.value = result['token'] ?? "";
         if (CommonPreferences.phone.value != phone &&
             CommonPreferences.phone.value != "") {
@@ -324,7 +326,8 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getInfo', () async {
       try {
-        var result = await authDio.getRst('user/single');
+        var rsp = await authDio.get('user/single');
+        var result = rsp.data['result'];
         if (result['token'] != null) {
           CommonPreferences.token.value = result['token'];
         }
@@ -432,7 +435,8 @@ class AuthService with AsyncTimer {
   /// 获得当前学期信息，在用户 手动/自动 登录后被调用
   static getSemesterInfo() async {
     try {
-      var result = await authDio.getRst("semester");
+      var rsp = await authDio.get("semester");
+      var result = rsp.data['result'];
       CommonPreferences.termStart.value = result['semesterStartTimestamp'];
       CommonPreferences.termName.value = result['semesterName'];
       CommonPreferences.termStartDate.value = result['semesterStartAt'];

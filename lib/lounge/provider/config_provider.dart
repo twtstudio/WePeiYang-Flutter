@@ -1,5 +1,4 @@
 // @dart = 2.12
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';

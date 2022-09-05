@@ -331,7 +331,6 @@ class _NCommentCardState extends State<NCommentCard>
     var commentImage = Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: AnimatedSize(
-          vsync: this,
           duration: Duration(milliseconds: 150),
           curve: Curves.decelerate,
           child: InkWell(

@@ -406,7 +406,6 @@ class _DetailPageState extends State<DetailPage>
               builder: (BuildContext context, value, Widget child) {
             return AnimatedSize(
               clipBehavior: Clip.antiAlias,
-              vsync: this,
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOutSine,
               child: Container(
@@ -1253,7 +1252,6 @@ class _AnimatedOptionState extends State<AnimatedOption>
             });
         },
         child: AnimatedSize(
-          vsync: this,
           duration: Duration(milliseconds: 400),
           curve: Curves.easeOutQuad,
           child: Container(

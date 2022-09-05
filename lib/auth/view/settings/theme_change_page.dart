@@ -120,7 +120,6 @@ class _ThemeChangePageState extends State<ThemeChangePage>
         : AnimatedSize(
             duration: Duration(milliseconds: 300),
             curve: Curves.easeInOutBack,
-            vsync: this,
             child: Container(
               width: WePeiYangApp.screenWidth - 28,
               padding: EdgeInsets.all(6),
