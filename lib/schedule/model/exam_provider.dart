@@ -1,9 +1,10 @@
 // @dart = 2.12
 import 'dart:convert' show json;
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure;
+    show OnFailure, OnSuccess;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
@@ -84,13 +85,15 @@ class ExamProvider with ChangeNotifier {
   bool get hideExam => CommonPreferences.hideExam.value;
 
   /// 通过爬虫刷新数据
-  void refreshExam({bool hint = false, OnFailure? onFailure}) {
+  void refreshExam(
+      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
     if (hint) ToastProvider.running("刷新数据中……");
     ScheduleService.fetchExam(onResult: (exams) {
       if (hint) ToastProvider.success("刷新考表数据成功");
       this.exams = exams;
       CommonPreferences.examData.value =
           json.encode(ExamTable(_exams)); // 刷新本地缓存
+      onSuccess?.call();
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);
     });

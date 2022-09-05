@@ -3,22 +3,22 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
 
 class TjuBindPage extends StatefulWidget {
   final String routeAfterBind; // 绑定成功后跳转至的路由
@@ -134,12 +134,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
           height: 50,
           width: 120,
           child: ElevatedButton(
-            onPressed: () =>
-                showDialog(
+            onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: true,
                     builder: (BuildContext context) => TjuUnbindDialog())
-                    .then((_) => this.setState(() {})),
+                .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
                 style: TextUtil.base.regular.white.sp(13)),
             style: ButtonStyle(
@@ -150,7 +149,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 return Color.fromRGBO(79, 88, 107, 1);
               }),
               backgroundColor:
-              MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
+                  MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -292,13 +291,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
-                MaterialStateProperty.resolveWith<Color>((states) {
+                    MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return Color.fromRGBO(103, 110, 150, 1);
                   return Color.fromRGBO(53, 59, 84, 1);
                 }),
                 backgroundColor:
-                MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -307,7 +306,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
           SizedBox(height: 35),
           Text(
             '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
-                '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
+            '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
             style: TextUtil.base.regular
                 .sp(10)
                 .customColor(Color.fromRGBO(98, 103, 124, 1)),
@@ -346,14 +345,14 @@ class _TjuBindPageState extends State<TjuBindPage> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
-          )),
+          ),
+          systemOverlayStyle: SystemUiOverlayStyle.dark),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -441,6 +440,6 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
     return GestureDetector(
         onTap: refresh,
         child:
-        data == null ? CupertinoActivityIndicator() : Image.memory(data));
+            data == null ? CupertinoActivityIndicator() : Image.memory(data));
   }
 }

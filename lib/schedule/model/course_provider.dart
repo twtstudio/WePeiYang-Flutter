@@ -1,9 +1,10 @@
 // @dart = 2.12
 import 'dart:convert' show json;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure;
+    show OnFailure, OnSuccess;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -54,8 +55,9 @@ class CourseProvider with ChangeNotifier {
   }
 
   /// 全部课程
-  List<Course> get totalCourses =>
-      []..addAll(_customCourses)..addAll(_schoolCourses); // 课表相关一般都用这个
+  List<Course> get totalCourses => []
+    ..addAll(_customCourses)
+    ..addAll(_schoolCourses); // 课表相关一般都用这个
 
   /// 当前显示的星期
   int _selectedWeek = 1;
@@ -88,7 +90,8 @@ class CourseProvider with ChangeNotifier {
   final _widgetChannel = MethodChannel('com.twt.service/widget');
 
   /// 通过爬虫刷新数据，并通知小组件更新
-  void refreshCourse({bool hint = false, OnFailure? onFailure}) {
+  void refreshCourse(
+      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
     if (hint) ToastProvider.running("刷新数据中……");
     ScheduleService.fetchCourses(onResult: (courses) {
       if (hint) ToastProvider.success("刷新课程表数据成功");
@@ -97,6 +100,7 @@ class CourseProvider with ChangeNotifier {
       CommonPreferences.courseData.value =
           json.encode(CourseTable(_schoolCourses, _customCourses));
       _widgetChannel.invokeMethod("refreshScheduleWidget");
+      onSuccess?.call();
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);
     });

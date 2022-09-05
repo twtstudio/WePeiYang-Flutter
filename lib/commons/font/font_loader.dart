@@ -1,12 +1,12 @@
 // @dart = 2.12
 import 'dart:io';
-import 'package:dio/dio.dart';
-import 'package:path/path.dart' as p;
-import 'package:flutter_html/shims/dart_ui_real.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
+import 'package:dio/dio.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
+import 'package:path/path.dart' as p;
+import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class WbyFontLoader {
   static void initFonts({bool hint = false}) {
@@ -48,10 +48,6 @@ class WbyFontLoader {
         },
       );
     } else if (Platform.isIOS) {
-      if (tasks.isEmpty) {
-        if (hint) ToastProvider.success('加载字体成功');
-        return;
-      }
       List<DownloadTask> taskToDownload = [];
 
       final dio = Dio();
@@ -73,6 +69,10 @@ class WbyFontLoader {
         if (!dir.existsSync()) dir.createSync();
         taskToDownload.add(element);
       });
+      if (taskToDownload.isEmpty) {
+        if (hint) ToastProvider.success('加载字体成功');
+        return;
+      }
       try {
         Future.sync(() async {
           var res = await Future.wait(taskToDownload.map((e) => dio.get(e.url,

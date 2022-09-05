@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,7 +85,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // WbyFontLoader.initFonts();
       context.read<PushManager>().initGeTuiSdk();
-      AuthService.updateCid(context, onResult: (_) {}, onFailure: (_) {});
+      // 这里只有安卓可以用
+      if (Platform.isAndroid) {
+        final manager = context.read<PushManager>();
+        final cid = await manager.getCid();
+        AuthService.updateCid(cid, onResult: (_) {}, onFailure: (_) {});
+      }
       var hasReport = await ReportService.getTodayHasReported();
       if (hasReport) {
         CommonPreferences.reportTime.value = DateTime.now().toString();

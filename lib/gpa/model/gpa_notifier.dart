@@ -1,8 +1,9 @@
 // @dart = 2.12
 import 'dart:convert' show json;
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure;
+    show OnFailure, OnSuccess;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -116,13 +117,15 @@ class GPANotifier with ChangeNotifier {
 
   bool get hideGPA => CommonPreferences.hideGPA.value;
 
-  void refreshGPA({bool hint = false, OnFailure? onFailure}) {
+  void refreshGPA(
+      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
     if (hint) ToastProvider.running("刷新数据中……");
     GPAService.getGPABean(onResult: (gpaBean) {
       if (hint) ToastProvider.success("刷新gpa数据成功");
       _gpaStats = gpaBean.stats;
       total = gpaBean.total;
       notifyListeners();
+      onSuccess?.call();
       CommonPreferences.gpaData.value = json.encode(gpaBean);
     }, onFailure: (e) {
       if (onFailure != null) onFailure(e);

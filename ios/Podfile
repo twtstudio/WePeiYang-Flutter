@@ -32,6 +32,9 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   
+  pod 'UMCCommonLog', '2.0.0'
+  pod 'UMCommon', '7.2.5'
+  pod 'UMDevice', '1.1.0'
   pod 'GTSDK', '2.6.2.0'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))

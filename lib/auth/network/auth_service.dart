@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext, Navigator, required;
 import 'package:http_parser/http_parser.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
-import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -485,13 +483,11 @@ class AuthService with AsyncTimer {
   }
 
   /// 获取cid
-  static updateCid(BuildContext context,
+  static updateCid(String cid,
       {@required OnResult<String> onResult,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('updateCid', () async {
       try {
-        final manager = context.read<PushManager>();
-        final cid = await manager.getCid();
         await authDio.post("notification/cid",
             data: {'cid': cid},
             options: Options(contentType: Headers.formUrlEncodedContentType));

@@ -1,8 +1,12 @@
 // @dart = 2.12
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'push_intent.dart';
@@ -17,6 +21,9 @@ class PushManager extends ChangeNotifier {
         case 'refreshPushPermission':
           openPush = false;
           break;
+        case 'getCidFromIOS':
+          _gotCidFromIOS(call.arguments);
+          break;
         default:
           break;
       }
@@ -24,7 +31,7 @@ class PushManager extends ChangeNotifier {
     });
   }
 
-  bool _openPush = false;
+  bool _openPush = Platform.isIOS ? true : false;
 
   bool get openPush => _openPush;
 
@@ -202,6 +209,13 @@ class PushManager extends ChangeNotifier {
     } catch (e) {
       return null;
     }
+  }
+
+  void _gotCidFromIOS(arguments) async {
+    final list = jsonDecode(jsonEncode(arguments));
+    AuthService.updateCid(list['cid'], onResult: (_) {
+      debugPrint('cid 更新成功');
+    }, onFailure: (_) {});
   }
 }
 
