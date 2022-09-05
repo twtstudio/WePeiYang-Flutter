@@ -1,5 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
+import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/schedule/page/course_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/custom_courses_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
@@ -12,8 +14,14 @@ class ScheduleRouter {
   static String editDetail = 'schedule/editDetail';
 
   static final Map<String, Widget Function(Object arguments)> routers = {
-    course: (_) => CoursePage(),
-    exam: (_) => ExamPage(),
+    course: (_) {
+      if (!CommonPreferences.isBindTju.value) return TjuBindPage(course);
+      return CoursePage();
+    },
+    exam: (_) {
+      if (!CommonPreferences.isBindTju.value) return TjuBindPage(exam);
+      return ExamPage();
+    },
     customCourse: (_) => CustomCoursesPage(),
     editDetail: (args) => EditDetailPage(args as EditDetailPageArgs),
   };

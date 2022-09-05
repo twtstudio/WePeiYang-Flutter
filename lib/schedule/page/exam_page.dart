@@ -11,7 +11,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
@@ -47,21 +46,16 @@ class _ExamPageState extends State<ExamPage> {
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),
           onPressed: () {
-            if (CommonPreferences.isBindTju.value) {
-              context.read<ExamProvider>().refreshExam(
-                  hint: true,
-                  onFailure: (e) {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context) => TjuRebindDialog(
-                            reason:
-                                e is WpyDioError ? e.error.toString() : null));
-                  });
-            } else {
-              ToastProvider.error("请绑定办公网");
-              Navigator.pushNamed(context, AuthRouter.tjuBind);
-            }
+            context.read<ExamProvider>().refreshExam(
+                hint: true,
+                onFailure: (e) {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) => TjuRebindDialog(
+                          reason:
+                          e is WpyDioError ? e.error.toString() : null));
+                });
           },
         ),
         SizedBox(width: 10.w),
@@ -161,24 +155,6 @@ Widget examCard(BuildContext context, Exam exam, bool finished) {
                     cancelText: "这样也挺好",
                     confirmFun: () {
                       CommonPreferences.isAprilFool.value = false;
-                      if (CommonPreferences.isBindTju.value) {
-                        Provider.of<ExamProvider>(context, listen: false)
-                            .refreshExam(
-                                hint: true,
-                                onFailure: (e) {
-                                  showDialog(
-                                      context: context,
-                                      barrierDismissible: true,
-                                      builder: (BuildContext context) =>
-                                          TjuRebindDialog(
-                                              reason: e is WpyDioError
-                                                  ? e.error.toString()
-                                                  : null));
-                                });
-                      } else {
-                        ToastProvider.error("请绑定办公网");
-                        Navigator.pushNamed(context, AuthRouter.tjuBind);
-                      }
                       Navigator.popAndPushNamed(context, HomeRouter.home);
                     },
                   );

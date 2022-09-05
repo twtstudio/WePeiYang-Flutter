@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
@@ -162,7 +161,8 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
           : Brightness.dark,
       leading: leading,
       leadingWidth: 40.w,
-      title: Text('HELLO, ${CommonPreferences.lakeNickname.value}',
+      title: Text(
+          'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
       actions: [
@@ -190,11 +190,6 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
                       },
                     );
                   });
-            }
-            if (!CommonPreferences.isBindTju.value) {
-              ToastProvider.error("请绑定办公网");
-              Navigator.pushNamed(context, AuthRouter.tjuBind);
-              return;
             }
             Provider.of<GPANotifier>(context, listen: false).refreshGPA(
               hint: true,

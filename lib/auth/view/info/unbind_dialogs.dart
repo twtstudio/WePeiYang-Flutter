@@ -204,7 +204,7 @@ class LogoffDialog extends Dialog {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: 140,
+        height: 160,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -212,12 +212,19 @@ class LogoffDialog extends Dialog {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Center(
+              child: Text('警告',
+                  textAlign: TextAlign.center,
+                  style: TextUtil.base.bold.noLine
+                      .sp(18)
+                      .customColor(Color.fromRGBO(255, 0, 0, 1))),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.w900.noLine
-                      .sp(18)
+                  style: TextUtil.base.noLine
+                      .sp(16)
                       .customColor(Color.fromRGBO(255, 0, 0, 1))),
             ),
             Row(
@@ -228,7 +235,7 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel,
-                        style: TextUtil.base.w900.mainColor.sp(20)),
+                        style: TextUtil.base.w400.blue2C.sp(15)),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -237,7 +244,7 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok,
-                        style: TextUtil.base.w400.dangerousRed.sp(15)),
+                        style: TextUtil.base.w400.black2A.sp(15)),
                   ),
                 )
               ],

@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -131,11 +130,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
                   );
                 });
           }
-          if (!CommonPreferences.isBindTju.value) {
-            ToastProvider.error("请绑定办公网");
-            Navigator.pushNamed(context, AuthRouter.tjuBind);
-            return;
-          }
           context.read<CourseProvider>().refreshCourse(
               hint: true,
               onFailure: (e) {
@@ -207,7 +201,8 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
       leading: leading,
       leadingWidth: 40.w,
       actions: actions,
-      title: Text("HELLO, ${CommonPreferences.lakeNickname.value}",
+      title: Text(
+          'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
     );

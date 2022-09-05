@@ -432,7 +432,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   child: SizedBox(
                     width: 1.sw - 60.w,
                     child: Text(
-                      'HELLO${CommonPreferences.lakeNickname.value == '' ? ' ' : ', '}${CommonPreferences.lakeNickname.value == '' ? ' ' : CommonPreferences.lakeNickname.value}',
+                      'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
