@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 typedef LikeCallback = void Function(bool, int);
@@ -220,91 +221,94 @@ class _NCommentCardState extends State<NCommentCard>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
-                    widget.comment.nickname ?? "匿名用户",
-                    maxLines: 1,
-                    overflow: TextOverflow.clip,
-                    style: TextUtil.base.w400.bold.NotoSansSC.sp(14).black2A,
-                  ),
-                  if (widget.comment.isOwner != null)
-                    CommentIdentificationContainer(
-                        widget.comment.isOwner
-                            ? '我的评论'
-                            : widget.comment.uid == widget.uid
-                                ? widget.isSubFloor &&
-                                        widget.comment.nickname ==
-                                            widget.ancestorName
-                                    ? '楼主 层主'
-                                    : '楼主'
-                                : widget.isSubFloor &&
-                                        widget.comment.nickname ==
-                                            widget.ancestorName
-                                    ? '层主'
-                                    : '',
-                        true),
-                  //回复自己那条时出现
-                  if (widget.comment.replyToName != '' &&
-                      widget.comment.replyTo != widget.ancestorUId)
-                    widget.comment.isOwner &&
-                            widget.comment.replyToName ==
-                                widget.comment.nickname
-                        ? CommentIdentificationContainer('回复我', true)
-                        : SizedBox(),
-                  //后面有东西时出现
-                  if (widget.comment.replyToName != '' &&
-                      widget.comment.replyTo != widget.ancestorUId)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(width: 2),
-                        Icon(Icons.play_arrow, size: 8),
-                        SizedBox(width: 2),
-                        Text(
-                          widget.comment.replyToName ?? "",
-                          style: TextUtil.base.w700.NotoSansSC.sp(14).black2A,
-                        ),
-                        SizedBox(width: 2)
-                      ],
-                    ),
-                  //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
-                  //回的是层主但回复的不是这条评论
-                  if (widget.comment.isOwner != null &&
-                      !widget.comment.isOwner &&
-                      widget.comment.replyToName != widget.comment.nickname)
-                    CommentIdentificationContainer(
-                        widget.isSubFloor
-                            ? widget.comment.replyToName == 'Owner' &&
-                                    (widget.ancestorName != 'Owner' ||
-                                        (widget.ancestorName == 'Owner' &&
-                                            widget.comment.replyTo !=
-                                                widget.ancestorUId))
-                                ? widget.comment.replyToName ==
-                                            widget.ancestorName &&
-                                        widget.comment.replyTo !=
-                                            widget.ancestorUId
-                                    ? '楼主 层主'
-                                    : '楼主'
-                                : widget.comment.replyToName ==
-                                            widget.ancestorName &&
-                                        widget.comment.replyTo !=
-                                            widget.ancestorUId
-                                    ? '层主'
-                                    : ''
-                            : '',
-                        false),
-                  // if (widget.isSubFloor &&
-                  //     widget.comment.replyTo != widget.ancestorUId)
-                  //   CommentIdentificationContainer(
-                  //       '回复ID：' + widget.comment.replyTo.toString(), false),
-                ],
+              Text(
+                widget.comment.nickname ?? "匿名用户",
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: TextUtil.base.w400.bold.NotoSansSC.sp(14).black2A,
               ),
+              Padding(
+                padding: EdgeInsets.only(left: 3),
+                child: LevelUtil(
+                  width: 20,
+                  height: 10,
+                  style: TextUtil.base.white.bold.sp(6),
+                  level: widget.comment.level.toString(),
+                ),
+              ),
+              if (widget.comment.isOwner != null)
+                CommentIdentificationContainer(
+                    widget.comment.isOwner
+                        ? '我的评论'
+                        : widget.comment.uid == widget.uid
+                            ? widget.isSubFloor &&
+                                    widget.comment.nickname ==
+                                        widget.ancestorName
+                                ? '楼主 层主'
+                                : '楼主'
+                            : widget.isSubFloor &&
+                                    widget.comment.nickname ==
+                                        widget.ancestorName
+                                ? '层主'
+                                : '',
+                    true),
+              //回复自己那条时出现
+              if (widget.comment.replyToName != '' &&
+                  widget.comment.replyTo != widget.ancestorUId)
+                widget.comment.isOwner &&
+                        widget.comment.replyToName ==
+                            widget.comment.nickname
+                    ? CommentIdentificationContainer('回复我', true)
+                    : SizedBox(),
+              //后面有东西时出现
+              if (widget.comment.replyToName != '' &&
+                  widget.comment.replyTo != widget.ancestorUId)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(width: 2),
+                    Icon(Icons.play_arrow, size: 8),
+                    SizedBox(width: 2),
+                    Text(
+                      widget.comment.replyToName ?? "",
+                      style: TextUtil.base.w700.NotoSansSC.sp(14).black2A,
+                    ),
+                    SizedBox(width: 2)
+                  ],
+                ),
+              //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
+              //回的是层主但回复的不是这条评论
+              if (widget.comment.isOwner != null &&
+                  !widget.comment.isOwner &&
+                  widget.comment.replyToName != widget.comment.nickname)
+                CommentIdentificationContainer(
+                    widget.isSubFloor
+                        ? widget.comment.replyToName == 'Owner' &&
+                                (widget.ancestorName != 'Owner' ||
+                                    (widget.ancestorName == 'Owner' &&
+                                        widget.comment.replyTo !=
+                                            widget.ancestorUId))
+                            ? widget.comment.replyToName ==
+                                        widget.ancestorName &&
+                                    widget.comment.replyTo !=
+                                        widget.ancestorUId
+                                ? '楼主 层主'
+                                : '楼主'
+                            : widget.comment.replyToName ==
+                                        widget.ancestorName &&
+                                    widget.comment.replyTo !=
+                                        widget.ancestorUId
+                                ? '层主'
+                                : ''
+                        : '',
+                    false),
+              // if (widget.isSubFloor &&
+              //     widget.comment.replyTo != widget.ancestorUId)
+              //   CommentIdentificationContainer(
+              //       '回复ID：' + widget.comment.replyTo.toString(), false),
             ],
           ),
         ),

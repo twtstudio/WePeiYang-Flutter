@@ -76,6 +76,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     // });
     context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);
+    initPage();
     super.initState();
   }
 

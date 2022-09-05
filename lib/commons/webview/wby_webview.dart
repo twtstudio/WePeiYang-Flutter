@@ -53,7 +53,7 @@ class WbyWebViewState extends State<WbyWebView> {
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         elevation: 0,
-        toolbarHeight: 50,
+        toolbarHeight: 40,
         brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,

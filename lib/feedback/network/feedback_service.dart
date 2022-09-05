@@ -1040,4 +1040,21 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  static adminResetAva(
+      {@required id,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminResetAva', () async {
+      try {
+        await feedbackAdminPostDio.post('user/avatar/reset',
+            formData: FormData.fromMap({
+              'uid': id,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
 }

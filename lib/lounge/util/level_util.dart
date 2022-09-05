@@ -38,12 +38,14 @@ class LevelUtil extends StatelessWidget {
                 : [
                     double.parse(level) >= 0
                         ? colors[(double.parse(level) / 10).floor() % 10]
+                            .withAlpha(175 + (int.parse(level) % 10) * 8)
                         : Color.fromRGBO(85, 0, 9, 1.0),
                     double.parse(level) >= 0
                         ? double.parse(level) >= 50
                             ? colors[(double.parse(level) / 10).floor() % 10]
                                 .withAlpha(190)
                             : colors[(double.parse(level) / 10).floor() % 10]
+                                .withAlpha(175 + (int.parse(level) % 10) * 8)
                         : Color.fromRGBO(0, 0, 0, 1.0),
                   ],
             stops: [0.5, 0.8]),
@@ -62,8 +64,7 @@ class LevelUtil extends StatelessWidget {
 class LevelProgress extends StatelessWidget {
   final double value;
 
-  LevelProgress({Key key, this.value})
-      : super(key: key);
+  LevelProgress({Key key, this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

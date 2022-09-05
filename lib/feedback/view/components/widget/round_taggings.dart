@@ -26,17 +26,9 @@ class CommentIdentificationContainer extends StatelessWidget {
     return text == ''
         ? SizedBox()
         : Container(
-            margin: EdgeInsets.only(left: 10, top: 3),
-            padding: EdgeInsets.fromLTRB(4, 2, 4, 3),
+            margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.w400.NotoSansSC.sp(8).blue2C),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: const Color(0xFF2C7EDF),
-              ),
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
+                style: TextUtil.base.w500.NotoSansSC.sp(9).blue2C),
           );
   }
 }
@@ -308,23 +300,65 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                       BoxConstraints(maxWidth: WePeiYangApp.screenWidth - 40),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
+                      borderRadius: BorderRadius.circular(20)),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 15),
+                      GestureDetector(
+                        onTap: () {
+                          if (avatar != '')
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.imageView, arguments: {
+                              "urlList": [avatar],
+                              "urlListLength": 1,
+                              "indexNow": 0
+                            });
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: avatar == ""
+                              ? SvgPicture.network(
+                                  '${EnvConfig.QNHD}avatar/beam/20/${uid}',
+                                  width: DateTime.now().month == 4 &&
+                                          DateTime.now().day == 1
+                                      ? 150
+                                      : 200,
+                                  height: DateTime.now().month == 4 &&
+                                          DateTime.now().day == 1
+                                      ? 150
+                                      : 200,
+                                  fit: BoxFit.contain,
+                                  placeholderBuilder: defaultPlaceholderBuilder,
+                                )
+                              : Image.network(
+                                  'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                                  width: DateTime.now().month == 4 &&
+                                          DateTime.now().day == 1
+                                      ? 150
+                                      : 200,
+                                  height: DateTime.now().month == 4 &&
+                                          DateTime.now().day == 1
+                                      ? 150
+                                      : 200,
+                                  fit: BoxFit.contain,
+                                ),
+                        ),
+                      ),
+                      SizedBox(height: 4),
                       Text(
                         '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickName == '' ? '没名字的微友' : nickName}',
                         style:
-                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(2),
+                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(1.8),
                         overflow: TextOverflow.ellipsis,
                       ),
+                      SizedBox(height: 6),
                       if (CommonPreferences.isSuper.value ||
                           CommonPreferences.isStuAdmin.value)
                         InkWell(
                           onTap: () =>
-                              _showResetConfirmDialog(context).then((value) {
+                              _showResetConfirmDialog(context, '昵称').then((value) {
                             if (value)
                               FeedbackService.adminResetName(
                                   id: uid,
@@ -345,6 +379,39 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                               ),
                               Text(
                                 '重置昵称',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: 6),
+                      if (CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value)
+                        InkWell(
+                          onTap: () =>
+                              _showResetConfirmDialog(context, '头像').then((value) {
+                                if (value)
+                                  FeedbackService.adminResetAva(
+                                      id: uid,
+                                      onSuccess: () {
+                                        ToastProvider.success('重置成功');
+                                        Navigator.pop(ctx);
+                                      },
+                                      onFailure: (e) {
+                                        ToastProvider.error(e.message);
+                                      });
+                              }),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                size: 18,
+                              ),
+                              Text(
+                                '重置头像',
                                 style: TextUtil.base.w600.NotoSansSC
                                     .sp(12)
                                     .black2A,
@@ -374,49 +441,6 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                     ],
                   )),
             ),
-            Align(
-              alignment: Alignment(0, -0.2),
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 130),
-                child: avatar == ""
-                    ? SvgPicture.network(
-                        '${EnvConfig.QNHD}avatar/beam/20/${avatar}',
-                        width:
-                            DateTime.now().month == 4 && DateTime.now().day == 1
-                                ? 36
-                                : 48,
-                        height:
-                            DateTime.now().month == 4 && DateTime.now().day == 1
-                                ? 36
-                                : 48,
-                        fit: BoxFit.contain,
-                        placeholderBuilder: defaultPlaceholderBuilder,
-                      )
-                    : Image.network(
-                        'https://qnhdpic.twt.edu.cn/download/thumb/${avatar}',
-                        width:
-                            DateTime.now().month == 4 && DateTime.now().day == 1
-                                ? 36
-                                : 48,
-                        height:
-                            DateTime.now().month == 4 && DateTime.now().day == 1
-                                ? 36
-                                : 48,
-                        fit: BoxFit.contain,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: FittedBox(
-                                fit: BoxFit.fitWidth, child: Loading()),
-                          );
-                        },
-                        // placeholderBuilder: defaultPlaceholderBuilder,
-                      ),
-              ),
-            ),
           ],
         ),
       ),
@@ -425,7 +449,7 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(100)),
         child: avatar == ""
             ? SvgPicture.network(
-                '${EnvConfig.QNHD}avatar/beam/20/${avatar}',
+                '${EnvConfig.QNHD}avatar/beam/20/${uid}',
                 width: DateTime.now().month == 4 && DateTime.now().day == 1
                     ? 18
                     : 32,
@@ -444,28 +468,18 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                     ? 18
                     : 32,
                 fit: BoxFit.contain,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
-                  );
-                },
-                // placeholderBuilder: defaultPlaceholderBuilder,
               ),
       ),
     );
   }
 
-  Future<bool> _showResetConfirmDialog(BuildContext context) {
+  Future<bool> _showResetConfirmDialog(BuildContext context, String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return LakeDialogWidget(
-              title: '重置昵称',
-              content: Text('您确定要重置该用户昵称吗？'),
+              title: '重置$quote',
+              content: Text('您确定要重置该用户$quote吗？'),
               cancelText: "取消",
               confirmTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,

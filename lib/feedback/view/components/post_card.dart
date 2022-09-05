@@ -270,16 +270,10 @@ class _PostCardState extends State<PostCard> {
               ClipboardData(text: '【' + post.title + '】 ' + post.content));
           ToastProvider.success('复制冒泡内容成功');
         },
-        onTap: () async {
+        onTap: () {
           if (widget.type == PostCardType.simple) {
             ///不然点击事件的回调根本用不到啊啊啊啊
             if (widget.onContentPressed == null) {
-              await FeedbackService.visitPost(
-                id: post.id,
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
               Navigator.pushNamed(
                 context,
                 FeedbackRouter.detail,
@@ -289,6 +283,12 @@ class _PostCardState extends State<PostCard> {
                   post = p;
                 });
               });
+              FeedbackService.visitPost(
+                id: post.id,
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
             } else {
               ///上面判过空，所以就不做空安全了XD
               widget.onContentPressed.call();
@@ -738,14 +738,8 @@ class _PostCardState extends State<PostCard> {
     var bottomWidget = Row(children: bottomList);
 
     var body = GestureDetector(
-        onTap: () async {
+        onTap: () {
           if (widget.type == PostCardType.simple) {
-            await FeedbackService.visitPost(
-              id: post.id,
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            );
             Navigator.pushNamed(
               context,
               FeedbackRouter.detail,
@@ -755,6 +749,12 @@ class _PostCardState extends State<PostCard> {
                 post = p;
               });
             });
+            FeedbackService.visitPost(
+              id: post.id,
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            );
           }
         },
         child: FeedbackBannerWidget(

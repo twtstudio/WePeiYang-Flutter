@@ -33,124 +33,97 @@ class _ImageViewPageState extends State<ImageViewPage> {
     urlListLength = obj['urlListLength'];
     indexNow = obj['indexNow'];
     isLongPic = obj['isLongPic'] ?? false;
-    // 显示toolbar及透明遮罩
-    ValueNotifier<bool> _showToolBar = ValueNotifier(true);
 
-    return GestureDetector(
-        onTap: () {
-          _showToolBar.value = !_showToolBar.value;
-        },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            PhotoViewGallery.builder(
-                loadingBuilder: (context, event) => Center(
-                    child: Container(
-                        width: 20.0,
-                        height: 20.0,
-                        child: CircularProgressIndicator(
-                          value: event == null
-                              ? 0
-                              : event.cumulativeBytesLoaded /
-                                  event.expectedTotalBytes,
-                        ))),
-                scrollPhysics: const BouncingScrollPhysics(),
-                builder: (BuildContext context, int index) {
-                  return PhotoViewGalleryPageOptions(
-                    basePosition:
-                        isLongPic ? Alignment.topCenter : Alignment.center,
-                    imageProvider: NetworkImage(baseUrl + urlList[index]),
-                    maxScale: isLongPic
-                        ? PhotoViewComputedScale.contained * 20
-                        : PhotoViewComputedScale.contained * 5.0,
-                    minScale: PhotoViewComputedScale.contained * 1.0,
-                    initialScale: isLongPic
-                        ? PhotoViewComputedScale.covered
-                        : PhotoViewComputedScale.contained,
-                  );
-                },
-                scrollDirection: Axis.horizontal,
-                itemCount: urlListLength,
-                backgroundDecoration: BoxDecoration(color: Colors.black),
-                pageController: PageController(
-                  initialPage: indexNow,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        PhotoViewGallery.builder(
+          loadingBuilder: (context, event) => Center(
+              child: Container(
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                    value: event == null
+                        ? 0
+                        : event.cumulativeBytesLoaded /
+                            event.expectedTotalBytes,
+                  ))),
+          scrollPhysics: const BouncingScrollPhysics(),
+          builder: (BuildContext context, int index) {
+            return PhotoViewGalleryPageOptions(
+              basePosition: isLongPic ? Alignment.topCenter : Alignment.center,
+              imageProvider: NetworkImage(baseUrl + urlList[index]),
+              maxScale: isLongPic
+                  ? PhotoViewComputedScale.contained * 20
+                  : PhotoViewComputedScale.contained * 5.0,
+              minScale: PhotoViewComputedScale.contained * 1.0,
+              initialScale: isLongPic
+                  ? PhotoViewComputedScale.covered
+                  : PhotoViewComputedScale.contained,
+            );
+          },
+          scrollDirection: Axis.horizontal,
+          itemCount: urlListLength,
+          backgroundDecoration: BoxDecoration(color: Colors.black),
+          pageController: PageController(
+            initialPage: indexNow,
+          ),
+          onPageChanged: (index) => setState(() {
+            tempSelect = index;
+          }),
+        ),
+        SafeArea(
+          child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(15.h, 15.h, 0, 0),
+                child: WButton(
+                  child: Icon(
+                    CupertinoIcons.back,
+                    color: Colors.white,
+                    size: 30.h,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                 ),
-                onPageChanged: (index) => setState(() {
-                      tempSelect = index;
-                    })),
-            ValueListenableBuilder(
-              valueListenable: _showToolBar,
-              builder: (BuildContext context, bool show, Widget child) {
-                return AnimatedOpacity(
-                    curve: Curves.easeInOut,
-                    opacity: show ? 1 : 0,
-                    duration: Duration(milliseconds: 300),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        colors: [
-                          Colors.black.withOpacity(0.3),
-                          Colors.black.withOpacity(0),
-                          Colors.black.withOpacity(0.3),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )),
-                      child: Stack(
-                        children: [
-                          Align(
-                              alignment: Alignment.topLeft,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(15.h, 35.h, 0, 0),
-                                child: WButton(
-                                  child: Icon(
-                                    CupertinoIcons.back,
-                                    color: Colors.white,
-                                    size: 30.h,
-                                  ),
-                                  onPressed: () {
-                                    if (show) Navigator.pop(context);
-                                  },
-                                ),
-                              )),
-                          Align(
-                              alignment: Alignment.bottomRight,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(0, 0, 15.h, 30.h),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    WButton(
-                                      child: Icon(
-                                        CupertinoIcons.square_arrow_down,
-                                        color: Colors.white,
-                                        size: 30.h,
-                                      ),
-                                      onPressed: () {
-                                        if (show) saveImage();
-                                      },
-                                    ),
-                                    SizedBox(width: 30.w),
-                                    WButton(
-                                      child: Icon(
-                                        CupertinoIcons.share,
-                                        color: Colors.white,
-                                        size: 30.h,
-                                      ),
-                                      onPressed: () {
-                                        if (show) showSaveImageBottomSheet();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ))
-                        ],
-                      ),
-                    ));
-              },
-            ),
-          ],
-        ));
+              )),
+        ),
+        Positioned(
+            bottom: 10.w,
+            right: 10.w,
+            child: Container(
+              decoration: BoxDecoration(color: Color(0x88444444), borderRadius: BorderRadius.all(Radius.circular(14.r))),
+              padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  WButton(
+                    child: Icon(
+                      CupertinoIcons.square_arrow_down,
+                      color: Colors.white,
+                      size: 30.h,
+                    ),
+                    onPressed: () {
+                      saveImage();
+                    },
+                  ),
+                  SizedBox(width: 30.w),
+                  WButton(
+                    child: Icon(
+                      CupertinoIcons.share,
+                      color: Colors.white,
+                      size: 30.h,
+                    ),
+                    onPressed: () {
+                      showSaveImageBottomSheet();
+                    },
+                  ),
+                ],
+              ),
+            ))
+      ],
+    );
   }
 
   void saveImage() async {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
@@ -42,7 +41,6 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                   ToastProvider.error(e.error.toString());
                 });
             Navigator.pop(context);
-            Navigator.popAndPushNamed(context, FeedbackRouter.profile);
           },
           onFailure: (e) {
             _focus.unfocus();

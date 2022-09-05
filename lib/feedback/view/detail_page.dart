@@ -700,6 +700,7 @@ class _DetailPageState extends State<DetailPage>
         icon: Image.asset(
           "assets/images/lake_butt_icons/back.png",
           color: ColorUtil.mainColor,
+          
         ),
         onPressed: () => Navigator.pop(context, post),
       ),

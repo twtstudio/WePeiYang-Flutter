@@ -218,11 +218,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       SizedBox(width: 5.w),
                       InkWell(
-                        onTap: () => showDialog(
+                        onTap: () {
+                          return showDialog(
                             context: context,
                             barrierDismissible: true,
                             builder: (BuildContext context) =>
-                                ChangeNicknameDialog()),
+                                ChangeNicknameDialog());
+                        },
                         child: Padding(
                           padding: EdgeInsets.all(4.w),
                           child: SvgPicture.asset(
