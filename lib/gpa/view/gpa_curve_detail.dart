@@ -22,10 +22,13 @@ class GPAPreview extends StatelessWidget {
       return
 
           ///去掉周围padding的懒方法
-          Column(
-        children: [
-          Image.asset("assets/images/schedule_empty.png"),
-        ],
+          GestureDetector(
+        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+        child: Column(
+          children: [
+            Image.asset("assets/images/schedule_empty.png"),
+          ],
+        ),
       );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
@@ -34,7 +37,17 @@ class GPAPreview extends StatelessWidget {
         //_CurveText(),
         SizedBox(height: 45.h),
         _GPAIntro(),
-        GPACurve(FavorColors.gpaColor, isPreview: true),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            physics: context.watch<GPANotifier>().curveData.length > 4
+                ? BouncingScrollPhysics()
+                : NeverScrollableScrollPhysics(),
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: context.watch<GPANotifier>().curveData.length > 4
+                        ? 800.w
+                        : 1.sw),
+                child: GPACurve(FavorColors.gpaColor, isPreview: true))),
       ]),
     );
   }
@@ -182,7 +195,12 @@ class _GPACurveState extends State<GPACurve>
       }
       List<Point<double>> points = [];
       List<double> curveData = notifier.curveData;
-      _initPoints(points, curveData, constraints.maxWidth);
+      _initPoints(
+          points,
+          curveData,
+          context.watch<GPANotifier>().curveData.length > 4
+              ? 700.w
+              : constraints.maxWidth);
       return GestureDetector(
 
           /// 点击监听
@@ -296,45 +314,49 @@ class _GPACurveState extends State<GPACurve>
                 ),
               ),
               if (widget.isPreview)
-                Padding(
-                  padding: const EdgeInsets.only(left: 40, right: 20, top: 80),
-                  child: Container(
-                    height: 40.h,
-                    width: 300.w,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: terms.length,
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Container(
-                              width: 48.w,
-                              height: 27.h,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: notifier.index == index
-                                      ? Color(0xFF2C7EDF)
-                                      : Colors.white),
-                              child: Center(
-                                child: Text(
-                                  terms[index],
-                                  style: notifier.index == index
-                                      ? TextUtil.base.white.bold.w700.sp(11)
-                                      : TextUtil.base.greyA6.bold.w700.sp(11),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: points[1].x - points[0].x - 24.w,
+                    ),
+                    Container(
+                      height: 180.h,
+                      width: constraints.maxWidth - 60.w,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: terms.length,
+                        itemBuilder: (context, index) {
+                          return Row(
+                            children: [
+                              Container(
+                                width: 48.w,
+                                height: 27.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: notifier.index == index
+                                        ? Color(0xFF2C7EDF)
+                                        : Colors.white),
+                                child: Center(
+                                  child: Text(
+                                    terms[index],
+                                    style: notifier.index == index
+                                        ? TextUtil.base.white.bold.w700.sp(11)
+                                        : TextUtil.base.greyA6.bold.w700.sp(11),
+                                  ),
                                 ),
                               ),
-                            ),
-                            if (index < 3)
-                              SizedBox(
-                                width: points[index + 1].x -
-                                    points[index].x -
-                                    48.w,
-                              ),
-                          ],
-                        );
-                      },
+                              if (index < points.length - 1)
+                                SizedBox(
+                                  width: points[index + 1].x -
+                                      points[index].x -
+                                      48.w,
+                                ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                  ],
                 )
             ],
           ));
@@ -344,7 +366,7 @@ class _GPACurveState extends State<GPACurve>
   /// Canvas上下各留高度为20的空白区域，并在中间进行绘制
   _initPoints(List<Point<double>> points, List<double> list, double maxWidth) {
     var width = maxWidth;
-    var step = width / (list.length + 1);
+    var step = points.length > 4 ? width / 9 : width / (list.length + 1);
     var h1 = _canvasHeight - 20; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
 

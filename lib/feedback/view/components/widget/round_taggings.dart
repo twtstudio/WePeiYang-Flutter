@@ -231,7 +231,7 @@ class TagShowWidget extends StatelessWidget {
                     ),
                     child: SvgPicture.asset(
                       type == 0
-                          ? "assets/svg_pics/lake_butt_icons/districts.svg"
+                          ? "assets/svg_pics/lake_butt_icons/hashtag.svg"
                           : type == 1
                               ? "assets/svg_pics/lake_butt_icons/flag.svg"
                               : "assets/svg_pics/lake_butt_icons/hashtag.svg",
