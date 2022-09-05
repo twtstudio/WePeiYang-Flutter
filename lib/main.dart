@@ -10,10 +10,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'auth/view/message/message_service.dart';
-import 'commons/util/storage_util.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
@@ -26,11 +26,12 @@ import 'commons/update/update_manager.dart';
 import 'commons/util/logger.dart';
 import 'commons/util/navigator_observers.dart';
 import 'commons/util/router_manager.dart';
+import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
 import 'feedback/model/feedback_providers.dart';
-import 'feedback/network/post.dart';
 import 'feedback/network/feedback_service.dart';
+import 'feedback/network/post.dart';
 import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lounge/lounge_providers.dart';
@@ -349,7 +350,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<UpdateManager>().checkUpdate();
 
     // 恢复截屏和亮度默认值，这两句代码不能放在更早的地方
-    LocalSetting.changeBrightness(-1);
+    // LocalSetting.changeBrightness(-1);
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
