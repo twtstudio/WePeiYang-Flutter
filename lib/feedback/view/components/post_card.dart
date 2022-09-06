@@ -249,19 +249,32 @@ class _PostCardState extends State<PostCard> {
             : -1;
 
     var campus = post.campus > 0
-        ? Container(
-            decoration: BoxDecoration(
-                color: ColorUtil.backgroundColor,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: ColorUtil.mainColor)),
-            padding: widget.type == PostCardType.simple
-                ? const EdgeInsets.fromLTRB(2, 2, 2, 1)
-                : const EdgeInsets.fromLTRB(4, 2, 4, 1),
-            child: Text(
-                widget.type == PostCardType.simple
-                    ? const ['', '卫津路', '北洋园'][post.campus]
-                    : const ['', '卫', '北'][post.campus],
-                style: TextUtil.base.regular.mainColor.sp(10)),
+        ? Row(
+            children: [
+              Container(
+                height: 14,
+                width: 14,
+                alignment: Alignment.center,
+                margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+                padding: EdgeInsets.symmetric(vertical: 2),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0xffeaeaea)),
+                child: SvgPicture.asset(
+                    "assets/svg_pics/lake_butt_icons/hashtag.svg"),
+              ),
+              SizedBox(width: 2),
+              ConstrainedBox(
+                constraints: BoxConstraints(),
+                child: Text(
+                  const ['', '卫津路', '北洋园'][post.campus],
+                  style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(width: 8)
+            ],
           )
         : SizedBox();
 
