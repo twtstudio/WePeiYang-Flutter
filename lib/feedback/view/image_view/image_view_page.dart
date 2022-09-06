@@ -78,11 +78,17 @@ class _ImageViewPageState extends State<ImageViewPage> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(15.h, 15.h, 0, 0),
                 child: WButton(
-                  child: Icon(
-                    CupertinoIcons.back,
-                    color: Colors.white,
-                    size: 30.h,
-                  ),
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0x88444444),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(14.r))),
+                      padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
+                      child: Icon(
+                        CupertinoIcons.back,
+                        color: Colors.white,
+                        size: 30.h,
+                      )),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -93,7 +99,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
             bottom: 10.w,
             right: 10.w,
             child: Container(
-              decoration: BoxDecoration(color: Color(0x88444444), borderRadius: BorderRadius.all(Radius.circular(14.r))),
+              decoration: BoxDecoration(
+                  color: Color(0x88444444),
+                  borderRadius: BorderRadius.all(Radius.circular(14.r))),
               padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
