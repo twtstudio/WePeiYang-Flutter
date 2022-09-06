@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:provider/provider.dart';
 
 class AgreementAndPrivacyDialog extends Dialog {
   final String result;
@@ -70,11 +70,12 @@ class AgreementAndPrivacyDialog extends Dialog {
         GestureDetector(
           onTap: () {
             CommonPreferences.firstPrivacy.value = false;
-            context.read<LakeModel>().checkTokenAndGetTabList(success: () {
-              context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
+            final ctx = WePeiYangApp.navigatorState.currentContext;
+            ctx.read<LakeModel>().checkTokenAndGetTabList(success: () {
+              ctx.read<FbHotTagsProvider>().initRecTag(failure: (e) {
                 ToastProvider.error(e.error.toString());
               });
-              context.read<FbHotTagsProvider>().initHotTags();
+              ctx.read<FbHotTagsProvider>().initHotTags();
               FeedbackService.getUserInfo(
                   onSuccess: () {},
                   onFailure: (e) {

@@ -15,7 +15,7 @@ class LoginPwWidget extends StatefulWidget {
 
 class _LoginPwWidgetState extends State<LoginPwWidget> {
   final checkNotifier = ValueNotifier<bool>(false); // 是否勾选隐私政策
-  bool _usePwLogin = false;
+  bool _usePwLogin = true;
 
   _login() async {
     // 隐藏键盘
