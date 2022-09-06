@@ -354,7 +354,7 @@ class FeedbackService with AsyncTimer {
       try {
         await feedbackDio.post('share',
             formData: FormData.fromMap({
-              'name': id,
+              'object_id': id,
               'type': type,
             }));
         onSuccess?.call();
