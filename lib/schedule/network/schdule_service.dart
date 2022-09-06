@@ -68,13 +68,18 @@ class ScheduleService {
 
   static _dataQuery() async {
     // 初始化学期查询
-    await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/dataQuery.action");
+    try {
+      await ClassesService.fetch(
+          "http://classes.tju.edu.cn/eams/dataQuery.action");
+    } catch (_) {}
     // 查询学期
-    var res = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/dataQuery.action",
-        isPost: true,
-        params: {"dataType": "semesterCalendar"});
+    var res;
+    try {
+      res = await ClassesService.fetch(
+          "http://classes.tju.edu.cn/eams/dataQuery.action",
+          isPost: true,
+          params: {"dataType": "semesterCalendar"});
+    } catch (_) {}
 
     // 这里最开始两次会跳转错误
     // 舍弃掉，重新开始请求

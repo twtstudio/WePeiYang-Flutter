@@ -1,7 +1,8 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
@@ -10,13 +11,13 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 /// 课表总页面
 class CoursePage extends StatefulWidget {
@@ -196,7 +197,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
 
     return AppBar(
       backgroundColor: Colors.transparent,
-      brightness: Brightness.light,
       elevation: 0,
       leading: leading,
       leadingWidth: 40.w,
@@ -205,6 +205,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
           'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
   }
 

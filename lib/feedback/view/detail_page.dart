@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,14 +15,15 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'lake_home_page/lake_notifier.dart';
@@ -43,8 +45,7 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState(this.post);
 }
 
-class _DetailPageState extends State<DetailPage>
-    with TickerProviderStateMixin {
+class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
@@ -151,7 +152,6 @@ class _DetailPageState extends State<DetailPage>
   _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
-        if (widget.post.type == 1)
         _getOfficialComment(onFail: onFail);
         _getComments(
           onSuccess: onSuccess,
@@ -201,6 +201,8 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _getOfficialComment({Function onSuccess, Function onFail}) {
+    // 非官方贴不请求
+    if (widget.post.type != 1) return;
     FeedbackService.getOfficialComment(
       id: post.id,
       onSuccess: (floor) {
@@ -698,10 +700,9 @@ class _DetailPageState extends State<DetailPage>
           ? Color(CommonPreferences.skinColorB.value)
           : Colors.white,
       leading: IconButton(
-        icon: Image.asset(
-          "assets/images/lake_butt_icons/back.png",
-          color: ColorUtil.mainColor,
-          
+        icon: Icon(
+          CupertinoIcons.back,
+          color: Color(0XFF252525),
         ),
         onPressed: () => Navigator.pop(context, post),
       ),
@@ -728,7 +729,7 @@ class _DetailPageState extends State<DetailPage>
         ),
       ),
       elevation: 0,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return WillPopScope(

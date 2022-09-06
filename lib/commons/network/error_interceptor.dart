@@ -37,8 +37,7 @@ class ClassesErrorInterceptor extends InterceptorsWrapper {
             e.error = "密码输入错误";
           break;
         case 302:
-          // e.error = "办公网绑定失效，请重新绑定";
-          e.error = '';
+          e.error = "办公网绑定失效，请重新绑定";
           break;
       }
     }

@@ -88,12 +88,15 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     }
     ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
+      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      var examProvider = Provider.of<ExamProvider>(context, listen: false);
       Future.sync(() async {
         var mtx = Mutex();
         // 这里既然第一次课程表有问题，那么最后多请求一次
         await mtx.acquire();
 
-        Provider.of<GPANotifier>(context, listen: false).refreshGPA(
+        gpaProvider.refreshGPA(
           onSuccess: () {
             mtx.release();
           },
@@ -103,7 +106,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           },
         );
         await mtx.acquire();
-        Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+        courseProvider.refreshCourse(
           onSuccess: () {
             mtx.release();
           },
@@ -114,7 +117,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         );
 
         await mtx.acquire();
-        Provider.of<ExamProvider>(context, listen: false).refreshExam(
+        examProvider.refreshExam(
           onSuccess: () {
             mtx.release();
           },
@@ -124,7 +127,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           },
         );
         await mtx.acquire();
-        Provider.of<CourseProvider>(context, listen: false).refreshCourse(
+        courseProvider.refreshCourse(
           onSuccess: () {
             mtx.release();
           },

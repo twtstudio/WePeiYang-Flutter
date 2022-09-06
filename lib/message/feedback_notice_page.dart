@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,19 +22,21 @@ class FeedbackNoticePage extends StatelessWidget {
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,
-        brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title:
             Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
         leading: IconButton(
-          icon:
-              Image.asset('assets/images/lake_butt_icons/back.png', width: 14),
+          icon: Icon(
+            CupertinoIcons.back,
+            color: Color(0XFF252525),
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
     );
 
@@ -80,11 +83,7 @@ class FeedbackNoticePage extends StatelessWidget {
 
     var middleWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        title,
-        SizedBox(height: 8.w),
-        content
-      ],
+      children: [title, SizedBox(height: 8.w), content],
     );
 
     var bottomWidget = LinkText(

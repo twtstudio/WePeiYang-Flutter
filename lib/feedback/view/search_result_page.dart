@@ -1,11 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../feedback_router.dart';
@@ -141,10 +142,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         leading: IconButton(
-          icon: Image.asset(
-            "assets/images/lake_butt_icons/back.png",
+          icon: Icon(
+            CupertinoIcons.back,
             color: ColorUtil.mainColor,
-            width: 12,
           ),
           onPressed: () {
             Navigator.pop(context, true);
@@ -161,8 +161,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   curve: Curves.easeInOut);
           },
           child: Center(
-              child: Text(title, style: TextUtil.base.bold.black2A.sp(16)),
-            ),
+            child: Text(title, style: TextUtil.base.bold.black2A.sp(16)),
+          ),
         ),
         actions: [
           if (lakeType != 0)
@@ -187,9 +187,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   Navigator.pushNamed(context, FeedbackRouter.newPost,
                       arguments: NewPostArgs(true, tagId, lakeType, title));
                 }),
-          if(lakeType !=0) SizedBox(width: 14),
-
-          if(lakeType == 0) SizedBox(width: 40,),
+          if (lakeType != 0) SizedBox(width: 14),
+          if (lakeType == 0)
+            SizedBox(
+              width: 40,
+            ),
         ]);
 
     Widget body;

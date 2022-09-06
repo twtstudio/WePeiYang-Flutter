@@ -1,7 +1,10 @@
 // @dart = 2.12
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
@@ -24,9 +27,13 @@ class UpdateMessageDialog extends StatelessWidget {
     }
 
     void ok() {
-      // 弹出进度对话框
-      UpdateDialog.progress.show();
-      context.read<UpdateManager>().setDownload();
+      if (Platform.isAndroid) {
+        // 弹出进度对话框
+        UpdateDialog.progress.show();
+        context.read<UpdateManager>().setDownload();
+      } else if (Platform.isIOS) {
+        launch('itms-apps://itunes.apple.com/app/id1542905353');
+      }
     }
 
     Widget buttons;

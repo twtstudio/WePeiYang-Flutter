@@ -85,7 +85,13 @@ class UpdateManager extends UpdateStatusListener {
             }
           }
         } else if (Platform.isIOS) {
-          // TODO: iOS逻辑
+          if (v.versionCode <= EnvConfig.VERSIONCODE) {
+            // 如果新获取到的版本不高于现在的版本，那么就不更新
+            setIdle();
+            if (!_auto) ToastProvider.success('已是最新版本');
+          } else {
+            UpdateDialog.message.show();
+          }
         }
         break;
       case UpdateStatus.getVersion:

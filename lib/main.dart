@@ -350,7 +350,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<UpdateManager>().checkUpdate();
 
     // 恢复截屏和亮度默认值，这两句代码不能放在更早的地方
-    // LocalSetting.changeBrightness(-1);
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑

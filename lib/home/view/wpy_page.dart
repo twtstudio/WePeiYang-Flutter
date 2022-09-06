@@ -523,7 +523,7 @@ class SliverCardsWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () async {
               if (await canLaunch(cards[i].route)) {
-                await launch(cards[i].route);
+                await launch(cards[i].route, forceSafariVC: false);
               } else {
                 ToastProvider.error('请检查网络状态');
               }

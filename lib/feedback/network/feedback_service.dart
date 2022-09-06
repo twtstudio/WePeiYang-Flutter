@@ -496,6 +496,7 @@ class FeedbackService with AsyncTimer {
           'post_id': '$id',
         },
       );
+      print(commentResponse.data);
       List<Floor> officialCommentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']) {
         officialCommentList.add(Floor.fromJson(json));
@@ -1043,8 +1044,8 @@ class FeedbackService with AsyncTimer {
 
   static adminResetAva(
       {@required id,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminResetAva', () async {
       try {
         await feedbackAdminPostDio.post('user/avatar/reset',

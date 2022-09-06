@@ -20,8 +20,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_banner_widget.dart';
 
 enum PostCardType { simple, detail, outSide }
@@ -401,12 +401,6 @@ class _PostCardState extends State<PostCard> {
                     },
                     onTap: () async {
                       if (widget.type == PostCardType.simple) {
-                        await FeedbackService.visitPost(
-                          id: post.id,
-                          onFailure: (e) {
-                            ToastProvider.error(e.error.toString());
-                          },
-                        );
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.detail,
@@ -416,6 +410,12 @@ class _PostCardState extends State<PostCard> {
                             post = p;
                           });
                         });
+                        FeedbackService.visitPost(
+                          id: post.id,
+                          onFailure: (e) {
+                            ToastProvider.error(e.error.toString());
+                          },
+                        );
                       }
                     },
                     child: title,
