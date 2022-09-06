@@ -128,7 +128,8 @@ class CommonPreferences {
       PrefsBean<int>('lastShownYearMonthDay', 20220905);
 
   /// 是否为初次使用此app（重新登陆也算）
-  static final isFirstUse = PrefsBean<bool>('isFirstUse', true);
+  static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
+  static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
@@ -194,7 +195,8 @@ class CommonPreferences {
     lastCheckUpdateTime.clear();
     canPush.clear();
     lastShownYearMonthDay.clear();
-    isFirstUse.clear();
+    firstPrivacy.clear();
+    firstClassesDialog.clear();
   }
 
   /// 清除办公网缓存

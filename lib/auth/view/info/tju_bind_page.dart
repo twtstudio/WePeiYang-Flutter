@@ -19,7 +19,6 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
 
 class TjuBindPage extends StatefulWidget {
   final String routeAfterBind; // 绑定成功后跳转至的路由

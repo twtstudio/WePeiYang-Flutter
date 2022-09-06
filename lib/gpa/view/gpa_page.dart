@@ -63,8 +63,8 @@ class _GPAPageState extends State<GPAPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      if (CommonPreferences.isFirstUse.value) {
-        CommonPreferences.isFirstUse.value = false;
+      if (CommonPreferences.firstClassesDialog.value) {
+        CommonPreferences.firstClassesDialog.value = false;
         showDialog(
             context: context,
             barrierDismissible: true,

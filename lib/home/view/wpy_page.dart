@@ -45,23 +45,9 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   TabController _tc;
 
   List<CardBean> cards;
-  var md = '';
-  dynamic result;
+  String md = '';
   Future<NAcidInfo> acidInfo;
   bool hasShow = false;
-
-  Future<String> _loadFromAssets() async {
-    String filePath = 'privacy/privacy_content.md';
-    String fileContents = await rootBundle.loadString(filePath);
-    return fileContents;
-  }
-
-  void setAsserts() async {
-    result = await _loadFromAssets();
-    setState(() {
-      md = result.toString();
-    });
-  }
 
   ///此数组是假的 List 应该被删掉
   List<String> waterGod = [
@@ -282,7 +268,11 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
     acidInfo = AuthService.checkNuclearAcid();
-    if (CommonPreferences.isFirstUse.value == true) setAsserts();
+    if (CommonPreferences.firstPrivacy.value == true) {
+      setState(() async {
+        md = await rootBundle.loadString('privacy/privacy_content.md');
+      });
+    }
     cards = [
       CardBean(
           Image.asset(
@@ -321,7 +311,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (CommonPreferences.isFirstUse.value == true) {
+      if (CommonPreferences.firstPrivacy.value == true) {
         showDialog(
             context: context,
             barrierDismissible: false,

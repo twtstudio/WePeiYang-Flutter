@@ -39,8 +39,8 @@ class _CoursePageState extends State<CoursePage> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       /// 初次使用课表时展示办公网dialog
-      if (CommonPreferences.isFirstUse.value) {
-        CommonPreferences.isFirstUse.value = false;
+      if (CommonPreferences.firstClassesDialog.value) {
+        CommonPreferences.firstClassesDialog.value = false;
         showDialog(
             context: context,
             barrierDismissible: true,

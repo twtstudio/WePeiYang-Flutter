@@ -69,7 +69,7 @@ class AgreementAndPrivacyDialog extends Dialog {
         ),
         GestureDetector(
           onTap: () {
-            CommonPreferences.isFirstUse.value = false;
+            CommonPreferences.firstPrivacy.value = false;
             context.read<LakeModel>().checkTokenAndGetTabList(success: () {
               context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
                 ToastProvider.error(e.error.toString());
