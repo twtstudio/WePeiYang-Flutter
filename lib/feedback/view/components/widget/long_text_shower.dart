@@ -16,6 +16,7 @@ class ExpandableText extends StatefulWidget {
   final bool buttonIsShown;
   @required
   final bool isHTML;
+  final String replyTo;
 
   const ExpandableText(
       {Key key,
@@ -24,7 +25,8 @@ class ExpandableText extends StatefulWidget {
       this.style,
       this.expand,
       this.buttonIsShown,
-      this.isHTML})
+      this.isHTML,
+      this.replyTo})
       : super(key: key);
 
   @override

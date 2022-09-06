@@ -28,8 +28,8 @@ class _LinkTextState extends State<LinkText> {
         maxLines: widget.maxLine ?? 100,
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
-        textStyle: widget.style.NotoSansSC.w400.sp(14),
-        linkStyle: widget.style.linkBlue.w500.sp(14), onTap: (link) async {
+        textStyle: widget.style.NotoSansSC.w400.sp(16),
+        linkStyle: widget.style.linkBlue.w500.sp(16), onTap: (link) async {
       //粗暴地解决了，但是肯定不是个长久之计
       if (link.value.startsWith('#MP') &&
           RegExp(r'^-?[0-9]+').hasMatch(link.value.substring(3))) {

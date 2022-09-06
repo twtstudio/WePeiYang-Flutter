@@ -307,7 +307,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0 &&
                     context.read<FestivalProvider>().festivalList.length > 0)
                   return Padding(
-                    padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 0),
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                     child: ActivityCard(),
                   );
                 ind--;
@@ -323,7 +323,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             });
                           },
                           child: Padding(
-                            padding: EdgeInsets.fromLTRB(15.w, 14.h, 5.w, 6.h),
+                            padding: EdgeInsets.fromLTRB(20.w, 14.h, 5.w, 6.h),
                             child: Text('默认排序',
                                 style: context.read<LakeModel>().sortSeq != 0
                                     ? TextUtil.base.blue2C.w600.sp(14)

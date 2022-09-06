@@ -90,7 +90,7 @@ class _NCommentCardState extends State<NCommentCard>
   Widget build(BuildContext context) {
     var commentMenuButton = GestureDetector(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 8.w, 8.w, 12.w),
+          padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.w,
@@ -232,18 +232,21 @@ class _NCommentCardState extends State<NCommentCard>
           child: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Text(
-                widget.comment.nickname ?? "匿名用户",
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-                style: TextUtil.base.w400.bold.NotoSansSC.sp(14).black2A,
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 0.37.sw),
+                child: Text(
+                  widget.comment.nickname ?? "匿名用户",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).black2A,
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 3),
                 child: LevelUtil(
-                  width: 20,
-                  height: 10,
-                  style: TextUtil.base.white.bold.sp(6),
+                  width: 24,
+                  height: 12,
+                  style: TextUtil.base.white.bold.sp(7),
                   level: widget.comment.level.toString(),
                 ),
               ),
@@ -267,8 +270,7 @@ class _NCommentCardState extends State<NCommentCard>
               if (widget.comment.replyToName != '' &&
                   widget.comment.replyTo != widget.ancestorUId)
                 widget.comment.isOwner &&
-                        widget.comment.replyToName ==
-                            widget.comment.nickname
+                        widget.comment.replyToName == widget.comment.nickname
                     ? CommentIdentificationContainer('回复我', true)
                     : SizedBox(),
               //后面有东西时出现
@@ -278,11 +280,14 @@ class _NCommentCardState extends State<NCommentCard>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(width: 2),
-                    Icon(Icons.play_arrow, size: 8),
+                    Icon(Icons.play_arrow, size: 10),
                     SizedBox(width: 2),
-                    Text(
-                      widget.comment.replyToName ?? "",
-                      style: TextUtil.base.w700.NotoSansSC.sp(14).black2A,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 0.37.sw),
+                      child: Text(
+                        widget.comment.replyToName ?? "",
+                        style: TextUtil.base.w700.NotoSansSC.sp(16).black2A,
+                      ),
                     ),
                     SizedBox(width: 2)
                   ],
@@ -301,14 +306,12 @@ class _NCommentCardState extends State<NCommentCard>
                                             widget.ancestorUId))
                             ? widget.comment.replyToName ==
                                         widget.ancestorName &&
-                                    widget.comment.replyTo !=
-                                        widget.ancestorUId
+                                    widget.comment.replyTo != widget.ancestorUId
                                 ? '楼主 层主'
                                 : '楼主'
                             : widget.comment.replyToName ==
                                         widget.ancestorName &&
-                                    widget.comment.replyTo !=
-                                        widget.ancestorUId
+                                    widget.comment.replyTo != widget.ancestorUId
                                 ? '层主'
                                 : ''
                         : '',
@@ -333,10 +336,11 @@ class _NCommentCardState extends State<NCommentCard>
             child: ExpandableText(
               text: widget.comment.content,
               maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-              style: TextUtil.base.w400.NotoSansSC.black2A.h(1.2).sp(16),
+              style: TextUtil.base.w400.NotoSansSC.black2A.h(1.8).sp(14),
               expand: false,
               buttonIsShown: true,
               isHTML: false,
+              replyTo: widget.comment.replyToName,
             ),
           );
 
@@ -478,11 +482,14 @@ class _NCommentCardState extends State<NCommentCard>
                     .toLocal()
                     .toIso8601String()
                     .replaceRange(10, 11, ' ')
-                    .substring(0, 19)
+                    .replaceAllMapped('-', (_) => '/')
+                    .substring(2, 19)
                 : DateTime.now()
                     .difference(widget.comment.createAt)
                     .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans.grey97.regular.sp(12),
+            style: TextUtil.base.ProductSans.grey97.regular
+                .sp(12)
+                .space(letterSpacing: 0.6),
           ),
         ),
       ],
@@ -495,7 +502,8 @@ class _NCommentCardState extends State<NCommentCard>
         child: ProfileImageWithDetailedPopup(
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
-            widget.comment.uid, widget.comment.nickname),
+            widget.comment.uid,
+            widget.comment.nickname),
       ),
       SizedBox(width: 10.w),
       Expanded(
@@ -540,22 +548,18 @@ class _NCommentCardState extends State<NCommentCard>
             children: [
               Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    // 这个Ink是为了确保body -> bottomWidget -> reportWidget的波纹效果正常显示
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(16.w, 8.h, 14.w, 8.h),
-                      color: CommonPreferences.isSkinUsed.value
-                          ? Color(CommonPreferences.skinColorE.value)
-                          : Colors.transparent,
-                      child: mainBody,
-                    ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 14.w, 12.h),
+                    color: CommonPreferences.isSkinUsed.value
+                        ? Color(CommonPreferences.skinColorE.value)
+                        : Colors.transparent,
+                    child: mainBody,
                   ),
                   if (!widget.isSubFloor &&
                       !widget.isFullView &&
                       subFloor != null)
                     Padding(
-                        padding: EdgeInsets.only(left: 40),
+                        padding: EdgeInsets.only(left: 44.w),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -584,18 +588,19 @@ class _NCommentCardState extends State<NCommentCard>
                                                   ' 条回复 >'
                                               : '查看回复详情 >',
                                           style: TextUtil.base.NotoSansSC.w400
-                                              .sp(14)
+                                              .sp(12)
                                               .blue2C),
                                     ),
                                     Spacer()
                                   ],
                                 ),
-                              )
+                              ),
+                            SizedBox(height: 12.h)
                           ],
                         )),
                 ],
               ),
-              Positioned(top: 8.w, right: 4.w, child: commentMenuButton)
+              Positioned(right: 8.w, child: commentMenuButton)
             ],
           );
   }

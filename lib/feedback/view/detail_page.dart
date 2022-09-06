@@ -298,14 +298,16 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           },
                           child: value == 1
                               ? Container(
+                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.boldTag54,
+                                    color: ColorUtil.blue2CColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
                                       style: TextUtil.base.white.w400.sp(14)),
                                 )
                               : Container(
+                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
                                     color: ColorUtil.whiteF8Color,
                                     borderRadius: BorderRadius.circular(20),
@@ -424,7 +426,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                         blurRadius: 6,
                         spreadRadius: 0),
                   ],
-                  color: ColorUtil.whiteF8Color,
+                  color: Colors.white,
                 ),
                 child: Column(
                   children: [
@@ -538,9 +540,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                             .focusNode);
                                   },
                                   child: Container(
-                                      height: 22,
+                                      height: 36,
                                       margin:
-                                          EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                          EdgeInsets.fromLTRB(16, 13, 0, 20),
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
@@ -556,8 +558,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(11),
-                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(18),
+                                        color: ColorUtil.whiteF8Color,
                                       )),
                                 ),
                               ),

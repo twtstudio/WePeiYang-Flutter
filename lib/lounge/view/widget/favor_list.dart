@@ -28,10 +28,10 @@ class _LoungeFavorListState extends State<LoungeFavorList> {
   @override
   Widget build(BuildContext context) {
     final title = Padding(
-      padding: EdgeInsets.symmetric(horizontal: 7.w),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Text(
         widget.title,
-        style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
+        style: TextUtil.base.PingFangSC.black2A.bold.sp(15),
       ),
     );
 

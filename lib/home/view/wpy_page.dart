@@ -581,6 +581,7 @@ class SliverCardsWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          SizedBox(width: 8.w),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -603,10 +604,19 @@ class SliverCardsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(bean.eng,
-                  maxLines: 2, style: TextUtil.base.w500.black2A.sp(12).bold),
-              Text(bean.label,
-                  maxLines: 2, style: TextUtil.base.w400.black2A.sp(12).medium),
+              SizedBox(
+                width: 70.w,
+                child: Text(bean.eng,
+                    maxLines: 2,
+                    style: TextUtil.base.w500.black2A.sp(12).w400,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              SizedBox(
+                width: 70.w,
+                child: Text(bean.label,
+                    maxLines: 2,
+                    style: TextUtil.base.w400.black2A.sp(12).medium),
+              ),
             ],
           )
         ],

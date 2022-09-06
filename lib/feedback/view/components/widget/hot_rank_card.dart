@@ -24,28 +24,28 @@ class _HotCardState extends State<HotCard> {
   }
 
   List<SvgPicture> leads = [
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg", width: 16),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg", width: 16),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg", width: 16),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 16),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 16),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg", width: 18),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg", width: 18),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg", width: 18),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 18),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 18),
     //下面的这个是图钉
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg",
-        width: 16),
+        width: 18),
   ];
 
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 20.w),
+          width: 24.w),
       SizedBox(width: 4.w),
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 80.w)
+          width: 86.w)
     ]);
 
     return Padding(
-      padding: EdgeInsets.all(15.w),
+      padding: EdgeInsets.all(20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,7 +81,7 @@ class _HotCardState extends State<HotCard> {
                                   child: Text(
                                     data.hotTagsList[index].name,
                                     style: TextUtil.base.w400.NotoSansSC
-                                        .sp(14)
+                                        .sp(16)
                                         .black2A,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -95,7 +95,7 @@ class _HotCardState extends State<HotCard> {
                                           .toString() ??
                                       '0',
                                   style: TextUtil.base.w400.NotoSansSC
-                                      .sp(12)
+                                      .sp(14)
                                       .black2A,
                                 ),
                               ),

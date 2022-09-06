@@ -234,7 +234,7 @@ class _PostCardState extends State<PostCard> {
       post.title,
       maxLines: widget.type == PostCardType.detail ? 3 : 1,
       overflow: TextOverflow.ellipsis,
-      style: TextUtil.base.w400.NotoSansSC.sp(16).black00.bold,
+      style: TextUtil.base.w400.NotoSansSC.sp(18).black00.bold,
     );
 
     var tag = post.type != 1
@@ -318,12 +318,12 @@ class _PostCardState extends State<PostCard> {
     var createTime = Text(
       DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
       textAlign: TextAlign.left,
-      style: TextUtil.base.black2A.bold.ProductSans.sp(8),
+      style: TextUtil.base.black2A.bold.ProductSans.sp(10),
     );
     var createTimeDetail = Text(
       DateFormat('yyyy-MM-dd HH:mm:ss').format(post.createAt.toLocal()),
       textAlign: TextAlign.left,
-      style: TextUtil.base.grey6C.normal.ProductSans.sp(8),
+      style: TextUtil.base.grey6C.normal.ProductSans.sp(10),
     );
     List<Widget> rowList = [];
 
@@ -346,8 +346,8 @@ class _PostCardState extends State<PostCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ConstrainedBox(
                             constraints: BoxConstraints(
@@ -355,18 +355,18 @@ class _PostCardState extends State<PostCard> {
                                   (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
                             ),
                             child: Text(
-                              post.nickname == '' ? '没名字的微友' : post.nickname,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  TextUtil.base.w500.NotoSansSC.sp(14).black2A,
-                            ),
+                                post.nickname == '' ? '没名字的微友' : post.nickname,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextUtil.base.w400.NotoSansSC
+                                    .sp(16)
+                                    .black2A),
                           ),
                           SizedBox(width: 4.w),
                           LevelUtil(
-                            width: 20,
-                            height: 10,
-                            style: TextUtil.base.white.bold.sp(6),
+                            width: 24,
+                            height: 12,
+                            style: TextUtil.base.white.bold.sp(7),
                             level: post.level.toString(),
                           ),
                         ],
@@ -570,8 +570,7 @@ class _PostCardState extends State<PostCard> {
             width: 11.67.w),
         SizedBox(width: 3.w),
         Text(
-          post.commentCount.toString() +
-              (post.commentCount < 100 ? '   ' : ' '),
+          post.commentCount.toString() + '   ',
           style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
         ),
       ],
@@ -782,7 +781,7 @@ class _PostCardState extends State<PostCard> {
                   border: widget.type == PostCardType.simple
                       ? Border(bottom: BorderSide(color: ColorUtil.greyEAColor))
                       : Border()),
-              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -817,52 +816,46 @@ class _PostCardState extends State<PostCard> {
           "indexNow": index
         });
       },
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(6)),
-          child: Image.network(
-              widget.type == PostCardType.detail
-                  ? picBaseUrl + 'origin/' + post.imageUrls[index]
-                  : picBaseUrl + 'thumb/' + post.imageUrls[index],
-              fit: BoxFit.cover,
-              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
-                  4.w,
-              height:
-                  (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
-                      4.w, loadingBuilder: (BuildContext context, Widget child,
-                  ImageChunkEvent loadingProgress) {
-            if (loadingProgress == null) return child;
-            return SizedBox(
-              width: (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
-                  4.w,
-              height:
-                  (WePeiYangApp.screenWidth - 46.w) / post.imageUrls.length -
-                      4.w,
-              child: Center(
-                child: Container(
-                  height: 40,
-                  width: 40,
-                  padding: EdgeInsets.all(4),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    backgroundColor: Colors.black12,
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes
-                        : null,
-                  ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+        child: Image.network(
+            widget.type == PostCardType.detail
+                ? picBaseUrl + 'origin/' + post.imageUrls[index]
+                : picBaseUrl + 'thumb/' + post.imageUrls[index],
+            fit: BoxFit.cover,
+            width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                post.imageUrls.length,
+            height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                post.imageUrls.length,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent loadingProgress) {
+          if (loadingProgress == null) return child;
+          return SizedBox(
+            width: (WePeiYangApp.screenWidth - 56.w) / post.imageUrls.length,
+            height: (WePeiYangApp.screenWidth - 56.w) / post.imageUrls.length,
+            child: Center(
+              child: Container(
+                height: 40,
+                width: 40,
+                padding: EdgeInsets.all(4),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  backgroundColor: Colors.black12,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null,
                 ),
               ),
-            );
-          }, errorBuilder: (BuildContext context, Object exception,
-                  StackTrace stackTrace) {
-            return Text(
-              '💔[图片加载失败]',
-              style: TextUtil.base.grey6C.w400.sp(12),
-            );
-          }),
-        ),
+            ),
+          );
+        }, errorBuilder: (BuildContext context, Object exception,
+                StackTrace stackTrace) {
+          return Text(
+            '💔[图片加载失败]',
+            style: TextUtil.base.grey6C.w400.sp(12),
+          );
+        }),
       ),
     );
   }

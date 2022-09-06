@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -28,7 +29,7 @@ class CommentIdentificationContainer extends StatelessWidget {
         : Container(
             margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.w500.NotoSansSC.sp(9).blue2C),
+                style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C),
           );
   }
 }
@@ -451,22 +452,22 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
             ? SvgPicture.network(
                 '${EnvConfig.QNHD}avatar/beam/20/${uid}',
                 width: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 18
-                    : 32,
+                    ? 20.w
+                    : 34.w,
                 height: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 18
-                    : 32,
+                    ? 20.w
+                    : 34.w,
                 fit: BoxFit.contain,
                 placeholderBuilder: defaultPlaceholderBuilder,
               )
             : Image.network(
                 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
                 width: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 18
-                    : 32,
+                    ? 20.w
+                    : 34.w,
                 height: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 18
-                    : 32,
+                    ? 18.w
+                    : 32.w,
                 fit: BoxFit.contain,
               ),
       ),
