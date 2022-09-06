@@ -126,7 +126,7 @@ class _GPAPageState extends State<GPAPage> {
                                 context.watch<GPANotifier>().curveData.length >
                                         4
                                     ? 800.w
-                                    : 1.sw - 60.w),
+                                    : 1.sw),
                         child: GPACurve(widget._gpaColors, isPreview: false))),
                 CourseListWidget(widget._gpaColors)
               ],

@@ -344,6 +344,26 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static Future<void> postShare({
+    @required id,
+    @required type,
+    @required onSuccess,
+    @required onFailure,
+  }) async {
+    AsyncTimer.runRepeatChecked('share', () async {
+      try {
+        await feedbackDio.post('share',
+            formData: FormData.fromMap({
+              'name': id,
+              'type': type,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   static getPosts(
       {keyword,
       departmentId,
@@ -498,7 +518,7 @@ class FeedbackService with AsyncTimer {
       );
       print(commentResponse.data);
       List<Floor> officialCommentList = [];
-      for (Map<String, dynamic> json in commentResponse.data['data']) {
+      for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         officialCommentList.add(Floor.fromJson(json));
       }
       onSuccess(officialCommentList);

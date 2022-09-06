@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -71,6 +72,11 @@ class _PostCardState extends State<PostCard> {
   Post post;
 
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+  List<String> solved = [
+    'assets/svg_pics/lake_butt_icons/unshared.svg',
+    'assets/svg_pics/lake_butt_icons/unsolved.svg',
+    'assets/svg_pics/lake_butt_icons/solved.svg',
+  ];
 
   _PostCardState(this.post);
 
@@ -382,6 +388,14 @@ class _PostCardState extends State<PostCard> {
                     style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
                   ),
                 ),
+                if (post.type == 1 && widget.type == PostCardType.simple)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: WpyPic(
+                      solved[post.solved],
+                      width: 55.w,
+                    ),
+                  )
               ],
             ),
             SizedBox(height: 13.w),
