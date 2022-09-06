@@ -72,11 +72,6 @@ class _PostCardState extends State<PostCard> {
   Post post;
 
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
-  List<String> solved = [
-    'assets/svg_pics/lake_butt_icons/unshared.svg',
-    'assets/svg_pics/lake_butt_icons/unsolved.svg',
-    'assets/svg_pics/lake_butt_icons/solved.svg',
-  ];
 
   _PostCardState(this.post);
 
@@ -390,14 +385,6 @@ class _PostCardState extends State<PostCard> {
                     style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
                   ),
                 ),
-                if (post.type == 1 && widget.type == PostCardType.simple)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: WpyPic(
-                      solved[post.solved],
-                      width: 55.w,
-                    ),
-                  )
               ],
             ),
             SizedBox(height: 13.w),
