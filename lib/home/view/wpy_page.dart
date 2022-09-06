@@ -269,8 +269,10 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     _tc = TabController(length: 3, vsync: this);
     acidInfo = AuthService.checkNuclearAcid();
     if (CommonPreferences.firstPrivacy.value == true) {
-      setState(() async {
-        md = await rootBundle.loadString('privacy/privacy_content.md');
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
       });
     }
     cards = [
