@@ -124,29 +124,29 @@ class SolveOrNotWidget extends StatelessWidget {
     switch (index) {
       //未分发
       case 0:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tag_not_processed.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_not_processed.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
       //已分发
       case 3:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tag_processed.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_processed.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-      //未解决
+      //未解决 现在改名叫已回复
       case 1:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tag_replied.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_replied.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
       //已解决
       case 2:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tag_solved.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_solved.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );

@@ -78,7 +78,7 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0xD9, 0x53, 0x4F, 0.1),
+          color: Colors.red,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -86,11 +86,13 @@ class ToastProvider with AsyncTimer {
           children: [
             SvgPicture.asset(
                 'assets/svg_pics/lake_butt_icons/error_background.svg',
-                width: 15),
+                color: Colors.white,
+                width: 15,
+            ),
             SizedBox(width: 10),
             Text(
               msg,
-              style: TextUtil.base.NotoSansSC.bold.sp(14).redD9,
+              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
             ),
           ],
         ),
@@ -111,12 +113,22 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0x21, 0x96, 0xf3, 0.4),
+          color: Color(0xFFF0AD4E),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(
-          msg,
-          style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/svg_pics/lake_butt_icons/running_background.svg',
+              width: 15,
+            ),
+            SizedBox(width: 10),
+            Text(
+              msg,
+              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+            ),
+          ],
         ),
       ),
       positionedToastBuilder: (context, child) {
@@ -135,12 +147,22 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(0x4C, 0xAF, 0x50, 0.4),
+          color: Color(0xFF5CB85C),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(
-          msg,
-          style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/svg_pics/lake_butt_icons/success_background.svg',
+              width: 15,
+            ),
+            SizedBox(width: 10),
+            Text(
+              msg,
+              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+            ),
+          ],
         ),
       ),
       positionedToastBuilder: (context, child) {

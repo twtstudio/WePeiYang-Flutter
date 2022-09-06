@@ -376,7 +376,9 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 Spacer(),
-                GestureDetector(
+                if(post.type == 1) SolveOrNotWidget(post.solved),
+                if(post.type != 1)
+                  GestureDetector(
                   onLongPress: () {
                     return Clipboard.setData(ClipboardData(
                             text: '#MP' + post.id.toString().padLeft(6, '0')))
