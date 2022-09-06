@@ -1,12 +1,11 @@
 // @dart = 2.12
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'push_intent.dart';
@@ -20,9 +19,6 @@ class PushManager extends ChangeNotifier {
       switch (call.method) {
         case 'refreshPushPermission':
           openPush = false;
-          break;
-        case 'getCidFromIOS':
-          _gotCidFromIOS(call.arguments);
           break;
         default:
           break;
@@ -53,6 +49,10 @@ class PushManager extends ChangeNotifier {
 
   void closeDialogAndRetryTurnOnPush() {
     SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
+    if (Platform.isIOS) {
+      openAppSettings();
+      return;
+    }
     turnOnPushService(() {
       openPush = true;
     }, () {
@@ -72,42 +72,48 @@ class PushManager extends ChangeNotifier {
   }
 
   // 在用户同意隐私协议后，开启个推
+  // TODO: iOS逻辑还可以完善
   Future<void> initGeTuiSdk() async {
-    try {
-      final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
-      switch (result) {
-        case 'open push service success':
-          openPush = true;
-          break;
-        case 'refuse open push':
-          // 1. 在对话框中选择不打开推送
-          // 2. 在推送权限页中不允许通知权限
-          // 3. 不允许推送（没有权限或手动关闭）
-          openPush = false;
-          break;
-        case 'showRequestNotificationDialog':
-          showRequestNotificationDialog();
-          break;
+    if (Platform.isAndroid) {
+      try {
+        final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
+        switch (result) {
+          case 'open push service success':
+            openPush = true;
+            break;
+          case 'refuse open push':
+            // 1. 在对话框中选择不打开推送
+            // 2. 在推送权限页中不允许通知权限
+            // 3. 不允许推送（没有权限或手动关闭）
+            openPush = false;
+            break;
+          case 'showRequestNotificationDialog':
+            showRequestNotificationDialog();
+            break;
+        }
+      } on PlatformException catch (e) {
+        switch (e.code) {
+          case "OPEN_PUSH_SERVICE_ERROR":
+            break;
+          case "OPEN_NOTIFICATION_CONFIG_PAGE_ERROR":
+            break;
+          case "CHECK_NOTIFICATION_ENABLE_ERROR":
+            break;
+          case "INIT_GT_SDK_ERROR":
+            break;
+          case 'OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR':
+            break;
+          case 'FATAL_ERROR':
+            break;
+          default:
+            break;
+        }
+      } catch (e) {
+        // TODO
       }
-    } on PlatformException catch (e) {
-      switch (e.code) {
-        case "OPEN_PUSH_SERVICE_ERROR":
-          break;
-        case "OPEN_NOTIFICATION_CONFIG_PAGE_ERROR":
-          break;
-        case "CHECK_NOTIFICATION_ENABLE_ERROR":
-          break;
-        case "INIT_GT_SDK_ERROR":
-          break;
-        case 'OPEN_REQUEST_NOTIFICATION_DIALOG_ERROR':
-          break;
-        case 'FATAL_ERROR':
-          break;
-        default:
-          break;
-      }
-    } catch (e) {
-      // TODO
+    } else if (Platform.isIOS) {
+      final canPush = await Permission.notification.isGranted;
+      if (!canPush) showRequestNotificationDialog();
     }
   }
 
@@ -209,13 +215,6 @@ class PushManager extends ChangeNotifier {
     } catch (e) {
       return null;
     }
-  }
-
-  void _gotCidFromIOS(arguments) async {
-    final list = jsonDecode(jsonEncode(arguments));
-    AuthService.updateCid(list['cid'], onResult: (_) {
-      debugPrint('cid 更新成功 ${list['cid']}');
-    }, onFailure: (_) {});
   }
 }
 

@@ -488,11 +488,11 @@ class AuthService with AsyncTimer {
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('updateCid', () async {
       try {
-        await authDio.post("notification/cid",
+        var res = await authDio.post("notification/cid",
             data: {'cid': cid},
             options: Options(contentType: Headers.formUrlEncodedContentType));
 
-        onResult(cid);
+        onResult(res.data.toString());
       } on DioError catch (e) {
         onFailure(e);
       }

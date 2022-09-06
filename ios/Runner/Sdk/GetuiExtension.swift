@@ -9,11 +9,6 @@ extension AppDelegate {
     // [ GTSDK回调 ] 已注册客户端
     func geTuiSdkDidRegisterClient(_ clientId: String) {
         print("[ GTSDK回调 ] 已注册客户端，本机cid: \(clientId)")
-        
-        // 发送给flutter端
-        if let chan = getChannel(type: .push) {
-            chan.channel.invokeMethod("getCidFromIOS", arguments: ["cid": clientId])
-        }
     }
     
     // [ GTSDK回调 ] 状态通知

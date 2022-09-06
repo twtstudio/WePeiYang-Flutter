@@ -62,7 +62,12 @@ extension Channel {
     
     func pushSettingHandler() -> FlutterMethodCallHandler {
         return { call, result in
-           
+            switch call.method {
+            case "getCid":
+                result(GeTuiSdk.clientId())
+            default:
+                result(FlutterMethodNotImplemented)
+            }
         }
     }
     

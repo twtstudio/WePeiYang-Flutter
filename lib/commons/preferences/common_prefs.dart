@@ -135,6 +135,8 @@ class CommonPreferences {
   static final apkType = PrefsBean<String>('apkType', 'release');
   static final lastCheckUpdateTime = PrefsBean<String>('lastCheckUpdateTime');
   static final canPush = PrefsBean<bool>('can_push', false);
+  static final pushCid = PrefsBean<String>('pushCid', '');
+  static final pushUser = PrefsBean<String>('pushUser', '');
 
   /// 清除天外天账号系统缓存
   static void clearUserPrefs() {
@@ -194,6 +196,8 @@ class CommonPreferences {
 
     lastCheckUpdateTime.clear();
     canPush.clear();
+    pushCid.clear();
+    pushUser.clear();
     lastShownYearMonthDay.clear();
     firstPrivacy.clear();
     firstClassesDialog.clear();

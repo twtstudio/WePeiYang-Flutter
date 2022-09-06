@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -36,7 +36,6 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                 .sp(16)
                 .customColor(Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
-        brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: Padding(
@@ -47,6 +46,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             onTap: () => Navigator.pop(context),
           ),
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -252,7 +252,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('青年湖底和信箱消息通知', style: mainTextStyle),
+                      Text('求是论坛和信箱消息通知', style: mainTextStyle),
                       SizedBox(height: 3.h),
                       Text('应用消息通知', style: hintTextStyle)
                     ],
