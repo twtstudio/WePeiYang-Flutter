@@ -41,12 +41,11 @@ class AuthDio extends DioAbstract {
           error = "用户名或密码错误";
           break;
         case 40005:
-          // TODO: 后端问题
-          // Navigator.pushNamedAndRemoveUntil(
-          //     WePeiYangApp.navigatorState.currentContext,
-          //     AuthRouter.login,
-          //     (route) => false);
-          // error = "登录失效，请重新登录";
+          Navigator.pushNamedAndRemoveUntil(
+              WePeiYangApp.navigatorState.currentContext,
+              AuthRouter.login,
+              (route) => false);
+          error = "登录失效，请重新登录";
           break;
         case 50001:
         // error = "数据库错误";
@@ -335,10 +334,11 @@ class AuthService with AsyncTimer {
       {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getInfo', () async {
       try {
-        var rsp = await authDio.get('user/single');
+        var rsp = await authDio.post('auth/updateToken');
         var result = rsp.data['result'];
-        if (result['token'] != null) {
-          CommonPreferences.token.value = result['token'];
+        if (result != null) {
+          CommonPreferences.token.value = result;
+          print('---------------------------------------' + result);
         }
         onSuccess();
       } on DioError catch (e) {
