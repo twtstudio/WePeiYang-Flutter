@@ -102,8 +102,7 @@ class UpdateManager extends UpdateStatusListener {
           final localVersion = await LocalSetting.getBundleVersion();
           debugPrint("remoteVersionCode ${v.version}");
           debugPrint("localVersionCode  ${localVersion}");
-          final remoteVersion = (v.version as String).substring(1);
-
+          final remoteVersion = (v.version as String);
           if (_versionCmp(localVersion, remoteVersion)) {
             UpdateDialog.message.show();
           } else {
