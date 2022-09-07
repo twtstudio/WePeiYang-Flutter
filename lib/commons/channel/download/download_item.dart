@@ -26,7 +26,7 @@ class DownloadTask {
     this.description,
   });
 
-  factory DownloadTask.updateApk(Version _version) {
+  factory DownloadTask.updateApk(AndroidVersion _version) {
     return DownloadTask(
       url: _version.apkUrl,
       fileName: _version.apkName,
@@ -37,7 +37,7 @@ class DownloadTask {
     );
   }
 
-  factory DownloadTask.updateZip(Version _version) {
+  factory DownloadTask.updateZip(AndroidVersion _version) {
     return DownloadTask(
       url: _version.zipUrl,
       fileName: _version.zipName,

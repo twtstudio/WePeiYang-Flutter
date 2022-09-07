@@ -54,6 +54,9 @@ extension Channel {
                     brightness = 0.3
                 }
                 UIScreen.main.brightness = brightness
+            case "bundleVersion":
+                let localVersion:String = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+                result(localVersion)
             default:
                 result(FlutterMethodNotImplemented)
             }

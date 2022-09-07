@@ -86,7 +86,7 @@ class WbyDialogStandardTwoButton extends StatelessWidget {
     required this.firstText,
     required this.secondText,
     this.firstType = ButtonType.light,
-    this.secondType = ButtonType.dark,
+    this.secondType = ButtonType.blue,
   }) : super(key: key);
 
   @override

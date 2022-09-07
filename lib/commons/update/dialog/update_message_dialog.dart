@@ -42,7 +42,7 @@ class UpdateMessageDialog extends StatelessWidget {
       buttons = WbyDialogButton(
         onTap: ok,
         text: '应用版本过低，立刻更新',
-        type: ButtonType.dark,
+        type: ButtonType.blue,
         expand: true,
       );
     } else {

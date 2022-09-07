@@ -18,4 +18,9 @@ class LocalSetting {
       await _channel.invokeMethod("changeWindowSecure", {'isSecure': enable});
     ;
   }
+
+  static Future<String> getBundleVersion() async {
+    if (Platform.isAndroid) return '';
+    return await _channel.invokeMethod<String>('bundleVersion') ?? '';
+  }
 }

@@ -9,14 +9,25 @@ class UpdateDio extends DioAbstract {}
 final updateDio = UpdateDio();
 
 class UpdateService with AsyncTimer {
-  static const BASEURL = 'https://upgrade.twt.edu.cn/androidupdate/';
+  static const BASEURL = 'https://upgrade.twt.edu.cn/';
 
   /// 获取最新版本，如果失败则返回null
-  static Future<Version?> get latestVersion async {
+  static Future<AndroidVersion?> get latestAndroidVersion async {
     try {
       var code = UpdateUtil.apkType == ApkType.release ? 1 : 0;
-      var response = await updateDio.get("${BASEURL}check/$code");
+      var response = await updateDio.get("${BASEURL}androidupdate/check/$code");
       return VersionData.fromJson(response.data).data;
+    } catch (error, stack) {
+      Logger.reportError(error, stack);
+      return null;
+    }
+  }
+
+  /// 获取最新版本，如果失败则返回null
+  static Future<IOSVersion?> get latestIOSVersion async {
+    try {
+      var response = await updateDio.get("${BASEURL}iosupdate/check");
+      return VersionData.fromJson(response.data, iOS: true).data;
     } catch (error, stack) {
       Logger.reportError(error, stack);
       return null;
