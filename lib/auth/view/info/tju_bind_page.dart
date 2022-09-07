@@ -48,7 +48,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
       super.initState();
       return;
     }
-    tjuuname = CommonPreferences.tjuuname.value;
+    tjuuname = CommonPreferences.tjuuname.value == ''
+        ? CommonPreferences.account.value
+        : CommonPreferences.tjuuname.value;
     tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
@@ -264,7 +266,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                           borderSide: BorderSide.none),
                       suffixIcon: GestureDetector(
                         child: Icon(
-                            value ? Icons.visibility_off : Icons.visibility),
+                          value ? Icons.visibility_off : Icons.visibility,
+                          color: ColorUtil.mainColor,
+                        ),
                         onTap: () {
                           visNotifier.value = !visNotifier.value;
                         },

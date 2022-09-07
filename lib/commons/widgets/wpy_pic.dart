@@ -15,12 +15,14 @@ class WpyPic extends StatefulWidget {
     this.height,
     this.fit = BoxFit.contain,
     this.withHolder = false,
+    this.holderHeight = 40,
     this.withCache = true,
   }) : super(key: key);
 
   final String res;
   final double? width;
   final double? height;
+  final double holderHeight;
   final BoxFit fit;
   final bool withHolder;
   final bool withCache;
@@ -72,15 +74,14 @@ class _WpyPicState extends State<WpyPic> {
                       loadingProgress.expectedTotalBytes!;
                 }
                 return Container(
-                  width: widget.width,
-                  height: widget.height,
+                  width: widget.width ?? widget.holderHeight,
+                  height: widget.height ?? widget.holderHeight,
                   color: Colors.black26,
                   child: Center(
                     child: SizedBox(
-                        width:
-                            widget.width == null ? 20 : widget.width! * 0.25,
+                        width: widget.width == null ? 20 : widget.width! * 0.25,
                         height:
-                        widget.width == null ? 20 : widget.width! * 0.25,
+                            widget.width == null ? 20 : widget.width! * 0.25,
                         child: CircularProgressIndicator(value: value)),
                   ),
                 );

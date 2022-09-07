@@ -542,7 +542,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                   child: Container(
                                       height: 36,
                                       margin:
-                                          EdgeInsets.fromLTRB(16, 13, 0, 20),
+                                          EdgeInsets.fromLTRB(16, 13, 0, 13),
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
@@ -1173,40 +1173,40 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                 AnimatedOption(
                     origin: false,
                     id: widget.post.id,
-                    color1: Color.fromRGBO(159, 159, 159, 1.0),
+                    color1: Color.fromRGBO(131, 130, 130, 1.0),
                     color2: Color.fromRGBO(107, 107, 107, 1.0),
                     title: '恢复正常帖子',
                     action: 0),
               AnimatedOption(
                   origin: originTag == 0,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(223, 108, 171, 1.0),
-                  color2: Color.fromRGBO(243, 16, 73, 1.0),
+                  color1: Color.fromRGBO(208, 104, 160, 1.0),
+                  color2: Color.fromRGBO(134, 103, 111, 1.0),
                   title: originTag == 0 ? '× 已置顶' : '将此帖置顶'),
               AnimatedOption(
                   origin: originTag == 1,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(232, 178, 27, 1.0),
-                  color2: Color.fromRGBO(236, 120, 57, 1.0),
+                  color1: Color.fromRGBO(190, 163, 91, 1.0),
+                  color2: Color.fromRGBO(157, 129, 113, 1.0),
                   title: originTag == 1 ? '× 已加精' : '加入精华帖',
                   action: 1),
               AnimatedOption(
                   origin: originTag == 2,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(66, 161, 225, 1.0),
-                  color2: Color.fromRGBO(57, 90, 236, 1.0),
+                  color1: Color.fromRGBO(124, 179, 216, 1.0),
+                  color2: Color.fromRGBO(72, 80, 117, 1.0),
                   title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
                   action: 2),
               AnimatedOption(
                   origin: false,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(127, 0, 0, 1.0),
-                  color2: Color.fromRGBO(66, 0, 96, 1.0),
+                  color1: Color.fromRGBO(43, 16, 16, 1.0),
+                  color2: Color.fromRGBO(42, 28, 49, 1.0),
                   title: '⚠ 删帖',
                   action: 100),
             ]),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24), color: Colors.white),
+            borderRadius: BorderRadius.circular(14), color: Colors.white),
       ),
     );
   }
@@ -1270,7 +1270,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                 horizontal: 20, vertical: isSelected ? 12 : 20),
             margin: EdgeInsets.only(top: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(8),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment(0.4, 1.6),

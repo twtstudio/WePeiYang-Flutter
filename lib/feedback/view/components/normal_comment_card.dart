@@ -368,6 +368,7 @@ class _NCommentCardState extends State<NCommentCard>
                         child: WpyPic(
                           picBaseUrl + 'origin/' + widget.comment.imageUrl,
                           withHolder: true,
+                          holderHeight: 64.h,
                         ),
                       ),
                     )
@@ -377,8 +378,8 @@ class _NCommentCardState extends State<NCommentCard>
                             borderRadius: BorderRadius.all(Radius.circular(4)),
                             child: WpyPic(
                               picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                              width: 70,
-                              height: 64,
+                              width: 70.w,
+                              height: 64.h,
                               fit: BoxFit.cover,
                               withHolder: true,
                             )),
