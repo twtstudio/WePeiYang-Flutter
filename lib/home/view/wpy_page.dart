@@ -297,8 +297,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           ReportRouter.pass),
       CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
           ReportRouter.main),
-      CardBean(Icon(Icons.refresh, size: 25), '重开模拟器', 'RestartGame',
-          HomeRouter.restartGame),
     ];
     if (DateTime.now().month == 4 && DateTime.now().day == 1) {
       cards.insert(

@@ -338,7 +338,6 @@ class AuthService with AsyncTimer {
         var result = rsp.data['result'];
         if (result != null) {
           CommonPreferences.token.value = result;
-          print('---------------------------------------' + result);
         }
         onSuccess();
       } on DioError catch (e) {

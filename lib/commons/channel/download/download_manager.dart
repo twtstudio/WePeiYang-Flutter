@@ -49,8 +49,8 @@ class DownloadManager {
 
   void _updateProgress(MethodCall call) {
     final list = (call.arguments as List).cast<Map>();
-    try {
-      for (var item in list) {
+    for (var item in list) {
+      try {
         final listenerId = item['listenerId'];
         final taskId = item['id'];
         final listener = listeners[listenerId]!;
@@ -64,6 +64,7 @@ class DownloadManager {
             break;
           case 1 << 1: // DownloadManager.STATUS_RUNNING
             listener.running?.call(task, progress);
+            print('yahhhhh');
             break;
           case 1 << 2: // DownloadManager.STATUS_PAUSED
             listener.paused?.call(task, progress);
@@ -71,6 +72,7 @@ class DownloadManager {
           case 1 << 3: // DownloadManager.STATUS_SUCCESSFUL
             listener.success.call(task);
             listener.downloadList.add(taskId);
+            print('yahhhhhhhhh');
 
             var successNum = listener.downloadList.length;
             var failedNum = listener.failedList.length;
@@ -91,9 +93,9 @@ class DownloadManager {
             listener.failedList.add(taskId);
             break;
         }
+      } catch (e, s) {
+        Logger.reportError(e, s);
       }
-    } catch (e, s) {
-      Logger.reportError(e, s);
     }
   }
 

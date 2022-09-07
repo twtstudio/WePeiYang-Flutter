@@ -2,7 +2,6 @@ import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/fifty_two_hz_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/wiki_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/restart_school_days_game.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/notices_page.dart';
 
 class HomeRouter {
@@ -15,7 +14,6 @@ class HomeRouter {
     home: (_) => HomePage(),
     wiki: (_) => WikiPage(),
     hz: (_) => FiftyTwoHzPage(),
-    restartGame: (_) => RestartSchoolDaysGamePage(),
     notice:(_) => NoticesPage()
   };
 }
