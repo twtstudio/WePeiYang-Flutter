@@ -41,11 +41,12 @@ class AuthDio extends DioAbstract {
           error = "用户名或密码错误";
           break;
         case 40005:
-          Navigator.pushNamedAndRemoveUntil(
-              WePeiYangApp.navigatorState.currentContext,
-              AuthRouter.login,
-              (route) => false);
-          error = "登录失效，请重新登录";
+          // TODO: 后端问题
+          // Navigator.pushNamedAndRemoveUntil(
+          //     WePeiYangApp.navigatorState.currentContext,
+          //     AuthRouter.login,
+          //     (route) => false);
+          // error = "登录失效，请重新登录";
           break;
         case 50001:
         // error = "数据库错误";

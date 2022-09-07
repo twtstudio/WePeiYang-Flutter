@@ -69,9 +69,6 @@ dependencies:
   al_downloader: ^1.4.5
   optimized_cached_image: ^3.0.0
 
-dependency_overrides:
-  meta: ^1.7.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
