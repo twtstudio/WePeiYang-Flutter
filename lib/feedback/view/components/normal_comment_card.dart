@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -112,15 +112,12 @@ class _NCommentCardState extends State<NCommentCard>
                       Clipboard.setData(data);
                       CommonPreferences.feedbackLastWeCo.value =
                           widget.ancestorUId.toString();
+                      ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
                       FeedbackService.postShare(
-                          id:  widget.ancestorUId.toString(),
+                          id: widget.ancestorUId.toString(),
                           type: 0,
-                          onSuccess: () {
-                            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                          },
-                          onFailure: () {
-                            ToastProvider.error('微口令复制失败，重试一下吧');
-                          });
+                          onSuccess: () {},
+                          onFailure: () {});
                     },
                     child: Text(
                       '分享',

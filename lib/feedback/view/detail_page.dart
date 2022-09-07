@@ -615,15 +615,12 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                         Clipboard.setData(data);
                         CommonPreferences.feedbackLastWeCo.value =
                             post.id.toString();
+                        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
                         FeedbackService.postShare(
                             id: post.id.toString(),
                             type: 0,
-                            onSuccess: () {
-                              ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                            },
-                            onFailure: () {
-                              ToastProvider.error('微口令复制失败，重试一下吧');
-                            });
+                            onSuccess: () {},
+                            onFailure: () {});
                       }
                       Navigator.pop(context);
                     },

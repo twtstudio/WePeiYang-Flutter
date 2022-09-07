@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -384,20 +383,20 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 Spacer(),
-                if(post.type == 1) SolveOrNotWidget(post.solved),
-                if(post.type != 1)
+                if (post.type == 1) SolveOrNotWidget(post.solved),
+                if (post.type != 1)
                   GestureDetector(
-                  onLongPress: () {
-                    return Clipboard.setData(ClipboardData(
-                            text: '#MP' + post.id.toString().padLeft(6, '0')))
-                        .whenComplete(
-                            () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
-                  },
-                  child: Text(
-                    '#MP' + post.id.toString().padLeft(6, '0'),
-                    style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+                    onLongPress: () {
+                      return Clipboard.setData(ClipboardData(
+                              text: '#MP' + post.id.toString().padLeft(6, '0')))
+                          .whenComplete(
+                              () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
+                    },
+                    child: Text(
+                      '#MP' + post.id.toString().padLeft(6, '0'),
+                      style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+                    ),
                   ),
-                ),
               ],
             ),
             SizedBox(height: 13.w),
@@ -726,6 +725,7 @@ class _PostCardState extends State<PostCard> {
 
         if (post.imageUrls.length > 1) {
           var imageList = Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(
               post.imageUrls.length,
               (index) => _image(index, context),
