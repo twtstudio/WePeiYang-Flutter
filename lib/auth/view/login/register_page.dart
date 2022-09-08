@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show FilteringTextInputFormatter, LengthLimitingTextInputFormatter;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, LengthLimitingTextInputFormatter, rootBundle;
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -21,7 +21,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   String nickname = "";
   String idNum = "";
   String email = "";
-
+  String md = "";
   _toNextPage() async {
     if (userNum == "")
       ToastProvider.error("学号不能为空");
@@ -57,7 +57,6 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   final FocusNode _nicknameFocus = FocusNode();
   final FocusNode _idNumFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -669,7 +668,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
   String password1 = "";
   String password2 = "";
   var checkNotifier = ValueNotifier<bool>(false);
-
+  String md = '';
   _submit() async {
     if (password1 == "")
       ToastProvider.error("请输入密码");
@@ -707,7 +706,18 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
 
   final FocusNode _pw1Focus = FocusNode();
   final FocusNode _pw2Focus = FocusNode();
-
+  @override
+  void initState() {
+    super.initState();
+    ///隐私政策markdown加载
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -916,7 +926,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
-                                  PrivacyDialog(check: checkNotifier)),
+                                  PrivacyDialog(md,check: checkNotifier)),
                           child: Text.rich(TextSpan(
                               text: "《隐私政策》",
                               style: TextUtil.base.normal.NotoSansSC.w400.sp(10).underLine

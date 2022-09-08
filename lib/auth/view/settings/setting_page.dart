@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
+
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
@@ -25,6 +26,19 @@ class _SettingPageState extends State<SettingPage> {
       TextUtil.base.bold.sp(12).customColor(Color.fromRGBO(177, 180, 186, 1));
   static const arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+  String md = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +214,9 @@ class _SettingPageState extends State<SettingPage> {
                 onTap: () => showDialog(
                     context: context,
                     barrierDismissible: true,
-                    builder: (context) => PrivacyDialog()),
+                    builder: (BuildContext context) {
+                      return PrivacyDialog(md);
+                    }),
                 child: Container(
                   padding: EdgeInsets.all(8.r),
                   decoration: BoxDecoration(),

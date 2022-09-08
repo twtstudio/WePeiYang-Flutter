@@ -16,7 +16,7 @@ class LoginPwWidget extends StatefulWidget {
 class _LoginPwWidgetState extends State<LoginPwWidget> {
   final checkNotifier = ValueNotifier<bool>(false); // 是否勾选隐私政策
   bool _usePwLogin = true;
-
+  String md = "";
   _login() async {
     // 隐藏键盘
     FocusScope.of(context).requestFocus(FocusNode());
@@ -58,7 +58,18 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       }
     }
   }
-
+  @override
+  void initState() {
+    super.initState();
+    ///隐私政策markdown加载
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -145,7 +156,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) =>
-                                    PrivacyDialog(check: checkNotifier)),
+                                    PrivacyDialog(md,check: checkNotifier)),
                             child: Text.rich(TextSpan(
                                 text: "《隐私政策》",
                                 style: TextUtil.base.normal.NotoSansSC.w400

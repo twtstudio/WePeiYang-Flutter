@@ -12,7 +12,7 @@ import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/agreement_and_privacy_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -48,12 +48,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   String md = '';
   Future<NAcidInfo> acidInfo;
   bool hasShow = false;
-
-  ///此数组是假的 List 应该被删掉
-  List<String> waterGod = [
-    'https://pic.imgdb.cn/item/630f543316f2c2beb1ce122f.jpg',
-    'https://pic.imgdb.cn/item/630f57e016f2c2beb1d01b51.jpg'
-  ];
 
   Widget get activityDialog => FutureBuilder(
         future: ThemeService.getBanner(),
@@ -316,7 +310,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
-              return AgreementAndPrivacyDialog(md);
+              return PrivacyDialog(md);
             });
       }
       var info = await acidInfo;

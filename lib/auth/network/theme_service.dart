@@ -146,7 +146,6 @@ class ThemeService with AsyncTimer {
     try {
       var response = await themeDio.get('banner');
       var result = response.data['result'];
-      // return result.map((e) => BannerPic.fromJson(e)).toList();
       var list = <BannerPic>[];
       result.forEach((e) {
         list.add(BannerPic.fromJson(e));
