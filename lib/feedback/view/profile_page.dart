@@ -124,20 +124,8 @@ class _ProfilePageState extends State<ProfilePage> {
     var postLists = (List.generate(
       _postList.length,
       (index) {
-        Widget post = PostCard.simple(
+        Widget post = PostCardSimple(
           _postList[index],
-          onContentLongPressed: () => _deletePostOnLongPressed(index),
-          showBanner: true,
-          key: ValueKey(_postList[index].id),
-          onContentPressed: () {
-            Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: _postList[index],
-            ).then((p) {
-              _refreshController.requestRefresh();
-            });
-          },
         );
         return post;
       },

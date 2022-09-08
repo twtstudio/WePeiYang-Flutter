@@ -42,18 +42,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool canSee = false;
 
-  /// nestedScrollView 展示 appbar
-  _onFeedbackOpen() {
-    if (!scroll && context.read<LakeModel>().nController.offset != 0) {
-      scroll = true;
-      context
-          .read<LakeModel>()
-          .nController
-          .animateTo(0,
-              duration: Duration(milliseconds: 200), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
-  }
+  /// 30.h
+  double get searchBarHeight => 30.h;
+
+  /// 50.h
+  double get tabBarHeight => 46.h;
 
   initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(success: () {
@@ -74,7 +67,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   // firstInLake();
     // });
-    context.read<LakeModel>().nController = new ScrollController();
     context.read<LakeModel>().getClipboardWeKoContents(context);
     initPage();
     super.initState();
@@ -113,13 +105,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   _onFeedbackTapped() {
     if (!context.read<LakeModel>().tabController.indexIsChanging) {
       if (canSee) {
-        _onFeedbackOpen();
+        context.read<LakeModel>().onFeedbackOpen();
         fbKey.currentState.tap();
         setState(() {
           canSee = false;
         });
       } else {
-        _onFeedbackOpen();
+        context.read<LakeModel>().onFeedbackOpen();
         fbKey.currentState.tap();
         setState(() {
           canSee = true;
@@ -151,7 +143,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: 30.w,
+        height: searchBarHeight,
         margin: EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
@@ -191,227 +183,199 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     var expanded = Expanded(
-      child: status == LakePageStatus.unload
-          ? Align(
-              alignment: Alignment.center,
-              child: Consumer<ChangeHintTextProvider>(
-                builder: (loadingContext, loadingProvider, __) {
-                  loadingProvider.calculateTime();
-                  return loadingProvider.timeEnded
-                      ? GestureDetector(
-                          onTap: () {
-                            var model = context.read<LakeModel>();
-                            model.mainStatus = LakePageStatus.loading;
-                            initPage();
+      child: SizedBox(
+        height: tabBarHeight - 6.h,
+        child: status == LakePageStatus.unload
+            ? Align(
+                alignment: Alignment.center,
+                child: Consumer<ChangeHintTextProvider>(
+                  builder: (loadingContext, loadingProvider, __) {
+                    loadingProvider.calculateTime();
+                    return loadingProvider.timeEnded
+                        ? GestureDetector(
+                            onTap: () {
+                              var model = context.read<LakeModel>();
+                              model.mainStatus = LakePageStatus.loading;
+                              initPage();
+                            },
+                            child: Text('点我重新加载'))
+                        : Loading();
+                  },
+                ),
+              )
+            : status == LakePageStatus.loading
+                ? Align(alignment: Alignment.center, child: Loading())
+                : status == LakePageStatus.idle
+                    ? Builder(builder: (context) {
+                        return TabBar(
+                          indicatorPadding: EdgeInsets.only(bottom: 2),
+                          labelPadding: EdgeInsets.only(bottom: 3),
+                          isScrollable: true,
+                          physics: BouncingScrollPhysics(),
+                          controller: context.read<LakeModel>().tabController,
+                          labelColor: ColorUtil.blue2CColor,
+                          labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
+                          unselectedLabelColor: ColorUtil.black2AColor,
+                          unselectedLabelStyle:
+                              TextUtil.base.w400.NotoSansSC.sp(18),
+                          indicator: CustomIndicator(
+                              borderSide: BorderSide(
+                                  color: ColorUtil.blue2CColor, width: 2)),
+                          tabs: List<Widget>.generate(
+                              tabList.length,
+                              (index) => DaTab(
+                                  text: tabList[index].shortname,
+                                  withDropDownButton:
+                                      tabList[index].name == '校务专区')),
+                          onTap: (index) {
+                            if (tabList[index].id == 1) {
+                              _onFeedbackTapped();
+                            }
                           },
-                          child: Text('点我重新加载'))
-                      : Loading();
-                },
-              ),
-            )
-          : status == LakePageStatus.loading
-              ? Align(alignment: Alignment.center, child: Loading())
-              : status == LakePageStatus.idle
-                  ? Builder(builder: (context) {
-                      return TabBar(
-                        indicatorPadding: EdgeInsets.only(bottom: 2),
-                        labelPadding: EdgeInsets.only(bottom: 3),
-                        isScrollable: true,
-                        physics: BouncingScrollPhysics(),
-                        controller: context.read<LakeModel>().tabController,
-                        labelColor: ColorUtil.blue2CColor,
-                        labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
-                        unselectedLabelColor: ColorUtil.black2AColor,
-                        unselectedLabelStyle:
-                            TextUtil.base.w400.NotoSansSC.sp(18),
-                        indicator: CustomIndicator(
-                            borderSide: BorderSide(
-                                color: ColorUtil.blue2CColor, width: 2)),
-                        tabs: List<Widget>.generate(
-                            tabList.length,
-                            (index) => DaTab(
-                                text: tabList[index].shortname,
-                                withDropDownButton:
-                                    tabList[index].name == '校务专区')),
-                        onTap: (index) {
-                          if (tabList[index].id == 1) {
-                            _onFeedbackTapped();
-                          }
-                        },
-                      );
-                    })
-                  : InkWell(
-                      onTap: () =>
-                          context.read<LakeModel>().checkTokenAndGetTabList(),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          '点击重新加载分区',
-                          style: TextUtil.base.mainColor.w400.sp(16),
+                        );
+                      })
+                    : InkWell(
+                        onTap: () =>
+                            context.read<LakeModel>().checkTokenAndGetTabList(),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            '点击重新加载分区',
+                            style: TextUtil.base.mainColor.w400.sp(16),
+                          ),
                         ),
                       ),
-                    ),
+      ),
     );
 
     return Scaffold(
       backgroundColor: CommonPreferences.isSkinUsed.value
           ? Color(CommonPreferences.skinColorA.value)
           : Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            NestedScrollView(
-                controller: context.read<LakeModel>().nController,
-                physics: BouncingScrollPhysics(),
-                floatHeaderSlivers: false,
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  scroll = false;
-                  return <Widget>[
-                    SliverAppBar(
-                      toolbarHeight: 48,
-                      backgroundColor: CommonPreferences.isSkinUsed.value
-                          ? Color(CommonPreferences.skinColorA.value)
-                          : Colors.white,
-                      titleSpacing: 0,
-                      title: searchBar,
-                      // actions: [
-                      //   Hero(
-                      //     tag: "addNewPost",
-                      //     child: InkWell(
-                      //         splashColor: Colors.transparent,
-                      //         highlightColor: Colors.transparent,
-                      //         child: Container(
-                      //           height: 24,
-                      //           width: 24,
-                      //           decoration: BoxDecoration(
-                      //             image: DecorationImage(
-                      //               image: AssetImage(
-                      //                   "assets/images/lake_butt_icons/add_post.png"),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         onTap: () {
-                      //           if (tabList.isNotEmpty) {
-                      //             initializeRefresh = true;
-                      //             Navigator.pushNamed(
-                      //                 context, FeedbackRouter.newPost,
-                      //                 arguments: NewPostArgs(false, '', 0, ''));
-                      //           }
-                      //         }),
-                      //   ),
-                      //   SizedBox(width: 15)
-                      // ],
-                    ),
-                    SliverPersistentHeader(
-                      floating: true,
-                      pinned: true,
-                      delegate: HomeHeaderDelegate(
-                        child: Container(
-                          color: CommonPreferences.isSkinUsed.value
-                              ? Color(CommonPreferences.skinColorA.value)
-                              : Colors.white,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(width: 4),
-                              expanded,
-                              SizedBox(width: 17)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ];
-                },
-                body: Container(
-                  decoration: BoxDecoration(
-                      color: CommonPreferences.isSkinUsed.value
-                          ? Color(CommonPreferences.skinColorA.value)
-                          : Colors.white),
-                  child: Stack(
-                    children: [
-                      Selector<LakeModel, List<WPYTab>>(
-                          selector: (BuildContext context, LakeModel lakeModel) {
-                        return lakeModel.tabList;
-                      }, builder: (_, tabs, __) {
-                        if (!context.read<LakeModel>().tabControllerLoaded) {
-                          context.read<LakeModel>().tabController = TabController(
-                              length: tabs.length, vsync: this)
-                            ..addListener(() {
-                              if (context
-                                      .read<LakeModel>()
-                                      .tabController
-                                      .index
-                                      .toDouble() ==
-                                  context
-                                      .read<LakeModel>()
-                                      .tabController
-                                      .animation
-                                      .value) {
-                                WPYTab tab =
-                                    context.read<LakeModel>().lakeAreas[1].tab;
-                                if (context.read<LakeModel>().tabController.index !=
-                                        tabList.indexOf(tab) &&
-                                    canSee) _onFeedbackTapped();
-                                _onFeedbackOpen();
-                                context.read<LakeModel>().currentTab =
-                                    context.read<LakeModel>().tabController.index;
-                              }
-                            });
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              // 因为上面的空要藏住搜索框
+                top: MediaQuery.of(context).padding.top < searchBarHeight
+                    ? searchBarHeight + tabBarHeight
+                    : MediaQuery.of(context).padding.top + searchBarHeight),
+            child: Selector<LakeModel, List<WPYTab>>(
+                selector: (BuildContext context, LakeModel lakeModel) {
+              return lakeModel.tabList;
+            }, builder: (_, tabs, __) {
+              if (!context.read<LakeModel>().tabControllerLoaded) {
+                context.read<LakeModel>().tabController =
+                    TabController(length: tabs.length, vsync: this)
+                      ..addListener(() {
+                        if (context
+                                .read<LakeModel>()
+                                .tabController
+                                .index
+                                .toDouble() ==
+                            context
+                                .read<LakeModel>()
+                                .tabController
+                                .animation
+                                .value) {
+                          WPYTab tab =
+                              context.read<LakeModel>().lakeAreas[1].tab;
+                          if (context.read<LakeModel>().tabController.index !=
+                                  tabList.indexOf(tab) &&
+                              canSee) _onFeedbackTapped();
+                          // _onFeedbackOpen();
+                          context.read<LakeModel>().currentTab =
+                              context.read<LakeModel>().tabController.index;
                         }
-                        int cacheNum = 0;
-                        return ExtendedTabBarView(
-                            cacheExtent: cacheNum,
-                            controller: context.read<LakeModel>().tabController,
-                            children: List<Widget>.generate(
-                                tabs == null ? 1 : tabs.length,
-                                (i) => NSubPage(
-                                      index: tabList[i].id,
-                                    )));
-                      }),
-                      Visibility(
-                        child: InkWell(
-                            onTap: () {
-                              if (canSee) _onFeedbackTapped();
-                            },
-                            child: FbTagsWrap(key: fbKey)),
-                        maintainState: true,
-                        visible: canSee,
-                      ),
-                    ],
-                  ),
-                )),
-            Positioned(
-              bottom: 20.h,
-              right: 20.w,
-              child: Hero(
-                tag: "addNewPost",
-                child: InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    child: Container(
-                      height: 62.r,
-                      width: 62.r,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                              "assets/images/add_post.png"),
-                        ),
+                      });
+              }
+              int cacheNum = 0;
+              return ExtendedTabBarView(
+                  cacheExtent: cacheNum,
+                  controller: context.read<LakeModel>().tabController,
+                  children: List<Widget>.generate(
+                      tabs == null ? 1 : tabs.length,
+                      (i) => NSubPage(
+                            index: tabList[i].id,
+                          )));
+            }),
+          ),
+          Visibility(
+            child: InkWell(
+                onTap: () {
+                  if (canSee) _onFeedbackTapped();
+                },
+                child: FbTagsWrap(key: fbKey)),
+            maintainState: true,
+            visible: canSee,
+          ),
+          Selector<LakeModel, bool>(
+              selector: (BuildContext context, LakeModel lakeModel) {
+            return lakeModel.barExtended;
+          }, builder: (_, barExtended, __) {
+            return AnimatedContainer(
+                height: searchBarHeight + tabBarHeight,
+                margin: EdgeInsets.only(
+                    top: barExtended
+                        ? MediaQuery.of(context).padding.top < searchBarHeight
+                            ? searchBarHeight
+                            : MediaQuery.of(context).padding.top
+                        : MediaQuery.of(context).padding.top < searchBarHeight
+                            ? 0
+                            : MediaQuery.of(context).padding.top - searchBarHeight),
+                color: CommonPreferences.isSkinUsed.value
+                    ? Color(CommonPreferences.skinColorA.value)
+                    : Colors.white,
+                duration: Duration(milliseconds: 300),
+                child: Column(children: [
+                  searchBar,
+                  SizedBox(
+                    height: tabBarHeight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(width: 4),
+                        expanded,
+                        SizedBox(width: 17)
+                      ],
+                    ),
+                  )
+                ]));
+          }),
+          // 挡上面
+          Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).padding.top < searchBarHeight
+                  ? searchBarHeight
+                  : MediaQuery.of(context).padding.top),
+          Positioned(
+            bottom: 20.h,
+            right: 20.w,
+            child: Hero(
+              tag: "addNewPost",
+              child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: Container(
+                    height: 62.r,
+                    width: 62.r,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage("assets/images/add_post.png"),
                       ),
                     ),
-                    onTap: () {
-                      if (tabList.isNotEmpty) {
-                        initializeRefresh = true;
-                        Navigator.pushNamed(
-                            context, FeedbackRouter.newPost,
-                            arguments: NewPostArgs(false, '', 0, ''));
-                      }
-                    }),
-              ),
+                  ),
+                  onTap: () {
+                    if (tabList.isNotEmpty) {
+                      initializeRefresh = true;
+                      Navigator.pushNamed(context, FeedbackRouter.newPost,
+                          arguments: NewPostArgs(false, '', 0, ''));
+                    }
+                  }),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

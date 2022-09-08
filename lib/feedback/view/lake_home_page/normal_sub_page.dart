@@ -67,7 +67,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       if (scrollInfo.metrics.pixels <= _previousOffset)
         context.read<LakeModel>().onFeedbackOpen();
       else
-        context.read<LakeModel>().onClose();
+        context.read<LakeModel>().onFeedbackClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
   }
@@ -223,7 +223,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0)
                   return Container(
                     height: 35,
-                    margin: EdgeInsets.only(top: 12, left: 14, right: 14),
+                    margin: EdgeInsets.only(top: 12.h + 30.h, left: 14, right: 14),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -353,7 +353,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     .dataList
                     .values
                     .toList()[ind];
-                return PostCard.simple(post, key: ValueKey(post.id));
+                return PostCardSimple(post);
               });
             },
           ),

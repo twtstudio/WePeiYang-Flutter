@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -869,4 +870,271 @@ class _PostCardState extends State<PostCard> {
     });
     return typeName[type];
   }
+}
+
+class PostCardSimple extends StatefulWidget {
+  final Post post;
+
+  PostCardSimple(this.post);
+
+  @override
+  State<StatefulWidget> createState() => _PostCardSimpleState(this.post);
+}
+
+class _PostCardSimpleState extends State<PostCardSimple> {
+  Post post;
+
+  final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+
+  _PostCardSimpleState(this.post);
+
+  @override
+  Widget build(BuildContext context) {
+    /// 头像昵称时间MP已解决
+    var avatarAndSolve = SizedBox(
+        height: 34.w,
+        child: Row(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(100)),
+            child: WpyPic(
+              post.avatar == ""
+                  ? '${EnvConfig.QNHD}avatar/beam/20/${post.uid}.svg'
+                  : 'https://qnhdpic.twt.edu.cn/download/origin/${post.avatar}',
+              width: 34.w,
+              height: 34.w,
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          SizedBox(
+              width: (WePeiYangApp.screenWidth - 24.w) / 2,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth:
+                                (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
+                          ),
+                          child: Text(
+                              post.nickname == '' ? '没名字的微友' : post.nickname,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  TextUtil.base.w400.NotoSansSC.sp(16).black2A),
+                        ),
+                        SizedBox(width: 4.w),
+                        LevelUtil(
+                          width: 24,
+                          height: 12,
+                          style: TextUtil.base.white.bold.sp(7),
+                          level: post.level.toString(),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      DateFormat('yyyy-MM-dd HH:mm:ss')
+                          .format(post.createAt.toLocal()),
+                      textAlign: TextAlign.left,
+                      style: TextUtil.base.grey6C.normal.ProductSans.sp(10),
+                    )
+                  ])),
+          Spacer(),
+          if (post.type == 1) SolveOrNotWidget(post.solved),
+          if (post.type != 1)
+            GestureDetector(
+              onLongPress: () {
+                return Clipboard.setData(ClipboardData(
+                        text: '#MP' + post.id.toString().padLeft(6, '0')))
+                    .whenComplete(
+                        () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
+              },
+              child: Text(
+                '#MP' + post.id.toString().padLeft(6, '0'),
+                style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+              ),
+            ),
+        ]));
+
+    /// 标题eTag
+    var eTagAndTitle = Row(children: [
+      if (post.eTag != '' && post.eTag != null)
+        Center(child: ETagWidget(entry: widget.post.eTag, full: false)),
+      SizedBox(
+        width: 1.sw - 80.w,
+        child: Text(
+          post.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextUtil.base.w400.NotoSansSC.sp(18).black00.bold,
+        ),
+      )
+    ]);
+
+    /// 帖子内容
+    var content = Padding(
+        padding: EdgeInsets.only(top: 6.h),
+        child: Text(
+          post.content,
+          maxLines: 2,
+          style: TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.4),
+          overflow: TextOverflow.ellipsis,
+        ));
+
+    /// 图片
+    var images = Padding(
+        padding: EdgeInsets.only(top: 10.h),
+        child: post.imageUrls.length == 1 ? singleImage : multipleImage);
+
+    /// 评论点赞点踩浏览量
+    var likeUnlikeVisit = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
+              width: 11.67.w),
+          SizedBox(width: 3.w),
+          Text(
+            post.commentCount.toString() + '   ',
+            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+          ),
+          IconWidget(
+            IconType.like,
+            count: post.likeCount,
+            onLikePressed: (isLike, likeCount, success, failure) async {
+              await FeedbackService.postHitLike(
+                id: post.id,
+                isLike: post.isLike,
+                onSuccess: () {
+                  post.isLike = !post.isLike;
+                  post.likeCount = likeCount;
+                  if (post.isLike && post.isDis) {
+                    post.isDis = !post.isDis;
+                    setState(() {});
+                  }
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: post.isLike,
+          ),
+          DislikeWidget(
+            size: 15.w,
+            isDislike: widget.post.isDis,
+            onDislikePressed: (dislikeNotifier) async {
+              await FeedbackService.postHitDislike(
+                id: post.id,
+                isDisliked: post.isDis,
+                onSuccess: () {
+                  post.isDis = !post.isDis;
+                  if (post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount--;
+                    setState(() {});
+                  }
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            },
+          ),
+          Spacer(),
+          Text(
+            post.visitCount == null
+                ? '0次浏览'
+                : post.visitCount.toString() + "次浏览",
+            style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
+          )
+        ]);
+
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(
+        context,
+        FeedbackRouter.detail,
+        arguments: post,
+      ),
+      child: Container(
+          padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            avatarAndSolve,
+            SizedBox(height: 6.h),
+            eTagAndTitle,
+            if (post.content.isNotEmpty) content,
+            if (post.imageUrls.isNotEmpty) images,
+            SizedBox(height: 8.h),
+            likeUnlikeVisit
+          ])),
+    );
+  }
+
+  Widget get singleImage {
+    Completer<ui.Image> completer = new Completer<ui.Image>();
+    Image image = new Image.network(
+      picBaseUrl + 'thumb/' + post.imageUrls[0],
+      width: double.infinity,
+      fit: BoxFit.fitWidth,
+      alignment: Alignment.center,
+    );
+    image.image
+        .resolve(new ImageConfiguration())
+        .addListener(ImageStreamListener((ImageInfo info, bool _) {
+      completer.complete(info.image);
+    }));
+
+    return ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(8.r)),
+        child: FutureBuilder<ui.Image>(
+          future: completer.future,
+          builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+            return Container(
+              width: 350.w,
+              height: 197.w,
+              child: snapshot.hasData
+                  ? snapshot.data.height / snapshot.data.width > 2.0
+                      ? Stack(
+                          alignment: Alignment.topLeft,
+                          children: [
+                            image,
+                            Positioned(top: 4, left: 4, child: TextPod('长图'))
+                          ],
+                        )
+                      : image
+                  : Icon(
+                      Icons.refresh,
+                      color: Colors.black54,
+                    ),
+              color: snapshot.hasData ? Colors.transparent : Colors.black12,
+            );
+          },
+        ));
+  }
+
+  Widget get multipleImage => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(
+          post.imageUrls.length,
+          (index) => ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(8.r)),
+            child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
+                fit: BoxFit.cover,
+                width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                    post.imageUrls.length,
+                height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                    post.imageUrls.length,
+                withHolder: true),
+          ),
+        ),
+      );
 }

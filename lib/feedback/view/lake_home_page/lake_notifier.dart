@@ -100,9 +100,9 @@ class LakeModel extends ChangeNotifier {
   List<WPYTab> backupList = [WPYTab()];
   int currentTab = 0;
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
+  bool barExtended = true;
   double opacity = 0;
   TabController tabController;
-  ScrollController nController;
   int sortSeq = 1;
 
   Future<void> initTabList() async {
@@ -132,23 +132,13 @@ class LakeModel extends ChangeNotifier {
   }
 
   void onFeedbackOpen() {
-    if (!scroll && nController.offset != 0) {
-      scroll = true;
-      nController
-          .animateTo(0,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
+    barExtended = true;
+    notifyListeners();
   }
 
-  void onClose() {
-    if (!scroll && nController.offset != nController.position.maxScrollExtent) {
-      scroll = true;
-      nController
-          .animateTo(nController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
+  void onFeedbackClose() {
+    barExtended = false;
+    notifyListeners();
   }
 
   void initLakeArea(int index, WPYTab tab, RefreshController rController,
