@@ -744,12 +744,22 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         Navigator.pop(context, post);
         return true;
       },
-      child: Scaffold(
-        backgroundColor: CommonPreferences.isSkinUsed.value
-            ? Color(CommonPreferences.skinColorB.value)
-            : Colors.white,
-        appBar: appBar,
-        body: body,
+      child: GestureDetector(
+        child: Scaffold(
+          backgroundColor: CommonPreferences.isSkinUsed.value
+              ? Color(CommonPreferences.skinColorB.value)
+              : Colors.white,
+          appBar: appBar,
+          body: body,
+        ),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          setState(() {
+            if (details.delta.dx > 20) {
+              Navigator.pop(context, post);
+              return true;
+            }
+          });
+        },
       ),
     );
   }

@@ -427,16 +427,24 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     return WillPopScope(
       onWillPop: () async {
-        context.read<NewFloorProvider>().clearAndClose();
-        Navigator.pop(context);
+        Navigator.pop(context, true);
         return true;
       },
-      child: Scaffold(
-        backgroundColor: CommonPreferences.isSkinUsed.value
-            ? Color(CommonPreferences.skinColorB.value)
-            : ColorUtil.backgroundColor,
-        appBar: appBar,
-        body: body,
+      child: GestureDetector(
+        child: Scaffold(
+            appBar: appBar,
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: body,
+            )),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          setState(() {
+            if (details.delta.dx > 20) {
+              Navigator.pop(context, true);
+              return true;
+            }
+          });
+        },
       ),
     );
   }

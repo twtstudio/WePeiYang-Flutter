@@ -245,12 +245,22 @@ class _SearchResultPageState extends State<SearchResultPage> {
         Navigator.pop(context, true);
         return true;
       },
-      child: Scaffold(
-          appBar: appBar,
-          body: AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
-            child: body,
-          )),
+      child: GestureDetector(
+        child: Scaffold(
+            appBar: appBar,
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: body,
+            )),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          setState(() {
+            if (details.delta.dx > 20) {
+              Navigator.pop(context, true);
+              return true;
+            }
+          });
+        },
+      ),
     );
   }
 }
