@@ -2,14 +2,13 @@ import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:flutter/material.dart' show Navigator, required;
+import 'package:flutter/material.dart' show Navigator, debugPrint, required;
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class AuthDio extends DioAbstract {
@@ -507,7 +506,7 @@ class AuthService with AsyncTimer {
       else
         return NAcidInfo.fromJson(rsp.data['result']);
     } on DioError catch (e) {
-      ToastProvider.error(e.message);
+      debugPrint(e.error);
     }
     return NAcidInfo(id: -1);
   }

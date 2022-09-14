@@ -312,6 +312,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             builder: (BuildContext context) {
               return PrivacyDialog(md);
             });
+        CommonPreferences.firstPrivacy.value = false;
       }
       var info = await acidInfo;
       if (info.id != -1 &&
