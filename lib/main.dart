@@ -347,7 +347,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     UmengCommonSdk.initCommon();
 
     // 检查更新
-    context.read<UpdateManager>().checkUpdate(auto: false);
+    context.read<UpdateManager>().checkUpdate();
 
     // 恢复截屏和亮度默认值，这两句代码不能放在更早的地方
     LocalSetting.changeSecurity(false);

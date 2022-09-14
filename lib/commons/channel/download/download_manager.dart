@@ -64,7 +64,6 @@ class DownloadManager {
             break;
           case 1 << 1: // DownloadManager.STATUS_RUNNING
             listener.running?.call(task, progress);
-            print('yahhhhh');
             break;
           case 1 << 2: // DownloadManager.STATUS_PAUSED
             listener.paused?.call(task, progress);
@@ -72,7 +71,6 @@ class DownloadManager {
           case 1 << 3: // DownloadManager.STATUS_SUCCESSFUL
             listener.success.call(task);
             listener.downloadList.add(taskId);
-            print('yahhhhhhhhh');
 
             var successNum = listener.downloadList.length;
             var failedNum = listener.failedList.length;
