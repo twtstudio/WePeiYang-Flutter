@@ -18,7 +18,7 @@ class ThemeDio extends DioAbstract {
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       if (CommonPreferences.themeToken != null)
-      options.headers['token'] = CommonPreferences.themeToken.value;
+        options.headers['token'] = CommonPreferences.themeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['error_code'] ?? 0;
@@ -79,8 +79,7 @@ class ThemeService with AsyncTimer {
           .get('skin/user?token=${CommonPreferences.themeToken.value}');
       List<Skin> list = [];
       for (Map<String, dynamic> json in response.data['result']) {
-        if (json != null)
-        list.add(Skin.fromJson(json));
+        if (json != null) list.add(Skin.fromJson(json));
       }
       return list;
     } on DioError catch (_) {

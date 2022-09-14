@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
@@ -222,8 +223,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
               return Builder(builder: (context) {
                 if (ind == 0)
                   return Container(
-                    height: 35,
-                    margin: EdgeInsets.only(top: 12.h + 30.h, left: 14, right: 14),
+                    height: 35.h,
+                    margin: EdgeInsets.only(
+                        top: 12.h + FeedbackHomePageState().searchBarHeight,
+                        left: 14.w,
+                        right: 14.w),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100)),

@@ -42,8 +42,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool canSee = false;
 
-  /// 30.h
-  double get searchBarHeight => 30.h;
+  /// 42.h
+  double get searchBarHeight => 42.h;
 
   /// 50.h
   double get tabBarHeight => 46.h;
@@ -123,6 +123,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var tc = context.read<LakeModel>().tabController;
 
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
@@ -130,21 +131,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     //控制动画速率
     timeDilation = 0.9;
     if (initializeRefresh == true) {
-      context
-          .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]
-          .controller
-          .animateTo(-85,
-              duration: Duration(milliseconds: 1000),
-              curve: Curves.easeOutCirc);
+      context.read<LakeModel>().lakeAreas[tc.index].controller.animateTo(-85,
+          duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
       initializeRefresh = false;
     }
 
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: searchBarHeight,
-        margin: EdgeInsets.symmetric(horizontal: 15),
+        height: searchBarHeight - 8,
+        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(15))),
@@ -212,7 +208,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           labelPadding: EdgeInsets.only(bottom: 3),
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
-                          controller: context.read<LakeModel>().tabController,
+                          controller: tc,
                           labelColor: ColorUtil.blue2CColor,
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
@@ -256,7 +252,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         children: [
           Padding(
             padding: EdgeInsets.only(
-              // 因为上面的空要藏住搜索框
+                // 因为上面的空要藏住搜索框
                 top: MediaQuery.of(context).padding.top < searchBarHeight
                     ? searchBarHeight + tabBarHeight
                     : MediaQuery.of(context).padding.top + searchBarHeight),
@@ -265,34 +261,20 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               return lakeModel.tabList;
             }, builder: (_, tabs, __) {
               if (!context.read<LakeModel>().tabControllerLoaded) {
-                context.read<LakeModel>().tabController =
-                    TabController(length: tabs.length, vsync: this)
-                      ..addListener(() {
-                        if (context
-                                .read<LakeModel>()
-                                .tabController
-                                .index
-                                .toDouble() ==
-                            context
-                                .read<LakeModel>()
-                                .tabController
-                                .animation
-                                .value) {
-                          WPYTab tab =
-                              context.read<LakeModel>().lakeAreas[1].tab;
-                          if (context.read<LakeModel>().tabController.index !=
-                                  tabList.indexOf(tab) &&
-                              canSee) _onFeedbackTapped();
-                          // _onFeedbackOpen();
-                          context.read<LakeModel>().currentTab =
-                              context.read<LakeModel>().tabController.index;
-                        }
-                      });
+                tc = TabController(length: tabs.length, vsync: this)
+                  ..addListener(() {
+                    if (tc.index.toDouble() == tc.animation.value) {
+                      WPYTab tab = context.read<LakeModel>().lakeAreas[1].tab;
+                      if (tc.index != tabList.indexOf(tab) && canSee)
+                        _onFeedbackTapped();
+                      context.read<LakeModel>().currentTab = tc.index;
+                    }
+                  });
               }
               int cacheNum = 0;
               return ExtendedTabBarView(
                   cacheExtent: cacheNum,
-                  controller: context.read<LakeModel>().tabController,
+                  controller: tc,
                   children: List<Widget>.generate(
                       tabs == null ? 1 : tabs.length,
                       (i) => NSubPage(
@@ -300,14 +282,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           )));
             }),
           ),
-          Visibility(
-            child: InkWell(
-                onTap: () {
-                  if (canSee) _onFeedbackTapped();
-                },
-                child: FbTagsWrap(key: fbKey)),
-            maintainState: true,
-            visible: canSee,
+          Padding(
+            padding: EdgeInsets.only(
+                // 因为上面的空要藏住搜索框
+                top: MediaQuery.of(context).padding.top < searchBarHeight
+                    ? searchBarHeight + tabBarHeight
+                    : MediaQuery.of(context).padding.top + searchBarHeight),
+            child: Visibility(
+              child: InkWell(
+                  onTap: () {
+                    if (canSee) _onFeedbackTapped();
+                  },
+                  child: FbTagsWrap(key: fbKey)),
+              maintainState: true,
+              visible: canSee,
+            ),
           ),
           Selector<LakeModel, bool>(
               selector: (BuildContext context, LakeModel lakeModel) {
@@ -322,11 +311,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             : MediaQuery.of(context).padding.top
                         : MediaQuery.of(context).padding.top < searchBarHeight
                             ? 0
-                            : MediaQuery.of(context).padding.top - searchBarHeight),
+                            : MediaQuery.of(context).padding.top -
+                                searchBarHeight),
                 color: CommonPreferences.isSkinUsed.value
                     ? Color(CommonPreferences.skinColorA.value)
                     : Colors.white,
-                duration: Duration(milliseconds: 300),
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOutCirc,
                 child: Column(children: [
                   searchBar,
                   SizedBox(
@@ -337,7 +328,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       children: [
                         SizedBox(width: 4),
                         expanded,
-                        SizedBox(width: 17)
+                        SizedBox(width: 4)
                       ],
                     ),
                   )
@@ -350,7 +341,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
           Positioned(
-            bottom: 20.h,
+            bottom: 90.h,
             right: 20.w,
             child: Hero(
               tag: "addNewPost",
@@ -358,8 +349,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   child: Container(
-                    height: 62.r,
-                    width: 62.r,
+                    height: 72.r,
+                    width: 72.r,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/images/add_post.png"),

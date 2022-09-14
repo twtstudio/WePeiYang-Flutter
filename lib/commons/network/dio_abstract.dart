@@ -57,7 +57,7 @@ extension DioRequests on DioAbstract {
       {Map<String, dynamic>? queryParameters,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
+    return (debug ? _dio_debug : _dio_debug)
         .get(path, queryParameters: queryParameters, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
@@ -71,7 +71,7 @@ extension DioRequests on DioAbstract {
       data,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
+    return (debug ? _dio_debug : _dio_debug)
         .post(path,
             queryParameters: queryParameters,
             data: formData ?? data,
@@ -84,7 +84,7 @@ extension DioRequests on DioAbstract {
 
   Future<Response<dynamic>> put(String path,
       {Map<String, dynamic>? queryParameters, bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
+    return (debug ? _dio_debug : _dio_debug)
         .put(path, queryParameters: queryParameters)
         .catchError((error, stack) {
       Logger.reportError(error, stack);

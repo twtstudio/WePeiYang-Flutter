@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 class PrivacyDialog extends Dialog {
   final ValueNotifier check;
   final String result;
+
   PrivacyDialog(this.result, {this.check});
 
   @override

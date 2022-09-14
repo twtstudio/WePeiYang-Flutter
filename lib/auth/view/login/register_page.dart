@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show FilteringTextInputFormatter, LengthLimitingTextInputFormatter, rootBundle;
+import 'package:flutter/services.dart'
+    show
+        FilteringTextInputFormatter,
+        LengthLimitingTextInputFormatter,
+        rootBundle;
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -9,7 +13,6 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -22,6 +25,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   String idNum = "";
   String email = "";
   String md = "";
+
   _toNextPage() async {
     if (userNum == "")
       ToastProvider.error("学号不能为空");
@@ -57,6 +61,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
   final FocusNode _nicknameFocus = FocusNode();
   final FocusNode _idNumFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -372,10 +377,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
           },
           onFailure: (e) => ToastProvider.error(e.error.toString()));
     }
-
   }
 
   final FocusNode _phoneFocus = FocusNode();
+
   //6个密码框
   final TextEditingController codeController1 = TextEditingController();
   final TextEditingController codeController2 = TextEditingController();
@@ -471,97 +476,115 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       SizedBox(height: 20),
                       Stack(
                         children: [
-                          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 0 ? code.substring(0, 1) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 1 ? code.substring(1, 2) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 2 ? code.substring(2, 3) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 3 ? code.substring(3, 4) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 4 ? code.substring(4, 5) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                            Container(
-                              alignment: AlignmentDirectional.center,
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(255, 255, 255, 0.4),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                code.length > 5 ? code.substring(5, 6) : "",
-                                style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
-                              ),
-                            ),
-                          ]),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 0 ? code.substring(0, 1) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 1 ? code.substring(1, 2) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 2 ? code.substring(2, 3) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 3 ? code.substring(3, 4) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 4 ? code.substring(4, 5) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: AlignmentDirectional.center,
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    code.length > 5 ? code.substring(5, 6) : "",
+                                    style: TextUtil
+                                        .base.normal.NotoSansSC.blue2C
+                                        .sp(16),
+                                  ),
+                                ),
+                              ]),
                           TextField(
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(6),
                               FilteringTextInputFormatter.digitsOnly,
                             ],
-                            style: TextUtil.base.normal.w400.sp(16).NotoSansSC.transParent,
+                            style: TextUtil.base.normal.w400
+                                .sp(16)
+                                .NotoSansSC
+                                .transParent,
                             showCursor: false,
                             decoration: InputDecoration(
                               border: InputBorder.none,
-                              contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
                             ),
                             onChanged: (input) => setState(() => code = input),
                           ),
@@ -669,6 +692,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
   String password2 = "";
   var checkNotifier = ValueNotifier<bool>(false);
   String md = '';
+
   _submit() async {
     if (password1 == "")
       ToastProvider.error("请输入密码");
@@ -679,22 +703,17 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     else if (!checkNotifier.value)
       ToastProvider.error("请同意用户协议与隐私政策并继续");
     else {
-      AuthService.register(
-          widget.userNum,
-          widget.nickname,
-          widget.phone,
-          widget.code,
-          password1,
-          widget.email,
-          widget.idNum,
+      AuthService.register(widget.userNum, widget.nickname, widget.phone,
+          widget.code, password1, widget.email, widget.idNum,
           onSuccess: () {
-            FeedbackService.getTokenByPw(
-                widget.userNum, password1, onSuccess: () {
-              FeedbackService.changeNickname(
-                  nickName: widget.nickname,
-                  onSuccess: () {},
-                  onFailure: (e) => ToastProvider.error(e.error.toString()));
-            },
+            FeedbackService.getTokenByPw(widget.userNum, password1,
+                onSuccess: () {
+                  FeedbackService.changeNickname(
+                      nickName: widget.nickname,
+                      onSuccess: () {},
+                      onFailure: (e) =>
+                          ToastProvider.error(e.error.toString()));
+                },
                 onFailure: (e) => ToastProvider.error(e.error.toString()));
             ToastProvider.success("注册成功");
             Navigator.pushNamedAndRemoveUntil(
@@ -706,9 +725,11 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
 
   final FocusNode _pw1Focus = FocusNode();
   final FocusNode _pw2Focus = FocusNode();
+
   @override
   void initState() {
     super.initState();
+
     ///隐私政策markdown加载
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       rootBundle.loadString('privacy/privacy_content.md').then((str) {
@@ -718,9 +739,9 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
-
     double width = WePeiYangApp.screenWidth;
 
     return Scaffold(
@@ -794,7 +815,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               hintText: "请输入密码",
                               hintStyle: TextUtil.base.normal.sp(14).w400.white,
                               isCollapsed: true,
-                              contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
                             ),
                             onChanged: (input) =>
                                 setState(() => password1 = input),
@@ -824,33 +846,34 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                           ),
                           child: TextField(
                             style: TextUtil.base.normal.w400
-                              .sp(14)
-                              .NotoSansSC
-                              .white,
+                                .sp(14)
+                                .NotoSansSC
+                                .white,
                             cursorColor: Colors.white,
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: _pw2Focus,
                             obscureText: true,
                             decoration: InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                    width: 1.0,
-                                  ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
                                 ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                    width: 1.0,
-                                  ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
                                 ),
-                                hintText: '请再次输入您的密码',
-                                hintStyle: TextUtil.base.normal.sp(14).w400.white,
-                                isCollapsed: true,
-                                contentPadding:
-                                    const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                             ),
-                            onChanged: (input) => setState(() => password2 = input),
+                              ),
+                              hintText: '请再次输入您的密码',
+                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) =>
+                                setState(() => password2 = input),
                           ),
                         ),
                       ],
@@ -869,14 +892,14 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                 .blue2C)),
                         style: ButtonStyle(
                           overlayColor:
-                          MaterialStateProperty.resolveWith<Color>(
+                              MaterialStateProperty.resolveWith<Color>(
                                   (states) {
-                                if (states.contains(MaterialState.pressed))
-                                  return Color.fromRGBO(255, 255, 255, 0.1);
-                                return Color.fromRGBO(255, 255, 255, 1);
-                              }),
+                            if (states.contains(MaterialState.pressed))
+                              return Color.fromRGBO(255, 255, 255, 0.1);
+                            return Color.fromRGBO(255, 255, 255, 1);
+                          }),
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                              MaterialStateProperty.all(Colors.white),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),
@@ -893,7 +916,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             return Checkbox(
                               value: value,
                               materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                                  MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
                               activeColor: Color.fromARGB(255, 44, 126, 223),
                               onChanged: (_) {
@@ -904,8 +927,9 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                         ),
                         Text.rich(TextSpan(
                             text: "我已阅读并同意",
-                            style: TextUtil.base.normal.NotoSansSC.w400.sp(10).black2A
-                        )),
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(10)
+                                .black2A)),
                         GestureDetector(
                           onTap: () => showDialog(
                               context: context,
@@ -914,23 +938,26 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                   UserAgreementDialog(check: checkNotifier)),
                           child: Text.rich(TextSpan(
                               text: "《用户协议》",
-                              style: TextUtil.base.normal.NotoSansSC.w400.sp(10).underLine
-                          )),
+                              style: TextUtil.base.normal.NotoSansSC.w400
+                                  .sp(10)
+                                  .underLine)),
                         ),
                         Text.rich(TextSpan(
                             text: "与",
-                            style: TextUtil.base.normal.NotoSansSC.w400.sp(10).black2A
-                        )),
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(10)
+                                .black2A)),
                         GestureDetector(
                           onTap: () => showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
-                                  PrivacyDialog(md,check: checkNotifier)),
+                                  PrivacyDialog(md, check: checkNotifier)),
                           child: Text.rich(TextSpan(
                               text: "《隐私政策》",
-                              style: TextUtil.base.normal.NotoSansSC.w400.sp(10).underLine
-                          )),
+                              style: TextUtil.base.normal.NotoSansSC.w400
+                                  .sp(10)
+                                  .underLine)),
                         ),
                       ],
                     ),
