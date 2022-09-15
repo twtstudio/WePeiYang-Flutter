@@ -48,10 +48,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   /// 50.h
   double get tabBarHeight => 46.h;
 
-  TabController _tc;
+  FbDepartmentsProvider _departmentsProvider;
 
   initPage() {
-    context.read<LakeModel>().checkTokenAndGetTabList(success: () {
+    context.read<LakeModel>().checkTokenAndGetTabList(_departmentsProvider,
+        success: () {
       context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
         ToastProvider.error(e.error.toString());
       });
@@ -69,6 +70,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   // firstInLake();
     // });
+    _departmentsProvider =
+        Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().getClipboardWeKoContents(context);
     initPage();
     super.initState();
@@ -80,22 +83,32 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (context
             .read<LakeModel>()
-            .lakeAreas[context.read<LakeModel>().tabList[_tc.index].id]
+            .lakeAreas[context
+                .read<LakeModel>()
+                .tabList[context.read<LakeModel>().tabController.index]
+                .id]
             .controller
             .offset >
         1500) {
-      context.read<LakeModel>().lakeAreas[_tc.index].controller.jumpTo(1500);
+      context
+          .read<LakeModel>()
+          .lakeAreas[context.read<LakeModel>().tabController.index]
+          .controller
+          .jumpTo(1500);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context.read<LakeModel>().tabList[_tc.index].id]
+        .lakeAreas[context
+            .read<LakeModel>()
+            .tabList[context.read<LakeModel>().tabController.index]
+            .id]
         .controller
         .animateTo(-85,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
   _onFeedbackTapped() {
-    if (!_tc.indexIsChanging) {
+    if (!context.read<LakeModel>().tabController.indexIsChanging) {
       if (canSee) {
         context.read<LakeModel>().onFeedbackOpen();
         fbKey.currentState.tap();
@@ -122,8 +135,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     //控制动画速率
     timeDilation = 0.9;
     if (initializeRefresh == true) {
-      context.read<LakeModel>().lakeAreas[_tc.index].controller.animateTo(-85,
-          duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
+      context
+          .read<LakeModel>()
+          .lakeAreas[context.read<LakeModel>().tabController.index]
+          .controller
+          .animateTo(-85,
+              duration: Duration(milliseconds: 1000),
+              curve: Curves.easeOutCirc);
       initializeRefresh = false;
     }
 
@@ -199,7 +217,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           labelPadding: EdgeInsets.only(bottom: 3),
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
-                          controller: _tc,
+                          controller: context.read<LakeModel>().tabController,
                           labelColor: ColorUtil.blue2CColor,
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
@@ -222,8 +240,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         );
                       })
                     : InkWell(
-                        onTap: () =>
-                            context.read<LakeModel>().checkTokenAndGetTabList(),
+                        onTap: () => context
+                            .read<LakeModel>()
+                            .checkTokenAndGetTabList(_departmentsProvider),
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
@@ -246,26 +265,42 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 // 因为上面的空要藏住搜索框
                 top: MediaQuery.of(context).padding.top < searchBarHeight
                     ? searchBarHeight + tabBarHeight
-                    : MediaQuery.of(context).padding.top + searchBarHeight),
+                    : MediaQuery.of(context).padding.top + searchBarHeight,
+                bottom: 70.h - 18),
             child: Selector<LakeModel, List<WPYTab>>(
                 selector: (BuildContext context, LakeModel lakeModel) {
               return lakeModel.tabList;
             }, builder: (_, tabs, __) {
               if (!context.read<LakeModel>().tabControllerLoaded) {
-                _tc = TabController(length: tabs.length, vsync: this)
-                  ..addListener(() {
-                    if (_tc.index.toDouble() == _tc.animation.value) {
-                      WPYTab tab = context.read<LakeModel>().lakeAreas[1].tab;
-                      if (_tc.index != tabList.indexOf(tab) && canSee)
-                        _onFeedbackTapped();
-                      context.read<LakeModel>().currentTab = _tc.index;
-                    }
-                  });
+                context.read<LakeModel>().tabController =
+                    TabController(length: tabs.length, vsync: this)
+                      ..addListener(() {
+                        if (context
+                                .read<LakeModel>()
+                                .tabController
+                                .index
+                                .toDouble() ==
+                            context
+                                .read<LakeModel>()
+                                .tabController
+                                .animation
+                                .value) {
+                          WPYTab tab =
+                              context.read<LakeModel>().lakeAreas[1].tab;
+                          if (context.read<LakeModel>().tabController.index !=
+                                  tabList.indexOf(tab) &&
+                              canSee) _onFeedbackTapped();
+                          context.read<LakeModel>().currentTab =
+                              context.read<LakeModel>().tabController.index;
+                          context.read<LakeModel>().onFeedbackOpen();
+                          print("openopen");
+                        }
+                      });
               }
               int cacheNum = 0;
               return ExtendedTabBarView(
                   cacheExtent: cacheNum,
-                  controller: _tc,
+                  controller: context.read<LakeModel>().tabController,
                   children: List<Widget>.generate(
                       tabs == null ? 1 : tabs.length,
                       (i) => NSubPage(
@@ -276,9 +311,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           Padding(
             padding: EdgeInsets.only(
                 // 因为上面的空要藏住搜索框
-                top: MediaQuery.of(context).padding.top < searchBarHeight
-                    ? searchBarHeight + tabBarHeight
-                    : MediaQuery.of(context).padding.top + searchBarHeight),
+                top: (MediaQuery.of(context).padding.top < searchBarHeight
+                        ? searchBarHeight + tabBarHeight
+                        : MediaQuery.of(context).padding.top +
+                            searchBarHeight) +
+                    tabBarHeight -
+                    4),
             child: Visibility(
               child: InkWell(
                   onTap: () {

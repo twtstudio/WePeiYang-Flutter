@@ -32,7 +32,6 @@ class NSubPage extends StatefulWidget {
 
 class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   int index;
-  FbDepartmentsProvider _departmentsProvider;
   double _previousOffset = 0;
 
   NSubPageState(this.index);
@@ -59,7 +58,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           .lakeAreas[index]
           .refreshController
           .refreshToIdle();
-    if (scrollInfo.metrics.pixels == 0)
+    if (scrollInfo.metrics.pixels <
+        12.h + FeedbackHomePageState().searchBarHeight)
       context.read<LakeModel>().onFeedbackOpen();
     if (scrollInfo.metrics.axisDirection == AxisDirection.down &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
@@ -163,14 +163,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     if (index == 0) {
       context.read<FbHotTagsProvider>().initHotTags();
     }
-    _departmentsProvider =
-        Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<FestivalProvider>().initFestivalList();
     context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
-    context.read<LakeModel>().checkTokenAndGetPostList(
-        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 1,
+    context.read<LakeModel>().initPostList(
+        index,
         success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });

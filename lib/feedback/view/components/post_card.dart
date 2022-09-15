@@ -82,9 +82,7 @@ class _PostCardState extends State<PostCard> {
     if (post.imageUrls.isNotEmpty) if (post.imageUrls != null &&
         post.imageUrls.length == 1) {
       Image image = new Image.network(
-        widget.type == PostCardType.detail
-            ? picBaseUrl + 'origin/' + post.imageUrls[0]
-            : picBaseUrl + 'thumb/' + post.imageUrls[0],
+        picBaseUrl + 'origin/' + post.imageUrls[0],
         width: double.infinity,
         //fit: BoxFit.none,
         fit: (widget.type == PostCardType.detail)
@@ -1066,8 +1064,10 @@ class _PostCardSimpleState extends State<PostCardSimple> {
           padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
           decoration: BoxDecoration(
               border: Border(
-                  bottom: BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  bottom:
+                      BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             avatarAndSolve,
             SizedBox(height: 6.h),
             eTagAndTitle,
@@ -1082,10 +1082,10 @@ class _PostCardSimpleState extends State<PostCardSimple> {
   Widget get singleImage {
     Completer<ui.Image> completer = new Completer<ui.Image>();
     Image image = new Image.network(
-      picBaseUrl + 'thumb/' + post.imageUrls[0],
+      picBaseUrl + 'origin/' + post.imageUrls[0],
       width: double.infinity,
       fit: BoxFit.fitWidth,
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
     );
     image.image
         .resolve(new ImageConfiguration())

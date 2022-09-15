@@ -102,7 +102,7 @@ class LakeModel extends ChangeNotifier {
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
   bool barExtended = true;
   double opacity = 0;
-  // TabController tabController;
+  TabController tabController;
   int sortSeq = 1;
 
   Future<void> initTabList() async {
@@ -197,29 +197,15 @@ class LakeModel extends ChangeNotifier {
     );
   }
 
-  checkTokenAndGetTabList({OnSuccess success, OnFailure failure}) async {
+  checkTokenAndGetTabList(FbDepartmentsProvider provider, {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
+        provider.initDepartments();
         initTabList();
         success?.call();
       },
       onFailure: (e) {
         ToastProvider.error('获取分区失败');
-        failure?.call(e);
-        notifyListeners();
-      },
-    );
-  }
-
-  checkTokenAndGetPostList(FbDepartmentsProvider provider, int index, int mode,
-      {OnSuccess success, OnFailure failure}) async {
-    await FeedbackService.getToken(
-      onResult: (token) {
-        provider.initDepartments();
-        initPostList(index);
-      },
-      onFailure: (e) {
-        lakeAreas[index].status = LakePageStatus.error;
         failure?.call(e);
         notifyListeners();
       },
