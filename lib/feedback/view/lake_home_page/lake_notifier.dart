@@ -102,7 +102,7 @@ class LakeModel extends ChangeNotifier {
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
   bool barExtended = true;
   double opacity = 0;
-  TabController tabController;
+  // TabController tabController;
   int sortSeq = 1;
 
   Future<void> initTabList() async {

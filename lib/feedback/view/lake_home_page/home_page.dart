@@ -48,6 +48,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   /// 50.h
   double get tabBarHeight => 46.h;
 
+  TabController _tc;
+
   initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(success: () {
       context.read<FbHotTagsProvider>().initRecTag(failure: (e) {
@@ -78,32 +80,22 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   void listToTop() {
     if (context
             .read<LakeModel>()
-            .lakeAreas[context
-                .read<LakeModel>()
-                .tabList[context.read<LakeModel>().tabController.index]
-                .id]
+            .lakeAreas[context.read<LakeModel>().tabList[_tc.index].id]
             .controller
             .offset >
         1500) {
-      context
-          .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]
-          .controller
-          .jumpTo(1500);
+      context.read<LakeModel>().lakeAreas[_tc.index].controller.jumpTo(1500);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context
-            .read<LakeModel>()
-            .tabList[context.read<LakeModel>().tabController.index]
-            .id]
+        .lakeAreas[context.read<LakeModel>().tabList[_tc.index].id]
         .controller
         .animateTo(-85,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
   _onFeedbackTapped() {
-    if (!context.read<LakeModel>().tabController.indexIsChanging) {
+    if (!_tc.indexIsChanging) {
       if (canSee) {
         context.read<LakeModel>().onFeedbackOpen();
         fbKey.currentState.tap();
@@ -123,7 +115,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var tc = context.read<LakeModel>().tabController;
 
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
@@ -131,7 +122,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     //控制动画速率
     timeDilation = 0.9;
     if (initializeRefresh == true) {
-      context.read<LakeModel>().lakeAreas[tc.index].controller.animateTo(-85,
+      context.read<LakeModel>().lakeAreas[_tc.index].controller.animateTo(-85,
           duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
       initializeRefresh = false;
     }
@@ -208,7 +199,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           labelPadding: EdgeInsets.only(bottom: 3),
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
-                          controller: tc,
+                          controller: _tc,
                           labelColor: ColorUtil.blue2CColor,
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
@@ -261,20 +252,20 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               return lakeModel.tabList;
             }, builder: (_, tabs, __) {
               if (!context.read<LakeModel>().tabControllerLoaded) {
-                tc = TabController(length: tabs.length, vsync: this)
+                _tc = TabController(length: tabs.length, vsync: this)
                   ..addListener(() {
-                    if (tc.index.toDouble() == tc.animation.value) {
+                    if (_tc.index.toDouble() == _tc.animation.value) {
                       WPYTab tab = context.read<LakeModel>().lakeAreas[1].tab;
-                      if (tc.index != tabList.indexOf(tab) && canSee)
+                      if (_tc.index != tabList.indexOf(tab) && canSee)
                         _onFeedbackTapped();
-                      context.read<LakeModel>().currentTab = tc.index;
+                      context.read<LakeModel>().currentTab = _tc.index;
                     }
                   });
               }
               int cacheNum = 0;
               return ExtendedTabBarView(
                   cacheExtent: cacheNum,
-                  controller: tc,
+                  controller: _tc,
                   children: List<Widget>.generate(
                       tabs == null ? 1 : tabs.length,
                       (i) => NSubPage(

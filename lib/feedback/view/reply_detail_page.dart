@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -12,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
@@ -422,12 +423,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         ),
       ),
       elevation: 0,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, true);
+        context.read<NewFloorProvider>().clearAndClose();
+        Navigator.pop(context);
         return true;
       },
       child: GestureDetector(
@@ -438,12 +440,10 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               child: body,
             )),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
-          setState(() {
-            if (details.delta.dx > 20) {
-              Navigator.pop(context, true);
-              return true;
-            }
-          });
+          if (details.delta.dx > 20) {
+            context.read<NewFloorProvider>().clearAndClose();
+            Navigator.pop(context);
+          }
         },
       ),
     );

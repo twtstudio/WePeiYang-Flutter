@@ -753,12 +753,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           body: body,
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
-          setState(() {
-            if (details.delta.dx > 20) {
-              Navigator.pop(context, post);
-              return true;
-            }
-          });
+          if (details.delta.dx > 20) {
+            Navigator.pop(context, post);
+          }
         },
       ),
     );

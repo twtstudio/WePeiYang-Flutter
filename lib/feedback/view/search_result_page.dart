@@ -253,12 +253,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
               child: body,
             )),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
-          setState(() {
-            if (details.delta.dx > 20) {
-              Navigator.pop(context, true);
-              return true;
-            }
-          });
+          if (details.delta.dx > 20) {
+            Navigator.pop(context, true);
+          }
         },
       ),
     );
