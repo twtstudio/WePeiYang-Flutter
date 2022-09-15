@@ -20,7 +20,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
@@ -28,8 +27,6 @@ import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
-
-const _APRIL_FOOL_LABEL = '愚人节模式？';
 
 class WPYPage extends StatefulWidget {
   @override
@@ -292,17 +289,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
           ReportRouter.main),
     ];
-    if (DateTime.now().month == 4 && DateTime.now().day == 1) {
-      cards.insert(
-          0,
-          CardBean(
-              Image.asset(
-                'assets/images/lake_butt_icons/joker_stamp.png',
-                width: 30,
-              ),
-              _APRIL_FOOL_LABEL,
-              'fool'));
-    }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (CommonPreferences.firstPrivacy.value == true) {
@@ -367,8 +353,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                         // 在0.7停止同理
                         stops: [0, 0.53, 0.7])
                     : LinearGradient(colors: [Colors.white, Colors.white]))),
-        if (CommonPreferences.isSkinUsed.value)
-          Image.network(CommonPreferences.skinMain.value, fit: BoxFit.fitWidth),
         SafeArea(
           child: Stack(
             children: [
@@ -517,29 +501,8 @@ class SliverCardsWidget extends StatelessWidget {
           );
         } else {
           return GestureDetector(
-            onTap: () async {
-              if (cards[i].label == _APRIL_FOOL_LABEL) {
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (BuildContext context) {
-                      return AprilFoolDialog(
-                        content: '要体验愚人节模式吗？',
-                        confirmText: '好耶',
-                        cancelText: '坏耶',
-                        confirmFun: () {
-                          CommonPreferences.isAprilFool.value = true;
-                          CommonPreferences.isAprilFoolLike.value = true;
-                          CommonPreferences.isAprilFoolGPA.value = true;
-                          CommonPreferences.isAprilFoolClass.value = true;
-                          CommonPreferences.isAprilFoolHead.value = true;
-                          Navigator.popAndPushNamed(context, HomeRouter.home);
-                        },
-                      );
-                    });
-              } else {
-                return Navigator.pushNamed(context, cards[i].route);
-              }
+            onTap: () {
+              Navigator.pushNamed(context, cards[i].route);
             },
             child: generateCard(context, cards[i]),
           );

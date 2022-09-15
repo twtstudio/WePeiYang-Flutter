@@ -1,5 +1,4 @@
 ﻿// @dart = 2.12
-
 import 'package:flutter/foundation.dart';
 
 /// 动态打包配置

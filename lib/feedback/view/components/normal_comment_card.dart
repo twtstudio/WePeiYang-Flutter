@@ -495,8 +495,8 @@ class _NCommentCardState extends State<NCommentCard>
 
     var mainBody = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
-        width: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
-        height: DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 34,
+        width: 34,
+        height: 34,
         child: ProfileImageWithDetailedPopup(
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
@@ -548,9 +548,7 @@ class _NCommentCardState extends State<NCommentCard>
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(16.w, 0, 14.w, 12.h),
-                    color: CommonPreferences.isSkinUsed.value
-                        ? Color(CommonPreferences.skinColorE.value)
-                        : Colors.transparent,
+                    color: Colors.transparent,
                     child: mainBody,
                   ),
                   if (!widget.isSubFloor &&
@@ -574,21 +572,18 @@ class _NCommentCardState extends State<NCommentCard>
                                 },
                                 child: Row(
                                   children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.fromLTRB(58.w, 0, 0, 0),
-                                      // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
-                                      child: Text(
-                                          widget.comment.subFloorCnt > 2
-                                              ? '查看全部 ' +
-                                                  widget.comment.subFloorCnt
-                                                      .toString() +
-                                                  ' 条回复 >'
-                                              : '查看回复详情 >',
-                                          style: TextUtil.base.NotoSansSC.w400
-                                              .sp(12)
-                                              .blue2C),
-                                    ),
+                                    SizedBox(width: 58.w),
+                                    // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
+                                    Text(
+                                        widget.comment.subFloorCnt > 2
+                                            ? '查看全部 ' +
+                                                widget.comment.subFloorCnt
+                                                    .toString() +
+                                                ' 条回复 >'
+                                            : '查看回复详情 >',
+                                        style: TextUtil.base.NotoSansSC.w400
+                                            .sp(12)
+                                            .blue2C),
                                     Spacer()
                                   ],
                                 ),

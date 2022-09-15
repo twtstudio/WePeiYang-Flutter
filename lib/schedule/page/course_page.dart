@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -67,18 +66,8 @@ class _CoursePageState extends State<CoursePage> {
             children: [
               _TitleWidget(),
               WeekSelectWidget(),
-              Container(
-                decoration: CommonPreferences.isSkinUsed.value
-                    ? BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                NetworkImage(CommonPreferences.skinClass.value),
-                            fit: BoxFit.cover),
-                      )
-                    : BoxDecoration(),
-                child: Column(
-                  children: [CourseDetailWidget(), _HoursCounterWidget()],
-                ),
+              Column(
+                children: [CourseDetailWidget(), _HoursCounterWidget()],
               ),
             ],
           ),
@@ -112,25 +101,6 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          if (CommonPreferences.isAprilFoolClass.value &&
-              DateTime.now().day == 1 &&
-              DateTime.now().month == 4) {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AprilFoolDialog(
-                    content: "愚人节快乐呀！",
-                    confirmText: "返回真实课表",
-                    cancelText: "保留多色",
-                    confirmFun: () {
-                      CommonPreferences.isAprilFoolClass.value = false;
-                      Navigator.pop(context);
-                      Navigator.popAndPushNamed(context, HomeRouter.home);
-                    },
-                  );
-                });
-          }
           context.read<CourseProvider>().refreshCourse(
               hint: true,
               onFailure: (e) {

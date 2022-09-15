@@ -6,46 +6,21 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
+import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
-
 import '../../commons/util/text_util.dart';
 
-/// 这里讲一下gpa页面配色的颜色分配：（不包含首页的gpa曲线）
-///
-/// 首先，gpa配色[_gpaColors]来自[FavorColors.gpaColor]，配色名则由[FavorColors.gpaType]保存
-/// 每套配色均由四种颜色：[背景色]、[颜色一]、[颜色二]、[颜色三]组成（在List中顺序排列，具体名字我懒得取了）
-/// * 背景色：页面背景颜色、曲线上被选中的点的内圆
-///
-/// * 颜色一：AppBar图标、雷达图上的课程名、雷达图成绩区域外沿、曲线上未选中的点、[CourseListWidget]中的
-///          课程名、以及所有的数字（[CourseListWidget]中的[xx Credits]除外）
-///
-/// * 颜色二：[GPAStatsWidget]中的文字、'ORDERED BY'、[CourseListWidget]中的课程类别和小图标
-///
-/// * 颜色三：gpa曲线颜色、曲线上popup框颜色、[CourseListWidget]框颜色
-///
-/// * 注：雷达图的成绩区域填充色、放射线条、绩点区域颜色均固定，设计也没给55555
-
 class GPAPage extends StatefulWidget {
-  static List<Color> get skinList => [
-        Color(CommonPreferences.skinColorB.value),
-        Color(CommonPreferences.skinColorE.value),
-        Color(CommonPreferences.skinColorD.value),
-        Color(CommonPreferences.skinColorF.value),
-      ];
-  final List<Color> _gpaColors =
-      CommonPreferences.isSkinUsed.value ? skinList : FavorColors.gpaColor;
+  final List<Color> _gpaColors = GPAColor.blue;
 
   @override
   _GPAPageState createState() => _GPAPageState();
@@ -165,9 +140,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: gpaColors[0],
       elevation: 0,
-      brightness: FavorColors.gpaType.value == 'light'
-          ? Brightness.light
-          : Brightness.dark,
+      brightness: Brightness.dark,
       leading: leading,
       leadingWidth: 40.w,
       title: Text(
@@ -183,23 +156,6 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
             height: 28.h,
           ),
           onTap: () {
-            if (CommonPreferences.isAprilFoolGPA.value) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return AprilFoolDialog(
-                      content: "不满绩的你一样完美",
-                      confirmText: "返回真实绩点",
-                      cancelText: "保留满绩",
-                      confirmFun: () {
-                        CommonPreferences.isAprilFoolGPA.value = false;
-                        Navigator.pop(context);
-                        Navigator.popAndPushNamed(context, HomeRouter.home);
-                      },
-                    );
-                  });
-            }
             Provider.of<GPANotifier>(context, listen: false).refreshGPA(
               hint: true,
               onFailure: (e) {
@@ -317,9 +273,7 @@ class _RadarChartPainter extends CustomPainter {
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
   final Paint _creditPaint = Paint()
-    ..color = CommonPreferences.isSkinUsed.value
-        ? Color.fromRGBO(255, 251, 240, 0.111)
-        : Color.fromRGBO(178, 178, 158, 0.2)
+    ..color = Color.fromRGBO(178, 178, 158, 0.2)
     ..style = PaintingStyle.fill;
 
   _drawCredit(Canvas canvas, Size size) {
@@ -367,9 +321,7 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _linePaint = Paint()
-    ..color = CommonPreferences.isSkinUsed.value
-        ? Color.fromRGBO(255, 251, 240, 0.45)
-        : Color.fromRGBO(158, 158, 138, 0.45)
+    ..color = Color.fromRGBO(158, 158, 138, 0.45)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.5;
 
@@ -385,9 +337,7 @@ class _RadarChartPainter extends CustomPainter {
 
   _drawScoreOutLine(Canvas canvas) {
     final Paint _outLinePaint = Paint()
-      ..color = CommonPreferences.isSkinUsed.value
-          ? Color.fromRGBO(255, 251, 240, 0.9)
-          : gpaColors[1]
+      ..color = gpaColors[1]
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3.0
       ..strokeJoin = StrokeJoin.round;

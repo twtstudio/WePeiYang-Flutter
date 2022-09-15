@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -66,7 +65,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return MyColors.brightBlue;
+                  return Color.fromRGBO(103, 110, 150, 1.0);
                 return Color.fromRGBO(79, 88, 107, 1);
               }),
               backgroundColor:

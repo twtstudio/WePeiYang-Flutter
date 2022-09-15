@@ -3,15 +3,12 @@ import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/profile_dialog.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import '../../auth/auth_router.dart';
@@ -83,34 +80,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }, onFail: () {
       currentPage--;
       _refreshController.loadFailed();
-    });
-  }
-
-  _deletePostOnLongPressed(int index) {
-    showDialog<bool>(
-      context: context,
-      builder: (context) => ProfileDialog(
-        post: _postList[index],
-        onConfirm: () => Navigator.pop(context, true),
-        onCancel: () => Navigator.pop(context, false),
-      ),
-    ).then((confirm) {
-      if (confirm) {
-        FeedbackService.deletePost(
-          id: _postList[index].id,
-          onSuccess: () {
-            _postList.removeAt(index);
-            ToastProvider.success(S.current.feedback_delete_success);
-            context.read<MessageProvider>().refreshFeedbackCount();
-            setState(() {
-              _refreshController.requestRefresh();
-            });
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          },
-        );
-      }
     });
   }
 
@@ -208,10 +177,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       InkWell(
                         onTap: () {
                           return showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (BuildContext context) =>
-                                ChangeNicknameDialog());
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) =>
+                                  ChangeNicknameDialog());
                         },
                         child: Padding(
                           padding: EdgeInsets.all(4.w),
@@ -326,15 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Navigator.pushNamed(context, AuthRouter.avatarCrop)
                   .then((_) => _refreshController.requestRefresh());
             },
-            child: Container(
-              decoration: CommonPreferences.isAprilFoolHead.value
-                  ? BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/lake_butt_icons/jokers.png'),
-                          fit: BoxFit.contain),
-                    )
-                  : BoxDecoration(),
+            child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.w),
               child: Hero(
                 tag: 'avatar',

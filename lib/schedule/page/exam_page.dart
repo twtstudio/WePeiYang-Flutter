@@ -8,11 +8,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/april_fool_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -28,11 +23,7 @@ class _ExamPageState extends State<ExamPage> {
         .refreshExam();
   }
 
-  get _color {
-    return CommonPreferences.isSkinUsed.value
-        ? Color(CommonPreferences.skinColorB.value)
-        : FavorColors.scheduleTitleColor;
-  }
+  get _color => Color.fromRGBO(98, 103, 123, 1);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +45,7 @@ class _ExamPageState extends State<ExamPage> {
                       barrierDismissible: true,
                       builder: (BuildContext context) => TjuRebindDialog(
                           reason:
-                          e is WpyDioError ? e.error.toString() : null));
+                              e is WpyDioError ? e.error.toString() : null));
                 });
           },
         ),
@@ -107,121 +98,106 @@ class _ExamPageState extends State<ExamPage> {
       ),
     );
   }
-}
 
-Widget examCard(BuildContext context, Exam exam, bool finished) {
-  int code = exam.name.hashCode + DateTime.now().day;
+  List<Color> get _scheduleColor => [
+    Color.fromRGBO(114, 117, 136, 1), // #727588
+    Color.fromRGBO(143, 146, 165, 1), // #8F92A5
+    Color.fromRGBO(122, 119, 138, 1), // #7A778A
+    Color.fromRGBO(142, 122, 150, 1), // #8E7A96
+    Color.fromRGBO(130, 134, 161, 1), // #8286A1
+  ];
 
-  ///愚人节配色
-  var unfinishedColor = CommonPreferences.isAprilFool.value
-      ? ColorUtil.aprilFoolColor[code % ColorUtil.aprilFoolColor.length]
-      : CommonPreferences.isSkinUsed.value
-          ? FavorColors.homeSchedule[code % FavorColors.homeSchedule.length]
-          : FavorColors.scheduleColor[code % FavorColors.scheduleColor.length];
-  var name = exam.name;
-  if (name.length >= 10) name = name.substring(0, 10) + '...';
-  String remain = '';
-  if (finished) {
-    remain = '';
-  } else if (exam.date == '时间未安排') {
-    remain = 'Unknown';
-  } else {
-    var now = DateTime.now();
-    var realNow = DateTime(now.year, now.month, now.day);
-    var target = DateTime.parse(exam.date);
-    var diff = target.difference(realNow).inDays;
-    remain = (diff == 0) ? 'today' : '${diff}days';
-  }
-  var seat = exam.seat;
-  if (seat != '地点未安排') seat = '座位' + seat;
-  return Padding(
-    padding: EdgeInsets.fromLTRB(0, 4.h, 14.w, 4.h),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(10.r),
-      child: Container(
-        decoration: BoxDecoration(
-          color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
-        ),
-        child: InkWell(
-          onTap: () {
-            if (CommonPreferences.isAprilFool.value) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AprilFoolDialog(
-                    content: '${exam.name}, \n第二天将自动回到正常考表',
-                    confirmText: "返回真实考表",
-                    cancelText: "这样也挺好",
-                    confirmFun: () {
-                      CommonPreferences.isAprilFool.value = false;
-                      Navigator.popAndPushNamed(context, HomeRouter.home);
-                    },
-                  );
-                },
-              );
-            }
-          },
-          borderRadius: BorderRadius.circular(10.r),
-          splashFactory: InkRipple.splashFactory,
-          child: Stack(
-            children: [
-              DefaultTextStyle(
-                style: TextStyle(
-                    color: finished
-                        ? Color.fromRGBO(205, 206, 210, 1)
-                        : Colors.white),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(name, style: TextUtil.base.sp(20)),
-                      SizedBox(height: 10.h),
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(exam.arrange,
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w500)),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Icon(Icons.location_on_outlined,
-                              size: 17.r,
-                              color: finished
-                                  ? Color.fromRGBO(205, 206, 210, 1)
-                                  : Colors.white),
-                          SizedBox(width: 3.w),
-                          Text('${exam.location}-$seat',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.w300.sp(14)),
-                          Spacer(),
-                          Text(exam.date,
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500)),
-                        ],
-                      ),
-                    ],
+  Widget examCard(BuildContext context, Exam exam, bool finished) {
+    int code = exam.name.hashCode + DateTime.now().day;
+
+    var unfinishedColor = _scheduleColor[code % _scheduleColor.length];
+    var name = exam.name;
+    if (name.length >= 10) name = name.substring(0, 10) + '...';
+    String remain = '';
+    if (finished) {
+      remain = '';
+    } else if (exam.date == '时间未安排') {
+      remain = 'Unknown';
+    } else {
+      var now = DateTime.now();
+      var realNow = DateTime(now.year, now.month, now.day);
+      var target = DateTime.parse(exam.date);
+      var diff = target.difference(realNow).inDays;
+      remain = (diff == 0) ? 'today' : '${diff}days';
+    }
+    var seat = exam.seat;
+    if (seat != '地点未安排') seat = '座位' + seat;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(0, 4.h, 14.w, 4.h),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.r),
+        child: Container(
+          decoration: BoxDecoration(
+            color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
+          ),
+          child: InkWell(
+            onTap: () {},
+            borderRadius: BorderRadius.circular(10.r),
+            splashFactory: InkRipple.splashFactory,
+            child: Stack(
+              children: [
+                DefaultTextStyle(
+                  style: TextStyle(
+                      color: finished
+                          ? Color.fromRGBO(205, 206, 210, 1)
+                          : Colors.white),
+                  child: Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name, style: TextUtil.base.sp(20)),
+                        SizedBox(height: 10.h),
+                        Row(
+                          children: [
+                            Spacer(),
+                            Text(exam.arrange,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Icon(Icons.location_on_outlined,
+                                size: 17.r,
+                                color: finished
+                                    ? Color.fromRGBO(205, 206, 210, 1)
+                                    : Colors.white),
+                            SizedBox(width: 3.w),
+                            Text('${exam.location}-$seat',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextUtil.base.w300.sp(14)),
+                            Spacer(),
+                            Text(exam.date,
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                right: 0,
-                bottom: 1.h,
-                child: Text(remain,
-                    style: TextUtil.base.Fourche.bold.italic
-                        .h(0)
-                        .sp(55)
-                        .customColor(Colors.white38)),
-              ),
-            ],
+                Positioned(
+                  right: 0,
+                  bottom: 1.h,
+                  child: Text(remain,
+                      style: TextUtil.base.Fourche.bold.italic
+                          .h(0)
+                          .sp(55)
+                          .customColor(Colors.white38)),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

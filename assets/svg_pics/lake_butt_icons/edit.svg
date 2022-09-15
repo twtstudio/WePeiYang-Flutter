@@ -1,2 +1,9 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1653830793206" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5684" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><defs><style type="text/css">@font-face { font-family: "feedback-iconfont"; src: url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.woff2?t=1630033759944") format("woff2"), url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.woff?t=1630033759944") format("woff"), url("//at.alicdn.com/t/font_1031158_u69w8yhxdu.ttf?t=1630033759944") format("truetype"); }
-</style></defs><path d="M513 956.9C266.8 956.9 67.1 757.2 67.1 511 67.1 264.7 266.8 65.1 513 65.1S958.9 264.7 958.9 511c0 246.2-199.6 445.9-445.9 445.9zM282.5 757.7l136-53.2-84.1-84.1-51.9 137.3z m72.9-158.3l84.1 84.1 273.3-273.2-84.1-84.1-273.3 273.2z m346.8-346.8l-52.6 52.6 84.1 84.1 52.6-52.6-84.1-84.1z" fill="" p-id="5685"></path></svg>
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+    "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg t="1653830793206" class="icon" viewBox="0 0 1024 1024" version="1.1"
+    xmlns="http://www.w3.org/2000/svg" p-id="5684" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="200" height="200">
+    <path
+        d="M513 956.9C266.8 956.9 67.1 757.2 67.1 511 67.1 264.7 266.8 65.1 513 65.1S958.9 264.7 958.9 511c0 246.2-199.6 445.9-445.9 445.9zM282.5 757.7l136-53.2-84.1-84.1-51.9 137.3z m72.9-158.3l84.1 84.1 273.3-273.2-84.1-84.1-273.3 273.2z m346.8-346.8l-52.6 52.6 84.1 84.1 52.6-52.6-84.1-84.1z"
+        fill="" p-id="5685"></path>
+</svg>

@@ -15,7 +15,7 @@ class CommonPreferences {
   static final isLogin = PrefsBean<bool>('login');
   static final token = PrefsBean<String>('token');
   static final nickname = PrefsBean<String>('nickname', '未登录');
-  static final lakeNickname = PrefsBean<String>('lakeNickname', '');
+  static final lakeNickname = PrefsBean<String>('lakeNickname');
   static final userNumber = PrefsBean<String>('userNumber');
   static final phone = PrefsBean<String>('phone');
   static final email = PrefsBean<String>('email');
@@ -32,7 +32,6 @@ class CommonPreferences {
   static final floor = PrefsBean<String>('floor');
   static final room = PrefsBean<String>('room');
   static final bed = PrefsBean<String>('bed');
-  static final themeToken = PrefsBean<String>('themeToken');
 
   /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken');
@@ -51,28 +50,6 @@ class CommonPreferences {
   static final level = PrefsBean<int>('level');
   static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
   static final curLevelPoint = PrefsBean<int>('curLevelPoint');
-
-  /// 愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像，课表
-  static final isAprilFoolGen = PrefsBean<bool>('aprilFoolGen', true);
-  static final isAprilFool = PrefsBean<bool>('aprilFool', false);
-  static final isAprilFoolGPA = PrefsBean<bool>('aprilFoolGpa', false);
-  static final isAprilFoolHead = PrefsBean<bool>('aprilFoolHead', false);
-  static final isAprilFoolLike = PrefsBean<bool>('aprilFoolLike', false);
-  static final isAprilFoolClass = PrefsBean<bool>('aprilFoolClass', false);
-
-  /// 海棠节用->皮肤用
-  static final isSkinUsed = PrefsBean<bool>('skin', false);
-  static final isDarkMode = PrefsBean<bool>('isDarkMode', false);
-  static final skinProfile = PrefsBean<String>('skinProfile', '');
-  static final skinClass = PrefsBean<String>('skinClass', '');
-  static final skinMain = PrefsBean<String>('skinMain', '');
-  static final skinColorA = PrefsBean<int>('skinColorA', 1);
-  static final skinColorB = PrefsBean<int>('skinColorB', 1);
-  static final skinColorC = PrefsBean<int>('skinColorC', 1);
-  static final skinColorD = PrefsBean<int>('skinColorD', 1);
-  static final skinColorE = PrefsBean<int>('skinColorE', 1);
-  static final skinColorF = PrefsBean<int>('skinColorF', 1);
-  static final skinColorG = PrefsBean<int>('skinColorG', 1);
 
   /// 办公网
   static final gpaData = PrefsBean<String>('gpaData');
@@ -161,7 +138,6 @@ class CommonPreferences {
     floor.clear();
     room.clear();
     bed.clear();
-    themeToken.clear();
 
     /// 求实论坛相关
     lakeToken.clear();
@@ -180,20 +156,7 @@ class CommonPreferences {
     nextLevelPoint.clear();
     curLevelPoint.clear();
 
-    /// 皮肤
-    isSkinUsed.clear();
-    isDarkMode.clear();
-    skinProfile.clear();
-    skinClass.clear();
-    skinMain.clear();
-    skinColorA.clear();
-    skinColorB.clear();
-    skinColorC.clear();
-    skinColorD.clear();
-    skinColorE.clear();
-    skinColorF.clear();
-    skinColorG.clear();
-
+    /// 杂项
     lastCheckUpdateTime.clear();
     canPush.clear();
     pushCid.clear();

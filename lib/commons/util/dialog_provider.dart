@@ -45,46 +45,24 @@ class LakeDialogWidget extends Dialog {
           children: <Widget>[
             Container(
               padding: EdgeInsets.all(28.w),
-
-              ///节日用处理
-              decoration: DateTime.now().month == 4 && DateTime.now().day == 1
-                  ? ShapeDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/lake_butt_icons/mask_group.png'),
-                          fit: BoxFit.cover),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                    )
-                  : ShapeDecoration(
-                      color: Color(0xfff2f2f2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                    ),
+              decoration: BoxDecoration(
+                color: Color(0xfff2f2f2),
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(0),
-                    child: Row(
-                      children: [
-                        Text(title,
-                            style: titleTextStyle ??
-                                TextUtil.base.black2A.NotoSansSC.w500.normal
-                                    .sp(18)),
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      Text(title,
+                          style: titleTextStyle ??
+                              TextUtil.base.black2A.NotoSansSC.w500.normal
+                                  .sp(18)),
+                    ],
                   ),
                   Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 24),
                       child: content),
-                  this._buildBottomButtonGroup()
+                  _buildBottomButtonGroup()
                 ],
               ),
             )
@@ -120,14 +98,12 @@ class LakeDialogWidget extends Dialog {
       height: 44.w,
       width: 136.w,
       child: TextButton(
-        onPressed: this.cancelFun,
+        onPressed: cancelFun,
         child: Text(cancelText,
             style: cancelTextStyle ??
                 TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600),
         style: ButtonStyle(
-          elevation: DateTime.now().month == 4 && DateTime.now().day == 1
-              ? MaterialStateProperty.all(0)
-              : MaterialStateProperty.all(3),
+          elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);
@@ -180,9 +156,7 @@ class LakeDialogWidget extends Dialog {
                     TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
               ),
               style: ButtonStyle(
-                elevation: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? MaterialStateProperty.all(0)
-                    : MaterialStateProperty.all(3),
+                elevation: MaterialStateProperty.all(3),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))

@@ -14,15 +14,12 @@ import 'package:we_pei_yang_flutter/auth/view/login/login_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/register_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_done_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_pw_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/settings/color_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/language_setting_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/settings/theme_change_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
-
 import 'view/message/user_mails_page.dart';
 
 class AuthRouter {
@@ -48,13 +45,10 @@ class AuthRouter {
   static String avatarCrop = 'info/avatar_crop';
 
   /// 个人页 & 设置页
-  static String user = 'home/user';
   static String setting = 'setting/home';
   static String generalSetting = 'setting/general_setting';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
-  static String colorSetting = 'setting/color_setting';
-  static String themeSetting = 'setting/theme_setting';
 
   static String mailbox = "user/mailbox";
   static String aboutTwt = "user/about_twt";
@@ -91,8 +85,6 @@ class AuthRouter {
     generalSetting: (_) => GeneralSettingPage(),
     languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
-    themeSetting: (_) => ThemeChangePage(),
-    colorSetting: (_) => ColorSettingPage(),
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),
     debug: (_) => DebugPage(),

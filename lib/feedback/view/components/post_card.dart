@@ -8,7 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -81,7 +80,7 @@ class _PostCardState extends State<PostCard> {
     var longPicOutsideLook;
     if (post.imageUrls.isNotEmpty) if (post.imageUrls != null &&
         post.imageUrls.length == 1) {
-      Image image = new Image.network(
+      Image image = Image.network(
         picBaseUrl + 'origin/' + post.imageUrls[0],
         width: double.infinity,
         //fit: BoxFit.none,
@@ -93,9 +92,9 @@ class _PostCardState extends State<PostCard> {
             ? Alignment.topCenter
             : Alignment.center,
       );
-      Completer<ui.Image> completer = new Completer<ui.Image>();
+      Completer<ui.Image> completer = Completer<ui.Image>();
       image.image
-          .resolve(new ImageConfiguration())
+          .resolve(ImageConfiguration())
           .addListener(ImageStreamListener((ImageInfo info, bool _) {
         completer.complete(info.image);
       }));
@@ -178,7 +177,7 @@ class _PostCardState extends State<PostCard> {
         children: [image, Positioned(top: 4, left: 4, child: TextPod('长图'))],
       );
 
-      longPicOutsideLook = new FutureBuilder<ui.Image>(
+      longPicOutsideLook = FutureBuilder<ui.Image>(
         //initialData: ,
         future: completer.future,
         builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
@@ -200,7 +199,7 @@ class _PostCardState extends State<PostCard> {
 
       singlePictureLoader = ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(14)),
-        child: new FutureBuilder<ui.Image>(
+        child: FutureBuilder<ui.Image>(
           future: completer.future,
           builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
             if (snapshot.connectionState != ConnectionState.done)
@@ -230,21 +229,11 @@ class _PostCardState extends State<PostCard> {
       style: TextUtil.base.w400.NotoSansSC.sp(18).black00.bold,
     );
 
-    var tag = post.type != 1
-        ? post.tag != null
-            ? '${post.tag.name}'
-            : ''
-        : post.department != null
-            ? '${post.department.name}'
-            : '';
+    var tag =
+        post.type == 1 ? (post.department?.name ?? '') : (post.tag?.name ?? '');
 
-    var id = post.type != 1
-        ? post.tag != null && post.tag.id != null
-            ? post.tag.id
-            : -1
-        : post.department != null
-            ? post.department.id
-            : -1;
+    var id =
+        post.type == 1 ? (post.department?.id ?? -1) : (post.tag?.id ?? -1);
 
     var campus = post.campus > 0
         ? Row(
@@ -438,7 +427,8 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
             SizedBox(height: 6.w),
-            content, SizedBox(height: 2.w),
+            content,
+            SizedBox(height: 2.w),
           ],
         ),
       ),
@@ -453,8 +443,9 @@ class _PostCardState extends State<PostCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
-                children: rowList,
-                crossAxisAlignment: CrossAxisAlignment.start),
+              children: rowList,
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
           ],
         );
 
@@ -500,66 +491,61 @@ class _PostCardState extends State<PostCard> {
             isLike: post.isFav,
           );
 
+    /// [PostCardType.simple] 或 [PostCardType.detail]
+    var visitWidgetChildren = (widget.type == PostCardType.simple)
+        ? [
+            if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
+            SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
+                color: ColorUtil.mainColor, width: 14.6.w),
+            SizedBox(width: 2.w),
+            Text(
+              post.visitCount == null
+                  ? '0  '
+                  : post.visitCount < 1000
+                      ? post.visitCount.toString() +
+                          (post.visitCount < 100 ? '   ' : '  ')
+                      : post.visitCount < 10000
+                          ? (post.visitCount.toDouble() / 1000)
+                                  .toStringAsFixed(1)
+                                  .toString() +
+                              'k  '
+                          : (post.visitCount.toDouble() / 10000)
+                                  .toStringAsFixed(1)
+                                  .toString() +
+                              'w  ',
+              style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+            ),
+          ]
+        : [
+            if (tag != '')
+              TagShowWidget(
+                  tag,
+                  (WePeiYangApp.screenWidth - 24.w) / 2 -
+                      (post.campus > 0 ? 100.w : 60.w),
+                  post.type,
+                  id,
+                  0,
+                  post.type),
+            if (tag != '') SizedBox(width: 8),
+            TagShowWidget(
+                getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
+            if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
+            campus,
+            Spacer(),
+            Text(
+              post.visitCount.toString(),
+              style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
+            ),
+            Text(
+              '次浏览',
+              style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
+            ),
+          ];
+
     var visitWidget = Row(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        //这里的各种detail和simple的区分只是为了方便在调试帖子详情页面的时候让外面的页面不崩溃
-
-        if (tag != '' && widget.type == PostCardType.detail)
-          TagShowWidget(
-              tag,
-              widget.type == PostCardType.simple
-                  ? WePeiYangApp.screenWidth -
-                      (post.campus > 0 ? 50.w : 0) -
-                      (widget.post.imageUrls.isEmpty ? 140.w : 240.w)
-                  : (WePeiYangApp.screenWidth - 24.w) / 2 -
-                      (post.campus > 0 ? 100.w : 60.w),
-              post.type,
-              id,
-              0,
-              post.type),
-        if (tag != '' && widget.type == PostCardType.detail) SizedBox(width: 8),
-        if (widget.type == PostCardType.detail)
-          TagShowWidget(
-              getTypeName(widget.post.type), 100, 0, 0, widget.post.type, 0),
-        if (post.campus != 0 && post.campus != null) SizedBox(width: 8),
-        if (widget.type == PostCardType.detail) campus,
-        if (widget.type == PostCardType.detail) Spacer(),
-
-        if (widget.type == PostCardType.simple)
-          SvgPicture.asset("assets/svg_pics/lake_butt_icons/big_eye.svg",
-              color: ColorUtil.mainColor, width: 14.6.w),
-        if (widget.type == PostCardType.simple) SizedBox(width: 2.w),
-        if (widget.type == PostCardType.simple)
-          Text(
-            post.visitCount == null
-                ? '0  '
-                : post.visitCount < 1000
-                    ? post.visitCount.toString() +
-                        (post.visitCount < 100 ? '   ' : '  ')
-                    : post.visitCount < 10000
-                        ? (post.visitCount.toDouble() / 1000)
-                                .toStringAsFixed(1)
-                                .toString() +
-                            'k  '
-                        : (post.visitCount.toDouble() / 10000)
-                                .toStringAsFixed(1)
-                                .toString() +
-                            'w  ',
-            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
-          ),
-        if (widget.type == PostCardType.detail)
-          Text(
-            post.visitCount.toString(),
-            style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
-          ),
-        if (widget.type == PostCardType.detail)
-          Text(
-            '次浏览',
-            style: TextUtil.base.NotoSansSC.mainGrey.normal.sp(10).w400,
-          ),
-      ],
+      children: visitWidgetChildren,
     );
 
     var commentAndWatchedWidget = Row(
@@ -708,9 +694,7 @@ class _PostCardState extends State<PostCard> {
               child: longPicOutsideLook,
             ),
             //这里的 SizedBox 为了单图模式与底部的点赞评论组件有空隙
-            SizedBox(
-              height: 12.h,
-            ),
+            SizedBox(height: 12.h),
           ]);
         }
         break;
@@ -776,9 +760,7 @@ class _PostCardState extends State<PostCard> {
           questionId: post.id,
           builder: (tap) => Container(
               decoration: BoxDecoration(
-                  color: CommonPreferences.isSkinUsed.value
-                      ? Color(CommonPreferences.skinColorE.value)
-                      : Colors.white,
+                  color: Colors.white,
                   border: widget.type == PostCardType.simple
                       ? Border(bottom: BorderSide(color: ColorUtil.greyEAColor))
                       : Border()),
@@ -890,7 +872,7 @@ class _PostCardSimpleState extends State<PostCardSimple> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: 34.w,
+        height: 35.w,
         child: Row(children: [
           ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -1061,13 +1043,13 @@ class _PostCardSimpleState extends State<PostCardSimple> {
         arguments: post,
       ),
       child: Container(
-          padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom:
-                      BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             avatarAndSolve,
             SizedBox(height: 6.h),
             eTagAndTitle,
@@ -1075,20 +1057,22 @@ class _PostCardSimpleState extends State<PostCardSimple> {
             if (post.imageUrls.isNotEmpty) images,
             SizedBox(height: 8.h),
             likeUnlikeVisit
-          ])),
+          ],
+        ),
+      ),
     );
   }
 
   Widget get singleImage {
-    Completer<ui.Image> completer = new Completer<ui.Image>();
-    Image image = new Image.network(
+    Completer<ui.Image> completer = Completer<ui.Image>();
+    Image image = Image.network(
       picBaseUrl + 'origin/' + post.imageUrls[0],
       width: double.infinity,
       fit: BoxFit.fitWidth,
       alignment: Alignment.topCenter,
     );
     image.image
-        .resolve(new ImageConfiguration())
+        .resolve(ImageConfiguration())
         .addListener(ImageStreamListener((ImageInfo info, bool _) {
       completer.complete(info.image);
     }));

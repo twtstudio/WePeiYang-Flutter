@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
@@ -20,9 +19,7 @@ class WpyExamWidget extends StatelessWidget {
 
   Widget _detail(ExamProvider provider, BuildContext context) {
     if (provider.unscheduled.length == 0) {
-      var msg = CommonPreferences.isAprilFool.value
-          ? '您最近有新的考试哦，打开考表查看详情'
-          : provider.unfinished.length == 0
+      var msg = provider.unfinished.length == 0
               ? '目前没有考试哦'
               : '没有已安排时间的考试哦';
       return GestureDetector(

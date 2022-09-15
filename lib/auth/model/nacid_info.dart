@@ -1,6 +1,7 @@
+// @dart = 2.12
 class NAcidInfo {
   NAcidInfo({
-    this.id,
+    required this.id,
     this.nAcidInfoOperator,
     this.percentage,
     this.campus,
@@ -14,16 +15,16 @@ class NAcidInfo {
   });
 
   int id;
-  String nAcidInfoOperator;
-  String percentage;
-  String campus;
-  String type;
-  String title;
-  String content;
-  String url;
-  DateTime createdAt;
-  DateTime startTime;
-  DateTime endTime;
+  String? nAcidInfoOperator;
+  String? percentage;
+  String? campus;
+  String? type;
+  String? title;
+  String? content;
+  String? url;
+  DateTime? createdAt;
+  DateTime? startTime;
+  DateTime? endTime;
 
   factory NAcidInfo.fromJson(Map<String, dynamic> json) => NAcidInfo(
     id: json["id"],

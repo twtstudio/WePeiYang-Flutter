@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -32,8 +31,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   List<bool> shouldBeInitialized;
   final fbKey = new GlobalKey<FbTagsWrapState>();
 
-  ///根据tab的index得到对应type
-
+  /// 根据tab的index得到对应type
   final postTypeNotifier = ValueNotifier(int);
 
   bool scroll = false;
@@ -67,14 +65,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   void initState() {
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   // firstInLake();
-    // });
+    super.initState();
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().getClipboardWeKoContents(context);
     initPage();
-    super.initState();
   }
 
   @override
@@ -255,9 +250,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: CommonPreferences.isSkinUsed.value
-          ? Color(CommonPreferences.skinColorA.value)
-          : Colors.white,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Padding(
@@ -342,9 +335,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ? 0
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
-                color: CommonPreferences.isSkinUsed.value
-                    ? Color(CommonPreferences.skinColorA.value)
-                    : Colors.white,
+                color: Colors.white,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -401,72 +392,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 }
 
-class RacTangle extends ShapeBorder {
-  @override
-  // ignore: missing_return
-  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
-    return null;
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    var path = Path();
-    path.addRRect(RRect.fromRectAndRadius(rect, Radius.circular(10)));
-    return path;
-  }
-
-  @override
-  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    // var paint = Paint()
-    //   ..color = Colors.transparent
-    //   ..strokeWidth = 12.0
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeJoin = StrokeJoin.round;
-    // var w = rect.width;
-    // var tang = Paint()
-    //   ..isAntiAlias = true
-    //   ..strokeCap = StrokeCap.square
-    //   ..color = Colors.white
-    //   ..strokeWidth = 5;
-    // //var h = rect.height;
-    // canvas.drawLine(Offset(0, 5), Offset(w / 2, 5), paint);
-    // canvas.drawLine(Offset(w - 20, 5), Offset(w - 15, -5), tang);
-    // canvas.drawLine(Offset(w - 15, -5), Offset(w - 10, 5), tang);
-    // canvas.drawLine(Offset(w - 10, 5), Offset(w, 5), paint);
-  }
-
-  @override
-  ShapeBorder scale(double t) {
-    return null;
-  }
-
-  @override
-  EdgeInsetsGeometry get dimensions => null;
-}
-
-class HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final Widget child;
-
-  HomeHeaderDelegate({@required this.child});
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return this.child;
-  }
-
-  @override
-  double get maxExtent => 32;
-
-  @override
-  double get minExtent => 32;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-}
-
 class FbTagsWrap extends StatefulWidget {
   FbTagsWrap({Key key}) : super(key: key);
 
@@ -485,11 +410,11 @@ class FbTagsWrapState extends State<FbTagsWrap>
 
   @override
   void initState() {
+    super.initState();
     _tagsWrapIsShow = false;
     _tagsContainerCanAnimate = true;
     _tagsContainerBackgroundIsShow = false;
     _tagsContainerBackgroundOpacity = 0;
-    super.initState();
   }
 
   _offstageTheBackground() {
@@ -504,7 +429,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
     var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(12.0, 0, 12.0, 8.0),
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
           child: Wrap(
             spacing: 6,
             children: List.generate(provider.departmentList.length, (index) {

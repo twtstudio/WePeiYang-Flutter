@@ -156,13 +156,6 @@ class GPAService {
     double credit = double.tryParse(data['credit'] ?? '0.0') ?? 0.0;
     double gpa = double.tryParse(data['gpa'] ?? '0.0') ?? 0.0;
 
-    /// 愚人节措施
-    if (CommonPreferences.isAprilFoolGPA.value) {
-      score = 100.0;
-      credit = 7157.125;
-      gpa = 4.0;
-    }
-
     return GPACourse(data['name'] ?? '', data['type'] ?? '', score,
         data['score'] ?? '', credit, gpa);
   }

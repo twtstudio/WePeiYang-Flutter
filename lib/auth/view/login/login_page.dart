@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
@@ -58,8 +57,8 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return MyColors.brightBlue;
-                        return MyColors.deepBlue;
+                          return Color.fromRGBO(103, 110, 150, 1.0);
+                        return Color.fromRGBO(98, 103, 124, 1.0);
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
                       backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -84,8 +83,8 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return MyColors.brightBlue;
-                        return MyColors.deepBlue;
+                          return Color.fromRGBO(103, 110, 150, 1.0);
+                        return Color.fromRGBO(98, 103, 124, 1.0);
                       }),
                       backgroundColor: MaterialStateProperty.all(Colors.white),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(

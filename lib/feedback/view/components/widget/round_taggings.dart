@@ -322,27 +322,15 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                           child: avatar == ""
                               ? SvgPicture.network(
                                   '${EnvConfig.QNHD}avatar/beam/20/${uid}',
-                                  width: DateTime.now().month == 4 &&
-                                          DateTime.now().day == 1
-                                      ? 150
-                                      : 200,
-                                  height: DateTime.now().month == 4 &&
-                                          DateTime.now().day == 1
-                                      ? 150
-                                      : 200,
+                                  width: 200,
+                                  height: 200,
                                   fit: BoxFit.contain,
                                   placeholderBuilder: defaultPlaceholderBuilder,
                                 )
                               : Image.network(
                                   'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                                  width: DateTime.now().month == 4 &&
-                                          DateTime.now().day == 1
-                                      ? 150
-                                      : 200,
-                                  height: DateTime.now().month == 4 &&
-                                          DateTime.now().day == 1
-                                      ? 150
-                                      : 200,
+                                  width: 200,
+                                  height: 200,
                                   fit: BoxFit.contain,
                                 ),
                         ),
@@ -451,23 +439,15 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
         child: avatar == ""
             ? SvgPicture.network(
                 '${EnvConfig.QNHD}avatar/beam/20/${uid}',
-                width: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 20.w
-                    : 34.w,
-                height: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 20.w
-                    : 34.w,
+                width: 34.w,
+                height: 34.w,
                 fit: BoxFit.contain,
                 placeholderBuilder: defaultPlaceholderBuilder,
               )
             : Image.network(
                 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                width: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 20.w
-                    : 34.w,
-                height: DateTime.now().month == 4 && DateTime.now().day == 1
-                    ? 18.w
-                    : 32.w,
+                width: 34.w,
+                height: 32.w,
                 fit: BoxFit.contain,
               ),
       ),
