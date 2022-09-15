@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/gpa/view/gpa_page.dart';
 class GPARouter {
   static String gpa = 'gpa/home';
 
-  static final Map<String, Widget Function(Object arguments)> routers = {
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     gpa: (_) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(gpa);
       return GPAPage();

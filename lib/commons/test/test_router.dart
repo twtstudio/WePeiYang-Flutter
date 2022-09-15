@@ -1,5 +1,4 @@
 // @dart = 2.12
-
 import 'package:flutter/material.dart' show Widget;
 import 'font_test_page.dart';
 import 'push_test_page.dart';
@@ -14,7 +13,7 @@ class TestRouter {
   static final String fontTest = 'test/font';
   static final String mainPage = 'test/main';
 
-  static final Map<String, Widget Function(Object arguments)> routers = {
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     pushTest: (_) => const PushTestPage(),
     updateTest: (_) => const UpdateTestPage(),
     qsltTest: (_) => const QsltTestPage(),

@@ -12,7 +12,7 @@ class LoungeRouter {
   static const String plan = 'lounge/plan';
   static const String search = 'lounge/search';
 
-  static final Map<String, Widget Function(Object? arguments)> routers = {
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     areas: (arguments) {
       var bid = arguments.toString();
       return AreasPage(bId: bid);

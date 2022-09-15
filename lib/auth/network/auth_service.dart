@@ -1,8 +1,9 @@
+// @dart = 2.12
 import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:flutter/material.dart' show Navigator, debugPrint, required;
+import 'package:flutter/material.dart' show Navigator, debugPrint;
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
@@ -21,7 +22,7 @@ class AuthDio extends DioAbstract {
   String baseUrl = "https://api.twt.edu.cn/api/";
 
   @override
-  Map<String, String> headers = {"DOMAIN": DOMAIN, "ticket": ticket};
+  Map<String, String>? headers = {"DOMAIN": DOMAIN, "ticket": ticket};
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -30,7 +31,7 @@ class AuthDio extends DioAbstract {
       options.headers['token'] = CommonPreferences.token.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['error_code'] ?? -1;
+      var code = response.data['error_code'] ?? -1;
       var error = "";
       switch (code) {
         case 40002:
@@ -41,7 +42,7 @@ class AuthDio extends DioAbstract {
           break;
         case 40005:
           Navigator.pushNamedAndRemoveUntil(
-              WePeiYangApp.navigatorState.currentContext,
+              WePeiYangApp.navigatorState.currentContext!,
               AuthRouter.login,
               (route) => false);
           error = "登录失效，请重新登录";
@@ -121,7 +122,7 @@ final authDio = AuthDio();
 class AuthService with AsyncTimer {
   /// 注册或完善信息时获取短信验证码
   static getCaptchaOnRegister(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnRegister', () async {
       try {
         await authDio
@@ -135,7 +136,7 @@ class AuthService with AsyncTimer {
 
   /// 在用户界面更新信息时获取短信验证码
   static getCaptchaOnInfo(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
       try {
         await authDio.post("user/phone/msg",
@@ -150,7 +151,7 @@ class AuthService with AsyncTimer {
 
   /// 修改密码时获取短信验证码
   static getCaptchaOnReset(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnReset', () async {
       try {
         await authDio
@@ -164,7 +165,7 @@ class AuthService with AsyncTimer {
 
   /// 修改密码时认证短信验证码
   static verifyOnReset(String phone, String code,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('verifyOnReset', () async {
       try {
         await authDio.post("password/reset/verify",
@@ -179,7 +180,7 @@ class AuthService with AsyncTimer {
 
   /// 忘记密码时，使用手机号修改密码
   static resetPwByPhone(String phone, String password,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('resetPwByPhone', () async {
       try {
         await authDio.post("password/reset",
@@ -194,7 +195,7 @@ class AuthService with AsyncTimer {
 
   /// 登录状态下修改密码
   static resetPwByLogin(String password,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('resetPwByLogin', () async {
       try {
         await authDio.put("password/person/reset",
@@ -210,7 +211,7 @@ class AuthService with AsyncTimer {
   /// 注册
   static register(String userNumber, String nickname, String phone,
       String verifyCode, String password, String email, String idNumber,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('register', () async {
       try {
         await authDio.post("register",
@@ -233,7 +234,7 @@ class AuthService with AsyncTimer {
 
   /// 使用学号/昵称/邮箱/手机号 + 密码登录
   static pwLogin(String account, String password,
-      {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
+      {required OnResult<Map> onResult, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
         var rsp = await authDio.post("auth/common",
@@ -275,7 +276,7 @@ class AuthService with AsyncTimer {
 
   /// 登陆时获取短信验证码
   static getCaptchaOnLogin(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {
       try {
         await authDio.post("auth/phone/msg",
@@ -290,7 +291,7 @@ class AuthService with AsyncTimer {
 
   /// 使用手机号 + 验证码登录
   static codeLogin(String phone, String code,
-      {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
+      {required OnResult<Map> onResult, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('codeLogin', () async {
       try {
         var rsp = await authDio.post("auth/phone",
@@ -330,7 +331,7 @@ class AuthService with AsyncTimer {
 
   /// 获取个人信息（刷新token用）
   static getInfo(
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getInfo', () async {
       try {
         var rsp = await authDio.post('auth/updateToken');
@@ -347,7 +348,7 @@ class AuthService with AsyncTimer {
 
   /// 补全信息（手机号和邮箱）
   static addInfo(String telephone, String verifyCode, String email,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('addInfo', () async {
       try {
         await authDio.put("user/single", queryParameters: {
@@ -366,7 +367,7 @@ class AuthService with AsyncTimer {
 
   /// 单独修改手机号
   static changePhone(String phone, String code,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changePhone', () async {
       try {
         await authDio.put("user/single/phone",
@@ -381,7 +382,7 @@ class AuthService with AsyncTimer {
 
   /// 单独修改邮箱
   static changeEmail(String email,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeEmail', () async {
       try {
         await authDio
@@ -396,7 +397,7 @@ class AuthService with AsyncTimer {
 
   /// 单独修改用户名
   static changeNickname(String username,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeNickname', () async {
       try {
         await authDio.put("user/single/username",
@@ -411,7 +412,7 @@ class AuthService with AsyncTimer {
 
   /// 检测学号和用户名是否重复
   static checkInfo1(String userNumber, String username,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkInfo1', () async {
       try {
         await authDio.get("register/checking/$userNumber/$username");
@@ -424,7 +425,7 @@ class AuthService with AsyncTimer {
 
   /// 检测身份证、邮箱、手机号是否重复（其实手机号不用查重，获取验证码时已经查重过了）
   static checkInfo2(String idNumber, String email, String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkInfo2', () async {
       try {
         await authDio.post("register/checking",
@@ -450,7 +451,7 @@ class AuthService with AsyncTimer {
 
   /// 上传头像
   static uploadAvatar(File image,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('uploadAvatar', () async {
       try {
         var data = FormData.fromMap({
@@ -470,7 +471,7 @@ class AuthService with AsyncTimer {
 
   /// 注销账号
   static logoff(
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('logoff', () async {
       try {
         await authDio.post("auth/logoff");
@@ -483,8 +484,8 @@ class AuthService with AsyncTimer {
 
   /// 获取cid
   static updateCid(String cid,
-      {@required OnResult<String> onResult,
-      @required OnFailure onFailure}) async {
+      {required OnResult<String> onResult,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('updateCid', () async {
       try {
         var res = await authDio.post("notification/cid",

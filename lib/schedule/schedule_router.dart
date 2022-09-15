@@ -13,7 +13,7 @@ class ScheduleRouter {
   static String customCourse = 'schedule/customCourse';
   static String editDetail = 'schedule/editDetail';
 
-  static final Map<String, Widget Function(Object arguments)> routers = {
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     course: (_) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(course);
       return CoursePage();

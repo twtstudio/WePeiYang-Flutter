@@ -97,9 +97,7 @@ class FeedbackService with AsyncTimer {
       bool forceRefresh = false}) async {
     try {
       var response;
-      if (CommonPreferences.lakeToken.value != null &&
-          CommonPreferences.lakeToken.value != "" &&
-          !forceRefresh) {
+      if (CommonPreferences.lakeToken.value != "" && !forceRefresh) {
         response =
             await feedbackDio.get('auth/${CommonPreferences.lakeToken.value}');
       } else {

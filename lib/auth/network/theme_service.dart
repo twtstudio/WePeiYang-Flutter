@@ -1,6 +1,7 @@
+// @dart = 2.12
 import 'dart:io';
 
-import 'package:flutter/material.dart' show Color, required;
+import 'package:flutter/material.dart' show Color;
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/skin_utils.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -12,16 +13,14 @@ class ThemeDio extends DioAbstract {
   @override
   //String baseUrl = 'https://59.67.37.34/api/v1/';
   String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
-  var headers = {};
 
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      if (CommonPreferences.themeToken != null)
-        options.headers['token'] = CommonPreferences.themeToken.value;
+      options.headers['token'] = CommonPreferences.themeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['error_code'] ?? 0;
+      var code = response.data['error_code'] ?? 0;
       switch (code) {
         case 0: // 成功
           return handler.next(response);
@@ -37,17 +36,17 @@ final themeDio = ThemeDio();
 
 class ThemeService with AsyncTimer {
   static Future<void> loginFromClient({
-    @required void Function() onSuccess,
+    required void Function() onSuccess,
   }) async {
     CommonPreferences.themeToken.clear();
     AsyncTimer.runRepeatChecked('theme_login', () async {
       try {
         var response = await themeDio.post('auth/client',
             formData: FormData.fromMap({
-              'token': CommonPreferences.token.value.toString(),
+              'token': CommonPreferences.token.value,
             }));
         CommonPreferences.themeToken.value = response.data['result'];
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (_) {
         ToastProvider.error('主题加载失败');
       }
@@ -55,9 +54,9 @@ class ThemeService with AsyncTimer {
   }
 
   static Future<void> uploadFile({
-    @required File file,
-    @required void Function() onSuccess,
-    @required onFailure,
+    required File file,
+    required void Function() onSuccess,
+    required onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
@@ -66,7 +65,7 @@ class ThemeService with AsyncTimer {
               'token': '${CommonPreferences.token.value}',
             }));
         CommonPreferences.themeToken.value = response.data['result'];
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -123,9 +122,9 @@ class ThemeService with AsyncTimer {
   }
 
   static Future<void> postMeSkin({
-    @required int skinId,
-    @required void Function() onSuccess,
-    @required onFailure,
+    required int skinId,
+    required void Function() onSuccess,
+    required onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('post_me_skin', () async {
       try {
@@ -134,7 +133,7 @@ class ThemeService with AsyncTimer {
               'skinId': '${skinId}',
               'token': '${CommonPreferences.themeToken.value}',
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }

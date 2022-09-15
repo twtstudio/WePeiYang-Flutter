@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/auth/view/info/email_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/phone_bind_page.dart';
@@ -61,7 +62,7 @@ class AuthRouter {
   /// debug页面
   static String debug = 'user/debug';
 
-  static final Map<String, Widget Function(Object arguments)> routers = {
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     login: (_) => LoginHomeWidget(),
     loginPw: (_) => LoginPwWidget(),
     register1: (_) => RegisterPageOne(),
