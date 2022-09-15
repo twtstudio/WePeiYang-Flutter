@@ -16,12 +16,12 @@ class CourseProvider with ChangeNotifier {
   /// 学校课程
   List<Course> _schoolCourses = [];
 
-  List<Course> get schoolCourses => _schoolCourses; // 用于统计学时
+  List<Course> get schoolCourses => _schoolCourses;
 
   /// 自定义课程
   List<Course> _customCourses = [];
 
-  List<Course> get customCourses => _customCourses; // 用于自定义课程编辑页
+  List<Course> get customCourses => _customCourses;
 
   void addCustomCourse(Course course) {
     _customCourses.add(course);

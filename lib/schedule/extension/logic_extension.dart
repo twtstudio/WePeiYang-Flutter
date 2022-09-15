@@ -13,6 +13,7 @@ List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
     course.arrangeList.forEach((arrange) {
       if (judgeActiveInWeek(week, weekCount, arrange)) {
         var day = arrange.weekday;
+        if (day > dayNumber) return;
         var start = arrange.unitList.first;
         var end = arrange.unitList.last;
 
@@ -99,6 +100,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     var start = pair.arrange.unitList.first;
     var end = pair.arrange.unitList.last;
     var day = pair.arrange.weekday - 1;
+    if (day > dayNumber) return;
     var needAppend = true; // `pair`是否需要外显
     for (int i = start; i <= end; i++) {
       if (unitCountMatrix[day][i - 1] == 2) {
