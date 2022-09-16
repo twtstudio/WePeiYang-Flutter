@@ -42,7 +42,7 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
               );
             },
             child: Image.asset(
-              'assets/images/lounge_icons/schedule.png',
+              'assets/images/studyroom_icons/schedule.png',
             ),
           )),
     );
@@ -61,7 +61,7 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
             }
           },
           child: Image.asset(
-            'assets/images/lounge_icons/pop.png',
+            'assets/images/studyroom_icons/pop.png',
             width: 20.w,
           ),
         ),

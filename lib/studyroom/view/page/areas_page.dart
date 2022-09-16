@@ -82,7 +82,7 @@ class _AreaItem extends StatelessWidget {
     final areaName = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset('assets/images/lounge_icons/point.png', width: 6.w),
+        Image.asset('assets/images/studyroom_icons/point.png', width: 6.w),
         SizedBox(width: 6.w),
         Text(
           area.id + '区',

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
@@ -19,30 +20,36 @@ class TimePickerWidget extends StatelessWidget {
 
     const tableClassTimes = _TableClassTimes();
 
-    const okButton = _OkButton();
-
-    Widget viewList = ListView(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
+    final okButton = WButton(
+      onPressed: () => Navigator.pop(context),
+      child: Container(
+          width: 1.sw,
+          height: 54.h + ScreenUtil().bottomBarHeight,
+          color: ColorUtil.blue2CColor,
+          child: SafeArea(
+            child: Center(
+              child: Text(
+                '确定',
+                style: TextUtil.base.w400.PingFangSC.white.sp(14),
+              ),
+            ),
+          )),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        tableCalendar,
-        tableClassTimes,
-        SizedBox(height: 10.w),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 15.w,
+            vertical: 20.h,
+          ),
+          child: Column(
+            children: [tableCalendar, tableClassTimes, SizedBox(height: 10.w)],
+          ),
+        ),
         okButton,
       ],
     );
-
-    viewList = Padding(
-      padding: EdgeInsets.only(
-        left: 15.w,
-        top: 20.w,
-        right: 15.w,
-        bottom: 30.w,
-      ),
-      child: viewList,
-    );
-
-    return viewList;
   }
 }
 
@@ -263,35 +270,6 @@ class _TimeItem extends StatelessWidget {
         width: 122.w,
         child: button,
       ),
-    );
-  }
-}
-
-class _OkButton extends StatelessWidget {
-  const _OkButton({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        const Spacer(),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.w)),
-            ),
-            backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
-          ),
-          child: Text(
-            '确定',
-            style: TextUtil.base.w400.PingFangSC.white.sp(14),
-          ),
-        ),
-        SizedBox(width: 19.w),
-      ],
     );
   }
 }
