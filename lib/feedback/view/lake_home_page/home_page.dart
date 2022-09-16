@@ -286,7 +286,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           context.read<LakeModel>().currentTab =
                               context.read<LakeModel>().tabController.index;
                           context.read<LakeModel>().onFeedbackOpen();
-                          print("openopen");
                         }
                       });
               }
