@@ -7,15 +7,16 @@ import 'package:we_pei_yang_flutter/schedule/page/custom_courses_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
+import 'model/course.dart';
+
 class ScheduleRouter {
   static String course = 'schedule/course';
   static String exam = 'schedule/exam';
   static String customCourse = 'schedule/customCourse';
   static String editDetail = 'schedule/editDetail';
 
+
   static final Map<String, Widget Function(dynamic arguments)> routers = {
-    course: (_) {
-  static final Map<String, Widget Function(Object arguments)> routers = {
     course: (args) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(course);
       return CoursePage(args as List<Pair<Course, int>>);

@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
@@ -33,16 +32,17 @@ class GPAPreview extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 1.sw - 60.w,
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: <Widget>[
+            //_CurveText(),
+            SizedBox(height: 45.h),
+            _GPAIntro(),
+            GPACurve(GPAColor.blue, isPreview: true),
+          ]),
         ),
-        child: Column(children: <Widget>[
-          //_CurveText(),
-          SizedBox(height: 45.h),
-          _GPAIntro(),
-          GPACurve(FavorColors.gpaColor, isPreview: true),
-        ]),
       ),
     );
   }
@@ -84,62 +84,51 @@ class _GPAIntro extends StatelessWidget {
     var grade = "知";
     var credit = "道";
     if (total != null) {
-      if (CommonPreferences.isAprilFoolGPA.value) {
-        weighted = 100.toString();
-        grade = 4.0.toString();
-        credit = 114514.toString();
-      } else {
-        weighted = total.weighted.toString();
-        grade = total.gpa.toString();
-        credit = total.credits.toString();
-      }
+      weighted = total.weighted.toString();
+      grade = total.gpa.toString();
+      credit = total.credits.toString();
     }
     var quietPvd = context.read<GPANotifier>();
-    return Container(
-      decoration: CommonPreferences.isSkinUsed.value
-          ? BoxDecoration(color: Colors.white10)
-          : BoxDecoration(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          InkResponse(
-            onTap: () => quietPvd.type = 0,
-            radius: 45,
-            splashFactory: InkRipple.splashFactory,
-            child: Column(
-              children: <Widget>[
-                Text('Total Weighted', style: _textStyle),
-                SizedBox(height: 8),
-                Text(weighted, style: _numStyle)
-              ],
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        InkResponse(
+          onTap: () => quietPvd.type = 0,
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Total Weighted', style: _textStyle),
+              SizedBox(height: 8),
+              Text(weighted, style: _numStyle)
+            ],
           ),
-          InkResponse(
-            onTap: () => quietPvd.type = 1,
-            radius: 45,
-            splashFactory: InkRipple.splashFactory,
-            child: Column(
-              children: <Widget>[
-                Text('Total GPA', style: _textStyle),
-                SizedBox(height: 8),
-                Text(grade, style: _numStyle)
-              ],
-            ),
+        ),
+        InkResponse(
+          onTap: () => quietPvd.type = 1,
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Total GPA', style: _textStyle),
+              SizedBox(height: 8),
+              Text(grade, style: _numStyle)
+            ],
           ),
-          InkResponse(
-            onTap: () => quietPvd.type = 2,
-            radius: 45,
-            splashFactory: InkRipple.splashFactory,
-            child: Column(
-              children: <Widget>[
-                Text('Credits Earned', style: _textStyle),
-                SizedBox(height: 8),
-                Text(credit, style: _numStyle)
-              ],
-            ),
-          )
-        ],
-      ),
+        ),
+        InkResponse(
+          onTap: () => quietPvd.type = 2,
+          radius: 45,
+          splashFactory: InkRipple.splashFactory,
+          child: Column(
+            children: <Widget>[
+              Text('Credits Earned', style: _textStyle),
+              SizedBox(height: 8),
+              Text(credit, style: _numStyle)
+            ],
+          ),
+        )
+      ],
     );
   }
 }
@@ -180,7 +169,6 @@ class _GPACurveState extends State<GPACurve>
 
   @override
   Widget build(BuildContext context) {
-    var terms = context.select<GPANotifier, List<String>>((p) => p.terms);
     return LayoutBuilder(builder: (context, constraints) {
       var notifier = context.watch<GPANotifier>();
       if (notifier.statsData.isEmpty) return SizedBox(height: 10);
@@ -190,7 +178,12 @@ class _GPACurveState extends State<GPACurve>
       }
       List<Point<double>> points = [];
       List<double> curveData = notifier.curveData;
-      _initPoints(points, curveData, constraints.maxWidth);
+      _initPoints(
+          points,
+          curveData,
+          context.watch<GPANotifier>().curveData.length > 4
+              ? 700.w
+              : constraints.maxWidth);
       return GestureDetector(
 
           /// 点击监听
@@ -205,149 +198,78 @@ class _GPACurveState extends State<GPACurve>
           },
           child: Column(
             children: [
-              Container(
-                decoration:
-                    (widget.isPreview && CommonPreferences.isSkinUsed.value)
-                        ? BoxDecoration(color: Colors.white10)
-                        : BoxDecoration(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Stack(
-                    children: <Widget>[
-                      /// Stack底层
-                      CustomPaint(
-                        painter: _GPACurvePainter(widget._gpaColors,
-                            isPreview: widget.isPreview,
-                            points: points,
-                            taped: _newTaped),
-                        size: Size(double.maxFinite, _canvasHeight),
-                      ),
-
-                      /// Stack顶层
-                      TweenAnimationBuilder<double>(
-                        duration: const Duration(milliseconds: 500),
-                        tween: Tween(
-                            begin: 0.0,
-                            end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
-                        onEnd: () => setState(() => _lastTaped = _newTaped),
-                        curve: Curves.easeInOutSine,
-                        builder: (BuildContext context, value, _) {
-                          var lT = points[_lastTaped], nT = points[_newTaped];
-                          return Transform.translate(
-                            /// 计算两次点击之间的偏移量Offset
-                            /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
-                            offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
-                                lT.y - 60 + (nT.y - lT.y) * value),
-                            child: SizedBox(
-                              width: 80,
-                              height: 75,
-                              child: Column(
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: 80,
-                                    height: 45,
-                                    child: Card(
-                                      color: widget.isPreview
-                                          ? _popupCardPreview
-                                          : _popupCardColor,
-                                      elevation: widget.isPreview ? 1 : 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
-                                      child: Center(
-                                        child: Text(
-                                            '${curveData[_newTaped - 1]}',
-                                            style: TextUtil.base.Swis.regular
-                                                .sp(16)
-                                                .customColor(widget.isPreview
-                                                    ? _popupTextPreview
-                                                    : _popupTextColor)),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration:
-                                        CommonPreferences.isSkinUsed.value
-                                            ? BoxDecoration(
-                                                image: widget.isPreview
-                                                    ? DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/begonia/flower_grey.png'),
-                                                        fit: BoxFit.contain,
-                                                      )
-                                                    : DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/lake_butt_icons/flower.png'),
-                                                        fit: BoxFit.scaleDown,
-                                                      ),
-                                              )
-                                            : BoxDecoration(),
-                                    child: CustomPaint(
-                                      painter: _GPAPopupPainter(
-                                        widget._gpaColors,
-                                        points,
-                                        _newTaped,
-                                        widget.isPreview,
-                                        isPreview: widget.isPreview,
-                                      ),
-                                      size: const Size(80, 30),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (widget.isPreview)
-                Row(
-                  children: [
-                    SizedBox(
-                      width: points[1].x - points[0].x - 24.w,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Stack(
+                  children: <Widget>[
+                    /// Stack底层
+                    CustomPaint(
+                      painter: _GPACurvePainter(widget._gpaColors,
+                          isPreview: widget.isPreview,
+                          points: points,
+                          taped: _newTaped),
+                      size: Size(double.maxFinite, _canvasHeight),
                     ),
-                    Container(
-                      height: 180.h,
-                      width: constraints.maxWidth - 60.w,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: terms.length,
-                        itemBuilder: (context, index) {
-                          return Row(
-                            children: [
-                              Container(
-                                width: 48.w,
-                                height: 27.h,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: notifier.index == index
-                                        ? Color(0xFF2C7EDF)
-                                        : Colors.white),
-                                child: Center(
-                                  child: Text(
-                                    terms[index],
-                                    style: notifier.index == index
-                                        ? TextUtil.base.white.bold.w700.sp(11)
-                                        : TextUtil.base.greyA6.bold.w700.sp(11),
+
+                    /// Stack顶层
+                    TweenAnimationBuilder<double>(
+                      duration: const Duration(milliseconds: 500),
+                      tween: Tween(
+                          begin: 0.0,
+                          end: (_lastTaped == _newTaped) ? 0.0 : 1.0),
+                      onEnd: () => setState(() => _lastTaped = _newTaped),
+                      curve: Curves.easeInOutSine,
+                      builder: (BuildContext context, value, _) {
+                        var lT = points[_lastTaped], nT = points[_newTaped];
+                        return Transform.translate(
+                          /// 计算两次点击之间的偏移量Offset
+                          /// 40.0和60.0用来对准黑白圆点的圆心(与下方container大小有关)
+                          offset: Offset(lT.x - 40 + (nT.x - lT.x) * value,
+                              lT.y - 60 + (nT.y - lT.y) * value),
+                          child: SizedBox(
+                            width: 80,
+                            height: 75,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: 80,
+                                  height: 45,
+                                  child: Card(
+                                    color: widget.isPreview
+                                        ? _popupCardPreview
+                                        : _popupCardColor,
+                                    elevation: widget.isPreview ? 1 : 0,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Center(
+                                      child: Text('${curveData[_newTaped - 1]}',
+                                          style: TextUtil.base.Swis.regular
+                                              .sp(16)
+                                              .customColor(widget.isPreview
+                                                  ? _popupTextPreview
+                                                  : _popupTextColor)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              if (index < points.length - 1)
-                                SizedBox(
-                                  width: points[index + 1].x -
-                                      points[index].x -
-                                      48.w,
+                                CustomPaint(
+                                  painter: _GPAPopupPainter(
+                                    widget._gpaColors,
+                                    points,
+                                    _newTaped,
+                                    widget.isPreview,
+                                    isPreview: widget.isPreview,
+                                  ),
+                                  size: const Size(80, 30),
                                 ),
-                            ],
-                          );
-                        },
-                      ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
-                )
+                ),
+              ),
             ],
           ));
     });
@@ -428,11 +350,6 @@ class _GPAPopupPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawCircle(size.center(Offset.zero), _innerRadius, _innerPaint);
     canvas.drawCircle(size.center(Offset.zero), _outerRadius, _outerPaint);
-    if (isPre)
-      canvas.drawLine(
-          size.center(Offset.zero),
-          Offset(size.center(Offset.zero).dx, 240 - points[taped].y),
-          _innerPaint);
   }
 
   @override
@@ -489,8 +406,6 @@ class _GPACurvePainter extends CustomPainter {
       if (i == selected) {
         canvas.drawCircle(
             Offset(points[i].x, points[i].y), radius + 2.0, _pointPaint);
-        // canvas.drawLine(Offset(points[i].x, points[i].y),
-        //     Offset(points[i].x, 230), _downPaint);
       }
     }
   }

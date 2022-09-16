@@ -45,7 +45,7 @@ class MainPageStudyRoomWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 40.h),
+          SizedBox(height: 24.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w),
             child: Text(
