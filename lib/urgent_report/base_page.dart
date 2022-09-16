@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 class ReportBasePage extends StatelessWidget {
@@ -26,7 +27,6 @@ class ReportBasePage extends StatelessWidget {
               child: AppBar(
                 titleSpacing: 0,
                 leadingWidth: 30,
-                brightness: Brightness.light,
                 elevation: 0,
                 centerTitle: true,
                 automaticallyImplyLeading: false,
@@ -46,6 +46,7 @@ class ReportBasePage extends StatelessWidget {
                 bottom: PreferredSize(
                     preferredSize: const Size.fromHeight(50),
                     child: SelfInformation()),
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
               ),
             ),
           ),

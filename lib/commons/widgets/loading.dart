@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/lounge/util/theme_util.dart';
 
 class Loading extends StatefulWidget {
   final Color? dotOneColor;
@@ -26,8 +25,13 @@ class Loading extends StatefulWidget {
   _LoadingState createState() => _LoadingState();
 }
 
-class _LoadingState extends State<Loading>
-    with SingleTickerProviderStateMixin {
+extension LoadingDotsColors on ThemeData {
+  Color get dotOneColor => const Color(0xFF3884DE);
+  Color get dotTwoColor => const Color(0xFF8DBBF1);
+  Color get dotThreeColor => const Color(0xFF156ACE);
+}
+
+class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
   late Animation<double> animation_1;
   late Animation<double> animation_2;
   late Animation<double> animation_3;

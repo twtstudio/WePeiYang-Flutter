@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
@@ -22,7 +23,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/util/level_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 typedef LikeCallback = void Function(bool, int);

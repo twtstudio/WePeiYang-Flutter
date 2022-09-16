@@ -23,10 +23,10 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
-import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
+import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
 
 class WPYPage extends StatefulWidget {
   @override
@@ -453,7 +453,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
-                  child: MainPageLoungeWidget(),
+                  child: MainPageStudyRoomWidget(),
                 ),
                 Container(
                   width: 1.sw - 60.w,

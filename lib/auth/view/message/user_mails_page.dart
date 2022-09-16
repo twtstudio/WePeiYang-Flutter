@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
@@ -9,7 +10,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/lounge/util/image_util.dart';
 
 import 'message_service.dart';
 
@@ -29,7 +29,6 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
                   .sp(16)
                   .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
-          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(
@@ -38,7 +37,8 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
-          )),
+          ),
+          systemOverlayStyle: SystemUiOverlayStyle.dark),
       body: UserMailList(),
     );
   }
@@ -131,8 +131,8 @@ class _MailItemState extends State<MailItem> {
               SizedBox(height: 10),
               Row(
                 children: [
-                  Image(
-                    image: AssetImage(Images.cloud),
+                  Image.asset(
+                    'assets/images/account/cloud.png',
                     width: 17,
                     color: Colors.black,
                     fit: BoxFit.cover,
@@ -172,7 +172,6 @@ class MailPage extends StatelessWidget {
                 .sp(16)
                 .customColor(Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
-        brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: Padding(
@@ -182,6 +181,7 @@ class MailPage extends StatelessWidget {
                   color: Color.fromRGBO(53, 59, 84, 1), size: 32),
               onTap: () => Navigator.pop(context)),
         ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: _TextMailContent(data: data),
     );

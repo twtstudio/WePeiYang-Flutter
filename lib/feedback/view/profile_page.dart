@@ -4,17 +4,17 @@ import 'package:flutter/material.dart'
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
-import '../../auth/auth_router.dart';
-import '../../auth/view/user/user_avatar_image.dart';
-import '../../commons/preferences/common_prefs.dart';
-import '../../lounge/util/level_util.dart';
 import '../feedback_router.dart';
 import '../util/color_util.dart';
 import 'components/change_nickname_dialog.dart';

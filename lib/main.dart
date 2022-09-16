@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
@@ -34,8 +35,6 @@ import 'feedback/network/feedback_service.dart';
 import 'feedback/network/post.dart';
 import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
-import 'lounge/lounge_providers.dart';
-import 'lounge/server/hive_manager.dart';
 import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
@@ -131,7 +130,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
     with WidgetsBindingObserver {
   @override
   void dispose() async {
-    LoungeDB.closeDB();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -146,7 +144,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
-      LoungeDB.initDB();
       WbyFontLoader.initFonts();
       ToastProvider.init(baseContext);
       TextUtil.init(baseContext);
@@ -225,7 +222,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
         ...scheduleProviders,
-        ...loungeProviders,
+        ...studyroomProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
           create: (context) {

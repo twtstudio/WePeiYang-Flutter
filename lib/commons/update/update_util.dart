@@ -1,7 +1,7 @@
 // @dart = 2.12
 
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/lounge/util/time_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 
 class UpdateUtil {
   /// 今日是否还检查更新
@@ -9,7 +9,7 @@ class UpdateUtil {
     final date = CommonPreferences.lastCheckUpdateTime.value;
     if (date == '') return false;
     final todayNotAgain =
-        DateTime.tryParse(date)?.isTheSameDay(DateTime.now()) ?? false;
+        DateTime.tryParse(date)?.isSameDay(DateTime.now()) ?? false;
     return !todayNotAgain;
   }
 

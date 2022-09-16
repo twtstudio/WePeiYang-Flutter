@@ -27,16 +27,18 @@ class NAcidInfo {
   DateTime? endTime;
 
   factory NAcidInfo.fromJson(Map<String, dynamic> json) => NAcidInfo(
-    id: json["id"],
-    nAcidInfoOperator: json["operator"],
-    percentage: json["percentage"],
-    campus: json["campus"],
-    type: json["type"],
-    title: json["title"],
-    content: json["content"],
-    url: json["url"],
-    createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-    startTime: DateTime.parse(json["startTime"]),
-    endTime: DateTime.parse(json["endTime"]),
-  );
+        id: json["id"],
+        nAcidInfoOperator: json["operator"],
+        percentage: json["percentage"],
+        campus: json["campus"],
+        type: json["type"],
+        title: json["title"],
+        content: json["content"],
+        url: json["url"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        startTime: DateTime.parse(json["startTime"]),
+        endTime: DateTime.parse(json["endTime"]),
+      );
 }

@@ -12,8 +12,8 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
-import 'package:we_pei_yang_flutter/lounge/main_page_widget.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 class HomePage extends StatefulWidget {
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
-      initLoungeFavourDataAtMainPage(context);
+      context.read<StudyroomProvider>().init();
     });
   }
 
