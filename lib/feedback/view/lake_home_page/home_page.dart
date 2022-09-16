@@ -70,6 +70,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().getClipboardWeKoContents(context);
     initPage();
+    super.initState();
   }
 
   @override

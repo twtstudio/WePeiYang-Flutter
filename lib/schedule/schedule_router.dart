@@ -15,8 +15,10 @@ class ScheduleRouter {
 
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     course: (_) {
+  static final Map<String, Widget Function(Object arguments)> routers = {
+    course: (args) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(course);
-      return CoursePage();
+      return CoursePage(args as List<Pair<Course, int>>);
     },
     exam: (_) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(exam);

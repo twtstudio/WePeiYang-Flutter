@@ -70,8 +70,11 @@ class TodayCoursesWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
-                onTap: () =>
-                    Navigator.pushNamed(context, ScheduleRouter.course),
+                onTap: () {
+                  List<Pair<Course, int>> now = [todayPairs[i]];
+                  Navigator.pushNamed(context, ScheduleRouter.course,
+                      arguments: now);
+                },
                 borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
                 splashColor: Colors.black26,

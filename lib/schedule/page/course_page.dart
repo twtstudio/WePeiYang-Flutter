@@ -12,14 +12,20 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
 /// 课表总页面
 class CoursePage extends StatefulWidget {
+  final List<Pair<Course, int>> pairs;
+
+  const CoursePage(this.pairs);
+
   @override
   _CoursePageState createState() => _CoursePageState();
 }
@@ -44,6 +50,9 @@ class _CoursePageState extends State<CoursePage> {
             context: context,
             barrierDismissible: true,
             builder: (context) => ClassesNeedVPNDialog());
+      }
+      if (widget.pairs.isNotEmpty) {
+        showCourseDialog(context, widget.pairs);
       }
     });
   }
