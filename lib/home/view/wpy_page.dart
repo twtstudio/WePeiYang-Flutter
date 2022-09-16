@@ -5,24 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
+import 'package:we_pei_yang_flutter/home/view/dialogs/acid_check_dialog.dart';
+import 'package:we_pei_yang_flutter/home/view/dialogs/activity_dialog.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -38,218 +33,29 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   bool useRound = true;
 
   ScrollController _sc = ScrollController();
-  SwiperController _swc = SwiperController();
   TabController _tc;
 
   List<CardBean> cards;
   String md = '';
+
+  Timer _timer;
+  ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());
   Future<NAcidInfo> acidInfo;
   bool hasShow = false;
-
-  Widget get activityDialog => FutureBuilder(
-        future: ThemeService.getBanner(),
-        builder: (context, AsyncSnapshot<List<BannerPic>> snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Spacer(),
-                snapshot.data.length == 1
-                    ? SizedBox(
-                        width: 0.81.sw,
-                        height: 1.08.sw,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, FeedbackRouter.haitang,
-                                  arguments:
-                                      FestivalArgs(snapshot.data[0].url, '活动'));
-                            },
-                            child: WpyPic(
-                              snapshot.data[0].picUrl,
-                              fit: BoxFit.cover,
-                              withHolder: true,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Swiper(
-                        controller: _swc,
-                        loop: true,
-                        autoplay: true,
-                        autoplayDelay: 4000,
-                        itemWidth: 0.81.sw,
-                        itemHeight: 1.08.sw,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (snapshot.data.length == 0) return SizedBox();
-                          return ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, FeedbackRouter.haitang,
-                                    arguments: FestivalArgs(
-                                        snapshot.data[index].url, '活动'));
-                              },
-                              child: WpyPic(
-                                snapshot.data[index].picUrl,
-                                fit: BoxFit.cover,
-                                withHolder: false,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: SizedBox(
-                      width: 1.sw,
-                      height: 0.55.sh - 0.54.sw,
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Image.asset(
-                          'assets/images/lake_butt_icons/x.png',
-                          width: 50.w,
-                          height: 100.w,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ))
-              ],
-            );
-          } else {
-            return Loading();
-          }
-        },
-      );
 
   void showHomeDialog() {
     showDialog(
       context: context,
-      barrierDismissible: true,
-      builder: (context) => activityDialog,
+      barrierDismissible: false,
+      builder: (context) => ActivityDialog(),
     );
   }
 
-  Timer _timer;
-  ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());
-
-  /// 核酸检测提醒弹窗
-  Widget NCCheckDialog(BuildContext context) => FutureBuilder(
-        future: acidInfo,
-        builder: (context, AsyncSnapshot<NAcidInfo> snapshot) {
-          if (snapshot.hasData) {
-            final start = snapshot.data.startTime;
-            final end = snapshot.data.endTime;
-
-            return Column(
-              children: [
-                Spacer(),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
-                  width: 0.7.sw,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: Colors.white,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Image.asset(
-                          'assets/images/schedule/notify.png',
-                          height: 25.h,
-                          width: 25.w,
-                        ),
-                      ),
-                      SizedBox(height: 20.w),
-                      Text(
-                        '#${snapshot.data.title}',
-                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(18),
-                      ),
-                      SizedBox(height: 20.w),
-                      Text(
-                        '${snapshot.data.content}',
-                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
-                      ),
-                      SizedBox(height: 10.w),
-                      Text(
-                        '${snapshot.data.campus}校区',
-                        style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
-                      ),
-                      SizedBox(height: 10.w),
-                      Text(
-                        '${DateFormat('HH:mm').format(start?.toLocal())} - ${DateFormat('HH:mm').format(end?.toLocal())}',
-                        style: TextUtil.base.PingFangSC.blue2C.w500.sp(20),
-                      ),
-                      SizedBox(height: 10.w),
-                      ValueListenableBuilder(
-                          valueListenable: _now,
-                          builder: (_, DateTime time, __) {
-                            final before = time.isBefore(start);
-                            Duration dur = before
-                                ? start.difference(time)
-                                : end.difference(time);
-                            final hr = dur.inHours.toString().padLeft(2, '0');
-                            final min =
-                                (dur.inMinutes % 60).toString().padLeft(2, '0');
-                            return time.isBefore(end)
-                                ? Text(
-                                    '距检测${before ? '开始' : '结束'}还有$hr时$min分',
-                                    style: TextUtil
-                                        .base.PingFangSC.grey126.normal
-                                        .sp(16),
-                                  )
-                                : Text(
-                                    '今日核酸已结束',
-                                    style: TextUtil
-                                        .base.PingFangSC.grey126.normal
-                                        .sp(16),
-                                  );
-                          }),
-                      SizedBox(height: 20.w),
-                    ],
-                  ),
-                ),
-                Spacer()
-              ],
-            );
-          } else {
-            return Loading();
-          }
-        },
-      );
-
-  void showNCDialog() {
-    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
-      _now.value = DateTime.now();
-    });
-
+  void showAcidCheckDialog() {
     showDialog(
       context: context,
-      barrierColor: Colors.transparent,
-      useSafeArea: false,
       builder: (context) {
-        var dialog = NCCheckDialog(context);
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                  child: ColoredBox(color: Colors.black38),
-                ),
-              ),
-            ),
-            Center(child: dialog),
-          ],
-        );
+        return AcidCheckDialog(acidInfo, _now);
       },
     ).then((_) => _timer.cancel());
   }
@@ -304,7 +110,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       if (info.id != -1 &&
           hasShow == false &&
           DateTime.now().isBefore(info.endTime.add(Duration(hours: 1)))) {
-        showNCDialog();
+        showAcidCheckDialog();
         hasShow = true;
       }
       int showYearMonthDay = int.parse(
