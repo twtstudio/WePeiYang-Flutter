@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -43,7 +44,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   Future<NAcidInfo> acidInfo;
   bool hasShow = false;
 
-  void showHomeDialog() {
+  void showActivityDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -113,11 +114,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         showAcidCheckDialog();
         hasShow = true;
       }
-      int showYearMonthDay = int.parse(
-          '${DateTime.now().toLocal().toIso8601String().substring(0, 4)}${DateTime.now().toLocal().toIso8601String().substring(5, 7)}${DateTime.now().toLocal().toIso8601String().substring(8, 10)}');
-      if (CommonPreferences.lastShownYearMonthDay.value < showYearMonthDay) {
-        showHomeDialog();
-        CommonPreferences.lastShownYearMonthDay.value = showYearMonthDay;
+      final lastDate =
+          DateTime.parse(CommonPreferences.lastShownYearMonthDay.value);
+
+      if (!lastDate.isSameDay(DateTime.now())) {
+        showActivityDialog();
+        CommonPreferences.lastShownYearMonthDay.value =
+            DateTime.now().toString();
       }
     });
   }

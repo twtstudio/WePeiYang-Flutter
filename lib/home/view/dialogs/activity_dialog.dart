@@ -23,6 +23,10 @@ class ActivityDialog extends Dialog {
       builder: (context, AsyncSnapshot<List<BannerPic>> snapshot) {
         if (snapshot.hasData) {
           final data = snapshot.data!;
+          if (data.isEmpty) {
+            Navigator.pop(context);
+            return SizedBox.shrink();
+          }
           return Column(
             children: [
               Spacer(),
