@@ -1071,12 +1071,13 @@ class _PostCardSimpleState extends State<PostCardSimple> {
       fit: BoxFit.fitWidth,
       alignment: Alignment.topCenter,
     );
-    image.image
-        .resolve(ImageConfiguration())
-        .addListener(ImageStreamListener((ImageInfo info, bool _) {
-      completer.complete(info.image);
-    }));
-
+    if (!completer.isCompleted) {
+      image.image
+          .resolve(ImageConfiguration())
+          .addListener(ImageStreamListener((ImageInfo info, bool _) {
+        if (!completer.isCompleted) completer.complete(info.image);
+      }));
+    }
     return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(8.r)),
         child: FutureBuilder<ui.Image>(

@@ -175,6 +175,7 @@ class LakeModel extends ChangeNotifier {
       lakeAreas[index]
           .dataList
           .update(element.id, (value) => element, ifAbsent: () => element);
+      print(lakeAreas[index].dataList);
     });
   }
 
@@ -192,16 +193,33 @@ class LakeModel extends ChangeNotifier {
         notifyListeners();
       },
       onFailure: (e) {
+        FeedbackService.getToken();
         failure?.call(e);
       },
     );
   }
 
-  checkTokenAndGetTabList(FbDepartmentsProvider provider, {OnSuccess success, OnFailure failure}) async {
+  checkTokenAndGetTabList(FbDepartmentsProvider provider,
+      {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
         provider.initDepartments();
         initTabList();
+        success?.call();
+      },
+      onFailure: (e) {
+        ToastProvider.error('获取分区失败');
+        failure?.call(e);
+        notifyListeners();
+      },
+    );
+  }
+
+  checkTokenAndInitPostList(int index,
+      {OnSuccess success, OnFailure failure}) async {
+    await FeedbackService.getToken(
+      onResult: (_) {
+        initPostList(index);
         success?.call();
       },
       onFailure: (e) {
@@ -235,6 +253,7 @@ class LakeModel extends ChangeNotifier {
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
+        checkTokenAndInitPostList(index);
         lakeAreas[index].status = LakePageStatus.error;
         failure?.call(e);
         notifyListeners();

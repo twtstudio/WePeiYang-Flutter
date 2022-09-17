@@ -128,7 +128,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     final tabList = context.select((LakeModel model) => model.tabList);
 
     //控制动画速率
-    timeDilation = 0.9;
+    timeDilation = 0.7;
     if (initializeRefresh == true) {
       context
           .read<LakeModel>()
