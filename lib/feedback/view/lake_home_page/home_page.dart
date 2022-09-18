@@ -360,7 +360,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
           Positioned(
-            bottom: 90.h,
+            bottom: 90.h + ScreenUtil().bottomBarHeight,
             right: 20.w,
             child: Hero(
               tag: "addNewPost",

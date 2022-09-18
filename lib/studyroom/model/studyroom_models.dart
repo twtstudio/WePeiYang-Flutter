@@ -5,6 +5,7 @@
 
 import 'dart:convert';
 
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_campus.dart';
 
 class Building {
@@ -21,8 +22,9 @@ class Building {
   final String? campusId;
 
   String get name {
-    if (this.building == null) return '';
-    return this.building!.substring(0, this.building!.length - 1);
+    if (this.building == null || this.building! == '') return '';
+    // 只捕获数字
+    return this.building!.find('(\\d+)');
   }
 
   String get id => this.buildingId ?? '';

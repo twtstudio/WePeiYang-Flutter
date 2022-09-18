@@ -114,13 +114,19 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         showAcidCheckDialog();
         hasShow = true;
       }
-      final lastDate =
-          DateTime.parse(CommonPreferences.lastShownYearMonthDay.value);
 
-      if (!lastDate.isSameDay(DateTime.now())) {
+      var _show = () {
         showActivityDialog();
-        CommonPreferences.lastShownYearMonthDay.value =
+        CommonPreferences.lastActivityDialogShownDate.value =
             DateTime.now().toString();
+      };
+
+      try {
+        final lastDate =
+            DateTime.parse(CommonPreferences.lastActivityDialogShownDate.value);
+        if (!lastDate.isSameDay(DateTime.now())) _show();
+      } catch (_) {
+        _show();
       }
     });
   }

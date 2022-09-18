@@ -101,8 +101,8 @@ class CommonPreferences {
   /// ----------下方是一些应用相关的杂项----------
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
   static final updateTime = PrefsBean<String>('updateTime');
-  static final lastShownYearMonthDay =
-      PrefsBean<String>('lastShownYearMonthDay', '');
+  static final lastActivityDialogShownDate =
+      PrefsBean<String>('lastActivityDialogShownDate', '');
 
   /// 是否为初次使用此app（重新登陆也算）
   static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
@@ -161,7 +161,7 @@ class CommonPreferences {
     canPush.clear();
     pushCid.clear();
     pushUser.clear();
-    lastShownYearMonthDay.clear();
+    lastActivityDialogShownDate.clear();
     firstPrivacy.clear();
     firstClassesDialog.clear();
   }
