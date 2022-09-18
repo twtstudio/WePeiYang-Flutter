@@ -175,7 +175,6 @@ class LakeModel extends ChangeNotifier {
       lakeAreas[index]
           .dataList
           .update(element.id, (value) => element, ifAbsent: () => element);
-      print(lakeAreas[index].dataList);
     });
   }
 
