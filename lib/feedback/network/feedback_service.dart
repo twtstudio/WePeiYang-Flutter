@@ -1021,7 +1021,7 @@ class FeedbackService with AsyncTimer {
 
   static superAdminOpenBox(
       {@required uid,
-      @required OnResult<String> onResult,
+      @required OnResult<Map<String, String>> onResult,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('superAdminDeleteReply', () async {
       try {
@@ -1032,10 +1032,21 @@ class FeedbackService with AsyncTimer {
           },
         );
         var obd = response.data['data']['detail'];
-        String openBoxDetail = 'hh';
+        Map<String, String> openBoxDetail = {};
         if (obd != null)
-          openBoxDetail =
-              '学号：${obd["userNumber"] ?? '无学号'}\n昵称：${obd["nickname"] ?? '无昵称'}\n电话：${obd["telephone"] ?? '无电话'}\n邮箱：${obd["email"] ?? '无邮箱'}\n真名：${obd["realname"] ?? '无真名'}\n性别：${obd["gender"] ?? '无性别'}\n学院/部：${obd["department"] ?? '无学院/部'}\n专业：${obd["major"] ?? '无专业'}\n种类：${obd["stuType"] ?? '无种类'}\n校区：${obd["campus"] ?? '无校区'}\n身份证号：${obd["idNumber"] ?? '无身份证号'}\n';
+          openBoxDetail = {
+            '真名': obd["realname"] ?? '无真名',
+            '学号': obd["userNumber"] ?? '无学号',
+            '学院/部': obd["department"] ?? '无学院/部',
+            '身份证号': obd["idNumber"] ?? '无身份证号',
+            '归属地': '在线查询身份证号归属地',
+            '电话': obd["telephone"] ?? '无电话',
+            '邮箱': obd["email"] ?? '无邮箱',
+            '性别': obd["gender"] ?? '无性别',
+            '专业': obd["major"] ?? '无专业',
+            '种类': obd["stuType"] ?? '无种类',
+            '校区': obd["campus"] ?? '无校区',
+          };
         onResult(openBoxDetail);
       } on DioError catch (e) {
         onFailure(e);

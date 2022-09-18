@@ -156,6 +156,9 @@ class CommonPreferences {
     nextLevelPoint.clear();
     curLevelPoint.clear();
 
+    /// 自定义课表
+    customCourseToken.clear();
+
     /// 杂项
     lastCheckUpdateTime.clear();
     canPush.clear();

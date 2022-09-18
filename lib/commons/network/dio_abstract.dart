@@ -57,7 +57,7 @@ extension DioRequests on DioAbstract {
       {Map<String, dynamic>? queryParameters,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
+    return (debug ? _dio_debug : _dio_debug)
         .get(path, queryParameters: queryParameters, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
