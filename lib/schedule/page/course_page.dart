@@ -1,7 +1,10 @@
 // @dart = 2.12
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
@@ -19,6 +22,8 @@ import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
+
+import '../../FlutterData.dart';
 
 /// 课表总页面
 class CoursePage extends StatefulWidget {

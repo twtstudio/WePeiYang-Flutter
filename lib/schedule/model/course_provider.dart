@@ -3,6 +3,7 @@ import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
+import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show OnFailure, OnSuccess;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -99,6 +100,11 @@ class CourseProvider with ChangeNotifier {
       notifyListeners();
       CommonPreferences.courseData.value =
           json.encode(CourseTable(_schoolCourses, _customCourses));
+
+      /// iOS 小组件刷新
+      WidgetKit.setItem('courseTable', CommonPreferences.courseData.value,
+          'group.com.wepeiyang');
+      WidgetKit.reloadAllTimelines();
       _widgetChannel.invokeMethod("refreshScheduleWidget");
       onSuccess?.call();
     }, onFailure: (e) {
