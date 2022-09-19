@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)"
+options: "564e950b0d887dd3f786f8c458050b6ecf9e4c2be4824f6620a2db170fdc4738"
+build_start_time: [1663600747, 635439872]
+build_end_time: [1663600747, 712046146]
+inputs:
+  "/Users/lijialin/WePeiYang-Flutter/ios/Pods/ReachabilitySwift/Sources/Reachability.swift": !private [1663505138, 871449947]

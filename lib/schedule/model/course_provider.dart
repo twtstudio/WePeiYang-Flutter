@@ -1,5 +1,5 @@
 // @dart = 2.12
-import 'dart:convert' show json;
+import 'dart:convert' show json, jsonEncode;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
@@ -50,6 +50,11 @@ class CourseProvider with ChangeNotifier {
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
     CommonPreferences.customUpdatedAt.value = time;
+    WidgetKit.setItem(
+        'courseTable',
+        jsonEncode(CourseTable(_schoolCourses, _customCourses)),
+        'group.com.wepeiyang');
+    WidgetKit.reloadAllTimelines();
     _widgetChannel.invokeMethod("refreshScheduleWidget");
     // remote
     CustomCourseService.postCustomTable(_customCourses, time);

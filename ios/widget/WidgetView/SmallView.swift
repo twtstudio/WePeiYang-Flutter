@@ -10,7 +10,7 @@ import WidgetKit
 
 struct SmallView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @ObservedObject var store = Storage.courseTable
+    @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     let entry: DataEntry
     var currentCourseTable: [Course] { entry.courses }
@@ -19,7 +19,6 @@ struct SmallView: View {
         hourFormatter.dateFormat = "HH"
         let hrString = hourFormatter.string(from: Date())
         let hour = Int(hrString) ?? 0
-//        fontName()
         return hour
     }
     var time: Int {
@@ -140,11 +139,4 @@ struct SmallView: View {
         }
     }
     
-    func fontName() {
-        for fontFamilyName in UIFont.familyNames {
-            for fontName in UIFont.fontNames(forFamilyName: fontFamilyName) {
-                print("Available font: \(fontName)")
-            }
-        }
-    }
 }

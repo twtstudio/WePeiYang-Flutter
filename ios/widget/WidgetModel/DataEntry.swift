@@ -11,14 +11,13 @@ import WidgetKit
 struct DataEntry: TimelineEntry {
     let date: Date
     let courses: [Course]
-    let weathers: [Weather]
     let studyRoom: [CollectionClass]
     var isPlaceHolder = false
 }
 
 extension DataEntry {
     static var placeholder: DataEntry {
-        DataEntry(date: Date(), courses: [], weathers: [Weather(), Weather()], studyRoom: [], isPlaceHolder: true)
+        DataEntry(date: Date(), courses: [], studyRoom: [], isPlaceHolder: true)
     }
 }
 

@@ -11,10 +11,10 @@ import MapKit
 struct LargeView: View {
     @Environment(\.colorScheme) private var colorScheme
     
-    var courseTable: CourseTable = Storage.courseTable.object
+    var courseTable: CourseTable = SwiftStorage.courseTable.object
     let entry: DataEntry
     var currentCourseTable: [Course] { entry.courses }
-    var weathers: [Weather] { entry.weathers }
+    var weathers = [Weather]()
     var collections: [CollectionClass] { entry.studyRoom }
     var time: Int {
         let formatter = DateFormatter()

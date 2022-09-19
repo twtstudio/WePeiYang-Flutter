@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		556667755269D4177BC0246F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */; };
 		568EF1EE28D6400000074B70 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB42890230E00569DB3 /* WidgetKit.framework */; };
 		568EF1EF28D6400000074B70 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB62890230F00569DB3 /* SwiftUI.framework */; };
@@ -16,9 +15,7 @@
 		568EF1F528D6400200074B70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568EF1F428D6400200074B70 /* Assets.xcassets */; };
 		568EF1FB28D6400300074B70 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 568EF1ED28D63FFF00074B70 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		568EF20428D649F500074B70 /* SmallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20228D649F200074B70 /* SmallView.swift */; };
-		568EF20628D64CFE00074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20528D64CFE00074B70 /* Storage.swift */; };
 		568EF20828D64D8600074B70 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
-		568EF20A28D64FDA00074B70 /* SharedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20928D64FDA00074B70 /* SharedMessage.swift */; };
 		568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20B28D652AC00074B70 /* DataEntry.swift */; };
 		568EF20E28D6534F00074B70 /* WidgetCourseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20D28D6534F00074B70 /* WidgetCourseManager.swift */; };
 		568EF21028D655CD00074B70 /* FontTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20F28D655CD00074B70 /* FontTool.swift */; };
@@ -27,6 +24,9 @@
 		568EF21628D65C2200074B70 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21528D65C2200074B70 /* WeatherService.swift */; };
 		568EF21828D65C6E00074B70 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21728D65C6E00074B70 /* Network.swift */; };
 		568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */; };
+		568EF21E28D8B21800074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
+		56ECC29028D8C3C700181B96 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
+		56ECC29228D8CF3A00181B96 /* LockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECC29128D8CF3A00181B96 /* LockView.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -88,9 +88,7 @@
 		568EF1F628D6400200074B70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		568EF20028D6428800074B70 /* widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetExtension.entitlements; sourceTree = "<group>"; };
 		568EF20228D649F200074B70 /* SmallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallView.swift; sourceTree = "<group>"; };
-		568EF20528D64CFE00074B70 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		568EF20728D64D8600074B70 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
-		568EF20928D64FDA00074B70 /* SharedMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMessage.swift; sourceTree = "<group>"; };
 		568EF20B28D652AC00074B70 /* DataEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataEntry.swift; sourceTree = "<group>"; };
 		568EF20D28D6534F00074B70 /* WidgetCourseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCourseManager.swift; sourceTree = "<group>"; };
 		568EF20F28D655CD00074B70 /* FontTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTool.swift; sourceTree = "<group>"; };
@@ -106,6 +104,7 @@
 		56B1FDAE288EA4AF00569DB3 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		56B1FDB42890230E00569DB3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		56B1FDB62890230F00569DB3 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		56ECC29128D8CF3A00181B96 /* LockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockView.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A922869B3699FAB36BCCE61 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -172,6 +171,7 @@
 				568EF20228D649F200074B70 /* SmallView.swift */,
 				568EF21128D656E400074B70 /* MediumView.swift */,
 				568EF21328D6579600074B70 /* LargeView.swift */,
+				56ECC29128D8CF3A00181B96 /* LockView.swift */,
 			);
 			path = WidgetView;
 			sourceTree = "<group>";
@@ -190,8 +190,6 @@
 			isa = PBXGroup;
 			children = (
 				568EF20728D64D8600074B70 /* Model.swift */,
-				568EF20528D64CFE00074B70 /* Storage.swift */,
-				568EF20928D64FDA00074B70 /* SharedMessage.swift */,
 				568EF20B28D652AC00074B70 /* DataEntry.swift */,
 				568EF20F28D655CD00074B70 /* FontTool.swift */,
 			);
@@ -424,7 +422,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
-				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
@@ -470,11 +467,9 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -525,16 +520,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				568EF21828D65C6E00074B70 /* Network.swift in Sources */,
+				568EF21E28D8B21800074B70 /* Storage.swift in Sources */,
 				568EF20828D64D8600074B70 /* Model.swift in Sources */,
 				568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */,
-				568EF20628D64CFE00074B70 /* Storage.swift in Sources */,
 				568EF21628D65C2200074B70 /* WeatherService.swift in Sources */,
 				568EF20E28D6534F00074B70 /* WidgetCourseManager.swift in Sources */,
 				568EF21228D656E400074B70 /* MediumView.swift in Sources */,
 				568EF1F228D6400000074B70 /* widget.swift in Sources */,
-				568EF20A28D64FDA00074B70 /* SharedMessage.swift in Sources */,
 				568EF21028D655CD00074B70 /* FontTool.swift in Sources */,
 				568EF21428D6579600074B70 /* LargeView.swift in Sources */,
+				56ECC29228D8CF3A00181B96 /* LockView.swift in Sources */,
 				568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */,
 				568EF20428D649F500074B70 /* SmallView.swift in Sources */,
 			);
@@ -550,6 +545,7 @@
 				9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */,
 				D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */,
 				D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */,
+				56ECC29028D8C3C700181B96 /* Model.swift in Sources */,
 				D302FA2428C67F9600B47A90 /* ChannelConfiguration.swift in Sources */,
 				D302FA2828C75F2400B47A90 /* Storage.swift in Sources */,
 				9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */,

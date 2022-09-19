@@ -1,0 +1,11 @@
+framework module flutter_widgetkit {
+  umbrella header "flutter_widgetkit-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module flutter_widgetkit.Swift {
+  header "flutter_widgetkit-Swift.h"
+  requires objc
+}

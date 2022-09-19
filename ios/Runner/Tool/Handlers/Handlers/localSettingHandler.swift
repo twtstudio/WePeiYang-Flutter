@@ -4,6 +4,7 @@
 //
 //  Created by TwT on 2022/9/19.
 //
+import Flutter
 
 extension Channel {
     func localSettingHandler() -> FlutterMethodCallHandler {

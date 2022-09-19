@@ -1,0 +1,6 @@
+framework module flutter_native_image {
+  umbrella header "flutter_native_image-umbrella.h"
+
+  export *
+  module * { export * }
+}

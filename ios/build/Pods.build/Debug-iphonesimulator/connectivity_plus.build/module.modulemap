@@ -1,0 +1,11 @@
+framework module connectivity_plus {
+  umbrella header "connectivity_plus-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module connectivity_plus.Swift {
+  header "connectivity_plus-Swift.h"
+  requires objc
+}

@@ -6,6 +6,7 @@
 //
 
 import WidgetKit
+import Flutter
 
 extension Channel {
     private func reloadWidgetData() {

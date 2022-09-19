@@ -1,0 +1,6 @@
+framework module flutter_image_compress {
+  umbrella header "flutter_image_compress-umbrella.h"
+
+  export *
+  module * { export * }
+}

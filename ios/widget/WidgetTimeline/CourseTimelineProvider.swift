@@ -10,20 +10,15 @@ import WidgetKit
 
 struct CourseTimelineProvider: TimelineProvider {
     
-    var storage = Storage.courseTable
-//    var courseTable: CourseTable { storage.object }
+    var storage = SwiftStorage.courseTable
     let formatter = DateFormatter()
-//    var endDate: Date{
-//        formatter.dateFormat = "YYYYMMdd"
-//        return formatter.date(from: "20210816")!
-//    }
     var currentCalendar: Calendar {
         var currentCalendar = Calendar.current
         currentCalendar.firstWeekday = 2
         return currentCalendar
     }
     var startDate: Date {
-        let dateStr = SharedMessage.semesterStartAt
+        let dateStr = StorageKey.termStartDate.getGroupData()
         let seps = dateStr.components(separatedBy: "-").map { Int($0) ?? 0 }
         guard seps.count == 3 else { return Date() }
         return DateComponents(calendar: currentCalendar, year: seps[0], month: seps[1], day: seps[2]).date ?? Date()
@@ -58,39 +53,28 @@ struct CourseTimelineProvider: TimelineProvider {
         var entries: [DataEntry] = []
         let firstDate = getFirstEntryDate()
         let firstMin = getFirstMinuteEntryDate()
-//        for offset in 0..<60 {
-//            let refreshDate = Calendar.current.date(byAdding: .minute, value: 5, to: currentDate)!
         let courses = getTodayCourse()
         
-            WeatherService().weatherGet { result in
-                var weathers: [Weather]
-                switch result {
-                case .success(let weather):
-                    weathers = weather
-                case .failure(_):
-                    weathers = [Weather(), Weather()]
-                    print("获取天气错误")
-                }
-//                getCollection { (res) in
-//                    var classCollections: [CollectionClass] = []
-//                    switch res {
-//                    case .success(let collections):
-//                        classCollections = collections
-//                    case .failure(_):
-//                        print("获取天气错误")
-//                    }
-                entries.append(DataEntry(date: firstDate, courses: courses, weathers: weathers, studyRoom: []))
-                    entries.append(DataEntry(date: firstMin, courses: courses, weathers: weathers, studyRoom: []))
-                    for offset in 0..<60 {
-                        let refreshDate = Calendar.current.date(byAdding: .minute, value: offset, to: currentDate)!
-                        let entry = DataEntry(date: refreshDate, courses: courses, weathers: weathers, studyRoom: [])
-                        entries.append(entry)
-                    }
-                    let timeline = Timeline(entries: entries, policy: .atEnd)
-                    completion(timeline)
-//                }
-//        }
+        entries.append(DataEntry(date: firstDate, courses: courses, studyRoom: []))
+        entries.append(DataEntry(date: firstMin, courses: courses, studyRoom: []))
+        for offset in 0..<60 {
+            let refreshDate = Calendar.current.date(byAdding: .minute, value: offset, to: currentDate)!
+            let entry = DataEntry(date: refreshDate, courses: courses, studyRoom: [])
+            entries.append(entry)
         }
+        let timeline = Timeline(entries: entries, policy: .atEnd)
+        completion(timeline)
+        
+//        WeatherService().weatherGet { result in
+//            var weathers: [Weather]
+//            switch result {
+//            case .success(let weather):
+//                weathers = weather
+//            case .failure(_):
+//                weathers = [Weather(), Weather()]
+//                print("获取天气错误")
+//            }
+//
 //        }
     }
     

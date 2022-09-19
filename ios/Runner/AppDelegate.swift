@@ -31,6 +31,7 @@ fileprivate struct KGTInfo {
         GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
         
         GeneratedPluginRegistrant.register(with: self)
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }

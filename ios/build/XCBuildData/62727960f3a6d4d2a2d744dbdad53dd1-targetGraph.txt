@@ -1,0 +1,128 @@
+Target dependency graph (36 targets)
+widgetExtension in Runner, no dependencies
+FMDB in Pods, no dependencies
+Flutter in Pods, no dependencies
+GTSDK in Pods, no dependencies
+Mantle in Pods, no dependencies
+ReachabilitySwift in Pods, no dependencies
+SDWebImage in Pods, no dependencies
+libwebp in Pods, no dependencies
+SDWebImageWebPCoder in Pods, depends on:
+SDWebImage in Pods (explicit)
+libwebp in Pods (explicit)
+TOCropViewController-TOCropViewControllerBundle in Pods, no dependencies
+TOCropViewController in Pods, depends on:
+TOCropViewController-TOCropViewControllerBundle in Pods (explicit)
+Toast in Pods, no dependencies
+UMCCommonLog in Pods, no dependencies
+UMDevice in Pods, no dependencies
+UMCommon in Pods, depends on:
+UMDevice in Pods (explicit)
+connectivity_plus in Pods, depends on:
+Flutter in Pods (explicit)
+ReachabilitySwift in Pods (explicit)
+flutter_image_compress in Pods, depends on:
+Flutter in Pods (explicit)
+Mantle in Pods (explicit)
+SDWebImage in Pods (explicit)
+SDWebImageWebPCoder in Pods (explicit)
+flutter_native_image in Pods, depends on:
+Flutter in Pods (explicit)
+flutter_widgetkit in Pods, depends on:
+Flutter in Pods (explicit)
+fluttertoast in Pods, depends on:
+Flutter in Pods (explicit)
+Toast in Pods (explicit)
+gallery_saver in Pods, depends on:
+Flutter in Pods (explicit)
+image_cropper in Pods, depends on:
+Flutter in Pods (explicit)
+TOCropViewController in Pods (explicit)
+image_picker_ios in Pods, depends on:
+Flutter in Pods (explicit)
+location_permissions in Pods, depends on:
+Flutter in Pods (explicit)
+path_provider_ios in Pods, depends on:
+Flutter in Pods (explicit)
+permission_handler_apple in Pods, depends on:
+Flutter in Pods (explicit)
+photo_manager in Pods, depends on:
+Flutter in Pods (explicit)
+share_plus in Pods, depends on:
+Flutter in Pods (explicit)
+shared_preferences_ios in Pods, depends on:
+Flutter in Pods (explicit)
+sqflite in Pods, depends on:
+FMDB in Pods (explicit)
+Flutter in Pods (explicit)
+url_launcher_ios in Pods, depends on:
+Flutter in Pods (explicit)
+video_player_avfoundation in Pods, depends on:
+Flutter in Pods (explicit)
+wakelock in Pods, depends on:
+Flutter in Pods (explicit)
+webview_flutter_wkwebview in Pods, depends on:
+Flutter in Pods (explicit)
+Pods-Runner in Pods, depends on:
+FMDB in Pods (explicit)
+Flutter in Pods (explicit)
+GTSDK in Pods (explicit)
+Mantle in Pods (explicit)
+ReachabilitySwift in Pods (explicit)
+SDWebImage in Pods (explicit)
+SDWebImageWebPCoder in Pods (explicit)
+TOCropViewController in Pods (explicit)
+Toast in Pods (explicit)
+UMCCommonLog in Pods (explicit)
+UMCommon in Pods (explicit)
+UMDevice in Pods (explicit)
+connectivity_plus in Pods (explicit)
+flutter_image_compress in Pods (explicit)
+flutter_native_image in Pods (explicit)
+flutter_widgetkit in Pods (explicit)
+fluttertoast in Pods (explicit)
+gallery_saver in Pods (explicit)
+image_cropper in Pods (explicit)
+image_picker_ios in Pods (explicit)
+libwebp in Pods (explicit)
+location_permissions in Pods (explicit)
+path_provider_ios in Pods (explicit)
+permission_handler_apple in Pods (explicit)
+photo_manager in Pods (explicit)
+share_plus in Pods (explicit)
+shared_preferences_ios in Pods (explicit)
+sqflite in Pods (explicit)
+url_launcher_ios in Pods (explicit)
+video_player_avfoundation in Pods (explicit)
+wakelock in Pods (explicit)
+webview_flutter_wkwebview in Pods (explicit)
+Runner in Runner, depends on:
+widgetExtension in Runner (explicit)
+Pods-Runner in Pods (implicit dependency via file 'Pods_Runner.framework' in build phase 'Link Binary')
+FMDB in Pods (implicit dependency via options '-framework FMDB' in build setting 'OTHER_LDFLAGS')
+Mantle in Pods (implicit dependency via options '-framework Mantle' in build setting 'OTHER_LDFLAGS')
+ReachabilitySwift in Pods (implicit dependency via options '-framework Reachability' in build setting 'OTHER_LDFLAGS')
+SDWebImage in Pods (implicit dependency via options '-framework SDWebImage' in build setting 'OTHER_LDFLAGS')
+SDWebImageWebPCoder in Pods (implicit dependency via options '-framework SDWebImageWebPCoder' in build setting 'OTHER_LDFLAGS')
+TOCropViewController in Pods (implicit dependency via options '-framework TOCropViewController' in build setting 'OTHER_LDFLAGS')
+Toast in Pods (implicit dependency via options '-framework Toast' in build setting 'OTHER_LDFLAGS')
+connectivity_plus in Pods (implicit dependency via options '-framework connectivity_plus' in build setting 'OTHER_LDFLAGS')
+flutter_image_compress in Pods (implicit dependency via options '-framework flutter_image_compress' in build setting 'OTHER_LDFLAGS')
+flutter_native_image in Pods (implicit dependency via options '-framework flutter_native_image' in build setting 'OTHER_LDFLAGS')
+flutter_widgetkit in Pods (implicit dependency via options '-framework flutter_widgetkit' in build setting 'OTHER_LDFLAGS')
+fluttertoast in Pods (implicit dependency via options '-framework fluttertoast' in build setting 'OTHER_LDFLAGS')
+gallery_saver in Pods (implicit dependency via options '-framework gallery_saver' in build setting 'OTHER_LDFLAGS')
+image_cropper in Pods (implicit dependency via options '-framework image_cropper' in build setting 'OTHER_LDFLAGS')
+image_picker_ios in Pods (implicit dependency via options '-framework image_picker_ios' in build setting 'OTHER_LDFLAGS')
+libwebp in Pods (implicit dependency via options '-framework libwebp' in build setting 'OTHER_LDFLAGS')
+location_permissions in Pods (implicit dependency via options '-framework location_permissions' in build setting 'OTHER_LDFLAGS')
+path_provider_ios in Pods (implicit dependency via options '-framework path_provider_ios' in build setting 'OTHER_LDFLAGS')
+permission_handler_apple in Pods (implicit dependency via options '-framework permission_handler_apple' in build setting 'OTHER_LDFLAGS')
+photo_manager in Pods (implicit dependency via options '-framework photo_manager' in build setting 'OTHER_LDFLAGS')
+share_plus in Pods (implicit dependency via options '-framework share_plus' in build setting 'OTHER_LDFLAGS')
+shared_preferences_ios in Pods (implicit dependency via options '-framework shared_preferences_ios' in build setting 'OTHER_LDFLAGS')
+sqflite in Pods (implicit dependency via options '-framework sqflite' in build setting 'OTHER_LDFLAGS')
+url_launcher_ios in Pods (implicit dependency via options '-framework url_launcher_ios' in build setting 'OTHER_LDFLAGS')
+video_player_avfoundation in Pods (implicit dependency via options '-framework video_player_avfoundation' in build setting 'OTHER_LDFLAGS')
+wakelock in Pods (implicit dependency via options '-framework wakelock' in build setting 'OTHER_LDFLAGS')
+webview_flutter_wkwebview in Pods (implicit dependency via options '-framework webview_flutter_wkwebview' in build setting 'OTHER_LDFLAGS')

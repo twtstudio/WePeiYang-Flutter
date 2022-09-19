@@ -1,0 +1,6 @@
+framework module location_permissions {
+  umbrella header "location_permissions-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -82,7 +82,7 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
             (8, 30), (9, 20), (10, 25), (11, 15),
             (13, 30), (14, 20), (15, 25), (16, 15),
             (18, 30), (19, 20), (20, 10), (21, 0)
-        ][startUnit]
+        ][startUnit - 1]
     }
     var startTimeString: String { String(format: "%02d:%02d", startTime.0, startTime.1) }
     var endTime: (Int, Int) {
@@ -93,7 +93,7 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
             (9, 15), (10, 5), (11, 10), (12, 0),
             (14, 15), (15, 5), (16, 10), (17, 0),
             (19, 15), (20, 5), (20, 55), (21, 45)
-        ][endUnit - 1]
+        ][endUnit]
     }
     var endTimeString: String { String(format: "%02d:%02d", endTime.0, endTime.1) }
     var unitString: String { "\(startUnit + 1)-\(startUnit + length)" }
@@ -245,7 +245,7 @@ struct CourseTable: Codable, Storable {
         return currentCalendar
     }
     var startDate: Date {
-        let dateStr = SharedMessage.semesterStartAt
+        let dateStr = StorageKey.termStartDate.getGroupData()
         let seps = dateStr.components(separatedBy: "-").map { Int($0) ?? 0 }
         guard seps.count == 3 else { return Date() }
         return DateComponents(calendar: currentCalendar, year: seps[0], month: seps[1], day: seps[2]).date ?? Date()
@@ -253,7 +253,7 @@ struct CourseTable: Codable, Storable {
     private var endDate: Date { Date(timeInterval: TimeInterval(totalWeek * 7 * 24 * 60 * 60), since: startDate) }
     var currentDate: Date {
         // TODO: Dynamic calculated
-        let currentDate = Date()
+        let currentDate = utcToLocal(utcDate: Date())
         if currentDate < startDate {
             return startDate
         } else if currentDate > endDate {
@@ -278,7 +278,7 @@ struct CourseTable: Codable, Storable {
     
     var currentWeekday: Int {
         let weekdayDistance = weekDistance - passedWeek
-        return Int(floor(weekdayDistance * 7))
+        return Int(floor(weekdayDistance * 7) + 1)  // +1???
     }
     
     init(courseArray: [Course]) {
@@ -289,6 +289,12 @@ struct CourseTable: Codable, Storable {
     init() {
         self.courseArray = []
         self.customCourseArray = []
+    }
+    
+    func utcToLocal(utcDate: Date) -> Date {
+        let zone = NSTimeZone.system
+        let interval = zone.secondsFromGMT()   //GMT = UTC+0
+        return utcDate.addingTimeInterval(TimeInterval(interval))
     }
     
 }

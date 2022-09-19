@@ -17,10 +17,16 @@ struct CourseTableWidgetEntryView: View {
     
     var body: some View {
         switch family {
-        case .systemMedium:
-            MediumView(entry: entry)
-        case .systemLarge:
-            LargeView(entry: entry)
+//        case .systemMedium:
+//            MediumView(entry: entry)
+//        case .systemLarge:
+//            LargeView(entry: entry)
+        case .accessoryRectangular:
+            LockRectView(entry: entry)
+        case .accessoryInline:
+            LockLineView(entry: entry)
+//        case .accessoryCircular:
+//            LockRingView(entry: entry)
         default:
             SmallView(entry: entry)
         }
@@ -40,13 +46,6 @@ struct PeiYang_LiteWidget: Widget {
         }
         .configurationDisplayName("WePeiyang Widget")
         .description("快速查看当前课表信息。")
-        .supportedFamilies([.systemMedium, .systemSmall, .systemLarge])
+        .supportedFamilies([.systemSmall, .accessoryRectangular, .accessoryInline])
     }
 }
-
-//struct PeiYangLiteWidget_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MediumView(currentCourseTable: [Course()], weathers: [Weather()])
-//            .previewContext(WidgetPreviewContext(family: .systemMedium))
-//    }
-//}

@@ -4,6 +4,8 @@
 //
 //  Created by Zr埋 on 2022/9/6.
 //
+import Foundation
+import Flutter
 
 enum Channel: CaseIterable {
          // 设置
