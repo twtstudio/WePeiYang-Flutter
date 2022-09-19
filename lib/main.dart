@@ -12,7 +12,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_widgetkit/flutter_widgetkit.dart';
 
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/FlutterData.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
@@ -141,7 +140,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
-    initPlatformState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
@@ -156,32 +154,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         FeedbackService.getToken(forceRefresh: true);
       }
     });
-  }
-
-  //iOS小组件初始化
-  Future<void> initPlatformState() async {
-    WidgetKit.reloadAllTimelines();
-    WidgetKit.reloadTimelines('test');
-
-    final data = FlutterWidgetData('Hello From Flutter');
-    final resultString =
-        await WidgetKit.getItem('testString', 'group.com.wepeiyang');
-    final resultBool =
-        await WidgetKit.getItem('testBool', 'group.com.wepeiyang');
-    final resultNumber =
-        await WidgetKit.getItem('testNumber', 'group.com.wepeiyang');
-    final resultJsonString =
-        await WidgetKit.getItem('testJson', 'group.com.wepeiyang');
-
-    var resultData;
-    if (resultJsonString != null) {
-      resultData = FlutterWidgetData.fromJson(jsonDecode(resultJsonString));
-    }
-
-    WidgetKit.setItem('testString', 'Hello World', 'group.com.wepeiyang');
-    WidgetKit.setItem('testBool', false, 'group.com.wepeiyang');
-    WidgetKit.setItem('testNumber', 10, 'group.com.wepeiyang');
-    WidgetKit.setItem('testJson', jsonEncode(data), 'group.com.wepeiyang');
   }
 
   @override

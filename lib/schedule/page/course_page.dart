@@ -23,8 +23,6 @@ import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
-import '../../FlutterData.dart';
-
 /// 课表总页面
 class CoursePage extends StatefulWidget {
   final List<Pair<Course, int>> pairs;

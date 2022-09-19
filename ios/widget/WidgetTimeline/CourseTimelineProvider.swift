@@ -8,7 +8,7 @@
 import Foundation
 import WidgetKit
 
-struct CourseTimelineProvider: IntentTimelineProvider {
+struct CourseTimelineProvider: TimelineProvider {
     
     var storage = Storage.courseTable
 //    var courseTable: CourseTable { storage.object }
@@ -48,11 +48,11 @@ struct CourseTimelineProvider: IntentTimelineProvider {
         DataEntry.placeholder
     }
     
-    func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (DataEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (DataEntry) -> Void) {
         completion(DataEntry.placeholder)
     }
     
-    func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<DataEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<DataEntry>) -> Void) {
         storage.load()  //解码flutter传来json
         let currentDate = Date()
         var entries: [DataEntry] = []

@@ -101,10 +101,6 @@ class CourseProvider with ChangeNotifier {
       CommonPreferences.courseData.value =
           json.encode(CourseTable(_schoolCourses, _customCourses));
 
-      /// iOS 小组件刷新
-      WidgetKit.setItem('courseTable', CommonPreferences.courseData.value,
-          'group.com.wepeiyang');
-      WidgetKit.reloadAllTimelines();
       _widgetChannel.invokeMethod("refreshScheduleWidget");
       onSuccess?.call();
     }, onFailure: (e) {

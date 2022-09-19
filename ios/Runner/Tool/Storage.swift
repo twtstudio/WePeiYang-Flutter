@@ -5,17 +5,64 @@
 //  Created by Zr埋 on 2022/9/6.
 //
 
+/// app group名称
+public let GROUP_NAME = "group.com.wepeiyang"
+
 struct Storage {
-    static let defaults = UserDefaults(suiteName: "group.com.wepeiyang")!
+    static let group = UserDefaults(suiteName: GROUP_NAME)!
+    
+    static let standard = UserDefaults.standard
     
     static func removeAll() {
-        UserDefaults.standard.removePersistentDomain(forName: "group.com.wepeiyang")
+        UserDefaults.standard.removePersistentDomain(forName: GROUP_NAME)
     }
     
     static let flutter = UserDefaults.standard
     
-    // 用户选择是否开启推送
-    static let canPushKey = "flutter.can_push"
+    static func saveDataToGroupStorage(data: String, in fileName: String) {
+        let GroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: GROUP_NAME)
+        let fileURL = GroupURL?.appendingPathComponent("widgetdata-\(fileName).data")
+        FileManager.default.createFile(atPath: fileURL!.path, contents: data.data(using: .utf8))
+    }
+}
+
+enum StorageKey {
+         // 用户选择是否开启推送
+    case canPush,
+         // 课表起始学期
+         termStart,
+         // 夜猫子模式
+         nightMode,
+         // 课表数据
+         courseData
+         
+    var key: String {
+        switch self {
+        case .canPush:
+            return "can_push"
+        case .termStart:
+            return "termStart"
+        case .nightMode:
+            return "nightMode"
+        case .courseData:
+            return "courseData"
+        }
+    }
     
+    func getStandardData() -> String {
+        let prefix = "flutter."
+        return Storage.standard.string(forKey: prefix + self.key) ?? ""
+    }
     
+    func getGroupData() -> String {
+        return Storage.group.string(forKey: self.key) ?? ""
+    }
+    
+    static func saveToGroupStorage() {
+        var types: [StorageKey] = [.termStart, .nightMode, .courseData]
+        for type in types {
+            let data = type.getStandardData()
+            Storage.saveDataToGroupStorage(data: data, in: type.key)
+        }
+    }
 }

@@ -14,10 +14,8 @@
 		568EF1EF28D6400000074B70 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB62890230F00569DB3 /* SwiftUI.framework */; };
 		568EF1F228D6400000074B70 /* widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF1F128D6400000074B70 /* widget.swift */; };
 		568EF1F528D6400200074B70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 568EF1F428D6400200074B70 /* Assets.xcassets */; };
-		568EF1F728D6400200074B70 /* widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 568EF1F328D6400000074B70 /* widget.intentdefinition */; };
-		568EF1F828D6400300074B70 /* widget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 568EF1F328D6400000074B70 /* widget.intentdefinition */; };
 		568EF1FB28D6400300074B70 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 568EF1ED28D63FFF00074B70 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		568EF20428D649F500074B70 /* smallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20228D649F200074B70 /* smallView.swift */; };
+		568EF20428D649F500074B70 /* SmallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20228D649F200074B70 /* SmallView.swift */; };
 		568EF20628D64CFE00074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20528D64CFE00074B70 /* Storage.swift */; };
 		568EF20828D64D8600074B70 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
 		568EF20A28D64FDA00074B70 /* SharedMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20928D64FDA00074B70 /* SharedMessage.swift */; };
@@ -33,6 +31,10 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		9D7D7FF128D8A73C004C4576 /* localSettingHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF028D8A73C004C4576 /* localSettingHandler.swift */; };
+		9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF228D8A74D004C4576 /* pushHandler.swift */; };
+		9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */; };
+		9D7D7FF728D8A761004C4576 /* widgetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF628D8A761004C4576 /* widgetHandler.swift */; };
 		D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */; };
 		D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */; };
 		D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */; };
@@ -82,11 +84,10 @@
 		4EC6C351A3468DCC55593FFC /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		568EF1ED28D63FFF00074B70 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		568EF1F128D6400000074B70 /* widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widget.swift; sourceTree = "<group>"; };
-		568EF1F328D6400000074B70 /* widget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = widget.intentdefinition; sourceTree = "<group>"; };
 		568EF1F428D6400200074B70 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		568EF1F628D6400200074B70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		568EF20028D6428800074B70 /* widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetExtension.entitlements; sourceTree = "<group>"; };
-		568EF20228D649F200074B70 /* smallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = smallView.swift; sourceTree = "<group>"; };
+		568EF20228D649F200074B70 /* SmallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallView.swift; sourceTree = "<group>"; };
 		568EF20528D64CFE00074B70 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		568EF20728D64D8600074B70 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		568EF20928D64FDA00074B70 /* SharedMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMessage.swift; sourceTree = "<group>"; };
@@ -117,6 +118,10 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9D7D7FF028D8A73C004C4576 /* localSettingHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localSettingHandler.swift; sourceTree = "<group>"; };
+		9D7D7FF228D8A74D004C4576 /* pushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pushHandler.swift; sourceTree = "<group>"; };
+		9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = umengStatisticsHandler.swift; sourceTree = "<group>"; };
+		9D7D7FF628D8A761004C4576 /* widgetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widgetHandler.swift; sourceTree = "<group>"; };
 		C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMAnalyticsSwift.swift; sourceTree = "<group>"; };
 		D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMCommonSwift.swift; sourceTree = "<group>"; };
@@ -155,7 +160,6 @@
 				568EF21928D65D3F00074B70 /* WidgetManager */,
 				568EF20128D649C400074B70 /* WidgetView */,
 				568EF1F128D6400000074B70 /* widget.swift */,
-				568EF1F328D6400000074B70 /* widget.intentdefinition */,
 				568EF1F428D6400200074B70 /* Assets.xcassets */,
 				568EF1F628D6400200074B70 /* Info.plist */,
 			);
@@ -165,7 +169,7 @@
 		568EF20128D649C400074B70 /* WidgetView */ = {
 			isa = PBXGroup;
 			children = (
-				568EF20228D649F200074B70 /* smallView.swift */,
+				568EF20228D649F200074B70 /* SmallView.swift */,
 				568EF21128D656E400074B70 /* MediumView.swift */,
 				568EF21328D6579600074B70 /* LargeView.swift */,
 			);
@@ -273,6 +277,26 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		9D7D7FE628D8A5F8004C4576 /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */,
+				9D7D7FEF28D8A70D004C4576 /* Handlers */,
+			);
+			path = Handlers;
+			sourceTree = "<group>";
+		};
+		9D7D7FEF28D8A70D004C4576 /* Handlers */ = {
+			isa = PBXGroup;
+			children = (
+				9D7D7FF028D8A73C004C4576 /* localSettingHandler.swift */,
+				9D7D7FF228D8A74D004C4576 /* pushHandler.swift */,
+				9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */,
+				9D7D7FF628D8A761004C4576 /* widgetHandler.swift */,
+			);
+			path = Handlers;
+			sourceTree = "<group>";
+		};
 		D302FA1A28C6654400B47A90 /* UMSwift */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,7 +319,7 @@
 		D302FA2628C75EF500B47A90 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */,
+				9D7D7FE628D8A5F8004C4576 /* Handlers */,
 				D302FA2728C75F2400B47A90 /* Storage.swift */,
 			);
 			path = Tool;
@@ -502,7 +526,6 @@
 			files = (
 				568EF21828D65C6E00074B70 /* Network.swift in Sources */,
 				568EF20828D64D8600074B70 /* Model.swift in Sources */,
-				568EF1F728D6400200074B70 /* widget.intentdefinition in Sources */,
 				568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */,
 				568EF20628D64CFE00074B70 /* Storage.swift in Sources */,
 				568EF21628D65C2200074B70 /* WeatherService.swift in Sources */,
@@ -513,7 +536,7 @@
 				568EF21028D655CD00074B70 /* FontTool.swift in Sources */,
 				568EF21428D6579600074B70 /* LargeView.swift in Sources */,
 				568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */,
-				568EF20428D649F500074B70 /* smallView.swift in Sources */,
+				568EF20428D649F500074B70 /* SmallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,13 +544,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D7D7FF728D8A761004C4576 /* widgetHandler.swift in Sources */,
 				D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */,
 				D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */,
-				568EF1F828D6400300074B70 /* widget.intentdefinition in Sources */,
 				D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */,
 				D302FA2428C67F9600B47A90 /* ChannelConfiguration.swift in Sources */,
 				D302FA2828C75F2400B47A90 /* Storage.swift in Sources */,
+				9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */,
+				9D7D7FF128D8A73C004C4576 /* localSettingHandler.swift in Sources */,
 				D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
