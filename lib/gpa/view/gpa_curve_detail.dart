@@ -181,9 +181,7 @@ class _GPACurveState extends State<GPACurve>
       _initPoints(
           points,
           curveData,
-          context.watch<GPANotifier>().curveData.length > 4
-              ? 700.w
-              : constraints.maxWidth);
+          constraints.maxWidth);
       return GestureDetector(
 
           /// 点击监听
