@@ -24,6 +24,14 @@ struct Storage {
         let fileURL = GroupURL?.appendingPathComponent("widgetdata-\(fileName).data")
         FileManager.default.createFile(atPath: fileURL!.path, contents: data.data(using: .utf8))
     }
+    
+    static func getDataFromGroupStorage(key: String) -> String {
+        let GroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: GROUP_NAME)
+        let fileURL = GroupURL?.appendingPathComponent("widgetdata-\(key).data")
+        
+        let data = try? String(contentsOf: fileURL!, encoding: .utf8)
+        return data ?? ""
+    }
 }
 
 enum StorageKey {
@@ -55,14 +63,16 @@ enum StorageKey {
     }
     
     func getGroupData() -> String {
-        return Storage.group.string(forKey: self.key) ?? ""
+        return Storage.getDataFromGroupStorage(key: self.key)
     }
     
     static func saveToGroupStorage() {
-        var types: [StorageKey] = [.termStart, .nightMode, .courseData]
+        let types: [StorageKey] = [.termStart, .nightMode, .courseData]
         for type in types {
             let data = type.getStandardData()
             Storage.saveDataToGroupStorage(data: data, in: type.key)
         }
     }
+    
+    
 }
