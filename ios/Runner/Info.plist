@@ -47,7 +47,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>我们将使用您的相机权限以获取照片，如果不愿意您可以使用相册</string>
+	<string>我们将使用您的相机权限以获取照片，照片可用于帖子展示，否则您可以使用相册选取</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>如果您选择同意，我们将会在表单中上传您的位置，该选项不是必须的。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
