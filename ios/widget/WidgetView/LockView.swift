@@ -54,11 +54,11 @@ struct LockRectView: View {
                                                 .foregroundColor(colorScheme == .dark ? .white : .black)
                                                 .lineLimit(1)
                                             HStack {
-                                                Text("\(nextCourse.course.activeArrange(courseTable.currentWeekday).location)")
+                                                Text("\(nextCourse.course.activeArrange(courseTable.currentDay).location)")
                                                     .font(.system(size: 11))
                                                     .foregroundColor(colorScheme == .dark ? .white : .gray)
                                                 
-                                                Text("\(nextCourse.course.activeArrange(courseTable.currentWeekday).startTimeString)-\(nextCourse.course.activeArrange(courseTable.currentWeekday).endTimeString)")
+                                                Text("\(nextCourse.course.activeArrange(courseTable.currentDay).startTimeString)-\(nextCourse.course.activeArrange(courseTable.currentDay).endTimeString)")
                                                     .font(.system(size: 11))
                                                     .foregroundColor(colorScheme == .dark ? .white : .gray)
                                             }
@@ -84,7 +84,7 @@ struct LockRectView: View {
             .padding(.top, 15)
         }
         .onAppear {
-            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentWeekday, time: time)
+            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentDay, time: time)
             if preCourse.isNext {
                 nextCourse = preCourse
                 preCourse = WidgetCourse()
@@ -138,11 +138,11 @@ struct LockLineView: View {
                                             .foregroundColor(colorScheme == .dark ? .white : .black)
                                             .lineLimit(1)
                                     VStack(alignment: .leading){
-                                        Text("\(preCourse.course.activeArrange(courseTable.currentWeekday).location)")
+                                        Text("\(preCourse.course.activeArrange(courseTable.currentDay).location)")
                                             .font(.system(size: 10))
                                             .foregroundColor(.gray)
                                         
-                                        Text("\(preCourse.course.activeArrange(courseTable.currentWeekday).startTimeString)-\(preCourse.course.activeArrange(courseTable.currentWeekday).endTimeString)")
+                                        Text("\(preCourse.course.activeArrange(courseTable.currentDay).startTimeString)-\(preCourse.course.activeArrange(courseTable.currentDay).endTimeString)")
                                             .font(.system(size: 10))
                                             .foregroundColor(.gray)
                                     }
@@ -167,7 +167,7 @@ struct LockLineView: View {
             .padding(.top, 15)
         }
         .onAppear {
-            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentWeekday, time: time)
+            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentDay, time: time)
             if preCourse.isNext {
                 nextCourse = preCourse
                 preCourse = WidgetCourse()

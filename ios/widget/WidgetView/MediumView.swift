@@ -30,7 +30,7 @@ struct MediumView: View {
                     if !currentCourseTable.isEmpty {
                         if let preCourse = WidgetCourseManager.getPresentAndNextCourse(
                             courseArray: currentCourseTable,
-                            weekday: courseTable.currentWeekday,
+                            weekday: courseTable.currentDay,
                             time: time).0 {
                             if preCourse.isNext == false {
                                 Image("NOW")
@@ -53,10 +53,10 @@ struct MediumView: View {
                                         .fontWeight(.bold)
                                         .lineLimit(1)
                                     
-                                    Text("\(preCourse.course.activeArrange(courseTable.currentWeekday).location)")
+                                    Text("\(preCourse.course.activeArrange(courseTable.currentDay).location)")
                                         .font(.footnote)
                                     
-                                    Text("\(preCourse.course.activeArrange(courseTable.currentWeekday).startTimeString)-\(preCourse.course.activeArrange(courseTable.currentWeekday).endTimeString)")
+                                    Text("\(preCourse.course.activeArrange(courseTable.currentDay).startTimeString)-\(preCourse.course.activeArrange(courseTable.currentDay).endTimeString)")
                                         .font(.footnote)
                                 }
                                 .frame(width: geo.size.width*(4/5), height: geo.size.height, alignment: .center)

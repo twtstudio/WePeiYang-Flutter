@@ -88,10 +88,10 @@ class Store<T: Codable & Storable>: ObservableObject {
     init(_ storageKey: StorageKey) {
         self.object = T()
         self.storageKey = storageKey
-        load()
+        reloadData()
     }
 
-    func load() {
+    func reloadData() {
         if(storageKey.getGroupData() != ""){
             guard let object = try? JSONDecoder().decode(T.self, from: storageKey.getGroupData().data(using: .utf8)!) else {
                 return

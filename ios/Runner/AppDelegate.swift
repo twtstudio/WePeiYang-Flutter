@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import WidgetKit
 
 fileprivate struct KGTInfo {
     static let kGtAppId = "43HGFmIKsnAmjrjDLr60X4"
@@ -33,6 +34,14 @@ fileprivate struct KGTInfo {
         GeneratedPluginRegistrant.register(with: self)
         
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+    
+    override func applicationWillResignActive(_ application: UIApplication) {
+        print("退出桌面")
+//        let st = SwiftStorage.courseTable
+//        st.reloadData()
+//        print(st.object.courseArray)
+//        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

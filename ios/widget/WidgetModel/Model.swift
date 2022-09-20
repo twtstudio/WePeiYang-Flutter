@@ -92,7 +92,7 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
         guard startUnit >= 0 && startUnit < 12 else {
             return (8, 30)
         }
-        return Arrange.startPoints[startUnit - 1]
+        return Arrange.startTimes[startUnit - 1]
     }
     var startTimeString: String { String(format: "%02d:%02d", startTime.0, startTime.1) }
     var endTime: (Int, Int) {
@@ -180,43 +180,6 @@ struct Course: Codable, Storable, Equatable, Hashable {
         arrangeArray.filter { $0.weekday == weekday }
     }
     
-//    init(fullCourse: [String], arrangePairArray: [(String, Arrange)]) {
-//        self.serial = fullCourse[1]
-//        self.no = fullCourse[2]
-//        self.name = fullCourse[3]
-//        self.credit = fullCourse[4]
-//        self.teacherArray = fullCourse[5].split(separator: ",").map { String($0).replacingOccurrences(of: "(", with: " (") }
-//        self.weeks = fullCourse[6]
-//        self.campus = fullCourse[9]
-//
-//        var arrangeArray = [Arrange]()
-//        for (id, arrange) in arrangePairArray {
-//            if id == fullCourse[1] {
-//                arrangeArray.append(arrange)
-//            }
-//        }
-//        self.arrangeArray = arrangeArray
-//    }
-    
-//    init(dict: [String: String], arrangePairArray: [(String, Arrange)]) {
-//        self.serial = dict["serial"] ?? ""
-//        self.no = dict["no"] ?? ""
-//        self.name = dict["name"] ?? ""
-//        self.credit = dict["credit"] ?? ""
-//        self.teacherArray = (dict["teacher"] ?? "").split(separator: ",").map { String($0).replacingOccurrences(of: "(", with: " (") }
-//        self.weeks = dict["weeks"] ?? ""
-//        self.campus = dict["campus"] ?? ""
-//
-//        var arrangeArray = [Arrange]()
-//        for (id, arrange) in arrangePairArray {
-//            if id == self.serial {
-//                arrangeArray.append(arrange)
-//            }
-//        }
-//
-//        self.arrangeArray = arrangeArray
-//    }
-    
     init() {
         self.serial = ""
         self.no = ""
@@ -241,25 +204,28 @@ struct CourseTable: Codable, Storable {
         case customCourseArray = "customCourses"
     }
     
+    /// 一周的秒数
+    private let WEEK_SECONDS: Int = 7 * 24 * 60 * 60
+    
     var totalWeek: Int {
         courseArray.map { $0.weekRange.max() ?? 1 }.max() ?? 1
     }
     
     var currentCalendar: Calendar {
-        var currentCalendar = Calendar.current
-        currentCalendar.firstWeekday = 2
-        return currentCalendar
+        Calendar.current
     }
     var startDate: Date {
         let dateStr = StorageKey.termStartDate.getGroupData()
         let seps = dateStr.components(separatedBy: "-").map { Int($0) ?? 0 }
         guard seps.count == 3 else { return Date() }
-        return DateComponents(calendar: currentCalendar, year: seps[0], month: seps[1], day: seps[2]).date ?? Date()
+        return DateComponents(calendar: currentCalendar, timeZone: TimeZone.current, year: seps[0], month: seps[1], day: seps[2]).date ?? Date()
     }
-    private var endDate: Date { Date(timeInterval: TimeInterval(totalWeek * 7 * 24 * 60 * 60), since: startDate) }
+    
+    var endDate: Date { Date(timeInterval: TimeInterval(totalWeek * WEEK_SECONDS), since: startDate) }
+    
+    /// 返回有效的时间，仅可能在学期的开始和结束期间
     var currentDate: Date {
-        // TODO: Dynamic calculated
-        let currentDate = utcToLocal(utcDate: Date())
+        let currentDate = Date()
         if currentDate < startDate {
             return startDate
         } else if currentDate > endDate {
@@ -269,22 +235,28 @@ struct CourseTable: Codable, Storable {
         }
     }
     
-    var currentMonth: String { currentDate.format(with: "LLL") }
-    
-    var currentDay: Int { currentCalendar.component(.day, from: currentDate) }
-    
-    private var weekDistance: Double { startDate.distance(to: currentDate) / (7 * 24 * 60 * 60) }
-    private var passedWeek: Double { floor(weekDistance) }
-    var currentWeek: Int { weekDistance == 0 ? 1 : Int(ceil(weekDistance)) }
-    
-    var currentWeekStartDay: Int {
-        let currentWeekStartDate = startDate.addingTimeInterval(passedWeek * 7 * 24 * 60 * 60)
-        return currentCalendar.component(.day, from: currentWeekStartDate)
+    /// 当前周数
+    var currentWeek: Int {
+        // 此时weekOfMonth返回周数
+        currentCalendar.dateComponents([.weekOfMonth], from: startDate, to: currentDate).weekOfMonth ?? 0
     }
     
-    var currentWeekday: Int {
-        let weekdayDistance = weekDistance - passedWeek
-        return Int(floor(weekdayDistance * 7) + 1)  // +1???
+    /// 当前星期数
+    var currentDay: Int {
+        // 默认是从周日开始
+        let day = currentCalendar.dateComponents(in: TimeZone.current, from: currentDate).weekday! - 1
+        return day == 0 ? 7 : day
+    }
+    
+    /// 明天周数
+    var tomorrowWeek: Int {
+        currentDay == 1 ? currentWeek + 1 : currentWeek
+    }
+    
+    /// 明天星期数
+    var tomorrowDay: Int {
+        let day = currentDay + 1
+        return day == 8 ? 1 : day
     }
     
     init(courseArray: [Course]) {
@@ -295,12 +267,6 @@ struct CourseTable: Codable, Storable {
     init() {
         self.courseArray = []
         self.customCourseArray = []
-    }
-    
-    func utcToLocal(utcDate: Date) -> Date {
-        let zone = NSTimeZone.system
-        let interval = zone.secondsFromGMT()   //GMT = UTC+0
-        return utcDate.addingTimeInterval(TimeInterval(interval))
     }
     
 }
