@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -139,13 +140,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
     /// 帖子内容
     var content = Padding(
         padding: EdgeInsets.only(top: 6.h),
-        child: Text(
-          post.content,
+        child: ExpandableText(
+          text: post.content,
           maxLines: widget.single ? 2 : 8,
           style: widget.single
               ? TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.4)
               : TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.6),
-          overflow: TextOverflow.ellipsis,
+          expand: false,
+          buttonIsShown: !widget.single,
+          isHTML: false,
         ));
 
     /// 图片
@@ -154,7 +157,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     var detailedImage = post.imageUrls.length == 1
         ? DetailCardSingleImage(post.imageUrls[0])
-        : singleMultipleImage;
+        : detailMultipleImage;
 
     /// 评论点赞点踩浏览量
     var likeUnlikeVisit = Row(
@@ -282,18 +285,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
       SizedBox(height: 10.h)
     ];
     return widget.single
+        // detail 框架
         ? GestureDetector(
             onTap: () => Navigator.pushNamed(
               context,
               FeedbackRouter.detail,
               arguments: post,
             ),
-            child: Container(
+            child: Padding(
               padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                          color: ColorUtil.greyEAColor, width: 1.h))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -305,6 +305,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               ),
             ),
           )
+        // single 框架
         : Container(
             padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
             decoration: BoxDecoration(
@@ -317,7 +318,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 ...head,
                 if (post.imageUrls.isNotEmpty) detailedImage,
                 SizedBox(height: 8.h),
-                widget.single ? likeUnlikeVisit : tagCampusVisit
+                tagCampusVisit
               ],
             ),
           );
@@ -329,7 +330,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
             width: 350.w,
             height: 197.w,
-            child: Image.network(
+            child: WpyPic(
               picBaseUrl + 'origin/' + post.imageUrls[0],
               width: double.infinity,
               fit: BoxFit.fitWidth,
@@ -398,6 +399,7 @@ class _DetailCardSingleImageState extends State<DetailCardSingleImage> {
   Widget build(BuildContext context) {
     /// 计算长图
     Completer<ui.Image> completer = Completer<ui.Image>();
+    // 这个不能替换成 WpyPic
     Image image = Image.network(
       picBaseUrl + 'origin/' + widget.imageUrl,
       width: double.infinity,
@@ -428,7 +430,7 @@ class _DetailCardSingleImageState extends State<DetailCardSingleImage> {
                                 onTap: () => Navigator.pushNamed(
                                         context, FeedbackRouter.imageView,
                                         arguments: {
-                                          "urlList": widget.imageUrl,
+                                          "urlList": [widget.imageUrl],
                                           "urlListLength": 1,
                                           "indexNow": 0,
                                           "isLongPic": true
@@ -459,7 +461,7 @@ class _DetailCardSingleImageState extends State<DetailCardSingleImage> {
                                 onTap: () => Navigator.pushNamed(
                                         context, FeedbackRouter.imageView,
                                         arguments: {
-                                          "urlList": widget.imageUrl,
+                                          "urlList": [widget.imageUrl],
                                           "urlListLength": 1,
                                           "indexNow": 0,
                                           "isLongPic": true
@@ -521,7 +523,7 @@ class _DetailCardSingleImageState extends State<DetailCardSingleImage> {
                       onTap: () => Navigator.pushNamed(
                               context, FeedbackRouter.imageView,
                               arguments: {
-                                "urlList": widget.imageUrl,
+                                "urlList": [widget.imageUrl],
                                 "urlListLength": 1,
                                 "indexNow": 0,
                                 "isLongPic": false
@@ -623,4 +625,3 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
     );
   }
 }
-

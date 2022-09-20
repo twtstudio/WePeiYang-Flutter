@@ -501,7 +501,7 @@ class _NCommentCardState extends State<NCommentCard>
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
             widget.comment.uid,
-            widget.comment.nickname),
+            widget.comment.nickname, widget.comment.level.toString()),
       ),
       SizedBox(width: 10.w),
       Expanded(

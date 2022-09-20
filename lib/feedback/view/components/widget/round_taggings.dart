@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -275,9 +276,10 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
   final int uid;
   final String avatar;
   final String nickName;
+  final String level;
 
   ProfileImageWithDetailedPopup(
-      this.type, this.avatar, this.uid, this.nickName);
+      this.type, this.avatar, this.uid, this.nickName, this.level);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -311,11 +313,12 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                         onTap: () {
                           if (avatar != '')
                             Navigator.pushNamed(
-                                context, FeedbackRouter.imageView, arguments: {
-                              "urlList": [avatar],
-                              "urlListLength": 1,
-                              "indexNow": 0
-                            });
+                                context, FeedbackRouter.imageView,
+                                arguments: {
+                                  "urlList": [avatar],
+                                  "urlListLength": 1,
+                                  "indexNow": 0
+                                });
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -342,12 +345,18 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                             TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(1.8),
                         overflow: TextOverflow.ellipsis,
                       ),
+                      LevelUtil(
+                        level: level,
+                        width: 34,
+                        height: 17,
+                        style: TextUtil.base.white.bold.sp(9),
+                      ),
                       SizedBox(height: 6),
                       if (CommonPreferences.isSuper.value ||
                           CommonPreferences.isStuAdmin.value)
                         InkWell(
-                          onTap: () =>
-                              _showResetConfirmDialog(context, '昵称').then((value) {
+                          onTap: () => _showResetConfirmDialog(context, '昵称')
+                              .then((value) {
                             if (value)
                               FeedbackService.adminResetName(
                                   id: uid,
@@ -379,19 +388,19 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                       if (CommonPreferences.isSuper.value ||
                           CommonPreferences.isStuAdmin.value)
                         InkWell(
-                          onTap: () =>
-                              _showResetConfirmDialog(context, '头像').then((value) {
-                                if (value)
-                                  FeedbackService.adminResetAva(
-                                      id: uid,
-                                      onSuccess: () {
-                                        ToastProvider.success('重置成功');
-                                        Navigator.pop(ctx);
-                                      },
-                                      onFailure: (e) {
-                                        ToastProvider.error(e.message);
-                                      });
-                              }),
+                          onTap: () => _showResetConfirmDialog(context, '头像')
+                              .then((value) {
+                            if (value)
+                              FeedbackService.adminResetAva(
+                                  id: uid,
+                                  onSuccess: () {
+                                    ToastProvider.success('重置成功');
+                                    Navigator.pop(ctx);
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.message);
+                                  });
+                          }),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

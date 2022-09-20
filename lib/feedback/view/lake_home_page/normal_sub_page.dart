@@ -167,9 +167,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeArea(
         index, RefreshController(initialRefresh: false), ScrollController());
-    context.read<LakeModel>().initPostList(
-        index,
-        success: () {}, failure: (e) {
+    context.read<LakeModel>().initPostList(index, success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
     super.initState();

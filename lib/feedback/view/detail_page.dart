@@ -258,13 +258,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             return Column(
               children: [
                 PostCardNormal(post, single: false),
-                Divider(
-                  height: 2,
-                  indent: 15,
-                  endIndent: 15,
-                  color: ColorUtil.grey229,
-                ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     const SizedBox(width: 15),

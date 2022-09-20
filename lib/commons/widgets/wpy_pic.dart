@@ -8,16 +8,16 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 /// 统一Button样式
 class WpyPic extends StatefulWidget {
-  WpyPic(
-    this.res, {
-    Key? key,
-    this.width,
-    this.height,
-    this.fit = BoxFit.contain,
-    this.withHolder = false,
-    this.holderHeight = 40,
-    this.withCache = true,
-  }) : super(key: key);
+  WpyPic(this.res,
+      {Key? key,
+      this.width,
+      this.height,
+      this.fit = BoxFit.contain,
+      this.withHolder = false,
+      this.holderHeight = 40,
+      this.withCache = true,
+      this.alignment = Alignment.center})
+      : super(key: key);
 
   final String res;
   final double? width;
@@ -26,6 +26,7 @@ class WpyPic extends StatefulWidget {
   final BoxFit fit;
   final bool withHolder;
   final bool withCache;
+  final Alignment alignment;
 
   @override
   _WpyPicState createState() => _WpyPicState();
@@ -39,6 +40,7 @@ class _WpyPicState extends State<WpyPic> {
         width: widget.width,
         height: widget.height,
         fit: widget.fit,
+        alignment: widget.alignment,
       );
     } else {
       return Image.asset(
@@ -46,6 +48,7 @@ class _WpyPicState extends State<WpyPic> {
         width: widget.width,
         height: widget.height,
         fit: widget.fit,
+        alignment: widget.alignment,
       );
     }
   }
@@ -57,6 +60,7 @@ class _WpyPicState extends State<WpyPic> {
         width: widget.width,
         height: widget.height,
         fit: widget.fit,
+        alignment: widget.alignment,
         placeholderBuilder: widget.withHolder ? (_) => Loading() : null,
       );
     } else {
@@ -65,6 +69,7 @@ class _WpyPicState extends State<WpyPic> {
         width: widget.width,
         height: widget.height,
         fit: widget.fit,
+        alignment: widget.alignment,
         loadingBuilder: widget.withHolder
             ? (context, Widget child, ImageChunkEvent? loadingProgress) {
                 if (loadingProgress == null) return child;
