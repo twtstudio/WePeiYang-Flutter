@@ -74,26 +74,32 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
     var length: Int { unitArray.count }
     var startUnit: Int { unitArray.first ?? 0 }
     var endUnit: Int { startUnit + length }
+    
+    /// 所有课程开始时间
+    static let startTimes = [
+        (8, 30), (9, 20), (10, 25), (11, 15),
+        (13, 30), (14, 20), (15, 25), (16, 15),
+        (18, 30), (19, 20), (20, 10), (21, 0)
+    ]
+    /// 所有课程结束时间
+    static let endTimes = [
+        (9, 15), (10, 5), (11, 10), (12, 0),
+        (14, 15), (15, 5), (16, 10), (17, 0),
+        (19, 15), (20, 5), (20, 55), (21, 45)
+    ]
+    
     var startTime: (Int, Int) {
         guard startUnit >= 0 && startUnit < 12 else {
             return (8, 30)
         }
-        return [
-            (8, 30), (9, 20), (10, 25), (11, 15),
-            (13, 30), (14, 20), (15, 25), (16, 15),
-            (18, 30), (19, 20), (20, 10), (21, 0)
-        ][startUnit - 1]
+        return Arrange.startPoints[startUnit - 1]
     }
     var startTimeString: String { String(format: "%02d:%02d", startTime.0, startTime.1) }
     var endTime: (Int, Int) {
         guard endUnit - 1 >= 0 && endUnit - 1 < 12 else {
-            return (9, 15)
+            return Arrange.endTimes[0]
         }
-        return [
-            (9, 15), (10, 5), (11, 10), (12, 0),
-            (14, 15), (15, 5), (16, 10), (17, 0),
-            (19, 15), (20, 5), (20, 55), (21, 45)
-        ][endUnit]
+        return Arrange.endTimes[endUnit]
     }
     var endTimeString: String { String(format: "%02d:%02d", endTime.0, endTime.1) }
     var unitString: String { "\(startUnit + 1)-\(startUnit + length)" }

@@ -48,50 +48,40 @@ struct CourseTimelineProvider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<DataEntry>) -> Void) {
-        storage.load()  //解码flutter传来json
+        // 解码flutter传来json
+        storage.load()
         let currentDate = Date()
-        var entries: [DataEntry] = []
-        let firstDate = getFirstEntryDate()
-        let firstMin = getFirstMinuteEntryDate()
-        let courses = getTodayCourse()
         
-        entries.append(DataEntry(date: firstDate, courses: courses, studyRoom: []))
-        entries.append(DataEntry(date: firstMin, courses: courses, studyRoom: []))
-        for offset in 0..<60 {
-            let refreshDate = Calendar.current.date(byAdding: .minute, value: offset, to: currentDate)!
-            let entry = DataEntry(date: refreshDate, courses: courses, studyRoom: [])
-            entries.append(entry)
+        let times = Arrange.startTimes + Arrange.endTimes
+        var current = Calendar.current.dateComponents(in: TimeZone.current, from: currentDate)
+        var dates = times.map { (h, m) in
+            current.hour = h
+            current.minute = m
+            return Calendar.current.date(from: current)!
         }
+        // 加一天
+        current = Calendar.current.dateComponents(in: TimeZone.current, from: currentDate.addingTimeInterval(60 * 60 * 24))
+        dates += times.map { (h, m) in
+            current.hour = h
+            current.minute = m
+            return Calendar.current.date(from: current)!
+        }
+        
+        // 找到比现在更后的时间
+        dates = dates.filter { d in
+            d.compare(currentDate) == .orderedDescending
+        }
+        
+        let entries = dates.map { date in
+            let entry = DataEntry(date: date, courses: [], studyRoom: [])
+        }
+        
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
-        
-//        WeatherService().weatherGet { result in
-//            var weathers: [Weather]
-//            switch result {
-//            case .success(let weather):
-//                weathers = weather
-//            case .failure(_):
-//                weathers = [Weather(), Weather()]
-//                print("获取天气错误")
-//            }
-//
-//        }
     }
     
-    private func getFirstEntryDate() -> Date {
-        let offsetSecond: TimeInterval = TimeInterval(2)
-        var currentDate = Date()
-        currentDate += offsetSecond
-        return currentDate
-    }
     
-    private func getFirstMinuteEntryDate() -> Date {
-        var currentDate = Date()
-        let passSecond = Calendar.current.component(.second, from: currentDate)
-        let offsetSecond: TimeInterval = TimeInterval(60 - passSecond)
-        currentDate += offsetSecond
-        return currentDate
-    }
+    
     
     private func getTodayCourse() -> [Course] {
         let activeWeek = storage.object.currentWeek
@@ -123,33 +113,6 @@ struct CourseTimelineProvider: TimelineProvider {
         return currentCourseArray
         
     }
-    
-//    private func getCollection(completion: @escaping (Result<[CollectionClass], Network.Failure>) -> Void) {
-//        let termName = SharedMessage.semesterName
-//        StudyRoomManager.allBuidlingGet(term: termName, week: String(todayWeek), day: String(todayDay)) { result in
-//            switch result {
-//            case .success(let data):
-//                if(data.errorCode == 0) {
-//                    StyCollectionManager.getCollections(buildings: data.data) {result in
-//                        switch result {
-//                        case .success(let data):
-//                            completion(.success(data))
-//                        case .failure(let error):
-//                            completion(.failure(error))
-//                        }
-//                    }
-//                }
-//            case .failure(let error):
-//                print("加载失败")
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-    
-//    private func requestDataToUseData(buildings: [StudyBuilding], completion: @escaping (Result<[CollectionClass], Network.Failure>) -> Void) {
-//
-//    }
-    
 }
 
 extension Date {
