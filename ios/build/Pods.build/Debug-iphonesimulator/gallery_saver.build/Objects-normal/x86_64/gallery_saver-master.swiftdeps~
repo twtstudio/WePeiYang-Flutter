@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)"
-options: "89c3a08a20641d078532fed800ceea36199b56db33848c3d9def712ad3fed267"
-build_start_time: [1663600747, 635435104]
-build_end_time: [1663600747, 717823982]
-inputs:
-  "/Users/lijialin/flutter/.pub-cache/hosted/pub.flutter-io.cn/gallery_saver-2.3.2/ios/Classes/SwiftGallerySaverPlugin.swift": !private [1663418700, 626591205]

@@ -21,8 +21,6 @@
 		568EF21028D655CD00074B70 /* FontTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20F28D655CD00074B70 /* FontTool.swift */; };
 		568EF21228D656E400074B70 /* MediumView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21128D656E400074B70 /* MediumView.swift */; };
 		568EF21428D6579600074B70 /* LargeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21328D6579600074B70 /* LargeView.swift */; };
-		568EF21628D65C2200074B70 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21528D65C2200074B70 /* WeatherService.swift */; };
-		568EF21828D65C6E00074B70 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21728D65C6E00074B70 /* Network.swift */; };
 		568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */; };
 		568EF21E28D8B21800074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
 		56ECC29028D8C3C700181B96 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
@@ -35,6 +33,8 @@
 		9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF228D8A74D004C4576 /* pushHandler.swift */; };
 		9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */; };
 		9D7D7FF728D8A761004C4576 /* widgetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF628D8A761004C4576 /* widgetHandler.swift */; };
+		9D7D800228D96F9D004C4576 /* Morning-Star-1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */; };
+		9D7D800328D96F9D004C4576 /* GILROY-BOLD-4.OTF in Resources */ = {isa = PBXBuildFile; fileRef = 9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */; };
 		D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */; };
 		D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */; };
 		D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */; };
@@ -94,8 +94,6 @@
 		568EF20F28D655CD00074B70 /* FontTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontTool.swift; sourceTree = "<group>"; };
 		568EF21128D656E400074B70 /* MediumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumView.swift; sourceTree = "<group>"; };
 		568EF21328D6579600074B70 /* LargeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeView.swift; sourceTree = "<group>"; };
-		568EF21528D65C2200074B70 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
-		568EF21728D65C6E00074B70 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTimelineProvider.swift; sourceTree = "<group>"; };
 		56B1FDAA288EA36500569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		56B1FDAB288EA36600569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
@@ -121,6 +119,8 @@
 		9D7D7FF228D8A74D004C4576 /* pushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pushHandler.swift; sourceTree = "<group>"; };
 		9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = umengStatisticsHandler.swift; sourceTree = "<group>"; };
 		9D7D7FF628D8A761004C4576 /* widgetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widgetHandler.swift; sourceTree = "<group>"; };
+		9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Morning-Star-1.ttf"; sourceTree = "<group>"; };
+		9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GILROY-BOLD-4.OTF"; sourceTree = "<group>"; };
 		C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMAnalyticsSwift.swift; sourceTree = "<group>"; };
 		D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMCommonSwift.swift; sourceTree = "<group>"; };
@@ -154,6 +154,7 @@
 		568EF1F028D6400000074B70 /* widget */ = {
 			isa = PBXGroup;
 			children = (
+				9D7D7FFC28D96F64004C4576 /* fonts */,
 				568EF21B28D6C03B00074B70 /* WidgetTimeline */,
 				568EF21A28D65D6400074B70 /* WidgetModel */,
 				568EF21928D65D3F00074B70 /* WidgetManager */,
@@ -180,8 +181,6 @@
 			isa = PBXGroup;
 			children = (
 				568EF20D28D6534F00074B70 /* WidgetCourseManager.swift */,
-				568EF21528D65C2200074B70 /* WeatherService.swift */,
-				568EF21728D65C6E00074B70 /* Network.swift */,
 			);
 			path = WidgetManager;
 			sourceTree = "<group>";
@@ -293,6 +292,15 @@
 				9D7D7FF628D8A761004C4576 /* widgetHandler.swift */,
 			);
 			path = Handlers;
+			sourceTree = "<group>";
+		};
+		9D7D7FFC28D96F64004C4576 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */,
+				9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		D302FA1A28C6654400B47A90 /* UMSwift */ = {
@@ -413,7 +421,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D7D800328D96F9D004C4576 /* GILROY-BOLD-4.OTF in Resources */,
 				568EF1F528D6400200074B70 /* Assets.xcassets in Resources */,
+				9D7D800228D96F9D004C4576 /* Morning-Star-1.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,11 +531,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				568EF21828D65C6E00074B70 /* Network.swift in Sources */,
 				568EF21E28D8B21800074B70 /* Storage.swift in Sources */,
 				568EF20828D64D8600074B70 /* Model.swift in Sources */,
 				568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */,
-				568EF21628D65C2200074B70 /* WeatherService.swift in Sources */,
 				568EF20E28D6534F00074B70 /* WidgetCourseManager.swift in Sources */,
 				568EF21228D656E400074B70 /* MediumView.swift in Sources */,
 				568EF1F228D6400000074B70 /* widget.swift in Sources */,

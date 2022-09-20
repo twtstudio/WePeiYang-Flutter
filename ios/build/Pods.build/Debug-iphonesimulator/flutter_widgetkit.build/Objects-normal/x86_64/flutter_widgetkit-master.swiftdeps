@@ -1,7 +1,0 @@
-version: "Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)"
-options: "06c8cb62f13e3d4b815d42962b1868cf8754e6e58bc4453f40c09ba0f5e9e999"
-build_start_time: [1663601018, 65515995]
-build_end_time: [1663601020, 203507900]
-inputs:
-  ? "/Users/lijialin/flutter/.pub-cache/hosted/pub.flutter-io.cn/flutter_widgetkit-1.0.3/ios/Classes/SwiftFlutterWidgetkitPlugin.swift"
-  : [1663591671, 546576976]

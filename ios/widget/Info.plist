@@ -7,5 +7,10 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Morning-Star-1.ttf</string>
+		<string>GILROY-BOLD-4.OTF</string>
+	</array>
 </dict>
 </plist>
