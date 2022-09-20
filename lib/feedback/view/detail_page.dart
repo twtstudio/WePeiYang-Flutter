@@ -243,7 +243,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       } else {
         body = ListView(
           children: [
-            PostCard.detail(post),
+            PostCardNormal(post, single: false),
             SizedBox(
               height: 120,
               child: Center(child: Loading()),
@@ -257,7 +257,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           if (i == 0) {
             return Column(
               children: [
-                PostCard.detail(post),
+                PostCardNormal(post, single: false),
                 Divider(
                   height: 2,
                   indent: 15,
@@ -567,7 +567,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           ),
                         ),
                         if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                          PostCard.outSide(post),
+                          BottomLikeFavDislike(post),
                       ],
                     ),
                   ],

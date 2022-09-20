@@ -121,7 +121,7 @@ class _CollectionPageState extends State<CollectionPage> {
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        Widget fav = PostCardSimple(
+        Widget fav = PostCardNormal(
           _favList[index],
         );
         return fav;

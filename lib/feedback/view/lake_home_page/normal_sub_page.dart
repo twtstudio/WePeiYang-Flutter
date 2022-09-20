@@ -356,7 +356,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     .dataList
                     .values
                     .toList()[ind];
-                return PostCardSimple(post);
+                return PostCardNormal(post);
               });
             },
           ),

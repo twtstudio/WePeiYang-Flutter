@@ -216,7 +216,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 controller: _sc,
                 childrenDelegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    Widget post = PostCardSimple(_list[index]);
+                    Widget post = PostCardNormal(_list[index]);
                     return post;
                   },
                   childCount: _list.length,

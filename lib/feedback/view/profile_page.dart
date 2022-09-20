@@ -93,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
     var postLists = (List.generate(
       _postList.length,
       (index) {
-        Widget post = PostCardSimple(
+        Widget post = PostCardNormal(
           _postList[index],
         );
         return post;
