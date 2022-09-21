@@ -20,8 +20,8 @@ abstract class DioAbstract {
   DioAbstract() {
     BaseOptions options = BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 10000,
-        receiveTimeout: 10000,
+        connectTimeout: 3000,
+        receiveTimeout: 3000,
         responseType: responseType,
         headers: headers);
     _dio = Dio()
@@ -57,7 +57,7 @@ extension DioRequests on DioAbstract {
       {Map<String, dynamic>? queryParameters,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio_debug)
+    return (debug ? _dio_debug : _dio)
         .get(path, queryParameters: queryParameters, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);

@@ -83,7 +83,6 @@ class WbyFontLoader {
           }
         });
       } catch (e, s) {
-        print('llogg');
         Logger.reportError(e, s);
       }
     }

@@ -514,7 +514,6 @@ class FeedbackService with AsyncTimer {
           'post_id': '$id',
         },
       );
-      print(commentResponse.data);
       List<Floor> officialCommentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         officialCommentList.add(Floor.fromJson(json));
@@ -1086,5 +1085,15 @@ class FeedbackService with AsyncTimer {
         onFailure(e);
       }
     });
+  }
+
+  /// 获取iOS是否显示拉黑按钮
+  static Future<bool> getIOSShowBlock() async {
+    try {
+      final res = await feedbackDio.get('setting');
+      return res.data['data']['data']['ios_lahei'];
+    } catch (e) {
+      return false;
+    }
   }
 }

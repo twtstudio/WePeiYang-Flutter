@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -39,21 +40,24 @@ class NCommentCard extends StatefulWidget {
   final DislikeCallback dislikeSuccessCallback;
   final bool isSubFloor;
   final bool isFullView;
+  final bool showBlockButton;
 
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
-  NCommentCard(
-      {this.ancestorName,
-      this.ancestorUId,
-      this.comment,
-      this.uid,
-      this.commentFloor,
-      this.likeSuccessCallback,
-      this.dislikeSuccessCallback,
-      this.isSubFloor,
-      this.isFullView,
-      this.type});
+  NCommentCard({
+    this.ancestorName,
+    this.ancestorUId,
+    this.comment,
+    this.uid,
+    this.commentFloor,
+    this.likeSuccessCallback,
+    this.dislikeSuccessCallback,
+    this.isSubFloor,
+    this.isFullView,
+    this.type,
+    this.showBlockButton,
+  });
 }
 
 class _NCommentCardState extends State<NCommentCard>
@@ -103,6 +107,20 @@ class _NCommentCardState extends State<NCommentCard>
             builder: (context) {
               return CupertinoActionSheet(
                 actions: <Widget>[
+                  // 拉黑按钮
+                  if (Platform.isIOS && widget.showBlockButton)
+                    // 分享按钮
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        ToastProvider.success('拉黑用户成功');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '拉黑',
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
                   // 分享按钮
                   CupertinoActionSheetAction(
                     onPressed: () {
@@ -501,7 +519,8 @@ class _NCommentCardState extends State<NCommentCard>
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
             widget.comment.uid,
-            widget.comment.nickname, widget.comment.level.toString()),
+            widget.comment.nickname,
+            widget.comment.level.toString()),
       ),
       SizedBox(width: 10.w),
       Expanded(

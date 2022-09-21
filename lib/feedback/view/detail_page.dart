@@ -66,6 +66,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
 
+  /// iOS显示拉黑按钮
+  bool _showBlockButton = false;
+
   _DetailPageState(this.post);
 
   _onRefresh() {
@@ -118,44 +121,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    status = DetailPageStatus.loading;
-    context.read<NewFloorProvider>().inputFieldEnabled = false;
-    context.read<NewFloorProvider>().replyTo = 0;
-    _officialCommentList = [];
-    _commentList = [];
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /// 如果是从通知栏点进来的
-      if (post == null || post.isLike == null || post.isOwner == null) {
-        _initCommentsOnly(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.error;
-          });
-        });
-      } else {
-        _getOfficialComment();
-        _getComments(
-            onSuccess: (comments) {
-              _commentList.addAll(comments);
-            },
-            onFail: () {},
-            current: currentPage);
-        status = DetailPageStatus.idle;
-      }
-    });
-    order.addListener(() {
-      _refreshController.requestRefresh();
-      CommonPreferences.feedbackFloorSortType.value = order.value;
-    });
   }
 
   // 逻辑有点问题
@@ -234,6 +199,50 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ToastProvider.error(e.error.toString());
       },
     );
+  }
+
+  _getIOSShowBlock() async {
+    _showBlockButton = await FeedbackService.getIOSShowBlock();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    status = DetailPageStatus.loading;
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
+    _officialCommentList = [];
+    _commentList = [];
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      /// 如果是从通知栏点进来的
+      if (post == null || post.isLike == null || post.isOwner == null) {
+        _initCommentsOnly(onSuccess: (comments) {
+          _commentList.addAll(comments);
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
+        }, onFail: () {
+          setState(() {
+            status = DetailPageStatus.error;
+          });
+        });
+      } else {
+        _getOfficialComment();
+        _getComments(
+            onSuccess: (comments) {
+              _commentList.addAll(comments);
+            },
+            onFail: () {},
+            current: currentPage);
+        status = DetailPageStatus.idle;
+      }
+    });
+    _getIOSShowBlock();
+    order.addListener(() {
+      _refreshController.requestRefresh();
+      CommonPreferences.feedbackFloorSortType.value = order.value;
+    });
   }
 
   @override
@@ -380,6 +389,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               isSubFloor: false,
               isFullView: false,
               type: post.type,
+              showBlockButton: _showBlockButton,
             );
           }
         },
@@ -616,7 +626,21 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             context: context,
             builder: (context) {
               return CupertinoActionSheet(
-                actions: <Widget>[
+                actions: [
+                  // 拉黑按钮
+                  if (Platform.isIOS && _showBlockButton)
+                    // 分享按钮
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        ToastProvider.success('拉黑用户成功');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '拉黑',
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
                   // 分享按钮
                   CupertinoActionSheetAction(
                     onPressed: () {
@@ -662,14 +686,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                               FeedbackService.deletePost(
                                 id: widget.post.id,
                                 onSuccess: () {
-                                  context
-                                      .read<LakeModel>()
-                                      .lakeAreas[context
-                                          .read<LakeModel>()
-                                          .tabList[context
-                                              .read<LakeModel>()
-                                              .currentTab]
-                                          .id]
+                                  final lake = context.read<LakeModel>();
+                                  lake
+                                      .lakeAreas[
+                                          lake.tabList[lake.currentTab].id]
                                       .refreshController
                                       .requestRefresh();
                                   ToastProvider.success(

@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -97,7 +98,6 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 50,
-            brightness: Brightness.light,
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
@@ -184,6 +184,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 ),
               ),
             ),
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
         ),
         body: TabBarView(
@@ -302,7 +303,6 @@ class _LikeMessagesListState extends State<LikeMessagesList>
       }
       _refreshController.refreshCompleted();
     } catch (e) {
-      print(e.toString());
       _refreshController.refreshFailed();
     }
   }
