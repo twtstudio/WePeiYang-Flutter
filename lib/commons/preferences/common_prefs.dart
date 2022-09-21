@@ -111,7 +111,11 @@ class CommonPreferences {
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
-  static final lastCheckUpdateTime = PrefsBean<String>('lastCheckUpdateTime');
+  static final lastCheckUpdateTime =
+      PrefsBean<String>('lastCheckUpdateTime', '');
+  static final ignoreUpdateVersion =
+      PrefsBean<String>('ignoreUpdateVersion', '');
+  // 推送
   static final canPush = PrefsBean<bool>('can_push', false);
   static final pushCid = PrefsBean<String>('pushCid', '');
   static final pushUser = PrefsBean<String>('pushUser', '');
@@ -162,6 +166,7 @@ class CommonPreferences {
 
     /// 杂项
     lastCheckUpdateTime.clear();
+    ignoreUpdateVersion.clear();
     canPush.clear();
     pushCid.clear();
     pushUser.clear();

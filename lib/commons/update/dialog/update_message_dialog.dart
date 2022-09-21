@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
@@ -23,6 +24,8 @@ class UpdateMessageDialog extends StatelessWidget {
 
     final size = DialogSize.getSize(context);
     void cancel() {
+      // 设置跳过这个版本
+      CommonPreferences.ignoreUpdateVersion.value = manager.version.version;
       manager.setIdle();
     }
 
@@ -32,7 +35,7 @@ class UpdateMessageDialog extends StatelessWidget {
         UpdateDialog.progress.show();
         context.read<UpdateManager>().setDownload();
       } else if (Platform.isIOS) {
-        launch('itms-apps://itunes.apple.com/app/id1542905353');
+        launchUrl(Uri.parse('itms-apps://itunes.apple.com/app/id1542905353'));
       }
     }
 
@@ -49,7 +52,7 @@ class UpdateMessageDialog extends StatelessWidget {
       buttons = WbyDialogStandardTwoButton(
         first: cancel,
         second: ok,
-        firstText: '稍后更新',
+        firstText: '跳过此版本',
         secondText: '立刻更新',
       );
     }

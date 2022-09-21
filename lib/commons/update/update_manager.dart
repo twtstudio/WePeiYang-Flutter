@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/channel/install/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -70,6 +71,12 @@ class UpdateManager extends UpdateStatusListener {
 
         // 如果今天不再检查更新，且为自动更新，且不是强制更新
         if (!UpdateUtil.todayCheckAgain && auto && !v.isForced) {
+          setIdle();
+          return;
+        }
+        // 如果跳过版本
+        if (auto &&
+            CommonPreferences.ignoreUpdateVersion.value == version.version) {
           setIdle();
           return;
         }
