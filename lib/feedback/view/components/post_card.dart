@@ -23,12 +23,16 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/main.dart';
 
 class PostCardNormal extends StatefulWidget {
+  /// 标准 PostCard
+  ///
+  /// 包括论坛首页展示的 (outer = true / null) 和 详情页展示的 (outer = false)
+
+  PostCardNormal(this.post, {this.outer = true});
+
   final Post post;
 
-  /// 以下默认single
-  final bool single;
-
-  PostCardNormal(this.post, {this.single = true});
+  /// 以下默认 outer
+  final bool outer;
 
   @override
   State<StatefulWidget> createState() => _PostCardNormalState(this.post);
@@ -56,16 +60,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
     var avatarAndSolve = SizedBox(
         height: 35.w,
         child: Row(children: [
-          ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(100)),
-            child: WpyPic(
-              post.avatar == ""
-                  ? '${EnvConfig.QNHD}avatar/beam/20/${post.uid}.svg'
-                  : 'https://qnhdpic.twt.edu.cn/download/origin/${post.avatar}',
-              width: 34.w,
-              height: 34.w,
-              fit: BoxFit.contain,
-            ),
+          SizedBox(
+            width: 34,
+            height: 34,
+            child: ProfileImageWithDetailedPopup(
+                post.type,
+                post.avatar ?? post.nickname,
+                post.uid,
+                post.nickname, post.level.toString()),
           ),
           SizedBox(width: 8.w),
           SizedBox(
@@ -142,22 +144,22 @@ class _PostCardNormalState extends State<PostCardNormal> {
         padding: EdgeInsets.only(top: 6.h),
         child: ExpandableText(
           text: post.content,
-          maxLines: widget.single ? 2 : 8,
-          style: widget.single
+          maxLines: widget.outer ? 2 : 8,
+          style: widget.outer
               ? TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.4)
               : TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.6),
           expand: false,
-          buttonIsShown: !widget.single,
+          buttonIsShown: !widget.outer,
           isHTML: false,
         ));
 
     /// 图片
-    var singleImages =
-        post.imageUrls.length == 1 ? singleImage : singleMultipleImage;
+    var outerImages =
+        post.imageUrls.length == 1 ? outerSingleImage : outerMultipleImage;
 
-    var detailedImage = post.imageUrls.length == 1
-        ? DetailCardSingleImage(post.imageUrls[0])
-        : detailMultipleImage;
+    var innerImages = post.imageUrls.length == 1
+        ? InnerSingleImageWidget(post.imageUrls[0])
+        : innerMultipleImage;
 
     /// 评论点赞点踩浏览量
     var likeUnlikeVisit = Row(
@@ -275,8 +277,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
           )
         ]);
 
-    /// avatarAndSolve、eTagAndTitle、content的统一list
-    /// （因为single和detail的这部分几乎完全相同）
+    // avatarAndSolve、eTagAndTitle、content的统一list
+    // （因为 outer 和 inner 的这部分几乎完全相同）
     List<Widget> head = [
       avatarAndSolve,
       SizedBox(height: 6.h),
@@ -284,8 +286,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
       if (post.content.isNotEmpty) content, // 行数的区别在内部判断
       SizedBox(height: 10.h)
     ];
-    return widget.single
-        // detail 框架
+    return widget.outer
+        // outer 框架
         ? GestureDetector(
             onTap: () => Navigator.pushNamed(
               context,
@@ -298,14 +300,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ...head,
-                  if (post.imageUrls.isNotEmpty) singleImages,
+                  if (post.imageUrls.isNotEmpty) outerImages,
                   SizedBox(height: 8.h),
                   likeUnlikeVisit
                 ],
               ),
             ),
           )
-        // single 框架
+        // inner 框架
         : Container(
             padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
             decoration: BoxDecoration(
@@ -316,7 +318,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...head,
-                if (post.imageUrls.isNotEmpty) detailedImage,
+                if (post.imageUrls.isNotEmpty) innerImages,
                 SizedBox(height: 8.h),
                 tagCampusVisit
               ],
@@ -324,21 +326,24 @@ class _PostCardNormalState extends State<PostCardNormal> {
           );
   }
 
-  Widget get singleImage {
+  Widget get outerSingleImage {
     return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(8.r)),
         child: Container(
+          width: 350.w,
+          height: 197.w,
+          color: Colors.black12,
+          child: WpyPic(
+            picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
             height: 197.w,
-            child: WpyPic(
-              picBaseUrl + 'origin/' + post.imageUrls[0],
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-            )));
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+          ),
+        ));
   }
 
-  Widget get detailMultipleImage => Row(
+  Widget get innerMultipleImage => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
           post.imageUrls.length,
@@ -363,7 +368,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         ),
       );
 
-  Widget get singleMultipleImage => Row(
+  Widget get outerMultipleImage => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
           post.imageUrls.length,
@@ -381,16 +386,16 @@ class _PostCardNormalState extends State<PostCardNormal> {
       );
 }
 
-class DetailCardSingleImage extends StatefulWidget {
+class InnerSingleImageWidget extends StatefulWidget {
   final String imageUrl;
 
-  DetailCardSingleImage(this.imageUrl);
+  InnerSingleImageWidget(this.imageUrl);
 
   @override
-  State<DetailCardSingleImage> createState() => _DetailCardSingleImageState();
+  State<InnerSingleImageWidget> createState() => _InnerSingleImageWidgetState();
 }
 
-class _DetailCardSingleImageState extends State<DetailCardSingleImage> {
+class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
 
   bool _picFullView = false;

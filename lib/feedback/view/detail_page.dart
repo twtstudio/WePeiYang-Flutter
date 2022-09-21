@@ -50,6 +50,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   DetailPageStatus status;
   List<Floor> _commentList;
   List<Floor> _officialCommentList;
+  bool _showPostCard = true;
   bool _bottomIsOpen;
   int currentPage = 1;
   int rating = 0;
@@ -70,13 +71,22 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
+    setState(() {
+      _showPostCard = false;
+    });
     _commentList.clear();
     _initPostAndComments(
       onSuccess: (comments) {
+        setState(() {
+          _showPostCard = true;
+        });
         _commentList = comments;
         _refreshController.refreshCompleted();
       },
       onFail: () {
+        setState(() {
+          _showPostCard = true;
+        });
         _refreshController.refreshFailed();
       },
     );
@@ -121,7 +131,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
       if (post == null || post.isLike == null || post.isOwner == null) {
-        _initPostAndComments(onSuccess: (comments) {
+        _initCommentsOnly(onSuccess: (comments) {
           _commentList.addAll(comments);
           setState(() {
             status = DetailPageStatus.idle;
@@ -160,6 +170,15 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         );
       }
     });
+  }
+
+  _initCommentsOnly({Function(List<Floor>) onSuccess, Function onFail}) {
+    _getOfficialComment(onFail: onFail);
+    _getComments(
+      onSuccess: onSuccess,
+      onFail: onFail,
+      current: 1,
+    );
   }
 
   Future<bool> _initPost([Function onFail]) async {
@@ -243,7 +262,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       } else {
         body = ListView(
           children: [
-            PostCardNormal(post, single: false),
+            PostCardNormal(post, outer: false),
             SizedBox(
               height: 120,
               child: Center(child: Loading()),
@@ -257,7 +276,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           if (i == 0) {
             return Column(
               children: [
-                PostCardNormal(post, single: false),
+                if (_showPostCard) PostCardNormal(post, outer: false),
                 const SizedBox(height: 10),
                 Row(
                   children: [

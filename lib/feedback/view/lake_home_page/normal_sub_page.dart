@@ -89,13 +89,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       return '晚上好';
   }
 
-  onRefresh([AnimationController controller]) async {
+  onRefresh() async {
     FeedbackService.getToken(onResult: (_) {
       context.read<LakeModel>().getClipboardWeKoContents(context);
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(index, success: () {
-        setState(() {});
         context
             .read<LakeModel>()
             .lakeAreas[index]
@@ -110,7 +109,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
               .lakeAreas[index]
               .refreshController
               .refreshToIdle();
-        controller?.stop();
         context
             .read<LakeModel>()
             .lakeAreas[index]
@@ -121,7 +119,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       context.read<NoticeProvider>().initNotices();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
-      controller?.stop();
       context
           .read<LakeModel>()
           .lakeAreas[index]
@@ -165,11 +162,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     }
     context.read<FestivalProvider>().initFestivalList();
     context.read<NoticeProvider>().initNotices();
-    context.read<LakeModel>().fillLakeArea(
+    context.read<LakeModel>().fillLakeAreaAndInitPostList(
         index, RefreshController(initialRefresh: false), ScrollController());
-    context.read<LakeModel>().initPostList(index, success: () {}, failure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
     super.initState();
   }
 
@@ -372,7 +366,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 }
 
 class HomeErrorContainer extends StatefulWidget {
-  final void Function(AnimationController) onPressed;
+  final void Function() onPressed;
   final bool networkFailPageUsage;
   final int index;
 
@@ -434,7 +428,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             });
         if (!controller.isAnimating) {
           controller.repeat();
-          widget.onPressed?.call(controller);
+          widget.onPressed?.call();
         }
       },
       mini: true,

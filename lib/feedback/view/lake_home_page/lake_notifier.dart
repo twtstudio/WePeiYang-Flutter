@@ -148,11 +148,14 @@ class LakeModel extends ChangeNotifier {
     lakeAreas[index] = lakeArea;
   }
 
-  void fillLakeArea(
+  void fillLakeAreaAndInitPostList(
       int index, RefreshController rController, ScrollController sController) {
     LakeArea lakeArea = new LakeArea._(lakeAreas[index].tab, {}, rController,
         sController, LakePageStatus.unload);
     lakeAreas[index] = lakeArea;
+    initPostList(index, success: () {}, failure: (e) {
+      ToastProvider.error(e.error.toString());
+    });
   }
 
   void quietUpdateItem(Post post, WPYTab tab) {
@@ -247,15 +250,15 @@ class LakeModel extends ChangeNotifier {
         _addOrUpdateItems(postList, index);
         lakeAreas[index].currentPage = 1;
         lakeAreas[index].status = LakePageStatus.idle;
-        success?.call();
         notifyListeners();
+        success?.call();
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
         checkTokenAndInitPostList(index);
         lakeAreas[index].status = LakePageStatus.error;
-        failure?.call(e);
         notifyListeners();
+        failure?.call(e);
       },
     );
   }

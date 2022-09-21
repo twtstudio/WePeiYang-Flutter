@@ -193,10 +193,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
                                 color: Colors.white,
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        'assets/images/wpy_home_background.png')),
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
