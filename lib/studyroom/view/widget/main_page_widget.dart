@@ -41,22 +41,24 @@ class MainPageStudyRoomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 18.0, right: 18, bottom: 15),
+      padding: EdgeInsets.only(left: 22.w, right: 22.w, bottom: 15.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 24.h),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            padding: EdgeInsets.only(left: 8.w),
             child: Text(
               '我的收藏',
-              style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
+              style: TextUtil.base.PingFangSC.black2A.bold.sp(14.2),
             ),
           ),
           SizedBox(height: 25.h),
           _favorList(context),
           TextButton.icon(
             onPressed: () => context.read<StudyroomProvider>().changeCampus(),
+            style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.only(left: 8.w))),
             icon: Text(
               context.watch<StudyroomProvider>().campus.campusName + '校区',
               style: TextUtil.base.PingFangSC.black2A.bold.sp(14),

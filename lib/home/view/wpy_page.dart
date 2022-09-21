@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/view/dialogs/acid_check_dialog.dart';
 import 'package:we_pei_yang_flutter/home/view/dialogs/activity_dialog.dart';
+import 'package:we_pei_yang_flutter/home/view/map_calender_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -82,6 +83,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           '课程表',
           'Schedule',
           ScheduleRouter.course),
+      CardBean(
+          Image.asset(
+            'assets/images/schedule/add.png',
+            width: 24.w,
+          ),
+          '地图·校历',
+          'Map-\nCalender',
+          HomeRouter.mapCalenderPage),
       CardBean(
           Image.asset(
             'assets/svg_pics/lake_butt_icons/wiki.png',
@@ -188,7 +197,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                         AnimatedContainer(
                             duration: const Duration(milliseconds: 800),
                             curve: Curves.easeIn,
-                            height: MediaQuery.of(context).size.height - 160.h,
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
@@ -232,10 +240,11 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 
   Widget _functionCardsView() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 功能跳转卡片
         SliverCardsWidget(cards),
-        SizedBox(height: 10.w),
+        if (CommonPreferences.showMap.value) MapAndCalender(),
         Padding(
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
           child: TabBar(
@@ -298,7 +307,7 @@ class SliverCardsWidget extends StatelessWidget {
     Widget cardList = ListView.builder(
       controller: controller,
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 16.h),
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
       itemCount: cards.length,
@@ -336,19 +345,8 @@ class SliverCardsWidget extends StatelessWidget {
     return Container(
       width: 150.w,
       height: 80.h,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 7),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        // border: Border.all(),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 4),
-            blurRadius: 10,
-            color: Colors.black.withOpacity(0.05),
-          ),
-        ],
-      ),
+      margin: EdgeInsets.fromLTRB(0, 2.h, 18.h, 16.h),
+      decoration: MapAndCalenderState().cardDecoration,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -363,7 +361,9 @@ class SliverCardsWidget extends StatelessWidget {
                   height: 48.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Color(0xFF80B7F9),
+                    color: bean.label == '地图·校历'
+                        ? Color(0xFF2887FF)
+                        : Color(0xFF80B7F9),
                   ),
                 ),
               ),

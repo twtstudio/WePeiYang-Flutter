@@ -11,7 +11,8 @@ class LocalImageViewPage extends StatefulWidget {
 }
 
 class _LocalImageViewPageState extends State<LocalImageViewPage> {
-  List<File> uriList;
+  List<File> uriList = [];
+  List<String> assetList = [];
   int uriListLength = 0;
   int indexNow = 0;
   int tempSelect;
@@ -21,6 +22,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
     timeDilation = 0.5;
     dynamic obj = ModalRoute.of(context).settings.arguments;
     uriList = obj['uriList'];
+    assetList = obj['assetList'];
     uriListLength = obj['uriListLength'];
     indexNow = obj['indexNow'];
     tempSelect = indexNow;
@@ -39,12 +41,14 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
                         value: event == null
                             ? 0
                             : event.cumulativeBytesLoaded /
-                            event.expectedTotalBytes,
+                                event.expectedTotalBytes,
                       ))),
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  imageProvider: FileImage(uriList[index]),
+                  imageProvider: assetList.isNotEmpty
+                      ? AssetImage(assetList[index])
+                      : FileImage(uriList[index]),
                   maxScale: PhotoViewComputedScale.contained * 5.0,
                   minScale: PhotoViewComputedScale.contained * 1.0,
                   initialScale: PhotoViewComputedScale.contained,
@@ -57,8 +61,8 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
                 initialPage: indexNow,
               ),
               onPageChanged: (index) => setState(() {
-                tempSelect = index;
-              }))),
+                    tempSelect = index;
+                  }))),
     );
   }
 }
