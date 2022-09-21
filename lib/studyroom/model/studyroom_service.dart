@@ -2,10 +2,8 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:retry/retry.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -83,13 +81,7 @@ final _studyroomDio = _StudyroomDio();
 class StudyroomService {
   /// 获取收藏的教室id
   static Future<List<String>> getFavouriteIds() async {
-    // 这个有几率失败
-    final response = await retry(
-      // Make a GET request
-      () => _studyroomDio.get('getCollections'),
-      // Retry on SocketException or TimeoutException
-      retryIf: (e) => e is SocketException || e is TimeoutException,
-    );
+    final response = await _studyroomDio.get('getCollections');
     // var response =
     var pre = Map<String, List<dynamic>>.from(response.data).values;
     if (pre.isEmpty) {

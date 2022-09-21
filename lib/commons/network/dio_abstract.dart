@@ -24,17 +24,23 @@ abstract class DioAbstract {
         receiveTimeout: 3000,
         responseType: responseType,
         headers: headers);
-    _dio = Dio()
-      ..options = options
-      ..interceptors.add(NetCheckInterceptor())
-      ..interceptors.addAll(interceptors)
-      ..interceptors.add(ErrorInterceptor());
-    _dio_debug = Dio()
-      ..options = options
-      ..interceptors.add(NetCheckInterceptor())
-      ..interceptors.add(LogInterceptor(requestBody: true, responseBody: true))
-      ..interceptors.addAll(interceptors)
-      ..interceptors.add(ErrorInterceptor());
+
+    _dio = Dio()..options = options;
+    _dio.interceptors.addAll([
+      RetryInterceptor(dio: _dio),
+      NetCheckInterceptor(),
+      ...interceptors,
+      ErrorInterceptor()
+    ]);
+
+    _dio_debug = Dio()..options = options;
+    _dio_debug.interceptors.addAll([
+      RetryInterceptor(dio: _dio_debug),
+      NetCheckInterceptor(),
+      LogInterceptor(requestBody: true, responseBody: true),
+      ...interceptors,
+      ErrorInterceptor()
+    ]);
   }
 
 // 不要删除！！！！
