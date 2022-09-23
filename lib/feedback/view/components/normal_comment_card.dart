@@ -56,7 +56,7 @@ class NCommentCard extends StatefulWidget {
     this.isSubFloor,
     this.isFullView,
     this.type,
-    this.showBlockButton,
+    this.showBlockButton = false,
   });
 }
 
