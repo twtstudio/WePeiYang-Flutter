@@ -7,7 +7,7 @@ class UpdateUtil {
   /// 今日是否还检查更新
   static bool get todayCheckAgain {
     final date = CommonPreferences.lastCheckUpdateTime.value;
-    if (date == '') return false;
+    if (date == '') return true;
     final todayNotAgain =
         DateTime.tryParse(date)?.isSameDay(DateTime.now()) ?? false;
     return !todayNotAgain;
