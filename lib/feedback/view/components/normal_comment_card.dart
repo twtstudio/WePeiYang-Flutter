@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -15,6 +16,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
@@ -364,13 +366,52 @@ class _NCommentCardState extends State<NCommentCard>
         child: AnimatedSize(
           duration: Duration(milliseconds: 150),
           curve: Curves.decelerate,
-          child: InkWell(
-              onTap: () {
-                setState(() {
-                  _picFullView = true;
-                });
-              },
-              child: _picFullView
+          child: widget.comment.content != ''
+              ? InkWell(
+                  onTap: () {
+                    setState(() {
+                      _picFullView = true;
+                    });
+                  },
+                  child: _picFullView
+                      ? InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.imageView,
+                                arguments: {
+                                  "urlList": [widget.comment.imageUrl],
+                                  "urlListLength": 1,
+                                  "indexNow": 0
+                                });
+                          },
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxHeight: WePeiYangApp.screenWidth * 2),
+                            child: WpyPic(
+                              picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                              withHolder: true,
+                              holderHeight: 64.h,
+                            ),
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                child: WpyPic(
+                                  picBaseUrl +
+                                      'thumb/' +
+                                      widget.comment.imageUrl,
+                                  width: 70.w,
+                                  height: 68.h,
+                                  fit: BoxFit.cover,
+                                  withHolder: true,
+                                )),
+                            Spacer()
+                          ],
+                        ))
+              : _picFullView
                   ? InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, FeedbackRouter.imageView,
@@ -392,18 +433,46 @@ class _NCommentCardState extends State<NCommentCard>
                     )
                   : Row(
                       children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                            child: WpyPic(
-                              picBaseUrl + 'thumb/' + widget.comment.imageUrl,
-                              width: 70.w,
-                              height: 64.h,
-                              fit: BoxFit.cover,
-                              withHolder: true,
-                            )),
-                        Spacer()
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _picFullView = true;
+                            });
+                          },
+                          child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                              child: WpyPic(
+                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                                width: 70.w,
+                                height: 68.h,
+                                fit: BoxFit.cover,
+                                withHolder: true,
+                              )),
+                        ),
+                        Expanded(
+                            child: GestureDetector(
+                                onTap: () {
+                                  if (Provider.of<NewFloorProvider>(context,
+                                          listen: false)
+                                      .inputFieldEnabled) {
+                                    Provider.of<NewFloorProvider>(context,
+                                            listen: false)
+                                        .clearAndClose();
+                                  } else {
+                                    Provider.of<NewFloorProvider>(context,
+                                            listen: false)
+                                        .inputFieldOpenAndReplyTo(
+                                            widget.comment.id);
+                                    FocusScope.of(context).requestFocus(
+                                        Provider.of<NewFloorProvider>(context,
+                                                listen: false)
+                                            .focusNode);
+                                  }
+                                },
+                                child: Container(height: 68.h, color: Colors.transparent)))
                       ],
-                    )),
+                    ),
         ));
 
     var subFloor;

@@ -450,14 +450,14 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                 '${EnvConfig.QNHD}avatar/beam/20/${uid}',
                 width: 34.w,
                 height: 34.w,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 placeholderBuilder: defaultPlaceholderBuilder,
               )
             : Image.network(
                 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
                 width: 34.w,
                 height: 32.w,
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
               ),
       ),
     );
