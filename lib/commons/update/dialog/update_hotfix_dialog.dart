@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
@@ -85,10 +84,10 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
               UpdateDetail(),
               SizedBox(height: size.dialogWidth * 0.04),
               buttons,
+              SizedBox(height: size.dialogWidth * 0.04),
             ],
           ),
         ),
-        TodayShowAgainCheck(tap: cancel),
       ],
     );
 

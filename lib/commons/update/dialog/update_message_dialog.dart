@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
@@ -74,10 +73,10 @@ class UpdateMessageDialog extends StatelessWidget {
               UpdateDetail(),
               SizedBox(height: size.verticalPadding),
               buttons,
+              SizedBox(height: size.verticalPadding),
             ],
           ),
         ),
-        TodayShowAgainCheck(tap: cancel),
       ],
     );
 
