@@ -661,6 +661,7 @@
 				CURRENT_PROJECT_VERSION = 202209302200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -909,6 +910,7 @@
 				CURRENT_PROJECT_VERSION = 202209302200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 x86_64 arm64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -935,6 +937,7 @@
 				CURRENT_PROJECT_VERSION = 202209302200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

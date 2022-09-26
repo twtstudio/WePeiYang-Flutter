@@ -8,6 +8,7 @@
 import SwiftUI
 import WidgetKit
 
+
 struct SmallView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var store = SwiftStorage.courseTable
@@ -32,13 +33,44 @@ struct SmallView: View {
     var body: some View {
         VStack {
             HStack {
-                Text(weekday)
-                    .morningStar(style: .largeTitle, weight: .bold)
-                    .foregroundColor(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.6872389913, green: 0.7085373998, blue: 0.8254910111, alpha: 1)))
-                    .padding(.leading, -3)
-                
+                if weekday=="Monday" {
+                    Image("Mon.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else if weekday=="Tuesday" {
+                    Image("Tue.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else if weekday=="Wednesday" {
+                    Image("Wed.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else if weekday=="Thursday" {
+                    Image("Thu.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else if weekday=="Friday" {
+                    Image("Fri.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else if weekday=="Saturday" {
+                    Image("Sat.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
+                else {
+                    Image("Sun.b")
+                        .padding(.leading)
+                        .padding(.top, 10)
+                }
                 Spacer()
-                
+                Image("beiyangb")
+                    .padding(.trailing)
             }
 //            Text(entry.date.format(with: "HH:mm:ss") + "T \(courseTable.customCourseArray.count)个 \(courseTable.courseArray.count)个\n" + "\(courseTable.currentWeek) \(courseTable.currentDay)\n" + "\(StorageKey.termStartDate.getGroupData())")
 //                .foregroundColor(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.6872389913, green: 0.7085373998, blue: 0.8254910111, alpha: 1)))
@@ -109,11 +141,13 @@ struct SmallView: View {
                         }
                         
                     } else {
-                        Text(hour>21 ? "夜深了\n做个早睡的人吧" : "今日无课:)\n做点有意义的事情吧")
-                            .font(.footnote)
+                        Text("这两天都没有课程啦，\n假期愉快！")
+                            .font(.system(size: 10))
+                            .fontWeight(.regular)
                             .bold()
                             .foregroundColor(colorScheme == .dark ? .white : .black)
-                            .padding([.leading, .top])
+                            .padding(.leading)
+                            .padding(.top, 25)
                     }
                     
                 }

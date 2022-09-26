@@ -21,9 +21,9 @@ struct CourseTableWidgetEntryView: View {
 //            MediumView(entry: entry)
 //        case .systemLarge:
 //            LargeView(entry: entry)
-        case .accessoryRectangular:
+        case .systemLarge:
             LockRectView(entry: entry)
-        case .accessoryInline:
+        case .systemMedium:
             LockLineView(entry: entry)
 //        case .accessoryCircular:
 //            LockRingView(entry: entry)
@@ -46,6 +46,6 @@ struct PeiYang_LiteWidget: Widget {
         }
         .configurationDisplayName("WePeiyang Widget")
         .description("快速查看当前课表信息。")
-        .supportedFamilies([.systemSmall, .accessoryRectangular, .accessoryInline])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
