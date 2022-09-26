@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -90,6 +91,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   onRefresh() async {
+    context.read<LakeModel>().lakeAreas[index].status = LakePageStatus.loading;
     FeedbackService.getToken(onResult: (_) {
       context.read<LakeModel>().getClipboardWeKoContents(context);
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
@@ -361,7 +363,108 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     else if (status == LakePageStatus.error)
       return HomeErrorContainer(onRefresh, true, index);
     else
-      return Loading();
+      return LoadingPageWidget(index);
+  }
+}
+
+class LoadingPageWidget extends StatefulWidget {
+  final int index;
+
+  LoadingPageWidget(this.index);
+
+  @override
+  _LoadingPageWidgetState createState() => _LoadingPageWidgetState();
+}
+
+class _LoadingPageWidgetState extends State<LoadingPageWidget>
+    with SingleTickerProviderStateMixin {
+  bool isOpa = false;
+  Timer _timer;
+
+  @override
+  void initState() {
+    isOpa = true;
+    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
+      if (isOpa)
+        isOpa = false;
+      else
+        isOpa = true;
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: 10,
+          itemBuilder: (context, ind) {
+            return Builder(builder: (context) {
+              if (ind == 0)
+                return Container(
+                  height: 35.h,
+                  margin: EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+                  padding: EdgeInsets.symmetric(vertical: 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
+                      color: ColorUtil.blue2CColor.withAlpha(12)),
+                );
+              ind--;
+              if (widget.index == 0 && ind == 0)
+                return Opacity(opacity: 0.4, child: HotCard());
+              if (widget.index != 0 && ind == 0) return SizedBox(height: 10.h);
+              ind--;
+              if (ind == 0 &&
+                  context.read<FestivalProvider>().festivalList.length > 0)
+                return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      color: Colors.black26,
+                    ),
+                    margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                    width: WePeiYangApp.screenWidth - 28,
+                    height: 0.32 * WePeiYangApp.screenWidth);
+              ind--;
+              if (ind == 0) return SizedBox(height: 20.h);
+              ind--;
+              return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    color: Colors.black26,
+                  ),
+                  margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                  width: WePeiYangApp.screenWidth - 28,
+                  height: 160.h);
+            });
+          },
+        ),
+        AnimatedContainer(
+            duration: Duration(microseconds: 200),
+            width: 1.sw,
+            height: 1.sh,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: isOpa ? Alignment(0, 0.2) : Alignment(0, 1.6),
+                colors: [
+                  Color(0x32FFFFFF),
+                  Color(0xE1FFFFFF),
+                ],
+              ),
+            ),
+            child: Center(child: Loading()))
+      ],
+    );
   }
 }
 
