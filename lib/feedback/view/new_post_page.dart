@@ -302,8 +302,7 @@ class SubmitButton extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 onFailure: (e) {
-                  dataModel.clear();
-                  ToastProvider.error(e.error.toString());
+                  ToastProvider.error('发帖失败，内容已暂存\n${e.error.toString()}');
                 },
               );
               dataModel.clear();
@@ -314,8 +313,7 @@ class SubmitButton extends StatelessWidget {
             }
           },
           onFailure: (e) {
-            dataModel.clear();
-            ToastProvider.error(e.error.toString());
+            ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
           });
     } else {
       if (dataModel.check) {

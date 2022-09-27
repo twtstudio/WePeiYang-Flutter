@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
@@ -517,8 +518,14 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var errorImg = SvgPicture.asset('assets/svg_pics/network_failed.svg');
+    var errorImg = WpyPic('assets/images/lake_butt_icons/monkie.png', height: 160, width: 160);
 
     var errorText = Text(
         widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
@@ -563,10 +570,10 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 120.h),
           errorImg,
+          SizedBox(height: 20.h),
           errorText,
           paddingBox,
           widget.networkFailPageUsage ? retryButton : SizedBox(),
