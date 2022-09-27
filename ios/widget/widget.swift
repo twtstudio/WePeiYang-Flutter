@@ -21,12 +21,12 @@ struct CourseTableWidgetEntryView: View {
 //            MediumView(entry: entry)
 //        case .systemLarge:
 //            LargeView(entry: entry)
-        case .systemLarge:
-            LockRectView(entry: entry)
-        case .systemMedium:
-            LockLineView(entry: entry)
 //        case .accessoryCircular:
 //            LockRingView(entry: entry)
+//        case .accessoryInline:
+//            LockLineView(entry: entry)
+//        case .accessoryRectangular:
+//            LockRectView(entry: entry)
         default:
             SmallView(entry: entry)
         }

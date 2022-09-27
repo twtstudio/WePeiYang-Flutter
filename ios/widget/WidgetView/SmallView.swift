@@ -14,7 +14,7 @@ struct SmallView: View {
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     let entry: DataEntry
-    @State var currentCourses: [Course] = []
+    var currentCourses: [Course] {entry.courses}
     var hour: Int {
         Calendar.current.dateComponents(in: TimeZone.current, from: Date()).hour ?? 0
     }
@@ -29,51 +29,28 @@ struct SmallView: View {
     @State var preCourse = WidgetCourse()
     @State var nextCourse = WidgetCourse()
     
-    
     var body: some View {
         VStack {
             HStack {
-                if weekday=="Monday" {
-                    Image("Mon.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else if weekday=="Tuesday" {
-                    Image("Tue.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else if weekday=="Wednesday" {
-                    Image("Wed.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else if weekday=="Thursday" {
-                    Image("Thu.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else if weekday=="Friday" {
-                    Image("Fri.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else if weekday=="Saturday" {
-                    Image("Sat.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
-                else {
-                    Image("Sun.b")
-                        .padding(.leading)
-                        .padding(.top, 10)
-                }
+                Image({ () -> String in
+                    switch weekday{
+                    case "Monday": return "Mon.b"
+                    case "Tuesday": return "Tue.b"
+                    case "Wednesday": return "Wed.b"
+                    case "Thursday": return "Thu.b"
+                    case "Friday": return "Fri.b"
+                    case "Saturday": return "Sat.b"
+                    default: return "Sun.b"
+                    }
+                }())
+                .padding(.leading)
+                .padding(.top, 10)
+
                 Spacer()
                 Image("beiyangb")
+                    .padding(.top, -10)
                     .padding(.trailing)
             }
-//            Text(entry.date.format(with: "HH:mm:ss") + "T \(courseTable.customCourseArray.count)个 \(courseTable.courseArray.count)个\n" + "\(courseTable.currentWeek) \(courseTable.currentDay)\n" + "\(StorageKey.termStartDate.getGroupData())")
-//                .foregroundColor(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.6872389913, green: 0.7085373998, blue: 0.8254910111, alpha: 1)))
             
             
             GeometryReader { geo in
@@ -81,10 +58,10 @@ struct SmallView: View {
                     if !currentCourses.isEmpty {
                         HStack {
                                 RoundedRectangle(cornerRadius: 3)
-                                    .fill(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.3056178987, green: 0.3728546202, blue: 0.4670386314, alpha: 1)))
-                                    .frame(width: 3, height: 28)
-                                    .padding(.leading, 6)
-                                
+                                    .fill(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.22, green: 0.43, blue: 0.91, alpha: 1)))
+                                    .frame(width: 4, height: 28)
+                                    .padding(.leading, 16)
+                                    .padding(.trailing, -4)
                                 if !preCourse.isEmpty {
                                     VStack(alignment: .leading) {
                                         Text("\(preCourse.course.name)")
@@ -113,9 +90,11 @@ struct SmallView: View {
                         
                         HStack {
                             RoundedRectangle(cornerRadius: 3)
-                                .fill(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.3056178987, green: 0.3728546202, blue: 0.4670386314, alpha: 1)))
-                                .frame(width: 3, height: 28)
-                                .padding(.leading, 6)
+                                .fill(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.22, green: 0.43, blue: 0.91, alpha: 1)))
+                                .frame(width: 4, height: 28)
+                                .padding(.leading, 16)
+                                .padding(.trailing, -4)
+
                                 if !nextCourse.isEmpty {
                                     VStack(alignment: .leading) {
                                         Text("\(nextCourse.course.name)")
@@ -158,5 +137,4 @@ struct SmallView: View {
             (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourses, weekday: courseTable.currentDay, time: time)
         }
     }
-
 }

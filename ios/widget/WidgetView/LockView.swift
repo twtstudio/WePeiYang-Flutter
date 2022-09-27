@@ -179,66 +179,66 @@ struct LockLineView: View {
 
 
 
-//struct LockRingView: View {
-//    @Environment(\.colorScheme) private var colorScheme
-//    @ObservedObject var store = SwiftStorage.courseTable
-//    private var courseTable: CourseTable { store.object }
-//    let entry: DataEntry
-//    var currentCourseTable: [Course] { entry.courses }
-//    var hour: Int {
-//        let hourFormatter = DateFormatter()
-//        hourFormatter.dateFormat = "HH"
-//        let hrString = hourFormatter.string(from: Date())
-//        let hour = Int(hrString) ?? 0
-//        return hour
-//    }
-//    var time: Int {
-//        let formatter = DateFormatter()
-//        formatter.dateFormat = "HH mm"
-//        let s = formatter.string(from: Date())
-//        let t = s.split(separator: " ").map{ Int($0) ?? 0 }
-//
-//        return 60 * t[0] + t[1]
-//    }
-//
-//    @State var preCourse = WidgetCourse()
-//    @State var nextCourse = WidgetCourse()
-//
-//
-//    var body: some View {
-//        ZStack {
-//            VStack {
-//                GeometryReader { geo in
-//                    if !nextCourse.isEmpty {
-//                        ZStack{
-//                            Text("\(nextCourse.course.name)")
-//                                .font(.footnote)
-//                                .fontWeight(.bold)
-//                                .foregroundColor(colorScheme == .dark ? .white : .black)
-//                                .lineLimit(2)
-//                                .frame(width: 45)
+struct LockRingView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @ObservedObject var store = SwiftStorage.courseTable
+    private var courseTable: CourseTable { store.object }
+    let entry: DataEntry
+    var currentCourseTable: [Course] { entry.courses }
+    var hour: Int {
+        let hourFormatter = DateFormatter()
+        hourFormatter.dateFormat = "HH"
+        let hrString = hourFormatter.string(from: Date())
+        let hour = Int(hrString) ?? 0
+        return hour
+    }
+    var time: Int {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH mm"
+        let s = formatter.string(from: Date())
+        let t = s.split(separator: " ").map{ Int($0) ?? 0 }
+
+        return 60 * t[0] + t[1]
+    }
+
+    @State var preCourse = WidgetCourse()
+    @State var nextCourse = WidgetCourse()
+
+
+    var body: some View {
+        ZStack {
+            VStack {
+                GeometryReader { geo in
+                    if !nextCourse.isEmpty {
+                        ZStack{
+                            Text("\(nextCourse.course.name)")
+                                .font(.footnote)
+                                .fontWeight(.bold)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .lineLimit(2)
+                                .frame(width: 45)
 //                            RingView
-//                        }
-//                    } else {
-//                        ZStack{
-//                            AccessoryWidgetBackground()
-//                            Text("没有课:)")
-//                                .font(.footnote)
-//                                .foregroundColor(colorScheme == .dark ? .white : .black)
-//                        }
-//                    }
-//                }
-//            }
-//            .padding(.top, 15)
-//        }
-//        .onAppear {
-//            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentWeekday, time: time)
-//            if preCourse.isNext {
-//                nextCourse = preCourse
-//                preCourse = WidgetCourse()
-//            }
-//        }
-//    }
-//}
+                        }
+                    } else {
+                        ZStack{
+                            AccessoryWidgetBackground()
+                            Text("没有课:)")
+                                .font(.footnote)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                        }
+                    }
+                }
+            }
+            .padding(.top, 15)
+        }
+        .onAppear {
+            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentDay, time: time)
+            if preCourse.isNext {
+                nextCourse = preCourse
+                preCourse = WidgetCourse()
+            }
+        }
+    }
+}
 //
 
