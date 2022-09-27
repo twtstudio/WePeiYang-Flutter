@@ -176,7 +176,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final status =
+    var status =
         context.select((LakeModel model) => model.lakeAreas[index].status);
 
     if (status == LakePageStatus.idle)
@@ -363,14 +363,15 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     else if (status == LakePageStatus.error)
       return HomeErrorContainer(onRefresh, true, index);
     else
-      return LoadingPageWidget(index);
+      return LoadingPageWidget(index, onRefresh);
   }
 }
 
 class LoadingPageWidget extends StatefulWidget {
   final int index;
+  final void Function() onPressed;
 
-  LoadingPageWidget(this.index);
+  LoadingPageWidget(this.index, this.onPressed);
 
   @override
   _LoadingPageWidgetState createState() => _LoadingPageWidgetState();
@@ -379,16 +380,25 @@ class LoadingPageWidget extends StatefulWidget {
 class _LoadingPageWidgetState extends State<LoadingPageWidget>
     with SingleTickerProviderStateMixin {
   bool isOpa = false;
+  bool showBtn = false;
   Timer _timer;
+  int count = 0;
 
   @override
   void initState() {
     isOpa = true;
     _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
+      count++;
       if (isOpa)
         isOpa = false;
       else
         isOpa = true;
+      if (count > 50) {
+        setState(() {
+          showBtn = true;
+        });
+        _timer.cancel();
+      }
       setState(() {});
     });
     super.initState();
@@ -402,69 +412,80 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: 10,
-          itemBuilder: (context, ind) {
-            return Builder(builder: (context) {
-              if (ind == 0)
-                return Container(
-                  height: 35.h,
-                  margin: EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
-                  padding: EdgeInsets.symmetric(vertical: 2),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: ColorUtil.blue2CColor.withAlpha(12)),
-                );
-              ind--;
-              if (widget.index == 0 && ind == 0)
-                return Opacity(opacity: 0.4, child: HotCard());
-              if (widget.index != 0 && ind == 0) return SizedBox(height: 10.h);
-              ind--;
-              if (ind == 0 &&
-                  context.read<FestivalProvider>().festivalList.length > 0)
-                return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      color: Colors.black26,
-                    ),
-                    margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
-                    width: WePeiYangApp.screenWidth - 28,
-                    height: 0.32 * WePeiYangApp.screenWidth);
-              ind--;
-              if (ind == 0) return SizedBox(height: 20.h);
-              ind--;
-              return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    color: Colors.black26,
-                  ),
-                  margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-                  width: WePeiYangApp.screenWidth - 28,
-                  height: 160.h);
-            });
-          },
-        ),
-        AnimatedContainer(
-            duration: Duration(microseconds: 200),
-            width: 1.sw,
-            height: 1.sh,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: isOpa ? Alignment(0, 0.2) : Alignment(0, 1.6),
-                colors: [
-                  Color(0x32FFFFFF),
-                  Color(0xE1FFFFFF),
-                ],
+    return showBtn
+        ? HomeErrorContainer(widget.onPressed, true, widget.index)
+        : Stack(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 8,
+                itemBuilder: (context, ind) {
+                  return Builder(builder: (context) {
+                    if (ind == 0)
+                      return Container(
+                        height: 35.h,
+                        margin:
+                            EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+                        padding: EdgeInsets.symmetric(vertical: 2),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            color: ColorUtil.blue2CColor.withAlpha(12)),
+                      );
+                    ind--;
+                    if (widget.index == 0 && ind == 0)
+                      return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            color: Colors.black26,
+                          ),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 20.h),
+                          height: 160.h);
+                    if (widget.index != 0 && ind == 0)
+                      return SizedBox(height: 10.h);
+                    ind--;
+                    if (ind == 0 &&
+                        context.read<FestivalProvider>().festivalList.length >
+                            0)
+                      return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            color: Colors.black26,
+                          ),
+                          margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                          height: 0.32 * WePeiYangApp.screenWidth);
+                    ind--;
+                    if (ind == 0) return SizedBox(height: 20.h);
+                    ind--;
+                    return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Colors.black26,
+                        ),
+                        margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                        height: 160.h);
+                  });
+                },
               ),
-            ),
-            child: Center(child: Loading()))
-      ],
-    );
+              AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  width: 1.sw,
+                  height: 1.sh,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: isOpa ? Alignment(0, 0.2) : Alignment(0, 2.2),
+                      colors: [
+                        Color(0x12FFFFFF),
+                        Color(0x80FFFFFF),
+                      ],
+                    ),
+                  ),
+                  child: Center(child: Loading()))
+            ],
+          );
   }
 }
 

@@ -24,86 +24,93 @@ class _HotCardState extends State<HotCard> {
   }
 
   List<SvgPicture> leads = [
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg", width: 18),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg", width: 18),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg", width: 18),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg", width: 18),
-    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg", width: 18),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label1.svg",
+        height: 18.h),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label2.svg",
+        height: 18.h),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label3.svg",
+        height: 18.h),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label4.svg",
+        height: 18.h),
+    SvgPicture.asset("assets/svg_pics/lake_butt_icons/label5.svg",
+        height: 18.h),
     //下面的这个是图钉
     SvgPicture.asset("assets/svg_pics/lake_butt_icons/stick_to_top.svg",
-        width: 18),
+        height: 18.h),
   ];
 
   @override
   Widget build(BuildContext context) {
     var title = Row(children: [
       SvgPicture.asset("assets/svg_pics/lake_butt_icons/really_hot_fire.svg",
-          width: 24.w),
+          height: 24.h),
       SizedBox(width: 4.w),
-      SvgPicture.asset("assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
-          width: 86.w)
+      SvgPicture.asset(
+        "assets/svg_pics/lake_butt_icons/pei_yang_hot.svg",
+        height: 25.h,
+      )
     ]);
 
     return Padding(
-      padding: EdgeInsets.all(20.w),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           title,
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Consumer<FbHotTagsProvider>(
             builder: (_, data, __) => data.hotTagsList.length > 0
                 ? Column(
-                    children:List.generate(data.hotTagsList.length <= 5
-                        ? data.hotTagsList.length
-                        : 5, (index) => InkWell(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.searchResult,
-                          arguments: SearchResultPageArgs(
-                              '',
-                              '${data.hotTagsList[index].tagId}',
-                              '',
-                              '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
-                              0,
-                              0),
-                        ),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 3),
-                          child: Row(
-                            children: [
-                              leads[index],
-                              SizedBox(width: 5),
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    data.hotTagsList[index].name,
-                                    style: TextUtil.base.w400.NotoSansSC
-                                        .sp(16)
-                                        .black2A,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                    children: List.generate(
+                        data.hotTagsList.length <= 5
+                            ? data.hotTagsList.length
+                            : 5,
+                        (index) => InkWell(
+                              onTap: () => Navigator.pushNamed(
+                                context,
+                                FeedbackRouter.searchResult,
+                                arguments: SearchResultPageArgs(
+                                    '',
+                                    '${data.hotTagsList[index].tagId}',
+                                    '',
+                                    '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
+                                    0,
+                                    0),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 3.h),
+                                child: Row(
+                                  children: [
+                                    leads[index],
+                                    SizedBox(width: 5),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          data.hotTagsList[index].name,
+                                          style: TextUtil.base.w400.NotoSansSC
+                                              .sp(16)
+                                              .black2A,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        data.hotTagsList[index].point
+                                                .toString() ??
+                                            '0',
+                                        style: TextUtil.base.w400.NotoSansSC
+                                            .sp(14)
+                                            .black2A,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 5),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  data.hotTagsList[index].point
-                                          .toString() ??
-                                      '0',
-                                  style: TextUtil.base.w400.NotoSansSC
-                                      .sp(14)
-                                      .black2A,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ))
-                  )
+                            )))
                 : Text(
                     '     loading...',
                     style: TextUtil.base.w400.NotoSansSC.sp(18).black2A,
