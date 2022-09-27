@@ -34,7 +34,7 @@ class CommonPreferences {
   static final bed = PrefsBean<String>('bed');
 
   /// 求实论坛相关
-  static final lakeToken = PrefsBean<String>('lakeToken');
+  static final lakeToken = PrefsBean<String>('lakeToken', '');
   static final lakeUid = PrefsBean<String>('feedbackUid');
   static final isSuper = PrefsBean<bool>('isSuper', false);
   static final isSchAdmin = PrefsBean<bool>('isSchAdmin', false);

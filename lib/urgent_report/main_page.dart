@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,8 +11,10 @@ import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'report_loading_dialog.dart';
 
@@ -703,17 +705,30 @@ class PickImage extends StatefulWidget {
 class _PickImageState extends State<PickImage> {
   File _image;
 
-  _imgFromGallery() async {
-    XFile xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 50);
-
-    if (xFile != null) {
-      _setImg(File(xFile.path));
-      _reportImage(xFile);
+  loadAssets() async {
+    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+        maxAssets: 1,
+        requestType: RequestType.image,
+        themeColor: ColorUtil.selectionButtonColor);
+    for (int i = 0; i < assets.length; i++) {
+      _image = await assets[i].file;
+      for (int j = 0; _image.lengthSync() > 2000 * 1024 && j < 10; j++) {
+        _image = await FlutterNativeImage.compressImage(_image.path, quality: 80);
+        if (j == 10) {
+          ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
     }
+    if (!mounted) return;
+    if (_image != null) {
+      _setImg(File(_image.path));
+      _reportImage(_image);
+    }
+    setState(() {});
   }
 
-  _reportImage(XFile file) async {
+  _reportImage(File file) async {
     Provider.of<ReportDataModel>(context, listen: false)
         .add(widget.image.key, file.path);
   }
@@ -764,7 +779,7 @@ class _PickImageState extends State<PickImage> {
         ),
         GestureDetector(
           onTap: () {
-            _imgFromGallery();
+            loadAssets();
           },
           child: _image != null
               ? DecoratedBox(

@@ -105,6 +105,21 @@ class LakeModel extends ChangeNotifier {
   TabController tabController;
   int sortSeq = 1;
 
+  clearAll() {
+    mainStatus = LakePageStatus.unload;
+    lakeAreas.clear();
+    tabList.clear();
+    backupList = [WPYTab()];
+    currentTab = 0;
+    openFeedbackList = false;
+    tabControllerLoaded = false;
+    scroll = false;
+    barExtended = true;
+    opacity = 0;
+    tabController.dispose();
+    sortSeq = 1;
+  }
+
   Future<void> initTabList() async {
     if (mainStatus == LakePageStatus.error ||
         mainStatus == LakePageStatus.unload)
