@@ -14,7 +14,7 @@ class HomeRouter {
   static String restartGame = 'home/restartGame';
   static String notice = 'home/notice';
   static final Map<String, Widget Function(dynamic arguments)> routers = {
-    home: (_) => HomePage(),
+    home: (args) => HomePage(args),
     wiki: (_) => WikiPage(),
     mapCalenderPage: (_) => MapCalenderPage(),
     hz: (_) => FiftyTwoHzPage(),

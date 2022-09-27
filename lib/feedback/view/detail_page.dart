@@ -694,7 +694,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                       .requestRefresh();
                                   ToastProvider.success(
                                       S.current.feedback_delete_success);
-                                  Navigator.of(context).pop(post);
+                                  Navigator.of(context).popAndPushNamed(
+                                      FeedbackRouter.home,
+                                      arguments: 2);
                                 },
                                 onFailure: (e) {
                                   ToastProvider.error(e.error.toString());

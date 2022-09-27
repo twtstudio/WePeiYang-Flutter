@@ -350,6 +350,7 @@ class SubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool tapAble = true;
     return Hero(
       tag: "addNewPost",
       child: ElevatedButton(
@@ -362,7 +363,17 @@ class SubmitButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () => submit(context),
+        onPressed: () => {
+          if (tapAble)
+            {
+              tapAble = false,
+              submit(context),
+              Future.delayed(Duration(milliseconds: 3000)),
+              () {
+                tapAble = true;
+              }
+            }
+        },
         child: Text(S.current.feedback_submit,
             style: TextUtil.base.NotoSansSC.w500.sp(14).white),
       ),

@@ -41,7 +41,6 @@ class FeedbackDio extends DioAbstract {
     })
   ];
 }
-
 class FeedbackPicPostDio extends DioAbstract {
   @override
   String baseUrl = EnvConfig.QNHDPIC;
@@ -62,6 +61,7 @@ class FeedbackPicPostDio extends DioAbstract {
     })
   ];
 }
+
 
 class FeedbackAdminPostDio extends DioAbstract {
   @override

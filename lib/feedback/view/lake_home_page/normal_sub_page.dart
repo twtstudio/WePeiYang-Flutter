@@ -187,7 +187,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           controller:
               context.read<LakeModel>().lakeAreas[index].refreshController,
           header: ClassicHeader(
-            height: 40.h,
+            height: 5.h,
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
             releaseText: '下拉以刷新',

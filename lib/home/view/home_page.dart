@@ -17,6 +17,10 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 class HomePage extends StatefulWidget {
+  final int page;
+
+  HomePage(this.page);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -77,6 +81,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       context.read<StudyroomProvider>().init();
     });
+    if(widget.page!=null){
+      _tabController.animateTo(widget.page);
+    }
   }
 
   @override
