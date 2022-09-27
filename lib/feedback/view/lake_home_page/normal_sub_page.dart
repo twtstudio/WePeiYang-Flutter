@@ -477,10 +477,11 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
-                      end: isOpa ? Alignment(0, 0.2) : Alignment(0, 2.2),
+                      end: Alignment.bottomCenter,
                       colors: [
-                        Color(0x12FFFFFF),
-                        Color(0x80FFFFFF),
+                        isOpa
+                         ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
+                        !isOpa ? Color(0x32FFFFFF) : Color(0x90FFFFFF),
                       ],
                     ),
                   ),

@@ -46,7 +46,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
               scrollPhysics: const BouncingScrollPhysics(),
               builder: (BuildContext context, int index) {
                 return PhotoViewGalleryPageOptions(
-                  imageProvider: assetList.isNotEmpty
+                  imageProvider: assetList != null
                       ? AssetImage(assetList[index])
                       : FileImage(uriList[index]),
                   maxScale: PhotoViewComputedScale.contained * 5.0,
