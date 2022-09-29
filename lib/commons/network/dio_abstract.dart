@@ -11,6 +11,7 @@ abstract class DioAbstract {
   String baseUrl = '';
   Map<String, String>? headers;
   List<InterceptorsWrapper> interceptors = [];
+  InterceptorsWrapper? errorInterceptor = null;
   ResponseType responseType = ResponseType.json;
 
   late final Dio _dio;
@@ -27,19 +28,17 @@ abstract class DioAbstract {
 
     _dio = Dio()..options = options;
     _dio.interceptors.addAll([
-      RetryInterceptor(dio: _dio),
       NetCheckInterceptor(),
       ...interceptors,
-      ErrorInterceptor()
+      errorInterceptor ?? ErrorInterceptor()
     ]);
 
     _dio_debug = Dio()..options = options;
     _dio_debug.interceptors.addAll([
-      RetryInterceptor(dio: _dio_debug),
       NetCheckInterceptor(),
       LogInterceptor(requestBody: true, responseBody: true),
       ...interceptors,
-      ErrorInterceptor()
+      errorInterceptor ?? ErrorInterceptor()
     ]);
   }
 
@@ -63,12 +62,18 @@ extension DioRequests on DioAbstract {
       {Map<String, dynamic>? queryParameters,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
-        .get(path, queryParameters: queryParameters, options: options)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
+    return retry(
+      // Make a GET request
+      () => (debug ? _dio_debug : _dio)
+          .get(path, queryParameters: queryParameters, options: options)
+          .catchError((error, stack) {
+        Logger.reportError(error, stack);
+        throw error;
+      }),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+      maxAttempts: 3,
+    );
   }
 
   Future<Response<dynamic>> post(String path,
@@ -77,37 +82,52 @@ extension DioRequests on DioAbstract {
       data,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
-        .post(path,
-            queryParameters: queryParameters,
-            data: formData ?? data,
-            options: options)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
+    return retry(
+      () => (debug ? _dio_debug : _dio)
+          .post(path,
+              queryParameters: queryParameters,
+              data: formData ?? data,
+              options: options)
+          .catchError((error, stack) {
+        Logger.reportError(error, stack);
+        throw error;
+      }),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+      maxAttempts: 3,
+    );
   }
 
   Future<Response<dynamic>> put(String path,
       {Map<String, dynamic>? queryParameters, bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
-        .put(path, queryParameters: queryParameters)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
+    return retry(
+      () => (debug ? _dio_debug : _dio)
+          .put(path, queryParameters: queryParameters)
+          .catchError((error, stack) {
+        Logger.reportError(error, stack);
+        throw error;
+      }),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+      maxAttempts: 3,
+    );
   }
 
   Future<Response<dynamic>> download(String urlPath, String savePath,
       {ProgressCallback? onReceiveProgress,
       Options? options,
       bool debug = false}) {
-    return (debug ? _dio_debug : _dio)
-        .download(urlPath, savePath,
-            onReceiveProgress: onReceiveProgress, options: options)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
+    return retry(
+      () => (debug ? _dio_debug : _dio)
+          .download(urlPath, savePath,
+              onReceiveProgress: onReceiveProgress, options: options)
+          .catchError((error, stack) {
+        Logger.reportError(error, stack);
+        throw error;
+      }),
+      // Retry on SocketException or TimeoutException
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+      maxAttempts: 3,
+    );
   }
 }
