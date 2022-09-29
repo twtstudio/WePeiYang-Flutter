@@ -2,8 +2,10 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:provider/provider.dart';
@@ -51,34 +53,32 @@ class _ActivityCardState extends State<ActivityCard> {
                 sp.startAutoplay();
               });
             });
+          } else if (context
+              .read<FestivalProvider>()
+              .festivalList[index]
+              .url
+              .startsWith('browser:')) {
+            if (await canLaunchUrlString(context
+                .read<FestivalProvider>()
+                .festivalList[index]
+                .url
+                .replaceAll('browser:', ''))) {
+              launchUrlString(context
+                  .read<FestivalProvider>()
+                  .festivalList[index]
+                  .url
+                  .replaceAll('browser:', ''));
+            } else {
+              ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+            }
           } else
-            context
-                    .read<FestivalProvider>()
-                    .festivalList[index]
-                    .url
-                    .startsWith('https://photograph.twt.edu.cn/')
-                ? await launch('https://photograph.twt.edu.cn/')
-                : context
+            Navigator.pushNamed(context, FeedbackRouter.haitang,
+                arguments: FestivalArgs(
+                    context.read<FestivalProvider>().festivalList[index].url,
+                    context
                         .read<FestivalProvider>()
                         .festivalList[index]
-                        .url
-                        .startsWith('https://graduation.twt.edu.cn/')
-                    ? await launch(context
-                        .read<FestivalProvider>()
-                        .festivalList[index]
-                        .url
-                        .replaceAll(
-                            '<token>', '${CommonPreferences.token.value}'))
-                    : Navigator.pushNamed(context, FeedbackRouter.haitang,
-                        arguments: FestivalArgs(
-                            context
-                                .read<FestivalProvider>()
-                                .festivalList[index]
-                                .url,
-                            context
-                                .read<FestivalProvider>()
-                                .festivalList[index]
-                                .title));
+                        .title));
         },
         child: Stack(
           children: [

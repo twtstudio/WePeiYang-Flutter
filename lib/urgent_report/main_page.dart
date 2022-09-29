@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -713,7 +712,8 @@ class _PickImageState extends State<PickImage> {
     for (int i = 0; i < assets.length; i++) {
       _image = await assets[i].file;
       for (int j = 0; _image.lengthSync() > 2000 * 1024 && j < 10; j++) {
-        _image = await FlutterNativeImage.compressImage(_image.path, quality: 80);
+        _image =
+            await FlutterNativeImage.compressImage(_image.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
           return;
@@ -798,9 +798,11 @@ class _PickImageState extends State<PickImage> {
                     ),
                   ),
                 )
-              : DottedBorder(
-                  borderType: BorderType.RRect,
-                  color: Color(0xffd0d1d6),
+              : Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Color(0xffd0d1d6), style: BorderStyle.solid),
+                      borderRadius: BorderRadius.all(Radius.circular(18))),
                   child: SizedBox(
                     width: imageWidth - 32,
                     height: imageWidth - 32,

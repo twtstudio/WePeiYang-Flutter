@@ -3,8 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/size_extension.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -37,7 +40,16 @@ class ActivityDialog extends Dialog {
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         child: GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            if (data[0].url.startsWith('browser:')) {
+                              if (await canLaunchUrlString(
+                                  data[0].url.replaceAll('browser:', ''))) {
+                                launchUrlString(
+                                    data[0].url.replaceAll('browser:', ''));
+                              } else {
+                                ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                              }
+                            } else
                             Navigator.pushNamed(context, FeedbackRouter.haitang,
                                 arguments: FestivalArgs(data[0].url, '活动'));
                           },
@@ -62,11 +74,18 @@ class ActivityDialog extends Dialog {
                         return ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, FeedbackRouter.haitang,
-                                  arguments:
-                                      FestivalArgs(data[index].url, '活动'));
+                            onTap: () async {
+                              if (data[index].url.startsWith('browser:')) {
+                                if (await canLaunchUrlString(
+                                    data[index].url.replaceAll('browser:', ''))) {
+                                  launchUrlString(
+                                      data[index].url.replaceAll('browser:', ''));
+                                } else {
+                                  ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                                }
+                              } else
+                                Navigator.pushNamed(context, FeedbackRouter.haitang,
+                                    arguments: FestivalArgs(data[index].url, '活动'));
                             },
                             child: WpyPic(
                               data[index].picUrl,
