@@ -4,15 +4,16 @@ import 'package:flutter/services.dart'
         FilteringTextInputFormatter,
         LengthLimitingTextInputFormatter,
         rootBundle;
-import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:flutter_screenutil/size_extension.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -67,8 +68,9 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       body: Container(
+        height: 1.sh,
         decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -78,250 +80,257 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                 Color.fromARGB(255, 166, 207, 255),
               ]),
         ),
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
-              child: Text.rich(TextSpan(children: [
-                TextSpan(
-                    text: "新用户注册",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
-              ])),
-            ),
-            SizedBox(height: 62),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          text: "学号",
-                          style:
-                              TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
-                        ),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 55,
-                        ),
-                        child: TextField(
-                          style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: Colors.white,
-                          textInputAction: TextInputAction.next,
-                          focusNode: _userNumFocus,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            hintText: "请输入学号",
-                            //S.current.student_id,
-                            hintStyle: TextUtil.base.normal.sp(14).w400.white,
-                            isCollapsed: true,
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                          ),
-                          onChanged: (input) => setState(() => userNum = input),
-                          onEditingComplete: () {
-                            _userNumFocus.unfocus();
-                            FocusScope.of(context).requestFocus(_nicknameFocus);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          text: '昵称',
-                          style:
-                              TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
-                        ),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 55,
-                        ),
-                        child: TextField(
-                          style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: Colors.white,
-                          textInputAction: TextInputAction.next,
-                          focusNode: _nicknameFocus,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            hintText: "请输入昵称",
-                            //S.current.user_name,
-                            hintStyle: TextUtil.base.normal.sp(14).w400.white,
-                            isCollapsed: true,
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                          ),
-                          onChanged: (input) =>
-                              setState(() => nickname = input),
-                          onEditingComplete: () {
-                            _nicknameFocus.unfocus();
-                            FocusScope.of(context).requestFocus(_idNumFocus);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          text: "身份证号",
-                          style:
-                              TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
-                        ),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 55,
-                        ),
-                        child: TextField(
-                          style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: Colors.white,
-                          textInputAction: TextInputAction.next,
-                          focusNode: _idNumFocus,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            hintText: "请输入身份证号",
-                            //S.current.user_name,
-                            hintStyle: TextUtil.base.normal.sp(14).w400.white,
-                            isCollapsed: true,
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                          ),
-                          onChanged: (input) => setState(() => idNum = input),
-                          onEditingComplete: () {
-                            _idNumFocus.unfocus();
-                            FocusScope.of(context).requestFocus(_emailFocus);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 30),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text.rich(
-                        TextSpan(
-                          text: "邮箱",
-                          style:
-                              TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
-                        ),
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 55,
-                        ),
-                        child: TextField(
-                          style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: Colors.white,
-                          textInputAction: TextInputAction.next,
-                          focusNode: _emailFocus,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                                width: 1.0,
-                              ),
-                            ),
-                            hintText: "请输入邮箱",
-                            //S.current.user_name,
-                            hintStyle: TextUtil.base.normal.sp(14).w400.white,
-                            isCollapsed: true,
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                          ),
-                          onChanged: (input) => setState(() => email = input),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 50),
-                  SizedBox(
-                    height: 48,
-                    //这样的地方改了，便于屏幕适配
-                    width: width - 60,
-                    child: ElevatedButton(
-                      onPressed: _toNextPage,
-                      child: Text.rich(TextSpan(
-                          text: "下一步",
-                          style: TextUtil.base.normal.NotoSansSC.w400
-                              .sp(16)
-                              .blue2C)),
-                      style: ButtonStyle(
-                        overlayColor:
-                            MaterialStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Color.fromRGBO(255, 255, 255, 0.1);
-                          return Color.fromRGBO(255, 255, 255, 1);
-                        }),
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24))),
-                      ),
-                    ),
-                  ),
-                  Spacer(),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: "新用户注册",
+                      style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                ])),
               ),
-            )) //
-          ],
+              SizedBox(height: 62),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text: "学号",
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(16)
+                                .white,
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 55,
+                          ),
+                          child: TextField(
+                            style: TextUtil.base.normal.w400
+                                .sp(14)
+                                .NotoSansSC
+                                .white,
+                            cursorColor: Colors.white,
+                            textInputAction: TextInputAction.next,
+                            focusNode: _userNumFocus,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              hintText: "请输入学号",
+                              //S.current.student_id,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) =>
+                                setState(() => userNum = input),
+                            onEditingComplete: () {
+                              _userNumFocus.unfocus();
+                              FocusScope.of(context)
+                                  .requestFocus(_nicknameFocus);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text: '昵称',
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(16)
+                                .white,
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 55,
+                          ),
+                          child: TextField(
+                            style: TextUtil.base.normal.w400
+                                .sp(14)
+                                .NotoSansSC
+                                .white,
+                            cursorColor: Colors.white,
+                            textInputAction: TextInputAction.next,
+                            focusNode: _nicknameFocus,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              hintText: "请输入昵称",
+                              //S.current.user_name,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) =>
+                                setState(() => nickname = input),
+                            onEditingComplete: () {
+                              _nicknameFocus.unfocus();
+                              FocusScope.of(context).requestFocus(_idNumFocus);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text: "身份证号",
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(16)
+                                .white,
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 55,
+                          ),
+                          child: TextField(
+                            style: TextUtil.base.normal.w400
+                                .sp(14)
+                                .NotoSansSC
+                                .white,
+                            cursorColor: Colors.white,
+                            textInputAction: TextInputAction.next,
+                            focusNode: _idNumFocus,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              hintText: "请输入身份证号",
+                              //S.current.user_name,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) => setState(() => idNum = input),
+                            onEditingComplete: () {
+                              _idNumFocus.unfocus();
+                              FocusScope.of(context).requestFocus(_emailFocus);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            text: "邮箱",
+                            style: TextUtil.base.normal.NotoSansSC.w400
+                                .sp(16)
+                                .white,
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 55,
+                          ),
+                          child: TextField(
+                            style: TextUtil.base.normal.w400
+                                .sp(14)
+                                .NotoSansSC
+                                .white,
+                            cursorColor: Colors.white,
+                            textInputAction: TextInputAction.next,
+                            focusNode: _emailFocus,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.white,
+                                  width: 1.0,
+                                ),
+                              ),
+                              hintText: "请输入邮箱",
+                              //S.current.user_name,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              isCollapsed: true,
+                              contentPadding:
+                                  const EdgeInsets.fromLTRB(0, 18, 0, 18),
+                            ),
+                            onChanged: (input) => setState(() => email = input),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 50),
+                    SizedBox(
+                        child: WButton(
+                      onPressed: _toNextPage,
+                      child: Container(
+                        height: 48,
+                        width: width - 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: Text("下一步",
+                              style: TextUtil.base.normal.NotoSansSC.w400
+                                  .sp(16)
+                                  .blue2C),
+                        ),
+                      ),
+                    )),
+                  ],
+                ),
+              ) //
+            ],
+          ),
         ),
       ),
     );
@@ -358,6 +367,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   }
 
   _toNextPage() async {
+    print('gagga');
     if (phone == "")
       ToastProvider.error("手机号码不能为空");
     else if (code == "")
@@ -593,32 +603,23 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       SizedBox(height: 39),
                       //"下一步"按钮
                       SizedBox(
-                        height: 48,
-                        //这样的地方改了，便于屏幕适配
-                        width: width - 60,
-                        child: ElevatedButton(
-                          onPressed: _toNextPage,
-                          child: Text.rich(TextSpan(
-                              text: "下一步",
-                              style: TextUtil.base.normal.NotoSansSC.w400
-                                  .sp(16)
-                                  .blue2C)),
-                          style: ButtonStyle(
-                            overlayColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                                    (states) {
-                              if (states.contains(MaterialState.pressed))
-                                return Color.fromRGBO(255, 255, 255, 0.1);
-                              return Color.fromRGBO(255, 255, 255, 1);
-                            }),
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.white),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24))),
+                          child: WButton(
+                        onPressed: _toNextPage,
+                        child: Container(
+                          height: 48,
+                          width: width - 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                            child: Text("下一步",
+                                style: TextUtil.base.normal.NotoSansSC.w400
+                                    .sp(16)
+                                    .blue2C),
                           ),
                         ),
-                      ),
+                      )),
                       SizedBox(height: 20),
                       Row(
                         children: [

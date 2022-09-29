@@ -39,7 +39,7 @@ class FeedbackRouter {
   static String openBox = 'feedback/openbox';
   static String collection = 'feedback/collection';
   static final Map<String, Widget Function(dynamic arguments)> routers = {
-    home: (_) => HomePage(),
+    home: (args) => HomePage(args),
     profile: (_) => ProfilePage(),
     detail: (args) => DetailPage(args),
     commentDetail: (args) => ReplyDetailPage(args),

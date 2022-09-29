@@ -2,10 +2,11 @@
 library wpy_dio;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:retry/retry.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
