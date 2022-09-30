@@ -45,7 +45,7 @@ class ActivityDialog extends Dialog {
                               if (await canLaunchUrlString(
                                   data[0].url.replaceAll('browser:', ''))) {
                                 launchUrlString(
-                                    data[0].url.replaceAll('browser:', ''));
+                                    data[0].url.replaceAll('browser:', ''), mode: LaunchMode.externalApplication);
                               } else {
                                 ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
                               }

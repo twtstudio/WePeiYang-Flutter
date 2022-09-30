@@ -33,15 +33,16 @@ dependencies:
   extended_tabs: ^2.3.0
   extended_image: ^4.0.0
 
-  fluttertoast: ^8.0.8
   flutter_html: ^2.0.0
   flutter_markdown: ^0.6.9+1
   flutter_rating_bar: ^4.0.0
+  flutter_native_image: ^0.0.6+1
+  flutter_screenutil: ^4.0.4
+  flutter_smart_dialog: ^3.3.5
   flutter_svg: ^0.22.0
   flutter_swiper: ^1.1.6
-  flutter_screenutil: ^4.0.4
-  flutter_native_image: ^0.0.6+1
-  flutter_smart_dialog: ^3.3.5
+
+  fluttertoast: ^8.0.8
 
   gallery_saver: ^2.3.2
 
