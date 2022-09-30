@@ -1,6 +1,8 @@
 import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -8,9 +10,9 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
 import '../../../feedback_router.dart';
 
 class ActivityCard extends StatefulWidget {
@@ -35,8 +37,8 @@ class _ActivityCardState extends State<ActivityCard> {
     Widget card(BuildContext context, int index) {
       return InkWell(
         onTap: () async {
-          if (context.read<FestivalProvider>().festivalList[index].url.length ==
-              0) {
+          final url = context.read<FestivalProvider>().festivalList[index].url;
+          if (url.isEmpty) {
             sp.stopAutoplay();
             setState(() {
               dark = true;
@@ -53,28 +55,21 @@ class _ActivityCardState extends State<ActivityCard> {
                 sp.startAutoplay();
               });
             });
-          } else if (context
-              .read<FestivalProvider>()
-              .festivalList[index]
-              .url
-              .startsWith('browser:')) {
-            if (await canLaunchUrlString(context
-                .read<FestivalProvider>()
-                .festivalList[index]
-                .url
-                .replaceAll('browser:', ''))) {
-              launchUrlString(context
-                  .read<FestivalProvider>()
-                  .festivalList[index]
-                  .url
-                  .replaceAll('browser:', ''));
+          } else if (url.startsWith('browser:')) {
+            final launchUrl = url
+                .replaceAll('browser:', '')
+                .replaceAll('<token>', '${CommonPreferences.token.value}')
+                .replaceAll(
+                    '<laketoken>', '${CommonPreferences.lakeToken.value}');
+            if (await canLaunchUrlString(launchUrl)) {
+              launchUrlString(launchUrl, mode: LaunchMode.externalApplication);
             } else {
               ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
             }
           } else
             Navigator.pushNamed(context, FeedbackRouter.haitang,
                 arguments: FestivalArgs(
-                    context.read<FestivalProvider>().festivalList[index].url,
+                    url,
                     context
                         .read<FestivalProvider>()
                         .festivalList[index]
