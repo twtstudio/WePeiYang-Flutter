@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -110,14 +109,14 @@ class _OpenBoxState extends State<OpenBox> {
         if (src == '归属地') {
           String url =
               'https://qq.ip138.com/idsearch/index.asp?userid=${detail['身份证号']}&action=idcard';
-          if (await canLaunch(url)) {
-            await launch(url);
+          if (await canLaunchUrl(Uri.parse(url))) {
+            await launchUrl(Uri.parse(url));
           } else {
             ToastProvider.error('请检查网络状态');
           }
         } else
-        Clipboard.setData(ClipboardData(text: content))
-            .whenComplete(() => ToastProvider.success('复制 $src 成功'));
+          Clipboard.setData(ClipboardData(text: content))
+              .whenComplete(() => ToastProvider.success('复制 $src 成功'));
       },
     );
   }

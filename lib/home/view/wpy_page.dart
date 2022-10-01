@@ -315,8 +315,9 @@ class SliverCardsWidget extends StatelessWidget {
         if (cards[i].label == '北洋维基') {
           return GestureDetector(
             onTap: () async {
-              if (await canLaunch(cards[i].route)) {
-                await launch(cards[i].route, forceSafariVC: false);
+              if (await canLaunchUrl(Uri.parse(cards[i].route))) {
+                await launchUrl(Uri.parse(cards[i].route),
+                    mode: LaunchMode.externalApplication);
               } else {
                 ToastProvider.error('请检查网络状态');
               }

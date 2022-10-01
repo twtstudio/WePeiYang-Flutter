@@ -36,7 +36,7 @@ class UpdateFailureDialog extends StatelessWidget {
     }
 
     void goToWeb() {
-      launch("https://mobile.twt.edu.cn/wpy/index.html");
+      launchUrl(Uri.parse("https://mobile.twt.edu.cn/wpy/index.html"));
     }
 
     Widget buttons;

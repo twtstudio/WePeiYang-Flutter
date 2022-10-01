@@ -55,6 +55,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
+    // 检测办公网
+    _checkClasses();
     super.initState();
   }
 
@@ -155,6 +157,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
   final FocusNode _notRobotFocus = FocusNode();
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
+  /// 能否连接到办公网
+  bool _canConnectToClasses = true;
+  _checkClasses() async {
+    _canConnectToClasses = await ClassesService.check();
+    setState(() {});
+  }
 
   Widget _detail(BuildContext context) {
     var hintStyle = TextUtil.base.regular
@@ -200,16 +208,18 @@ class _TjuBindPageState extends State<TjuBindPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(children: [
           SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              S.current.tju_bind_hint,
-              textAlign: TextAlign.center,
-              style: TextUtil.base.regular
-                  .sp(10)
-                  .customColor(Color.fromRGBO(98, 103, 124, 1)),
-            ),
+          Text(
+            S.current.tju_bind_hint,
+            style: TextUtil.base.regular
+                .sp(10)
+                .customColor(Color.fromRGBO(98, 103, 124, 1)),
           ),
+          if (!_canConnectToClasses)
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text('请连接至校园网环境以获取数据，请检查网络',
+                  style: TextUtil.base.regular.sp(10).redD9),
+            ),
           SizedBox(height: 20),
           ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 55),
@@ -362,8 +372,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
               GestureDetector(
                 onTap: () async {
                   String url = 'http://classes.tju.edu.cn/';
-                  if (await canLaunch(url)) {
-                    await launch(url);
+                  if (await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(Uri.parse(url));
                   } else {
                     ToastProvider.error('请检查网络状态');
                   }

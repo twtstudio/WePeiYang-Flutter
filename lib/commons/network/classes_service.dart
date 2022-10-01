@@ -19,6 +19,16 @@ class _SpiderDio extends DioAbstract {
 }
 
 class ClassesService {
+  /// 检查办公网连通
+  static Future<bool> check() async {
+    try {
+      await fetch('http://classes.tju.edu.cn');
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录
   static void login(
       BuildContext context, String name, String pw, String captcha,

@@ -205,8 +205,9 @@ class _ReportMainPageState extends State<ReportMainPage> {
               onTap: () async {
                 var url =
                     'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
-                if (await canLaunch(url)) {
-                  await launch(url, forceSafariVC: false);
+                if (await canLaunchUrl(Uri.parse(url))) {
+                  await launchUrl(Uri.parse(url),
+                      mode: LaunchMode.externalApplication);
                 } else {
                   ToastProvider.error('请检查网络状态');
                 }

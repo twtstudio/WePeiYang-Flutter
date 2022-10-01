@@ -340,7 +340,7 @@ class _TextMailContent extends StatelessWidget {
                         var url = data.url.startsWith('http')
                             ? data.url
                             : 'https://${data.url}';
-                        if (await canLaunch(url)) {
+                        if (await canLaunchUrl(Uri.parse(url))) {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -378,7 +378,7 @@ class _TextMailContent extends StatelessWidget {
                                               EdgeInsets.symmetric(
                                                   vertical: 10),
                                           onTap: () async {
-                                            await launch(url);
+                                            await launchUrl(Uri.parse(url));
                                             Navigator.pop(context);
                                           },
                                           titleStyle: url.startsWith(
@@ -419,7 +419,7 @@ class _TextMailContent extends StatelessWidget {
                                       Navigator.pop(context);
                                     },
                                     confirmFun: () async {
-                                      await launch(url);
+                                      await launchUrl(Uri.parse(url));
                                       Navigator.pop(context);
                                     });
                               });

@@ -64,6 +64,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
+    // 检测办公网
+    _checkClasses();
   }
 
   @override
@@ -149,6 +151,13 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   final FocusNode _accountFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
+  /// 能否连接到办公网
+  bool _canConnectToClasses = true;
+  _checkClasses() async {
+    _canConnectToClasses = await ClassesService.check();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var hintStyle = TextUtil.base.regular
@@ -170,6 +179,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             style: TextUtil.base.regular
                 .sp(12)
                 .customColor(Color.fromRGBO(79, 88, 107, 1))),
+        if (!_canConnectToClasses)
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text('请连接至校园网环境以获取数据，请检查网络',
+                style: TextUtil.base.regular.sp(10).redD9),
+          ),
         SizedBox(height: 18),
         ConstrainedBox(
           constraints: BoxConstraints(

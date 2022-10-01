@@ -51,7 +51,7 @@ class _LinkTextState extends State<LinkText> {
         var url = link.value.startsWith('http')
             ? link.value
             : 'https://${link.value}';
-        if (await canLaunch(url)) {
+        if (await canLaunchUrl(Uri.parse(url))) {
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -81,7 +81,7 @@ class _LinkTextState extends State<LinkText> {
                           previewContainerPadding:
                               EdgeInsets.symmetric(vertical: 10),
                           onTap: () async {
-                            await launch(url);
+                            await launchUrl(Uri.parse(url));
                             Navigator.pop(context);
                           },
                           titleStyle: url.startsWith('https://b23.tv/') ||
@@ -110,7 +110,7 @@ class _LinkTextState extends State<LinkText> {
                       Navigator.pop(context);
                     },
                     confirmFun: () async {
-                      await launch(url);
+                      await launchUrl(Uri.parse(url));
                       Navigator.pop(context);
                     });
               });

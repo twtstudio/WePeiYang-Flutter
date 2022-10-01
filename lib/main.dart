@@ -297,6 +297,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
     // 点击空白区域取消TextField焦点
+    // return child;
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
