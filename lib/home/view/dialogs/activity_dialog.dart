@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
@@ -45,7 +46,8 @@ class ActivityDialog extends Dialog {
                               if (await canLaunchUrlString(
                                   data[0].url.replaceAll('browser:', ''))) {
                                 launchUrlString(
-                                    data[0].url.replaceAll('browser:', ''), mode: LaunchMode.externalApplication);
+                                    data[0].url.replaceAll('browser:', '').replaceAll('<token>', '${CommonPreferences.token.value}')
+                                    .replaceAll('<laketoken>', '${CommonPreferences.lakeToken.value}'), mode: LaunchMode.externalApplication);
                               } else {
                                 ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
                               }
