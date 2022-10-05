@@ -2,65 +2,89 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart'
-    show
-        DiagnosticsTreeStyle,
-        TextTreeRenderer;
+    show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
-import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
-import 'package:we_pei_yang_flutter/commons/network/net_status_listener.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
-import 'package:we_pei_yang_flutter/commons/util/navigator_observers.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_providers.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
+import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
+import 'auth/network/auth_service.dart';
+import 'auth/view/message/message_router.dart';
+import 'auth/view/message/message_service.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
+import 'commons/local/local_model.dart';
+import 'commons/network/wpy_dio.dart';
+import 'commons/preferences/common_prefs.dart';
+import 'commons/update/update_manager.dart';
+import 'commons/util/logger.dart';
+import 'commons/util/navigator_observers.dart';
+import 'commons/util/router_manager.dart';
+import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
+import 'commons/util/toast_provider.dart';
+import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/feedback_service.dart';
-import 'lounge/lounge_providers.dart';
-import 'lounge/server/hive_manager.dart';
+import 'feedback/network/post.dart';
+import 'generated/l10n.dart';
+import 'gpa/model/gpa_notifier.dart';
+import 'message/model/message_provider.dart';
+import 'schedule/model/course_provider.dart';
+import 'schedule/model/exam_provider.dart';
+import 'schedule/schedule_providers.dart';
+import 'urgent_report/report_server.dart';
 
-/// 列一下各种东西的初始化：
-/// 1. run app 之前：
-/// [CommonPreferences.initPrefs]初始化shared_preferences, 初次调用为启动页的[build]函数之后
-/// [NetStatusListener.init]初始化网络状态监听, 初次调用为WePeiYangApp的[build]函数
-/// 2. App build 前后：
-/// [HiveManager.init]初始化自习室数据库, 初次调用为HomePage的[build]函数之后
-/// 3. 用户登录时（调用AuthService.login），此时用户已同意隐私权先
-/// [UmengSdk.setPageCollectionModeManual]开启埋点
+/// 应用入口
+final _entry = WePeiYangApp();
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    // 初始化环境变量
-    EnvConfig.init();
-    PathUtil.init();
 
-    /// 程序中的同步（sync）错误也交给zone处理
+    /// 初始化环境变量
+    EnvConfig.init();
+    StorageUtil.init();
+
+    /// 初始化友盟
+    await UmengCommonSdk.initCommon();
+
+    /// 初始化sharedPreference
+    await CommonPreferences.init();
+
+    /// 初始化Connectivity
+    await NetStatusListener.init();
+
+    /// 设置哪天微北洋全部变灰
+    var now = DateTime.now().toLocal();
+    if ((now.month == 5 && now.day == 12) ||
+        (now.month == 12 && now.day == 13)) {
+      runApp(
+        ColorFiltered(
+          colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
+          child: _entry,
+        ),
+      );
+    } else {
+      runApp(_entry);
+    }
+
+    /// 设置沉浸式状态栏
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+
+    /// 修改debugPrint
+    debugPrint = (message, {wrapWidth}) => print(message);
+
+    /// 程序中的同步（sync）错误交给zone处理
     FlutterError.onError = (FlutterErrorDetails details) async {
-      /// 生成错误信息
+      // 生成错误信息
       String text = TextTreeRenderer(
               wrapWidth: FlutterError.wrapWidth,
               wrapWidthProperties: FlutterError.wrapWidth,
@@ -69,55 +93,18 @@ void main() async {
           .trimRight();
       Zone.current.handleUncaughtError(text, null);
     };
-
-    // 初始化sharePreference
-    await CommonPreferences.initPrefs();
-    // 初始化Connectivity
-    await NetStatusListener.init();
-    // 修改debugPrint
-    debugPrint = (message, {wrapWidth}) {
-      print(message);
-    };
-
-    // 设置哪天微北洋全部变灰
-    (DateTime.now().toLocal().month == 5 &&
-        DateTime.now().toLocal().day == 12) ||
-            (DateTime.now().toLocal().month == 12 &&
-                DateTime.now().toLocal().day == 13)
-        ? runApp(ColorFiltered(
-            colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
-            child: WePeiYangApp()))
-        : runApp(WePeiYangApp());
-    if (Platform.isAndroid) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: Colors.white,
-      ));
-    }
   }, (Object error, StackTrace stack) {
     /// 这里是处理所有 unhandled sync & async error 的地方
     Logger.reportError(error, stack);
   }, zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-        /// 覆盖zone中的所有[print]，统一日志格式
+    /// 覆盖zone中的所有[print]，统一日志格式
     Logger.reportPrint(parent, zone, line);
   }));
 }
 
-class WePeiYangApp extends StatefulWidget {
-  static double screenWidth;
-  static double screenHeight;
-  static double paddingTop;
-
-  /// 用于全局获取当前context
-  static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
-
-  @override
-  WePeiYangAppState createState() => WePeiYangAppState();
-}
-
-final messageChannel = MethodChannel('com.twt.service/message');
-final pushChannel = MethodChannel('com.twt.service/push');
+final _messageChannel = MethodChannel('com.twt.service/message');
+final _pushChannel = MethodChannel('com.twt.service/push');
 
 class IntentEvent {
   static const FeedbackPostPage = 1;
@@ -128,11 +115,21 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
+class WePeiYangApp extends StatefulWidget {
+  static double screenWidth;
+  static double screenHeight;
+
+  /// 用于全局获取当前context
+  static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
+
+  @override
+  WePeiYangAppState createState() => WePeiYangAppState();
+}
+
 class WePeiYangAppState extends State<WePeiYangApp>
     with WidgetsBindingObserver {
   @override
   void dispose() async {
-    LoungeDB.closeDB();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -147,10 +144,10 @@ class WePeiYangAppState extends State<WePeiYangApp>
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
-      WePeiYangApp.paddingTop = mediaQueryData.padding.top;
-      LoungeDB.initDB();
-      if (CommonPreferences().token != null &&
-          CommonPreferences().token != "") {
+      WbyFontLoader.initFonts();
+      ToastProvider.init(baseContext);
+      TextUtil.init(baseContext);
+      if (CommonPreferences.token.value != '') {
         FeedbackService.getToken(forceRefresh: true);
       }
     });
@@ -164,9 +161,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   checkEventList() async {
+    if (Platform.isIOS) return;
     var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
-    await messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
-      debugPrint('resume -----------$eventMap--------- resume');
+    await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           Navigator.pushNamed(
@@ -187,8 +184,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
           );
           break;
         case IntentEvent.SchedulePage:
-          if (!PageStackObserver.pageStack.contains(ScheduleRouter.schedule)) {
-            Navigator.pushNamed(baseContext, ScheduleRouter.schedule);
+          if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
+            Navigator.pushNamed(baseContext, ScheduleRouter.course);
           }
           break;
         case IntentEvent.UpdateDialog:
@@ -222,16 +219,15 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (_) => RemoteConfig()),
         ChangeNotifierProvider(create: (_) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => GPANotifier()),
-        ChangeNotifierProvider(create: (_) => ScheduleNotifier()),
-        ChangeNotifierProvider(create: (_) => ExamNotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
-        ...loungeProviders,
+        ...scheduleProviders,
+        ...studyroomProviders,
         ...feedbackProviders,
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
-            pushChannel
+            _pushChannel
               ..setMethodCallHandler((call) async {
                 switch (call.method) {
                   case 'refreshFeedbackMessageCount':
@@ -253,6 +249,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         context.read<RemoteConfig>().getRemoteConfig();
 
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -292,13 +289,14 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   Widget _builder(BuildContext context, Widget child) {
+    // 设置标准设计图尺寸
     ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         designSize: const Size(390, 844),
         orientation: Orientation.portrait);
-    TextUtil.init(context);
+    // 点击空白区域取消TextField焦点
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
@@ -325,15 +323,13 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoLogin(context);
     });
-    // TODO 合并
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark
-        .copyWith(systemNavigationBarColor: Colors.white));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
+      padding: EdgeInsets.all(30),
       child: Center(
         child: Image(
             fit: BoxFit.contain,
@@ -344,49 +340,46 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _autoLogin(BuildContext context) {
-    // 初始化友盟
+    /// 初始化友盟
     UmengCommonSdk.initCommon();
 
-    var prefs = CommonPreferences();
+    // 检查更新
+    context.read<UpdateManager>().checkUpdate();
 
-    // 恢复截屏和亮度默认值
-    LocalSetting.changeBrightness(-1);
+    // 恢复截屏和亮度默认值，这两句代码不能放在更早的地方
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (prefs.updateTime.value != "20210906") {
-      prefs.updateTime.value = "20210906";
-      prefs.clearTjuPrefs();
-      prefs.clearUserPrefs();
+    if (CommonPreferences.updateTime.value != "20220822") {
+      CommonPreferences.updateTime.value = "20220822";
+      CommonPreferences.clearTjuPrefs();
+      CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
 
-    /// 读取gpa和课程表的缓存
-    Provider.of<ScheduleNotifier>(context, listen: false).readPref();
-    Provider.of<ExamNotifier>(context, listen: false).readPref();
-    Provider.of<GPANotifier>(context, listen: false).readPref();
+    /// 读取gpa、考表、课程表的缓存
+    context.read<GPANotifier>().readPref();
+    context.read<ExamProvider>().readPref();
+    context.read<CourseProvider>().readPref();
 
-    /// 如果存过账号密码，优先用账密刷新token
-    if (prefs.account.value != '' && prefs.password.value != '') {
-      Future.delayed(Duration(milliseconds: 500)).then((_) =>
-          AuthService.pwLogin(prefs.account.value, prefs.password.value,
-              onResult: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          }, onFailure: (_) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
-          }));
-    } else if (prefs.isLogin.value && prefs.token.value != '') {
-      /// 如果是短信登陆的，尝试用token刷新
-      Future.delayed(Duration(milliseconds: 500)).then(
+    /// 如果登陆过，尝试刷新token
+    if (CommonPreferences.isLogin.value &&
+        CommonPreferences.token.value != '') {
+      Future.delayed(const Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
           onFailure: (_) {
+            if (CommonPreferences.account.value != '' &&
+                CommonPreferences.password.value != '') {
+              /// 如果存过账密，尝试用账密刷新token，无论成功与否均进入主页
+              AuthService.pwLogin(CommonPreferences.account.value,
+                  CommonPreferences.password.value,
+                  onResult: (_) {}, onFailure: (_) {});
+            }
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
@@ -394,7 +387,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       );
     } else {
       /// 没登陆过的话，多看一会的启动页再跳转到登录页
-      Future.delayed(Duration(seconds: 1)).then(
+      Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
   }

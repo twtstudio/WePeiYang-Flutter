@@ -1,7 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -60,16 +60,15 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     super.initState();
     wd.clear();
     tb.clear();
-    _tabController =
-        TabController(length: types.length + 1, vsync: this, initialIndex: 0)
-          ..addListener(() {
-            ///这个if避免点击tab时回调两次
-            ///https://blog.csdn.net/u010960265/article/details/104982299
-            if (_tabController.index.toDouble() ==
-                _tabController.animation.value) {
-              currentIndex.value = _tabController.index;
-            }
-          });
+    _tabController = TabController(
+        length: types.length + 1, vsync: this, initialIndex: 0)
+      ..addListener(() {
+        ///这个if避免点击tab时回调两次
+        ///https://blog.csdn.net/u010960265/article/details/104982299
+        if (_tabController.index.toDouble() == _tabController.animation.value) {
+          currentIndex.value = _tabController.index;
+        }
+      });
     tb = types.map((t) {
       return MessageTab(type: t);
     }).toList();
@@ -93,18 +92,17 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xfff7f7f8),
+        backgroundColor: ColorUtil.whiteFDFE,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 50,
-            brightness: Brightness.light,
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text('消息中心',
-                style: TextUtil.base.NotoSansSC.black2A.w600.sp(18)),
+                style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
@@ -127,17 +125,17 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                           return LakeDialogWidget(
                             title: '一键已读：',
                             titleTextStyle: TextUtil
-                                .base.normal.black2A.NotoSansSC
+                                .base.normal.black2A.PingFangSC
                                 .sp(18)
                                 .w600,
                             content: Text('这将清除所有的消息提醒'),
                             cancelText: "取消",
                             confirmTextStyle: TextUtil
-                                .base.normal.white.NotoSansSC
+                                .base.normal.white.PingFangSC
                                 .sp(16)
                                 .w600,
                             cancelTextStyle: TextUtil
-                                .base.normal.black2A.NotoSansSC
+                                .base.normal.black2A.PingFangSC
                                 .sp(16)
                                 .w400,
                             confirmText: "确认",
@@ -164,19 +162,21 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   highlightColor: Colors.transparent,
                 ),
                 child: TabBar(
+                  indicatorWeight: 0,
+                  indicatorSize: TabBarIndicatorSize.label,
                   indicatorPadding: EdgeInsets.only(bottom: 10),
                   labelPadding: EdgeInsets.zero,
                   isScrollable: false,
                   physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
-                  labelColor: ColorUtil.black2AColor,
-                  labelStyle: TextUtil.base.black2A.w500.NotoSansSC.sp(16),
-                  unselectedLabelColor: ColorUtil.greyB2B6Color,
+                  labelColor: ColorUtil.blue2CColor,
+                  labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
+                  unselectedLabelColor: ColorUtil.black2AColor,
                   unselectedLabelStyle:
-                      TextUtil.base.greyB2.w500.NotoSansSC.sp(16),
+                      TextUtil.base.black2A.w500.PingFangSC.sp(14),
                   indicator: CustomIndicator(
                       borderSide:
-                          BorderSide(color: ColorUtil.mainColor, width: 2)),
+                          BorderSide(color: ColorUtil.blue2CColor, width: 2)),
                   tabs: tb,
                   onTap: (index) {
                     currentIndex.value = _tabController.index;
@@ -184,6 +184,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                 ),
               ),
             ),
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
         ),
         body: TabBarView(
@@ -484,19 +485,19 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
             Row(
               children: [
                 Text(
-                  '匿名用户 ',
-                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                  '共计 ${widget.data.type == 1 ? widget.data.floor.likeCount : widget.data.post.likeCount}名用户 ',
+                  style: TextUtil.base.black00.bold.sp(16).PingFangSC,
                 ),
                 Text(
                   '为你点赞',
-                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
             SizedBox(height: 2.w),
             Text(
               '某时某刻',
-              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
             ),
           ],
         ),
@@ -505,7 +506,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
@@ -516,7 +517,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -525,7 +526,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -534,7 +535,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
       ],
     );
@@ -562,7 +563,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                     maxLines: 2,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,
@@ -595,7 +596,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               children: [
                 Text(
                   widget.data.floor.nickname + ': ' + widget.data.floor.content,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                 ),
                 SizedBox(height: 8.w),
                 questionItem,
@@ -611,34 +612,29 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       child: questionItem,
     );
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
-      child: GestureDetector(
-        onTap: () async {
-          await widget.onTapDown?.call();
+    return GestureDetector(
+      onTap: () async {
+        await widget.onTapDown?.call();
 
-          ///点内部的帖子区域块跳转到帖子
-          if (post.id != -1) {
-            await Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: post,
-            );
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: ColorUtil.whiteFDFE,
-              borderRadius: BorderRadius.all(Radius.circular(16.w))),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              children: [
-                sender,
-                SizedBox(height: 8.w),
-                messageWrapper ?? questionItem,
-              ],
-            ),
+        ///点内部的帖子区域块跳转到帖子
+        if (post.id != -1) {
+          await Navigator.pushNamed(
+            context,
+            FeedbackRouter.detail,
+            arguments: post,
+          );
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            children: [
+              sender,
+              SizedBox(height: 8.w),
+              messageWrapper ?? questionItem,
+            ],
           ),
         ),
       ),
@@ -798,21 +794,27 @@ class FloorMessageItem extends StatefulWidget {
 class _FloorMessageItemState extends State<FloorMessageItem> {
   final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
-
   @override
   Widget build(BuildContext context) {
     Widget sender = Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
-          width: 30,
-          height: 30,
-          fit: BoxFit.cover,
-          placeholderBuilder: defaultPlaceholderBuilder,
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          child: widget.data.floor.avatar == ''
+              ? SvgPicture.network(
+                  '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                )
+              : Image.network(
+                  baseUrl + '${widget.data.floor.avatar}',
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                ),
         ),
         SizedBox(width: 6.w),
         Column(
@@ -825,13 +827,13 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   constraints: BoxConstraints(maxWidth: 0.3.sw),
                   child: Text(
                     widget.data.floor.nickname + ' ',
-                    style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                    style: TextUtil.base.black00.bold.sp(16).PingFangSC,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
                   widget.data.type == 0 ? '回复了你的冒泡' : '回复了你的评论',
-                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
@@ -846,7 +848,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   : DateTime.now()
                       .difference(widget.data.floor.createAt)
                       .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
             ),
           ],
         ),
@@ -855,7 +857,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
@@ -866,7 +868,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -875,7 +877,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -884,7 +886,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
       ],
     );
@@ -922,7 +924,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
-                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,
@@ -957,7 +959,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   widget.data.toFloor.nickname +
                       ': ' +
                       widget.data.toFloor.content,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                 ),
                 SizedBox(height: 8.w),
                 questionItem,
@@ -976,82 +978,77 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
-      child: GestureDetector(
-        onTap: () async {
-          await widget.onTapDown?.call();
-          if (widget.data.type == 0) {
-            await Navigator.pushNamed(
-              context,
-              FeedbackRouter.commentDetail,
-              arguments: ReplyDetailPageArgs(
-                  widget.data.floor, widget.data.post.uid,
-                  isMessage: true),
-            ).then((_) {
-              context.read<MessageProvider>().refreshFeedbackCount();
-            });
-          } else {
-            widget.data.floor.subTo == 0
-                ? await FeedbackService.getFloorById(
-                    id: widget.data.floor.id,
-                    onResult: (subToFloor) {
-                      Navigator.pushNamed(
-                        context,
-                        FeedbackRouter.commentDetail,
-                        arguments: ReplyDetailPageArgs(
-                            subToFloor, widget.data.post.uid,
-                            isMessage: true),
-                      ).then((_) {
-                        context.read<MessageProvider>().refreshFeedbackCount();
-                      });
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    })
-                : await FeedbackService.getFloorById(
-                    id: widget.data.floor.subTo,
-                    onResult: (subToFloor) {
-                      Navigator.pushNamed(
-                        context,
-                        FeedbackRouter.commentDetail,
-                        arguments: ReplyDetailPageArgs(
-                            subToFloor, widget.data.post.uid,
-                            isMessage: true),
-                      ).then((_) {
-                        context.read<MessageProvider>().refreshFeedbackCount();
-                      });
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
+    return GestureDetector(
+      onTap: () async {
+        await widget.onTapDown?.call();
+        if (widget.data.type == 0) {
+          await Navigator.pushNamed(
+            context,
+            FeedbackRouter.commentDetail,
+            arguments: ReplyDetailPageArgs(
+                widget.data.floor, widget.data.post.uid,
+                isMessage: true),
+          ).then((_) {
+            context.read<MessageProvider>().refreshFeedbackCount();
+          });
+        } else {
+          widget.data.floor.subTo == 0
+              ? await FeedbackService.getFloorById(
+                  id: widget.data.floor.id,
+                  onResult: (subToFloor) {
+                    Navigator.pushNamed(
+                      context,
+                      FeedbackRouter.commentDetail,
+                      arguments: ReplyDetailPageArgs(
+                          subToFloor, widget.data.post.uid,
+                          isMessage: true),
+                    ).then((_) {
+                      context.read<MessageProvider>().refreshFeedbackCount();
                     });
-          }
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: ColorUtil.whiteFDFE,
-              borderRadius: BorderRadius.all(Radius.circular(16.w))),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                sender,
-                SizedBox(height: 7.w),
-                if (widget.data.floor.content != '')
-                  Text(
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  })
+              : await FeedbackService.getFloorById(
+                  id: widget.data.floor.subTo,
+                  onResult: (subToFloor) {
+                    Navigator.pushNamed(
+                      context,
+                      FeedbackRouter.commentDetail,
+                      arguments: ReplyDetailPageArgs(
+                          subToFloor, widget.data.post.uid,
+                          isMessage: true),
+                    ).then((_) {
+                      context.read<MessageProvider>().refreshFeedbackCount();
+                    });
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  });
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              sender,
+              SizedBox(height: 7.w),
+              if (widget.data.floor.content != '')
+                Text(
                   widget.data.floor.content,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.black00,
                 ),
-                if (widget.data.floor.imageUrl != '')
-                  Text(
-                    '[图片]',
-                    style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
-                  ),
-                SizedBox(height: 8.w),
-                messageWrapper ?? questionItem,
-              ],
-            ),
+              if (widget.data.floor.imageUrl != '')
+                Text(
+                  '[图片]',
+                  style: TextUtil.base.sp(14).PingFangSC.w400.black00,
+                ),
+              SizedBox(height: 8.w),
+              messageWrapper ?? questionItem,
+            ],
           ),
         ),
       ),
@@ -1228,11 +1225,11 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
               children: [
                 Text(
                   '官方部门 ',
-                  style: TextUtil.base.black00.w500.sp(16).NotoSansSC,
+                  style: TextUtil.base.black00.bold.sp(16).PingFangSC,
                 ),
                 Text(
                   '回复了你的问题',
-                  style: TextUtil.base.black00.w400.sp(16).NotoSansSC,
+                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
@@ -1247,7 +1244,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                   : DateTime.now()
                       .difference(widget.data.reply.createdAt)
                       .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.sp(12).NotoSansSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
             ),
           ],
         ),
@@ -1256,7 +1253,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.NotoSansSC.sp(24),
+      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
@@ -1267,7 +1264,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -1276,7 +1273,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
@@ -1285,7 +1282,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.NotoSansSC.sp(14),
+          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
         ),
       ],
     );
@@ -1311,7 +1308,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
-                    style: TextUtil.base.sp(14).NotoSansSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,
@@ -1340,36 +1337,31 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.w, 2.w, 16.w, 14.w),
-      child: GestureDetector(
-        onTap: () async {
-          await widget.onTapDown?.call();
-          await Navigator.pushNamed(
-            context,
-            FeedbackRouter.detail,
-            arguments: widget.data.post,
-          ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
-        },
-        child: Container(
-          decoration: BoxDecoration(
-              color: ColorUtil.whiteFDFE,
-              borderRadius: BorderRadius.all(Radius.circular(16.w))),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                sender,
-                SizedBox(height: 7.w),
-                Text(
-                  widget.data.reply.content,
-                  style: TextUtil.base.sp(14).NotoSansSC.w400.black00,
-                ),
-                SizedBox(height: 8.w),
-                messageWrapper ?? questionItem,
-              ],
-            ),
+    return GestureDetector(
+      onTap: () async {
+        await widget.onTapDown?.call();
+        await Navigator.pushNamed(
+          context,
+          FeedbackRouter.detail,
+          arguments: widget.data.post,
+        ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
+      },
+      child: Container(
+        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              sender,
+              SizedBox(height: 7.w),
+              Text(
+                widget.data.reply.content,
+                style: TextUtil.base.sp(14).PingFangSC.w400.black00,
+              ),
+              SizedBox(height: 8.w),
+              messageWrapper ?? questionItem,
+            ],
           ),
         ),
       ),
@@ -1389,10 +1381,13 @@ extension StringExtension on String {
 
 class CustomIndicator extends Decoration {
   const CustomIndicator({
+    this.left = false,
     this.borderSide = const BorderSide(width: 2, color: Colors.white),
     this.insets = EdgeInsets.zero,
   })  : assert(borderSide != null),
         assert(insets != null);
+
+  final bool left;
 
   final BorderSide borderSide;
 
@@ -1429,12 +1424,14 @@ class CustomIndicator extends Decoration {
     assert(rect != null);
     assert(textDirection != null);
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
-    double wantWidth = 14;
+    double wantWidth = left ? 30 : 32;
     double cw = (indicator.left + indicator.right) / 2;
 
     return Rect.fromLTWH(
-      cw - wantWidth / 2,
-      indicator.bottom - borderSide.width,
+      left ? indicator.left : cw - wantWidth / 2,
+      left
+          ? indicator.bottom - borderSide.width - 4
+          : indicator.bottom - borderSide.width,
       wantWidth,
       borderSide.width,
     );

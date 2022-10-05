@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async' show Timer;
 import 'package:flutter/widgets.dart';
 
@@ -10,12 +11,11 @@ class AnimationExecutor extends StatefulWidget {
   final Builder builder;
 
   const AnimationExecutor({
-    Key key,
-    @required this.duration,
+    Key? key,
+    required this.duration,
     this.delay = Duration.zero,
-    @required this.builder,
-  })  : assert(builder != null),
-        super(key: key);
+    required this.builder,
+  })  : super(key: key);
 
   @override
   _AnimationExecutorState createState() => _AnimationExecutorState();
@@ -23,8 +23,8 @@ class AnimationExecutor extends StatefulWidget {
 
 class _AnimationExecutorState extends State<AnimationExecutor>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-  Timer _timer;
+  late AnimationController _animationController;
+  late Timer _timer;
 
   @override
   void initState() {

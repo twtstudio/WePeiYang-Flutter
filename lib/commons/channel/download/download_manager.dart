@@ -1,7 +1,7 @@
 // @dart = 2.12
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/path_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -35,7 +35,7 @@ class DownloadManager {
   }
 
   void _clearTemporaryFiles() {
-    for (final file in PathUtil.downloadDir.listSync(recursive: true)) {
+    for (final file in StorageUtil.downloadDir.listSync(recursive: true)) {
       if (file.path.endsWith(".temporary")) {
         try {
           file.deleteSync();
@@ -48,10 +48,8 @@ class DownloadManager {
   }
 
   void _updateProgress(MethodCall call) {
-    debugPrint('listeners : ${listeners.keys}');
     final list = (call.arguments as List).cast<Map>();
     for (var item in list) {
-      debugPrint('${item}');
       try {
         final listenerId = item['listenerId'];
         final taskId = item['id'];
@@ -73,14 +71,24 @@ class DownloadManager {
           case 1 << 3: // DownloadManager.STATUS_SUCCESSFUL
             listener.success.call(task);
             listener.downloadList.add(taskId);
-            if (listener.downloadList.length == listener.tasks.length) {
-              final paths = List.generate(listener.tasks.length,
+
+            var successNum = listener.downloadList.length;
+            var failedNum = listener.failedList.length;
+            var tasksNum = listener.tasks.length;
+            // 判断是否全部成功
+            if (successNum == tasksNum) {
+              final paths = List.generate(tasksNum,
                   (index) => listener.tasks.values.toList()[index].path);
               listener.allSuccess?.call(paths);
+            }
+            // 判断是否全部结束
+            if (successNum + failedNum == tasksNum) {
+              listener.allComplete?.call(successNum, failedNum);
             }
             break;
           case 1 << 4: // DownloadManager.STATUS_FAILED
             listener.failed(task, progress, reason);
+            listener.failedList.add(taskId);
             break;
         }
       } catch (e, s) {
@@ -107,11 +115,11 @@ class DownloadManager {
     required FailedCallback download_failed,
     required SuccessCallback download_success,
     AllSuccessCallback? all_success,
+    AllCompleteCallback? all_complete,
   }) async {
     try {
       // filter tasks
       final downloadedList = <DownloadTask>[];
-
       tasks.removeWhere((task) {
         if (task.exist) {
           downloadedList.add(task);
@@ -119,11 +127,7 @@ class DownloadManager {
         }
         return false;
       });
-
       downloadedList.forEach(download_success);
-
-      debugPrint("${tasks.length}");
-
       if (tasks.isEmpty) {
         all_success?.call(downloadedList.map((e) => e.path).toList());
         return;
@@ -137,16 +141,13 @@ class DownloadManager {
         failed: download_failed,
         success: download_success,
         allSuccess: all_success,
+        allComplete: all_complete,
       );
       listeners[listener.listenerId] = listener;
 
-      debugPrint("$listener");
-
       await _downloadChannel.invokeMethod(
         "addDownloadTask",
-        {
-          "downloadList": DownloadList(tasks).toJson(),
-        },
+        {"downloadList": DownloadList(tasks).toJson()},
       );
     } catch (e, s) {
       Logger.reportError(e, s);
@@ -163,6 +164,7 @@ class DownloadManager {
     required FailedCallback download_failed,
     required SuccessCallback download_success,
     AllSuccessCallback? all_success,
+    AllCompleteCallback? all_complete,
   }) {
     downloads(
       [task],
@@ -173,6 +175,7 @@ class DownloadManager {
       download_failed: download_failed,
       download_success: download_success,
       all_success: all_success,
+      all_complete: all_complete,
     );
   }
 }

@@ -1,7 +1,6 @@
 // @dart = 2.12
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 
@@ -22,7 +21,7 @@ class _FestivalPageState extends WbyWebViewState {
 
   @override
   Future<String> getInitialUrl(BuildContext context) async {
-    ///测试qpi，正式为https://www.qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences().lakeToken.value}
-    return 'https://qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences().lakeToken.value}';
+    ///测试qpi，正式为https://www.qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences.lakeToken.value}
+    return 'https://qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences.lakeToken.value}';
   }
 }

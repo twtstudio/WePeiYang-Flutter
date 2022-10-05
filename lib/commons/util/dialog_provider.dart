@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -8,26 +8,29 @@ class LakeDialogWidget extends Dialog {
   final String title; //标题
   final Widget content; //内容
   final String cancelText; //是否需要"取消"按钮
-  final TextStyle confirmTextStyle;//确认按钮文字样式
-  final TextStyle cancelTextStyle;//取消按钮文字样式
+  final TextStyle? confirmTextStyle; //确认按钮文字样式
+  final TextStyle? cancelTextStyle; //取消按钮文字样式
   final String confirmText; //是否需要"确定"按钮
-  final Function cancelFun; //取消回调
-  final Function confirmFun; //确定回调
-  Color cancelButtonColor;
-  Color confirmButtonColor;
-  TextStyle titleTextStyle;
-  LakeDialogWidget( {
-    @required this.title,
-    @required this.content,
-    @required this.cancelText,
-    @required this.confirmTextStyle,
-    @required this.cancelTextStyle,
-    @required this.confirmText,
-    @required this.cancelFun,
-    @required this.confirmFun,
+  final void Function() cancelFun; //取消回调
+  final void Function() confirmFun; //确定回调
+  final Color? cancelButtonColor;
+  final Color? confirmButtonColor;
+  final TextStyle? titleTextStyle;
+  final LinearGradient? gradient;
+
+  LakeDialogWidget({
+    required this.title,
+    required this.content,
+    required this.cancelText,
+    required this.confirmText,
+    required this.cancelFun,
+    required this.confirmFun,
     this.cancelButtonColor,
     this.confirmButtonColor,
-    this.titleTextStyle
+    this.gradient,
+    this.titleTextStyle,
+    this.cancelTextStyle,
+    this.confirmTextStyle,
   });
 
   @override
@@ -41,39 +44,25 @@ class LakeDialogWidget extends Dialog {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              padding:EdgeInsets.all(28.w),
-              ///节日用处理
-              decoration:  DateTime.now().month==4&&DateTime.now().day==1? ShapeDecoration(
-        image: DecorationImage(image: AssetImage('assets/images/lake_butt_icons/mask_group.png'),fit: BoxFit.cover),
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-      ):ShapeDecoration(
+              padding: EdgeInsets.all(28.w),
+              decoration: BoxDecoration(
                 color: Color(0xfff2f2f2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(0),
-                    child: Row(
-                      children: [
-                        Text(title, style: titleTextStyle ?? TextUtil.base.black2A.NotoSansSC.w500.normal.sp(18)),
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      Text(title,
+                          style: titleTextStyle ??
+                              TextUtil.base.black2A.NotoSansSC.w500.normal
+                                  .sp(18)),
+                    ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 24),
-                    child: content
-                  ),
-                  this._buildBottomButtonGroup()
+                      padding: const EdgeInsets.only(top: 16, bottom: 24),
+                      child: content),
+                  _buildBottomButtonGroup()
                 ],
               ),
             )
@@ -85,66 +74,101 @@ class LakeDialogWidget extends Dialog {
 
   Widget _buildBottomButtonGroup() {
     var widgets = <Widget>[];
-    if (cancelText != null && cancelText.isNotEmpty) widgets.add(_buildBottomCancelButton());
-    if (confirmText != null && confirmText.isNotEmpty && confirmText != null && confirmText.isNotEmpty) widgets.add(_buildBottomOnline());
-    if (confirmText != null && confirmText.isNotEmpty && confirmText != null && confirmText.isNotEmpty) widgets.add(SizedBox(width: 30.w,));
-    if (confirmText != null && confirmText.isNotEmpty) widgets.add(_buildBottomPositiveButton());
+    if (cancelText.isNotEmpty) widgets.add(_buildBottomCancelButton());
+    if (confirmText.isNotEmpty && confirmText.isNotEmpty)
+      widgets.add(_buildBottomOnline());
+    if (confirmText.isNotEmpty && confirmText.isNotEmpty)
+      widgets.add(SizedBox(width: 30.w));
+    if (confirmText.isNotEmpty) widgets.add(_buildBottomPositiveButton());
 
     return Flex(
       direction: Axis.horizontal,
       children: widgets,
     );
   }
+
   Widget _buildBottomOnline() {
     return Container(
       color: ColorUtil.backgroundColor,
     );
   }
+
   Widget _buildBottomCancelButton() {
     return Container(
       height: 44.w,
       width: 136.w,
       child: TextButton(
-        onPressed: this.cancelFun,
+        onPressed: cancelFun,
         child: Text(cancelText,
-            style: cancelTextStyle),
+            style: cancelTextStyle ??
+                TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600),
         style: ButtonStyle(
-          elevation: DateTime.now().month==4&&DateTime.now().day==1? MaterialStateProperty.all(0):MaterialStateProperty.all(3),
+          elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return Color.fromRGBO(79, 88, 107, 1);
-            return  ColorUtil.backgroundColor;
+            return ColorUtil.backgroundColor;
           }),
-          backgroundColor:
-          MaterialStateProperty.all(cancelButtonColor ?? ColorUtil.backgroundColor),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10))),
+          backgroundColor: MaterialStateProperty.all(
+              cancelButtonColor ?? ColorUtil.backgroundColor),
+          shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
         ),
       ),
     );
   }
 
   Widget _buildBottomPositiveButton() {
-    return Container(
-      height: 44.w,
-      width: 136.w,
-      child: TextButton(
-        onPressed:  this.confirmFun,
-        child: Text(confirmText,
-            style: confirmTextStyle),
-        style: ButtonStyle(
-          elevation: DateTime.now().month==4&&DateTime.now().day==1? MaterialStateProperty.all(0):MaterialStateProperty.all(3),
-          overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.pressed))
-              return Color.fromRGBO(79, 88, 107, 1);
-            return  ColorUtil.backgroundColor;
-          }),
-          backgroundColor:
-          MaterialStateProperty.all(confirmButtonColor ?? ColorUtil.backgroundColor),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10))),
-        ),
-      ),
-    );
+    return gradient != null
+        ? Container(
+            height: 44.w,
+            width: 136.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: gradient,
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 1.6,
+                    color: Colors.black12,
+                    offset: Offset(-1, 3),
+                    spreadRadius: 1),
+              ],
+            ),
+            child: TextButton(
+              onPressed: this.confirmFun,
+              child: Text(confirmText,
+                  style: confirmTextStyle ??
+                      TextUtil.base.normal.white.NotoSansSC.sp(16).w400),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20))),
+              ),
+            ),
+          )
+        : Container(
+            height: 44.w,
+            width: 136.w,
+            child: TextButton(
+              onPressed: this.confirmFun,
+              child: Text(
+                confirmText,
+                style: confirmTextStyle ??
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+              ),
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.all(3),
+                overlayColor:
+                    MaterialStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(MaterialState.pressed))
+                    return Color.fromRGBO(79, 88, 107, 1);
+                  return ColorUtil.backgroundColor;
+                }),
+                backgroundColor: MaterialStateProperty.all(
+                    confirmButtonColor ?? ColorUtil.backgroundColor),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20))),
+              ),
+            ),
+          );
   }
 }

@@ -53,7 +53,7 @@ class WbyWebViewState extends State<WbyWebView> {
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
         elevation: 0,
-        toolbarHeight: 50,
+        toolbarHeight: 40,
         brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -89,7 +89,6 @@ class WbyWebViewState extends State<WbyWebView> {
         await getInitialUrl(context).then((u) => u, onError: (_) => null);
     if (url != null) {
       setState(() {
-        print(url);
         state = _PageState.initWebView;
         _controller?.loadUrl(url);
       });
@@ -143,16 +142,18 @@ class WbyWebViewState extends State<WbyWebView> {
       ],
     );
 
-    return widget.fullPage ? body : Scaffold(
-      backgroundColor: widget.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-              appBar,
-            Expanded(child: body),
-          ],
-        ),
-      ),
-    );
+    return widget.fullPage
+        ? body
+        : Scaffold(
+            backgroundColor: widget.backgroundColor,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  appBar,
+                  Expanded(child: body),
+                ],
+              ),
+            ),
+          );
   }
 }

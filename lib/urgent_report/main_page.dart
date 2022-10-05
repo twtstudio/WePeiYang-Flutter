@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
@@ -92,7 +92,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   bool _checkTodayHasReportedOrNot() {
     try {
-      var lastTime = DateTime.parse(CommonPreferences().reportTime.value);
+      var lastTime = DateTime.parse(CommonPreferences.reportTime.value);
       var lastDay = DateTime(lastTime.year, lastTime.month, lastTime.day);
       var difference = lastDay.difference(DateTime.now()).inDays;
       return difference == 0;
@@ -117,10 +117,10 @@ class _ReportMainPageState extends State<ReportMainPage> {
       _partBackgroundColor.forEach((element) {
         element.value = Colors.transparent;
       });
-      reportDio.report(
+      ReportService.report(
           data: model.data,
           onResult: () async {
-            CommonPreferences().reportTime.value = DateTime.now().toString();
+            CommonPreferences.reportTime.value = DateTime.now().toString();
             Navigator.pop(context);
             ToastProvider.success('上传成功');
             clearAll.value = !clearAll.value;
@@ -203,9 +203,9 @@ class _ReportMainPageState extends State<ReportMainPage> {
             GestureDetector(
               onTap: () async {
                 var url =
-                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences().token.value}';
+                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
                 if (await canLaunch(url)) {
-                  await launch(url);
+                  await launch(url, forceSafariVC: false);
                 } else {
                   ToastProvider.error('请检查网络状态');
                 }
@@ -222,7 +222,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
         break;
       case _Page.list:
         body = FutureBuilder<List<ReportItem>>(
-            future: reportDio.getReportHistoryList(),
+            future: ReportService.getReportHistoryList(),
             builder: (_, snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data.length == 0) {
@@ -381,10 +381,7 @@ class _ReportListItem extends StatelessWidget {
       child: Text(
         monthAndDay,
         maxLines: 1,
-        style: FontManager.Gilroy.copyWith(
-            color: Color(0xffD9DEEA),
-            fontWeight: FontWeight.w800,
-            fontSize: 60),
+        style: TextUtil.base.Swis.w800.sp(60).customColor(Color(0xFFD9DEEA)),
       ),
     );
 
@@ -587,10 +584,9 @@ class _TodayTempState extends State<TodayTemp> {
                       controller: _temperature,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
-                      style: FontManager.YaHeiRegular.copyWith(
-                        color: Color(0xff63677b),
-                        fontSize: 12,
-                      ),
+                      style: TextUtil.base.regular
+                          .sp(12)
+                          .customColor(Color(0xFF63677b)),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       decoration: InputDecoration(
@@ -604,10 +600,9 @@ class _TodayTempState extends State<TodayTemp> {
                   SizedBox(width: 3),
                   Text(
                     "℃",
-                    style: FontManager.YaHeiRegular.copyWith(
-                      color: Color(0xff63677b),
-                      fontSize: 12,
-                    ),
+                    style: TextUtil.base.regular
+                        .sp(12)
+                        .customColor(Color(0xFF63677b)),
                   )
                 ],
               ),
@@ -921,11 +916,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           minLines: 1,
           maxLines: 10,
           buildCounter: null,
-          style: FontManager.YaHeiRegular.copyWith(
-            color: Color(0xff626774),
-            fontWeight: FontWeight.normal,
-            fontSize: 15,
-          ),
+          style: TextUtil.base.normal.sp(15).customColor(Color(0xff626774)),
           decoration: InputDecoration(
               hintText: "点击此处填写当前位置",
               hintStyle: TextStyle(

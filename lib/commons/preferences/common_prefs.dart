@@ -1,158 +1,132 @@
+// @dart = 2.12
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonPreferences {
   CommonPreferences._();
 
-  static final _instance = CommonPreferences._();
-
-  /// 用create函数获取commonPref类单例
-  factory CommonPreferences() => _instance;
-
-  static SharedPreferences getPref() => _instance._sharedPref;
-
-  SharedPreferences _sharedPref;
+  static late SharedPreferences sharedPref;
 
   /// 初始化sharedPrefs，在运行app前被调用
-  static Future<void> initPrefs() async {
-    _instance._sharedPref = await SharedPreferences.getInstance();
+  static Future<void> init() async {
+    sharedPref = await SharedPreferences.getInstance();
   }
 
-  /// 第一次登录
-  var isFirstUse = PrefsBean<bool>('isFirstUse', true);
-
   /// 天外天账号系统
-  var isLogin = PrefsBean<bool>('login');
-  var token = PrefsBean<String>('token');
-  var nickname = PrefsBean<String>('nickname', '未登录');
-  var lakeNickname = PrefsBean<String>('lakeNickname', '无昵称');
-  var userNumber = PrefsBean<String>('userNumber');
-  var phone = PrefsBean<String>('phone');
-  var email = PrefsBean<String>('email');
-  var account = PrefsBean<String>('account');
-  var password = PrefsBean<String>('password');
-  var captchaCookie = PrefsBean<String>('Cookie');
-  var realName = PrefsBean<String>('realName');
-  var department = PrefsBean<String>('department');
-  var major = PrefsBean<String>('major');
-  var stuType = PrefsBean<String>('stuType');
-  var avatar = PrefsBean<String>('avatar');
-  var area = PrefsBean<String>('area');
-  var building = PrefsBean<String>('building');
-  var floor = PrefsBean<String>('floor');
-  var room = PrefsBean<String>('room');
-  var bed = PrefsBean<String>('bed');
+  static final isLogin = PrefsBean<bool>('login');
+  static final token = PrefsBean<String>('token');
+  static final nickname = PrefsBean<String>('nickname', '未登录');
+  static final lakeNickname = PrefsBean<String>('lakeNickname');
+  static final userNumber = PrefsBean<String>('userNumber');
+  static final phone = PrefsBean<String>('phone');
+  static final email = PrefsBean<String>('email');
+  static final account = PrefsBean<String>('account');
+  static final password = PrefsBean<String>('password');
+  static final captchaCookie = PrefsBean<String>('Cookie');
+  static final realName = PrefsBean<String>('realName');
+  static final department = PrefsBean<String>('department');
+  static final major = PrefsBean<String>('major');
+  static final stuType = PrefsBean<String>('stuType');
+  static final avatar = PrefsBean<String>('avatar');
+  static final area = PrefsBean<String>('area');
+  static final building = PrefsBean<String>('building');
+  static final floor = PrefsBean<String>('floor');
+  static final room = PrefsBean<String>('room');
+  static final bed = PrefsBean<String>('bed');
 
-  var themeToken = PrefsBean<String>("themeToken");
+  /// 求实论坛相关
+  static final lakeToken = PrefsBean<String>('lakeToken');
+  static final lakeUid = PrefsBean<String>('feedbackUid');
+  static final isSuper = PrefsBean<bool>('isSuper', false);
+  static final isSchAdmin = PrefsBean<bool>('isSchAdmin', false);
+  static final isStuAdmin = PrefsBean<bool>('isStuAdmin', false);
+  static final isUser = PrefsBean<bool>('isUser', true);
+  static final feedbackFloorSortType =
+      PrefsBean<int>('feedbackFloorSortType', 0);
+  static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
 
-  /// 用户信息
-  var lakeToken = PrefsBean<String>("lakeToken");
-  var lakeUid = PrefsBean<String>('feedbackUid');
-  var isSuper = PrefsBean<bool>("isSuper", false);
-  var isSchAdmin = PrefsBean<bool>("isSchAdmin", false);
-  var isStuAdmin = PrefsBean<bool>("isStuAdmin", false);
-  var isUser = PrefsBean<bool>("isUser", true);
-  var feedbackSearchHistory =
-      PrefsBean<List<String>>("feedbackSearchHistory", []);
+  /// 求实论坛--等级系统
+  static final levelPoint = PrefsBean<int>('levelPoint');
+  static final levelName = PrefsBean<String>('levelName');
+  static final level = PrefsBean<int>('level');
+  static final nextLevelPoint = PrefsBean<int>('nextLevelPoint');
+  static final curLevelPoint = PrefsBean<int>('curLevelPoint');
 
-  // 1 -> 按时间排序; 2 -> 按热度排序
-  var feedbackSearchType = PrefsBean<String>("feedbackSearchType", "1");
-  var feedbackFloorSortType = PrefsBean<int>("feedbackFloorSortType", 0);
-  var feedbackLastWeCo = PrefsBean<String>("feedbackLastWeKo");
-  var isFirstLogin = PrefsBean<bool>("firstLogin", true);
-
-  ///愚人节用，从上到下为总判断第一次，考表，GPA，点赞，头像,课表
-  var isAprilFoolGen = PrefsBean<bool>("aprilFoolGen", true);
-  var isAprilFool = PrefsBean<bool>("aprilFool", false);
-  var isAprilFoolGPA = PrefsBean<bool>("aprilFoolGpa", false);
-  var isAprilFoolHead = PrefsBean<bool>("aprilFoolHead", false);
-  var isAprilFoolLike = PrefsBean<bool>("aprilFoolLike", false);
-  var isAprilFoolClass = PrefsBean<bool>("aprilFoolClass", false);
-
-  ///海棠节用->皮肤用
-  var isSkinUsed = PrefsBean<bool>("skin", false);
-  var isDarkMode = PrefsBean<bool>("isDarkMode", false);
-  var skinProfile = PrefsBean<String>("skinProfile", "");
-  var skinClass = PrefsBean<String>("skinClass", "");
-  var skinMain = PrefsBean<String>("skinMain", "");
-  var skinColorA = PrefsBean<int>("skinColorA", 1);
-  var skinColorB = PrefsBean<int>("skinColorB", 1);
-  var skinColorC = PrefsBean<int>("skinColorC", 1);
-  var skinColorD = PrefsBean<int>("skinColorD", 1);
-  var skinColorE = PrefsBean<int>("skinColorE", 1);
-  var skinColorF = PrefsBean<int>("skinColorF", 1);
-  var skinColorG = PrefsBean<int>("skinColorG", 1);
-
-  /// 这里说明一下GPA和课程表的逻辑：
-  /// 1. 进入主页时先从缓存中读取数据
-  /// 2. 进入 gpa / 课程表 / 考表 页面时再尝试用缓存中办公网的cookie爬取最新数据
-  ///
   /// 办公网
-  var gpaData = PrefsBean<String>('gpaData');
-  var scheduleData = PrefsBean<String>('scheduleData');
-  var examData = PrefsBean<String>('examData');
-  var isBindTju = PrefsBean<bool>('bindtju');
-  var tjuuname = PrefsBean<String>('tjuuname');
-  var tjupasswd = PrefsBean<String>('tjupasswd');
-  var scheduleShrink = PrefsBean<bool>('scheduleShrink');
+  static final gpaData = PrefsBean<String>('gpaData');
+  static final courseData = PrefsBean<String>('courseData');
+  static final examData = PrefsBean<String>('examData');
+  static final customUpdatedAt =
+      PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
+  static final isBindTju = PrefsBean<bool>('bindtju');
+  static final tjuuname = PrefsBean<String>('tjuuname');
+  static final tjupasswd = PrefsBean<String>('tjupasswd');
+
+  /// 自定义课表
+  static final customCourseToken = PrefsBean<String>('customCourseToken');
+  static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
 
   /// 学期信息
-  /// 由于好奇心搜了一下，这个时间戳大概2038年才会int范围溢出，懒得改了哈哈
-  /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SharedPreferences.kt中的默认值
-  var termStart = PrefsBean<int>('termStart', 1645372800);
-  var termName = PrefsBean<String>('termName', '21222');
-  var termStartDate = PrefsBean<String>('termStartDate', '2022-02-21');
+  /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
+  static final termStart = PrefsBean<int>('termStart', 1660492800);
+  static final termName = PrefsBean<String>('termName', '22231');
+  static final termStartDate = PrefsBean<String>('termStartDate', '2022-08-15');
 
   /// cookies in classes.tju.edu.cn
-  var gSessionId = PrefsBean<String>("gsessionid"); // GSESSIONID
-  var garbled = PrefsBean<String>("garbled"); // UqZBpD3n3iXPAw1X
-  var semesterId = PrefsBean<String>("semester"); // semester.id
-  var ids = PrefsBean<String>("ids"); // ids
+  static final gSessionId = PrefsBean<String>('gsessionid'); // GSESSIONID
+  static final garbled = PrefsBean<String>('garbled'); // UqZBpD3n3iXPAw1X
+  static final semesterId = PrefsBean<String>('semester'); // semester.id
+  static final ids = PrefsBean<String>('ids'); // ids
 
-  List<String> getCookies() {
+  static List<String> get cookies {
     var jSessionId = 'J' +
-        ((gSessionId.value.length > 0) ? gSessionId.value.substring(1) : "");
+        ((gSessionId.value.length > 0) ? gSessionId.value.substring(1) : '');
     return [gSessionId.value, jSessionId, garbled.value, semesterId.value];
   }
 
   /// 设置页面
-  var language = PrefsBean<int>("language", 0); // 系统语言
-  var dayNumber = PrefsBean<int>("dayNumber", 7); // 每周显示天数
-  var hideGPA = PrefsBean<bool>("hideGPA"); // 首页不显示GPA
-  var hideExam = PrefsBean<bool>("hideExam"); // 首页不显示考表
-  var showPosterGirl = PrefsBean<bool>("hidePosterGirl"); //首页不显示看板娘
-  var nightMode = PrefsBean<bool>("nightMode", true); // 开启夜猫子模式
-  var otherWeekSchedule =
-      PrefsBean<bool>("otherWeekSchedule", true); // 课表显示非本周课程
-  var skinNow = PrefsBean<int>("skinNow", 0); // 当前皮肤编号
+  static final language = PrefsBean<int>('language', 0); // 系统语言
+  static final dayNumber = PrefsBean<int>('dayNumber', 7); // 每周显示天数
+  static final hideGPA = PrefsBean<bool>('hideGPA'); // 首页不显示GPA
+  static final hideExam = PrefsBean<bool>('hideExam'); // 首页不显示考表
+  static final showMap = PrefsBean<bool>('showMap', false); // 首页不显示考表
+  static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
+  static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
 
   /// 自习室
-  var loungeUpdateTime = PrefsBean<String>("loungeUpdateTime", "");
-  var lastChoseCampus = PrefsBean<int>("lastChoseCampus", 0);
+  static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
+  static final lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
 
   /// 健康信息提交时间
-  var reportTime = PrefsBean<String>('reportTime');
+  static final reportTime = PrefsBean<String>('reportTime');
 
   /// ----------下方是一些应用相关的杂项----------
   /// 上次修改数据逻辑的时间（当课表、gpa的逻辑修改时，判断这个来强制清除缓存）
-  var updateTime = PrefsBean<String>('updateTime');
+  static final updateTime = PrefsBean<String>('updateTime');
+  static final lastActivityDialogShownDate =
+      PrefsBean<String>('lastActivityDialogShownDate', '');
 
-  /// 是否为初次使用此app
-  var firstUse = PrefsBean<bool>('firstUse', true);
+  /// 是否为初次使用此app（重新登陆也算）
+  static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
+  static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 
-  /// 是否使用账密登陆（false则为短信登陆）
-  var usePwLogin = PrefsBean<bool>('pwLogin', true);
-
-  // 应用更新相关配置
-  /// 使用beta版还是release版微北洋
-  var apkType = PrefsBean('apkType', "release");
-  var lastCheckUpdateTime = PrefsBean('lastCheckUpdateTime', '');
-  var canPush = PrefsBean('can_push', false);
+  /// 应用更新相关配置，使用beta版还是release版微北洋
+  static final apkType = PrefsBean<String>('apkType', 'release');
+  static final lastCheckUpdateTime =
+      PrefsBean<String>('lastCheckUpdateTime', '');
+  static final ignoreUpdateVersion =
+      PrefsBean<String>('ignoreUpdateVersion', '');
+  // 推送
+  static final canPush = PrefsBean<bool>('can_push', false);
+  static final pushCid = PrefsBean<String>('pushCid', '');
+  static final pushUser = PrefsBean<String>('pushUser', '');
 
   /// 清除天外天账号系统缓存
-  void clearUserPrefs() {
+  static void clearUserPrefs() {
+    /// 天外天账号系统
     isLogin.clear();
     token.clear();
     nickname.clear();
+    lakeNickname.clear();
     userNumber.clear();
     phone.clear();
     email.clear();
@@ -161,38 +135,52 @@ class CommonPreferences {
     captchaCookie.clear();
     realName.clear();
     department.clear();
-    stuType.clear();
     major.clear();
+    stuType.clear();
+    avatar.clear();
+    area.clear();
+    building.clear();
+    floor.clear();
+    room.clear();
+    bed.clear();
+
+    /// 求实论坛相关
     lakeToken.clear();
     lakeUid.clear();
     isSuper.clear();
     isSchAdmin.clear();
     isStuAdmin.clear();
     isUser.clear();
-    canPush.clear();
+    feedbackFloorSortType.clear();
+    feedbackLastWeCo.clear();
+
+    /// 等级系统
+    levelPoint.clear();
+    levelName.clear();
+    level.clear();
+    nextLevelPoint.clear();
+    curLevelPoint.clear();
+
+    /// 自定义课表
+    customCourseToken.clear();
+
+    /// 杂项
     lastCheckUpdateTime.clear();
-    area.clear();
-    building.clear();
-    floor.clear();
-    room.clear();
-    bed.clear();
-    isSkinUsed.clear();
-    isDarkMode.clear();
-    skinProfile.clear();
-    skinClass.clear();
-    skinMain.clear();
-    skinColorA.clear();
-    skinColorB.clear();
-    skinColorC.clear();
-    skinColorD.clear();
-    skinColorE.clear();
-    skinColorF.clear();
+    ignoreUpdateVersion.clear();
+    canPush.clear();
+    pushCid.clear();
+    pushUser.clear();
+    lastActivityDialogShownDate.clear();
+    firstPrivacy.clear();
+    firstClassesDialog.clear();
   }
 
   /// 清除办公网缓存
-  void clearTjuPrefs() {
+  static void clearTjuPrefs() {
     gpaData.clear();
-    scheduleData.clear();
+    courseData.clear();
+    examData.clear();
+    customUpdatedAt.clear();
     isBindTju.clear();
     tjuuname.clear();
     tjupasswd.clear();
@@ -205,24 +193,19 @@ class PrefsBean<T> with PreferencesUtil<T> {
   }
 
   String _key;
-  T _default;
+  T? _default;
 
   T get value => _getValue(_key) ?? _default;
 
   // 这个判断不能加，因为不存储的话原生那边获取不到，除非原生那边也设置了默认值
   // if (value == newValue) return;
-  set value(T newValue) => _setValue(newValue, _key);
+  void set value(T newValue) => _setValue(newValue, _key);
 
-  clear() => _clearValue(_key);
+  void clear() => _clearValue(_key);
 }
 
 mixin PreferencesUtil<T> {
-  SharedPreferences _instance;
-
-  SharedPreferences get pref {
-    if (_instance == null) _instance = CommonPreferences.getPref();
-    return _instance;
-  }
+  static SharedPreferences get pref => CommonPreferences.sharedPref;
 
   dynamic _getValue(String key) => pref.get(key);
 
@@ -246,14 +229,12 @@ mixin PreferencesUtil<T> {
     }
   }
 
-  _clearValue(String key) async {
-    await pref.remove(key);
-  }
+  void _clearValue(String key) async => await pref.remove(key);
 
   dynamic _getDefaultValue() {
     switch (T) {
       case String:
-        return "";
+        return '';
       case int:
         return 0;
       case double:

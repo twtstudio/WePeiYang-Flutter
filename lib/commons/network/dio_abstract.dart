@@ -1,13 +1,5 @@
-import 'dart:async';
-import 'package:dio/dio.dart';
-import 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/network/net_check_interceptor.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
-
-export 'package:dio/dio.dart' show DioError, ResponseType, InterceptorsWrapper;
-export 'package:we_pei_yang_flutter/commons/network/error_interceptor.dart'
-    show WpyDioError;
-export 'async_timer.dart';
+// @dart = 2.12
+part of 'wpy_dio.dart';
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();
@@ -16,58 +8,63 @@ typedef OnFailure = void Function(DioError e);
 
 // TODO: 是否考虑删除 abstract ，这样有些简单使用的地方就不用再继承一个类了？
 abstract class DioAbstract {
-  String baseUrl;
-  Map<String, String> headers;
+  String baseUrl = '';
+  Map<String, String>? headers;
   List<InterceptorsWrapper> interceptors = [];
   ResponseType responseType = ResponseType.json;
-  bool responseBody = false;
-  Dio _dio;
 
-  Dio get dio => _dio;
+  late final Dio _dio;
+
+  late final Dio _dio_debug;
 
   DioAbstract() {
     BaseOptions options = BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 10000,
-        receiveTimeout: 10000,
+        connectTimeout: 3000,
+        receiveTimeout: 3000,
         responseType: responseType,
         headers: headers);
-    _dio = Dio()
-      ..options = options
-      ..interceptors.add(NetCheckInterceptor())
-      ..interceptors.addAll(interceptors)
-      ..interceptors.add(ErrorInterceptor())
-      ..interceptors.add(LogInterceptor(responseBody: responseBody));
-    // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    //     (HttpClient client) {
-    //   client.badCertificateCallback =
-    //       (X509Certificate cert, String host, int port) {
-    //     return true;
-    //   };
-    //   return client;
-    // };
 
-    // 不要删除！！！！
-    // 配置 fiddler 代理
-    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    //     (HttpClient client) {
-    //   client.findProxy = (uri) {
-    //     //proxy all request to localhost:8888
-    //     return 'PROXY 192.168.1.104:8888';
-    //   };
-    //   client.badCertificateCallback =
-    //       (X509Certificate cert, String host, int port) => true;
-    //   return client;
-    // };
+    _dio = Dio()..options = options;
+    _dio.interceptors.addAll([
+      RetryInterceptor(dio: _dio),
+      NetCheckInterceptor(),
+      ...interceptors,
+      ErrorInterceptor()
+    ]);
+
+    _dio_debug = Dio()..options = options;
+    _dio_debug.interceptors.addAll([
+      RetryInterceptor(dio: _dio_debug),
+      NetCheckInterceptor(),
+      LogInterceptor(requestBody: true, responseBody: true),
+      ...interceptors,
+      ErrorInterceptor()
+    ]);
   }
+
+// 不要删除！！！！
+// 配置 fiddler 代理
+// (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+//     (HttpClient client) {
+//   client.findProxy = (uri) {
+//     //proxy all request to localhost:8888
+//     return 'PROXY 192.168.1.104:8888';
+//   };
+//   client.badCertificateCallback =
+//       (X509Certificate cert, String host, int port) => true;
+//   return client;
+// };
 }
 
 extension DioRequests on DioAbstract {
   /// 普通的[get]、[post]、[put]与[download]方法，返回[Response]
   Future<Response<dynamic>> get(String path,
-      {Map<String, dynamic> queryParameters}) {
-    return dio
-        .get(path, queryParameters: queryParameters)
+      {Map<String, dynamic>? queryParameters,
+      Options? options,
+      bool debug = false}) {
+    return (debug ? _dio_debug : _dio)
+        .get(path, queryParameters: queryParameters, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;
@@ -75,9 +72,16 @@ extension DioRequests on DioAbstract {
   }
 
   Future<Response<dynamic>> post(String path,
-      {Map<String, dynamic> queryParameters, FormData formData}) {
-    return dio
-        .post(path, queryParameters: queryParameters, data: formData)
+      {Map<String, dynamic>? queryParameters,
+      FormData? formData,
+      data,
+      Options? options,
+      bool debug = false}) {
+    return (debug ? _dio_debug : _dio)
+        .post(path,
+            queryParameters: queryParameters,
+            data: formData ?? data,
+            options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;
@@ -85,8 +89,8 @@ extension DioRequests on DioAbstract {
   }
 
   Future<Response<dynamic>> put(String path,
-      {Map<String, dynamic> queryParameters}) {
-    return dio
+      {Map<String, dynamic>? queryParameters, bool debug = false}) {
+    return (debug ? _dio_debug : _dio)
         .put(path, queryParameters: queryParameters)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
@@ -95,47 +99,15 @@ extension DioRequests on DioAbstract {
   }
 
   Future<Response<dynamic>> download(String urlPath, String savePath,
-      {ProgressCallback onReceiveProgress, Options options}) {
-    return dio
+      {ProgressCallback? onReceiveProgress,
+      Options? options,
+      bool debug = false}) {
+    return (debug ? _dio_debug : _dio)
         .download(urlPath, savePath,
             onReceiveProgress: onReceiveProgress, options: options)
         .catchError((error, stack) {
       Logger.reportError(error, stack);
       throw error;
     });
-  }
-
-  /// twt后台包装的[get]与[post]方法，返回[CommonBody.result]
-  Future<Map> getRst(String path, {Map<String, dynamic> queryParameters}) {
-    return dio
-        .get(path, queryParameters: queryParameters)
-        .then((value) => CommonBody.fromJson(value.data).result)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
-  }
-
-  Future<Map> postRst(String path,
-      {Map<String, dynamic> queryParameters, FormData formData}) {
-    return dio
-        .post(path, queryParameters: queryParameters, data: formData)
-        .then((value) => CommonBody.fromJson(value.data).result)
-        .catchError((error, stack) {
-      Logger.reportError(error, stack);
-      throw error;
-    });
-  }
-}
-
-class CommonBody {
-  int errorCode;
-  String message;
-  Map result;
-
-  CommonBody.fromJson(dynamic jsonData) {
-    errorCode = jsonData['error_code'];
-    message = jsonData['message'];
-    result = jsonData['result'];
   }
 }

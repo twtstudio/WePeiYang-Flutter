@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ScheduleSettingPage extends StatefulWidget {
@@ -20,7 +19,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     S.current.mon_sat,
     S.current.mon_sun
   ];
-  int _index = CommonPreferences().dayNumber.value - 5;
+  int _index = CommonPreferences.dayNumber.value - 5;
 
   Widget _judgeIndex(int index) {
     if (index != _index)
@@ -42,16 +41,16 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   }
 
   Widget _getNumberOfDaysCard(BuildContext context, int index) {
-    var hintTextStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
-    var mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 16.5,
-      color: Color.fromRGBO(98, 103, 122, 1),
-    );
+    var hintTextStyle = TextUtil.base.regular
+        .sp(12)
+        .customColor(Color.fromRGBO(205, 206, 212, 1));
+    var mainTextStyle = TextUtil.base.regular
+        .sp(16.5)
+        .customColor(Color.fromRGBO(98, 103, 122, 1));
     return InkWell(
       onTap: () {
         setState(() => _index = index);
-        CommonPreferences().dayNumber.value = index + 5;
+        CommonPreferences.dayNumber.value = index + 5;
       },
       borderRadius: _judgeBorder(index),
       splashFactory: InkRipple.splashFactory,
@@ -63,12 +62,14 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                    width: 150,
-                    child: Text(upNumberList[index], style: mainTextStyle)),
+                  width: 150,
+                  child: Text(upNumberList[index], style: mainTextStyle),
+                ),
                 SizedBox(height: 3),
                 SizedBox(
-                    width: 150,
-                    child: Text(downNumberList[index], style: hintTextStyle))
+                  width: 150,
+                  child: Text(downNumberList[index], style: hintTextStyle),
+                )
               ],
             ),
             Spacer(),
@@ -98,41 +99,46 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
-            child: Text("${S.current.schedule}-${S.current.setting_day_number}",
-                style: FontManager.YaQiHei.copyWith(
-                    color: Color.fromRGBO(48, 60, 102, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28)),
+            child: Text(
+              "${S.current.schedule}-${S.current.setting_day_number}",
+              style: TextUtil.base.bold
+                  .sp(28)
+                  .customColor(Color.fromRGBO(48, 60, 102, 1)),
+            ),
           ),
           Container(
             margin: const EdgeInsets.fromLTRB(35, 15, 35, 20),
             alignment: Alignment.centerLeft,
-            child: Text(S.current.setting_day_number_hint,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 11.5)),
+            child: Text(
+              S.current.setting_day_number_hint,
+              style: TextUtil.base.regular
+                  .sp(11.5)
+                  .customColor(Color.fromRGBO(98, 103, 124, 1)),
+            ),
           ),
           Card(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9)),
-              child: Column(
-                children: <Widget>[
-                  _getNumberOfDaysCard(context, 0),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
-                    height: 1,
-                    color: Color.fromRGBO(212, 214, 226, 1),
-                  ),
-                  _getNumberOfDaysCard(context, 1),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
-                    height: 1,
-                    color: Color.fromRGBO(212, 214, 226, 1),
-                  ),
-                  _getNumberOfDaysCard(context, 2),
-                ],
-              )),
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+            child: Column(
+              children: <Widget>[
+                _getNumberOfDaysCard(context, 0),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  height: 1,
+                  color: Color.fromRGBO(212, 214, 226, 1),
+                ),
+                _getNumberOfDaysCard(context, 1),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
+                  height: 1,
+                  color: Color.fromRGBO(212, 214, 226, 1),
+                ),
+                _getNumberOfDaysCard(context, 2),
+              ],
+            ),
+          ),
         ],
       ),
     );

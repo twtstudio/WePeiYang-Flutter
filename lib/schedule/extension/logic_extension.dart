@@ -1,7 +1,263 @@
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
+// @dart = 2.12
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-/// 解决首页今日课程、课程表课程名称显示不全的问题（课程dialog不调用此函数）
+/// 为每周的点阵图生成bool矩阵
+List<List<bool>> getBoolMatrix(int week, int weekCount, List<Course> courses) {
+  var dayNumber = CommonPreferences.dayNumber.value;
+  // 这里不能 `list = List.filled(5, List.filled(6, false))` 这么写，不然外层List中会是同一个引用对象
+  List<List<bool>> list = [];
+  for (int i = 0; i < 5; i++) list.add(List.filled(dayNumber, false));
+  courses.forEach((course) {
+    course.arrangeList.forEach((arrange) {
+      if (judgeActiveInWeek(week, weekCount, arrange)) {
+        var day = arrange.weekday;
+        if (day > dayNumber) return;
+        var start = arrange.unitList.first;
+        var end = arrange.unitList.last;
+
+        /// 课程占奇数节时忽略一小节（例: 5-7视为5-6），因为点阵图的每个点代表两小节课
+        if ((end - start) % 2 == 0) end--;
+
+        /// 第11~12小节展示不开了，故去除掉
+        if (end > 10) end = 10;
+
+        for (var i = start; i <= end; i++) {
+          list[(i / 2).ceil() - 1][day - 1] = true;
+        }
+      }
+    });
+  });
+  return list;
+}
+
+/// 获取合并后的*本周*课程
+/// List<List<Pair<Course, int>>> 存储所有冲突课程，每个子List的第一个课程外显，其他位置的课程均与List[0]冲突
+List<List<Pair<Course, int>>> getMergedActiveCourses(
+    CourseProvider provider, int dayNumber) {
+  // 整理出所有本周arrange
+  List<Pair<Course, int>> pairList = [];
+  // 先添加普通课程
+  provider.schoolCourses.forEach((course) {
+    for (int j = 0; j < course.arrangeList.length; j++) {
+      course.arrangeList[j].showMode = 0; // 这里很坑，需要重置状态
+      if (judgeActiveInWeek(
+          provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
+        pairList.add(Pair<Course, int>(course, j));
+      }
+    }
+  });
+  // 再添加自定义课程
+  for (int i = 0; i < provider.customCourses.length; i++) {
+    var course = provider.customCourses[i];
+    course.index = null; // 重置状态
+    for (int j = 0; j < course.arrangeList.length; j++) {
+      course.arrangeList[j].showMode = 0; // 重置状态
+      if (judgeActiveInWeek(
+          provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
+        course.index = i;
+        pairList.add(Pair<Course, int>(course, j));
+      }
+    }
+  }
+  // 按照普通课程优先、长课程优先、时间早优先、高学分优先来排序
+  pairList.sort((a, b) {
+    // 普通课程优先
+    if (a.first.type == 1 && b.first.type == 0) return 1;
+    if (a.first.type == 0 && b.first.type == 1) return -1;
+
+    // 长课程优先
+    var aFirst = a.arrange.unitList.first;
+    var aLast = a.arrange.unitList.last;
+    var bFirst = b.arrange.unitList.first;
+    var bLast = b.arrange.unitList.last;
+    var aLen = aLast - aFirst;
+    var bLen = bLast - bFirst;
+    if (aLen != bLen) return bLen.compareTo(aLen);
+
+    // 时间早优先
+    if (aFirst != bFirst) return aFirst.compareTo(bFirst);
+
+    // 学分高优先，null(或不能解析成double的值)排最后
+    double? iA = double.tryParse(a.first.credit);
+    double? iB = double.tryParse(b.first.credit);
+    if (iA == null) return 1;
+    if (iB == null) return -1;
+    return iB.compareTo(iA);
+  });
+  // 每个子List为一组冲突课程：List[0]显示在外，其他位置的课程均与List[0]冲突
+  List<List<Pair<Course, int>>> mergedList = [];
+  // 不显示在外的课程
+  List<Pair<Course, int>> notAppendList = [];
+  // 二维矩阵，记录每个位置的课程量，显示在外的不能超过两节
+  List<List<int>> unitCountMatrix = [];
+  for (int i = 0; i < dayNumber; i++) {
+    unitCountMatrix.add(List.filled(12, 0));
+  }
+
+  pairList.forEach((pair) {
+    var start = pair.arrange.unitList.first;
+    var end = pair.arrange.unitList.last;
+    var day = pair.arrange.weekday - 1;
+    if (day > dayNumber) return;
+    var needAppend = true; // `pair`是否需要外显
+    for (int i = start; i <= end; i++) {
+      if (unitCountMatrix[day][i - 1] == 2) {
+        needAppend = false; // 如果某位置已经有了两节课，`pair`不能外显
+        break;
+      }
+    }
+    // 存储与`pair`相互冲突的课程
+    List<Pair<Course, int>> conflictList = [pair];
+    // 和所有外显课程判断冲突
+    for (int i = 0; i < mergedList.length; i++) {
+      var status = _checkMerged(pair.arrange, mergedList[i][0].arrange);
+      switch (status) {
+        case 2: // 如果完全重叠，标记该外显课程需要“漂浮”显示、此pair不显示内容
+          if (needAppend) {
+            mergedList[i][0].arrange.showMode = 1;
+            pair.arrange.showMode = 2;
+          }
+          continue c1;
+        c1:
+        case 1: // 如果存在重叠，互相添加至冲突列表中
+          mergedList[i].add(pair);
+          conflictList.add(mergedList[i][0]);
+      }
+    }
+    // 和所有非外显课程判断冲突
+    notAppendList.forEach((notAppend) {
+      if (_checkMerged(pair.arrange, notAppend.arrange) != 0) {
+        conflictList.add(notAppend); // 如果存在重叠，添加至`pair`的冲突列表中
+      }
+    });
+
+    if (needAppend) {
+      mergedList.add(conflictList);
+      for (int i = start; i <= end; i++) unitCountMatrix[day][i - 1]++;
+    } else {
+      notAppendList.add(pair);
+    }
+  });
+
+  // 按照普通课程优先、短课程优先、时间早优先、高学分优先再次排序
+  mergedList.sort((aList, bList) {
+    var a = aList.first, b = bList.first;
+    // 普通课程优先
+    if (a.first.type == 1 && b.first.type == 0) return 1;
+    if (a.first.type == 0 && b.first.type == 1) return -1;
+
+    // 短课程优先
+    var aFirst = a.arrange.unitList.first;
+    var aLast = a.arrange.unitList.last;
+    var bFirst = b.arrange.unitList.first;
+    var bLast = b.arrange.unitList.last;
+    var aLen = aLast - aFirst;
+    var bLen = bLast - bFirst;
+    if (aLen != bLen) return aLen.compareTo(bLen);
+
+    // 时间早优先
+    if (aFirst != bFirst) return aFirst.compareTo(bFirst);
+
+    // 学分高优先，null(或不能解析成double的值)排最后
+    double? iA = double.tryParse(a.first.credit);
+    double? iB = double.tryParse(b.first.credit);
+    if (iA == null) return 1;
+    if (iB == null) return -1;
+    if (iA != iB) return iB.compareTo(iA);
+
+    return a.first.name.compareTo(b.first.name);
+  });
+
+  return mergedList;
+}
+
+/// 检查两节课是否时间冲突，0->不冲突，1->部分重叠，2->完全重叠
+int _checkMerged(Arrange a1, Arrange a2) {
+  if (a1.weekday != a2.weekday) return 0;
+  int start1 = a1.unitList.first;
+  int end1 = a1.unitList.last;
+  int start2 = a2.unitList.first;
+  int end2 = a2.unitList.last;
+  if (end1 < start2 || end2 < start1) return 0;
+  if (start1 == start2 && end1 == end2) return 2;
+  return 1;
+}
+
+/// 检查当前课程在选中周的状态
+bool judgeActiveInWeek(int week, int weekCount, Arrange arrange) =>
+    _getWeekStatus(weekCount, arrange)[week];
+
+/// 检查当天课程（day从1开始数）
+bool judgeActiveInDay(int week, int day, int weekCount, Arrange arrange) =>
+    arrange.weekday == day ? _getWeekStatus(weekCount, arrange)[week] : false;
+
+/// 检查明天课程（用于夜猫子模式）
+bool judgeActiveTomorrow(int week, int day, int weekCount, Arrange arrange) {
+  int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
+  if (week + offset > weekCount) return false; // 防止数组越界
+  return (arrange.weekday == (day % 7 + 1))
+      ? _getWeekStatus(weekCount, arrange)[week + offset]
+      : false;
+}
+
+/// 该课程在所有周的状态
+/// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
+List<bool> _getWeekStatus(int weekCount, Arrange arrange) {
+  List<bool> list = [];
+  for (var i = 0; i <= weekCount; i++) {
+    list.add(arrange.weekList.contains(i));
+  }
+  return list;
+}
+
+/// 是否已开学
+bool get isBeforeTermStart =>
+    DateTime.now().millisecondsSinceEpoch / 1000 <
+    CommonPreferences.termStart.value;
+
+/// 夜猫子模式下，是否已开学，86400代表一天
+bool get isOneDayBeforeTermStart =>
+    (DateTime.now().millisecondsSinceEpoch / 1000 + 86400) <
+    CommonPreferences.termStart.value;
+
+/// 计算本学期已修学时（week为当前教学周，day从1开始数）
+/// 注：依照此计算方法，只有当天结束时才会更改已修学时
+int getCurrentHours(int week, int day, List<Course> courses) {
+  int totalHour = 0;
+  courses.forEach((course) {
+    course.arrangeList.forEach((arrange) {
+      int weekCount = 0;
+      for (int i = 1; i < week; i++) {
+        if (arrange.weekList.contains(i)) weekCount++;
+      }
+      if (arrange.weekList.contains(week) && day > arrange.weekday) {
+        weekCount++;
+      }
+      var arrangeStart = arrange.unitList.first;
+      var arrangeEnd = arrange.unitList.last;
+      totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
+    });
+  });
+  return totalHour;
+}
+
+/// 计算本学期课程总学时
+int getTotalHours(List<Course> courses) {
+  int totalHour = 0;
+  courses.forEach((course) {
+    course.arrangeList.forEach((arrange) {
+      int weekCount = arrange.weekList.length;
+      var arrangeStart = arrange.unitList.first;
+      var arrangeEnd = arrange.unitList.last;
+      totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
+    });
+  });
+  return totalHour;
+}
+
+/// 防止首页今日课程、课程表课程名称过长
 String formatText(String text) {
   if (text.length > 13)
     return text.substring(0, 13) + "...";
@@ -14,7 +270,7 @@ String formatText(String text) {
 /// [week] 需要第几周的日期
 /// [count] 需要6天还是7天的日期
 List<String> getWeekDayString(int termStart, int week, int count) {
-  var dayOfSeconds = 86400;
+  const dayOfSeconds = 86400;
   // 每周开始的时间戳
   var startUnixWithOffset = termStart + (week - 1) * dayOfSeconds * 7;
   List<String> list = [];
@@ -32,165 +288,6 @@ List<String> getWeekDayString(int termStart, int week, int count) {
   return list;
 }
 
-/// 为每周的点阵图生成bool矩阵
-List<List<bool>> getBoolMatrix(
-    int week, int weekCount, List<ScheduleCourse> courses, bool showSevenDay) {
-  List<List<bool>> list = [];
-  for (var i = 0; i < 5; i++)
-    list.add([false, false, false, false, false, false]);
-  courses.forEach((course) {
-    if (judgeActiveInWeek(week, weekCount, course)) {
-      var day = int.parse(course.arrange.day);
-      var start = int.parse(course.arrange.start);
-      var end = int.parse(course.arrange.end);
-
-      /// 课程占奇数节时忽略一小节（例: 5-7视为5-6），因为点阵图的每个点代表两小节课
-      if ((end - start) % 2 == 0) end--;
-
-      /// 第11~12小节展示不开了，故去除掉
-      if (end > 10) end = 10;
-
-      /// 判断周日的课是否需要显示在课表上
-      if (showSevenDay || day != 7)
-        for (var i = start; i <= end; i++)
-          list[(i / 2).ceil() - 1][day - 1] = true;
-    }
-  });
-  return list;
-}
-
-/// 返回每天合并冲突后的课程，[courses]是未经检验冲突的课程
-/// 最外层List储存所有天的合并课（周一至周dayNumber）
-/// 次外层List储存每一天的所有合并课
-/// 最内层List储存单个合并课，[List.first]的课显示在外，同时用于冲突判断
-List<List<List<ScheduleCourse>>> getMergedCourses(
-    ScheduleNotifier notifier, int dayNumber) {
-  List<ScheduleCourse> courses = notifier.coursesWithNotify;
-  List<List<List<ScheduleCourse>>> result = [];
-  for (int i = 0; i < dayNumber; i++) result.add([]);
-  courses.forEach((course) {
-    int day = int.parse(course.arrange.day);
-    if (day > dayNumber) return; // 这里return起到continue的作用
-    int start = int.parse(course.arrange.start);
-    int end = int.parse(course.arrange.end);
-    bool hasMerged = false;
-
-    /// 对当天的所有的已合并课（List<ScheduleCourse>）遍历，若均未冲突则添加至当天
-    result[day - 1].forEach((element) {
-      int eStart = int.parse(element[0].arrange.start);
-      int eEnd = int.parse(element[0].arrange.end);
-
-      /// 判断当前课与List中的第一节课是否冲突
-      if (checkMerged(course, element[0])) {
-        hasMerged = true;
-
-        /// List中只有一节inactive的课时，直接进行替换（这样List中的inactive课不会多于1节）
-        if (element.length == 1 &&
-            !judgeActiveInWeek(notifier.selectedWeekWithNotify,
-                notifier.weekCount, element[0])) {
-          element[0] = course;
-
-          /// 若不满足上述，且当前课（course）为inactive时，直接return
-        } else if (!judgeActiveInWeek(
-            notifier.selectedWeekWithNotify, notifier.weekCount, course)) {
-          return;
-
-          /// 当前课时长较长，插入first处
-        } else if ((end - start) > (eEnd - eStart)) {
-          element.insert(0, course);
-
-          /// List中第一节课时长较长，add即可
-        } else if ((end - start) < (eEnd - eStart)) {
-          element.add(course);
-
-          /// 当前课较早，插入first处
-        } else if (start < eStart) {
-          element.insert(0, course);
-
-          /// 当前课不比List第一节课早，add即可
-        } else {
-          element.add(course);
-        }
-      }
-    });
-    if (!hasMerged) result[day - 1].add([]..add(course));
-  });
-  return result;
-}
-
-/// 检查两节课是否时间冲突
-bool checkMerged(ScheduleCourse c1, ScheduleCourse c2) {
-  int start1 = int.parse(c1.arrange.start);
-  int end1 = int.parse(c1.arrange.end);
-  int start2 = int.parse(c2.arrange.start);
-  int end2 = int.parse(c2.arrange.end);
-  List<int> flag = List.filled(12, 0);
-  for (int i = start1; i <= end1; i++) flag[i - 1]++;
-  for (int i = start2; i <= end2; i++) flag[i - 1]++;
-  return flag.contains(2);
-}
-
-/// 检查当前课程在选中周的状态
-bool judgeActiveInWeek(int week, int weekCount, ScheduleCourse course) =>
-    getWeekStatus(weekCount, course)[week];
-
-/// 检查当天课程（day从1开始数）
-bool judgeActiveInDay(
-        int week, int day, int weekCount, ScheduleCourse course) =>
-    int.parse(course.arrange.day) == day
-        ? getWeekStatus(weekCount, course)[week]
-        : false;
-
-/// 检查明天课程（用于夜猫子模式）
-bool judgeActiveTomorrow(
-    int week, int day, int weekCount, ScheduleCourse course) {
-  int offset = (day == 7) ? 1 : 0; // 如果今天是周日，则检查下一周的课程
-  if (week + offset > weekCount) return false; // 如果后台一直不更新termStart, 这里有可能数组越界
-  return (int.parse(course.arrange.day) == ((day + 1) % 7))
-      ? getWeekStatus(weekCount, course)[week + offset]
-      : false;
-}
-
-/// 该课程在所有周的状态
-/// （list是从下标1开始数的哦，所以list[3]对应的是第三周）
-List<bool> getWeekStatus(int weekCount, ScheduleCourse course) {
-  List<bool> list = [];
-  for (var i = 0; i <= weekCount; i++)
-    list.add(course.arrange.binStr[i] == '1');
-  return list;
-}
-
-/// 计算本学期已修学时（week为当前教学周，day从1开始数）
-/// 注：依照此计算方法，只有当天结束时才会更改已修学时
-int getCurrentHours(int week, int day, List<ScheduleCourse> courses) {
-  int totalHour = 0;
-  courses.forEach((course) {
-    int weekCount = 0;
-    for (int i = 1; i < week; i++)
-      if (course.arrange.binStr[i] == '1') weekCount++;
-    if (course.arrange.binStr[week] == "1" &&
-        day > int.parse(course.arrange.day)) weekCount++;
-    var arrangeStart = int.parse(course.arrange.start);
-    var arrangeEnd = int.parse(course.arrange.end);
-    totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
-  });
-  return totalHour;
-}
-
-/// 计算本学期课程总学时
-int getTotalHours(List<ScheduleCourse> courses) {
-  int totalHour = 0;
-  courses.forEach((course) {
-    int weekCount = 0;
-    for (int i = 1; i < course.arrange.binStr.length; i++)
-      if (course.arrange.binStr[i] == '1') weekCount++;
-    var arrangeStart = int.parse(course.arrange.start);
-    var arrangeEnd = int.parse(course.arrange.end);
-    totalHour += weekCount * (arrangeEnd - arrangeStart + 1);
-  });
-  return totalHour;
-}
-
 /// 去掉字符串中小括号里的内容：  张三（教授） -> 张三
 String removeParentheses(String mode) =>
     mode.replaceAll(RegExp(r'\((.+?)\)'), '');
@@ -199,36 +296,35 @@ String removeParentheses(String mode) =>
 String replaceBuildingWord(String mode) =>
     mode.replaceAll('楼', '-').replaceAll('区', '');
 
-String getCourseTime(String start, String end) {
-  var startTimes = [
-    '08:30',
-    '09:20',
-    '10:25',
-    '11:15',
-    '13:30',
-    '14:20',
-    '15:25',
-    '16:15',
-    '18:30',
-    '19:20',
-    '20:10',
-    '21:00'
-  ];
-  var endTimes = [
-    '09:15',
-    '10:05',
-    '11:10',
-    '12:00',
-    '14:15',
-    '15:05',
-    '16:10',
-    '17:00',
-    '19:15',
-    '20:05',
-    '20:55',
-    '21:45'
-  ];
-  int s = int.parse(start);
-  int e = int.parse(end);
-  return "${startTimes[s - 1]}-${endTimes[e - 1]}";
-}
+String getCourseTime(List<int> unit) =>
+    "${_startTimes[unit.first - 1]}-${_endTimes[unit.last - 1]}";
+
+const _startTimes = [
+  '08:30',
+  '09:20',
+  '10:25',
+  '11:15',
+  '13:30',
+  '14:20',
+  '15:25',
+  '16:15',
+  '18:30',
+  '19:20',
+  '20:10',
+  '21:00'
+];
+
+const _endTimes = [
+  '09:15',
+  '10:05',
+  '11:10',
+  '12:00',
+  '14:15',
+  '15:05',
+  '16:10',
+  '17:00',
+  '19:15',
+  '20:05',
+  '20:55',
+  '21:45'
+];

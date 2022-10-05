@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class PhoneBindPage extends StatefulWidget {
@@ -15,7 +14,6 @@ class PhoneBindPage extends StatefulWidget {
 }
 
 class _PhoneBindPageState extends State<PhoneBindPage> {
-  var pref = CommonPreferences();
   String phone = "";
   String code = "";
   bool isPress = false;
@@ -49,18 +47,19 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
     double width = WePeiYangApp.screenWidth - 80;
-    if (pref.phone.value != "")
+    if (CommonPreferences.phone.value != "")
       return Column(children: [
         SizedBox(height: 70),
         Center(
-          child: Text("${S.current.bind_phone}: ${pref.phone.value}",
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Color.fromRGBO(79, 88, 107, 1))),
+          child: Text(
+              "${S.current.bind_phone}: ${CommonPreferences.phone.value}",
+              style: TextUtil.base.bold
+                  .sp(15)
+                  .customColor(Color.fromRGBO(79, 88, 107, 1))),
         ),
         SizedBox(height: 95),
         SizedBox(
@@ -73,13 +72,12 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     builder: (BuildContext context) => PhoneUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.white, fontSize: 13)),
+                style: TextUtil.base.regular.white.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return MyColors.brightBlue;
+                  return Color.fromRGBO(103, 110, 150, 1.0);
                 return Color.fromRGBO(79, 88, 107, 1);
               }),
               backgroundColor:
@@ -93,54 +91,52 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         ),
       ]);
     else {
-      return Column(children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 55,
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: S.current.phone,
-                  hintStyle: hintStyle,
-                  filled: true,
-                  fillColor: Color.fromRGBO(235, 238, 243, 1),
-                  isCollapsed: true,
-                  contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none)),
-              onChanged: (input) => setState(() => phone = input),
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 55),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: S.current.phone,
+                    hintStyle: hintStyle,
+                    filled: true,
+                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    isCollapsed: true,
+                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none)),
+                onChanged: (input) => setState(() => phone = input),
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Row(
-            children: [
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: 55,
-                  maxWidth: width / 2 + 20,
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              children: [
+                ConstrainedBox(
+                  constraints:
+                      BoxConstraints(maxHeight: 55, maxWidth: width / 2 + 20),
+                  child: TextField(
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                        hintText: S.current.text_captcha,
+                        hintStyle: hintStyle,
+                        filled: true,
+                        fillColor: Color.fromRGBO(235, 238, 243, 1),
+                        isCollapsed: true,
+                        contentPadding:
+                            const EdgeInsets.fromLTRB(15, 18, 0, 18),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none)),
+                    onChanged: (input) => setState(() => code = input),
+                  ),
                 ),
-                child: TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                      hintText: S.current.text_captcha,
-                      hintStyle: hintStyle,
-                      filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
-                      isCollapsed: true,
-                      contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none)),
-                  onChanged: (input) => setState(() => code = input),
-                ),
-              ),
-              Container(
+                Container(
                   height: 55,
                   width: width / 2 - 20,
                   margin: const EdgeInsets.only(left: 20),
@@ -157,10 +153,8 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             return ElevatedButton(
                               onPressed: () {},
                               child: Text('$time秒后重试',
-                                  style: FontManager.YaHeiRegular.copyWith(
-                                      color: Color.fromRGBO(98, 103, 123, 1),
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold)),
+                                  style: TextUtil.base.bold.sp(13).customColor(
+                                      Color.fromRGBO(98, 103, 123, 1))),
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(5),
                                 overlayColor:
@@ -168,17 +162,16 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.grey[300]),
                                 shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30))),
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30)),
+                                ),
                               ),
                             );
                           })
                       : ElevatedButton(
                           onPressed: _fetchCaptcha,
                           child: Text(S.current.fetch_captcha,
-                              style: FontManager.YaHeiRegular.copyWith(
-                                  color: Colors.white, fontSize: 13)),
+                              style: TextUtil.base.regular.white.sp(13)),
                           style: ButtonStyle(
                             elevation: MaterialStateProperty.all(5),
                             overlayColor:
@@ -191,23 +184,24 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             backgroundColor: MaterialStateProperty.all(
                                 Color.fromRGBO(53, 59, 84, 1)),
                             shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30))),
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30)),
+                            ),
                           ),
-                        )),
-            ],
+                        ),
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 20),
-        Container(
+          SizedBox(height: 20),
+          Container(
             height: 50,
             width: 400,
             margin: const EdgeInsets.symmetric(horizontal: 30),
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
@@ -218,11 +212,15 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 }),
                 backgroundColor:
                     MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30))),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                ),
               ),
-            )),
-      ]);
+            ),
+          ),
+        ],
+      );
     }
   }
 
@@ -249,21 +247,17 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 20),
                 child: Text(S.current.phone_bind,
-                    style: FontManager.YaQiHei.copyWith(
-                        color: Color.fromRGBO(48, 60, 102, 1),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28)),
+                    style: TextUtil.base.bold
+                        .sp(28)
+                        .customColor(Color.fromRGBO(48, 60, 102, 1))),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
                 child: Text(
-                    (pref.phone.value != "")
+                    (CommonPreferences.phone.value != "")
                         ? S.current.is_bind
                         : S.current.not_bind,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold)),
+                    style: TextUtil.base.bold.greyA6.sp(12)),
               ),
             ],
           ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
-
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuRebindDialog extends Dialog {
   final String reason;
@@ -58,9 +58,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   void initState() {
     super.initState();
     captchaWidget = CaptchaWidget(captchaKey);
-    var pref = CommonPreferences();
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -87,24 +86,57 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
       ToastProvider.error(message);
       return;
     }
-    login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
-        onSuccess: () {
+    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网重新绑定成功");
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ExamNotifier>(context, listen: false)
-          .refreshExam(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
+      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      var examProvider = Provider.of<ExamProvider>(context, listen: false);
+      Future.sync(() async {
+        var mtx = Mutex();
+        // 这里既然第一次课程表有问题，那么最后多请求一次
+        await mtx.acquire();
+
+        gpaProvider.refreshGPA(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+
+        await mtx.acquire();
+        examProvider.refreshExam(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
+      });
       Navigator.pop(context);
     }, onFailure: (e) {
       if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
@@ -119,8 +151,9 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -128,15 +161,15 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
           Text(S.current.wrong + "！",
-              style: FontManager.YaQiHei.copyWith(
-                  color: Color.fromRGBO(79, 88, 107, 1),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17))
+              style: TextUtil.base.bold
+                  .sp(17)
+                  .customColor(Color.fromRGBO(79, 88, 107, 1)))
         ]),
         SizedBox(height: 8),
         Text(widget.reason,
-            style: FontManager.YaHeiRegular.copyWith(
-                color: Color.fromRGBO(79, 88, 107, 1), fontSize: 12)),
+            style: TextUtil.base.regular
+                .sp(12)
+                .customColor(Color.fromRGBO(79, 88, 107, 1))),
         SizedBox(height: 18),
         ConstrainedBox(
           constraints: BoxConstraints(
@@ -228,8 +261,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.login,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

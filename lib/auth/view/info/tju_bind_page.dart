@@ -1,20 +1,29 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
+  final String routeAfterBind; // 绑定成功后跳转至的路由
+
+  TjuBindPage([this.routeAfterBind]);
+
   @override
   _TjuBindPageState createState() => _TjuBindPageState();
 }
@@ -27,21 +36,21 @@ class _TjuBindPageState extends State<TjuBindPage> {
   TextEditingController nameController;
   TextEditingController pwController;
   TextEditingController codeController;
-  GlobalKey<CaptchaWidgetState> captchaKey;
+  final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
   CaptchaWidget captchaWidget;
 
   @override
   void initState() {
-    captchaKey = GlobalKey();
     captchaWidget = CaptchaWidget(captchaKey);
     codeController = TextEditingController();
-    var pref = CommonPreferences();
-    if (pref.isBindTju.value) {
+    if (CommonPreferences.isBindTju.value) {
       super.initState();
       return;
     }
-    tjuuname = pref.tjuuname.value;
-    tjupasswd = pref.tjupasswd.value;
+    tjuuname = CommonPreferences.tjuuname.value == ''
+        ? CommonPreferences.account.value
+        : CommonPreferences.tjuuname.value;
+    tjupasswd = CommonPreferences.tjupasswd.value;
     nameController =
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
@@ -69,24 +78,64 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error(message);
       return;
     }
-    login(context, tjuuname, tjupasswd, captcha, captchaWidget.params,
-        onSuccess: () {
+    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
       ToastProvider.success("办公网绑定成功");
-      Provider.of<GPANotifier>(context, listen: false)
-          .refreshGPA(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ScheduleNotifier>(context, listen: false)
-          .refreshSchedule(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
-      Provider.of<ExamNotifier>(context, listen: false)
-          .refreshExam(
-            onFailure: (e) => ToastProvider.error(e.error.toString()),
-          )
-          .call();
+      ToastProvider.running('数据加载中');
+      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      var examProvider = Provider.of<ExamProvider>(context, listen: false);
+      Future.sync(() async {
+        var mtx = Mutex();
+        await mtx.acquire();
+        // TODO: 重定向错误不知道怎么忽略，多请求一次课程表是可以的，同时把GPA放在课程表
+        // 前面，防止刷到辅修成绩的bug情况。此外在判断是否刷新时，去掉了来自课程表页面的
+        // 多刷新课程表总能刷出来，所以不判断了，之后要重新对一遍办公网的登录流程
+        // 这里provider先拿出来，页面pop掉就没了
+        if (widget.routeAfterBind != GPARouter.gpa) {
+          gpaProvider.refreshGPA(
+            onSuccess: () {
+              mtx.release();
+            },
+            onFailure: (e) {
+              mtx.release();
+            },
+          );
+        }
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            mtx.release();
+          },
+        );
+
+        await mtx.acquire();
+        if (widget.routeAfterBind != ScheduleRouter.exam) {
+          examProvider.refreshExam(
+            onSuccess: () {
+              mtx.release();
+            },
+            onFailure: (e) {
+              mtx.release();
+            },
+          );
+        }
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            mtx.release();
+          },
+        );
+      });
+      if (widget.routeAfterBind != null) {
+        Navigator.pushReplacementNamed(context, widget.routeAfterBind);
+        return;
+      }
       setState(() {
         tjuuname = "";
         tjupasswd = "";
@@ -107,17 +156,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
 
-  Widget _detail(BuildContext context, CommonPreferences pref) {
-    var hintStyle = FontManager.YaHeiRegular.copyWith(
-        color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
-    if (pref.isBindTju.value)
+  Widget _detail(BuildContext context) {
+    var hintStyle = TextUtil.base.regular
+        .sp(13)
+        .customColor(Color.fromRGBO(201, 204, 209, 1));
+    if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
-        Text("${S.current.bind_account}: ${pref.tjuuname.value}",
-            style: FontManager.YaHeiRegular.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Color.fromRGBO(79, 88, 107, 1))),
+        Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
+            style: TextUtil.base.bold
+                .sp(15)
+                .customColor(Color.fromRGBO(79, 88, 107, 1))),
         SizedBox(height: 60),
         SizedBox(
           height: 50,
@@ -129,19 +178,19 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Colors.white, fontSize: 13)),
+                style: TextUtil.base.regular.white.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return MyColors.brightBlue;
+                  return Color.fromRGBO(103, 110, 150, 1.0);
                 return Color.fromRGBO(79, 88, 107, 1);
               }),
               backgroundColor:
                   MaterialStateProperty.all(Color.fromRGBO(79, 88, 107, 1)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30))),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
             ),
           ),
         ),
@@ -156,8 +205,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: Text(
               S.current.tju_bind_hint,
               textAlign: TextAlign.center,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+              style: TextUtil.base.regular
+                  .sp(10)
+                  .customColor(Color.fromRGBO(98, 103, 124, 1)),
             ),
           ),
           SizedBox(height: 20),
@@ -215,7 +265,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                           borderSide: BorderSide.none),
                       suffixIcon: GestureDetector(
                         child: Icon(
-                            value ? Icons.visibility_off : Icons.visibility),
+                          value ? Icons.visibility_off : Icons.visibility,
+                          color: ColorUtil.mainColor,
+                        ),
                         onTap: () {
                           visNotifier.value = !visNotifier.value;
                         },
@@ -275,8 +327,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
@@ -296,15 +347,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
           Text(
             '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
             '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
-            style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+            style: TextUtil.base.regular
+                .sp(10)
+                .customColor(Color.fromRGBO(98, 103, 124, 1)),
           ),
           Row(
             children: [
               Text(
                 '办公网网址为 ',
-                style: FontManager.YaHeiRegular.copyWith(
-                    fontSize: 10, color: Color.fromRGBO(98, 103, 124, 1)),
+                style: TextUtil.base.regular
+                    .sp(10)
+                    .customColor(Color.fromRGBO(98, 103, 124, 1)),
               ),
               GestureDetector(
                 onTap: () async {
@@ -315,13 +368,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     ToastProvider.error('请检查网络状态');
                   }
                 },
-                child: Text(
-                  'classes.tju.edu.cn',
-                  style: FontManager.YaHeiRegular.copyWith(
-                      fontSize: 10,
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline),
-                ),
+                child: Text('classes.tju.edu.cn',
+                    style: TextUtil.base.regular.blue363C.underLine.sp(10)),
               ),
             ],
           ),
@@ -333,19 +381,18 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
-    var pref = CommonPreferences();
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
                     color: Color.fromRGBO(53, 59, 84, 1), size: 32),
                 onTap: () => Navigator.pop(context)),
-          )),
+          ),
+          systemOverlayStyle: SystemUiOverlayStyle.dark),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -356,15 +403,14 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
                   child: Text(S.current.tju_bind,
-                      style: FontManager.YaQiHei.copyWith(
-                          color: Color.fromRGBO(48, 60, 102, 1),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28)),
+                      style: TextUtil.base.bold
+                          .sp(28)
+                          .customColor(Color.fromRGBO(48, 60, 102, 1))),
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                   child: Text(
-                      pref.isBindTju.value
+                      CommonPreferences.isBindTju.value
                           ? S.current.is_bind
                           : S.current.not_bind,
                       style: TextStyle(
@@ -376,7 +422,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             ),
 
             /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-            SizedBox(height: pref.isBindTju.value ? 20 : 0),
+            SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -389,7 +435,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     height: 50, width: 50),
               ],
             ),
-            _detail(context, pref)
+            _detail(context)
           ],
         ),
       ),
@@ -398,49 +444,45 @@ class _TjuBindPageState extends State<TjuBindPage> {
 }
 
 class CaptchaWidget extends StatefulWidget {
-  final Map<String, String> params = Map();
-
   CaptchaWidget(Key key) : super(key: key);
 
   @override
-  CaptchaWidgetState createState() => CaptchaWidgetState();
+  State<CaptchaWidget> createState() => CaptchaWidgetState();
 }
 
-var index = 0;
-
 class CaptchaWidgetState extends State<CaptchaWidget> {
-  refresh() {
-    setState(() => index++);
+  void refresh() async {
+    id += 0.001;
+    try {
+      await ClassesService.cookieJar.deleteAll();
+    } catch (_) {}
+    var res = await ClassesService.fetch(
+        "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
+        options: Options(responseType: ResponseType.bytes));
+    setState(() {
+      data = res.data;
+    });
+  }
+
+  Uint8List data;
+  double id = 0.001;
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
 
   @override
   void dispose() {
-    index++;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getExecAndSession(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.hasData) {
-          Map map = snapshot.data;
-          widget.params.clear();
-          widget.params.addAll(map);
-          return InkWell(
-            onTap: refresh,
-            child: Image.network(
-                "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?$index",
-                key: ValueKey(index),
-                headers: {"Cookie": map['session']},
-                fit: BoxFit.fill),
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
+    return GestureDetector(
+        onTap: refresh,
+        child:
+            data == null ? CupertinoActivityIndicator() : Image.memory(data));
   }
 }

@@ -1,216 +1,115 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/res/color.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/school_model.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-class TodayCoursesWidget extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => TodayCoursesWidgetState();
-}
-
-class TodayCoursesWidgetState extends State<TodayCoursesWidget> {
-  List<Color> skinList =[];
-  @override
-  void initState() {
-    super.initState();
-    if(CommonPreferences().isSkinUsed.value) {
-      skinList.add(Color(CommonPreferences().skinColorA.value));
-      skinList.add(Color(CommonPreferences().skinColorB.value));
-      skinList.add(Color(CommonPreferences().skinColorC.value));
-      skinList.add(Color(CommonPreferences().skinColorD.value));
-      skinList.add(Color(CommonPreferences().skinColorE.value));
-      skinList.add(Color(CommonPreferences().skinColorF.value));
-    }
-  }
+class TodayCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ScheduleNotifier>(builder: (context, notifier, _) {
-      List<ScheduleCourse> todayCourses = _getTodayCourses(notifier);
-      return Column(
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, ScheduleRouter.schedule),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(25, 20, 0, 12),
-              alignment: Alignment.centerLeft,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(S.current.schedule,
-                      style: FontManager.YaQiHei.copyWith(
-                          fontSize: 16,
-                          color: Color.fromRGBO(100, 103, 122, 1),
-                          fontWeight: FontWeight.bold)),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 25, top: 2),
-                    child: (todayCourses.length == 0)
-                        ? Container()
-                        : DefaultTextStyle(
-                      style: FontManager.YaHeiRegular.copyWith(
-                          fontSize: 12,
-                          color: Color.fromRGBO(100, 103, 122, 1)),
-                      child: Text.rich(TextSpan(children: [
-                        TextSpan(
-                            text: (notifier.nightMode &&
-                                DateTime
-                                    .now()
-                                    .hour >= 21)
-                                ? "明天 "
-                                : "今天 "),
-                        TextSpan(
-                            text: todayCourses.length.toString(),
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(text: " 节课 "),
-                        TextSpan(
-                            text: "> ", style: TextStyle(fontSize: 15))
-                      ])),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          _getDisplayWidget(notifier, todayCourses, context)
-        ],
-      );
+    return Consumer<CourseProvider>(builder: (context, provider, _) {
+      var nightMode =
+          context.select<CourseDisplayProvider, bool>((p) => p.nightMode);
+      var todayPairs = _getTodayPairs(provider, nightMode);
+      if (todayPairs.length == 0) return Container();
+
+      return _detail(context, todayPairs, nightMode);
     });
   }
 
   /// 获取今天（夜猫子则是明天）的课程列表
-  List<ScheduleCourse> _getTodayCourses(ScheduleNotifier notifier) {
+  List<Pair<Course, int>> _getTodayPairs(
+      CourseProvider provider, bool nightMode) {
     /// 如果学期还没开始，则不显示
-    if (notifier.isOneDayBeforeTermStart) return [];
-    List<ScheduleCourse> todayCourses = [];
-    int today = DateTime
-        .now()
-        .weekday;
-    bool nightMode = notifier.nightMode;
-    if (DateTime
-        .now()
-        .hour < 21) nightMode = false;
+    if (isOneDayBeforeTermStart) return [];
+    List<Pair<Course, int>> todayPairs = [];
+    int today = DateTime.now().weekday;
+    if (DateTime.now().hour < 21) nightMode = false;
     bool flag;
-    notifier.coursesWithNotify.forEach((course) {
-      if (nightMode)
-        flag = judgeActiveTomorrow(
-            notifier.currentWeek, today, notifier.weekCount, course);
-      else
-        flag = judgeActiveInDay(
-            notifier.currentWeek, today, notifier.weekCount, course);
-      if (flag) todayCourses.add(course);
+    provider.totalCourses.forEach((course) {
+      for (int i = 0; i < course.arrangeList.length; i++) {
+        if (nightMode) {
+          flag = judgeActiveTomorrow(provider.currentWeek, today,
+              provider.weekCount, course.arrangeList[i]);
+        } else {
+          flag = judgeActiveInDay(provider.currentWeek, today,
+              provider.weekCount, course.arrangeList[i]);
+        }
+        if (flag) todayPairs.add(Pair(course, i));
+      }
     });
-    return todayCourses;
+    return todayPairs;
   }
 
   /// 返回首页显示课程的widget
-  Widget _getDisplayWidget(ScheduleNotifier notifier,
-      List<ScheduleCourse> todayCourses, BuildContext context) {
-    if (todayCourses.length == 0) {
-      // 如果今天没有课，就返回文字框
-      return GestureDetector(
-        onTap: () =>
-            Navigator.pushNamed(context, ScheduleRouter.schedule).then((
-                value) =>
-                this.setState(() {
-                })),
-        child: Container(
-            height: 60,
-            margin: const EdgeInsets.symmetric(horizontal: 22),
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(236, 238, 237, 1),
-                borderRadius: BorderRadius.circular(15)),
-            child: Center(
-              child: Text(
-                  (notifier.nightMode && DateTime
-                      .now()
-                      .hour >= 21)
-                      ? "明天没有课哦"
-                      : "今天没有课哦",
-                  style: FontManager.YaHeiLight.copyWith(
-                      color: Color.fromRGBO(207, 208, 212, 1),
-                      fontSize: 14,
-                      letterSpacing: 0.5)),
-            )),
-      );
-    }
-
+  Widget _detail(BuildContext context, List<Pair<Course, int>> todayPairs,
+      bool nightMode) {
     /// 给本日课程排序
-    todayCourses.sort((a, b) => a.arrange.start.compareTo(b.arrange.start));
+    todayPairs.sort(
+        (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
+    var height = todayPairs.length * 90.h;
+    if (todayPairs.length > 3) height = 270.h;
     return SizedBox(
-      height: 185,
+      height: height,
       child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          itemCount: todayCourses.length,
-          itemBuilder: (context, i) {
-            return Container(
-              height: 185,
-              width: 140,
-              padding: const EdgeInsets.fromLTRB(7, 0, 7, 7),
-              child: Material(
-                color: CommonPreferences().isSkinUsed.value?skinList
-                    [i %4]:FavorColors
-                    .defaultHomeSchedule[i % FavorColors.homeSchedule.length],
-                borderRadius: BorderRadius.circular(15),
-                elevation: 2,
-                child: InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(context, ScheduleRouter.schedule),
-                  borderRadius: BorderRadius.circular(15),
-                  splashFactory: InkRipple.splashFactory,
-                  splashColor: Color.fromRGBO(179, 182, 191, 1),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 95,
-                          alignment: Alignment.centerLeft,
-                          child: Text(formatText(todayCourses[i].courseName),
-                              style: FontManager.YaHeiBold.copyWith(
-                                  fontSize: 15,
-                                  color: CommonPreferences().isSkinUsed.value?(skinList[i %
-                                      4].value ==
-                                      Color
-                                          .fromRGBO(221, 182, 190, 1.0)
-                                          .value) ? Color(0xfff1dce0):Colors.white
-                                      : Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        SizedBox(height: 5),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              getCourseTime(todayCourses[i].arrange.start,
-                                  todayCourses[i].arrange.end),
-                              style: FontManager.Aspira.copyWith(
-                                  fontSize: 11.5, color: Colors.white)),
-                        ),
-                        SizedBox(height: 15),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              replaceBuildingWord(todayCourses[i].arrange.room),
-                              style: FontManager.Aspira.copyWith(
-                                  fontSize: 12.5,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                        )
-                      ],
-                    ),
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 30.w),
+        itemCount: todayPairs.length,
+        itemBuilder: (context, i) {
+          return Container(
+            height: 80.h,
+            width: 330.w,
+            margin: EdgeInsets.symmetric(vertical: 5.h),
+            child: Material(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(20.r),
+              elevation: 0,
+              child: InkWell(
+                onTap: () {
+                  List<Pair<Course, int>> now = [todayPairs[i]];
+                  Navigator.pushNamed(context, ScheduleRouter.course,
+                      arguments: now);
+                },
+                borderRadius: BorderRadius.circular(20.r),
+                splashFactory: InkRipple.splashFactory,
+                splashColor: Colors.black26,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
+                            style: TextUtil.base.bold
+                                .sp(14)
+                                .customColor(Colors.white54),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            todayPairs[i].first.name,
+                            style: TextUtil.base.PingFangSC.white.bold.sp(14),
+                          ),
+                        ],
+                      ),
+                      Spacer(),
+                      Image.asset('assets/images/schedule/circle.png',
+                          width: 50.r, height: 50.r),
+                    ],
                   ),
                 ),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 }

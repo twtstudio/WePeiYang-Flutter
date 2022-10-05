@@ -39,7 +39,7 @@ class OfficialReplyCard extends StatefulWidget {
   final bool detail;
   final int placeAppeared;
   ///评分数
-  int ratings;
+  final int ratings;
   OfficialReplyCard.reply({
     this.tag,
     this.comment,
@@ -227,7 +227,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String>>[
-          CommonPreferences().lakeUid.value.toString() ==
+          CommonPreferences.lakeUid.value.toString() ==
                   widget.comment.postId
               ? PopupMenuItem<String>(
                   value: '删除',
@@ -262,7 +262,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     );
     ///评分系统，只有楼主可评分
     Widget starWidget;
-    if (CommonPreferences().lakeUid.value.toString() ==
+    if (CommonPreferences.lakeUid.value.toString() ==
         widget.ancestorId.toString()) {
       starWidget = GestureDetector(
         onTap: () async {
@@ -401,6 +401,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           children: column),
     );
     Widget card = ClipCopy(
+      id: widget.comment.id,
       copy: widget.comment.content,
       toast: '复制评论成功',
       child: Container(

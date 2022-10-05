@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class AddInfoWidget extends StatefulWidget {
@@ -50,8 +50,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
   FocusNode _emailFocus = FocusNode();
   FocusNode _phoneFocus = FocusNode();
 
-  static final TextStyle _hintStyle = FontManager.YaHeiRegular.copyWith(
-      color: Color.fromRGBO(201, 204, 209, 1), fontSize: 13);
+  static final TextStyle _hintStyle = TextUtil.base.regular
+      .sp(13)
+      .customColor(Color.fromRGBO(201, 204, 209, 1));
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +74,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
         children: [
           Center(
             child: Text(S.current.add_info_hint,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
+                style: TextUtil.base.bold
+                    .sp(16)
+                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
           ),
           SizedBox(height: 30),
           Padding(
@@ -171,10 +171,10 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                               return ElevatedButton(
                                 onPressed: () {},
                                 child: Text('$time秒后重试',
-                                    style: FontManager.YaHeiRegular.copyWith(
-                                        color: Color.fromRGBO(98, 103, 123, 1),
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold)),
+                                    style: TextUtil.base.bold
+                                        .sp(13)
+                                        .customColor(
+                                            Color.fromRGBO(98, 103, 123, 1))),
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
@@ -191,8 +191,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: FontManager.YaHeiRegular.copyWith(
-                                    color: Colors.white, fontSize: 13)),
+                                style: TextUtil.base.regular.white.sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:
@@ -220,8 +219,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               child: ElevatedButton(
                 onPressed: _submit,
                 child: Text(S.current.login2,
-                    style: FontManager.YaHeiRegular.copyWith(
-                        color: Colors.white, fontSize: 13)),
+                    style: TextUtil.base.regular.white.sp(13)),
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(5),
                   overlayColor:

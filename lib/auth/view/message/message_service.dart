@@ -1,5 +1,5 @@
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 
 final userDio = UserNotificationDio();
@@ -9,7 +9,7 @@ class UserNotificationDio extends DioAbstract {
   Map<String, String> headers = {
     "DOMAIN": AuthDio.DOMAIN,
     "ticket": AuthDio.ticket,
-    "token": CommonPreferences().token.value
+    "token": CommonPreferences.token.value
   };
 }
 

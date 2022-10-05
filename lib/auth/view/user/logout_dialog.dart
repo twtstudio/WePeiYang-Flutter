@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LogoutDialog extends Dialog {
   void _logout() {
     ToastProvider.success("退出登录成功");
     UmengCommonSdk.onProfileSignOff();
-    CommonPreferences().clearUserPrefs();
-    CommonPreferences().clearTjuPrefs();
+    CommonPreferences.clearUserPrefs();
+    CommonPreferences.clearTjuPrefs();
     Navigator.pushNamedAndRemoveUntil(
         WePeiYangApp.navigatorState.currentContext,
         AuthRouter.login,
         (route) => false);
   }
 
-  static final _hintStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 15,
-      color: Color.fromRGBO(98, 103, 123, 1),
-      fontWeight: FontWeight.bold,
-      decoration: TextDecoration.none);
+  static final _hintStyle = TextUtil.base.bold.noLine
+      .sp(15)
+      .customColor(Color.fromRGBO(98, 103, 123, 1));
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +38,9 @@ class LogoutDialog extends Dialog {
           children: [
             SizedBox(height: 20),
             Text(S.current.logout_hint,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(79, 88, 107, 1),
-                    fontSize: 13,
-                    fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.none)),
+                style: TextUtil.base.normal.noLine
+                    .sp(13)
+                    .customColor(Color.fromRGBO(79, 88, 107, 1))),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

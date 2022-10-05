@@ -22,7 +22,7 @@ fun readCourseList(context: Context): List<Course> {
         if (nightMode) (today + 1) % 7 else today
     }
     val nowTime: Int = (Calendar.getInstance().timeInMillis / 1000).toInt()
-    val termStart: Int = pref.getLong("flutter.termStart", 1645372800).toInt()
+    val termStart: Int = pref.getLong("flutter.termStart", 1660492800).toInt()
     val weeks: Double = (nowTime - termStart) / 604800.0
 
     val nowWeek = ceil(weeks).roundToInt().let {
@@ -32,31 +32,62 @@ fun readCourseList(context: Context): List<Course> {
     // 假期里这个nowWeek可能为负或者超出周数上限，这里判断负数，超上限的判断在flag2那里
     if (nowWeek <= 0) return courseList
 
-    pref.getString("flutter.scheduleData", "")?.let {
+    pref.getString("flutter.courseData", "")?.let {
         if ("" == it) return emptyList()
         val obj = JSONObject(it)
-        val list = obj.getJSONArray("courses")
-        for (i in 0 until list.length()) {
-            val scheduleCourse = list.getJSONObject(i)
-            var courseName = scheduleCourse.getString("courseName")
-            if (courseName.length > 10) courseName = courseName.substring(0, 8) + "..."
-            val arrange = scheduleCourse.getJSONObject("arrange")
-            var room = arrange.getString("room").replace("-", "楼")
-            if (room == "") room = "————"
-            val start = arrange.getString("start")
-            val end = arrange.getString("end")
-            val time = getCourseTime(start.toInt(),end.toInt())
-            val flag1 = nowDay == arrange.getString("day").toInt()
-            val flag2 = arrange.getString("binStr").let { str ->
-                if (str.length <= nowWeek) false else str[nowWeek] == '1'
+        val schoolCourses = obj.getJSONArray("schoolCourses")
+        for (i in 0 until schoolCourses.length()) {
+            val scheduleCourse = schoolCourses.getJSONObject(i)
+            var name = scheduleCourse.getString("name")
+            if (name.length > 10) name = name.substring(0, 8) + "..."
+            val arrangeList = scheduleCourse.getJSONArray("arrangeList")
+            for (j in 0 until arrangeList.length()) {
+                val arrange = arrangeList.getJSONObject(j)
+                var location = arrange.getString("location").replace("-", "楼")
+                if (location == "") location = "————"
+                val unitList = arrange.getJSONArray("unitList")
+                val time = getCourseTime(unitList.getInt(0), unitList.getInt(1))
+                val flag1 = nowDay == arrange.getInt("weekday")
+                val flag2 = arrange.getJSONArray("weekList").let { weekList ->
+                    var flag = false
+                    for( k in 0 until weekList.length()) {
+                        if (weekList.getInt(k) == nowWeek) flag = true
+                    }
+                    flag
+                }
+                if (flag1 && flag2) courseList.add(Course(name, location, time))
             }
-            if (flag1 && flag2) courseList.add(Course(courseName, room, time))
+        }
+
+        val customCourses = obj.getJSONArray("customCourses")
+        for (i in 0 until customCourses.length()) {
+            val customCourse = customCourses.getJSONObject(i)
+            var name = customCourse.getString("name")
+            if (name.length > 10) name = name.substring(0, 8) + "..."
+            val arrangeList = customCourse.getJSONArray("arrangeList")
+            for (j in 0 until arrangeList.length()) {
+                val arrange = arrangeList.getJSONObject(j)
+                var location = arrange.getString("location").replace("-", "楼")
+                if (location == "") location = "————"
+                val unitList = arrange.getJSONArray("unitList")
+                val time = getCourseTime(unitList.getInt(0), unitList.getInt(1))
+                val flag1 = nowDay == arrange.getInt("weekday")
+                val flag2 = arrange.getJSONArray("weekList").let { weekList ->
+                    var flag = false
+                    for( k in 0 until weekList.length()) {
+                        if (weekList.getInt(k) == nowWeek) flag = true
+                    }
+                    flag
+                }
+                if (flag1 && flag2) courseList.add(Course(name, location, time))
+            }
         }
     }
     courseList.sortWith { a, b -> a.time.compareTo(b.time) }
     return courseList
 }
-private fun getCourseTime(start : Int, end : Int) : String{
+
+private fun getCourseTime(start: Int, end: Int): String {
     val startTimes = arrayListOf("08:30",
             "09:20",
             "10:25",
@@ -85,4 +116,5 @@ private fun getCourseTime(start : Int, end : Int) : String{
 
     return "${startTimes[start - 1]}-${endTimes[end - 1]}"
 }
+
 class Course(val courseName: String = "", val room: String = "", val time: String = "")

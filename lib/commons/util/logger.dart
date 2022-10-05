@@ -1,7 +1,8 @@
+// @dart = 2.12
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 
 /// release模式下在内存中存储log信息，debug模式下直接打印
@@ -18,7 +19,8 @@ class Logger {
     logs.add(line);
   }
 
-  static void reportError(Object error, StackTrace stack) {
+  static void reportError(Object error, StackTrace? stack) {
+    stack ??= StackTrace.empty;
     // 限制错误日志的长度
     final shortError =
         error.toString().substring(0, min(3000, error.toString().length));
@@ -51,6 +53,6 @@ class Logger {
 
   static String _getFormatTime() {
     var now = DateTime.now();
-    return "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
+    return "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}";
   }
 }

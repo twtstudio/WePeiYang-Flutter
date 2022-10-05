@@ -1,11 +1,13 @@
+// @dart = 2.12
 import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart' show Navigator, required;
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:flutter/material.dart' show Navigator, debugPrint;
 import 'package:http_parser/http_parser.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
-import 'package:we_pei_yang_flutter/commons/network/spider_service.dart';
+import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
+import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -20,17 +22,16 @@ class AuthDio extends DioAbstract {
   String baseUrl = "https://api.twt.edu.cn/api/";
 
   @override
-  Map<String, String> headers = {"DOMAIN": DOMAIN, "ticket": ticket};
+  Map<String, String>? headers = {"DOMAIN": DOMAIN, "ticket": ticket};
 
   @override
   List<InterceptorsWrapper> interceptors = [
+    CookieManager(CookieJar()),
     InterceptorsWrapper(onRequest: (options, handler) {
-      var pref = CommonPreferences();
-      options.headers['token'] = pref.token.value;
-      options.headers['Cookie'] = pref.captchaCookie.value;
+      options.headers['token'] = CommonPreferences.token.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['error_code'] ?? -1;
+      var code = response.data['error_code'] ?? -1;
       var error = "";
       switch (code) {
         case 40002:
@@ -41,11 +42,23 @@ class AuthDio extends DioAbstract {
           break;
         case 40005:
           Navigator.pushNamedAndRemoveUntil(
-              WePeiYangApp.navigatorState.currentContext,
+              WePeiYangApp.navigatorState.currentContext!,
               AuthRouter.login,
               (route) => false);
           error = "登录失效，请重新登录";
           break;
+        case 50001:
+        // error = "数据库错误";
+        // break;
+        case 50002:
+        // error = "逻辑错误或数据库错误";
+        // break;
+        case 50003:
+        // error = "未绑定的url，请联系管理员";
+        // break;
+        case 50004:
+        // error = "错误的app_key或app_secret";
+        // break;
         case 50005:
           error = "学号和身份证号不匹配";
           break;
@@ -93,12 +106,8 @@ class AuthDio extends DioAbstract {
           break;
         case 40001:
         case 40003:
-        case 50001:
-        case 50002:
-        case 50003:
-        case 50004:
         case 50010:
-          error = "发生未知错误，请重新尝试";
+          error = "发生未知错误，请重新尝试或联系管理员：错误码$code";
       }
       if (error == "")
         return handler.next(response);
@@ -113,16 +122,11 @@ final authDio = AuthDio();
 class AuthService with AsyncTimer {
   /// 注册或完善信息时获取短信验证码
   static getCaptchaOnRegister(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnRegister', () async {
       try {
-        var response = await authDio
+        await authDio
             .post("register/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences().captchaCookie.value =
-              getRegExpStr(r'\S+(?=\;)', cookie[0]);
-        }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -132,16 +136,12 @@ class AuthService with AsyncTimer {
 
   /// 在用户界面更新信息时获取短信验证码
   static getCaptchaOnInfo(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
       try {
-        var response = await authDio
-            .post("user/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences().captchaCookie.value =
-              getRegExpStr(r'\S+(?=\;)', cookie[0]);
-        }
+        await authDio.post("user/phone/msg",
+            data: {"phone": phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -151,16 +151,11 @@ class AuthService with AsyncTimer {
 
   /// 修改密码时获取短信验证码
   static getCaptchaOnReset(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnReset', () async {
       try {
-        var response = await authDio
+        await authDio
             .post("password/reset/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences().captchaCookie.value =
-              getRegExpStr(r'\S+(?=\;)', cookie[0]);
-        }
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -170,16 +165,12 @@ class AuthService with AsyncTimer {
 
   /// 修改密码时认证短信验证码
   static verifyOnReset(String phone, String code,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('verifyOnReset', () async {
       try {
-        var response = await authDio.post("password/reset/verify",
-            queryParameters: {"phone": phone, "code": code});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences().captchaCookie.value =
-              getRegExpStr(r'\S+(?=\;)', cookie[0]);
-        }
+        await authDio.post("password/reset/verify",
+            data: {"phone": phone, "code": code},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -189,11 +180,12 @@ class AuthService with AsyncTimer {
 
   /// 忘记密码时，使用手机号修改密码
   static resetPwByPhone(String phone, String password,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('resetPwByPhone', () async {
       try {
         await authDio.post("password/reset",
-            queryParameters: {"phone": phone, "password": password});
+            data: {"phone": phone, "password": password},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -203,12 +195,12 @@ class AuthService with AsyncTimer {
 
   /// 登录状态下修改密码
   static resetPwByLogin(String password,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('resetPwByLogin', () async {
       try {
         await authDio.put("password/person/reset",
             queryParameters: {"password": password});
-        CommonPreferences().password.value = password;
+        CommonPreferences.password.value = password;
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -219,18 +211,20 @@ class AuthService with AsyncTimer {
   /// 注册
   static register(String userNumber, String nickname, String phone,
       String verifyCode, String password, String email, String idNumber,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('register', () async {
       try {
-        await authDio.post("register", queryParameters: {
-          "userNumber": userNumber,
-          "nickname": nickname,
-          "phone": phone,
-          "verifyCode": verifyCode,
-          "password": password,
-          "email": email,
-          "idNumber": idNumber
-        });
+        await authDio.post("register",
+            data: {
+              "userNumber": userNumber,
+              "nickname": nickname,
+              "phone": phone,
+              "verifyCode": verifyCode,
+              "password": password,
+              "email": email,
+              "idNumber": idNumber
+            },
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -240,36 +234,36 @@ class AuthService with AsyncTimer {
 
   /// 使用学号/昵称/邮箱/手机号 + 密码登录
   static pwLogin(String account, String password,
-      {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
+      {required OnResult<Map> onResult, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('pwLogin', () async {
       try {
-        print(AuthDio().headers);
-        var result = await authDio.postRst("auth/common",
-            queryParameters: {"account": account, "password": password});
-        print(result['ticket']);
-        var prefs = CommonPreferences();
-        prefs.token.value = result['token'] ?? "";
-        if (prefs.account.value != account && prefs.account.value != "") {
+        var rsp = await authDio.post("auth/common",
+            data: {"account": account, "password": password},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
+        var result = rsp.data['result'];
+        CommonPreferences.token.value = result['token'] ?? "";
+        if (CommonPreferences.account.value != account &&
+            CommonPreferences.account.value != "") {
           /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
-          prefs.clearTjuPrefs();
+          CommonPreferences.clearTjuPrefs();
         }
-        prefs.account.value = account;
-        prefs.password.value = password;
-        prefs.nickname.value = result['nickname'] ?? "";
-        prefs.userNumber.value = result['userNumber'] ?? "";
-        prefs.phone.value = result['telephone'] ?? "";
-        prefs.email.value = result['email'] ?? "";
-        prefs.realName.value = result['realname'] ?? "";
-        prefs.department.value = result['department'] ?? "";
-        prefs.major.value = result['major'] ?? "";
-        prefs.stuType.value = result['stuType'] ?? "";
-        prefs.avatar.value = result['avatar'] ?? "";
-        prefs.area.value = result['area'] ?? "";
-        prefs.building.value = result['building'] ?? "";
-        prefs.floor.value = result['floor'] ?? "";
-        prefs.room.value = result['room'] ?? "";
-        prefs.bed.value = result['bed'] ?? "";
-        prefs.isLogin.value = true;
+        CommonPreferences.account.value = account;
+        CommonPreferences.password.value = password;
+        CommonPreferences.nickname.value = result['nickname'] ?? "";
+        CommonPreferences.userNumber.value = result['userNumber'] ?? "";
+        CommonPreferences.phone.value = result['telephone'] ?? "";
+        CommonPreferences.email.value = result['email'] ?? "";
+        CommonPreferences.realName.value = result['realname'] ?? "";
+        CommonPreferences.department.value = result['department'] ?? "";
+        CommonPreferences.major.value = result['major'] ?? "";
+        CommonPreferences.stuType.value = result['stuType'] ?? "";
+        CommonPreferences.avatar.value = result['avatar'] ?? "";
+        CommonPreferences.area.value = result['area'] ?? "";
+        CommonPreferences.building.value = result['building'] ?? "";
+        CommonPreferences.floor.value = result['floor'] ?? "";
+        CommonPreferences.room.value = result['room'] ?? "";
+        CommonPreferences.bed.value = result['bed'] ?? "";
+        CommonPreferences.isLogin.value = true;
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -282,16 +276,12 @@ class AuthService with AsyncTimer {
 
   /// 登陆时获取短信验证码
   static getCaptchaOnLogin(String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {
       try {
-        var response = await authDio
-            .post("auth/phone/msg", queryParameters: {"phone": phone});
-        var cookie = response.headers.map['set-cookie'];
-        if (cookie != null) {
-          CommonPreferences().captchaCookie.value =
-              getRegExpStr(r'\S+(?=\;)', cookie[0]);
-        }
+        await authDio.post("auth/phone/msg",
+            data: {"phone": phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -301,32 +291,34 @@ class AuthService with AsyncTimer {
 
   /// 使用手机号 + 验证码登录
   static codeLogin(String phone, String code,
-      {@required OnResult<Map> onResult, @required OnFailure onFailure}) async {
+      {required OnResult<Map> onResult, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('codeLogin', () async {
       try {
-        var result = await authDio.postRst("auth/phone",
-            queryParameters: {"phone": phone, "code": code});
-        var prefs = CommonPreferences();
-        prefs.token.value = result['token'] ?? "";
-        if (prefs.phone.value != phone && prefs.phone.value != "") {
+        var rsp = await authDio.post("auth/phone",
+            data: {"phone": phone, "code": code},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
+        var result = rsp.data['result'];
+        CommonPreferences.token.value = result['token'] ?? "";
+        if (CommonPreferences.phone.value != phone &&
+            CommonPreferences.phone.value != "") {
           /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
-          prefs.clearTjuPrefs();
+          CommonPreferences.clearTjuPrefs();
         }
-        prefs.nickname.value = result['nickname'] ?? "";
-        prefs.userNumber.value = result['userNumber'] ?? "";
-        prefs.phone.value = phone;
-        prefs.email.value = result['email'] ?? "";
-        prefs.realName.value = result['realname'] ?? "";
-        prefs.department.value = result['department'] ?? "";
-        prefs.major.value = result['major'] ?? "";
-        prefs.stuType.value = result['stuType'] ?? "";
-        prefs.avatar.value = result['avatar'] ?? "";
-        prefs.area.value = result['area'] ?? "";
-        prefs.building.value = result['building'] ?? "";
-        prefs.floor.value = result['floor'] ?? "";
-        prefs.room.value = result['room'] ?? "";
-        prefs.bed.value = result['bed'] ?? "";
-        prefs.isLogin.value = true;
+        CommonPreferences.nickname.value = result['nickname'] ?? "";
+        CommonPreferences.userNumber.value = result['userNumber'] ?? "";
+        CommonPreferences.phone.value = phone;
+        CommonPreferences.email.value = result['email'] ?? "";
+        CommonPreferences.realName.value = result['realname'] ?? "";
+        CommonPreferences.department.value = result['department'] ?? "";
+        CommonPreferences.major.value = result['major'] ?? "";
+        CommonPreferences.stuType.value = result['stuType'] ?? "";
+        CommonPreferences.avatar.value = result['avatar'] ?? "";
+        CommonPreferences.area.value = result['area'] ?? "";
+        CommonPreferences.building.value = result['building'] ?? "";
+        CommonPreferences.floor.value = result['floor'] ?? "";
+        CommonPreferences.room.value = result['room'] ?? "";
+        CommonPreferences.bed.value = result['bed'] ?? "";
+        CommonPreferences.isLogin.value = true;
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -339,12 +331,13 @@ class AuthService with AsyncTimer {
 
   /// 获取个人信息（刷新token用）
   static getInfo(
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getInfo', () async {
       try {
-        var result = await authDio.getRst('user/single');
-        if (result['token'] != null) {
-          CommonPreferences().token.value = result['token'];
+        var rsp = await authDio.post('auth/updateToken');
+        var result = rsp.data['result'];
+        if (result != null) {
+          CommonPreferences.token.value = result;
         }
         onSuccess();
       } on DioError catch (e) {
@@ -355,7 +348,7 @@ class AuthService with AsyncTimer {
 
   /// 补全信息（手机号和邮箱）
   static addInfo(String telephone, String verifyCode, String email,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('addInfo', () async {
       try {
         await authDio.put("user/single", queryParameters: {
@@ -363,9 +356,8 @@ class AuthService with AsyncTimer {
           "verifyCode": verifyCode,
           "email": email
         });
-        var prefs = CommonPreferences();
-        prefs.phone.value = telephone;
-        prefs.email.value = email;
+        CommonPreferences.phone.value = telephone;
+        CommonPreferences.email.value = email;
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -375,12 +367,12 @@ class AuthService with AsyncTimer {
 
   /// 单独修改手机号
   static changePhone(String phone, String code,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changePhone', () async {
       try {
         await authDio.put("user/single/phone",
             queryParameters: {'phone': phone, 'code': code});
-        CommonPreferences().phone.value = phone;
+        CommonPreferences.phone.value = phone;
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -390,12 +382,12 @@ class AuthService with AsyncTimer {
 
   /// 单独修改邮箱
   static changeEmail(String email,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeEmail', () async {
       try {
         await authDio
             .put("user/single/email", queryParameters: {'email': email});
-        CommonPreferences().email.value = email;
+        CommonPreferences.email.value = email;
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -405,12 +397,12 @@ class AuthService with AsyncTimer {
 
   /// 单独修改用户名
   static changeNickname(String username,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('changeNickname', () async {
       try {
         await authDio.put("user/single/username",
             queryParameters: {'username': username});
-        CommonPreferences().nickname.value = username;
+        CommonPreferences.nickname.value = username;
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -420,7 +412,7 @@ class AuthService with AsyncTimer {
 
   /// 检测学号和用户名是否重复
   static checkInfo1(String userNumber, String username,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkInfo1', () async {
       try {
         await authDio.get("register/checking/$userNumber/$username");
@@ -433,14 +425,12 @@ class AuthService with AsyncTimer {
 
   /// 检测身份证、邮箱、手机号是否重复（其实手机号不用查重，获取验证码时已经查重过了）
   static checkInfo2(String idNumber, String email, String phone,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('checkInfo2', () async {
       try {
-        await authDio.post("register/checking", queryParameters: {
-          'idNumber': idNumber,
-          'email': email,
-          'phone': phone
-        });
+        await authDio.post("register/checking",
+            data: {'idNumber': idNumber, 'email': email, 'phone': phone},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -451,17 +441,17 @@ class AuthService with AsyncTimer {
   /// 获得当前学期信息，在用户 手动/自动 登录后被调用
   static getSemesterInfo() async {
     try {
-      var result = await authDio.getRst("semester");
-      var pref = CommonPreferences();
-      pref.termStart.value = result['semesterStartTimestamp'];
-      pref.termName.value = result['semesterName'];
-      pref.termStartDate.value = result['semesterStartAt'];
+      var rsp = await authDio.get("semester");
+      var result = rsp.data['result'];
+      CommonPreferences.termStart.value = result['semesterStartTimestamp'];
+      CommonPreferences.termName.value = result['semesterName'];
+      CommonPreferences.termStartDate.value = result['semesterStartAt'];
     } on DioError catch (_) {}
   }
 
   /// 上传头像
   static uploadAvatar(File image,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('uploadAvatar', () async {
       try {
         var data = FormData.fromMap({
@@ -471,8 +461,7 @@ class AuthService with AsyncTimer {
             contentType: MediaType("image", "jpg"),
           ),
         });
-        var response = await authDio.post("user/avatar", formData: data);
-        CommonPreferences().avatar.value = response.data['result'];
+        await authDio.post("user/avatar", formData: data);
         onSuccess();
       } on DioError catch (e) {
         onFailure(e);
@@ -482,7 +471,7 @@ class AuthService with AsyncTimer {
 
   /// 注销账号
   static logoff(
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('logoff', () async {
       try {
         await authDio.post("auth/logoff");
@@ -491,5 +480,35 @@ class AuthService with AsyncTimer {
         onFailure(e);
       }
     });
+  }
+
+  /// 获取cid
+  static updateCid(String cid,
+      {required OnResult<String> onResult,
+      required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('updateCid', () async {
+      try {
+        var res = await authDio.post("notification/cid",
+            data: {'cid': cid},
+            options: Options(contentType: Headers.formUrlEncodedContentType));
+
+        onResult(res.data.toString());
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static Future<NAcidInfo> checkNuclearAcid() async {
+    try {
+      var rsp = await authDio.get('checkHeSuan');
+      if (rsp.data['result'] == '无核酸')
+        return NAcidInfo(id: -1);
+      else
+        return NAcidInfo.fromJson(rsp.data['result']);
+    } on DioError catch (e) {
+      debugPrint(e.error);
+    }
+    return NAcidInfo(id: -1);
   }
 }

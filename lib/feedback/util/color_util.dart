@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 
 class ColorUtil {
@@ -18,12 +19,38 @@ class ColorUtil {
   static const whiteFDFE = Color.fromARGB(255, 253, 253, 254);
   static const grey97Color = Color(0xFF979797);
   static const greyEAColor = Color(0xFFEAEAEA);
+  static const green5CColor = Color(0xFF5CB85C);
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const black2AColor = Color(0xFF2A2A2A);
   static const greyF7F8Color = Color(0xFFF7F7F8);
+  static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
   static const greyB2B6Color = Color(0xFFB2B6BB);
   static const blue363CColor = Color(0xFF363C54);
+  static const blue2CColor = Color(0xFF2C7EDF);
+  static const blueA6Color = Color(0xFFA6CFFF);
   static const biliPink = Color(0xFFF97198);
-  static const  List<Color> aprilFoolColor = [Color(0xFFF1B53B), Color(0xF033BB8F),Color(0xF0E1403A),Color(0xFF5B96F2),Color(0xFF6A63E1)];
+  static const warning = Color(0xFFFFBC6B);
+  static const grey144 = Color.fromARGB(255, 144, 144, 144);
+  static const grey229 = Color.fromARGB(255, 229, 229, 229);
+  static const gradientBlue = LinearGradient(
+    colors: [
+      Color(0xFF2C7EDF),
+      Color(0xFFA6CFFF),
+      // 用来挡下面圆角左右的空
+      Colors.white
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    // 在0.7停止同理
+    stops: [0, 0.53, 0.7],
+  );
+
+  static const List<Color> aprilFoolColor = [
+    Color(0xFFF1B53B),
+    Color(0xF033BB8F),
+    Color(0xF0E1403A),
+    Color(0xFF5B96F2),
+    Color(0xFF6A63E1)
+  ];
 }

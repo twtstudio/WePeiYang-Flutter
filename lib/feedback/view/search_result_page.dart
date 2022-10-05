@@ -1,11 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../feedback_router.dart';
@@ -137,12 +138,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget build(BuildContext context) {
     Widget appBar = AppBar(
         titleSpacing: 0,
-        centerTitle: false,
         elevation: 0,
+        centerTitle: true,
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back,
+            CupertinoIcons.back,
             color: ColorUtil.mainColor,
           ),
           onPressed: () {
@@ -159,16 +160,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   duration: Duration(milliseconds: 600),
                   curve: Curves.easeInOut);
           },
-          child: SizedBox(
-            width: double.infinity,
-            child: Text(
-              title,
-              style: FontManager.YaHeiRegular.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ColorUtil.boldTextColor,
-              ),
-            ),
+          child: Center(
+            child: Text(title, style: TextUtil.base.bold.black2A.sp(16)),
           ),
         ),
         actions: [
@@ -179,14 +172,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      '跟帖',
-                      style: FontManager.YaHeiRegular.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: ColorUtil.boldTextColor,
-                      ),
-                    ),
+                    Text('跟帖', style: TextUtil.base.bold.blue303C.sp(12)),
                     SizedBox(width: 4),
                     Container(
                         height: 24,
@@ -201,7 +187,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   Navigator.pushNamed(context, FeedbackRouter.newPost,
                       arguments: NewPostArgs(true, tagId, lakeType, title));
                 }),
-          SizedBox(width: 14)
+          if (lakeType != 0) SizedBox(width: 14),
+          if (lakeType == 0)
+            SizedBox(
+              width: 40,
+            ),
         ]);
 
     Widget body;
@@ -226,7 +216,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 controller: _sc,
                 childrenDelegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    Widget post = PostCard.simple(_list[index]);
+                    Widget post = PostCardNormal(_list[index]);
                     return post;
                   },
                   childCount: _list.length,
@@ -239,12 +229,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ));
         } else {
           body = Center(
-            child: Text(
-              S.current.feedback_no_post,
-              style: FontManager.YaHeiRegular.copyWith(
-                color: ColorUtil.lightTextColor,
-              ),
-            ),
+            child: Text(S.current.feedback_no_post,
+                style: TextUtil.base.regular
+                    .customColor(Color.fromARGB(255, 145, 145, 145))),
           );
         }
         break;
@@ -258,12 +245,19 @@ class _SearchResultPageState extends State<SearchResultPage> {
         Navigator.pop(context, true);
         return true;
       },
-      child: Scaffold(
-          appBar: appBar,
-          body: AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
-            child: body,
-          )),
+      child: GestureDetector(
+        child: Scaffold(
+            appBar: appBar,
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: body,
+            )),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          if (details.delta.dx > 20) {
+            Navigator.pop(context, true);
+          }
+        },
+      ),
     );
   }
 }

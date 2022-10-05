@@ -3,12 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
-import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/today_check.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 // 下载安装apk时的dialog
 class UpdateInstallDialog extends StatelessWidget {
@@ -64,10 +63,10 @@ class UpdateInstallDialog extends StatelessWidget {
               UpdateDetail(),
               SizedBox(height: size.verticalPadding),
               buttons,
+              SizedBox(height: size.verticalPadding),
             ],
           ),
         ),
-        TodayShowAgainCheck(tap: cancel),
       ],
     );
 

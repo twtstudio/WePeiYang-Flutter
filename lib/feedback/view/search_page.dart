@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -8,7 +10,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -68,21 +69,17 @@ class _SearchPageState extends State<SearchPage> {
         InkWell(
           child: Padding(
             padding: const EdgeInsets.only(top: 12, left: 12),
-            child: ImageIcon(
-                AssetImage('assets/images/lake_butt_icons/back.png'),
-                size: 18),
+            child: Icon(
+              CupertinoIcons.back,
+              color: Color(0XFF252525),
+            ),
           ),
           onTap: () => Navigator.pop(context),
         ),
       ],
     ));
 
-    const titleTextStyle = TextStyle(
-        fontSize: 17.0,
-        color: Color.fromRGBO(98, 103, 124, 1),
-        fontWeight: FontWeight.bold);
-
-    var searchHistoryIcon = Container(
+    var searchHistoryContainer = Container(
       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
       alignment: Alignment.centerLeft,
       child: Row(
@@ -90,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: titleTextStyle,
+            style: TextUtil.base.blue2C.w600.sp(17),
           ),
           InkWell(
             child: Icon(Icons.delete, size: 16),
@@ -127,7 +124,8 @@ class _SearchPageState extends State<SearchPage> {
                 '',
                 '',
                 S.current.feedback_search_result,
-                0, 0);
+                0,
+                0);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,
@@ -169,7 +167,7 @@ class _SearchPageState extends State<SearchPage> {
 
     var searchHistory = Padding(
       child: Column(
-        children: [searchHistoryIcon, searchHistoryList],
+        children: [searchHistoryContainer, searchHistoryList],
       ),
       padding: EdgeInsets.symmetric(horizontal: 10),
     );

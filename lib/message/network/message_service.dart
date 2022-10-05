@@ -1,10 +1,9 @@
 import 'dart:convert' show jsonDecode;
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
@@ -183,16 +182,16 @@ class MessageService {
 final messageDio = MessageDio();
 
 class MessageDio extends DioAbstract {
-
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/message/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
-    }), ApiInterceptor()
+    }),
+    ApiInterceptor()
   ];
 
   /// 这里不能改，因为下面手动解析的字符串

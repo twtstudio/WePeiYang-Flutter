@@ -1,5 +1,7 @@
 // @dart = 2.12
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
@@ -21,7 +23,9 @@ class UpdateTitle extends StatelessWidget {
         ),
         const SizedBox(height: 3),
         Text(
-          '${EnvConfig.VERSION} -> ${version.version}',
+          Platform.isAndroid
+              ? '${EnvConfig.VERSION} -> ${version.version}'
+              : '最新版本: ${version.version}',
           style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
         ),
       ],

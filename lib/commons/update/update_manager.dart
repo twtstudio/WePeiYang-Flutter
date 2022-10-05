@@ -4,11 +4,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/channel/download/download_listener.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
+import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -19,25 +20,44 @@ import 'version_data.dart';
 
 part 'update_listener.dart';
 
+enum UpdateState {
+  nothing,
+  checkUpdate,
+  download,
+  load,
+}
+
 /// 版本更新管理
 class UpdateManager extends UpdateStatusListener {
   /// 新版信息
-  late Version _version;
+  late AndroidVersion _androidVersion;
+  late IOSVersion _iosVersion;
 
-  Version get version => _version;
+  dynamic get version => Platform.isAndroid ? _androidVersion : _iosVersion;
 
   /// 是否为自动检查更新
   bool _auto = false;
 
+  /// r版本大于l版本
+  bool _versionCmp(String l, String r) {
+    final lArr = l.split('.').map((e) => int.parse(e)).toList();
+    final rArr = r.split('.').map((e) => int.parse(e)).toList();
+    if (lArr.length != 3 || rArr.length != 3) return false;
+
+    return (lArr[0] * 10000 + lArr[1] * 100 + lArr[2]) <
+        (rArr[0] * 10000 + rArr[1] * 100 + rArr[2]);
+  }
+
   Future<void> checkUpdate({bool auto = true}) async {
-    // ToastProvider.running("$status");
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
         // 无事发生就检查更新
         setGetVersion();
         // 获取最新版本
-        final v = await UpdateService.latestVersion;
+        final dynamic v = Platform.isIOS
+            ? await UpdateService.latestIOSVersion
+            : await UpdateService.latestAndroidVersion;
 
         // 如果获取最新版本失败，需要显示弹窗的时候显示检查更新失败
         if (v == null) {
@@ -45,37 +65,57 @@ class UpdateManager extends UpdateStatusListener {
           if (!_auto) ToastProvider.error("检查更新失败");
           return;
         }
-
-        _version = v;
+        if (Platform.isAndroid)
+          _androidVersion = v as AndroidVersion;
+        else if (Platform.isIOS) _iosVersion = v as IOSVersion;
 
         // 如果今天不再检查更新，且为自动更新，且不是强制更新
         if (!UpdateUtil.todayCheckAgain && auto && !v.isForced) {
           setIdle();
           return;
         }
-
-        debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
-        debugPrint("remoteVersionCode ${v.versionCode}");
-
-        await InstallManager.getCanGoToMarket();
-
-        if (v.versionCode <= EnvConfig.VERSIONCODE) {
-          // 如果新获取到的版本不高于现在的版本，那么就不更新
+        // 如果跳过版本
+        if (auto &&
+            CommonPreferences.ignoreUpdateVersion.value == version.version) {
           setIdle();
-          if (!_auto) ToastProvider.success('已是最新版本');
-        } else {
-          //如果新获取到的版本高于当前版本，则更新
-          // 1.删除原来的（不是当前版本的）apk和so
-          await _deleteOriginalFile();
-          // 2.判断是否有当前文件可用
-          if (await _checkIfFileCanUse()) return;
-          // 3.如果没有的话先判断是否 强制更新 或 手动更新 或 不能使用热修复
-          if (version.isForced || !_auto || !version.canHotFix) {
-            // 如果不能热修复 或 强制更新 或 手动更新，则弹窗对话框
+          return;
+        }
+
+        if (Platform.isAndroid) {
+          debugPrint("remoteVersionCode ${v.versionCode}");
+          debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
+          await InstallManager.getCanGoToMarket();
+
+          if (v.versionCode <= EnvConfig.VERSIONCODE) {
+            // 如果新获取到的版本不高于现在的版本，那么就不更新
+            setIdle();
+            if (!_auto) ToastProvider.success('已是最新版本');
+          } else {
+            //如果新获取到的版本高于当前版本，则更新
+            // 1.删除原来的（不是当前版本的）apk和so
+            await _deleteOriginalFile();
+            // 2.判断是否有当前文件可用
+            if (await _checkIfFileCanUse()) return;
+            // 3.如果没有的话先判断是否 强制更新 或 手动更新 或 不能使用热修复
+            if (v.isForced || !_auto || !v.canHotFix) {
+              // 如果不能热修复 或 强制更新 或 手动更新，则弹窗对话框
+              UpdateDialog.message.show();
+            } else {
+              // 否则，就优先热更新
+              setDownload();
+            }
+          }
+        } else if (Platform.isIOS) {
+          final localVersion = await LocalSetting.getBundleVersion();
+          debugPrint("remoteVersionCode ${v.version}");
+          debugPrint("localVersionCode  ${localVersion}");
+          final remoteVersion = (v.version as String);
+          if (_versionCmp(localVersion, remoteVersion)) {
             UpdateDialog.message.show();
           } else {
-            // 否则，就优先热更新
-            setDownload();
+            // 如果新获取到的版本不高于现在的版本，那么就不更新
+            setIdle();
+            if (!_auto) ToastProvider.success('已是最新版本');
           }
         }
         break;
@@ -108,7 +148,7 @@ class UpdateManager extends UpdateStatusListener {
       return true;
     } else if (soCanUse == false) {
       // 有热修复文件不能使用
-      _version.canHotFix = false;
+      _androidVersion.canHotFix = false;
     }
     // 也可能使用apk，检查apk是否存在
     if (await File(version.apkPath).exists()) {
@@ -161,8 +201,8 @@ class UpdateManager extends UpdateStatusListener {
       setError();
       // TODO: 再考虑下
       // 热修复失败，设置为不能使用热修复更新
-      _version.canHotFix = false;
-      if (_auto && !_version.isForced) {
+      _androidVersion.canHotFix = false;
+      if (_auto && !_androidVersion.isForced) {
         // 如果是自动更新，且非强制更新，则在这里弹出更新信息页面，由用户手动开始使用apk更新，
         // 因为只有这种情况是不自动显示弹窗
         UpdateDialog.message.show();
@@ -269,12 +309,11 @@ class UpdateManager extends UpdateStatusListener {
 
     for (var file in apkDir.listSync()) {
       final name = file.path.split(Platform.pathSeparator).last;
-      debugPrint('current file: ' + name);
 
       // 如果下载的文件是apk，则将不是新版本的删除
       if (name.endsWith('.apk')) {
         final versionCode = int.tryParse(name.split('-')[0]) ?? 0;
-        if (versionCode < _version.versionCode) {
+        if (versionCode < _androidVersion.versionCode) {
           file.delete();
         }
       }

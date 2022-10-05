@@ -1,409 +1,230 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
+
+import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
+import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/schedule_notifier.dart';
-
-class SettingPageArgs {
-  final bool showBrief;
-
-  SettingPageArgs(this.showBrief);
-}
 
 class SettingPage extends StatefulWidget {
-  final bool showBrief;
-
-  SettingPage(SettingPageArgs args) : showBrief = args.showBrief;
-
   @override
   _SettingPageState createState() => _SettingPageState();
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static final titleTextStyle = FontManager.YaHeiBold.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(177, 180, 186, 1),
-      fontWeight: FontWeight.bold);
-  static final mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 14,
-      color: Color.fromRGBO(98, 103, 122, 1),
-      fontWeight: FontWeight.bold);
-  static final hintTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 10, color: Color.fromRGBO(205, 206, 212, 1));
-  static final arrow =
+  static final mainTextStyle =
+      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
+  static final hintTextStyle =
+      TextUtil.base.bold.sp(12).customColor(Color.fromRGBO(177, 180, 186, 1));
+  static const arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+  String md = '';
 
-  var pref = CommonPreferences();
-  double descriptionMaxWidth;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    descriptionMaxWidth = MediaQuery.of(context).size.width / 2;
     return Scaffold(
       appBar: AppBar(
-          title: Text(S.current.setting,
-              style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 16,
-                  color: Color.fromRGBO(36, 43, 69, 1),
-                  fontWeight: FontWeight.bold)),
-          elevation: 0,
-          brightness: Brightness.light,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
-                onTap: () => Navigator.pop(context)),
-          )),
+        title: Text(S.current.setting,
+            style: TextUtil.base.bold
+                .sp(16)
+                .customColor(Color.fromRGBO(36, 43, 69, 1))),
+        elevation: 0,
+        brightness: Brightness.light,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 15.w),
+          child: GestureDetector(
+            child: Icon(Icons.arrow_back,
+                color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+            onTap: () => Navigator.pop(context),
+          ),
+        ),
+      ),
       body: ListView(
-        children: <Widget>[
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        children: [
+          SizedBox(height: 15.h),
           Container(
-            padding: const EdgeInsets.fromLTRB(25, 20, 25, 5),
-            alignment: Alignment.centerLeft,
-            child: (!widget.showBrief)
-                ? Text(S.current.setting_general, style: titleTextStyle)
-                : Text("首页自定义", style: titleTextStyle),
-          ),
-          if (!widget.showBrief)
-            Padding(
-              padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-              child: Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(context, AuthRouter.themeSetting)
-                          .then((_) {
-                    /// 使用pop返回此页面时进行rebuild
-                    this.setState(() {});
-                  }),
-                  splashFactory: InkRipple.splashFactory,
-                  borderRadius: BorderRadius.circular(15),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: descriptionMaxWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('主题', style: mainTextStyle),
-                              SizedBox(height: 3),
-                              Text('联网获取全部已获得主题', style: hintTextStyle)
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        arrow,
-                      ],
-                    ),
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onTap: () => Navigator.pushNamed(context, AuthRouter.userInfo)
+                  .then((_) => this.setState(() {})),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/modify_info_icon.png',
+                      width: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child:
+                        Text(S.current.reset_user_info, style: mainTextStyle),
                   ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                        width: descriptionMaxWidth,
-                        child:
-                            Text(S.current.setting_gpa, style: mainTextStyle)),
-                    Spacer(),
-                    Switch(
-                      value: pref.hideGPA.value,
-                      onChanged: (value) {
-                        setState(() => pref.hideGPA.value = value);
-                        Provider.of<GPANotifier>(context, listen: false)
-                            .hideGPA = value;
-                      },
-                      activeColor: Color.fromRGBO(105, 109, 127, 1),
-                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    ),
-                  ],
-                ),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                        width: descriptionMaxWidth,
-                        child:
-                            Text(S.current.setting_exam, style: mainTextStyle)),
-                    Spacer(),
-                    Switch(
-                      value: pref.hideExam.value,
-                      onChanged: (value) {
-                        setState(() => pref.hideExam.value = value);
-                        Provider.of<ExamNotifier>(context, listen: false)
-                            .hideExam = value;
-                      },
-                      activeColor: Color.fromRGBO(105, 109, 127, 1),
-                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    ),
-                  ],
-                ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (_) => DebugDialog(),
+                );
+              },
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.generalSetting)
+                      .then((_) => this.setState(() {})),
+              child: Row(
+                children: [
+                  Icon(Icons.widgets_outlined,
+                      color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                  SizedBox(width: 12.w),
+                  Expanded(child: Text('应用设置', style: mainTextStyle)),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
               ),
             ),
           ),
-          // Padding(
-          //   padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-          //   child: Card(
-          //     elevation: 0,
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(15),
-          //     ),
-          //     child: Padding(
-          //       padding: const EdgeInsets.all(10.0),
-          //       child: Row(
-          //         children: <Widget>[
-          //           SizedBox(
-          //               width: descriptionMaxWidth,
-          //               child: Text("首页显示看板娘", style: mainTextStyle)),
-          //           Spacer(),
-          //           Switch(
-          //             value: pref.showPosterGirl.value,
-          //             onChanged: (value) {
-          //               setState(() => pref.showPosterGirl.value = value);
-          //             },
-          //             activeColor: Color.fromRGBO(105, 109, 127, 1),
-          //             inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-          //             activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-          //             inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: descriptionMaxWidth,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(S.current.setting_night_mode,
-                              style: mainTextStyle),
-                          SizedBox(height: 3),
-                          Text(
-                            S.current.setting_night_mode_hint,
-                            style: hintTextStyle,
-                          )
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    Switch(
-                      value: pref.nightMode.value,
-                      onChanged: (value) {
-                        setState(() => pref.nightMode.value = value);
-                        Provider.of<ScheduleNotifier>(context, listen: false)
-                            .nightMode = value;
-                      },
-                      activeColor: Color.fromRGBO(105, 109, 127, 1),
-                      inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                      activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                      inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    ),
-                  ],
-                ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onLongPress: () {
+                if (EnvConfig.isTest) {
+                  Navigator.pushNamed(context, TestRouter.mainPage);
+                }
+              },
+              onTap: () => Navigator.pushNamed(context, AuthRouter.aboutTwt),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/twt.png', width: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Text(S.current.about_twt, style: mainTextStyle),
+                  ),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
               ),
             ),
           ),
-          if (!widget.showBrief)
-            Column(children: [
-              Container(
-                  padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
-                  alignment: Alignment.centerLeft,
-                  child: Text(S.current.schedule, style: titleTextStyle)),
-              Padding(
-                padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-                child: Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: InkWell(
-                    onTap: () =>
-                        Navigator.pushNamed(context, AuthRouter.scheduleSetting)
-                            .then((_) {
-                      /// 使用pop返回此页面时进行rebuild
-                      this.setState(() {});
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onTap: () {
+                context.read<UpdateManager>().checkUpdate(auto: false);
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.update,
+                      color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Text(S.current.check_new, style: mainTextStyle),
+                  ),
+                  Text("${S.current.current_version}: ${EnvConfig.VERSION}",
+                      style: hintTextStyle),
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onTap: () => showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (BuildContext context) => LogoutDialog()),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/logout.png', width: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Text(S.current.logout, style: mainTextStyle),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => UserAgreementDialog()),
+                child: Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(),
+                  child: Text('《用户协议》', style: hintTextStyle),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) {
+                      return PrivacyDialog(md);
                     }),
-                    splashFactory: InkRipple.splashFactory,
-                    borderRadius: BorderRadius.circular(15),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: descriptionMaxWidth,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(S.current.setting_day_number,
-                                    style: mainTextStyle),
-                                SizedBox(height: 3),
-                                Text('${pref.dayNumber.value}',
-                                    style: hintTextStyle)
-                              ],
-                            ),
-                          ),
-                          Spacer(),
-                          arrow,
-                        ],
-                      ),
-                    ),
-                  ),
+                child: Container(
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(),
+                  child: Text('《隐私政策》', style: hintTextStyle),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-                child: Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: descriptionMaxWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(S.current.setting_other_week,
-                                  style: mainTextStyle),
-                              SizedBox(height: 3),
-                              Text(S.current.setting_other_week_hint,
-                                  style: hintTextStyle)
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        Switch(
-                          value: pref.otherWeekSchedule.value,
-                          onChanged: (value) {
-                            setState(
-                                () => pref.otherWeekSchedule.value = value);
-                          },
-                          activeColor: Color.fromRGBO(105, 109, 127, 1),
-                          inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                          activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                          inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                  padding: const EdgeInsets.fromLTRB(20, 17, 40, 5),
-                  alignment: Alignment.centerLeft,
-                  child: Text('消息通知', style: titleTextStyle)),
-              Padding(
-                padding: EdgeInsets.fromLTRB(17, 4, 17, 4),
-                child: Card(
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      children: <Widget>[
-                        SizedBox(
-                          width: descriptionMaxWidth,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('青年湖底和信箱消息通知', style: mainTextStyle),
-                              SizedBox(height: 3),
-                              Text('应用消息通知', style: hintTextStyle)
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                        Builder(builder: (context) {
-                          return Switch(
-                            value: context.select(
-                                (PushManager manger) => manger.openPush),
-                            onChanged: (value) {
-                              if (value) {
-                                context.read<PushManager>().turnOnPushService(
-                                    () {
-                                  ToastProvider.success("开启推送成功");
-                                }, () {
-                                  ToastProvider.success("开启推送需要通知权限");
-                                }, () {
-                                  ToastProvider.error("打开失败");
-                                });
-                              } else {
-                                context.read<PushManager>().turnOffPushService(
-                                    () {
-                                  ToastProvider.success("关闭推送成功");
-                                }, () {
-                                  ToastProvider.error("关闭失败");
-                                });
-                              }
-                            },
-                            activeColor: Color.fromRGBO(105, 109, 127, 1),
-                            inactiveThumbColor:
-                                Color.fromRGBO(205, 206, 212, 1),
-                            activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                            inactiveTrackColor:
-                                Color.fromRGBO(240, 241, 242, 1),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ])
+            ],
+          ),
         ],
       ),
     );

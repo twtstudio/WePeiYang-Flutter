@@ -1,22 +1,25 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
@@ -31,7 +34,6 @@ class NSubPage extends StatefulWidget {
 
 class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   int index;
-  FbDepartmentsProvider _departmentsProvider;
   double _previousOffset = 0;
 
   NSubPageState(this.index);
@@ -58,7 +60,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           .lakeAreas[index]
           .refreshController
           .refreshToIdle();
-    if (scrollInfo.metrics.pixels == 0)
+    if (scrollInfo.metrics.pixels <
+        12.h + FeedbackHomePageState().searchBarHeight)
       context.read<LakeModel>().onFeedbackOpen();
     if (scrollInfo.metrics.axisDirection == AxisDirection.down &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20 &&
@@ -67,7 +70,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       if (scrollInfo.metrics.pixels <= _previousOffset)
         context.read<LakeModel>().onFeedbackOpen();
       else
-        context.read<LakeModel>().onClose();
+        context.read<LakeModel>().onFeedbackClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
   }
@@ -88,13 +91,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       return '晚上好';
   }
 
-  onRefresh([AnimationController controller]) async {
+  onRefresh() async {
+    context.read<LakeModel>().lakeAreas[index].status = LakePageStatus.loading;
     FeedbackService.getToken(onResult: (_) {
       context.read<LakeModel>().getClipboardWeKoContents(context);
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(index, success: () {
-        setState(() {});
         context
             .read<LakeModel>()
             .lakeAreas[index]
@@ -109,7 +112,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
               .lakeAreas[index]
               .refreshController
               .refreshToIdle();
-        controller?.stop();
         context
             .read<LakeModel>()
             .lakeAreas[index]
@@ -120,7 +122,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       context.read<NoticeProvider>().initNotices();
     }, onFailure: (e) {
       ToastProvider.error(e.error.toString());
-      controller?.stop();
       context
           .read<LakeModel>()
           .lakeAreas[index]
@@ -162,17 +163,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     if (index == 0) {
       context.read<FbHotTagsProvider>().initHotTags();
     }
-    _departmentsProvider =
-        Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<FestivalProvider>().initFestivalList();
     context.read<NoticeProvider>().initNotices();
-    context.read<LakeModel>().fillLakeArea(
+    context.read<LakeModel>().fillLakeAreaAndInitPostList(
         index, RefreshController(initialRefresh: false), ScrollController());
-    context.read<LakeModel>().checkTokenAndGetPostList(
-        _departmentsProvider, index, context.read<LakeModel>().sortSeq ?? 1,
-        success: () {}, failure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
     super.initState();
   }
 
@@ -183,7 +177,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final status =
+    var status =
         context.select((LakeModel model) => model.lakeAreas[index].status);
 
     if (status == LakePageStatus.idle)
@@ -193,6 +187,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           controller:
               context.read<LakeModel>().lakeAreas[index].refreshController,
           header: ClassicHeader(
+            height: 40.h,
             completeDuration: Duration(milliseconds: 300),
             idleText: '下拉以刷新 (乀*･ω･)乀',
             releaseText: '下拉以刷新',
@@ -222,12 +217,15 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
               return Builder(builder: (context) {
                 if (ind == 0)
                   return Container(
-                    height: 35,
-                    margin: EdgeInsets.only(top: 12, left: 14, right: 14),
+                    height: 35.h,
+                    margin: EdgeInsets.only(
+                        top: 12.h + FeedbackHomePageState().searchBarHeight,
+                        left: 14.w,
+                        right: 14.w),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
-                        color: Colors.white),
+                        color: ColorUtil.blue2CColor.withAlpha(12)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -241,13 +239,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                         CrossAxisAlignment.center,
                                     children: [
                                       SvgPicture.asset(
-                                        "assets/svg_pics/lake_butt_icons/notice.svg",
+                                        "assets/svg_pics/lake_butt_icons/la_ba.svg",
                                         width: 20,
                                       ),
                                       SizedBox(width: 6),
                                       SizedBox(
                                           height: 20,
-                                          width: WePeiYangApp.screenWidth - 170,
+                                          width: WePeiYangApp.screenWidth - 83,
                                           child: context
                                                       .read<NoticeProvider>()
                                                       .noticeList
@@ -264,19 +262,19 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                         .noticeList
                                                         .length,
                                                     (index) => Text(
-                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 16 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
+                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
                                                         style: TextUtil
                                                             .base
-                                                            .mainColor
-                                                            .w800
+                                                            .blue2C
+                                                            .w400
                                                             .NotoSansSC
                                                             .sp(15)),
                                                   ),
                                                 )
                                               : Text(
-                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 16 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 15) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                                  style: TextUtil.base.mainColor
-                                                      .w800.NotoSansSC
+                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                                  style: TextUtil.base.blue2C
+                                                      .w400.NotoSansSC
                                                       .sp(15))),
                                     ],
                                   ),
@@ -285,11 +283,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                 )
                               : InkWell(
                                   child: SizedBox(
-                                    width: WePeiYangApp.screenWidth * 0.56,
+                                    width: WePeiYangApp.screenWidth - 83,
                                     child: Text(
-                                      '${_getGreetText}, ${CommonPreferences().lakeNickname.value == '无昵称' ? '微友' : CommonPreferences().lakeNickname.value.toString()}',
+                                      '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
                                       style: TextUtil
-                                          .base.grey6C.w600.NotoSansSC
+                                          .base.blue2C.w600.NotoSansSC
                                           .sp(16),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -297,90 +295,55 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   onTap: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
-                          Spacer(),
-                          Container(
-                            height: double.infinity,
-                            width: 90,
-                            padding: EdgeInsets.symmetric(vertical: 1.5),
-                            margin: EdgeInsets.all(3),
-                            decoration: BoxDecoration(
-                              color: ColorUtil.greyF7F8Color,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
-                            ),
-                            child: Stack(
-                              children: [
-                                AnimatedContainer(
-                                  duration: Duration(milliseconds: 500),
-                                  curve: Curves.easeInOutCubic,
-                                  margin: EdgeInsets.only(
-                                      left:
-                                          context.read<LakeModel>().sortSeq != 0
-                                              ? 2
-                                              : 40),
-                                  width: 46,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100)),
-                                      color: Color.fromARGB(125, 54, 60, 84)),
-                                ),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                1;
-                                            listToTop();
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text('默认',
-                                              style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
-                                                  ? TextUtil.base.white.w900
-                                                      .sp(12)
-                                                  : TextUtil.base.black2A.w500
-                                                      .sp(12)),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            context.read<LakeModel>().sortSeq =
-                                                0;
-                                            listToTop();
-                                          });
-                                        },
-                                        child: Center(
-                                          child: Text('最新',
-                                              style: context
-                                                          .read<LakeModel>()
-                                                          .sortSeq !=
-                                                      0
-                                                  ? TextUtil.base.black2A.w500
-                                                      .sp(12)
-                                                  : TextUtil.base.white.w900
-                                                      .sp(12)),
-                                        ),
-                                      ),
-                                    ]),
-                              ],
-                            ),
-                          ),
-                          SizedBox(width: 2)
+                          Spacer()
                         ]),
                   );
                 ind--;
                 if (index == 0 && ind == 0) return HotCard();
-                if (index == 0) ind--;
+                if (index != 0 && ind == 0) return SizedBox(height: 10.h);
+                ind--;
                 if (ind == 0 &&
                     context.read<FestivalProvider>().festivalList.length > 0)
-                  return ActivityCard();
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                    child: ActivityCard(),
+                  );
+                ind--;
+                if (ind == 0)
+                  return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              context.read<LakeModel>().sortSeq = 1;
+                              listToTop();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(20.w, 14.h, 5.w, 6.h),
+                            child: Text('默认排序',
+                                style: context.read<LakeModel>().sortSeq != 0
+                                    ? TextUtil.base.blue2C.w600.sp(14)
+                                    : TextUtil.base.black2A.w400.sp(14)),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              context.read<LakeModel>().sortSeq = 0;
+                              listToTop();
+                            });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(5.w, 14.h, 10.w, 6.h),
+                            child: Text('最新发帖',
+                                style: context.read<LakeModel>().sortSeq != 0
+                                    ? TextUtil.base.black2A.w400.sp(14)
+                                    : TextUtil.base.blue2C.w600.sp(14)),
+                          ),
+                        ),
+                      ]);
                 ind--;
                 final post = context
                     .read<LakeModel>()
@@ -388,7 +351,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     .dataList
                     .values
                     .toList()[ind];
-                return PostCard.simple(post, key: ValueKey(post.id));
+                return PostCardNormal(post);
               });
             },
           ),
@@ -401,12 +364,134 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     else if (status == LakePageStatus.error)
       return HomeErrorContainer(onRefresh, true, index);
     else
-      return Loading();
+      return LoadingPageWidget(index, onRefresh);
+  }
+}
+
+class LoadingPageWidget extends StatefulWidget {
+  final int index;
+  final void Function() onPressed;
+
+  LoadingPageWidget(this.index, this.onPressed);
+
+  @override
+  _LoadingPageWidgetState createState() => _LoadingPageWidgetState();
+}
+
+class _LoadingPageWidgetState extends State<LoadingPageWidget>
+    with SingleTickerProviderStateMixin {
+  bool isOpa = false;
+  bool showBtn = false;
+  Timer _timer;
+  int count = 0;
+
+  @override
+  void initState() {
+    isOpa = true;
+    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
+      count++;
+      if (isOpa)
+        isOpa = false;
+      else
+        isOpa = true;
+      if (count > 50) {
+        setState(() {
+          showBtn = true;
+        });
+        _timer.cancel();
+      }
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return showBtn
+        ? HomeErrorContainer(widget.onPressed, true, widget.index)
+        : Stack(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: 8,
+                itemBuilder: (context, ind) {
+                  return Builder(builder: (context) {
+                    if (ind == 0)
+                      return Container(
+                        height: 35.h,
+                        margin:
+                            EdgeInsets.only(top: 14.h, left: 14.w, right: 14.w),
+                        padding: EdgeInsets.symmetric(vertical: 2),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(100)),
+                            color: ColorUtil.blue2CColor.withAlpha(12)),
+                      );
+                    ind--;
+                    if (widget.index == 0 && ind == 0)
+                      return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            color: Colors.black26,
+                          ),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 20.w, vertical: 20.h),
+                          height: 160.h);
+                    if (widget.index != 0 && ind == 0)
+                      return SizedBox(height: 10.h);
+                    ind--;
+                    if (ind == 0 &&
+                        context.read<FestivalProvider>().festivalList.length >
+                            0)
+                      return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            color: Colors.black26,
+                          ),
+                          margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                          height: 0.32 * WePeiYangApp.screenWidth);
+                    ind--;
+                    if (ind == 0) return SizedBox(height: 20.h);
+                    ind--;
+                    return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Colors.black26,
+                        ),
+                        margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                        height: 160.h);
+                  });
+                },
+              ),
+              AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  width: 1.sw,
+                  height: 1.sh,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: isOpa ? Alignment(0, 0.2) : Alignment(0, 2.2),
+                      colors: [
+                        Color(0x12FFFFFF),
+                        Color(0x80FFFFFF),
+                      ],
+                    ),
+                  ),
+                  child: Center(child: Loading()))
+            ],
+          );
   }
 }
 
 class HomeErrorContainer extends StatefulWidget {
-  final void Function(AnimationController) onPressed;
+  final void Function() onPressed;
   final bool networkFailPageUsage;
   final int index;
 
@@ -433,8 +518,14 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var errorImg = SvgPicture.asset('assets/svg_pics/network_failed.svg');
+    var errorImg = WpyPic('assets/images/lake_butt_icons/monkie.png', height: 160, width: 160);
 
     var errorText = Text(
         widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
@@ -468,7 +559,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             });
         if (!controller.isAnimating) {
           controller.repeat();
-          widget.onPressed?.call(controller);
+          widget.onPressed?.call();
         }
       },
       mini: true,
@@ -479,10 +570,10 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
     return SingleChildScrollView(
       physics: BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 120.h),
           errorImg,
+          SizedBox(height: 20.h),
           errorText,
           paddingBox,
           widget.networkFailPageUsage ? retryButton : SizedBox(),

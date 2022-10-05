@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/home/home_router.dart';
 
-import 'april_fool_dialog.dart';
 
 typedef WithCountNotifierCallback = Future<void> Function(
     bool, int, Function onSuccess, Function onFailure);
@@ -27,9 +24,7 @@ extension IconTypeExt on IconType {
         Image.asset('assets/images/lake_butt_icons/favorite_outlined.png')
       ][index];
 
-  double get size => [
-    15.w,22.w,15.w,22.w
-  ][index];
+  double get size => [15.w, 22.w, 15.w, 22.w][index];
 
   CircleColor get circleColor => [
         CircleColor(start: Colors.black12, end: Colors.redAccent),
@@ -100,40 +95,17 @@ class _IconWidgetState extends State<IconWidget> {
             },
             onTap: (value) async {
               if (value) {
-                ///愚人节临时处理
-                if(CommonPreferences().isAprilFoolLike.value){
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (BuildContext context) {
-                        return AprilFoolDialog(
-                          content: " 今天点赞似乎反了捏~~",
-                          confirmText: "返回正常点赞",
-                          cancelText: "保留整蛊",
-                          confirmFun: (){
-                            CommonPreferences().isAprilFoolLike.value = false;
-                            Navigator.popAndPushNamed(context, HomeRouter.home);
-                          },
-                        );
-                      });
-                  widget.countNotifier.value = widget.countNotifier.value + 1;
-                }
-                else
-                widget.countNotifier.value = widget.countNotifier.value - 1;
+                widget.countNotifier.value--;
               } else {
-                if(CommonPreferences().isAprilFoolLike.value) {
-                  widget.countNotifier.value = widget.countNotifier.value - 1;
-                }
-                else
-                widget.countNotifier.value = widget.countNotifier.value + 1;
+                widget.countNotifier.value++;
               }
               widget.onLikePressed(value, widget.countNotifier.value, () {
                 widget.isLikedNotifier.value = !value;
               }, () {
                 if (value) {
-                    widget.countNotifier.value++;
+                  widget.countNotifier.value++;
                 } else {
-                  widget.countNotifier.value --;
+                  widget.countNotifier.value--;
                 }
                 setState(() {});
               });
@@ -165,7 +137,6 @@ class _IconWidgetState extends State<IconWidget> {
   }
 }
 
-
 typedef DislikeNotifierCallback = void Function(bool);
 
 class DislikeWidget extends StatelessWidget {
@@ -175,11 +146,8 @@ class DislikeWidget extends StatelessWidget {
   final ValueNotifier<bool> isDislikedNotifier;
   final double size;
 
-  DislikeWidget({
-    this.onDislikePressed,
-    this.isDislike,
-    this.size
-  }) : isDislikedNotifier = ValueNotifier(isDislike);
+  DislikeWidget({this.onDislikePressed, this.isDislike, this.size})
+      : isDislikedNotifier = ValueNotifier(isDislike);
 
   @override
   Widget build(BuildContext context) {
@@ -190,9 +158,11 @@ class DislikeWidget extends StatelessWidget {
           size: size,
           likeBuilder: (bool isDisliked) {
             if (isDisliked) {
-              return Image.asset('assets/images/lake_butt_icons/dislike_filled.png');
+              return Image.asset(
+                  'assets/images/lake_butt_icons/dislike_filled.png');
             } else {
-              return Image.asset('assets/images/lake_butt_icons/dislike_outlined.png');
+              return Image.asset(
+                  'assets/images/lake_butt_icons/dislike_outlined.png');
             }
           },
           onTap: (value) async {
@@ -200,7 +170,8 @@ class DislikeWidget extends StatelessWidget {
             return !value;
           },
           isLiked: value,
-          circleColor: CircleColor(start: Colors.black12, end: Colors.blue[200]),
+          circleColor:
+              CircleColor(start: Colors.black12, end: Colors.blue[200]),
           bubblesColor: BubblesColor(
             dotPrimaryColor: Colors.blueGrey,
             dotSecondaryColor: Colors.black26,

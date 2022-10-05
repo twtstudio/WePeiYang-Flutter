@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class ResetDoneWidget extends StatelessWidget {
@@ -24,10 +24,9 @@ class ResetDoneWidget extends StatelessWidget {
           SizedBox(height: 180),
           Center(
             child: Text(S.current.reset_password_done,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 123, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16)),
+                style: TextUtil.base.bold
+                    .sp(16)
+                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
           ),
           SizedBox(height: 20),
           SizedBox(
@@ -37,8 +36,7 @@ class ResetDoneWidget extends StatelessWidget {
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context, AuthRouter.login, (route) => false),
               child: Text(S.current.login3,
-                  style: FontManager.YaHeiRegular.copyWith(
-                      color: Colors.white, fontSize: 13)),
+                  style: TextUtil.base.regular.white.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

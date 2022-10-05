@@ -32,9 +32,13 @@
 /build/
 /local.properties
 /android/app/build/
+/android/gradle.properties
 
 # Web related
 lib/generated_plugin_registrant.dart
+
+# l10n generated files
+/lib/generated/
 
 # Symbolication related
 app.*.symbols
@@ -45,3 +49,6 @@ app.*.map.json
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
+.fvm/
+
+ios/Podfile.lock

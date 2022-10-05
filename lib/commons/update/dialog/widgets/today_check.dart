@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/layout.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 class TodayShowAgainCheck extends StatelessWidget {
   final VoidCallback tap;

@@ -1,5 +1,4 @@
 ﻿// @dart = 2.12
-
 import 'package:flutter/foundation.dart';
 
 /// 动态打包配置
@@ -15,6 +14,11 @@ class EnvConfig {
         ? "https://www.zrzz.site:7015/"
         // 正式服务器域名
         : "https://qnhdpic.twt.edu.cn/";
+    CUSTOM_CLASS = isDevelop
+        // 测试服务器域名
+        ? "http://101.42.225.75:8081/"
+        // 正式服务器域名
+        : "https://activity.twt.edu.cn/";
   }
 
   static bool get isDevelop => ENVIRONMENT == "DEVELOP";
@@ -31,13 +35,13 @@ class EnvConfig {
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSION = String.fromEnvironment(
     "VERSION",
-    defaultValue : "4.2.11",
+    defaultValue : "4.3.3",
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSIONCODE = int.fromEnvironment(
     "VERSIONCODE",
-    defaultValue : 110,
+    defaultValue : 117,
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"
@@ -45,4 +49,7 @@ class EnvConfig {
 
   /// 青年湖底图片域名 "https://www.zrzz.site:7015/" (DEFAULT) 或 "https://qnhdpic.twt.edu.cn/"
   static late String QNHDPIC;
+
+  /// 自定义课表域名 "https://activity.twt.edu.cn/" (DEFAULT) 或 "http://101.42.225.75:8081//"
+  static late String CUSTOM_CLASS;
 }

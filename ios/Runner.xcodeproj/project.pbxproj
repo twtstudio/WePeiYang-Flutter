@@ -14,9 +14,25 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */; };
+		D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */; };
+		D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */; };
+		D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2128C67F6800B47A90 /* GetuiExtension.swift */; };
+		D302FA2428C67F9600B47A90 /* ChannelConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */; };
+		D302FA2828C75F2400B47A90 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		56B1FDC42890231A00569DB3 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -39,6 +55,8 @@
 		56B1FDAC288EA36B00569DB3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
 		56B1FDAD288EA36B00569DB3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		56B1FDAE288EA4AF00569DB3 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		56B1FDB42890230E00569DB3 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		56B1FDB62890230F00569DB3 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A922869B3699FAB36BCCE61 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
@@ -52,6 +70,12 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMAnalyticsSwift.swift; sourceTree = "<group>"; };
+		D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMCommonSwift.swift; sourceTree = "<group>"; };
+		D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMCommonLogSwift.swift; sourceTree = "<group>"; };
+		D302FA2128C67F6800B47A90 /* GetuiExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetuiExtension.swift; sourceTree = "<group>"; };
+		D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelConfiguration.swift; sourceTree = "<group>"; };
+		D302FA2728C75F2400B47A90 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +94,8 @@
 			isa = PBXGroup;
 			children = (
 				C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */,
+				56B1FDB42890230E00569DB3 /* WidgetKit.framework */,
+				56B1FDB62890230F00569DB3 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -107,6 +133,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				D302FA2628C75EF500B47A90 /* Tool */,
+				D302FA2528C75EDB00B47A90 /* Sdk */,
 				56B1FDAE288EA4AF00569DB3 /* Runner.entitlements */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
@@ -130,6 +158,34 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		D302FA1A28C6654400B47A90 /* UMSwift */ = {
+			isa = PBXGroup;
+			children = (
+				D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */,
+				D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */,
+				D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */,
+			);
+			path = UMSwift;
+			sourceTree = "<group>";
+		};
+		D302FA2528C75EDB00B47A90 /* Sdk */ = {
+			isa = PBXGroup;
+			children = (
+				D302FA2128C67F6800B47A90 /* GetuiExtension.swift */,
+				D302FA1A28C6654400B47A90 /* UMSwift */,
+			);
+			path = Sdk;
+			sourceTree = "<group>";
+		};
+		D302FA2628C75EF500B47A90 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */,
+				D302FA2728C75F2400B47A90 /* Storage.swift */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -145,6 +201,8 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				0BE3F7EF43EABDDFCA812DE5 /* [CP] Embed Pods Frameworks */,
+				56B1FDC42890231A00569DB3 /* Embed Foundation Extensions */,
+				613A3759415EBB8C0FDC0083 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -161,6 +219,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -236,6 +295,23 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
+		613A3759415EBB8C0FDC0083 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,7 +355,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */,
+				D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */,
+				D302FA2428C67F9600B47A90 /* ChannelConfiguration.swift in Sources */,
+				D302FA2828C75F2400B47A90 /* Storage.swift in Sources */,
+				D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,7 +450,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 110;
+				CURRENT_PROJECT_VERSION = 202209212000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -376,7 +458,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twt.wepeiyangFlutter;
+				MARKETING_VERSION = 4.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -500,7 +583,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 110;
+				CURRENT_PROJECT_VERSION = 202209212000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -508,7 +591,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twt.wepeiyangFlutter;
+				MARKETING_VERSION = 4.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -524,7 +608,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 110;
+				CURRENT_PROJECT_VERSION = 202209212000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -532,7 +616,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.twt.wepeiyangFlutter;
+				MARKETING_VERSION = 4.3.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

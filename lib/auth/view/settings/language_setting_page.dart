@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class LanguageSettingPage extends StatelessWidget {
@@ -14,12 +14,12 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hintTextStyle = FontManager.YaHeiRegular.copyWith(
-        fontSize: 12, color: Color.fromRGBO(205, 206, 212, 1));
-    var mainTextStyle = FontManager.YaHeiRegular.copyWith(
-      fontSize: 18,
-      color: Color.fromRGBO(98, 103, 122, 1),
-    );
+    var hintTextStyle = TextUtil.base.regular
+        .sp(12)
+        .customColor(Color.fromRGBO(205, 206, 212, 1));
+    var mainTextStyle = TextUtil.base.regular
+        .sp(18)
+        .customColor(Color.fromRGBO(98, 103, 122, 1));
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
@@ -38,17 +38,17 @@ class LanguageSettingPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language,
-                style: FontManager.YaQiHei.copyWith(
-                    color: Color.fromRGBO(48, 60, 102, 1),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30)),
+                style: TextUtil.base.bold
+                    .sp(30)
+                    .customColor(Color.fromRGBO(48, 60, 102, 1))),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(35, 15, 35, 15),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language_hint,
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(98, 103, 124, 1), fontSize: 9)),
+                style: TextUtil.base.regular
+                    .sp(9)
+                    .customColor(Color.fromRGBO(98, 103, 124, 1))),
           ),
           Consumer<LocaleModel>(
             builder: (_, model, __) => ListView.builder(
@@ -87,7 +87,7 @@ class LanguageSettingPage extends StatelessWidget {
                             ],
                           ),
                           Spacer(),
-                          if (CommonPreferences().language.value == index)
+                          if (CommonPreferences.language.value == index)
                             _judgeLanguage(LocaleModel.localeName(index))
                         ],
                       ),

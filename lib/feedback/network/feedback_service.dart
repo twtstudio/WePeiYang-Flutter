@@ -1,23 +1,22 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+
   // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -35,8 +34,9 @@ class FeedbackDio extends DioAbstract {
         //                   .toString()),
         //       true);
         default: // 其他错误
-          return handler.reject(
-              WpyDioError(error: response.data['data']['error']), true);
+          var data = response.data['data'];
+          if (data == null || data['error'] == null) return;
+          return handler.reject(WpyDioError(error: data['error']), true);
       }
     })
   ];
@@ -49,7 +49,7 @@ class FeedbackPicPostDio extends DioAbstract {
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -66,12 +66,13 @@ class FeedbackPicPostDio extends DioAbstract {
 class FeedbackAdminPostDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
+
   // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences().lakeToken.value;
+      options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response?.data['code'] ?? 0;
@@ -96,39 +97,54 @@ class FeedbackService with AsyncTimer {
       bool forceRefresh = false}) async {
     try {
       var response;
-      if (CommonPreferences().lakeToken.value != null &&
-          CommonPreferences().lakeToken.value != "" &&
-          !forceRefresh) {
-        response = await feedbackDio
-            .get('auth/${CommonPreferences().lakeToken.value}');
+      if (CommonPreferences.lakeToken.value != "" && !forceRefresh) {
+        response =
+            await feedbackDio.get('auth/${CommonPreferences.lakeToken.value}');
       } else {
         response = await feedbackDio.get('auth/token', queryParameters: {
-          'token': CommonPreferences().token.value,
+          'token': CommonPreferences.token.value,
         });
       }
       if (response.data['data'] != null &&
           response.data['data']['token'] != null) {
-        CommonPreferences().lakeToken.value = response.data['data']['token'];
-        CommonPreferences().lakeUid.value =
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+        CommonPreferences.lakeUid.value =
             response.data['data']['uid'].toString();
         if (response.data['data']['user'] != null) {
-          CommonPreferences().isSuper.value =
+          CommonPreferences.isSuper.value =
               response.data['data']['user']['is_super'];
-          CommonPreferences().isSchAdmin.value =
+          CommonPreferences.isSchAdmin.value =
               response.data['data']['user']['is_sch_admin'];
-          CommonPreferences().isStuAdmin.value =
+          CommonPreferences.isStuAdmin.value =
               response.data['data']['user']['is_stu_admin'];
-          CommonPreferences().isUser.value =
+          CommonPreferences.isUser.value =
               response.data['data']['user']['is_user'];
         }
         if (onResult != null) onResult(response.data['data']['token']);
-      } else {
-        ToastProvider.error('校务专区登录失败, 请刷新');
       }
     } on DioError catch (e) {
       if (!forceRefresh) {
         getToken(forceRefresh: true);
       } else if (onFailure != null) onFailure(e);
+    }
+  }
+
+  static getTokenByPw(
+    String user,
+    String passwd, {
+    OnSuccess onSuccess,
+    OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get('auth/passwd', queryParameters: {
+        'user': user,
+        'password': passwd,
+      });
+      if (response.data['data']['token'] != null)
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+      onSuccess();
+    } on DioError catch (e) {
+      if (onFailure != null) onFailure(e);
     }
   }
 
@@ -149,6 +165,21 @@ class FeedbackService with AsyncTimer {
     } on DioError catch (e) {
       onFailure(e);
     }
+  }
+
+  static uploadAvatars(String avatar,
+      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('avatar', () async {
+      try {
+        var data = FormData.fromMap({
+          'avatar': avatar,
+        });
+        feedbackDio.post("user/avatar", formData: data);
+        onSuccess();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
   }
 
   static Future<void> postPic(
@@ -305,6 +336,26 @@ class FeedbackService with AsyncTimer {
             }));
         Map<String, dynamic> json = response.data['data'];
         onSuccess?.call(PostTagId.fromJson(json));
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  static Future<void> postShare({
+    @required id,
+    @required type,
+    @required onSuccess,
+    @required onFailure,
+  }) async {
+    AsyncTimer.runRepeatChecked('share', () async {
+      try {
+        await feedbackDio.post('share',
+            formData: FormData.fromMap({
+              'object_id': id,
+              'type': type,
+            }));
+        onSuccess?.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -606,18 +657,27 @@ class FeedbackService with AsyncTimer {
   }) async {
     try {
       var response = await feedbackDio.get('user');
-      CommonPreferences().lakeUid.value =
+      CommonPreferences.lakeUid.value =
           response.data['data']['user']['id'].toString();
-      CommonPreferences().lakeNickname.value =
+      CommonPreferences.lakeNickname.value =
           response.data['data']['user']['nickname'];
-      CommonPreferences().isSuper.value =
+      CommonPreferences.isSuper.value =
           response.data['data']['user']['is_super'];
-      CommonPreferences().isSchAdmin.value =
+      CommonPreferences.isSchAdmin.value =
           response.data['data']['user']['is_sch_admin'];
-      CommonPreferences().isStuAdmin.value =
+      CommonPreferences.avatar.value = response.data['data']['user']['avatar'];
+      CommonPreferences.isStuAdmin.value =
           response.data['data']['user']['is_stu_admin'];
-      CommonPreferences().isUser.value =
-          response.data['data']['user']['is_user'];
+      CommonPreferences.levelPoint.value =
+          response.data['data']['user']['level_point'];
+      CommonPreferences.level.value =
+          response.data['data']['user']['level_info']['level'];
+      CommonPreferences.nextLevelPoint.value =
+          response.data['data']['user']['level_info']['next_level_point'];
+      CommonPreferences.curLevelPoint.value =
+          response.data['data']['user']['level_info']['cur_level_point'];
+      CommonPreferences.levelName.value =
+          response.data['data']['user']['level_info']['level_name'];
       onSuccess?.call();
     } on DioError catch (e) {
       onFailure(e);
@@ -673,7 +733,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
-              'token': CommonPreferences().lakeToken.value,
+              'token': CommonPreferences.lakeToken.value,
             }));
         onSuccess?.call();
       } on DioError catch (e) {
@@ -939,9 +999,28 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static adminChangeETag(
+      {@required id,
+      @required value,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminChangeETag', () async {
+      try {
+        await feedbackAdminPostDio.post('post/etag',
+            formData: FormData.fromMap({
+              'post_id': id,
+              'value': value,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   static superAdminOpenBox(
       {@required uid,
-      @required OnResult<String> onResult,
+      @required OnResult<Map<String, String>> onResult,
       @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('superAdminDeleteReply', () async {
       try {
@@ -952,10 +1031,21 @@ class FeedbackService with AsyncTimer {
           },
         );
         var obd = response.data['data']['detail'];
-        String openBoxDetail = 'hh';
+        Map<String, String> openBoxDetail = {};
         if (obd != null)
-          openBoxDetail =
-              '学号：${obd["userNumber"] ?? '无学号'}\n昵称：${obd["nickname"] ?? '无昵称'}\n电话：${obd["telephone"] ?? '无电话'}\n邮箱：${obd["email"] ?? '无邮箱'}\ntoken：${obd["token"] ?? '无token'}\n真名：${obd["realname"] ?? '无真名'}\n性别：${obd["gender"] ?? '无性别'}\n学院/部：${obd["department"] ?? '无学院/部'}\n专业：${obd["major"] ?? '无专业'}\n种类：${obd["stuType"] ?? '无种类'}\n校区：${obd["campus"] ?? '无校区'}\n身份证号：${obd["idNumber"] ?? '无身份证号'}\n';
+          openBoxDetail = {
+            '真名': obd["realname"] ?? '无真名',
+            '学号': obd["userNumber"] ?? '无学号',
+            '学院/部': obd["department"] ?? '无学院/部',
+            '身份证号': obd["idNumber"] ?? '无身份证号',
+            '归属地': '在线查询身份证号归属地',
+            '电话': obd["telephone"] ?? '无电话',
+            '邮箱': obd["email"] ?? '无邮箱',
+            '性别': obd["gender"] ?? '无性别',
+            '专业': obd["major"] ?? '无专业',
+            '种类': obd["stuType"] ?? '无种类',
+            '校区': obd["campus"] ?? '无校区',
+          };
         onResult(openBoxDetail);
       } on DioError catch (e) {
         onFailure(e);
@@ -965,8 +1055,8 @@ class FeedbackService with AsyncTimer {
 
   static adminResetName(
       {@required id,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminResetName', () async {
       try {
         await feedbackAdminPostDio.post('user/nickname/reset',
@@ -980,4 +1070,30 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static adminResetAva(
+      {@required id,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminResetAva', () async {
+      try {
+        await feedbackAdminPostDio.post('user/avatar/reset',
+            formData: FormData.fromMap({
+              'uid': id,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  /// 获取iOS是否显示拉黑按钮
+  static Future<bool> getIOSShowBlock() async {
+    try {
+      final res = await feedbackDio.get('setting');
+      return res.data['data']['data']['ios_lahei'];
+    } catch (e) {
+      return false;
+    }
+  }
 }

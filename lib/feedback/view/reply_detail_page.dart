@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -102,15 +101,16 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
     _getComment(
-        onResult: (comments) {
-          setState(() {
-            floors = comments;
-          });
-        },
-        onFail: () {
-          ToastProvider.error('获取回复失败');
-        },
-        page: 0);
+      onResult: (comments) {
+        setState(() {
+          floors = comments;
+        });
+      },
+      onFail: () {
+        ToastProvider.error('获取回复失败');
+      },
+      page: 0,
+    );
   }
 
   Future<bool> _getComment(
@@ -157,15 +157,24 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       itemCount: floors != null ? floors.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return NCommentCard(
-            comment: floor,
-            uid: uid,
-            ancestorUId: floor.postId,
-            commentFloor: index + 1,
-            isSubFloor: false,
-            isFullView: true,
-            // 这里不好传我就先置0了
-            type: 0,
+          return Column(
+            children: [
+              NCommentCard(
+                comment: floor,
+                uid: uid,
+                ancestorUId: floor.postId,
+                commentFloor: index + 1,
+                isSubFloor: false,
+                isFullView: true,
+                // 这里不好传我就先置0了
+                type: 0,
+              ),
+              Container(
+                width: WePeiYangApp.screenWidth - 30.w,
+                height: 1,
+                color: Colors.black12,
+              )
+            ],
           );
         }
         index--;
@@ -184,10 +193,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               // 这里不好传我就先置0了
               type: 0,
             ),
-            Container(
-                width: WePeiYangApp.screenWidth - 60,
-                height: 1,
-                color: Colors.black12)
           ],
         );
       },
@@ -221,7 +226,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             builder: (BuildContext context, value, Widget child) {
           return AnimatedSize(
             clipBehavior: Clip.antiAlias,
-            vsync: this,
             duration: Duration(milliseconds: 300),
             curve: Curves.easeOutSine,
             child: Container(
@@ -265,15 +269,15 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                       .images
                                       .length ==
                                   0)
-                              IconButton(
-                                  icon: Image.asset(
-                                    'assets/images/lake_butt_icons/paste.png',
-                                    width: 24,
-                                    height: 24,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  onPressed: () => launchKey.currentState
-                                      .getClipboardData()),
+                                IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/lake_butt_icons/paste.png',
+                                      width: 24,
+                                      height: 24,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onPressed: () => launchKey.currentState
+                                        .getClipboardData()),
                               IconButton(
                                   icon: Image.asset(
                                     'assets/images/lake_butt_icons/x.png',
@@ -282,7 +286,11 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                     fit: BoxFit.fitWidth,
                                   ),
                                   onPressed: () {
-                                    if (launchKey.currentState.textEditingController.text.isNotEmpty) {
+                                    if (launchKey
+                                        .currentState
+                                        .textEditingController
+                                        .text
+                                        .isNotEmpty) {
                                       launchKey
                                           .currentState.textEditingController
                                           .clear();
@@ -291,7 +299,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                             .commentLengthIndicator = '清空成功';
                                       });
                                     } else {
-                                      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+                                      Provider.of<NewFloorProvider>(context,
+                                              listen: false)
+                                          .clearAndClose();
                                     }
                                   }),
                               Spacer(),
@@ -374,15 +384,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           position: RelativeRect.fromLTRB(1000, kToolbarHeight, 0, 0),
           items: <PopupMenuItem<String>>[
             new PopupMenuItem<String>(
-              value: '举报',
-              child: new Text(
-                '举报',
-                style: FontManager.YaHeiRegular.copyWith(
-                  fontSize: 13,
-                  color: ColorUtil.boldTextColor,
-                ),
-              ),
-            ),
+                value: '举报',
+                child:
+                    Text('举报', style: TextUtil.base.regular.blue303C.sp(13))),
           ],
         ).then((value) {
           if (value == "举报") {
@@ -395,9 +399,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorB.value)
-          : ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.greyF7F8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
@@ -418,7 +420,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         ),
       ),
       elevation: 0,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return WillPopScope(
@@ -427,12 +429,19 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         Navigator.pop(context);
         return true;
       },
-      child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value
-            ? Color(CommonPreferences().skinColorB.value)
-            : ColorUtil.backgroundColor,
-        appBar: appBar,
-        body: body,
+      child: GestureDetector(
+        child: Scaffold(
+            appBar: appBar,
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: body,
+            )),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          if (details.delta.dx > 20) {
+            context.read<NewFloorProvider>().clearAndClose();
+            Navigator.pop(context);
+          }
+        },
       ),
     );
   }

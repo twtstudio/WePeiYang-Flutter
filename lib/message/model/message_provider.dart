@@ -12,24 +12,26 @@ class MessageProvider extends ChangeNotifier {
   List<ReplyMessage> _replyMessages = [];
   List<NoticeMessage> _noticeMessages = [];
 
-  MessageCount _messageCount = MessageCount(like: 0, floor: 0, reply: 0, notice: 0);
+  MessageCount _messageCount =
+      MessageCount(like: 0, floor: 0, reply: 0, notice: 0);
 
   List<LikeMessage> get likeMessages => _likeMessages;
+
   List<FloorMessage> get floorMessages => _floorMessages;
+
   List<ReplyMessage> get replyMessages => _replyMessages;
+
   List<NoticeMessage> get noticeMessages => _noticeMessages;
 
   MessageCount get messageCount => _messageCount;
 
-  bool get isEmpty =>
-      (likeMessages?.length ?? 0) == 0;
+  bool get isEmpty => (likeMessages?.length ?? 0) == 0;
 
   refreshFeedbackCount() async {
-    if(CommonPreferences().lakeToken.value != ""){
-      await MessageService.getUnreadMessagesCount(
-          onResult: (count) {
-            _messageCount = count;
-          }, onFailure: (e) {
+    if (CommonPreferences.lakeToken.value != "") {
+      await MessageService.getUnreadMessagesCount(onResult: (count) {
+        _messageCount = count;
+      }, onFailure: (e) {
         ToastProvider.error(e.error.toString());
       });
       notifyListeners();
@@ -39,23 +41,24 @@ class MessageProvider extends ChangeNotifier {
   setAllMessageRead() async {
     await MessageService.setAllMessageRead(
         onSuccess: () async {
-      await refreshFeedbackCount();
-      ToastProvider.success('所有消息已读成功');
-    }, onFailure: (e) => ToastProvider.error(e.error.toString()));
+          await refreshFeedbackCount();
+          ToastProvider.success('所有消息已读成功');
+        },
+        onFailure: (e) => ToastProvider.error(e.error.toString()));
     notifyListeners();
   }
 
   getLikeMessages({int page = 1, bool isRefresh = true}) async {
-      await MessageService.getLikeMessages(
-          page: page,
-          onSuccess: (list, total) {
-            if(isRefresh) clearLikeMessages();
-            _likeMessages.addAll(list);
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-      notifyListeners();
+    await MessageService.getLikeMessages(
+        page: page,
+        onSuccess: (list, total) {
+          if (isRefresh) clearLikeMessages();
+          _likeMessages.addAll(list);
+        },
+        onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+    notifyListeners();
   }
 
   clearLikeMessages() {
@@ -63,7 +66,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   int getMessageCount({MessageType type, bool isEmail = false}) {
-    if(isEmail) return _messageCount?.notice ?? 0;
+    if (isEmail) return _messageCount?.notice ?? 0;
     switch (type) {
       case MessageType.like:
         return _messageCount?.like ?? 0;
@@ -87,6 +90,8 @@ showMessageDialog(BuildContext context, String data) async {
 
 extension IntExtension on int {
   bool get isZero => this == 0;
+
   bool get haveMessage => this == -1;
+
   bool get isOne => this == 1;
 }

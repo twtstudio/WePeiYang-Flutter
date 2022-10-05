@@ -68,7 +68,7 @@ class _ActivityCardState extends State<ActivityCard> {
                         .festivalList[index]
                         .url
                         .replaceAll(
-                            '<token>', '${CommonPreferences().token.value}'))
+                            '<token>', '${CommonPreferences.token.value}'))
                     : Navigator.pushNamed(context, FeedbackRouter.haitang,
                         arguments: FestivalArgs(
                             context
@@ -80,96 +80,97 @@ class _ActivityCardState extends State<ActivityCard> {
                                 .festivalList[index]
                                 .title));
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 1.0),
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              child: Stack(
-                children: [
-                  Image.network(
-                      context
-                          .read<FestivalProvider>()
-                          .festivalList[index]
-                          .image,
-                      fit: BoxFit.cover,
-                      width: WePeiYangApp.screenWidth - 28,
-                      height: 128),
-                  Positioned(
-                      bottom: 4,
-                      right: 8,
-                      child: TextPod(context
-                          .read<FestivalProvider>()
-                          .festivalList[index]
-                          .title)),
-                ],
-              )),
+        child: Stack(
+          children: [
+            Image.network(
+                context.read<FestivalProvider>().festivalList[index].image,
+                fit: BoxFit.cover,
+                width: WePeiYangApp.screenWidth - 28,
+                height: 0.32 * WePeiYangApp.screenWidth),
+            Positioned(
+                bottom: 4,
+                right: 4,
+                child: TextPod(context
+                    .read<FestivalProvider>()
+                    .festivalList[index]
+                    .title)),
+          ],
         ),
       );
     }
 
     return Container(
-      height: 140,
-      padding: EdgeInsets.fromLTRB(13, 12, 13, 0),
+      height: 0.32 * WePeiYangApp.screenWidth,
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget child) {
         return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             clipBehavior: Clip.hardEdge,
             child: Stack(
               children: [
-                Swiper(
-                  controller: sp,
-                  autoplay:
-                      context.read<FestivalProvider>().festivalList.length != 1,
-                  autoplayDelay: 5000,
-                  itemCount:
-                      context.read<FestivalProvider>().festivalList.length == 0
-                          ? 1
-                          : context
-                              .read<FestivalProvider>()
-                              .festivalList
-                              .length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return context
+                context.read<FestivalProvider>().festivalList.length == 1
+                    ? card(context, 0)
+                    : Swiper(
+                        controller: sp,
+                        autoplay: context
                                 .read<FestivalProvider>()
                                 .festivalList
-                                .length ==
-                            0
-                        ? SizedBox()
-                        : card(context, index);
-                  },
-                  fade: 0.3,
-                  viewportFraction: 1,
-                  scale: 1,
-                  pagination: SwiperCustomPagination(
-                    builder: (context, config) {
-                      return Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 10),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children:
-                                  List.generate(config.itemCount, (index) {
-                                return Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                          color: index == config.activeIndex
-                                              ? Colors.white
-                                              : Color.fromRGBO(0, 0, 25, 0.22),
-                                          borderRadius:
-                                              BorderRadius.circular(100)),
-                                    ));
-                              })),
+                                .length !=
+                            1,
+                        autoplayDelay: 5000,
+                        itemCount: context
+                                    .read<FestivalProvider>()
+                                    .festivalList
+                                    .length ==
+                                0
+                            ? 1
+                            : context
+                                .read<FestivalProvider>()
+                                .festivalList
+                                .length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return context
+                                      .read<FestivalProvider>()
+                                      .festivalList
+                                      .length ==
+                                  0
+                              ? SizedBox()
+                              : card(context, index);
+                        },
+                        fade: 0.3,
+                        viewportFraction: 1,
+                        scale: 1,
+                        pagination: SwiperCustomPagination(
+                          builder: (context, config) {
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 10),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(config.itemCount,
+                                        (index) {
+                                      return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5),
+                                          child: Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                    index == config.activeIndex
+                                                        ? Colors.white
+                                                        : Color.fromRGBO(
+                                                            0, 0, 25, 0.22),
+                                                borderRadius:
+                                                    BorderRadius.circular(100)),
+                                          ));
+                                    })),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
                 Offstage(
                   offstage: offstage,
                   child: AnimatedContainer(

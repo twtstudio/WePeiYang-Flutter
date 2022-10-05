@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -27,14 +28,9 @@ class CommentIdentificationContainer extends StatelessWidget {
     return text == ''
         ? SizedBox()
         : Container(
-            margin: EdgeInsets.only(left: 2, top: 1),
-            padding: EdgeInsets.fromLTRB(4, 0.5, 4, 1.5),
+            margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.NotoSansSC.w700.whiteFD.sp(8)),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: active ? ColorUtil.mainColor : ColorUtil.grey97Color,
-            ),
+                style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C),
           );
   }
 }
@@ -82,7 +78,7 @@ class _ETagWidgetState extends State<ETagWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(3, 0.4, 2.8, 2.0),
+      padding: EdgeInsets.fromLTRB(3.5, 2, 3.5, 2),
       margin: EdgeInsets.only(right: 5),
       child: Text(
         widget.full
@@ -115,7 +111,7 @@ class MPWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text('#MP' + this.text,
-        style: TextUtil.base.ProductSans.w400.mainColor.sp(12));
+        style: TextUtil.base.ProductSans.w400.grey97.sp(12));
   }
 }
 
@@ -129,29 +125,29 @@ class SolveOrNotWidget extends StatelessWidget {
     switch (index) {
       //未分发
       case 0:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tagNotProcessed.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_not_processed.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
       //已分发
       case 3:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tagProcessed.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_processed.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
-      //未解决
+      //未解决 现在改名叫已回复
       case 1:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tagReplied.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_replied.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
       //已解决
       case 2:
-        return SvgPicture.asset(
-          'assets/svg_pics/lake_butt_icons/tagSolved.svg',
+        return Image.asset(
+          'assets/images/lake_butt_icons/tag_solved.png',
           width: 60,
           fit: BoxFit.fitWidth,
         );
@@ -210,46 +206,47 @@ class TagShowWidget extends StatelessWidget {
       },
       child: Container(
         height: 20,
-        child: Row(
-          children: [
-            Container(
-              height: 14,
-              width: 14,
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-              padding: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: type == 0
-                    ? Color(0xffeaeaea)
-                    : type == 1
-                        ? ColorUtil.mainColor
-                        : Colors.white,
-              ),
-              child: SvgPicture.asset(
-                type == 0
-                    ? "assets/svg_pics/lake_butt_icons/districts.svg"
-                    : type == 1
-                        ? "assets/svg_pics/lake_butt_icons/flag.svg"
-                        : "assets/svg_pics/lake_butt_icons/hashtag.svg",
-              ),
-            ),
-            SizedBox(width: type == 0 ? 0 : 2),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: width - 30),
-              child: Text(
-                tag,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            SizedBox(width: 8)
-          ],
-        ),
+        child: (tag != null && tag != "")
+            ? Row(
+                children: [
+                  Container(
+                    height: 14,
+                    width: 14,
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+                    padding: EdgeInsets.symmetric(vertical: 2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: type == 0
+                          ? Color(0xffeaeaea)
+                          : type == 1
+                              ? ColorUtil.mainColor
+                              : Colors.white,
+                    ),
+                    child: SvgPicture.asset(
+                      type == 0
+                          ? "assets/svg_pics/lake_butt_icons/hashtag.svg"
+                          : type == 1
+                              ? "assets/svg_pics/lake_butt_icons/flag.svg"
+                              : "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                    ),
+                  ),
+                  SizedBox(width: type == 0 ? 0 : 2),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: width - 30),
+                    child: Text(
+                      tag ?? '',
+                      style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  SizedBox(width: 8)
+                ],
+              )
+            : SizedBox(),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(1080),
-          color: Color(0xffeaeaea),
         ),
       ),
     );
@@ -266,7 +263,7 @@ class TextPod extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white54,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(color: Colors.black38)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C),
@@ -277,9 +274,12 @@ class TextPod extends StatelessWidget {
 class ProfileImageWithDetailedPopup extends StatelessWidget {
   final int type;
   final int uid;
-  final String nickname;
+  final String avatar;
+  final String nickName;
+  final String level;
 
-  ProfileImageWithDetailedPopup(this.type, this.nickname, this.uid);
+  ProfileImageWithDetailedPopup(
+      this.type, this.avatar, this.uid, this.nickName, this.level);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -303,23 +303,60 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                       BoxConstraints(maxWidth: WePeiYangApp.screenWidth - 40),
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(15)),
-                  padding: const EdgeInsets.fromLTRB(20, 6, 18, 10),
+                      borderRadius: BorderRadius.circular(20)),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 15),
+                      GestureDetector(
+                        onTap: () {
+                          if (avatar != '')
+                            Navigator.pushNamed(
+                                context, FeedbackRouter.imageView,
+                                arguments: {
+                                  "urlList": [avatar],
+                                  "urlListLength": 1,
+                                  "indexNow": 0
+                                });
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: avatar == ""
+                              ? SvgPicture.network(
+                                  '${EnvConfig.QNHD}avatar/beam/20/${uid}',
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.contain,
+                                  placeholderBuilder: defaultPlaceholderBuilder,
+                                )
+                              : Image.network(
+                                  'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.contain,
+                                ),
+                        ),
+                      ),
+                      SizedBox(height: 4),
                       Text(
-                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickname == '' ? '没名字的微友' : nickname}',
+                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickName == '' ? '没名字的微友' : nickName}',
                         style:
-                            TextUtil.base.w600.NotoSansSC.sp(16).black2A.h(2),
+                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(1.8),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      if (CommonPreferences().isSuper.value ||
-                          CommonPreferences().isStuAdmin.value)
+                      LevelUtil(
+                        level: level,
+                        width: 34,
+                        height: 17,
+                        style: TextUtil.base.white.bold.sp(9),
+                      ),
+                      SizedBox(height: 6),
+                      if (CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value)
                         InkWell(
-                          onTap: () =>
-                              _showResetConfirmDialog(context).then((value) {
+                          onTap: () => _showResetConfirmDialog(context, '昵称')
+                              .then((value) {
                             if (value)
                               FeedbackService.adminResetName(
                                   id: uid,
@@ -334,7 +371,10 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.refresh, size: 18,),
+                              Icon(
+                                Icons.refresh,
+                                size: 18,
+                              ),
                               Text(
                                 '重置昵称',
                                 style: TextUtil.base.w600.NotoSansSC
@@ -344,7 +384,40 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                             ],
                           ),
                         ),
-                      if (CommonPreferences().isSuper.value)
+                      SizedBox(height: 6),
+                      if (CommonPreferences.isSuper.value ||
+                          CommonPreferences.isStuAdmin.value)
+                        InkWell(
+                          onTap: () => _showResetConfirmDialog(context, '头像')
+                              .then((value) {
+                            if (value)
+                              FeedbackService.adminResetAva(
+                                  id: uid,
+                                  onSuccess: () {
+                                    ToastProvider.success('重置成功');
+                                    Navigator.pop(ctx);
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.message);
+                                  });
+                          }),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                size: 18,
+                              ),
+                              Text(
+                                '重置头像',
+                                style: TextUtil.base.w600.NotoSansSC
+                                    .sp(12)
+                                    .black2A,
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (CommonPreferences.isSuper.value)
                         InkWell(
                           onTap: () => Navigator.popAndPushNamed(
                               context, FeedbackRouter.openBox,
@@ -366,51 +439,37 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
                     ],
                   )),
             ),
-            Align(
-              alignment: Alignment(0, -0.2),
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 130),
-                child: SvgPicture.network(
-                  '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-                  width: DateTime.now().month == 4 && DateTime.now().day == 1
-                      ? 36
-                      : 48,
-                  height: DateTime.now().month == 4 && DateTime.now().day == 1
-                      ? 36
-                      : 48,
-                  fit: BoxFit.contain,
-                  placeholderBuilder: defaultPlaceholderBuilder,
-                ),
-              ),
-            ),
           ],
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.only(right: 4),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15)),
-          child: SvgPicture.network(
-            '${EnvConfig.QNHD}avatar/beam/20/${nickname}',
-            width:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            height:
-                DateTime.now().month == 4 && DateTime.now().day == 1 ? 18 : 24,
-            fit: BoxFit.contain,
-            placeholderBuilder: defaultPlaceholderBuilder,
-          ),
-        ),
+      child: ClipRRect(
+        // 保证圆角
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+        child: avatar == ""
+            ? SvgPicture.network(
+                '${EnvConfig.QNHD}avatar/beam/20/${uid}',
+                width: 34.w,
+                height: 34.w,
+                fit: BoxFit.cover,
+                placeholderBuilder: defaultPlaceholderBuilder,
+              )
+            : Image.network(
+                'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                width: 34.w,
+                height: 32.w,
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
 
-  Future<bool> _showResetConfirmDialog(BuildContext context) {
+  Future<bool> _showResetConfirmDialog(BuildContext context, String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return LakeDialogWidget(
-              title: '重置昵称',
-              content: Text('您确定要重置该用户昵称吗？'),
+              title: '重置$quote',
+              content: Text('您确定要重置该用户$quote吗？'),
               cancelText: "取消",
               confirmTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,

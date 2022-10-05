@@ -1,14 +1,18 @@
 // @dart = 2.12
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class UmengCommonSdk {
   static const MethodChannel _channel =
       const MethodChannel('com.twt.service/umeng_statistics');
 
   static Future<void> initCommon() async {
-    await _channel.invokeMethod('initCommon').catchError(printError);
+    if (Platform.isAndroid)
+      await _channel.invokeMethod('initCommon').catchError(printError);
+    // iOS自动初始化
   }
 
   static void onEvent(String event, Map<String, dynamic> properties) {
@@ -17,28 +21,28 @@ class UmengCommonSdk {
   }
 
   static void onPageStart(String viewName) {
-    _channel.invokeMethod('onPageStart', {"page": viewName}).catchError(printError);
+    _channel
+        .invokeMethod('onPageStart', {"page": viewName}).catchError(printError);
   }
 
   static void onPageEnd(String viewName) {
-    _channel.invokeMethod('onPageEnd', {"page": viewName}).catchError(printError);
+    _channel
+        .invokeMethod('onPageEnd', {"page": viewName}).catchError(printError);
   }
 
   static void reportError(String error) {
-    _channel.invokeMethod('reportError', {"error": error}).catchError(printError);
+    _channel
+        .invokeMethod('reportError', {"error": error}).catchError(printError);
   }
 
   static void onProfileSignIn(String userID) {
-    _channel.invokeMethod('onProfileSignIn', {"userID": userID}).catchError(printError);
+    _channel.invokeMethod(
+        'onProfileSignIn', {"userID": userID}).catchError(printError);
   }
 
   static void onProfileSignOff() {
     _channel.invokeMethod('onProfileSignOff').catchError(printError);
   }
 
-  static void printError(dynamic e){
-    print("UmengCommonSdk error: ");
-    print("$e");
-    print("------------------------");
-  }
+  static void printError(e, s) => Logger.reportError(e, s);
 }

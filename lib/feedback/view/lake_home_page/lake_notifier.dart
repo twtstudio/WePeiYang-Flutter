@@ -1,8 +1,7 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/network/dio_abstract.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -16,7 +15,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences().lakeToken.value,
+      CommonPreferences.lakeToken.value,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -101,9 +100,9 @@ class LakeModel extends ChangeNotifier {
   List<WPYTab> backupList = [WPYTab()];
   int currentTab = 0;
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
+  bool barExtended = true;
   double opacity = 0;
   TabController tabController;
-  ScrollController nController;
   int sortSeq = 1;
 
   Future<void> initTabList() async {
@@ -133,23 +132,13 @@ class LakeModel extends ChangeNotifier {
   }
 
   void onFeedbackOpen() {
-    if (!scroll && nController.offset != 0) {
-      scroll = true;
-      nController
-          .animateTo(0,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
+    barExtended = true;
+    notifyListeners();
   }
 
-  void onClose() {
-    if (!scroll && nController.offset != nController.position.maxScrollExtent) {
-      scroll = true;
-      nController
-          .animateTo(nController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 160), curve: Curves.decelerate)
-          .then((value) => scroll = false);
-    }
+  void onFeedbackClose() {
+    barExtended = false;
+    notifyListeners();
   }
 
   void initLakeArea(int index, WPYTab tab, RefreshController rController,
@@ -159,11 +148,14 @@ class LakeModel extends ChangeNotifier {
     lakeAreas[index] = lakeArea;
   }
 
-  void fillLakeArea(
+  void fillLakeAreaAndInitPostList(
       int index, RefreshController rController, ScrollController sController) {
     LakeArea lakeArea = new LakeArea._(lakeAreas[index].tab, {}, rController,
         sController, LakePageStatus.unload);
     lakeAreas[index] = lakeArea;
+    initPostList(index, success: () {}, failure: (e) {
+      ToastProvider.error(e.error.toString());
+    });
   }
 
   void quietUpdateItem(Post post, WPYTab tab) {
@@ -203,15 +195,19 @@ class LakeModel extends ChangeNotifier {
         notifyListeners();
       },
       onFailure: (e) {
+        FeedbackService.getToken();
         failure?.call(e);
       },
     );
   }
 
-  checkTokenAndGetTabList({OnSuccess success, OnFailure failure}) async {
+  checkTokenAndGetTabList(FbDepartmentsProvider provider,
+      {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
       onResult: (token) {
+        provider.initDepartments();
         initTabList();
+        success?.call();
       },
       onFailure: (e) {
         ToastProvider.error('获取分区失败');
@@ -221,15 +217,15 @@ class LakeModel extends ChangeNotifier {
     );
   }
 
-  checkTokenAndGetPostList(FbDepartmentsProvider provider, int index, int mode,
+  checkTokenAndInitPostList(int index,
       {OnSuccess success, OnFailure failure}) async {
     await FeedbackService.getToken(
-      onResult: (token) {
-        provider.initDepartments();
+      onResult: (_) {
         initPostList(index);
+        success?.call();
       },
       onFailure: (e) {
-        lakeAreas[index].status = LakePageStatus.error;
+        ToastProvider.error('获取分区失败');
         failure?.call(e);
         notifyListeners();
       },
@@ -254,14 +250,15 @@ class LakeModel extends ChangeNotifier {
         _addOrUpdateItems(postList, index);
         lakeAreas[index].currentPage = 1;
         lakeAreas[index].status = LakePageStatus.idle;
-        success?.call();
         notifyListeners();
+        success?.call();
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
+        checkTokenAndInitPostList(index);
         lakeAreas[index].status = LakePageStatus.error;
-        failure?.call(e);
         notifyListeners();
+        failure?.call(e);
       },
     );
   }
@@ -273,8 +270,8 @@ class LakeModel extends ChangeNotifier {
       RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
       if (regExp.hasMatch(weCo)) {
         var id = RegExp(r'\d{1,}').stringMatch(weCo);
-        if (CommonPreferences().feedbackLastWeCo.value != id &&
-            CommonPreferences().lakeToken.value != "") {
+        if (CommonPreferences.feedbackLastWeCo.value != id &&
+            CommonPreferences.lakeToken.value != "") {
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -291,9 +288,9 @@ class LakeModel extends ChangeNotifier {
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(context, FeedbackRouter.detail,
                         arguments: post);
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   } else {
-                    CommonPreferences().feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastWeCo.value = id;
                   }
                 });
               },

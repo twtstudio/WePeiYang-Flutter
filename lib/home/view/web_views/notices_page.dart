@@ -21,7 +21,7 @@ class _NoticesPageState extends WbyWebViewState {
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     ///测试qpi，正式为
-    return 'https://qnhd.twt.edu.cn/message/#/?type=department&token=${CommonPreferences().lakeToken.value}';
+    return 'https://qnhd.twt.edu.cn/message/#/?type=department&token=${CommonPreferences.lakeToken.value}';
     // return 'pamaforce.xyz:12000/#/?type=department&token=${CommonPreferences().lakeToken.value}';
   }
 }

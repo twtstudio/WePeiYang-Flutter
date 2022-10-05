@@ -1,4 +1,6 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/open_the_box.dart';
@@ -35,8 +37,8 @@ class FeedbackRouter {
   static String summary = 'feedback/summary';
   static String haitang = 'feedback/haitang';
   static String openBox = 'feedback/openbox';
-
-  static final Map<String, Widget Function(Object arguments)> routers = {
+  static String collection = 'feedback/collection';
+  static final Map<String, Widget Function(dynamic arguments)> routers = {
     home: (_) => HomePage(),
     profile: (_) => ProfilePage(),
     detail: (args) => DetailPage(args),
@@ -46,12 +48,13 @@ class FeedbackRouter {
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     imageView: (_) => ImageViewPage(),
-    localImageView:(_) => LocalImageViewPage(),
+    localImageView: (_) => LocalImageViewPage(),
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
-    summary:(_) => FeedbackSummaryPage(),
-    haitang:(args) => FestivalPage(args),
-    openBox:(args) => OpenBox(args),
+    summary: (_) => FeedbackSummaryPage(),
+    haitang: (args) => FestivalPage(args),
+    openBox: (args) => OpenBox(args),
+    collection: (_) => CollectionPage(),
   };
 }

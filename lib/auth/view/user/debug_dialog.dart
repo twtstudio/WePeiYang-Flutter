@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/font_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class DebugDialog extends Dialog {
-  static final _hintStyle = FontManager.YaQiHei.copyWith(
-      fontSize: 15,
-      color: Color.fromRGBO(98, 103, 123, 1),
-      fontWeight: FontWeight.bold,
-      decoration: TextDecoration.none);
+  static final _hintStyle = TextUtil.base.bold.noLine
+      .sp(15)
+      .customColor(Color.fromRGBO(98, 103, 123, 1));
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +22,9 @@ class DebugDialog extends Dialog {
           children: [
             SizedBox(height: 20),
             Text("确定要进入日志页面吗？",
-                style: FontManager.YaHeiRegular.copyWith(
-                    color: Color.fromRGBO(79, 88, 107, 1),
-                    fontSize: 13,
-                    fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.none)),
+                style: TextUtil.base.normal.noLine
+                    .sp(13)
+                    .customColor(Color.fromRGBO(79, 88, 107, 1))),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

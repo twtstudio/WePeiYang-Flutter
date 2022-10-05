@@ -1,3 +1,4 @@
+// @dart = 2.12
 class GPABean {
   Total total;
   List<GPAStat> stats;
@@ -6,8 +7,8 @@ class GPABean {
 
   GPABean.fromJson(Map<String, dynamic> map)
       : total = Total.fromJson(map['total']),
-        stats = []..addAll(
-            (map['stats'] as List ?? []).map((e) => GPAStat.fromJson(e)));
+        stats = []
+          ..addAll((map['stats'] as List).map((e) => GPAStat.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
         'total': total.toJson(),
@@ -32,21 +33,24 @@ class Total {
 }
 
 class GPAStat {
+  String term; // 学期名，1H22、2H22代表22年第1、2学期
   double weighted; // 每学期加权
   double gpa; // 每学期绩点
   double credits; // 每学期学分
   List<GPACourse> courses;
 
-  GPAStat(this.weighted, this.gpa, this.credits, this.courses);
+  GPAStat(this.term, this.weighted, this.gpa, this.credits, this.courses);
 
   GPAStat.fromJson(Map<String, dynamic> map)
-      : weighted = map['weighted'],
+      : term = map['term'],
+        weighted = map['weighted'],
         gpa = map['gpa'],
         credits = map['credits'],
-        courses = []..addAll(
-            (map['courses'] as List ?? []).map((e) => GPACourse.fromJson(e)));
+        courses = []
+          ..addAll((map['courses'] as List).map((e) => GPACourse.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
+        'term': term,
         'weighted': weighted,
         'gpa': gpa,
         'credits': credits,

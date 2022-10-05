@@ -1,9 +1,9 @@
 import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -15,17 +15,17 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
-import 'components/widget/pop_menu_shape.dart';
 import 'lake_home_page/lake_notifier.dart';
 
 enum DetailPageStatus {
@@ -45,19 +45,19 @@ class DetailPage extends StatefulWidget {
   _DetailPageState createState() => _DetailPageState(this.post);
 }
 
-class _DetailPageState extends State<DetailPage>
-    with SingleTickerProviderStateMixin {
+class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   Post post;
   DetailPageStatus status;
   List<Floor> _commentList;
   List<Floor> _officialCommentList;
+  bool _showPostCard = true;
   bool _bottomIsOpen;
   int currentPage = 1;
   int rating = 0;
   Widget topCard;
   final onlyOwner = ValueNotifier<int>(0);
   final order =
-      ValueNotifier<int>(CommonPreferences().feedbackFloorSortType.value);
+      ValueNotifier<int>(CommonPreferences.feedbackFloorSortType.value);
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
@@ -66,18 +66,30 @@ class _DetailPageState extends State<DetailPage>
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
 
+  /// iOS显示拉黑按钮
+  bool _showBlockButton = false;
+
   _DetailPageState(this.post);
 
   _onRefresh() {
     currentPage = 1;
     _refreshController.resetNoData();
+    setState(() {
+      _showPostCard = false;
+    });
     _commentList.clear();
     _initPostAndComments(
       onSuccess: (comments) {
+        setState(() {
+          _showPostCard = true;
+        });
         _commentList = comments;
         _refreshController.refreshCompleted();
       },
       onFail: () {
+        setState(() {
+          _showPostCard = true;
+        });
         _refreshController.refreshFailed();
       },
     );
@@ -111,44 +123,6 @@ class _DetailPageState extends State<DetailPage>
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    status = DetailPageStatus.loading;
-    context.read<NewFloorProvider>().inputFieldEnabled = false;
-    context.read<NewFloorProvider>().replyTo = 0;
-    _officialCommentList = [];
-    _commentList = [];
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /// 如果是从通知栏点进来的
-      if (post == null || post.isLike == null || post.isOwner == null) {
-        _initPostAndComments(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.error;
-          });
-        });
-      } else {
-        _getOfficialComment();
-        _getComments(
-            onSuccess: (comments) {
-              _commentList.addAll(comments);
-            },
-            onFail: () {},
-            current: currentPage);
-        status = DetailPageStatus.idle;
-      }
-    });
-    order.addListener(() {
-      _refreshController.requestRefresh();
-      CommonPreferences().feedbackFloorSortType.value = order.value;
-    });
-  }
-
   // 逻辑有点问题
   _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
     _initPost(onFail).then((success) {
@@ -161,6 +135,15 @@ class _DetailPageState extends State<DetailPage>
         );
       }
     });
+  }
+
+  _initCommentsOnly({Function(List<Floor>) onSuccess, Function onFail}) {
+    _getOfficialComment(onFail: onFail);
+    _getComments(
+      onSuccess: onSuccess,
+      onFail: onFail,
+      current: 1,
+    );
   }
 
   Future<bool> _initPost([Function onFail]) async {
@@ -202,6 +185,8 @@ class _DetailPageState extends State<DetailPage>
   }
 
   _getOfficialComment({Function onSuccess, Function onFail}) {
+    // 非官方贴不请求
+    if (widget.post.type != 1) return;
     FeedbackService.getOfficialComment(
       id: post.id,
       onSuccess: (floor) {
@@ -214,6 +199,50 @@ class _DetailPageState extends State<DetailPage>
         ToastProvider.error(e.error.toString());
       },
     );
+  }
+
+  _getIOSShowBlock() async {
+    _showBlockButton = await FeedbackService.getIOSShowBlock();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    status = DetailPageStatus.loading;
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
+    _officialCommentList = [];
+    _commentList = [];
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      /// 如果是从通知栏点进来的
+      if (post == null || post.isLike == null || post.isOwner == null) {
+        _initCommentsOnly(onSuccess: (comments) {
+          _commentList.addAll(comments);
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
+        }, onFail: () {
+          setState(() {
+            status = DetailPageStatus.error;
+          });
+        });
+      } else {
+        _getOfficialComment();
+        _getComments(
+            onSuccess: (comments) {
+              _commentList.addAll(comments);
+            },
+            onFail: () {},
+            current: currentPage);
+        status = DetailPageStatus.idle;
+      }
+    });
+    _getIOSShowBlock();
+    order.addListener(() {
+      _refreshController.requestRefresh();
+      CommonPreferences.feedbackFloorSortType.value = order.value;
+    });
   }
 
   @override
@@ -242,7 +271,7 @@ class _DetailPageState extends State<DetailPage>
       } else {
         body = ListView(
           children: [
-            PostCard.detail(post),
+            PostCardNormal(post, outer: false),
             SizedBox(
               height: 120,
               child: Center(child: Loading()),
@@ -256,107 +285,65 @@ class _DetailPageState extends State<DetailPage>
           if (i == 0) {
             return Column(
               children: [
-                PostCard.detail(post),
-                SizedBox(
-                  height: 10,
-                ),
+                if (_showPostCard) PostCardNormal(post, outer: false),
+                const SizedBox(height: 10),
                 Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          '回复 ' + post.commentCount.toString(),
-                          style:
-                              TextUtil.base.ProductSans.black2A.medium.sp(18),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 100,
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: onlyOwner,
-                        builder: (context, value, _) {
-                          return GestureDetector(
-                            onTap: () {
-                              onlyOwner.value = 1 - onlyOwner.value;
-                              _refreshController.requestRefresh();
-                            },
-                            child: value == 1
-                                ? Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorUtil.boldTag54,
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: ColorUtil.boldTag54, //边框颜色
-                                        width: 1, //宽度
-                                      ),
-                                    ),
-                                    child: Text('  只看楼主  ',
-                                        style: TextUtil.base.white.w500.sp(14)),
-                                  )
-                                : Container(
-                                    decoration: BoxDecoration(
-                                      color: ColorUtil.whiteF8Color,
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: ColorUtil.boldTag54, //边框颜色
-                                        width: 1, //宽度
-                                      ),
-                                    ),
-                                    child: Text('  只看楼主  ',
-                                        style:
-                                            TextUtil.base.black2A.w500.sp(14)),
+                  children: [
+                    const SizedBox(width: 15),
+                    GestureDetector(
+                      onTap: () {
+                        order.value = 1;
+                      },
+                      child: Text('时间正序',
+                          style: order.value == 1
+                              ? TextUtil.base.black2A.w700.sp(14).blue2C
+                              : TextUtil.base.black2A.w500.sp(14)),
+                    ),
+                    const SizedBox(width: 15),
+                    GestureDetector(
+                      onTap: () {
+                        order.value = 0;
+                      },
+                      child: Text('时间倒序',
+                          style: order.value == 0
+                              ? TextUtil.base.black2A.w700.sp(14).blue2C
+                              : TextUtil.base.black2A.w500.sp(14)),
+                    ),
+                    Spacer(),
+                    ValueListenableBuilder(
+                      valueListenable: onlyOwner,
+                      builder: (context, value, _) {
+                        return GestureDetector(
+                          onTap: () {
+                            onlyOwner.value = 1 - onlyOwner.value;
+                            _refreshController.requestRefresh();
+                          },
+                          child: value == 1
+                              ? Container(
+                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
+                                  decoration: BoxDecoration(
+                                    color: ColorUtil.blue2CColor,
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
-                          );
-                        },
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(right: 20),
-                        child: PopupMenuButton(
-                            shape: RacTangle(),
-                            offset: Offset(0, 0),
-                            child: Image.asset(
-                              'assets/images/lake_butt_icons/menu.png',
-                              width: 20,
-                            ),
-                            onSelected: (value) async {
-                              if (value == "时间正序") {
-                                order.value = 1;
-                              } else if (value == '时间倒序') {
-                                order.value = 0;
-                              }
-                            },
-                            itemBuilder: (context) {
-                              return <PopupMenuItem<String>>[
-                                PopupMenuItem<String>(
-                                  value: '时间正序',
-                                  child: Center(
-                                    child: Text('    时间正序',
-                                        style: order.value == 1
-                                            ? TextUtil.base.black2A.w700.sp(14)
-                                            : TextUtil.base.black2A.w500
-                                                .sp(14)),
+                                  child: Text('  只看楼主  ',
+                                      style: TextUtil.base.white.w400.sp(14)),
+                                )
+                              : Container(
+                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
+                                  decoration: BoxDecoration(
+                                    color: ColorUtil.whiteF8Color,
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
+                                  child: Text('  只看楼主  ',
+                                      style: TextUtil.base.black2A.w400.sp(14)),
                                 ),
-                                PopupMenuItem<String>(
-                                  value: '时间倒序',
-                                  child: Center(
-                                    child: Text('    时间倒序',
-                                        style: order.value == 0
-                                            ? TextUtil.base.black2A.w700.sp(14)
-                                            : TextUtil.base.black2A.w500
-                                                .sp(14)),
-                                  ),
-                                ),
-                              ];
-                            }),
-                      ),
-                    ]),
-                SizedBox(
-                  height: 10,
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 15),
+                  ],
                 ),
-                //topCard,
+                SizedBox(height: 10), //topCard,
               ],
             );
           }
@@ -379,8 +366,7 @@ class _DetailPageState extends State<DetailPage>
                     },
                   )
                 : i == 1
-
-                    ///楼中楼显示
+                    // 楼中楼显示
                     ? OfficialReplyCard.subFloor(
                         tag: "",
                         comment: data,
@@ -392,7 +378,7 @@ class _DetailPageState extends State<DetailPage>
                           refresh.call(list);
                         },
                       )
-                    : SizedBox(width: 0, height: 0);
+                    : SizedBox();
           } else {
             var data = _commentList[i - _officialCommentList.length];
             return NCommentCard(
@@ -403,6 +389,7 @@ class _DetailPageState extends State<DetailPage>
               isSubFloor: false,
               isFullView: false,
               type: post.type,
+              showBlockButton: _showBlockButton,
             );
           }
         },
@@ -447,27 +434,26 @@ class _DetailPageState extends State<DetailPage>
               builder: (BuildContext context, value, Widget child) {
             return AnimatedSize(
               clipBehavior: Clip.antiAlias,
-              vsync: this,
               duration: Duration(milliseconds: 300),
               curve: Curves.easeOutSine,
               child: Container(
                 margin: EdgeInsets.only(top: 4),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0, 1),
-                          blurRadius: 6,
-                          spreadRadius: 0),
-                    ],
-                    color: ColorUtil.whiteF8Color),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 1),
+                        blurRadius: 6,
+                        spreadRadius: 0),
+                  ],
+                  color: Colors.white,
+                ),
                 child: Column(
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Column(
@@ -577,9 +563,9 @@ class _DetailPageState extends State<DetailPage>
                                             .focusNode);
                                   },
                                   child: Container(
-                                      height: 22,
+                                      height: 36,
                                       margin:
-                                          EdgeInsets.fromLTRB(16, 20, 0, 20),
+                                          EdgeInsets.fromLTRB(16, 13, 0, 13),
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
@@ -595,8 +581,8 @@ class _DetailPageState extends State<DetailPage>
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(11),
-                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(18),
+                                        color: ColorUtil.whiteF8Color,
                                       )),
                                 ),
                               ),
@@ -604,7 +590,7 @@ class _DetailPageState extends State<DetailPage>
                           ),
                         ),
                         if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                          PostCard.outSide(post),
+                          BottomLikeFavDislike(post),
                       ],
                     ),
                   ],
@@ -617,7 +603,10 @@ class _DetailPageState extends State<DetailPage>
       body = Stack(
         children: [
           Column(
-            children: [Expanded(child: mainList), SizedBox(height: 60)],
+            children: [
+              Expanded(child: mainList),
+              SizedBox(height: 60),
+            ],
           ),
           bottomInput
         ],
@@ -626,139 +615,150 @@ class _DetailPageState extends State<DetailPage>
       body = Center(child: Text("error!"));
     }
 
-    var menuButton = PopupMenuButton(
-
-        ///改成了用PopupMenuButton的方式，方便偏移的处理
-        shape: RacTangle(),
-        offset: Offset(0, 20.w),
-        child: SvgPicture.asset(
-            'assets/svg_pics/lake_butt_icons/more_vertical.svg'),
-        onSelected: (value) async {
-          if (value == "举报") {
-            Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(widget.post.id, true));
-          } else if (value == '删除') {
-            bool confirm = await _showDeleteConfirmDialog('删除');
-            if (confirm) {
-              FeedbackService.deletePost(
-                id: widget.post.id,
-                onSuccess: () {
-                  context
-                      .read<LakeModel>()
-                      .lakeAreas[context
-                          .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab]
-                          .id]
-                      .refreshController
-                      .requestRefresh();
-                  ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.of(context).pop(post);
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            }
-          } else if (value == '删帖') {
-            bool confirm = await _showDeleteConfirmDialog('摧毁');
-            if (confirm) {
-              FeedbackService.adminDeletePost(
-                id: widget.post.id,
-                onSuccess: () {
-                  context
-                      .read<LakeModel>()
-                      .lakeAreas[context
-                          .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab]
-                          .id]
-                      .refreshController
-                      .requestRefresh();
-                  ToastProvider.success(S.current.feedback_delete_success);
-                  Navigator.of(context).pop(post);
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            }
-          } else if (value == '加精') {
-            bool confirm = await _showDeleteConfirmDialog('加精');
-            if (confirm) {
-              bool doubleConfirm = await _showAddNumDialog();
-              if (doubleConfirm) Navigator.of(context).pop(post);
-            }
-          }
-        },
-        itemBuilder: (context) {
-          return <PopupMenuItem<String>>[
-            if (!(widget.post.isOwner ?? false))
-              PopupMenuItem<String>(
-                value: '举报',
-                child: Center(
-                  child:
-                      new Text('举报', style: TextUtil.base.black2A.w500.sp(14)),
-                ),
-              ),
-            if (widget.post.isOwner ?? false)
-              PopupMenuItem<String>(
-                value: '删除',
-                child: Center(
-                  child:
-                      new Text('删除', style: TextUtil.base.black2A.w500.sp(14)),
-                ),
-              ),
-            if ((CommonPreferences().isSuper.value ||
-                    CommonPreferences().isStuAdmin.value) ??
-                false)
-              PopupMenuItem<String>(
-                value: '删帖',
-                child: Center(
-                  child: new Text('删帖',
-                      style: TextUtil.base.dangerousRed.w600.sp(14)),
-                ),
-              ),
-            if ((CommonPreferences().isSuper.value ||
-                    CommonPreferences().isStuAdmin.value) ??
-                false)
-              PopupMenuItem<String>(
-                value: '加精',
-                child: Center(
-                  child: new Text('加精',
-                      style: TextUtil.base.mainOrange.w600.sp(14)),
-                ),
-              ),
-          ];
-        });
-    var shareButton = IconButton(
-        icon: Icon(Icons.share, size: 23, color: ColorUtil.boldTextColor),
+    var menuButton = IconButton(
+        icon: SvgPicture.asset(
+          'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
+          width: 25,
+          color: Colors.black,
+        ),
         onPressed: () {
-          if (!_refreshController.isLoading && !_refreshController.isRefresh) {
-            String weCo =
-                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-            ClipboardData data = ClipboardData(text: weCo);
-            Clipboard.setData(data);
-            CommonPreferences().feedbackLastWeCo.value = post.id.toString();
-            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-          }
+          showCupertinoModalPopup(
+            context: context,
+            builder: (context) {
+              return CupertinoActionSheet(
+                actions: [
+                  // 拉黑按钮
+                  if (Platform.isIOS && _showBlockButton)
+                    // 分享按钮
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        ToastProvider.success('拉黑用户成功');
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '拉黑',
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
+                  // 分享按钮
+                  CupertinoActionSheetAction(
+                    onPressed: () {
+                      if (!_refreshController.isLoading &&
+                          !_refreshController.isRefresh) {
+                        String weCo =
+                            '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                        ClipboardData data = ClipboardData(text: weCo);
+                        Clipboard.setData(data);
+                        CommonPreferences.feedbackLastWeCo.value =
+                            post.id.toString();
+                        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                        FeedbackService.postShare(
+                            id: post.id.toString(),
+                            type: 0,
+                            onSuccess: () {},
+                            onFailure: () {});
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '分享',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                  (widget.post.isOwner == false)
+                      ? CupertinoActionSheetAction(
+                          onPressed: () {
+                            Navigator.pushNamed(context, FeedbackRouter.report,
+                                arguments:
+                                    ReportPageArgs(widget.post.id, true));
+                          },
+                          child: Text(
+                            '举报',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          ))
+                      : CupertinoActionSheetAction(
+                          onPressed: () async {
+                            bool confirm = await _showDeleteConfirmDialog('删除');
+                            if (confirm) {
+                              FeedbackService.deletePost(
+                                id: widget.post.id,
+                                onSuccess: () {
+                                  final lake = context.read<LakeModel>();
+                                  lake
+                                      .lakeAreas[
+                                          lake.tabList[lake.currentTab].id]
+                                      .refreshController
+                                      .requestRefresh();
+                                  ToastProvider.success(
+                                      S.current.feedback_delete_success);
+                                  Navigator.of(context).pop(post);
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
+                                },
+                              );
+                            }
+                          },
+                          child: Text(
+                            '删除',
+                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                                .sp(16),
+                          )),
+                  CupertinoActionSheetAction(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '收藏',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                ],
+                cancelButton: CupertinoActionSheetAction(
+                  // 取消按钮
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    '取消',
+                    style: TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                  ),
+                ),
+              );
+            },
+          );
         });
+    var manageButton = IconButton(
+        icon: Icon(Icons.admin_panel_settings,
+            size: 23, color: ColorUtil.black2AColor),
+        onPressed: () => _showManageDialog());
 
     var appBar = AppBar(
+      toolbarHeight: 40,
       titleSpacing: 0,
-      backgroundColor: CommonPreferences().isSkinUsed.value
-          ? Color(CommonPreferences().skinColorB.value)
-          : ColorUtil.greyF7F8Color,
+      backgroundColor: Colors.white,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
+        icon: Icon(
+          CupertinoIcons.back,
+          color: Color(0XFF252525),
+        ),
         onPressed: () => Navigator.pop(context, post),
       ),
-      actions: [shareButton, menuButton],
+      actions: [
+        if ((CommonPreferences.isSuper.value ||
+                CommonPreferences.isSchAdmin.value) ??
+            false)
+          manageButton,
+        menuButton,
+        SizedBox(width: 10)
+      ],
       title: InkWell(
         onTap: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             child: Text(
               post.type == 1 ? '校务提问：实名' : '冒泡',
               style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
@@ -767,7 +767,7 @@ class _DetailPageState extends State<DetailPage>
         ),
       ),
       elevation: 0,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return WillPopScope(
@@ -775,14 +775,31 @@ class _DetailPageState extends State<DetailPage>
         Navigator.pop(context, post);
         return true;
       },
-      child: Scaffold(
-        backgroundColor: CommonPreferences().isSkinUsed.value
-            ? Color(CommonPreferences().skinColorB.value)
-            : ColorUtil.backgroundColor,
-        appBar: appBar,
-        body: body,
+      child: GestureDetector(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          appBar: appBar,
+          body: body,
+        ),
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          if (details.delta.dx > 20) {
+            Navigator.pop(context, post);
+          }
+        },
       ),
     );
+  }
+
+  Future<bool> _showManageDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return Stack(
+            children: [
+              ManagerPopUp(post: post),
+            ],
+          );
+        });
   }
 
   Future<bool> _showDeleteConfirmDialog(String quote) {
@@ -794,65 +811,24 @@ class _DetailPageState extends State<DetailPage>
               content: Text('您确定要$quote这条冒泡吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600,
               confirmText: "确认",
+              gradient: LinearGradient(
+                  colors: [
+                    Color(0xFF2C7EDF),
+                    Color(0xFFA6CFFF),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  // 在0.7停止同理
+                  stops: [0, 0.99]),
               cancelFun: () {
                 Navigator.of(context).pop();
               },
               confirmFun: () {
                 Navigator.of(context).pop(true);
-              });
-        });
-  }
-
-  Future<bool> _showAddNumDialog() {
-    TextEditingController tc = new TextEditingController();
-    return showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return LakeDialogWidget(
-              title: '加精数值',
-              content: Column(
-                children: [
-                  Text('0为取消加精，只能为0~30000'),
-                  TextField(controller: tc, keyboardType: TextInputType.number),
-                ],
-              ),
-              cancelText: "取消",
-              confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-              cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
-              confirmText: "确认",
-              cancelFun: () {
-                Navigator.of(context).pop();
-              },
-              confirmFun: () async {
-                if (tc != null && tc.text != '') {
-                  await FeedbackService.adminTopPost(
-                    id: widget.post.id,
-                    hotIndex: tc.text,
-                    onSuccess: () {
-                      ToastProvider.success('加精成功');
-                      context
-                          .read<LakeModel>()
-                          .lakeAreas[context
-                              .read<LakeModel>()
-                              .tabList[context.read<LakeModel>().currentTab]
-                              .id]
-                          .refreshController
-                          .requestRefresh();
-                      Navigator.of(context).pop(post);
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error(e.error.toString());
-                    },
-                  );
-                  Navigator.of(context).pop(true);
-                } else
-                  ToastProvider.error('请输入数值！');
               });
         });
   }
@@ -1156,5 +1132,303 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
               ),
       ),
     );
+  }
+}
+
+class ManagerPopUp extends StatefulWidget {
+  @required
+  final Post post;
+
+  @required
+  const ManagerPopUp({Key key, this.post}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _ManagerPopUpState();
+  }
+}
+
+class _ManagerPopUpState extends State<ManagerPopUp>
+    with SingleTickerProviderStateMixin {
+  _ManagerPopUpState();
+
+  int originTag;
+
+  static const originTagMap = {
+    'top': 0,
+    'recommend': 1,
+    'theme': 2,
+  };
+
+  @override
+  void initState() {
+    originTag = originTagMap[widget.post.eTag] ?? 3;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        context
+            .read<LakeModel>()
+            .lakeAreas[context
+                .read<LakeModel>()
+                .tabList[context.read<LakeModel>().currentTab]
+                .id]
+            .refreshController
+            .requestRefresh();
+        return true;
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(height: 4),
+              Text(
+                ' 帖子：' + widget.post.title,
+                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+              ),
+              Text(
+                ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
+                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+              ),
+              if (CommonPreferences.isSuper.value)
+                AnimatedOption(
+                    origin: false,
+                    id: widget.post.uid,
+                    color1: Color.fromRGBO(95, 127, 0, 1.0),
+                    color2: Color.fromRGBO(8, 96, 0, 1.0),
+                    title: '开盒楼主',
+                    action: 200),
+              if (originTag != 3)
+                AnimatedOption(
+                    origin: false,
+                    id: widget.post.id,
+                    color1: Color.fromRGBO(131, 130, 130, 1.0),
+                    color2: Color.fromRGBO(107, 107, 107, 1.0),
+                    title: '恢复正常帖子',
+                    action: 0),
+              AnimatedOption(
+                  origin: originTag == 0,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(208, 104, 160, 1.0),
+                  color2: Color.fromRGBO(134, 103, 111, 1.0),
+                  title: originTag == 0 ? '× 已置顶' : '将此帖置顶'),
+              AnimatedOption(
+                  origin: originTag == 1,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(190, 163, 91, 1.0),
+                  color2: Color.fromRGBO(157, 129, 113, 1.0),
+                  title: originTag == 1 ? '× 已加精' : '加入精华帖',
+                  action: 1),
+              AnimatedOption(
+                  origin: originTag == 2,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(124, 179, 216, 1.0),
+                  color2: Color.fromRGBO(72, 80, 117, 1.0),
+                  title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
+                  action: 2),
+              AnimatedOption(
+                  origin: false,
+                  id: widget.post.id,
+                  color1: Color.fromRGBO(43, 16, 16, 1.0),
+                  color2: Color.fromRGBO(42, 28, 49, 1.0),
+                  title: '⚠ 删帖',
+                  action: 100),
+            ]),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14), color: Colors.white),
+      ),
+    );
+  }
+}
+
+class AnimatedOption extends StatefulWidget {
+  @required
+  final bool origin;
+  final Color color1;
+  final Color color2;
+  final String title;
+  final int id;
+  final int action;
+
+  @required
+  const AnimatedOption(
+      {Key key,
+      this.origin,
+      this.action,
+      this.color1,
+      this.color2,
+      this.title,
+      this.id})
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _AnimatedOptionState(origin);
+  }
+}
+
+class _AnimatedOptionState extends State<AnimatedOption>
+    with SingleTickerProviderStateMixin {
+  bool isSelected = false;
+  bool origin;
+  TextEditingController tc;
+
+  _AnimatedOptionState(this.origin);
+
+  @override
+  void initState() {
+    tc = new TextEditingController();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (origin) return;
+        setState(() {
+          isSelected = !isSelected;
+        });
+      },
+      child: AnimatedSize(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.easeOutQuad,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(
+              horizontal: 20, vertical: isSelected ? 12 : 20),
+          margin: EdgeInsets.only(top: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment(0.4, 1.6),
+              colors: [widget.color1, widget.color2],
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.title,
+                style: TextUtil.base.white.medium.sp(20),
+              ),
+              if (isSelected && widget.title == '将此帖置顶')
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    '0为取消置顶，只能为0~30000',
+                    style: TextUtil.base.white.medium.sp(10),
+                  ),
+                ),
+              if (isSelected && widget.title == '将此帖置顶')
+                TextField(
+                  controller: tc,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelStyle: TextStyle().white.NotoSansSC.w400.sp(16),
+                    hintStyle: TextStyle().white.NotoSansSC.w800.sp(16),
+                    hintText: '置顶数值',
+                    contentPadding: const EdgeInsets.all(0),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: TextUtil.base.white.medium.sp(16),
+                ),
+              if (isSelected && widget.title == '将此帖置顶')
+                Container(
+                    height: 1.5, width: double.infinity, color: Colors.white),
+              if (isSelected)
+                InkWell(
+                  onTap: _inkWellOnTap,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          '确认',
+                          style: TextUtil.base.white.medium.sp(18),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  _inkWellOnTap() async {
+    if (widget.action == null) {
+      if (tc != null && tc.text != '') {
+        await FeedbackService.adminTopPost(
+          id: widget.id,
+          hotIndex: tc.text,
+          onSuccess: () {
+            ToastProvider.success('加精成功');
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+          },
+        );
+        Navigator.of(context).pop(true);
+      } else {
+        ToastProvider.error('请输入数值！');
+      }
+    } else if (widget.action == 100) {
+      FeedbackService.adminDeletePost(
+        id: widget.id.toString(),
+        onSuccess: () {
+          context
+              .read<LakeModel>()
+              .lakeAreas[context
+                  .read<LakeModel>()
+                  .tabList[context.read<LakeModel>().currentTab]
+                  .id]
+              .refreshController
+              .requestRefresh();
+          ToastProvider.success(S.current.feedback_delete_success);
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        },
+        onFailure: (e) {
+          Navigator.of(context).pop();
+          ToastProvider.error(e.error.toString());
+        },
+      );
+    } else if (widget.action == 200) {
+      Navigator.popAndPushNamed(context, FeedbackRouter.openBox,
+          arguments: widget.id);
+    } else {
+      FeedbackService.adminChangeETag(
+          id: widget.id.toString(),
+          value: widget.action.toString(),
+          onSuccess: () => setState(() {
+                isSelected = false;
+                context
+                    .read<LakeModel>()
+                    .lakeAreas[context
+                        .read<LakeModel>()
+                        .tabList[context.read<LakeModel>().currentTab]
+                        .id]
+                    .refreshController
+                    .requestRefresh();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+                ToastProvider.running('成功');
+              }),
+          onFailure: (e) => ToastProvider.error(e.message));
+    }
   }
 }

@@ -1,13 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_screenutil/size_extension.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
-import 'package:we_pei_yang_flutter/commons/channel/share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/image_without_auth.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
 class ImageViewPage extends StatefulWidget {
   @override
@@ -32,112 +34,117 @@ class _ImageViewPageState extends State<ImageViewPage> {
     indexNow = obj['indexNow'];
     isLongPic = obj['isLongPic'] ?? false;
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      onLongPress: () {
-        //ToastProvider.error('当前暂时无法保存图片');
-        showSaveImageBottomSheet(context);
-      },
-      child: Container(
-          // child: new Image(
-          //     image: NetworkImageSSL(baseUrl + urlList[indexNow]),
-          //     width: double.infinity,
-          //     height: double.infinity,
-          //     fit: BoxFit.contain),
-          child: PhotoViewGallery.builder(
-              loadingBuilder: (context, event) => Center(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        PhotoViewGallery.builder(
+          loadingBuilder: (context, event) => Center(
+              child: Container(
+                  width: 20.0,
+                  height: 20.0,
+                  child: CircularProgressIndicator(
+                    value: event == null
+                        ? 0
+                        : event.cumulativeBytesLoaded /
+                            event.expectedTotalBytes,
+                  ))),
+          scrollPhysics: const BouncingScrollPhysics(),
+          builder: (BuildContext context, int index) {
+            return PhotoViewGalleryPageOptions(
+              basePosition: isLongPic ? Alignment.topCenter : Alignment.center,
+              imageProvider: NetworkImage(baseUrl + urlList[index]),
+              maxScale: isLongPic
+                  ? PhotoViewComputedScale.contained * 20
+                  : PhotoViewComputedScale.contained * 5.0,
+              minScale: PhotoViewComputedScale.contained * 1.0,
+              initialScale: isLongPic
+                  ? PhotoViewComputedScale.covered
+                  : PhotoViewComputedScale.contained,
+            );
+          },
+          scrollDirection: Axis.horizontal,
+          itemCount: urlListLength,
+          backgroundDecoration: BoxDecoration(color: Colors.black),
+          pageController: PageController(
+            initialPage: indexNow,
+          ),
+          onPageChanged: (index) => setState(() {
+            tempSelect = index;
+          }),
+        ),
+        SafeArea(
+          child: Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(15.h, 15.h, 0, 0),
+                child: WButton(
                   child: Container(
-                      width: 20.0,
-                      height: 20.0,
-                      child: CircularProgressIndicator(
-                        value: event == null
-                            ? 0
-                            : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes,
-                      ))),
-              scrollPhysics: const BouncingScrollPhysics(),
-              builder: (BuildContext context, int index) {
-                return PhotoViewGalleryPageOptions(
-                  basePosition:
-                      isLongPic ? Alignment.topCenter : Alignment.center,
-                  imageProvider: NetworkImage(baseUrl + urlList[index]),
-                  maxScale: isLongPic
-                      ? PhotoViewComputedScale.contained * 20
-                      : PhotoViewComputedScale.contained * 5.0,
-                  minScale: PhotoViewComputedScale.contained * 1.0,
-                  initialScale: isLongPic
-                      ? PhotoViewComputedScale.covered
-                      : PhotoViewComputedScale.contained,
-                );
-              },
-              scrollDirection: Axis.horizontal,
-              itemCount: urlListLength,
-              backgroundDecoration: BoxDecoration(color: Colors.black),
-              pageController: PageController(
-                initialPage: indexNow,
+                      decoration: BoxDecoration(
+                          color: Color(0x88444444),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(14.r))),
+                      padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
+                      child: Icon(
+                        CupertinoIcons.back,
+                        color: Colors.white,
+                        size: 30.h,
+                      )),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              )),
+        ),
+        Positioned(
+            bottom: 10.w,
+            right: 10.w,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Color(0x88444444),
+                  borderRadius: BorderRadius.all(Radius.circular(14.r))),
+              padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  WButton(
+                    child: Icon(
+                      CupertinoIcons.square_arrow_down,
+                      color: Colors.white,
+                      size: 30.h,
+                    ),
+                    onPressed: () {
+                      saveImage();
+                    },
+                  ),
+                  SizedBox(width: 30.w),
+                  WButton(
+                    child: Icon(
+                      CupertinoIcons.share,
+                      color: Colors.white,
+                      size: 30.h,
+                    ),
+                    onPressed: () {
+                      showSaveImageBottomSheet();
+                    },
+                  ),
+                ],
               ),
-              onPageChanged: (index) => setState(() {
-                    tempSelect = index;
-                  }))),
+            ))
+      ],
     );
   }
 
-  void showSaveImageBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text(
-                '保存图片',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              onTap: saveImgToAlbum,
-            ),
-            ListTile(
-              title: Text(
-                '分享图片到QQ',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              onTap: shareImageToQQ,
-            )
-          ],
-        );
-      },
-    );
+  void saveImage() async {
+    ToastProvider.running('保存中');
+    await GallerySaver.saveImage(baseUrl + urlList[indexNow], albumName: "微北洋");
+    ToastProvider.success('保存成功');
   }
 
-  void shareImageToQQ() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
-    final fileName = url.split("/").last;
-    ImageSave.saveImageFromUrl(
-      url,
-      fileName,
-      album: false,
-    ).then((path) async {
-      await ShareManager.shareImgToQQ(path);
-    }).then((_) {
-      ToastProvider.success("分享成功");
-    }, onError: (error, stack) {
-      Logger.reportError(error, stack);
-      ToastProvider.error("分享失败");
-    });
-  }
-
-  void saveImgToAlbum() {
-    final url = baseUrl + urlList[tempSelect ?? indexNow];
-    final fileName = url.split("/").last;
-    ImageSave.saveImageFromUrl(
-      url,
-      fileName,
-      album: true,
-    ).then((_) {
-      ToastProvider.success("成功保存到相册");
-      Navigator.pop(context);
-    });
+  void showSaveImageBottomSheet() async {
+    ToastProvider.running('请稍后');
+    final path = await StorageUtil.saveTempFileFromNetwork(
+        baseUrl + urlList[indexNow],
+        filename: urlList[indexNow]);
+    Share.shareFiles([path]);
   }
 }

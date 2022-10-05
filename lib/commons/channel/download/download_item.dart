@@ -2,9 +2,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-
-import 'path_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 
 class DownloadTask {
   final String url;
@@ -26,7 +26,7 @@ class DownloadTask {
     this.description,
   });
 
-  factory DownloadTask.updateApk(Version _version) {
+  factory DownloadTask.updateApk(AndroidVersion _version) {
     return DownloadTask(
       url: _version.apkUrl,
       fileName: _version.apkName,
@@ -37,7 +37,7 @@ class DownloadTask {
     );
   }
 
-  factory DownloadTask.updateZip(Version _version) {
+  factory DownloadTask.updateZip(AndroidVersion _version) {
     return DownloadTask(
       url: _version.zipUrl,
       fileName: _version.zipName,
@@ -54,7 +54,7 @@ class DownloadTask {
     String? title,
     String? description,
   }) {
-    fileName ??= url.split("/").last;
+    fileName ??= p.split(url).last;
     type ??= DownloadType.other;
     showNotification ??= false;
     String id = "${DateTime.now().millisecondsSinceEpoch}-$type-$fileName";
@@ -109,5 +109,6 @@ enum DownloadType { apk, font, hotfix, other }
 extension DownloadTypeExt on DownloadType {
   String get text => ['apk', 'font', 'hotfix', 'other'][index];
 
-  String get path => PathUtil.downloadDir.path + Platform.pathSeparator + text;
+  String get path =>
+      StorageUtil.downloadDir.path + Platform.pathSeparator + text;
 }
