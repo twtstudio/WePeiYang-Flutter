@@ -64,6 +64,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
             width: 34,
             height: 34,
             child: ProfileImageWithDetailedPopup(
+                post.id,
+                true,
                 post.type,
                 post.avatar ?? post.nickname,
                 post.uid,

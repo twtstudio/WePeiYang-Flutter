@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
@@ -826,58 +825,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   bool canInputAddress = false;
   TextEditingController _controller = TextEditingController();
 
-  _allowLocationPermission() async {
-    final status = await LocationPermissions().requestPermissions(
-      permissionLevel: LocationPermissionLevel.locationWhenInUse,
-    );
-    switch (status) {
-      case PermissionStatus.granted:
-        return true;
-      default:
-        _inputLocationBySelf();
-        return false;
-    }
-  }
 
   _inputLocationBySelf() {
     _allowInputAddress();
     ToastProvider.error("请手动填写您当前所在位置");
-  }
-
-  _checkLocationPermissions() async {
-    final status = await LocationPermissions().checkPermissionStatus(
-      level: LocationPermissionLevel.locationWhenInUse,
-    );
-    switch (status) {
-      case PermissionStatus.denied:
-        if (!await _allowLocationPermission()) return;
-        break;
-      case PermissionStatus.granted:
-        // continue
-        break;
-      default:
-        _inputLocationBySelf();
-        return;
-    }
-    switch (await LocationPermissions().checkServiceStatus()) {
-      case ServiceStatus.disabled:
-        ToastProvider.error("请打开手机定位服务或手动填写");
-        _allowInputAddress();
-        break;
-      case ServiceStatus.enabled:
-        try {
-          final location = await LocationManager.getLocation();
-          _reportLocation(location);
-          _setLocation(location.address);
-        } catch (_) {
-          ToastProvider.error("获取位置信息失败");
-          _allowInputAddress();
-        }
-        break;
-      default:
-        _inputLocationBySelf();
-        return;
-    }
   }
 
   _reportLocation(LocationData data) {
@@ -953,7 +904,6 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     );
 
     var chosePlaceButton = ElevatedButton(
-      onPressed: _checkLocationPermissions,
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         padding: MaterialStateProperty.all(EdgeInsets.zero),

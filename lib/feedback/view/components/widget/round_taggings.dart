@@ -4,16 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 
-import '../../../../main.dart';
 import '../../../feedback_router.dart';
 import '../../search_result_page.dart';
 
@@ -271,14 +267,16 @@ class TextPod extends StatelessWidget {
   }
 }
 
-class ProfileImageWithDetailedPopup extends StatelessWidget {
+class ProfileImageWithDetailedPopup extends StatefulWidget {
+  final int postOrCommentId;
+  final bool fromPostCard;
   final int type;
   final int uid;
   final String avatar;
   final String nickName;
   final String level;
 
-  ProfileImageWithDetailedPopup(
+  ProfileImageWithDetailedPopup(this.postOrCommentId, this.fromPostCard,
       this.type, this.avatar, this.uid, this.nickName, this.level);
 
   static WidgetBuilder defaultPlaceholderBuilder =
@@ -289,199 +287,38 @@ class ProfileImageWithDetailedPopup extends StatelessWidget {
           );
 
   @override
+  State<ProfileImageWithDetailedPopup> createState() =>
+      _ProfileImageWithDetailedPopupState();
+}
+
+class _ProfileImageWithDetailedPopupState
+    extends State<ProfileImageWithDetailedPopup> {
+  @override
   Widget build(BuildContext ctx) {
     return InkWell(
-      onTap: () => showDialog(
-        context: ctx,
-        barrierDismissible: true,
-        builder: (BuildContext context) => Stack(
-          children: [
-            Align(
-              alignment: Alignment(0, -0.2),
-              child: Container(
-                  constraints:
-                      BoxConstraints(maxWidth: WePeiYangApp.screenWidth - 40),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20)),
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (avatar != '')
-                            Navigator.pushNamed(
-                                context, FeedbackRouter.imageView,
-                                arguments: {
-                                  "urlList": [avatar],
-                                  "urlListLength": 1,
-                                  "indexNow": 0
-                                });
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          child: avatar == ""
-                              ? SvgPicture.network(
-                                  '${EnvConfig.QNHD}avatar/beam/20/${uid}',
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                  placeholderBuilder: defaultPlaceholderBuilder,
-                                )
-                              : Image.network(
-                                  'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                ),
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        '${type == 1 ? '用户真名：' : '用户昵称：'}\n${nickName == '' ? '没名字的微友' : nickName}',
-                        style:
-                            TextUtil.base.w600.NotoSansSC.sp(14).black2A.h(1.8),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      LevelUtil(
-                        level: level,
-                        width: 34,
-                        height: 17,
-                        style: TextUtil.base.white.bold.sp(9),
-                      ),
-                      SizedBox(height: 6),
-                      if (CommonPreferences.isSuper.value ||
-                          CommonPreferences.isStuAdmin.value)
-                        InkWell(
-                          onTap: () => _showResetConfirmDialog(context, '昵称')
-                              .then((value) {
-                            if (value)
-                              FeedbackService.adminResetName(
-                                  id: uid,
-                                  onSuccess: () {
-                                    ToastProvider.success('重置成功');
-                                    Navigator.pop(ctx);
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(e.message);
-                                  });
-                          }),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.refresh,
-                                size: 18,
-                              ),
-                              Text(
-                                '重置昵称',
-                                style: TextUtil.base.w600.NotoSansSC
-                                    .sp(12)
-                                    .black2A,
-                              ),
-                            ],
-                          ),
-                        ),
-                      SizedBox(height: 6),
-                      if (CommonPreferences.isSuper.value ||
-                          CommonPreferences.isStuAdmin.value)
-                        InkWell(
-                          onTap: () => _showResetConfirmDialog(context, '头像')
-                              .then((value) {
-                            if (value)
-                              FeedbackService.adminResetAva(
-                                  id: uid,
-                                  onSuccess: () {
-                                    ToastProvider.success('重置成功');
-                                    Navigator.pop(ctx);
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(e.message);
-                                  });
-                          }),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.refresh,
-                                size: 18,
-                              ),
-                              Text(
-                                '重置头像',
-                                style: TextUtil.base.w600.NotoSansSC
-                                    .sp(12)
-                                    .black2A,
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (CommonPreferences.isSuper.value)
-                        InkWell(
-                          onTap: () => Navigator.popAndPushNamed(
-                              context, FeedbackRouter.openBox,
-                              arguments: uid),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.person_search_rounded),
-                              Text(
-                                '开盒',
-                                style: TextUtil.base.w600.NotoSansSC
-                                    .sp(12)
-                                    .black2A,
-                              ),
-                            ],
-                          ),
-                        ),
-                      SizedBox(height: 5),
-                    ],
-                  )),
-            ),
-          ],
+      onTap: () => Navigator.pushNamed(context, FeedbackRouter.person,
+          arguments: PersonPageArgs(
+              widget.postOrCommentId,
+              widget.fromPostCard,
+              widget.type,
+              widget.uid,
+              widget.avatar,
+              widget.nickName,
+              widget.level)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(100)),
+        child: Hero(
+          tag: 'personImage',
+          child: WpyPic(
+            widget.avatar == ""
+                ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
+                : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
+            width: 34.w,
+            height: 34.w,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
-      child: ClipRRect(
-        // 保证圆角
-        borderRadius: BorderRadius.all(Radius.circular(100)),
-        child: avatar == ""
-            ? SvgPicture.network(
-                '${EnvConfig.QNHD}avatar/beam/20/${uid}',
-                width: 34.w,
-                height: 34.w,
-                fit: BoxFit.cover,
-                placeholderBuilder: defaultPlaceholderBuilder,
-              )
-            : Image.network(
-                'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                width: 34.w,
-                height: 32.w,
-                fit: BoxFit.cover,
-              ),
-      ),
     );
-  }
-
-  Future<bool> _showResetConfirmDialog(BuildContext context, String quote) {
-    return showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return LakeDialogWidget(
-              title: '重置$quote',
-              content: Text('您确定要重置该用户$quote吗？'),
-              cancelText: "取消",
-              confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-              cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
-              confirmText: '确认',
-              cancelFun: () {
-                Navigator.of(context).pop();
-              },
-              confirmFun: () {
-                Navigator.of(context).pop(true);
-              });
-        });
   }
 }

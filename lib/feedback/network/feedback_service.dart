@@ -418,6 +418,34 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getAnyonePosts({
+    @required OnResult<List<Post>> onResult,
+    @required uid,
+    @required page,
+    @required page_size,
+    @required OnFailure onFailure,
+  }) async {
+    try {
+      // 注意這裏用的dio和上面那個不一樣哦
+      var response = await feedbackAdminPostDio.get(
+        'posts/user',
+        queryParameters: {
+          'uid': '$uid',
+          'type': '0',
+          'page': '$page',
+          'page_size': '$page_size',
+        },
+      );
+      List<Post> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Post.fromJson(json));
+      }
+      onResult(list);
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getFavoritePosts({
     @required OnResult<List<Post>> onResult,
     @required page_size,

@@ -585,6 +585,8 @@ class _NCommentCardState extends State<NCommentCard>
         width: 34,
         height: 34,
         child: ProfileImageWithDetailedPopup(
+          widget.comment.id,
+            false,
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
             widget.comment.uid,
