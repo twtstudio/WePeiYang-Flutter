@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class ThemeDio extends DioAbstract {
   @override
-  //String baseUrl = 'https://59.67.37.34/api/v1/';
   String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
 
   @override

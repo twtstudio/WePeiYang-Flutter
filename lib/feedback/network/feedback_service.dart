@@ -11,8 +11,6 @@ class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
 
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/f/';
-
   @override
   List<InterceptorsWrapper> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
@@ -66,8 +64,6 @@ class FeedbackPicPostDio extends DioAbstract {
 class FeedbackAdminPostDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
-
-  // String baseUrl = 'https://www.zrzz.site:7013/api/v1/b/';
 
   @override
   List<InterceptorsWrapper> interceptors = [

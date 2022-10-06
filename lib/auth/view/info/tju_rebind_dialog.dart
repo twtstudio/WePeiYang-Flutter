@@ -156,6 +156,11 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   _checkClasses() async {
     _canConnectToClasses = await ClassesService.check();
     setState(() {});
+    if (!_canConnectToClasses) {
+      Future.delayed(Duration(seconds: 1)).then((_) {
+        _checkClasses();
+      });
+    }
   }
 
   @override

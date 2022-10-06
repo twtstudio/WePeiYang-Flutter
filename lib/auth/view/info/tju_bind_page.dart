@@ -162,6 +162,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
   _checkClasses() async {
     _canConnectToClasses = await ClassesService.check();
     setState(() {});
+    if (!_canConnectToClasses) {
+      Future.delayed(Duration(seconds: 1)).then((_) {
+        _checkClasses();
+      });
+    }
   }
 
   Widget _detail(BuildContext context) {
