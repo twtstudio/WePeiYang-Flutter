@@ -31,17 +31,11 @@ fileprivate struct KGTInfo {
         // [ GTSDK ]: 注册远程通知
         GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
         
-        GeneratedPluginRegistrant.register(with: self)
-        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     
     override func applicationWillResignActive(_ application: UIApplication) {
-        print("退出桌面")
-//        let st = SwiftStorage.courseTable
-//        st.reloadData()
-//        print(st.object.courseArray)
-//        WidgetCenter.shared.reloadAllTimelines()
+
     }
 }
 

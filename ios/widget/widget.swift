@@ -10,8 +10,45 @@ import SwiftUI
 import Intents
 
 
+@main
+struct PeiYang_LiteBundle: WidgetBundle {
+    @WidgetBundleBuilder
+    var body: some Widget {
+        WhiteColorWidget()
+        BlueColorWidget()
+    }
+}
+
+
+struct WhiteColorWidget: Widget {
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "white", provider: CourseTimelineProvider()) { entry in
+            CourseTableWidgetEntryView(entry: entry, color: .white)
+        }
+        .configurationDisplayName("课表信息-白")
+        .description("快速查看今明课表信息。")
+        .supportedFamilies([.systemSmall])
+    }
+}
+
+struct BlueColorWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "blue", provider: CourseTimelineProvider()) { entry in
+            CourseTableWidgetEntryView(entry: entry, color: .blue)
+        }
+        .configurationDisplayName("课表信息-蓝")
+        .description("快速查看今明课表信息。")
+        .supportedFamilies([.systemSmall])
+    }
+}
+
+
+
+
 struct CourseTableWidgetEntryView: View {
     var entry: CourseTimelineProvider.Entry
+    var color: WColorTheme
     
     @Environment(\.widgetFamily) var family
     
@@ -28,24 +65,7 @@ struct CourseTableWidgetEntryView: View {
 //        case .accessoryRectangular:
 //            LockRectView(entry: entry)
         default:
-            SmallView(entry: entry)
+            SmallView(theme: color)
         }
-    }
-}
-
-
-
-@main
-struct PeiYang_LiteWidget: Widget {
-    let kind: String = "WePeiyangWidget"
-    @Environment(\.widgetFamily) var family
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: CourseTimelineProvider()) { entry in
-            CourseTableWidgetEntryView(entry: entry)
-        }
-        .configurationDisplayName("WePeiyang Widget")
-        .description("快速查看当前课表信息。")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

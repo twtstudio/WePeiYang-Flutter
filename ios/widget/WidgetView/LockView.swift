@@ -14,7 +14,7 @@ struct LockRectView: View {
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     let entry: DataEntry
-    var currentCourseTable: [Course] { entry.courses }
+    var currentCourseTable: [Course] { courseTable.courseArray }
     var hour: Int {
         let hourFormatter = DateFormatter()
         hourFormatter.dateFormat = "HH"
@@ -104,7 +104,7 @@ struct LockLineView: View {
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     let entry: DataEntry
-    var currentCourseTable: [Course] { entry.courses }
+    var currentCourseTable: [Course] { courseTable.courseArray }
     var hour: Int {
         let hourFormatter = DateFormatter()
         hourFormatter.dateFormat = "HH"
@@ -184,7 +184,7 @@ struct LockRingView: View {
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     let entry: DataEntry
-    var currentCourseTable: [Course] { entry.courses }
+    var currentCourseTable: [Course] { courseTable.courseArray }
     var hour: Int {
         let hourFormatter = DateFormatter()
         hourFormatter.dateFormat = "HH"

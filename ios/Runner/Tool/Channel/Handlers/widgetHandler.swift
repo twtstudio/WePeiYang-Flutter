@@ -12,9 +12,6 @@ extension Channel {
     private func reloadWidgetData() {
         // 将User Defaults中的数据存到文件里
         StorageKey.saveToGroupStorage()
-//        let st = SwiftStorage.courseTable
-//        st.reloadData()
-//        print(st.object.courseArray)
         // 刷新小组件timeline
         WidgetCenter.shared.reloadAllTimelines()
     }

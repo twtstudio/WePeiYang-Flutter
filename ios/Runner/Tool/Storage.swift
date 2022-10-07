@@ -92,14 +92,16 @@ class Store<T: Codable & Storable>: ObservableObject {
     }
 
     func reloadData() {
-        if(storageKey.getGroupData() != ""){
-            guard let object = try? JSONDecoder().decode(T.self, from: storageKey.getGroupData().data(using: .utf8)!) else {
+        print("解码\(storageKey)")
+        let data = storageKey.getGroupData()
+        if(!data.isEmpty){
+            guard let object = try? JSONDecoder().decode(T.self, from: data.data(using: .utf8)!) else {
                 return
             }
+            print("解码成功")
             self.object = object
         }  else {
-            print(storageKey.getGroupData())
-            print("json 解码失败")
+            print("无内容，解码失败")
         }
     }
 

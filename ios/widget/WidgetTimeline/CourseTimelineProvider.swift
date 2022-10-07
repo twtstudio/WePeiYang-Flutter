@@ -7,6 +7,7 @@
 
 import Foundation
 import WidgetKit
+import UIKit
 
 struct CourseTimelineProvider: TimelineProvider {
     
@@ -24,10 +25,14 @@ struct CourseTimelineProvider: TimelineProvider {
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<DataEntry>) -> Void) {
         print("xcode: 刷新line")
-        
+        // TODO: 完善timeline刷新
         let currentDate = Date()
         
-        let times = Arrange.startTimes + Arrange.endTimes
+        var times = Arrange.startTimes + Arrange.endTimes
+        // 夜猫子模式，和新的一天
+        times += [
+            (22, 0), (24, 0)
+        ]
         var current = Calendar.current.dateComponents(in: TimeZone.current, from: currentDate)
         
         var entries: [DataEntry] = []
@@ -42,13 +47,9 @@ struct CourseTimelineProvider: TimelineProvider {
         
         // 马上来刷新一下
         todayValidDates.insert(Date().addingTimeInterval(3), at: 0)
-        // TODO: 删掉无用代码
-//        for i in 0..<60 {
-//            todayValidDates.insert(Date().addingTimeInterval(TimeInterval(60-i)), at: 0)
-//        }
         
         entries += todayValidDates.map { date in
-            DataEntry(date: date, courses: getDateCourse(), studyRoom: [])
+            DataEntry(date: date)
         }
         
         // 加一天
@@ -58,44 +59,11 @@ struct CourseTimelineProvider: TimelineProvider {
             current.minute = m
             return Calendar.current.date(from: current)!
         }.map { date in
-            DataEntry(date: date, courses: getDateCourse(tomorrow: true), studyRoom: [])
+            DataEntry(date: date)
         }
-        print(entries)
         
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
-    }
-    
-    
-    private func getDateCourse(tomorrow: Bool = false) -> [Course] {
-        let activeWeek = tomorrow ? courseTable.tomorrowWeek : courseTable.currentWeek
-        let activeWeekday = tomorrow ? courseTable.tomorrowDay : courseTable.currentDay
-        
-        let activeCourseArray: [Course] = courseTable.courseArray.filter {
-            $0.weekRange.contains(activeWeek)
-        }
-        
-        let activeCustomCourseArray: [Course] = courseTable.customCourseArray.filter {
-            $0.weekRange.contains(activeWeek)
-        }
-        
-        let totalActiveCourseArray: [Course] = activeCourseArray + activeCustomCourseArray
-        
-        var currentCourseArray: [Course] = totalActiveCourseArray.filter { course in
-            return course.arrangeArray
-                .filter { $0.weekArray.contains(activeWeek) }
-                .map(\.weekday)
-                .contains(activeWeekday)
-        }
-        // 进行排序
-        currentCourseArray.sort { (c1, c2) -> Bool in
-            let a1 = c1.activeArrange(activeWeekday)
-            let a2 = c2.activeArrange(activeWeekday)
-            return a1.startUnit < a2.startUnit
-        }
-        
-        return currentCourseArray
-        
     }
 }
 

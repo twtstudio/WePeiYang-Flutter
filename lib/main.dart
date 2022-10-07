@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
@@ -152,8 +151,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         FeedbackService.getToken(forceRefresh: true);
       }
     });
-    MethodChannel('com.twt.service/widget')
-        .invokeMethod("refreshScheduleWidget");
   }
 
   @override

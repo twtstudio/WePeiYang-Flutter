@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		556667755269D4177BC0246F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */; };
 		568EF1EE28D6400000074B70 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB42890230E00569DB3 /* WidgetKit.framework */; };
 		568EF1EF28D6400000074B70 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB62890230F00569DB3 /* SwiftUI.framework */; };
@@ -33,14 +32,15 @@
 		9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF228D8A74D004C4576 /* pushHandler.swift */; };
 		9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */; };
 		9D7D7FF728D8A761004C4576 /* widgetHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D7D7FF628D8A761004C4576 /* widgetHandler.swift */; };
-		9D7D800228D96F9D004C4576 /* Morning-Star-1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */; };
-		9D7D800328D96F9D004C4576 /* GILROY-BOLD-4.OTF in Resources */ = {isa = PBXBuildFile; fileRef = 9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */; };
 		D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */; };
 		D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */; };
 		D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA1D28C6654400B47A90 /* UMCommonLogSwift.swift */; };
 		D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2128C67F6800B47A90 /* GetuiExtension.swift */; };
 		D302FA2428C67F9600B47A90 /* ChannelConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */; };
 		D302FA2828C75F2400B47A90 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
+		D3CE7F3328EEA22500D93D3E /* sf-pro-text-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3CE7F3228EEA22200D93D3E /* sf-pro-text-regular.ttf */; };
+		D3CE7F3528EEA25200D93D3E /* Product Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3CE7F3428EEA25200D93D3E /* Product Sans Bold.ttf */; };
+		D3CE7F3728EEACB300D93D3E /* ColorTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CE7F3628EEACB300D93D3E /* ColorTool.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,8 +78,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
-		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		4EC6C351A3468DCC55593FFC /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		568EF1ED28D63FFF00074B70 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,8 +117,6 @@
 		9D7D7FF228D8A74D004C4576 /* pushHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pushHandler.swift; sourceTree = "<group>"; };
 		9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = umengStatisticsHandler.swift; sourceTree = "<group>"; };
 		9D7D7FF628D8A761004C4576 /* widgetHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widgetHandler.swift; sourceTree = "<group>"; };
-		9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Morning-Star-1.ttf"; sourceTree = "<group>"; };
-		9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GILROY-BOLD-4.OTF"; sourceTree = "<group>"; };
 		C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D302FA1B28C6654400B47A90 /* UMAnalyticsSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMAnalyticsSwift.swift; sourceTree = "<group>"; };
 		D302FA1C28C6654400B47A90 /* UMCommonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UMCommonSwift.swift; sourceTree = "<group>"; };
@@ -128,6 +124,9 @@
 		D302FA2128C67F6800B47A90 /* GetuiExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetuiExtension.swift; sourceTree = "<group>"; };
 		D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelConfiguration.swift; sourceTree = "<group>"; };
 		D302FA2728C75F2400B47A90 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		D3CE7F3228EEA22200D93D3E /* sf-pro-text-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "sf-pro-text-regular.ttf"; sourceTree = "<group>"; };
+		D3CE7F3428EEA25200D93D3E /* Product Sans Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold.ttf"; sourceTree = "<group>"; };
+		D3CE7F3628EEACB300D93D3E /* ColorTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTool.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +190,7 @@
 				568EF20728D64D8600074B70 /* Model.swift */,
 				568EF20B28D652AC00074B70 /* DataEntry.swift */,
 				568EF20F28D655CD00074B70 /* FontTool.swift */,
+				D3CE7F3628EEACB300D93D3E /* ColorTool.swift */,
 			);
 			path = WidgetModel;
 			sourceTree = "<group>";
@@ -256,8 +256,6 @@
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
 				97C147021CF9000F007C117D /* Info.plist */,
-				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
-				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
@@ -274,13 +272,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		9D7D7FE628D8A5F8004C4576 /* Handlers */ = {
+		9D7D7FE628D8A5F8004C4576 /* Channel */ = {
 			isa = PBXGroup;
 			children = (
 				D302FA2328C67F9600B47A90 /* ChannelConfiguration.swift */,
 				9D7D7FEF28D8A70D004C4576 /* Handlers */,
 			);
-			path = Handlers;
+			path = Channel;
 			sourceTree = "<group>";
 		};
 		9D7D7FEF28D8A70D004C4576 /* Handlers */ = {
@@ -297,8 +295,8 @@
 		9D7D7FFC28D96F64004C4576 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
-				9D7D800128D96F9D004C4576 /* GILROY-BOLD-4.OTF */,
-				9D7D800028D96F9D004C4576 /* Morning-Star-1.ttf */,
+				D3CE7F3228EEA22200D93D3E /* sf-pro-text-regular.ttf */,
+				D3CE7F3428EEA25200D93D3E /* Product Sans Bold.ttf */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
@@ -325,7 +323,7 @@
 		D302FA2628C75EF500B47A90 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
-				9D7D7FE628D8A5F8004C4576 /* Handlers */,
+				9D7D7FE628D8A5F8004C4576 /* Channel */,
 				D302FA2728C75F2400B47A90 /* Storage.swift */,
 			);
 			path = Tool;
@@ -421,9 +419,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D7D800328D96F9D004C4576 /* GILROY-BOLD-4.OTF in Resources */,
 				568EF1F528D6400200074B70 /* Assets.xcassets in Resources */,
-				9D7D800228D96F9D004C4576 /* Morning-Star-1.ttf in Resources */,
+				D3CE7F3328EEA22500D93D3E /* sf-pro-text-regular.ttf in Resources */,
+				D3CE7F3528EEA25200D93D3E /* Product Sans Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,6 +540,7 @@
 				56ECC29228D8CF3A00181B96 /* LockView.swift in Sources */,
 				568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */,
 				568EF20428D649F500074B70 /* SmallView.swift in Sources */,
+				D3CE7F3728EEACB300D93D3E /* ColorTool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,7 +560,6 @@
 				9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */,
 				9D7D7FF128D8A73C004C4576 /* localSettingHandler.swift in Sources */,
 				D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */,
-				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -72,8 +72,8 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
     
     // Unit
     var length: Int { unitArray.count }
-    var startUnit: Int { unitArray.first ?? 0 }
-    var endUnit: Int { startUnit + length }
+    var startUnit: Int { unitArray[0] }
+    var endUnit: Int { unitArray[0] + length - 1 }
     
     /// 所有课程开始时间
     static let startTimes = [
@@ -89,20 +89,20 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
     ]
     
     var startTime: (Int, Int) {
-        guard startUnit >= 0 && startUnit < 12 else {
-            return (8, 30)
+        guard startUnit > 0 && startUnit < 12 else {
+            return Arrange.startTimes[0]
         }
         return Arrange.startTimes[startUnit - 1]
     }
     var startTimeString: String { String(format: "%02d:%02d", startTime.0, startTime.1) }
     var endTime: (Int, Int) {
-        guard endUnit - 1 >= 0 && endUnit - 1 < 12 else {
+        guard endUnit > 0 && endUnit <= 12 else {
             return Arrange.endTimes[0]
         }
-        return Arrange.endTimes[endUnit]
+        return Arrange.endTimes[endUnit - 1]
     }
     var endTimeString: String { String(format: "%02d:%02d", endTime.0, endTime.1) }
-    var unitString: String { "\(startUnit + 1)-\(startUnit + length)" }
+    var unitString: String { "\(startUnit)-\(startUnit + length - 1)" }
     var unitTimeString: String { "\(startTimeString)-\(endTimeString)" }
     
     var uuid: String { teachers + weekString + weekday.description + unitString + location }
@@ -169,15 +169,14 @@ struct Course: Codable, Storable, Equatable, Hashable {
         return weekArray.count == 2 ? weekArray[0]...weekArray[1] : 1...1
     }
     
-    // 通过weekday返回课程的活跃安排
+    /// 通过weekday返回课程的活跃安排
     func activeArrange(_ weekday: Int) -> Arrange {
         arrangeArray.first { $0.weekday == weekday } ?? Arrange(teacherArray: [], weekArray: [], weekday: 0, unitArray: [], location: "")
     }
     
-    func activeArranges(_ weekday: Int, week: Int? = nil) -> [Arrange] {
-        return week != nil ?
-        arrangeArray.filter { $0.weekday == weekday }.filter { $0.weekArray.contains(week!) } :
-        arrangeArray.filter { $0.weekday == weekday }
+    /// 返回这周
+    func activeArranges(_ weekday: Int, week: Int) -> [Arrange] {
+        arrangeArray.filter { $0.weekday == weekday }.filter { $0.weekArray.contains(week) }
     }
     
     init() {
@@ -241,7 +240,7 @@ struct CourseTable: Codable, Storable {
         currentCalendar.dateComponents([.weekOfMonth], from: startDate, to: currentDate).weekOfMonth ?? 0
     }
     
-    /// 当前星期数
+    /// 今天星期几
     var currentDay: Int {
         // 默认是从周日开始
         let day = currentCalendar.dateComponents(in: TimeZone.current, from: currentDate).weekday! - 1
@@ -253,7 +252,7 @@ struct CourseTable: Codable, Storable {
         currentDay == 1 ? currentWeek + 1 : currentWeek
     }
     
-    /// 明天星期数
+    /// 明天星期几
     var tomorrowDay: Int {
         let day = currentDay + 1
         return day == 8 ? 1 : day

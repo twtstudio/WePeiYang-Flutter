@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter/services.dart' show MethodChannel, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -80,8 +80,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
       context.read<StudyroomProvider>().init();
+      // 刷新小组件
+      MethodChannel('com.twt.service/widget')
+          .invokeMethod("refreshScheduleWidget");
     });
-    if(widget.page!=null){
+    if (widget.page != null) {
       _tabController.animateTo(widget.page);
     }
   }

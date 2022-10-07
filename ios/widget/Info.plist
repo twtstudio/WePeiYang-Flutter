@@ -9,8 +9,8 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Morning-Star-1.ttf</string>
-		<string>GILROY-BOLD-4.OTF</string>
+		<string>sf-pro-text-regular.ttf</string>
+		<string>Product Sans Bold.ttf</string>
 	</array>
 </dict>
 </plist>
