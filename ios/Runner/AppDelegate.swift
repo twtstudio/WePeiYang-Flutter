@@ -29,8 +29,9 @@ fileprivate struct KGTInfo {
         // [ GTSDK ]：使用APPID/APPKEY/APPSECRENT启动个推
         GeTuiSdk.start(withAppId: KGTInfo.kGtAppId, appKey: KGTInfo.kGtAppKey, appSecret: KGTInfo.kGtAppSecret, delegate: self)
         // [ GTSDK ]: 注册远程通知
-        GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
-        
+        GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])        
+
+        GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
     

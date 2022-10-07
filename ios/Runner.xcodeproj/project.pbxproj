@@ -41,6 +41,7 @@
 		D3CE7F3328EEA22500D93D3E /* sf-pro-text-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3CE7F3228EEA22200D93D3E /* sf-pro-text-regular.ttf */; };
 		D3CE7F3528EEA25200D93D3E /* Product Sans Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D3CE7F3428EEA25200D93D3E /* Product Sans Bold.ttf */; };
 		D3CE7F3728EEACB300D93D3E /* ColorTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CE7F3628EEACB300D93D3E /* ColorTool.swift */; };
+		D3CE7F3A28F0506300D93D3E /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = D3CE7F3928F0506300D93D3E /* GeneratedPluginRegistrant.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,8 @@
 		D3CE7F3228EEA22200D93D3E /* sf-pro-text-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "sf-pro-text-regular.ttf"; sourceTree = "<group>"; };
 		D3CE7F3428EEA25200D93D3E /* Product Sans Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Product Sans Bold.ttf"; sourceTree = "<group>"; };
 		D3CE7F3628EEACB300D93D3E /* ColorTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTool.swift; sourceTree = "<group>"; };
+		D3CE7F3828F0506200D93D3E /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
+		D3CE7F3928F0506300D93D3E /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +260,8 @@
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
 				97C147021CF9000F007C117D /* Info.plist */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				D3CE7F3828F0506200D93D3E /* GeneratedPluginRegistrant.h */,
+				D3CE7F3928F0506300D93D3E /* GeneratedPluginRegistrant.m */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
@@ -559,6 +564,7 @@
 				D302FA2828C75F2400B47A90 /* Storage.swift in Sources */,
 				9D7D7FF528D8A758004C4576 /* umengStatisticsHandler.swift in Sources */,
 				9D7D7FF128D8A73C004C4576 /* localSettingHandler.swift in Sources */,
+				D3CE7F3A28F0506300D93D3E /* GeneratedPluginRegistrant.m in Sources */,
 				D302FA1F28C6654400B47A90 /* UMCommonSwift.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

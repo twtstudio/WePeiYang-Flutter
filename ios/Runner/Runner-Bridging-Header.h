@@ -1,3 +1,5 @@
+#import "GeneratedPluginRegistrant.h"
+
 //导入UMCommon的OC的头文件
 #import <UMCommon/UMCommon.h>
 //导入UMCommonLog的OC的头文件
