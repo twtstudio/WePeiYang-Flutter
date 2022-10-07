@@ -80,9 +80,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
       context.read<StudyroomProvider>().init();
-      // 刷新小组件
-      MethodChannel('com.twt.service/widget')
-          .invokeMethod("refreshScheduleWidget");
     });
     if (widget.page != null) {
       _tabController.animateTo(widget.page);

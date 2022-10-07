@@ -24,8 +24,6 @@ struct CourseTimelineProvider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<DataEntry>) -> Void) {
-        print("xcode: 刷新line")
-        // TODO: 完善timeline刷新
         let currentDate = Date()
         
         var times = Arrange.startTimes + Arrange.endTimes
@@ -41,10 +39,7 @@ struct CourseTimelineProvider: TimelineProvider {
         
         var todayValidDates: [Date] = times.map { (h, m) in
             zeroDate.addingTimeInterval(TimeInterval((60 * h + m) * 60))
-        }.filter { d in
-            // 比现在快
-            return d.compare(currentDate) == .orderedDescending
-        }
+        }.filter { $0 >= currentDate }
         // 马上来刷新一下
         todayValidDates.insert(currentDate.addingTimeInterval(3), at: 0)
         

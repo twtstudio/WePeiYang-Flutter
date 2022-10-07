@@ -14,7 +14,6 @@ struct LargeView: View {
     var courseTable: CourseTable = SwiftStorage.courseTable.object
     let entry: DataEntry
     var currentCourseTable: [Course] { courseTable.courseArray }
-    var weathers = [Weather]()
 
     var time: Int {
         let formatter = DateFormatter()

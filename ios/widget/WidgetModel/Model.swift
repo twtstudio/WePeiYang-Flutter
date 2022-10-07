@@ -12,19 +12,6 @@ struct FlutterData: Decodable, Hashable {
     let text: String
 }
 
-struct Weather: Codable, Storable {
-    var wStatus: String = ""
-    var wTempH: String = ""
-    var wTempL: String = ""
-    var weatherString: String = ""
-    var weatherIconString1: String = ""
-    var weatherIconString2: String = ""
-    
-    init() {
-    }
-    
-}
-
 
 // MARK: - Classroom
 struct Classroom: Codable, Identifiable, Hashable {
@@ -207,7 +194,8 @@ struct CourseTable: Codable, Storable {
     private let WEEK_SECONDS: Int = 7 * 24 * 60 * 60
     
     var totalWeek: Int {
-        courseArray.map { $0.weekRange.max() ?? 1 }.max() ?? 1
+        // TODO: 先写死吧
+        30
     }
     
     var currentCalendar: Calendar {

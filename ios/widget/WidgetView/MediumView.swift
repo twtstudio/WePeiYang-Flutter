@@ -13,7 +13,7 @@ struct MediumView: View {
     var courseTable: CourseTable = SwiftStorage.courseTable.object
     let entry: DataEntry
     
-    var weathers = [Weather]() 
+
     var time: Int {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH mm"

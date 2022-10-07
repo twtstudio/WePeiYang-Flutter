@@ -10,15 +10,19 @@ import WidgetKit
 
 
 struct SmallView: View {
-    @Environment(\.colorScheme) private var colorScheme 
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
     
-    var theme: WColorTheme
+    let entry: DataEntry
+    let theme: WColorTheme
+    
+    /// 是否为简写
+    var isPlaceHolder: Bool { entry.isPlaceHolder }
     
     /// 星期简写 比如Thu
     var weekday: String {
-        courseTable.currentDate.format(with: "E")
+        return courseTable.currentDate.format(with: "E")
     }
     
     @State var courses: [WCourse] = []
@@ -35,14 +39,17 @@ struct SmallView: View {
                         .wfont(.pingfang, size: 11)
                         .foregroundColor(.wColor(.title, theme))
                         .lineLimit(1)
-                    course.isDup ?
-                        AnyView(
-                        Image("warn")
-                            .resizable()
-                            .frame(width: 12, height: 12)) :
-                        AnyView(EmptyView())
+                    Group {
+                        if course.isDup {
+                            Image("warn")
+                                .resizable()
+                                .frame(width: 12, height: 12)
+                        } else {
+                            EmptyView()
+                        }
+                    }
                 }
-                    
+                
                 // 自动缩小防止显示不全
                 HStack(spacing: 0) {
                     Text("\(course.arrange.location) ")
@@ -103,47 +110,54 @@ struct SmallView: View {
     
     
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack(alignment: .top) {
-                Text("\(weekday).")
-                    .foregroundColor(.wColor(.main, theme))
-                    .wfont(.product, size: 36)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .lineLimit(1)
-            
-                Spacer()
-                
-                Image(theme == .white ? "peiyanglogo-white" : "peiyanglogo-blue")
+        Group {
+            if isPlaceHolder {
+                Image(theme == .white ? "small-snapshot-white" : "small-snapshot-blue")
                     .resizable()
-                    .frame(width: 21, height: 10)
-                    .padding(.top, 10)
-                    .scaledToFit()
-            }
-            
-            
-            Spacer()
-            if courses.isEmpty {
-                Text("这两天都没有课程啦，\n假期愉快！")
-                    .wfont(.pingfang, size: 10)
-                    .foregroundColor(.wColor(.title, theme))
             } else {
-                DetailView()
+                VStack(alignment: .leading) {
+                    HStack(alignment: .top) {
+                        Text("\(weekday).")
+                            .foregroundColor(.wColor(.main, theme))
+                            .wfont(.product, size: 36)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(1)
+                        
+                        Spacer()
+                        
+                        Image(theme == .white ? "peiyanglogo-white" : "peiyanglogo-blue")
+                            .resizable()
+                            .frame(width: 21, height: 10)
+                            .padding(.top, 10)
+                            .scaledToFit()
+                    }
+                    
+                    
+                    Spacer()
+                    if courses.isEmpty {
+                        Text("这两天都没有课程啦，\n假期愉快！")
+                            .wfont(.pingfang, size: 10)
+                            .foregroundColor(.wColor(.title, theme))
+                    } else {
+                        DetailView()
+                    }
+                    
+                    Spacer()
+                    
+                }
+                .padding()
+                .background(theme == .white ?
+                            AnyView(LinearGradient(colors: [
+                                .hex("#3586E2"),
+                                .hex("#3F8FE3"),
+                                .hex("#519FE4"),
+                                .hex("#70BAE7"),
+                            ], startPoint: .topLeading, endPoint: .bottomTrailing))
+                            : AnyView(Color.white))
+                .onAppear {
+                    courses = WidgetCourseManager.getCourses(courseTable: courseTable)
+                }
             }
-            
-            Spacer()
-            
-        }
-        .padding()
-        .background(theme == .white ?
-                    AnyView(LinearGradient(colors: [
-                        .hex("#3586E2"),
-                        .hex("#3F8FE3"),
-                        .hex("#519FE4"),
-                        .hex("#70BAE7"),
-                    ], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    : AnyView(Color.white))
-        .onAppear {
-            courses = WidgetCourseManager.getCourses(courseTable: courseTable)
         }
     }
 }

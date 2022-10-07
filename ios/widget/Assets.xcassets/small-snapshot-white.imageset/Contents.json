@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "圆角矩形 1 拷贝 3.png",
+      "filename" : "Frame 24.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "圆角矩形 1 拷贝 3@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "圆角矩形 1 拷贝 3@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

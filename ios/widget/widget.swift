@@ -65,7 +65,7 @@ struct CourseTableWidgetEntryView: View {
 //        case .accessoryRectangular:
 //            LockRectView(entry: entry)
         default:
-            SmallView(theme: color)
+            SmallView(entry: entry, theme: color)
         }
     }
 }

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show Navigator, debugPrint;
+import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
@@ -458,6 +459,8 @@ class AuthService with AsyncTimer {
       CommonPreferences.termStart.value = result['semesterStartTimestamp'];
       CommonPreferences.termName.value = result['semesterName'];
       CommonPreferences.termStartDate.value = result['semesterStartAt'];
+      MethodChannel('com.twt.service/widget')
+          .invokeMethod("refreshScheduleWidget");
     } on DioError catch (_) {}
   }
 
