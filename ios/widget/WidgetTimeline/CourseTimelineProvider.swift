@@ -31,43 +31,41 @@ struct CourseTimelineProvider: TimelineProvider {
         var times = Arrange.startTimes + Arrange.endTimes
         // 夜猫子模式，和新的一天
         times += [
-            (22, 0), (24, 0)
+            (22, 0), (24 + 0, 0), (24 + 6, 0)
         ]
-        var current = Calendar.current.dateComponents(in: TimeZone.current, from: currentDate)
-        
-        var entries: [DataEntry] = []
+        times = times.sorted { t1, t2 in
+            t1.0*60+t1.1 < t2.0*60+t2.1
+        }
+
+        let zeroDate = Date.zero()
         
         var todayValidDates: [Date] = times.map { (h, m) in
-            current.hour = h
-            current.minute = m
-            return Calendar.current.date(from: current)!
+            zeroDate.addingTimeInterval(TimeInterval((60 * h + m) * 60))
         }.filter { d in
-            d.compare(currentDate) == .orderedDescending
+            // 比现在快
+            return d.compare(currentDate) == .orderedDescending
         }
-        
         // 马上来刷新一下
-        todayValidDates.insert(Date().addingTimeInterval(3), at: 0)
+        todayValidDates.insert(currentDate.addingTimeInterval(3), at: 0)
         
-        entries += todayValidDates.map { date in
+        let entries  = todayValidDates.map { date in
             DataEntry(date: date)
         }
-        
-        // 加一天
-        current = Calendar.current.dateComponents(in: TimeZone.current, from: currentDate.addingTimeInterval(60 * 60 * 24))
-        entries += times.map { (h, m) in
-            current.hour = h
-            current.minute = m
-            return Calendar.current.date(from: current)!
-        }.map { date in
-            DataEntry(date: date)
-        }
-        
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
 }
 
 extension Date {
+    /// 今天的0点0分0秒
+    static func zero() -> Date {
+        var zero = Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+        zero.hour = 0
+        zero.minute = 0
+        zero.second = 0
+        return Calendar.current.date(from: zero) ?? Date()
+    }
+    
     func daysBetweenDate(toDate: Date) -> Int {
         let components = Calendar.current.dateComponents([.day], from: self, to: toDate)
         return components.day ?? 0

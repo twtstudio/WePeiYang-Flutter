@@ -18,7 +18,7 @@ struct SmallView: View {
     
     /// 星期简写 比如Thu
     var weekday: String {
-        Date().format(with: "E")
+        courseTable.currentDate.format(with: "E")
     }
     
     @State var courses: [WCourse] = []
@@ -44,10 +44,16 @@ struct SmallView: View {
                 }
                     
                 // 自动缩小防止显示不全
-                Text("\(course.arrange.location) \(course.arrange.unitTimeString)")
-                    .wfont(.sfpro, size: 11)
-                    .foregroundColor(.wColor(.body, theme))
-                    .minimumScaleFactor(0.3)
+                HStack(spacing: 0) {
+                    Text("\(course.arrange.location) ")
+                        .foregroundColor(.wColor(.body, theme))
+                        .wfont(.sfpro, size: 11)
+                    
+                    Text("\(course.arrange.unitTimeString)")
+                        .foregroundColor(.wColor(.body, theme))
+                        .wfont(.sfpro, size: 11)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
             }
         }
     }
@@ -100,9 +106,9 @@ struct SmallView: View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text("\(weekday).")
-                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(.wColor(.main, theme))
                     .wfont(.product, size: 36)
+                    .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(1)
             
                 Spacer()

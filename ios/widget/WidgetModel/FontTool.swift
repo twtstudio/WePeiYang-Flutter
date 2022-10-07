@@ -21,8 +21,8 @@ enum WFont {
     }
 }
 
-extension View {
-    func wfont(_ type: WFont, size: CGFloat) -> some View {
+extension Text {
+    func wfont(_ type: WFont, size: CGFloat) -> Text {
         self.font(.custom(type.fontName(), size: size))
     }
 }

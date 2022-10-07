@@ -70,7 +70,7 @@ struct WidgetCourseManager {
     }
     
     static func getCourses(courseTable: CourseTable) -> [WCourse] {
-        let current = Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+        let current = Calendar.current.dateComponents(in: TimeZone.current, from: courseTable.currentDate)
         // 现在的分钟总数
         let curMin = current.hour! * 60 + current.minute!
         
