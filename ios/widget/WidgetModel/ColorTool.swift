@@ -20,7 +20,7 @@ enum WColor: CaseIterable {
         if colorScheme == .dark {
             return darkColor
         }
-        if theme == .blue {
+        if theme == .white {
             return c1
         } else {
             return c2

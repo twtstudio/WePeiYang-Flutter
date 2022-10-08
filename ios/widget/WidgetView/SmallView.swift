@@ -146,7 +146,7 @@ struct SmallView: View {
                     
                 }
                 .padding()
-                .background(theme == .white ?
+                .background(theme == .blue ?
                             AnyView(LinearGradient(colors: [
                                 .hex("#3586E2"),
                                 .hex("#3F8FE3"),
