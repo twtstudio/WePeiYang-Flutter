@@ -197,8 +197,11 @@ class FeedbackService with AsyncTimer {
                   ))
             ]);
         }
-        var response =
-            await feedbackPicPostDio.post('upload/image', formData: formData);
+        var response = await feedbackPicPostDio.post(
+          'upload/image',
+          formData: formData,
+          options: Options(sendTimeout: 10000),
+        );
         List<String> list = [];
         for (String json in response.data['data']['urls']) {
           list.add(json);

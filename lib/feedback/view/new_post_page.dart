@@ -1,23 +1,23 @@
 import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:flutter_svg/svg.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../feedback_router.dart';
 import 'components/widget/pop_menu_shape.dart';
@@ -46,6 +46,97 @@ class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
   final campusNotifier = ValueNotifier(0);
   final postTypeNotifier = ValueNotifier(0);
+  bool tapAble = true;
+
+  _showLoading() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return Loading();
+        });
+  }
+
+  _submit() async {
+    final args = widget.args;
+    var dataModel = context.read<NewPostProvider>();
+    dataModel.type = postTypeNotifier.value;
+
+    if (!dataModel.check) {
+      dataModel.type == 1
+          ? ToastProvider.error('内容标题与部门不能为空！')
+          : ToastProvider.error('内容与标题不能为空！');
+      return;
+    }
+    ToastProvider.running("创建中...");
+    _showLoading();
+    if (dataModel.images.isNotEmpty) {
+      FeedbackService.postPic(
+          images: dataModel.images,
+          onResult: (images) {
+            dataModel.images.clear();
+            if (dataModel.check) {
+              FeedbackService.sendPost(
+                type: args.isFollowing ? args.type : dataModel.type,
+                title: dataModel.title,
+                content: dataModel.content,
+                tagId: args.isFollowing
+                    ? args.tagId
+                    : dataModel.tag == null
+                        ? ''
+                        : dataModel.tag.id,
+                departmentId:
+                    dataModel.department == null ? '' : dataModel.department.id,
+                images: images,
+                campus: campusNotifier.value,
+                onSuccess: () {
+                  ToastProvider.success(S.current.feedback_post_success);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                onFailure: (e) {
+                  Navigator.pop(context);
+                  ToastProvider.error('发帖失败，内容已暂存\n${e.error.toString()}');
+                },
+              );
+              dataModel.clear();
+            } else {
+              dataModel.type == 1
+                  ? ToastProvider.error('内容标题与部门不能为空！')
+                  : ToastProvider.error('内容与标题不能为空！');
+            }
+          },
+          onFailure: (e) {
+            Navigator.pop(context);
+            ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
+          });
+    } else {
+      FeedbackService.sendPost(
+        type: args.isFollowing ? args.type : dataModel.type,
+        title: dataModel.title,
+        content: dataModel.content,
+        tagId: args.isFollowing
+            ? args.tagId
+            : dataModel.tag == null
+                ? ''
+                : dataModel.tag.id,
+        departmentId:
+            dataModel.department == null ? '' : dataModel.department.id,
+        images: [],
+        campus: campusNotifier.value,
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          dataModel.clear();
+          ToastProvider.error(e.error.toString());
+          Navigator.pop(context);
+        },
+      );
+      dataModel.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +146,6 @@ class _NewPostPageState extends State<NewPostPage> {
         S.current.feedback_new_post,
         style: TextUtil.base.NotoSansSC.w700.sp(18).black2A,
       ),
-      brightness: Brightness.light,
       elevation: 0,
       leading: IconButton(
         padding: EdgeInsets.zero,
@@ -73,61 +163,92 @@ class _NewPostPageState extends State<NewPostPage> {
         child: TitleInputField(),
       ),
       backgroundColor: Colors.transparent,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
+    );
+
+    final submitButton = Hero(
+      tag: "addNewPost",
+      child: ElevatedButton(
+        style: ButtonStyle(
+          elevation: MaterialStateProperty.all(0),
+          backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+          ),
+        ),
+        onPressed: () async {
+          if (tapAble) {
+            tapAble = false;
+
+            await _submit();
+            await Future.delayed(Duration(milliseconds: 3000));
+            tapAble = true;
+          }
+        },
+        child: Text(S.current.feedback_submit,
+            style: TextUtil.base.NotoSansSC.w500.sp(14).white),
+      ),
     );
 
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: appBar,
-        body: ListView(
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(left: 20),
-            children: [
-              Container(
-                  margin: widget.args.isFollowing
-                      ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
-                      : EdgeInsets.zero,
-                  padding: widget.args.isFollowing
-                      ? const EdgeInsets.fromLTRB(22, 10, 22, 10)
-                      : EdgeInsets.zero,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        widget.args.isFollowing
-                            ? Text('跟帖:',
-                                style: TextUtil.base.NotoSansSC.w500
-                                    .sp(14)
-                                    .black2A)
-                            : LakeSelector(),
-                        SizedBox(height: 6),
-                      ])),
-              Container(
-                  margin: const EdgeInsets.only(right: 20, top: 4),
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 22),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ContentInputField(),
-                        SizedBox(height: 10),
-                        ImagesGridView(),
-                        SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Spacer(),
-                            CampusSelector(campusNotifier),
-                            SubmitButton(campusNotifier, postTypeNotifier,
-                                args: widget.args),
-                          ],
-                        ),
-                      ])),
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: widget.args.isFollowing
-                    ? Text('${widget.args.tagName}'.substring(3),
-                        style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
-                    : departmentTagView(postTypeNotifier),
-              ),
-            ]));
+        body: Stack(
+          children: [
+            ListView(
+              shrinkWrap: true,
+              physics: BouncingScrollPhysics(),
+              padding: const EdgeInsets.only(left: 20),
+              children: [
+                Container(
+                    margin: widget.args.isFollowing
+                        ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
+                        : EdgeInsets.zero,
+                    padding: widget.args.isFollowing
+                        ? const EdgeInsets.fromLTRB(22, 10, 22, 10)
+                        : EdgeInsets.zero,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          widget.args.isFollowing
+                              ? Text('跟帖:',
+                                  style: TextUtil.base.NotoSansSC.w500
+                                      .sp(14)
+                                      .black2A)
+                              : LakeSelector(),
+                          SizedBox(height: 6),
+                        ])),
+                Container(
+                    margin: const EdgeInsets.only(right: 20, top: 4),
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 22),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ContentInputField(),
+                          SizedBox(height: 10),
+                          ImagesGridView(),
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Spacer(),
+                              CampusSelector(campusNotifier),
+                              submitButton,
+                            ],
+                          ),
+                        ])),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: widget.args.isFollowing
+                      ? Text('${widget.args.tagName}'.substring(3),
+                          style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                      : departmentTagView(postTypeNotifier),
+                ),
+              ],
+            ),
+          ],
+        ));
   }
 }
 
@@ -264,120 +385,6 @@ class _LakeSelectorState extends State<LakeSelector> {
                       child: Text('点击刷新'),
                     ),
                   );
-  }
-}
-
-class SubmitButton extends StatelessWidget {
-  final ValueNotifier campusNotifier, postTypeNotifier;
-  final NewPostArgs args;
-
-  const SubmitButton(this.campusNotifier, this.postTypeNotifier,
-      {Key key, this.args})
-      : super(key: key);
-
-  void submit(BuildContext context) {
-    var dataModel = context.read<NewPostProvider>();
-    dataModel.type = postTypeNotifier.value;
-    if (dataModel.images.isNotEmpty && dataModel.check) {
-      FeedbackService.postPic(
-          images: dataModel.images,
-          onResult: (images) {
-            dataModel.images.clear();
-            if (dataModel.check) {
-              FeedbackService.sendPost(
-                type: args.isFollowing ? args.type : dataModel.type,
-                title: dataModel.title,
-                content: dataModel.content,
-                tagId: args.isFollowing
-                    ? args.tagId
-                    : dataModel.tag == null
-                        ? ''
-                        : dataModel.tag.id,
-                departmentId:
-                    dataModel.department == null ? '' : dataModel.department.id,
-                images: images,
-                campus: campusNotifier.value,
-                onSuccess: () {
-                  ToastProvider.success(S.current.feedback_post_success);
-                  Navigator.pop(context);
-                },
-                onFailure: (e) {
-                  ToastProvider.error('发帖失败，内容已暂存\n${e.error.toString()}');
-                },
-              );
-              dataModel.clear();
-            } else {
-              dataModel.type == 1
-                  ? ToastProvider.error('内容标题与部门不能为空！')
-                  : ToastProvider.error('内容与标题不能为空！');
-            }
-          },
-          onFailure: (e) {
-            ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
-          });
-    } else {
-      if (dataModel.check) {
-        FeedbackService.sendPost(
-          type: args.isFollowing ? args.type : dataModel.type,
-          title: dataModel.title,
-          content: dataModel.content,
-          tagId: args.isFollowing
-              ? args.tagId
-              : dataModel.tag == null
-                  ? ''
-                  : dataModel.tag.id,
-          departmentId:
-              dataModel.department == null ? '' : dataModel.department.id,
-          images: [],
-          campus: campusNotifier.value,
-          onSuccess: () {
-            ToastProvider.success(S.current.feedback_post_success);
-            Navigator.pop(context);
-          },
-          onFailure: (e) {
-            dataModel.clear();
-            ToastProvider.error(e.error.toString());
-          },
-        );
-        dataModel.clear();
-      } else {
-        dataModel.type == 1
-            ? ToastProvider.error('内容标题与部门不能为空！')
-            : ToastProvider.error('内容与标题不能为空！');
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    bool tapAble = true;
-    return Hero(
-      tag: "addNewPost",
-      child: ElevatedButton(
-        style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-          ),
-        ),
-        onPressed: () => {
-          if (tapAble)
-            {
-              tapAble = false,
-              submit(context),
-              Future.delayed(Duration(milliseconds: 3000)),
-              () {
-                tapAble = true;
-              }
-            }
-        },
-        child: Text(S.current.feedback_submit,
-            style: TextUtil.base.NotoSansSC.w500.sp(14).white),
-      ),
-    );
   }
 }
 
