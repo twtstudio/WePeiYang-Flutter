@@ -10,6 +10,10 @@ import Flutter
 
 extension Channel {
     private func reloadWidgetData() {
+        Channel.reloadWidgetData()
+    }
+    
+    static func reloadWidgetData() {
         // 将User Defaults中的数据存到文件里
         StorageKey.saveToGroupStorage()
         // 刷新小组件timeline

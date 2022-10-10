@@ -91,7 +91,6 @@ struct WidgetCourseManager {
         // 排序，按照arrange大小排序
             .sorted { $0.0 < $1.0 }
         
-        
         // 需要计算是否重复，所以重新查看下
         var result: [WCourse] = []
         // 用于比较

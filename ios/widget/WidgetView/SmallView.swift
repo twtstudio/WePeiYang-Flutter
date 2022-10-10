@@ -82,7 +82,7 @@ struct SmallView: View {
         
         // 插入明天logo
         for i in 0..<data.count {
-            if !data[0].0.isToday {
+            if !data[i].0.isToday {
                 data.insert((WCourse(),AnyView(TomorrowLogo())), at: i)
                 break
             }

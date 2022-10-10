@@ -60,7 +60,7 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
     // Unit
     var length: Int { unitArray.count }
     var startUnit: Int { unitArray[0] }
-    var endUnit: Int { unitArray[0] + length - 1 }
+    var endUnit: Int { unitArray[1] }
     
     /// 所有课程开始时间
     static let startTimes = [
@@ -111,9 +111,7 @@ struct Arrange: Codable, Storable, Comparable, Hashable {
     }
     
     static func < (lhs: Arrange, rhs: Arrange) -> Bool {
-        if lhs.firstWeek != rhs.firstWeek {
-            return lhs.firstWeek < rhs.firstWeek
-        } else if lhs.weekday != rhs.weekday {
+        if lhs.weekday != rhs.weekday {
             return lhs.weekday < rhs.weekday
         } else if lhs.startUnit != rhs.startUnit {
             return lhs.startUnit < rhs.startUnit
@@ -224,8 +222,8 @@ struct CourseTable: Codable, Storable {
     
     /// 当前周数
     var currentWeek: Int {
-        // 此时weekOfMonth返回周数
-        currentCalendar.dateComponents([.weekOfMonth], from: startDate, to: currentDate).weekOfMonth ?? 0
+        let d = currentCalendar.dateComponents([.second], from: startDate, to: currentDate).second ?? 0
+        return Int(ceil(Double(d) / Double(60 * 60 * 24 * 7))) 
     }
     
     /// 今天星期几
@@ -237,6 +235,7 @@ struct CourseTable: Codable, Storable {
     
     /// 明天周数
     var tomorrowWeek: Int {
+        // 如果是周日(1)就是week+1
         currentDay == 1 ? currentWeek + 1 : currentWeek
     }
     

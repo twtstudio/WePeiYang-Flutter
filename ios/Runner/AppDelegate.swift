@@ -36,7 +36,8 @@ fileprivate struct KGTInfo {
     }
     
     override func applicationWillResignActive(_ application: UIApplication) {
-
+        print("reload")
+        Channel.reloadWidgetData()
     }
 }
 
