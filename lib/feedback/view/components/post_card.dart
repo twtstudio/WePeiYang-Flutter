@@ -300,13 +300,17 @@ class _PostCardNormalState extends State<PostCardNormal> {
     return widget.outer
         // outer 框架
         ? GestureDetector(
-            onTap: () => Navigator.pushNamed(
-              context,
-              FeedbackRouter.detail,
-              arguments: post,
-            ),
-            child: Padding(
+            onTap: () {
+              FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
+              Navigator.pushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              );
+            },
+            child: Container(
               padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+              color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
