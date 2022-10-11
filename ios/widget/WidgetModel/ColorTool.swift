@@ -49,18 +49,29 @@ extension Color {
         }
 
         if ((cString.count) != 6) {
-            return Color(uiColor: UIColor.gray)
+            if #available(iOSApplicationExtension 15.0, *) {
+                return Color(uiColor: UIColor.gray)
+            } else {
+                return Color(UIColor.gray)
+            }
         }
 
         var rgbValue:UInt64 = 0
         Scanner(string: cString).scanHexInt64(&rgbValue)
-
-        return Color(uiColor: UIColor(
+        
+        let uiColor = UIColor(
             red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
             green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
             blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
             alpha: CGFloat(1.0)
-        ))
+        )
+        
+        if #available(iOSApplicationExtension 15.0, *) {
+            return Color(uiColor: uiColor)
+        } else {
+            return Color(uiColor)
+        }
+        
     }
     
     static func wColor(_ type: WColor, _ theme: WColorTheme) -> Color {

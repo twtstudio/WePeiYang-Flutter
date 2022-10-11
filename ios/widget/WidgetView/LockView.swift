@@ -178,7 +178,7 @@ struct LockLineView: View {
 }
 
 
-
+@available(iOSApplicationExtension 16.0, *)
 struct LockRingView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var store = SwiftStorage.courseTable
