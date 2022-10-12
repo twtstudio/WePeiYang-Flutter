@@ -11,10 +11,6 @@ import UIKit
 
 struct CourseTimelineProvider: TimelineProvider {
     
-    /// 课程表对象
-    private let storage = SwiftStorage.courseTable
-    private var courseTable: CourseTable {storage.object}
-    
     func placeholder(in context: Context) -> DataEntry {
         DataEntry.placeholder
     }

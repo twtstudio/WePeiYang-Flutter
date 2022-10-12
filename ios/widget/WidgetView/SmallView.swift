@@ -27,7 +27,6 @@ struct SmallView: View {
     
     @State var courses: [WCourse] = []
     
-    
     private func ClassLine(course: WCourse) -> some View {
         return HStack {
             RoundedRectangle(cornerRadius: 3)
@@ -131,8 +130,6 @@ struct SmallView: View {
                             .padding(.top, 10)
                             .scaledToFit()
                     }
-                    
-                    
                     Spacer()
                     if courses.isEmpty {
                         Text("这两天都没有课程啦，\n假期愉快！")
@@ -155,6 +152,7 @@ struct SmallView: View {
                             ], startPoint: .topLeading, endPoint: .bottomTrailing))
                             : AnyView(Color.white))
                 .onAppear {
+                    store.reloadData()
                     courses = WidgetCourseManager.getCourses(courseTable: courseTable)
                 }
             }
