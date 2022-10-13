@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -27,6 +28,8 @@ import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../detail_page.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -92,6 +95,42 @@ class _NCommentCardState extends State<NCommentCard>
         });
   }
 
+  ///弹出评论置顶窗口
+  Future<bool> _showFloorUpDialog(String id) async {
+    return showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return Stack(
+            children: [
+              AdminPopUp(
+                floorId: id,
+              ),
+            ],
+          );
+        });
+  }
+
+  ///评论置顶重置
+  cleanTopFloor(String id) async {
+    await FeedbackService.adminFloorTopPost(
+      id: id,
+      hotIndex: 0,
+      onSuccess: () {
+        ToastProvider.success('重置成功');
+      },
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
+      },
+    );
+  }
+
+  ///判断管理员权限
+  judgeAdmin() {
+    return CommonPreferences.isSchAdmin.value ||
+        CommonPreferences.isStuAdmin.value ||
+        CommonPreferences.isSuper.value;
+  }
+
   @override
   Widget build(BuildContext context) {
     var commentMenuButton = GestureDetector(
@@ -109,6 +148,32 @@ class _NCommentCardState extends State<NCommentCard>
             builder: (context) {
               return CupertinoActionSheet(
                 actions: <Widget>[
+                  if (judgeAdmin())
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        cleanTopFloor(widget.comment.id.toString())
+                            .then((_) => Navigator.pop(context));
+                      },
+                      child: Text(
+                        "恢复原评论状态（取消置顶）",
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
+
+                  if (judgeAdmin())
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        _showFloorUpDialog(widget.comment.id.toString())
+                            .then((value) => Navigator.pop(context));
+                      },
+                      child: Text(
+                        "评论置顶",
+                        style:
+                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                      ),
+                    ),
+
                   // 拉黑按钮
                   if (Platform.isIOS && widget.showBlockButton)
                     // 分享按钮
@@ -337,6 +402,11 @@ class _NCommentCardState extends State<NCommentCard>
               //     widget.comment.replyTo != widget.ancestorUId)
               //   CommentIdentificationContainer(
               //       '回复ID：' + widget.comment.replyTo.toString(), false),
+              if (widget.comment.value != 0)
+                Text(
+                  "  置顶贴",
+                    style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C,
+                ),
             ],
           ),
         ),
@@ -470,7 +540,8 @@ class _NCommentCardState extends State<NCommentCard>
                                             .focusNode);
                                   }
                                 },
-                                child: Container(height: 68.h, color: Colors.transparent)))
+                                child: Container(
+                                    height: 68.h, color: Colors.transparent)))
                       ],
                     ),
         ));
@@ -585,7 +656,7 @@ class _NCommentCardState extends State<NCommentCard>
         width: 34,
         height: 34,
         child: ProfileImageWithDetailedPopup(
-          widget.comment.id,
+            widget.comment.id,
             false,
             widget.type,
             widget.comment.avatar ?? widget.comment.nickname,
@@ -686,5 +757,92 @@ class _NCommentCardState extends State<NCommentCard>
               Positioned(right: 8.w, child: commentMenuButton)
             ],
           );
+  }
+}
+
+class AdminPopUp extends StatefulWidget {
+  @required
+  final String floorId;
+
+  @required
+  const AdminPopUp({Key key, this.floorId}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => AdminPopUpState();
+}
+
+class AdminPopUpState extends State<AdminPopUp> {
+  TextEditingController tc = TextEditingController();
+
+  adminTopFloor(String id, String index) async {
+    await FeedbackService.adminFloorTopPost(
+      id: id,
+      hotIndex: index,
+      onSuccess: () {
+        ToastProvider.success('置顶成功');
+        Navigator.pop(context);
+      },
+      onFailure: (e) {
+        ToastProvider.error(e.error.toString());
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+        child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SizedBox(height: 4),
+            Center(
+                child: Text("评论置顶",
+                    style: TextUtil.base.NotoSansSC.w500.sp(16).black2A)),
+            SizedBox(
+              height: 20,
+            ),
+            TextField(
+              controller: tc,
+              decoration: InputDecoration(
+                  hintMaxLines: 2,
+                  hintText: "评论置顶值，0-3000，0为取消置顶",
+                  hintStyle: TextUtil.base.black2A.bold.w500.sp(14),
+                  filled: true,
+                  fillColor: Color.fromRGBO(235, 238, 243, 1),
+                  isCollapsed: true,
+                  contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none)),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  adminTopFloor(widget.floorId, tc.text);
+                },
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(2),
+                  backgroundColor:
+                      MaterialStateProperty.all(ColorUtil.backgroundColor),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                ),
+                child: Text("确认",
+                    style: TextUtil.base.NotoSansSC.w500.sp(14).black2A),
+              ),
+            )
+          ]),
+    ));
   }
 }

@@ -1026,6 +1026,25 @@ class FeedbackService with AsyncTimer {
     });
   }
 
+  static adminFloorTopPost(
+      {@required id,
+        @required hotIndex,
+        @required OnSuccess onSuccess,
+        @required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('adminFloorTopPost', () async {
+      try {
+        await feedbackAdminPostDio.post('floor/value',
+            formData: FormData.fromMap({
+              'floor_id': id,
+              'value': hotIndex,
+            }));
+        onSuccess?.call();
+      } on DioError catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
   static adminChangeETag(
       {@required id,
       @required value,

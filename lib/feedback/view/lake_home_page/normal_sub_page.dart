@@ -480,8 +480,8 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       end: Alignment.bottomCenter,
                       colors: [
                         isOpa
-                         ? Color(0x42FFFFFF) : Color(0xA6FFFFFF),
-                        !isOpa ? Color(0x52FFFFFF) : Color(0xB0FFFFFF),
+                         ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
+                        !isOpa ? Color(0x32FFFFFF) : Color(0x90FFFFFF),
                       ],
                     ),
                   ),

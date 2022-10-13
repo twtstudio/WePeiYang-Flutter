@@ -797,6 +797,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         context: context,
         builder: (context) {
           return Stack(
+
             children: [
               ManagerPopUp(post: post),
             ],

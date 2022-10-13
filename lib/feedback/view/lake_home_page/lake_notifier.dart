@@ -125,10 +125,10 @@ class LakeModel extends ChangeNotifier {
         mainStatus == LakePageStatus.unload)
       mainStatus = LakePageStatus.loading;
     notifyListeners();
+    WPYTab oTab = WPYTab(id: 0, shortname: '精华', name: '精华');
+    tabList.clear();
+    tabList.add(oTab);
     await FeedbackService.getTabList().then((list) {
-      WPYTab oTab = WPYTab(id: 0, shortname: '精华', name: '精华');
-      tabList.clear();
-      tabList.add(oTab);
       tabList.addAll(list);
       lakeAreas.addAll({0: LakeArea.empty()});
       initLakeArea(0, oTab, RefreshController(), ScrollController());

@@ -191,6 +191,7 @@ class Floor {
     this.imageUrl,
     this.sender,
     this.replyTo,
+    this.value,
     this.replyToName,
     this.subTo,
     this.likeCount,
@@ -215,6 +216,7 @@ class Floor {
   int replyTo;
   String replyToName;
   int subTo;
+  int value;
   int likeCount;
   List<Floor> subFloors;
   int subFloorCnt;
@@ -239,6 +241,7 @@ class Floor {
         replyToName: json["reply_to_name"],
         rating: json["rating"],
         subTo: json["sub_to"],
+        value:json["value"],
         likeCount: json["like_count"],
         subFloors: json["sub_floors"] == null
             ? null
@@ -264,6 +267,7 @@ class Floor {
         "reply_to": replyTo,
         "reply_to_name": replyToName,
         "sub_to": subTo,
+        "value":value,
         "like_count": likeCount,
         "sub_floors": subFloors == null
             ? null
