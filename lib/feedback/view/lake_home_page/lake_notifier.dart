@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/we_ko_dialog.dart';
-
-import '../../feedback_router.dart';
 
 class FbDepartmentsProvider {
   List<Department> departmentList = [];
@@ -281,12 +281,12 @@ class LakeModel extends ChangeNotifier {
   getClipboardWeKoContents(BuildContext context) async {
     ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
     if (clipboardData != null && clipboardData.text.trim() != '') {
-      String weCo = clipboardData.text.trim();
-      RegExp regExp = RegExp(r'(wpy):\/\/(school_project)\/');
-      if (regExp.hasMatch(weCo)) {
-        var id = RegExp(r'\d{1,}').stringMatch(weCo);
+      String text = clipboardData.text.trim();
+
+      final id = text.find(r"wpy://school_project/(\d*)");
+      if (id.isNotEmpty) {
         if (CommonPreferences.feedbackLastWeCo.value != id &&
-            CommonPreferences.lakeToken.value != "") {
+            CommonPreferences.lakeToken.value != "")
           FeedbackService.getPostById(
               id: int.parse(id),
               onResult: (post) {
@@ -312,7 +312,6 @@ class LakeModel extends ChangeNotifier {
               onFailure: (e) {
                 // ToastProvider.error(e.error.toString());
               });
-        }
       }
     }
   }
