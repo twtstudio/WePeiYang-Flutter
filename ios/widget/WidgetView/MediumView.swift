@@ -10,127 +10,162 @@ import WidgetKit
 
 struct MediumView: View {
     @Environment(\.colorScheme) private var colorScheme
-    var courseTable: CourseTable = SwiftStorage.courseTable.object
-    let entry: DataEntry
+    @ObservedObject var store = SwiftStorage.courseTable
+    private var courseTable: CourseTable { store.object }
     
-
-    var time: Int {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH mm"
-        let s = formatter.string(from: Date())
-        let t = s.split(separator: " ").map{ Int($0) ?? 0 }
-        
-        return 60 * t[0] + t[1]
+    let entry: DataEntry
+    let theme: WColorTheme
+    
+    /// 是否为简写
+    var isPlaceHolder: Bool { entry.isPlaceHolder }
+    
+    /// 星期简写 比如Thu
+    var weekday: String {
+        return courseTable.currentDate.format(with: "E")
     }
     
+    @State var courses: [WCourse] = []
+    
+    private func ClassLine(course: WCourse) -> some View {
+        return HStack {
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color.wColor(.main, theme))
+                .frame(width: 4, height: 28)
+            VStack(alignment: .leading) {
+                HStack(alignment: .center, spacing: 2) {
+                    Text(course.course.name)
+                        .wfont(.pingfang, size: 11)
+                        .foregroundColor(.wColor(.title, theme))
+                        .lineLimit(1)
+                    Group {
+                        if course.isDup {
+                            Image("warn")
+                                .resizable()
+                                .frame(width: 12, height: 12)
+                        } else {
+                            EmptyView()
+                        }
+                    }
+                }
+                
+                // 自动缩小防止显示不全
+                HStack(spacing: 0) {
+                    Text("\(course.arrange.location) ")
+                        .foregroundColor(.wColor(.body, theme))
+                        .wfont(.sfpro, size: 11)
+                    
+                    Text("\(course.arrange.unitTimeString)")
+                        .foregroundColor(.wColor(.body, theme))
+                        .wfont(.sfpro, size: 11)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+            }
+        }
+    }
+    
+    private func TomorrowLogo() -> some View {
+        Text("明天")
+            .wfont(.pingfang, size: 10)
+            .foregroundColor(.wColor(.main, theme))
+            .padding(.top, -5)
+            .padding(.bottom, -5)
+    }
+    
+    private func MoreCourses(cnt: Int) -> some View {
+        Text("今天还有 \(cnt) 个课程")
+            .wfont(.pingfang, size: 10)
+            .foregroundColor(.wColor(.body, theme))
+            .padding(.top, -6)
+
+    }
+    
+    private func DetailView() -> some View {
+        let data: [(WCourse, AnyView)] = courses.prefix(2).map{ ($0, AnyView(ClassLine(course: $0))) }
+        var cnt = 0
+        
+        // 判断是否有“今天还有更多课”
+        if courses.count > 2 {
+            for i in 0..<courses.count {
+                if courses[i].arrange.weekday == courseTable.currentDay {
+                    cnt +=  1
+                }
+            }
+        }
+        
+        return VStack(alignment: .leading) {
+            if(!data[0].0.isToday){
+                TomorrowLogo()  //在第一个课前加入“明天”
+            }
+            ForEach(0..<data.count, id: \.self) { i in
+                if (!data[i].0.isToday && data[0].0.isToday){
+                    TomorrowLogo()  //在第一节为今天，第二节课为明天的时候加入“明天”
+                }
+                data[i].1
+            }
+            if(courses.count > 2 && data[0].0.isToday && data[1].0.isToday){
+                MoreCourses(cnt: cnt)   //在接下来连续两节课为今天的时候插入“今天还有x节课”
+            }
+        }
+    }
+    
+    
     var body: some View {
-        Text("")
-//        GeometryReader { geo in
-//            HStack(alignment: .center) {
-//                ZStack {
-//                    if !currentCourseTable.isEmpty {
-//                        if let preCourse = WidgetCourseManager.getPresentAndNextCourse(
-//                            courseArray: currentCourseTable,
-//                            weekday: courseTable.currentDay,
-//                            time: time).0 {
-//                            if preCourse.isNext == false {
-//                                Image("NOW")
-//                                    .resizable()
-//                                    .scaledToFill()
-//                                    .frame(width: geo.size.width/2, height: geo.size.height*(5/7))
-//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-//                            } else {
-//                                Image("NEXT")
-//                                    .resizable()
-//                                    .scaledToFill()
-//                                    .frame(width: geo.size.width/2, height: geo.size.height*(5/7))
-//                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-//                            }
-//
-//                            if preCourse.isEmpty == false {
-//                                VStack(spacing: 7) {
-//                                    Text("\(preCourse.course.name)")
-//                                        .font(.footnote)
-//                                        .fontWeight(.bold)
-//                                        .lineLimit(1)
-//
-//                                    Text("\(preCourse.course.activeArrange(courseTable.currentDay).location)")
-//                                        .font(.footnote)
-//
-//                                    Text("\(preCourse.course.activeArrange(courseTable.currentDay).startTimeString)-\(preCourse.course.activeArrange(courseTable.currentDay).endTimeString)")
-//                                        .font(.footnote)
-//                                }
-//                                .frame(width: geo.size.width*(4/5), height: geo.size.height, alignment: .center)
-//                                .foregroundColor(.white)
-//                                .padding(8)
-//                                .padding(.top, 8)
-//                            } else {
-//                                Text("接下来无课")
-//                                    .font(.footnote)
-//                                    .foregroundColor(.white)
-//                            }
-//                        }
-//                    }
-//
-//                    else {
-//                        Image("无课2*4")
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: geo.size.width/2, height: geo.size.height*(5/7))
-//                            .clipShape(RoundedRectangle(cornerRadius: 10))
-//
-//                        Text("今日无课:)\n做点有意义的事情吧")
-//                            .font(.footnote)
-//                            .foregroundColor(.white)
-//                    }
-//                }
-//                .frame(width: geo.size.width*(3/5), height: geo.size.height*(4/5))
-//                //                .padding(.trailing, 10)
-//                //                .padding(.leading, geo.size.width/25)
-//
-//                VStack(alignment: .leading) {
-//                    HStack {
-//                        Image(weathers[0].weatherIconString1)
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: 50, height: 50)
-//
-//                        VStack(alignment: .leading) {
-//                            Text("今：\(weathers[0].wStatus)")
-//                                .font(.footnote)
-//                                .bold()
-//
-//                            Text("\(weathers[0].weatherString)")
-//                                .font(.footnote)
-//                                .bold()
-//                        }
-//                        .foregroundColor(colorScheme == .dark ? .white : Color(#colorLiteral(red: 0.1279886365, green: 0.1797681153, blue: 0.2823780477, alpha: 1)))
-//                    }
-//
-//                    HStack {
-//                        Image(weathers[1].weatherIconString1)
-//                            .resizable()
-//                            .scaledToFill()
-//                            .frame(width: 50, height: 50)
-//
-//                        VStack(alignment: .leading) {
-//                            Text("明：\(weathers[1].wStatus)")
-//                                .font(.footnote)
-//                                .bold()
-//
-//                            Text("\(weathers[1].weatherString)")
-//                                .font(.footnote)
-//                                .bold()
-//                        }
-//                        .foregroundColor(colorScheme == .dark ? .white : Color(#colorLiteral(red: 0.1279886365, green: 0.1797681153, blue: 0.2823780477, alpha: 1)))
-//                    }
-//                }
-//            }
-//            .padding(.top, geo.size.height/9)
-//
-//        }
-//
-//
+        HStack {
+            VStack(alignment: .leading) {
+                HStack(alignment: .top) {
+                    Text("\(weekday).")
+                        .foregroundColor(.wColor(.main, theme))
+                        .wfont(.product, size: 36)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                    
+                    Spacer()
+                    
+                    Image(theme == .white ? "peiyanglogo-white" : "peiyanglogo-blue")
+                        .resizable()
+                        .frame(width: 21, height: 10)
+                        .padding(.top, 10)
+                        .scaledToFit()
+                }
+                .padding(.bottom, -8) //-1和0简直就是天壤之别。。。
+
+                Spacer()
+                VStack{
+                    if courses.isEmpty {
+                        Text("这两天都没有课程啦，\n假期愉快！")
+                            .wfont(.pingfang, size: 10)
+                            .foregroundColor(.wColor(.title, theme))
+                    } else {
+                        DetailView()
+                    }
+                }
+                Spacer()
+
+                
+            }
+            .frame(minWidth: 144, maxWidth: 144, minHeight: 0, maxHeight: .infinity, alignment: .top)  //使VStack占据父视图所有高度
+            .onAppear {
+                store.reloadData()
+                courses = WidgetCourseManager.getCourses(courseTable: courseTable)
+            }
+            Spacer()
+            
+            ZStack{
+                RoundedRectangle(cornerSize: CGSize(width: 12, height: 12))
+                    .foregroundColor(.white)
+                    .opacity(0.94)
+                    .frame(width: 150, height: 134)
+            }
+        }
+        .padding(12)
+        .background(theme == .blue ?
+                    AnyView(LinearGradient(colors: [
+                        .hex("#3586E2"),
+                        .hex("#3F8FE3"),
+                        .hex("#519FE4"),
+                        .hex("#70BAE7"),
+                    ], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    : AnyView(Color.white))
     }
 }
 

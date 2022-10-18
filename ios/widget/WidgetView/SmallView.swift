@@ -68,41 +68,43 @@ struct SmallView: View {
         Text("明天")
             .wfont(.pingfang, size: 10)
             .foregroundColor(.wColor(.main, theme))
+            .padding(.top, -5)
+            .padding(.bottom, -5)
     }
     
     private func MoreCourses(cnt: Int) -> some View {
         Text("今天还有 \(cnt) 个课程")
             .wfont(.pingfang, size: 10)
             .foregroundColor(.wColor(.body, theme))
+            .padding(.top, -6)
+
     }
     
     private func DetailView() -> some View {
-        var data: [(WCourse, AnyView)] = courses.prefix(2).map{ ($0, AnyView(ClassLine(course: $0))) }
-        
-        // 插入明天logo
-        for i in 0..<data.count {
-            if !data[i].0.isToday {
-                data.insert((WCourse(),AnyView(TomorrowLogo())), at: i)
-                break
-            }
-        }
+        let data: [(WCourse, AnyView)] = courses.prefix(2).map{ ($0, AnyView(ClassLine(course: $0))) }
+        var cnt = 0
         
         // 判断是否有“今天还有更多课”
         if courses.count > 2 {
-            var cnt = 0
-            for i in 2..<courses.count {
+            for i in 0..<courses.count {
                 if courses[i].arrange.weekday == courseTable.currentDay {
                     cnt +=  1
                 }
             }
-            if cnt != 0 {
-                data.append((WCourse(), AnyView(MoreCourses(cnt: cnt))))
-            }
         }
         
         return VStack(alignment: .leading) {
+            if(!data[0].0.isToday){
+                TomorrowLogo()  //在第一个课前加入“明天”
+            }
             ForEach(0..<data.count, id: \.self) { i in
+                if (!data[i].0.isToday && data[0].0.isToday){
+                    TomorrowLogo()  //在第一节为今天，第二节课为明天的时候加入“明天”
+                }
                 data[i].1
+            }
+            if(courses.count > 2 && data[0].0.isToday && data[1].0.isToday){
+                MoreCourses(cnt: cnt)   //在接下来连续两节课为今天的时候插入“今天还有x节课”
             }
         }
     }
@@ -130,18 +132,23 @@ struct SmallView: View {
                             .padding(.top, 10)
                             .scaledToFit()
                     }
+                    .padding(.bottom, -8) //-1和0简直就是天壤之别。。。
+
                     Spacer()
-                    if courses.isEmpty {
-                        Text("这两天都没有课程啦，\n假期愉快！")
-                            .wfont(.pingfang, size: 10)
-                            .foregroundColor(.wColor(.title, theme))
-                    } else {
-                        DetailView()
+                    VStack{
+                        if courses.isEmpty {
+                            Text("这两天都没有课程啦，\n假期愉快！")
+                                .wfont(.pingfang, size: 10)
+                                .foregroundColor(.wColor(.title, theme))
+                        } else {
+                            DetailView()
+                        }
                     }
-                    
+//                    .border(Color.green)
                     Spacer()
                     
                 }
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)  //使VStack占据父视图所有高度
                 .padding()
                 .background(theme == .blue ?
                             AnyView(LinearGradient(colors: [
