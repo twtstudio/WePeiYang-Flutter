@@ -17,7 +17,7 @@ struct SmallView: View {
     let entry: DataEntry
     let theme: WColorTheme
     
-    /// 是否为简写
+    /// 是否为占位符
     var isPlaceHolder: Bool { entry.isPlaceHolder }
     
     /// 星期简写 比如Thu
