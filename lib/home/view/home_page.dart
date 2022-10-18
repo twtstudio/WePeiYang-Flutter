@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter/services.dart' show MethodChannel, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       context.read<StudyroomProvider>().init();
     });
-    if(widget.page!=null){
+    if (widget.page != null) {
       _tabController.animateTo(widget.page);
     }
   }

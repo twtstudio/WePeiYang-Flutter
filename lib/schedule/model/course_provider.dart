@@ -99,6 +99,7 @@ class CourseProvider with ChangeNotifier {
       notifyListeners();
       CommonPreferences.courseData.value =
           json.encode(CourseTable(_schoolCourses, _customCourses));
+
       _widgetChannel.invokeMethod("refreshScheduleWidget");
       onSuccess?.call();
     }, onFailure: (e) {

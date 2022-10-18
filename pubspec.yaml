@@ -1,4 +1,4 @@
-﻿name: we_pei_yang_flutter
+name: we_pei_yang_flutter
 description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -41,11 +41,8 @@ dependencies:
   flutter_smart_dialog: ^3.3.5
   flutter_svg: ^0.22.0
   flutter_swiper: ^1.1.6
-
   fluttertoast: ^8.0.8
-
   gallery_saver: ^2.3.2
-
   http_parser: ^4.0.0
 
   image_cropper: ^1.5.0
