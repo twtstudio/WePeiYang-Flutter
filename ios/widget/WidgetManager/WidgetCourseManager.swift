@@ -74,7 +74,7 @@ struct WidgetCourseManager {
         // 现在的分钟总数
         let curMin = current.hour! * 60 + current.minute!
         
-        // `flat`实现了将[[E]]中的[E]拼接到一起的作用，最后类型为[(Arrange), Course]
+        // `flat`实现了将[[E]]中的[E]拼接到一起的作用，最后类型为[(Arrange, Course)]
         let array = courseTable.courseArray.flatMap { course in
             (course.activeArranges(courseTable.currentDay, week: courseTable.currentWeek) +
              course.activeArranges(courseTable.tomorrowDay, week: courseTable.tomorrowWeek))
@@ -83,7 +83,7 @@ struct WidgetCourseManager {
         }.filter { tup in
             let arrange = tup.0
             // 如果已经结束了就不要了
-            if arrange.weekday == courseTable.currentDay && arrange.endTime.0 * 60 + arrange.endTime.1 < curMin {
+            if arrange.weekday == courseTable.currentDay && arrange.endTime.0 * 60 + arrange.endTime.1 <= curMin {
                 return false
             }
             return true
