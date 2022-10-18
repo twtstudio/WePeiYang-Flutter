@@ -38,6 +38,8 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
     }
 
     override func applicationWillResignActive(_ application: UIApplication) {
+        // 每次退出到桌面的时候刷新下
+        Channel.reloadWidgetData()
     }
 }
 
