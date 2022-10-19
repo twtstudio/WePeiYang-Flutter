@@ -14,9 +14,22 @@ import Intents
 struct PeiYang_LiteBundle: WidgetBundle {
     @WidgetBundleBuilder
     var body: some Widget {
-        WhiteColorWidget()
-        BlueColorWidget()
-        LockScreenWidget()
+        widgets()
+    }
+    
+    private func widgets() -> some Widget {
+        if #available(iOS 16.0, *) {
+            return WidgetBundleBuilder.buildBlock(
+                WhiteColorWidget(),
+                BlueColorWidget(),
+                LockScreenWidget()
+            )
+        } else {
+            return WidgetBundleBuilder.buildBlock(
+                WhiteColorWidget(),
+                BlueColorWidget()
+            )
+        }
     }
 }
 
@@ -44,23 +57,16 @@ struct BlueColorWidget: Widget {
     }
 }
 
+
+@available(iOSApplicationExtension 16.0, *)
 struct LockScreenWidget: Widget {
     var body: some WidgetConfiguration {
-        if #available(iOSApplicationExtension 16.0, *) {
-            return StaticConfiguration(kind: "lockScreen", provider: CourseTimelineProvider()) { entry in
-                CourseTableWidgetEntryView(entry: entry, color: .blue)
-            }
-            .configurationDisplayName("课表信息")
-            .description("快速查看今明课表信息。")
-            .supportedFamilies([.accessoryRectangular,.accessoryCircular])
-        } else {
-            return StaticConfiguration(kind: "lockScreen", provider: CourseTimelineProvider()) { entry in
-                CourseTableWidgetEntryView(entry: entry, color: .blue)
-            }
-            .configurationDisplayName("课表信息")
-            .description("快速查看今明课表信息。")
-            .supportedFamilies([])
+        StaticConfiguration(kind: "lockScreen", provider: CourseTimelineProvider()) { entry in
+            LockScreenWidgetEntryView(entry: entry)
         }
+        .configurationDisplayName("课表信息")
+        .description("快速查看今明课表信息。")
+        .supportedFamilies([.accessoryRectangular,.accessoryCircular])
     }
 }
 
@@ -91,6 +97,24 @@ struct CourseTableWidgetEntryView: View {
             default:
                 SmallView(entry: entry, theme: color)
             }
+        }
+    }
+}
+
+@available(iOSApplicationExtension 16.0, *)
+struct LockScreenWidgetEntryView: View {
+    var entry: CourseTimelineProvider.Entry
+    
+    @Environment(\.widgetFamily) var family
+    
+    var body: some View {
+        switch family {
+        case .accessoryCircular:
+            LockRingView(entry: entry)
+        case .accessoryRectangular:
+            LockRectView(entry: entry)
+        default:
+            LockRingView(entry: entry)
         }
     }
 }

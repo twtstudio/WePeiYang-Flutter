@@ -52,6 +52,7 @@ struct SmallView: View {
                         }
                     }
                 }
+                .frame(height: 10)
                 
                 // 自动缩小防止显示不全
                 HStack(spacing: 0) {

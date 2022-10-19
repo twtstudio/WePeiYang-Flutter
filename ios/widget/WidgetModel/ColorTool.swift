@@ -74,10 +74,6 @@ extension Color {
         
     }
     
-    static func wColor(_ type: WColor, _ theme: WColorTheme, _ colorScheme: ColorScheme) -> Color {
-        type.color(theme: theme, colorScheme: colorScheme)
-    }
-    
     static func wColor(_ type: WColor, _ property: ColorProperty) -> Color {
         type.color(theme: property.wTheme, colorScheme: property.colorTheme)
     }

@@ -26,16 +26,20 @@ struct MediumView: View {
     
     @State var courses: [WCourse] = []
     
+    private var colorProperty: ColorProperty {
+        ColorProperty(wTheme: theme, colorTheme: colorScheme)
+    }
+    
     private func ClassLine(course: WCourse) -> some View {
         return HStack {
             RoundedRectangle(cornerRadius: 3)
-                .fill(Color.wColor(.main, theme))
+                .fill(Color.wColor(.main, colorProperty))
                 .frame(width: 4, height: 28)
             VStack(alignment: .leading) {
                 HStack(alignment: .center, spacing: 2) {
                     Text(course.course.name)
                         .wfont(.pingfang, size: 11)
-                        .foregroundColor(.wColor(.title, theme))
+                        .foregroundColor(.wColor(.title, colorProperty))
                         .lineLimit(1)
                     Group {
                         if course.isDup {
@@ -51,11 +55,11 @@ struct MediumView: View {
                 // 自动缩小防止显示不全
                 HStack(spacing: 0) {
                     Text("\(course.arrange.location) ")
-                        .foregroundColor(.wColor(.body, theme))
+                        .foregroundColor(.wColor(.body, colorProperty))
                         .wfont(.sfpro, size: 11)
                     
                     Text("\(course.arrange.unitTimeString)")
-                        .foregroundColor(.wColor(.body, theme))
+                        .foregroundColor(.wColor(.body, colorProperty))
                         .wfont(.sfpro, size: 11)
                         .fixedSize(horizontal: true, vertical: false)
                 }
@@ -66,7 +70,7 @@ struct MediumView: View {
     private func TomorrowLogo() -> some View {
         Text("明天")
             .wfont(.pingfang, size: 10)
-            .foregroundColor(.wColor(.main, theme))
+            .foregroundColor(.wColor(.main, colorProperty))
             .padding(.top, -5)
             .padding(.bottom, -5)
     }
@@ -74,7 +78,7 @@ struct MediumView: View {
     private func MoreCourses(cnt: Int) -> some View {
         Text("今天还有 \(cnt) 个课程")
             .wfont(.pingfang, size: 10)
-            .foregroundColor(.wColor(.body, theme))
+            .foregroundColor(.wColor(.body, colorProperty))
             .padding(.top, -6)
 
     }
@@ -114,7 +118,7 @@ struct MediumView: View {
             VStack(alignment: .leading) {
                 HStack(alignment: .top) {
                     Text("\(weekday).")
-                        .foregroundColor(.wColor(.main, theme))
+                        .foregroundColor(.wColor(.main, colorProperty))
                         .wfont(.product, size: 36)
                         .fixedSize(horizontal: false, vertical: true)
                         .lineLimit(1)
@@ -134,7 +138,7 @@ struct MediumView: View {
                     if courses.isEmpty {
                         Text("这两天都没有课程啦，\n假期愉快！")
                             .wfont(.pingfang, size: 10)
-                            .foregroundColor(.wColor(.title, theme))
+                            .foregroundColor(.wColor(.title, colorProperty))
                     } else {
                         DetailView()
                     }
