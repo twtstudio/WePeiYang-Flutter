@@ -297,20 +297,23 @@ class _PersonPageState extends State<PersonPage> {
     return Container(
       color: Colors.white,
       child: SafeArea(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController,
-          header: RefreshHeader(),
-          footer: ClassicFooter(
-            idleText: '没有更多数据了:>',
-            idleIcon: Icon(Icons.check),
-          ),
-          enablePullDown: true,
-          onRefresh: _onRefresh,
-          enablePullUp: true,
-          onLoading: _onLoading,
-          child: body,
-        ),
+        child: (CommonPreferences.isSuper.value ||
+                CommonPreferences.isStuAdmin.value)
+            ? SmartRefresher(
+                physics: BouncingScrollPhysics(),
+                controller: _refreshController,
+                header: RefreshHeader(),
+                footer: ClassicFooter(
+                  idleText: '没有更多数据了:>',
+                  idleIcon: Icon(Icons.check),
+                ),
+                enablePullDown: true,
+                onRefresh: _onRefresh,
+                enablePullUp: true,
+                onLoading: _onLoading,
+                child: body,
+              )
+            : SingleChildScrollView(child: appBar),
       ),
     );
   }

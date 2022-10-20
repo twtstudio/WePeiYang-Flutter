@@ -179,6 +179,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             post.commentCount.toString() + '   ',
             style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
           ),
+          if (post.isLike != null)
           IconWidget(
             IconType.like,
             count: post.likeCount,
@@ -203,6 +204,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             },
             isLike: post.isLike,
           ),
+          if (post.isDis != null)
           DislikeWidget(
             size: 15.w,
             isDislike: widget.post.isDis,
@@ -592,7 +594,8 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
     return Row(
       children: [
         SizedBox(width: 10),
-        IconWidget(
+        if (widget.post.isLike != null)
+          IconWidget(
           IconType.bottomLike,
           count: widget.post.likeCount,
           onLikePressed: (isLike, likeCount, success, failure) async {
@@ -616,7 +619,8 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
           },
           isLike: widget.post.isLike,
         ),
-        IconWidget(
+        if (widget.post.isFav != null)
+          IconWidget(
           IconType.bottomFav,
           count: widget.post.favCount,
           onLikePressed: (isFav, favCount, success, failure) async {
@@ -636,7 +640,8 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
           },
           isLike: widget.post.isFav,
         ),
-        DislikeWidget(
+        if (widget.post.isDis != null)
+          DislikeWidget(
           size: 22.w,
           isDislike: widget.post.isDis,
           onDislikePressed: (dislikeNotifier) async {
