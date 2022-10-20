@@ -305,17 +305,17 @@ class _ProfileImageWithDetailedPopupState
               widget.avatar,
               widget.nickName,
               widget.level)),
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(100)),
-        child: Hero(
-          tag: 'personImage',
+      child: Hero(
+        tag: widget.avatar ?? widget.uid,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
           child: WpyPic(
             widget.avatar == ""
                 ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                 : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
             width: 34.w,
             height: 34.w,
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
           ),
         ),
       ),

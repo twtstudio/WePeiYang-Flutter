@@ -166,10 +166,10 @@ class _PersonPageState extends State<PersonPage> {
                       "indexNow": 0
                     });
             },
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: Hero(
-                tag: 'personImage',
+            child: Hero(
+              tag: avatar ?? uid,
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
                 child: WpyPic(
                   avatar == ""
                       ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
