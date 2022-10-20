@@ -1,7 +1,7 @@
+// @dart = 2.12
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/foundation.dart' show compute;
-import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -9,8 +9,8 @@ import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
 class MessageService {
   static getUnreadMessagesCount(
-      {@required OnResult<MessageCount> onResult,
-      @required OnFailure onFailure}) async {
+      {required OnResult<MessageCount> onResult,
+      required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("count");
       onResult(MessageCount.fromJson(response.data['count']));
@@ -20,9 +20,9 @@ class MessageService {
   }
 
   static getLikeMessages(
-      {@required int page,
-      @required void Function(List<LikeMessage> list, int total) onSuccess,
-      @required OnFailure onFailure}) async {
+      {required int page,
+      required void Function(List<LikeMessage> list, int total) onSuccess,
+      required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("likes", queryParameters: {
         "page_size": '20',
@@ -39,9 +39,9 @@ class MessageService {
   }
 
   static getFloorMessages(
-      {@required page,
-      @required void Function(List<FloorMessage> list, int totalPage) onSuccess,
-      @required OnFailure onFailure}) async {
+      {required page,
+      required void Function(List<FloorMessage> list, int totalPage) onSuccess,
+      required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("floors", queryParameters: {
         "page_size": '20',
@@ -58,9 +58,9 @@ class MessageService {
   }
 
   static getReplyMessages(
-      {@required page,
-      @required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
-      @required OnFailure onFailure}) async {
+      {required page,
+      required void Function(List<ReplyMessage> list, int totalPage) onSuccess,
+      required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("replys", queryParameters: {
         "page_size": '20',
@@ -77,12 +77,9 @@ class MessageService {
   }
 
   static getNoticeMessages(
-      {@required
-          page,
-      @required
-          void Function(List<NoticeMessage> list, int totalPage) onSuccess,
-      @required
-          OnFailure onFailure}) async {
+      {required page,
+      required void Function(List<NoticeMessage> list, int totalPage) onSuccess,
+      required OnFailure onFailure}) async {
     try {
       var response = await messageDio.get("notices", queryParameters: {
         "page_size": '20',
@@ -99,7 +96,7 @@ class MessageService {
   }
 
   static setLikeMessageRead(int id, int type,
-      {OnSuccess onSuccess, OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     try {
       await messageDio.post("like/read",
           formData: FormData.fromMap({"id": id, "type": type}));
@@ -114,7 +111,7 @@ class MessageService {
   }
 
   static setReplyMessageRead(int id,
-      {OnSuccess onSuccess, OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     try {
       await messageDio.post("reply/read",
           formData: FormData.fromMap({"id": id}));
@@ -129,7 +126,7 @@ class MessageService {
   }
 
   static setFloorMessageRead(int id,
-      {OnSuccess onSuccess, OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     try {
       await messageDio.post("floor/read",
           formData: FormData.fromMap({"id": id}));
@@ -144,18 +141,18 @@ class MessageService {
   }
 
   static setPostFloorMessageRead(int postId,
-      {OnSuccess onSuccess, OnFailure onFailure}) async {
+      {OnSuccess? onSuccess, OnFailure? onFailure}) async {
     try {
       await messageDio.post("floor/read_in_post",
           formData: FormData.fromMap({"post_id": postId}));
-      onSuccess();
+      onSuccess?.call();
     } on DioError catch (e) {
-      onFailure(e);
+      onFailure?.call(e);
     }
   }
 
   static setNoticeMessageRead(int id,
-      {OnSuccess onSuccess, OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     try {
       await messageDio.post("notice/read",
           formData: FormData.fromMap({"id": id}));
@@ -169,7 +166,8 @@ class MessageService {
     //     .invokeMethod<String>("cancelNotification", {"id": questionId});
   }
 
-  static setAllMessageRead({OnSuccess onSuccess, OnFailure onFailure}) async {
+  static setAllMessageRead(
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     try {
       await messageDio.post("all");
       onSuccess();
@@ -204,7 +202,7 @@ class ApiInterceptor extends InterceptorsWrapper {
   onResponse(response, handler) async {
     final String data = response.data.toString();
     final bool isCompute = data.length > 10 * 1024;
-    final Map<dynamic, dynamic> _map =
+    final Map<String, dynamic> _map =
         isCompute ? await compute(parseData, data) : parseData(data);
     FeedbackMessageBaseData respData = FeedbackMessageBaseData.fromJson(_map);
     if (respData.success) {
@@ -216,7 +214,7 @@ class ApiInterceptor extends InterceptorsWrapper {
   }
 }
 
-Map<dynamic, dynamic> parseData(String data) {
+Map<String, dynamic> parseData(String data) {
   return jsonDecode(data);
 }
 
@@ -227,9 +225,8 @@ class FeedbackMessageBaseData {
 
   bool get success => code == 200;
 
-  FeedbackMessageBaseData.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    message = json['msg'];
-    data = json['data'];
-  }
+  FeedbackMessageBaseData.fromJson(Map<String, dynamic> json)
+      : this.code = json['code'],
+        this.message = json['msg'],
+        this.data = json['data'];
 }

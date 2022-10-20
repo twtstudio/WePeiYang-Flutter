@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +15,8 @@ import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 class TjuRebindDialog extends Dialog {
   final String reason;
 
-  TjuRebindDialog({String reason})
-      : reason = (reason == null ? S.current.re_login_text : reason);
+  TjuRebindDialog({String? reason})
+      : this.reason = reason ?? S.current.re_login_text;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +49,11 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   String tjupasswd = "";
   String captcha = "";
 
-  TextEditingController nameController;
-  TextEditingController pwController;
+  TextEditingController? nameController;
+  TextEditingController? pwController;
   TextEditingController codeController = TextEditingController();
   final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
-  CaptchaWidget captchaWidget;
+  late final CaptchaWidget captchaWidget;
 
   @override
   void initState() {
@@ -72,7 +73,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   void dispose() {
     nameController?.dispose();
     pwController?.dispose();
-    codeController?.dispose();
+    codeController.dispose();
     super.dispose();
   }
 
@@ -143,7 +144,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     }, onFailure: (e) {
       if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
       ToastProvider.error(e.error.toString());
-      captchaKey.currentState.refresh();
+      captchaKey.currentState?.refresh();
     });
     codeController.clear();
   }
@@ -153,6 +154,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   /// 能否连接到办公网
   bool _canConnectToClasses = true;
+
   _checkClasses() async {
     _canConnectToClasses = await ClassesService.check();
     setState(() {});

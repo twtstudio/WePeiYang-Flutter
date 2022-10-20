@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,22 +20,27 @@ class AvatarCropPage extends StatefulWidget {
 }
 
 class _AvatarCropPageState extends State<AvatarCropPage> {
-  File file;
+  File? file;
 
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         maxAssets: 1,
         requestType: RequestType.image,
         themeColor: ColorUtil.blueA6Color);
-    File file = await assets[0].file;
-    for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+    if (assets == null) return; // 取消选择图片的情况
+    File? file = await assets[0].file;
+    if (file == null) {
+      ToastProvider.error('选取图片异常，请重新尝试');
+      return;
+    }
+    for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
       file = await FlutterNativeImage.compressImage(file.path, quality: 80);
       if (j == 10) {
         ToastProvider.error('您的头像实在太大了，请自行压缩到2MB内再试吧');
         return;
       }
     }
-    File croppedFile = await ImageCropper().cropImage(
+    File? croppedFile = await ImageCropper().cropImage(
       sourcePath: file.path,
       cropStyle: CropStyle.circle,
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
@@ -72,10 +78,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
   }
 
   pickAndCropImage(BuildContext context, ImageSource source) async {
-    var image = await ImagePicker().pickImage(source: source, imageQuality: 50);
+    final image = await ImagePicker().pickImage(source: source, imageQuality: 50);
     if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
-    File croppedFile = await ImageCropper().cropImage(
+    File? croppedFile = await ImageCropper().cropImage(
       sourcePath: image.path,
       cropStyle: CropStyle.circle,
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
@@ -143,7 +149,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       return CircleAvatar(
         radius: width / 2,
         backgroundColor: Color.fromRGBO(98, 103, 124, 1),
-        backgroundImage: FileImage(file),
+        backgroundImage: FileImage(file!),
         child: SizedBox(width: width, height: width),
       );
     }

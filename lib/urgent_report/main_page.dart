@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -33,7 +33,7 @@ extension _SState on LocationState {
 }
 
 class ReportMainPage extends StatefulWidget {
-  const ReportMainPage({Key key}) : super(key: key);
+  const ReportMainPage({Key? key}) : super(key: key);
 
   @override
   _ReportMainPageState createState() => _ReportMainPageState();
@@ -45,8 +45,8 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   ValueNotifier<bool> clearAll = ValueNotifier(true);
 
-  _Page _page;
-  Widget _action;
+  late _Page _page;
+  late Widget _action;
 
   @override
   void initState() {
@@ -177,80 +177,79 @@ class _ReportMainPageState extends State<ReportMainPage> {
     switch (_page) {
       case _Page.report:
         body = Center(
-            child: ListView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            TodayTemp(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                PickImage(image: _Image.healthCode),
-                PickImage(image: _Image.itineraryCode),
-              ],
-            ),
-            CurrentPlace(),
-            CurrentState(),
-            Builder(
-              builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
-            ),
-            SizedBox(height: 40),
-            Text(
-              "若无法填报成功可点击下方链接前往网页版填报",
-              style: TextStyle(color: Color(0x8862677b), fontSize: 10),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10),
-            GestureDetector(
-              onTap: () async {
-                var url =
-                    'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
-                if (await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url),
-                      mode: LaunchMode.externalApplication);
-                } else {
-                  ToastProvider.error('请检查网络状态');
-                }
-              },
-              child: Text(
-                "https://i.twt.edu.cn/#/report",
-                style: TextStyle(color: Color(0xff62677b), fontSize: 14),
+          child: ListView(
+            physics: BouncingScrollPhysics(),
+            children: [
+              TodayTemp(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  PickImage(image: _Image.healthCode),
+                  PickImage(image: _Image.itineraryCode),
+                ],
+              ),
+              CurrentPlace(),
+              CurrentState(),
+              Builder(
+                builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
+              ),
+              SizedBox(height: 40),
+              Text(
+                "若无法填报成功可点击下方链接前往网页版填报",
+                style: TextStyle(color: Color(0x8862677b), fontSize: 10),
                 textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 40),
-          ],
-        ));
+              SizedBox(height: 10),
+              GestureDetector(
+                onTap: () async {
+                  var url =
+                      'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
+                  if (await canLaunchUrl(Uri.parse(url))) {
+                    await launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                  } else {
+                    ToastProvider.error('请检查网络状态');
+                  }
+                },
+                child: Text(
+                  "https://i.twt.edu.cn/#/report",
+                  style: TextStyle(color: Color(0xff62677b), fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: 40),
+            ],
+          ),
+        );
         break;
       case _Page.list:
         body = FutureBuilder<List<ReportItem>>(
-            future: ReportService.getReportHistoryList(),
-            builder: (_, snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data.length == 0) {
-                  return Center(
-                    child: Text(
-                      '当前无填报记录，请新建填报记录',
-                      style: TextStyle(color: Color(0xff63677b)),
-                    ),
-                  );
-                } else {
-                  var list = snapshot.data.reversed.toList();
-                  return ListView.builder(
-                    itemExtent: 150,
-                    itemCount: list.length,
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (_, index) {
-                      return _ReportListItem(data: list[index]);
-                    },
-                  );
-                }
+          future: ReportService.getReportHistoryList(),
+          builder: (_, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.length == 0) {
+                return Center(
+                  child: Text(
+                    '当前无填报记录，请新建填报记录',
+                    style: TextStyle(color: Color(0xff63677b)),
+                  ),
+                );
               } else {
-                return Container();
+                var list = snapshot.data!.reversed.toList();
+                return ListView.builder(
+                  itemExtent: 150,
+                  itemCount: list.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (_, index) {
+                    return _ReportListItem(data: list[index]);
+                  },
+                );
               }
-            });
-        break;
-      default:
-        break;
+            } else {
+              return Container();
+            }
+          },
+        );
     }
 
     return ReportBasePage(
@@ -264,9 +263,9 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
 class _ReportResultDialog extends StatelessWidget {
   const _ReportResultDialog({
-    Key key,
-    @required this.width,
-    @required this.height,
+    Key? key,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   final double width;
@@ -333,7 +332,7 @@ class _ReportResultDialog extends StatelessWidget {
 class _ReportListItem extends StatelessWidget {
   final ReportItem data;
 
-  const _ReportListItem({this.data, Key key}) : super(key: key);
+  const _ReportListItem({Key? key, required this.data}) : super(key: key);
 
   String _tryParseMonthAndDay(String text) {
     try {
@@ -510,16 +509,15 @@ class TodayTemp extends StatefulWidget {
 }
 
 class _TodayTempState extends State<TodayTemp> {
-  TextEditingController _temperature;
+  TextEditingController _temperature = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _temperature = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setText("");
       });
@@ -695,25 +693,30 @@ extension _Name on _Image {
 class PickImage extends StatefulWidget {
   final _Image image;
 
-  const PickImage({Key key, this.image}) : super(key: key);
+  const PickImage({Key? key, required this.image}) : super(key: key);
 
   @override
   _PickImageState createState() => _PickImageState();
 }
 
 class _PickImageState extends State<PickImage> {
-  File _image;
+  File? _image;
 
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         maxAssets: 1,
         requestType: RequestType.image,
         themeColor: ColorUtil.selectionButtonColor);
+    if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
       _image = await assets[i].file;
-      for (int j = 0; _image.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      if (_image == null) {
+        ToastProvider.error('选取图片异常，请重新尝试');
+        return;
+      }
+      for (int j = 0; _image!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         _image =
-            await FlutterNativeImage.compressImage(_image.path, quality: 80);
+            await FlutterNativeImage.compressImage(_image!.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
           return;
@@ -722,8 +725,8 @@ class _PickImageState extends State<PickImage> {
     }
     if (!mounted) return;
     if (_image != null) {
-      _setImg(File(_image.path));
-      _reportImage(_image);
+      _setImg(File(_image!.path));
+      _reportImage(_image!);
     }
     setState(() {});
   }
@@ -736,10 +739,10 @@ class _PickImageState extends State<PickImage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setImg(null);
       });
@@ -754,7 +757,7 @@ class _PickImageState extends State<PickImage> {
     }
   }
 
-  _setImg(File value) {
+  _setImg(File? value) {
     setState(() {
       _image = value;
     });
@@ -791,7 +794,7 @@ class _PickImageState extends State<PickImage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.file(
-                      _image,
+                      _image!,
                       width: imageWidth,
                       height: imageWidth,
                       fit: BoxFit.fitWidth,
@@ -825,7 +828,6 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   bool canInputAddress = false;
   TextEditingController _controller = TextEditingController();
 
-
   _inputLocationBySelf() {
     _allowInputAddress();
     ToastProvider.error("请手动填写您当前所在位置");
@@ -839,10 +841,10 @@ class _CurrentPlaceState extends State<CurrentPlace> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         canInputAddress = false;
         _setLocation("");
@@ -904,6 +906,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     );
 
     var chosePlaceButton = ElevatedButton(
+      onPressed: () {},
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         padding: MaterialStateProperty.all(EdgeInsets.zero),
@@ -956,15 +959,15 @@ class _CurrentStateState extends State<CurrentState> {
     LocationState.school,
     LocationState.travel
   ];
-  LocationState currentState;
+  LocationState? currentState;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setState(null);
       });
@@ -979,7 +982,7 @@ class _CurrentStateState extends State<CurrentState> {
     }
   }
 
-  _setState(LocationState value) {
+  _setState(LocationState? value) {
     setState(() {
       currentState = value;
     });
@@ -1029,10 +1032,10 @@ class StateItem extends StatelessWidget {
   final VoidCallback onclick;
 
   const StateItem({
-    @required this.state,
-    @required this.isSelected,
-    @required this.onclick,
-    Key key,
+    required this.state,
+    required this.isSelected,
+    required this.onclick,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -1070,7 +1073,7 @@ class StateItem extends StatelessWidget {
 class ReportButton extends StatefulWidget {
   final VoidCallback onTap;
 
-  ReportButton({this.onTap, Key key}) : super(key: key);
+  ReportButton({required this.onTap, Key? key}) : super(key: key);
 
   @override
   _ReportButtonState createState() => _ReportButtonState();
@@ -1111,15 +1114,18 @@ class BackgroundColorListener extends StatelessWidget {
   final ReportPart part;
   final ValueWidgetBuilder<Color> builder;
 
-  const BackgroundColorListener({Key key, this.part, this.builder})
-      : super(key: key);
+  const BackgroundColorListener({
+    Key? key,
+    required this.part,
+    required this.builder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
         valueListenable: context
             .findAncestorStateOfType<_ReportMainPageState>()
-            ._partBackgroundColor[part.index],
+            !._partBackgroundColor[part.index],
         builder: builder);
   }
 }

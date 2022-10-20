@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -7,7 +8,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class LakePrivacyDialog extends Dialog {
-  final ValueNotifier check;
+  final ValueNotifier? check;
 
   LakePrivacyDialog({this.check});
 
@@ -284,7 +285,7 @@ class LakePrivacyDialog extends Dialog {
         children: [
           GestureDetector(
             onTap: () {
-              check.value = false;
+              check!.value = false;
               Navigator.pop(context);
             },
             child: Container(
@@ -295,7 +296,7 @@ class LakePrivacyDialog extends Dialog {
           ),
           GestureDetector(
             onTap: () {
-              check.value = true;
+              check!.value = true;
               Navigator.pop(context);
             },
             child: Container(

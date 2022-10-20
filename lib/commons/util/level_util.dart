@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -8,7 +9,12 @@ class LevelUtil extends StatelessWidget {
   final double width;
   final double height;
 
-  LevelUtil({Key key, this.level, this.width, this.height, this.style})
+  LevelUtil(
+      {Key? key,
+      required this.level,
+      required this.width,
+      required this.height,
+      required this.style})
       : super(key: key);
 
   static const List<Color> colors = [
@@ -64,7 +70,7 @@ class LevelUtil extends StatelessWidget {
 class LevelProgress extends StatelessWidget {
   final double value;
 
-  LevelProgress({Key key, this.value}) : super(key: key);
+  LevelProgress({Key? key, required this.value}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

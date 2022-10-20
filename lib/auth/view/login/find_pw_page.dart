@@ -1,6 +1,7 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_dialog.dart';
@@ -208,7 +209,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                             builder: (context, snap) {
                               var time = 60 - (snap.data ?? 0);
                               if (time == 0)
-                                WidgetsBinding.instance.addPostFrameCallback(
+                                WidgetsBinding.instance!.addPostFrameCallback(
                                     (_) => setState(() => isPress = false));
                               return ElevatedButton(
                                 onPressed: () {},

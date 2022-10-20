@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -20,7 +21,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
-  final String routeAfterBind; // 绑定成功后跳转至的路由
+  final String? routeAfterBind; // 绑定成功后跳转至的路由
 
   TjuBindPage([this.routeAfterBind]);
 
@@ -33,11 +34,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
   String tjupasswd = "";
   String captcha = "";
 
-  TextEditingController nameController;
-  TextEditingController pwController;
-  TextEditingController codeController;
+  TextEditingController? nameController;
+  TextEditingController? pwController;
+  TextEditingController codeController = TextEditingController();
   final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
-  CaptchaWidget captchaWidget;
+  late final CaptchaWidget captchaWidget;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   void dispose() {
     nameController?.dispose();
     pwController?.dispose();
-    codeController?.dispose();
+    codeController.dispose();
     super.dispose();
   }
 
@@ -135,7 +136,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
         );
       });
       if (widget.routeAfterBind != null) {
-        Navigator.pushReplacementNamed(context, widget.routeAfterBind);
+        Navigator.pushReplacementNamed(context, widget.routeAfterBind!);
         return;
       }
       setState(() {
@@ -147,7 +148,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
     }, onFailure: (e) {
       if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
       ToastProvider.error(e.error.toString());
-      captchaKey.currentState.refresh();
+      captchaKey.currentState?.refresh();
     });
     codeController.clear();
   }
@@ -259,7 +260,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             constraints: BoxConstraints(maxHeight: 55),
             child: ValueListenableBuilder(
               valueListenable: visNotifier,
-              builder: (context, value, _) {
+              builder: (context, bool value, _) {
                 return Theme(
                   data: Theme.of(context)
                       .copyWith(primaryColor: Color.fromRGBO(53, 59, 84, 1)),
@@ -479,7 +480,7 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
     });
   }
 
-  Uint8List data;
+  Uint8List? data;
   double id = 0.001;
 
   @override
@@ -498,6 +499,6 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
     return GestureDetector(
         onTap: refresh,
         child:
-            data == null ? CupertinoActivityIndicator() : Image.memory(data));
+            data == null ? CupertinoActivityIndicator() : Image.memory(data!));
   }
 }

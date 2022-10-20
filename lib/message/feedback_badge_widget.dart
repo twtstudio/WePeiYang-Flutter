@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
@@ -6,7 +7,7 @@ import 'package:provider/provider.dart';
 class FeedbackBadgeWidget extends StatefulWidget {
   final Widget child;
 
-  const FeedbackBadgeWidget({Key key, this.child}) : super(key: key);
+  const FeedbackBadgeWidget({Key? key, required this.child}) : super(key: key);
 
   @override
   _FeedbackBadgeWidgetState createState() => _FeedbackBadgeWidgetState();

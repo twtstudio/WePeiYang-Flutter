@@ -1,10 +1,7 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show
-        FilteringTextInputFormatter,
-        LengthLimitingTextInputFormatter,
-        rootBundle;
-import 'package:flutter_screenutil/size_extension.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
@@ -647,7 +644,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                     builder: (context, snap) {
                                       var time = 60 - (snap.data ?? 0);
                                       if (time == 0)
-                                        WidgetsBinding.instance
+                                        WidgetsBinding.instance!
                                             .addPostFrameCallback((_) =>
                                                 setState(
                                                     () => isPress = false));
@@ -746,7 +743,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
     super.initState();
 
     ///隐私政策markdown加载
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       rootBundle.loadString('privacy/privacy_content.md').then((str) {
         setState(() {
           md = str;
@@ -927,7 +924,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                       children: [
                         ValueListenableBuilder(
                           valueListenable: checkNotifier,
-                          builder: (context, value, _) {
+                          builder: (context, bool value, _) {
                             return Checkbox(
                               value: value,
                               materialTapTargetSize:

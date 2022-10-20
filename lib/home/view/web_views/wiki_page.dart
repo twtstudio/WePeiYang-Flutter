@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -6,14 +7,14 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 // ignore: must_be_immutable
 class WikiPage extends StatelessWidget {
   static const URL = "https://wiki.tjubot.cn/";
-  WebViewController _controller;
+  WebViewController? _controller;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        var flag = await _controller.canGoBack();
-        if (flag) _controller.goBack();
+        var flag = await _controller?.canGoBack() ?? false;
+        if (flag) _controller!.goBack();
         return !flag;
       },
       child: Scaffold(

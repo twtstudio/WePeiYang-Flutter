@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
