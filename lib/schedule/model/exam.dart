@@ -24,9 +24,6 @@ class Exam {
   String state;
   String ext;
 
-  Exam(this.id, this.name, this.type, this.date, this.arrange, this.location,
-      this.seat, this.state, this.ext);
-
   Exam.fromJson(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],

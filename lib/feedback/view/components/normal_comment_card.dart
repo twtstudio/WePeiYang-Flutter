@@ -29,8 +29,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-import '../detail_page.dart';
-
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
 

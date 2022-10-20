@@ -43,11 +43,6 @@ class Course {
   /// 以下属性不需要缓存，临时存储
   int? index; // 在自定义课程列表中的下标
 
-  /// 爬课表用
-  Course.spider(this.name, this.classId, this.courseId, this.credit,
-      this.campus, this.weeks, this.teacherList, this.arrangeList)
-      : type = 0;
-
   /// 自定义课表用，没有classId、courseId、campus，index需要后续补充
   Course.custom(
       this.name, this.credit, this.weeks, this.teacherList, this.arrangeList)
@@ -80,7 +75,6 @@ class Course {
 
 /// [weekday], [weekList], [unitList]均从1开始数，例如[weekDay] == 1代表周一
 class Arrange {
-  String? name; // 课程名称，仅供爬虫时对照用，不进缓存
   String location = ''; // 上课地点
   int weekday = 1; // 周几
   List<int> weekList = []; // 哪些周有课
@@ -88,10 +82,6 @@ class Arrange {
   List<String> teacherList = []; // 讲这节课的所有老师，带职称
   /// 以下属性不需要缓存，临时存储
   int showMode = 0; // 0->正常, 1->“漂浮”显示, 2->不显示内容
-
-  /// 爬课表用，构造后需要补上location属性
-  Arrange.spider(
-      this.name, this.weekday, this.weekList, this.unitList, this.teacherList);
 
   /// 自定义课表用
   Arrange.empty();

@@ -1,23 +1,13 @@
-import 'dart:typed_data';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mutex/mutex.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/auth/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
-import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
   final String routeAfterBind; // 绑定成功后跳转至的路由
@@ -31,18 +21,12 @@ class TjuBindPage extends StatefulWidget {
 class _TjuBindPageState extends State<TjuBindPage> {
   String tjuuname = "";
   String tjupasswd = "";
-  String captcha = "";
 
   TextEditingController nameController;
   TextEditingController pwController;
-  TextEditingController codeController;
-  final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
-  CaptchaWidget captchaWidget;
 
   @override
   void initState() {
-    captchaWidget = CaptchaWidget(captchaKey);
-    codeController = TextEditingController();
     if (CommonPreferences.isBindTju.value) {
       super.initState();
       return;
@@ -55,8 +39,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
         TextEditingController.fromValue(TextEditingValue(text: tjuuname));
     pwController =
         TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
-    // 检测办公网
-    _checkClasses();
     super.initState();
   }
 
@@ -64,110 +46,38 @@ class _TjuBindPageState extends State<TjuBindPage> {
   void dispose() {
     nameController?.dispose();
     pwController?.dispose();
-    codeController?.dispose();
     super.dispose();
   }
 
   void _bind() {
-    if (tjuuname == "" || tjupasswd == "" || captcha == "") {
-      var message = "";
-      if (tjuuname == "")
-        message = "用户名不能为空";
-      else if (tjupasswd == "")
-        message = "密码不能为空";
+    if (tjuuname == '' || tjupasswd == '') {
+      if (tjuuname == '')
+        ToastProvider.error('用户名不能为空');
       else
-        message = "验证码不能为空";
-      ToastProvider.error(message);
+        ToastProvider.error('密码不能为空');
       return;
     }
-    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
-      ToastProvider.success("办公网绑定成功");
-      ToastProvider.running('数据加载中');
-      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
-      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
-      var examProvider = Provider.of<ExamProvider>(context, listen: false);
-      Future.sync(() async {
-        var mtx = Mutex();
-        await mtx.acquire();
-        // TODO: 重定向错误不知道怎么忽略，多请求一次课程表是可以的，同时把GPA放在课程表
-        // 前面，防止刷到辅修成绩的bug情况。此外在判断是否刷新时，去掉了来自课程表页面的
-        // 多刷新课程表总能刷出来，所以不判断了，之后要重新对一遍办公网的登录流程
-        // 这里provider先拿出来，页面pop掉就没了
-        if (widget.routeAfterBind != GPARouter.gpa) {
-          gpaProvider.refreshGPA(
-            onSuccess: () {
-              mtx.release();
-            },
-            onFailure: (e) {
-              mtx.release();
-            },
-          );
-        }
-        await mtx.acquire();
-        courseProvider.refreshCourse(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            mtx.release();
-          },
-        );
-
-        await mtx.acquire();
-        if (widget.routeAfterBind != ScheduleRouter.exam) {
-          examProvider.refreshExam(
-            onSuccess: () {
-              mtx.release();
-            },
-            onFailure: (e) {
-              mtx.release();
-            },
-          );
-        }
-        await mtx.acquire();
-        courseProvider.refreshCourse(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            mtx.release();
-          },
-        );
-      });
-      if (widget.routeAfterBind != null) {
-        Navigator.pushReplacementNamed(context, widget.routeAfterBind);
-        return;
-      }
-      setState(() {
-        tjuuname = "";
-        tjupasswd = "";
-        nameController = null;
-        pwController = null;
-      });
-    }, onFailure: (e) {
-      if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
-      ToastProvider.error(e.error.toString());
-      captchaKey.currentState.refresh();
+    CommonPreferences.tjuuname.value = tjuuname;
+    CommonPreferences.tjupasswd.value = tjupasswd;
+    CommonPreferences.isBindTju.value = true;
+    ToastProvider.success("办公网绑定成功");
+    ClassesService.getClasses();
+    if (widget.routeAfterBind != null) {
+      Navigator.pushReplacementNamed(context, widget.routeAfterBind);
+      return;
+    }
+    setState(() {
+      tjuuname = "";
+      tjupasswd = "";
+      nameController = null;
+      pwController = null;
     });
-    codeController.clear();
   }
 
   final FocusNode _accountFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
-  final FocusNode _notRobotFocus = FocusNode();
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
-  /// 能否连接到办公网
-  bool _canConnectToClasses = true;
-  _checkClasses() async {
-    _canConnectToClasses = await ClassesService.check();
-    setState(() {});
-    if (!_canConnectToClasses) {
-      Future.delayed(Duration(seconds: 1)).then((_) {
-        _checkClasses();
-      });
-    }
-  }
 
   Widget _detail(BuildContext context) {
     var hintStyle = TextUtil.base.regular
@@ -219,12 +129,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 .sp(10)
                 .customColor(Color.fromRGBO(98, 103, 124, 1)),
           ),
-          if (!_canConnectToClasses)
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text('请连接至校园网环境以获取数据，请检查网络',
-                  style: TextUtil.base.regular.sp(10).redD9),
-            ),
           SizedBox(height: 20),
           ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 55),
@@ -294,46 +198,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       pwController?.clear();
                       pwController = null;
                     },
-                    onEditingComplete: () {
-                      _accountFocus.unfocus();
-                      FocusScope.of(context).requestFocus(_notRobotFocus);
-                    },
                   ),
                 );
               },
             ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  height: 55,
-                  width: 120,
-                  child: TextField(
-                    controller: codeController,
-                    focusNode: _notRobotFocus,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        hintText: S.current.captcha,
-                        hintStyle: hintStyle,
-                        filled: true,
-                        fillColor: Color.fromRGBO(235, 238, 243, 1),
-                        isCollapsed: true,
-                        contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none)),
-                    onChanged: (input) => setState(() => captcha = input),
-                    onEditingComplete: () {
-                      _notRobotFocus.unfocus();
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(width: 20),
-              SizedBox(height: 55, width: 120, child: captchaWidget)
-            ],
           ),
           SizedBox(height: 25),
           SizedBox(
@@ -455,49 +323,5 @@ class _TjuBindPageState extends State<TjuBindPage> {
         ),
       ),
     );
-  }
-}
-
-class CaptchaWidget extends StatefulWidget {
-  CaptchaWidget(Key key) : super(key: key);
-
-  @override
-  State<CaptchaWidget> createState() => CaptchaWidgetState();
-}
-
-class CaptchaWidgetState extends State<CaptchaWidget> {
-  void refresh() async {
-    id += 0.001;
-    try {
-      await ClassesService.cookieJar.deleteAll();
-    } catch (_) {}
-    var res = await ClassesService.fetch(
-        "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
-        options: Options(responseType: ResponseType.bytes));
-    setState(() {
-      data = res.data;
-    });
-  }
-
-  Uint8List data;
-  double id = 0.001;
-
-  @override
-  void initState() {
-    refresh();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: refresh,
-        child:
-            data == null ? CupertinoActivityIndicator() : Image.memory(data));
   }
 }

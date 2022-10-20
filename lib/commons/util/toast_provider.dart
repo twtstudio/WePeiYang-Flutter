@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show AsyncTimer;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
-class ToastProvider with AsyncTimer {
+class ToastProvider {
   ToastProvider._();
 
   static late FToast _fToast;
@@ -85,9 +83,9 @@ class ToastProvider with AsyncTimer {
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-                'assets/svg_pics/lake_butt_icons/error_background.svg',
-                color: Colors.white,
-                width: 15,
+              'assets/svg_pics/lake_butt_icons/error_background.svg',
+              color: Colors.white,
+              width: 15,
             ),
             SizedBox(width: 10),
             Text(

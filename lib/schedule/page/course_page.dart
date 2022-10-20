@@ -1,13 +1,8 @@
 // @dart = 2.12
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -38,7 +33,7 @@ class _CoursePageState extends State<CoursePage> {
     var provider =
         WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
     provider.quietResetWeek();
-    provider.refreshCourse();
+    provider.refreshCustomCourse();
   }
 
   @override
@@ -112,17 +107,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          context.read<CourseProvider>().refreshCourse(
-              hint: true,
-              onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                    reason: e is WpyDioError ? e.error.toString() : null,
-                  ),
-                );
-              });
+          context.read<CourseProvider>().refreshCourse();
         },
         child: Container(
           decoration: BoxDecoration(),

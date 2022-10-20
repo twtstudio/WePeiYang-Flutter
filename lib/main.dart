@@ -351,8 +351,8 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (CommonPreferences.updateTime.value != "20220822") {
-      CommonPreferences.updateTime.value = "20220822";
+    if (CommonPreferences.updateTime.value != "20221019") {
+      CommonPreferences.updateTime.value = "20221019";
       CommonPreferences.clearTjuPrefs();
       CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
