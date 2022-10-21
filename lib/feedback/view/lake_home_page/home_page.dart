@@ -1,6 +1,5 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -288,14 +287,17 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       });
               }
               int cacheNum = 0;
-              return ExtendedTabBarView(
-                  cacheExtent: cacheNum,
-                  controller: context.read<LakeModel>().tabController,
-                  children: List<Widget>.generate(
-                      tabs == null ? 1 : tabs.length,
-                      (i) => NSubPage(
-                            index: tabList[i].id,
-                          )));
+              return tabs.length == 1
+                  ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
+                  : ExtendedTabBarView(
+                      cacheExtent: cacheNum,
+                      controller: context.read<LakeModel>().tabController,
+                      children: List<Widget>.generate(
+                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                          tabs.length,
+                          (i) => NSubPage(
+                                index: tabList[i].id,
+                              )));
             }),
           ),
           Padding(
