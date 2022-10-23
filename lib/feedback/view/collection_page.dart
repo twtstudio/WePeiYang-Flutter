@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
@@ -30,17 +31,15 @@ enum _CurrentTab {
 
 class _CollectionPageState extends State<CollectionPage> {
   ValueNotifier<_CurrentTab> _currentTab = ValueNotifier(_CurrentTab.myCollect);
-  PageController _tabController;
+  late final PageController _tabController;
   List<Post> _favList = [];
-  MessageProvider messageProvider;
   var _refreshController = RefreshController(initialRefresh: true);
   bool tap = false;
   int currentPage = 1;
 
-  _getMyCollects(
-      {Function(List<Post>) onSuccess, Function onFail, int current}) {
+  _getMyCollects({Function(List<Post>)? onSuccess, Function? onFail}) {
     FeedbackService.getFavoritePosts(
-        page: current ?? currentPage,
+        page: currentPage,
         page_size: 10,
         onResult: (list) {
           setState(() {
@@ -93,9 +92,10 @@ class _CollectionPageState extends State<CollectionPage> {
     _tabController = PageController(
       initialPage: 0,
     )..addListener(() {
-        var absPosition = (_tabController.page - _currentTab.value.index).abs();
+        var absPosition =
+            (_tabController.page! - _currentTab.value.index).abs();
         if (absPosition > 0.5 && !tap) {
-          _currentTab.value = _CurrentTab.values[_tabController.page.round()];
+          _currentTab.value = _CurrentTab.values[_tabController.page!.round()];
         }
         _refreshController.requestRefresh();
       });
@@ -136,17 +136,12 @@ class _CollectionPageState extends State<CollectionPage> {
           child: Text("暂无收藏", style: TextStyle(color: Color(0xff62677b))));
     } else {
       favListShow = Column(
-        children: [
-          favLists,
-          SizedBox(height: 20.w)
-        ],
+        children: [favLists, SizedBox(height: 20.w)],
       );
     }
     var list = ExpandablePageView(
       controller: _tabController,
-      children: [
-        favListShow,
-      ],
+      children: [favListShow],
     );
 
     Widget body = CustomScrollView(
@@ -194,34 +189,14 @@ class _CollectionPageState extends State<CollectionPage> {
   }
 }
 
-class CustomScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return GlowingOverscrollIndicator(
-      child: child,
-      showLeading: false,
-      showTrailing: true,
-      color: Color(0XFF62677B),
-      axisDirection: AxisDirection.down,
-    );
-  }
-
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) =>
-      ClampingScrollPhysics();
-}
-
 class ExpandablePageView extends StatefulWidget {
   final List<Widget> children;
   final PageController controller;
-  final ValueChanged<int> onPageChanged;
 
   const ExpandablePageView({
-    Key key,
-    @required this.children,
-    this.controller,
-    this.onPageChanged,
+    Key? key,
+    required this.children,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -230,8 +205,8 @@ class ExpandablePageView extends StatefulWidget {
 
 class _ExpandablePageViewState extends State<ExpandablePageView>
     with TickerProviderStateMixin {
-  PageController _pageController;
-  List<double> _heights;
+  late final PageController _pageController;
+  late final List<double> _heights;
   int _currentPage = 0;
 
   double get _currentHeight => _heights[_currentPage];
@@ -240,11 +215,10 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
   void initState() {
     _heights = widget.children.map((e) => 0.0).toList();
     super.initState();
-    _pageController = widget.controller ?? PageController() //
+    _pageController = widget.controller //
       ..addListener(() {
-        final _newPage = _pageController.page.round();
+        final _newPage = _pageController.page!.round();
         if (_currentPage != _newPage) {
-          widget.onPageChanged?.call(_newPage);
           setState(() => _currentPage = _newPage);
         }
       });
@@ -282,7 +256,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView>
             alignment: Alignment.topCenter,
             child: SizeReportingWidget(
               onSizeChange: (size) =>
-                  setState(() => _heights[index] = size?.height ?? 0),
+                  setState(() => _heights[index] = size.height),
               child: child,
             ),
           ),
@@ -297,9 +271,9 @@ class SizeReportingWidget extends StatefulWidget {
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
-    Key key,
-    @required this.child,
-    @required this.onSizeChange,
+    Key? key,
+    required this.child,
+    required this.onSizeChange,
   }) : super(key: key);
 
   @override
@@ -308,20 +282,20 @@ class SizeReportingWidget extends StatefulWidget {
 
 class _SizeReportingWidgetState extends State<SizeReportingWidget>
     with AutomaticKeepAliveClientMixin {
-  Size _oldSize;
+  Size? _oldSize;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _notifySize());
     return widget.child;
   }
 
   void _notifySize() {
-    final size = context?.size;
+    final size = context.size;
     if (_oldSize != size) {
       _oldSize = size;
-      widget.onSizeChange(size);
+      widget.onSizeChange(size!);
     }
   }
 

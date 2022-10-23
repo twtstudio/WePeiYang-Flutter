@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,8 +25,7 @@ class ReplyDetailPage extends StatefulWidget {
   ReplyDetailPage(this.args);
 
   @override
-  _ReplyDetailPageState createState() =>
-      _ReplyDetailPageState(args.floor, args.uid);
+  _ReplyDetailPageState createState() => _ReplyDetailPageState();
 }
 
 class ReplyDetailPageArgs {
@@ -38,20 +38,14 @@ class ReplyDetailPageArgs {
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
-  final Floor floor;
-  final int uid;
-
-  int index;
   int currentPage = 1;
-  List<Floor> floors;
+  List<Floor>? floors;
 
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
   final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
-
-  _ReplyDetailPageState(this.floor, this.uid);
 
   _onRefresh() {
     currentPage = 1;
@@ -77,7 +71,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             _refreshController.loadNoData();
             currentPage--;
           } else {
-            floors.addAll(comments);
+            floors?.addAll(comments);
             _refreshController.loadComplete();
           }
         },
@@ -114,18 +108,20 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   }
 
   Future<bool> _getComment(
-      {Function(List<Floor>) onResult, Function onFail, int page}) async {
+      {required Function(List<Floor>) onResult,
+      required Function onFail,
+      required int page}) async {
     bool success = false;
     FeedbackService.getFloorReplyById(
-      floorId: floor.id,
+      floorId: widget.args.floor.id,
       page: page,
       onResult: (comments) {
-        onResult?.call(comments);
+        onResult.call(comments);
         setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
-        onFail?.call();
+        onFail.call();
       },
     );
     return success;
@@ -142,7 +138,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send(false);
+        launchKey.currentState?.send(false);
         setState(() {
           _onRefresh();
         });
@@ -154,20 +150,19 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ),
     );
     Widget mainList1 = ListView.builder(
-      itemCount: floors != null ? floors.length + 1 : 0 + 1,
+      itemCount: floors != null ? floors!.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Column(
             children: [
               NCommentCard(
-                comment: floor,
-                uid: uid,
-                ancestorUId: floor.postId,
+                comment: widget.args.floor,
+                uid: widget.args.uid,
+                ancestorUId: widget.args.floor.postId,
+                ancestorName: widget.args.floor.nickname,
                 commentFloor: index + 1,
                 isSubFloor: false,
                 isFullView: true,
-                // 这里不好传我就先置0了
-                type: 0,
               ),
               Container(
                 width: WePeiYangApp.screenWidth - 30.w,
@@ -179,19 +174,17 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         }
         index--;
 
-        var data = floors[index];
+        var data = floors![index];
         return Column(
           children: [
             NCommentCard(
               comment: data,
-              uid: uid,
-              ancestorName: floor.nickname,
-              ancestorUId: floor.id,
+              uid: widget.args.uid,
+              ancestorName: widget.args.floor.nickname,
+              ancestorUId: widget.args.floor.id,
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: true,
-              // 这里不好传我就先置0了
-              type: 0,
             ),
           ],
         );
@@ -222,8 +215,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
     body = Column(
       children: [
         mainList,
-        Consumer<NewFloorProvider>(
-            builder: (BuildContext context, value, Widget child) {
+        Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
           return AnimatedSize(
             clipBehavior: Clip.antiAlias,
             duration: Duration(milliseconds: 300),
@@ -263,7 +255,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                   ),
                                   onPressed: () => imageSelectionKey
                                       .currentState
-                                      .loadAssets()),
+                                      ?.loadAssets()),
                               if (context
                                       .read<NewFloorProvider>()
                                       .images
@@ -277,7 +269,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                       fit: BoxFit.contain,
                                     ),
                                     onPressed: () => launchKey.currentState
-                                        .getClipboardData()),
+                                        ?.getClipboardData()),
                               IconButton(
                                   icon: Image.asset(
                                     'assets/images/lake_butt_icons/x.png',
@@ -287,16 +279,16 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                   ),
                                   onPressed: () {
                                     if (launchKey
-                                        .currentState
+                                        .currentState!
                                         .textEditingController
                                         .text
                                         .isNotEmpty) {
                                       launchKey
-                                          .currentState.textEditingController
+                                          .currentState?.textEditingController
                                           .clear();
-                                      launchKey.currentState.setState(() {
+                                      launchKey.currentState?.setState(() {
                                         launchKey.currentState
-                                            .commentLengthIndicator = '清空成功';
+                                            ?.commentLengthIndicator = '清空成功';
                                       });
                                     } else {
                                       Provider.of<NewFloorProvider>(context,
@@ -317,7 +309,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                     child: InkWell(
                       onTap: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
-                            .inputFieldOpenAndReplyTo(floor.id);
+                            .inputFieldOpenAndReplyTo(widget.args.floor.id);
                         FocusScope.of(context).requestFocus(
                             Provider.of<NewFloorProvider>(context,
                                     listen: false)
@@ -391,7 +383,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         ).then((value) {
           if (value == "举报") {
             Navigator.pushNamed(context, FeedbackRouter.report,
-                arguments: ReportPageArgs(floor.id, true));
+                arguments: ReportPageArgs(widget.args.floor.id, true));
           }
         });
       },

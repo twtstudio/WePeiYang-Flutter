@@ -841,14 +841,14 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             ),
             SizedBox(height: 2.w),
             Text(
-              DateTime.now().difference(widget.data.floor.createAt).inDays >= 1
+              DateTime.now().difference(widget.data.floor.createAt!).inDays >= 1
                   ? widget.data.floor.createAt
-                      .toLocal()
+                      !.toLocal()
                       .toIso8601String()
                       .replaceRange(10, 11, ' ')
                       .substring(0, 19)
                   : DateTime.now()
-                      .difference(widget.data.floor.createAt)
+                      .difference(widget.data.floor.createAt!)
                       .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
             ),

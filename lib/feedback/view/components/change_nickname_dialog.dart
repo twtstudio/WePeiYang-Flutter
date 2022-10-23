@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -6,9 +7,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class ChangeNicknameDialog extends StatefulWidget {
-  final int postId;
-
-  const ChangeNicknameDialog({Key key, this.postId}) : super(key: key);
+  const ChangeNicknameDialog({Key? key}) : super(key: key);
 
   @override
   ChangeNicknameDialogState createState() => ChangeNicknameDialogState();

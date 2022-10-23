@@ -1,15 +1,15 @@
+// @dart = 2.12
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
-import '../../../feedback_router.dart';
-import '../../search_result_page.dart';
-
-//北洋热搜
+/// 北洋热搜
 class HotCard extends StatefulWidget {
   @override
   _HotCardState createState() => _HotCardState();
@@ -100,8 +100,7 @@ class _HotCardState extends State<HotCard> {
                                       alignment: Alignment.centerRight,
                                       child: Text(
                                         data.hotTagsList[index].point
-                                                .toString() ??
-                                            '0',
+                                            .toString(),
                                         style: TextUtil.base.w400.NotoSansSC
                                             .sp(14)
                                             .black2A,

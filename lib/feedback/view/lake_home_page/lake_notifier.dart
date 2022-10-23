@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -43,25 +44,22 @@ class ChangeHintTextProvider extends ChangeNotifier {
 
 class FbHotTagsProvider extends ChangeNotifier {
   List<Tag> hotTagsList = [];
-  Tag recTag;
+  Tag? recTag;
 
-  Future<void> initHotTags({OnSuccess success, OnFailure failure}) async {
+  Future<void> initHotTags() async {
     await FeedbackService.getHotTags(onSuccess: (list) {
       hotTagsList.clear();
       hotTagsList.addAll(list);
       notifyListeners();
-      success?.call();
     }, onFailure: (e) {
-      failure.call(e);
       ToastProvider.error(e.error.toString());
     });
   }
 
-  Future<void> initRecTag({OnSuccess success, OnFailure failure}) async {
+  Future<void> initRecTag({required OnFailure failure}) async {
     await FeedbackService.getRecTag(onSuccess: (tag) {
       recTag = tag;
       notifyListeners();
-      success?.call();
     }, onFailure: (e) {
       failure.call(e);
       ToastProvider.error(e.error.toString());
@@ -78,18 +76,24 @@ enum LakePageStatus {
 
 class LakeArea {
   final WPYTab tab;
-  final Map<int, Post> dataList;
-  final RefreshController refreshController;
-  final ScrollController controller;
+  Map<int, Post> dataList;
+  RefreshController refreshController;
+  ScrollController controller;
   LakePageStatus status;
-  int currentPage;
+  int currentPage = 1;
 
-  LakeArea._(this.tab, this.dataList, this.refreshController, this.controller,
-      LakePageStatus unload);
+  LakeArea.empty()
+      : this.tab = WPYTab(),
+        this.dataList = {},
+        this.refreshController = RefreshController(),
+        this.controller = ScrollController(),
+        this.status = LakePageStatus.unload;
 
-  factory LakeArea.empty() {
-    return LakeArea._(WPYTab(), {}, RefreshController(), ScrollController(),
-        LakePageStatus.unload);
+  clear() {
+    this.dataList = {};
+    this.refreshController = RefreshController();
+    this.controller = ScrollController();
+    this.status = LakePageStatus.unload;
   }
 }
 
@@ -102,7 +106,7 @@ class LakeModel extends ChangeNotifier {
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
   bool barExtended = true;
   double opacity = 0;
-  TabController tabController;
+  late TabController tabController;
   int sortSeq = 1;
 
   clearAll() {
@@ -131,11 +135,8 @@ class LakeModel extends ChangeNotifier {
     await FeedbackService.getTabList().then((list) {
       tabList.addAll(list);
       lakeAreas.addAll({0: LakeArea.empty()});
-      initLakeArea(0, oTab, RefreshController(), ScrollController());
       list.forEach((element) {
         lakeAreas.addAll({element.id: LakeArea.empty()});
-        initLakeArea(
-            element.id, element, RefreshController(), ScrollController());
       });
       mainStatus = LakePageStatus.idle;
       notifyListeners();
@@ -156,25 +157,16 @@ class LakeModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void initLakeArea(int index, WPYTab tab, RefreshController rController,
-      ScrollController sController) {
-    LakeArea lakeArea = new LakeArea._(
-        WPYTab(), {}, rController, sController, LakePageStatus.unload);
-    lakeAreas[index] = lakeArea;
-  }
-
   void fillLakeAreaAndInitPostList(
       int index, RefreshController rController, ScrollController sController) {
-    LakeArea lakeArea = new LakeArea._(lakeAreas[index].tab, {}, rController,
-        sController, LakePageStatus.unload);
-    lakeAreas[index] = lakeArea;
+    lakeAreas[index]?.clear();
     initPostList(index, success: () {}, failure: (e) {
       ToastProvider.error(e.error.toString());
     });
   }
 
   void quietUpdateItem(Post post, WPYTab tab) {
-    lakeAreas[tab].dataList.update(
+    lakeAreas[tab]?.dataList.update(
       post.id,
       (value) {
         value.isLike = post.isLike;
@@ -191,33 +183,33 @@ class LakeModel extends ChangeNotifier {
   void _addOrUpdateItems(List<Post> data, int index) {
     data.forEach((element) {
       lakeAreas[index]
-          .dataList
+          ?.dataList
           .update(element.id, (value) => element, ifAbsent: () => element);
     });
   }
 
   Future<void> getNextPage(int index,
-      {OnSuccess success, OnFailure failure}) async {
+      {required OnSuccess success, required OnFailure failure}) async {
     await FeedbackService.getPosts(
       type: '${index}',
       searchMode: sortSeq,
       etag: index == 0 ? 'recommend' : '',
-      page: lakeAreas[index].currentPage + 1,
+      page: lakeAreas[index]!.currentPage + 1,
       onSuccess: (postList, page) {
         _addOrUpdateItems(postList, index);
-        lakeAreas[index].currentPage += 1;
-        success?.call();
+        lakeAreas[index]!.currentPage += 1;
+        success.call();
         notifyListeners();
       },
       onFailure: (e) {
         FeedbackService.getToken();
-        failure?.call(e);
+        failure.call(e);
       },
     );
   }
 
   checkTokenAndGetTabList(FbDepartmentsProvider provider,
-      {OnSuccess success, OnFailure failure}) async {
+      {OnSuccess? success}) async {
     await FeedbackService.getToken(
       onResult: (token) {
         provider.initDepartments();
@@ -226,31 +218,27 @@ class LakeModel extends ChangeNotifier {
       },
       onFailure: (e) {
         ToastProvider.error('获取分区失败');
-        failure?.call(e);
         notifyListeners();
       },
     );
   }
 
-  checkTokenAndInitPostList(int index,
-      {OnSuccess success, OnFailure failure}) async {
+  checkTokenAndInitPostList(int index) async {
     await FeedbackService.getToken(
       onResult: (_) {
         initPostList(index);
-        success?.call();
       },
       onFailure: (e) {
         ToastProvider.error('获取分区失败');
-        failure?.call(e);
         notifyListeners();
       },
     );
   }
 
   Future<void> initPostList(int index,
-      {OnSuccess success, OnFailure failure, bool reset = false}) async {
+      {OnSuccess? success, OnFailure? failure, bool reset = false}) async {
     if (reset) {
-      lakeAreas[index].status = LakePageStatus.loading;
+      lakeAreas[index]?.status = LakePageStatus.loading;
       notifyListeners();
     }
     await FeedbackService.getPosts(
@@ -260,18 +248,17 @@ class LakeModel extends ChangeNotifier {
       etag: index == 0 ? 'recommend' : '',
       onSuccess: (postList, totalPage) {
         tabControllerLoaded = true;
-        if (lakeAreas[index].dataList != null)
-          lakeAreas[index].dataList.clear();
+        lakeAreas[index]?.dataList.clear();
         _addOrUpdateItems(postList, index);
-        lakeAreas[index].currentPage = 1;
-        lakeAreas[index].status = LakePageStatus.idle;
+        lakeAreas[index]!.currentPage = 1;
+        lakeAreas[index]!.status = LakePageStatus.idle;
         notifyListeners();
         success?.call();
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
         checkTokenAndInitPostList(index);
-        lakeAreas[index].status = LakePageStatus.error;
+        lakeAreas[index]!.status = LakePageStatus.error;
         notifyListeners();
         failure?.call(e);
       },
@@ -279,9 +266,12 @@ class LakeModel extends ChangeNotifier {
   }
 
   getClipboardWeKoContents(BuildContext context) async {
-    ClipboardData clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    if (clipboardData != null && clipboardData.text.trim() != '') {
-      String text = clipboardData.text.trim();
+    ClipboardData? clipboardData =
+        await Clipboard.getData(Clipboard.kTextPlain);
+    if (clipboardData != null &&
+        clipboardData.text != null &&
+        clipboardData.text!.trim() != '') {
+      String text = clipboardData.text!.trim();
 
       final id = text.find(r"wpy://school_project/(\d*)");
       if (id.isNotEmpty) {

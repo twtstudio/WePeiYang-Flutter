@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -50,10 +51,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
   final int type;
 
   int currentPage = 1, totalPage = 1;
-  SearchPageStatus status;
+  SearchPageStatus status = SearchPageStatus.loading;
 
-  RefreshController _refreshController;
-  ScrollController _sc;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  ScrollController _sc = ScrollController();
 
   List<Post> _list = [];
 
@@ -109,11 +111,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   @override
   void initState() {
     super.initState();
-    status = SearchPageStatus.loading;
-    _refreshController = RefreshController(initialRefresh: false);
-    _sc = ScrollController();
-    currentPage = 1;
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       FeedbackService.getPosts(
         departmentId: departmentId,
         type: '$type',
@@ -136,7 +134,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget appBar = AppBar(
+    var appBar = AppBar(
         titleSpacing: 0,
         elevation: 0,
         centerTitle: true,
@@ -221,9 +219,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   },
                   childCount: _list.length,
                   findChildIndexCallback: (key) {
-                    final ValueKey<String> valueKey = key;
-                    return _list
-                        .indexWhere((m) => 'srm-${m.id}' == valueKey.value);
+                    return _list.indexWhere((m) =>
+                        'srm-${m.id}' == (key as ValueKey<String>).value);
                   },
                 ),
               ));

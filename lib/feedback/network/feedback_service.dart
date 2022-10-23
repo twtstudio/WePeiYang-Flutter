@@ -1,6 +1,5 @@
+// @dart = 2.12
 import 'dart:io';
-
-import 'package:flutter/material.dart' show required;
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -17,7 +16,7 @@ class FeedbackDio extends DioAbstract {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
+      var code = response.data['code'] ?? 0;
       switch (code) {
         case 200: // 成功
           return handler.next(response);
@@ -50,7 +49,7 @@ class FeedbackPicPostDio extends DioAbstract {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
+      var code = response.data['code'] ?? 0;
       switch (code) {
         case 200: // 成功
           return handler.next(response);
@@ -71,7 +70,7 @@ class FeedbackAdminPostDio extends DioAbstract {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
+      var code = response.data['code'] ?? 0;
       switch (code) {
         case 200: // 成功
           return handler.next(response);
@@ -88,8 +87,8 @@ final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
   static getToken(
-      {OnResult<String> onResult,
-      OnFailure onFailure,
+      {OnResult<String>? onResult,
+      OnFailure? onFailure,
       bool forceRefresh = false}) async {
     try {
       var response;
@@ -128,8 +127,8 @@ class FeedbackService with AsyncTimer {
   static getTokenByPw(
     String user,
     String passwd, {
-    OnSuccess onSuccess,
-    OnFailure onFailure,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get('auth/passwd', queryParameters: {
@@ -140,13 +139,13 @@ class FeedbackService with AsyncTimer {
         CommonPreferences.lakeToken.value = response.data['data']['token'];
       onSuccess();
     } on DioError catch (e) {
-      if (onFailure != null) onFailure(e);
+      onFailure(e);
     }
   }
 
   static getDepartments(token,
-      {@required OnResult<List<Department>> onResult,
-      @required OnFailure onFailure}) async {
+      {required OnResult<List<Department>> onResult,
+      required OnFailure onFailure}) async {
     try {
       var response = await feedbackDio.get('departments');
       if (response.data['data']['total'] != 0) {
@@ -164,7 +163,7 @@ class FeedbackService with AsyncTimer {
   }
 
   static uploadAvatars(String avatar,
-      {@required OnSuccess onSuccess, @required OnFailure onFailure}) async {
+      {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('avatar', () async {
       try {
         var data = FormData.fromMap({
@@ -179,9 +178,9 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> postPic(
-      {@required List<File> images,
-      @required OnResult<List<String>> onResult,
-      @required OnFailure onFailure}) async {
+      {required List<File> images,
+      required OnResult<List<String>> onResult,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('postPic', () async {
       try {
         var formData = FormData();
@@ -222,22 +221,9 @@ class FeedbackService with AsyncTimer {
     return list;
   }
 
-  static Future<Error> getError(
-    name,
-  ) async {
-    Error error;
-    var response = await feedbackDio.post('tag',
-        formData: FormData.fromMap({
-          'name': '$name',
-        }));
-    Map<String, dynamic> json = response.data['data'];
-    error = Error.fromJson(json);
-    return error;
-  }
-
   static getHotTags({
-    @required OnResult<List<Tag>> onSuccess,
-    @required OnFailure onFailure,
+    required OnResult<List<Tag>> onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get('tags/hot');
@@ -252,8 +238,8 @@ class FeedbackService with AsyncTimer {
   }
 
   static getFestCards({
-    @required OnResult<List<Festival>> onSuccess,
-    @required OnFailure onFailure,
+    required OnResult<List<Festival>> onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get('banners');
@@ -268,8 +254,8 @@ class FeedbackService with AsyncTimer {
   }
 
   static getNotices({
-    @required OnResult<List<Notice>> onResult,
-    @required OnFailure onFailure,
+    required OnResult<List<Notice>> onResult,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
@@ -286,8 +272,8 @@ class FeedbackService with AsyncTimer {
   }
 
   static getRecTag({
-    @required OnResult<Tag> onSuccess,
-    @required OnFailure onFailure,
+    required OnResult<Tag> onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get('tag/recommend');
@@ -302,9 +288,9 @@ class FeedbackService with AsyncTimer {
   }
 
   static searchTags(
-      {@required name,
-      @required OnResult<List<SearchTag>> onResult,
-      @required OnFailure onFailure}) async {
+      {required name,
+      required OnResult<List<SearchTag>> onResult,
+      required OnFailure onFailure}) async {
     try {
       var response = await feedbackDio.get(
         'tags',
@@ -323,9 +309,9 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> postTags({
-    @required name,
-    @required void Function(PostTagId postTagId) onSuccess,
-    @required onFailure,
+    required name,
+    required void Function(PostTagId postTagId) onSuccess,
+    required onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postTags', () async {
       try {
@@ -334,7 +320,7 @@ class FeedbackService with AsyncTimer {
               'name': '$name',
             }));
         Map<String, dynamic> json = response.data['data'];
-        onSuccess?.call(PostTagId.fromJson(json));
+        onSuccess.call(PostTagId.fromJson(json));
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -342,10 +328,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> postShare({
-    @required id,
-    @required type,
-    @required onSuccess,
-    @required onFailure,
+    required id,
+    required type,
+    required onSuccess,
+    required onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('share', () async {
       try {
@@ -367,10 +353,10 @@ class FeedbackService with AsyncTimer {
       tagId,
       searchMode,
       etag,
-      @required type,
-      @required page,
-      @required void Function(List<Post> list, int totalPage) onSuccess,
-      @required OnFailure onFailure}) async {
+      required type,
+      required page,
+      required void Function(List<Post> list, int totalPage) onSuccess,
+      required OnFailure onFailure}) async {
     try {
       var response = await feedbackDio.get(
         'posts',
@@ -398,10 +384,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static getMyPosts({
-    @required OnResult<List<Post>> onResult,
-    @required page,
-    @required page_size,
-    @required OnFailure onFailure,
+    required OnResult<List<Post>> onResult,
+    required page,
+    required page_size,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
@@ -422,11 +408,11 @@ class FeedbackService with AsyncTimer {
   }
 
   static getAnyonePosts({
-    @required OnResult<List<Post>> onResult,
-    @required uid,
-    @required page,
-    @required page_size,
-    @required OnFailure onFailure,
+    required OnResult<List<Post>> onResult,
+    required uid,
+    required page,
+    required page_size,
+    required OnFailure onFailure,
   }) async {
     try {
       // 注意這裏用的dio和上面那個不一樣哦
@@ -450,10 +436,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static getFavoritePosts({
-    @required OnResult<List<Post>> onResult,
-    @required page_size,
-    @required page,
-    @required OnFailure onFailure,
+    required OnResult<List<Post>> onResult,
+    required page_size,
+    required page,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
@@ -474,10 +460,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static getFloorReplyById({
-    @required int floorId,
-    int page,
-    @required OnResult<List<Floor>> onResult,
-    @required OnFailure onFailure,
+    required int floorId,
+    required int page,
+    required OnResult<List<Floor>> onResult,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
@@ -497,30 +483,26 @@ class FeedbackService with AsyncTimer {
   }
 
   static visitPost({
-    @required int id,
-    @required OnFailure onFailure,
+    required int id,
+    required OnFailure onFailure,
   }) async {
     try {
       await feedbackDio.post('post/visit',
-          formData: FormData.fromMap({
-            'post_id': '$id',
-          }));
+          formData: FormData.fromMap({'post_id': '$id'}));
     } on DioError catch (e) {
       onFailure(e);
     }
   }
 
   static getPostById({
-    @required int id,
-    @required OnResult<Post> onResult,
-    @required OnFailure onFailure,
+    required int id,
+    required OnResult<Post> onResult,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
         'post',
-        queryParameters: {
-          'id': '$id',
-        },
+        queryParameters: {'id': '$id'},
       );
       var post = Post.fromJson(response.data['data']['post']);
       onResult(post);
@@ -530,16 +512,14 @@ class FeedbackService with AsyncTimer {
   }
 
   static getOfficialComment({
-    @required id,
-    @required void Function(List<Floor> officialCommentList) onSuccess,
-    @required OnFailure onFailure,
+    required id,
+    required void Function(List<Floor> officialCommentList) onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var commentResponse = await feedbackDio.get(
         'post/replys',
-        queryParameters: {
-          'post_id': '$id',
-        },
+        queryParameters: {'post_id': '$id'},
       );
       List<Floor> officialCommentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
@@ -552,16 +532,14 @@ class FeedbackService with AsyncTimer {
   }
 
   static getFloorById({
-    @required int id,
-    @required OnResult<Floor> onResult,
-    @required OnFailure onFailure,
+    required int id,
+    required OnResult<Floor> onResult,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get(
         'floor',
-        queryParameters: {
-          'floor_id': '$id',
-        },
+        queryParameters: {'floor_id': '$id'},
       );
       var floor = Floor.fromJson(response.data['data']['floor']);
       onResult(floor);
@@ -572,12 +550,12 @@ class FeedbackService with AsyncTimer {
 
   ///comments改成了floors，需要点赞字段
   static getComments({
-    @required id,
-    @required order,
-    @required onlyOwner,
-    @required void Function(List<Floor> commentList, int totalPage) onSuccess,
-    @required OnFailure onFailure,
-    @required int page,
+    required id,
+    required order,
+    required onlyOwner,
+    required void Function(List<Floor> commentList, int totalPage) onSuccess,
+    required OnFailure onFailure,
+    required int page,
   }) async {
     try {
       var commentResponse = await feedbackDio.get(
@@ -601,10 +579,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> postHitLike({
-    @required id,
-    @required bool isLike,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    required id,
+    required bool isLike,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postHitLike', () async {
       try {
@@ -613,7 +591,7 @@ class FeedbackService with AsyncTimer {
               'post_id': '$id',
               'op': isLike ? 0 : 1,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -621,10 +599,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static postHitFavorite({
-    @required id,
-    @required bool isFavorite,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    required id,
+    required bool isFavorite,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postHitFavorite', () async {
       try {
@@ -633,7 +611,7 @@ class FeedbackService with AsyncTimer {
               'post_id': id,
               'op': isFavorite ? 0 : 1,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -641,10 +619,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> postHitDislike({
-    @required id,
-    @required bool isDisliked,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    required id,
+    required bool isDisliked,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('postHitDislike', () async {
       try {
@@ -653,7 +631,7 @@ class FeedbackService with AsyncTimer {
               'post_id': '$id',
               'op': isDisliked ? 0 : 1,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -661,17 +639,15 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> changeNickname({
-    @required String nickName,
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    required String nickName,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     AsyncTimer.runRepeatChecked('changeNickname', () async {
       try {
         await feedbackDio.post('user/name',
-            formData: FormData.fromMap({
-              'name': '$nickName',
-            }));
-        onSuccess?.call();
+            formData: FormData.fromMap({'name': '$nickName'}));
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -679,8 +655,8 @@ class FeedbackService with AsyncTimer {
   }
 
   static getUserInfo({
-    @required OnSuccess onSuccess,
-    @required OnFailure onFailure,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
   }) async {
     try {
       var response = await feedbackDio.get('user');
@@ -705,17 +681,17 @@ class FeedbackService with AsyncTimer {
           response.data['data']['user']['level_info']['cur_level_point'];
       CommonPreferences.levelName.value =
           response.data['data']['user']['level_info']['level_name'];
-      onSuccess?.call();
+      onSuccess.call();
     } on DioError catch (e) {
       onFailure(e);
     }
   }
 
   static Future<void> commentHitLike(
-      {@required id,
-      @required bool isLike,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required bool isLike,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitLike', () async {
       try {
         await feedbackDio.post('floor/like',
@@ -723,7 +699,7 @@ class FeedbackService with AsyncTimer {
               'floor_id': '$id',
               'op': isLike ? 0 : 1,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -731,10 +707,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static Future<void> commentHitDislike(
-      {@required id,
-      @required bool isDis,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required bool isDis,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('commentHitDislike', () async {
       try {
         await feedbackDio.post('floor/dis',
@@ -742,7 +718,7 @@ class FeedbackService with AsyncTimer {
               'floor_id': '$id',
               'op': isDis ? 0 : 1,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -751,10 +727,10 @@ class FeedbackService with AsyncTimer {
 
   ///暂时没有接口，后面改
   static officialCommentHitLike(
-      {@required id,
-      @required bool isLiked,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required bool isLiked,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('officialCommentHitLike', () async {
       try {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
@@ -762,7 +738,7 @@ class FeedbackService with AsyncTimer {
               'id': '$id',
               'token': CommonPreferences.lakeToken.value,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -770,11 +746,11 @@ class FeedbackService with AsyncTimer {
   }
 
   static sendFloor(
-      {@required id,
-      @required content,
-      @required List<String> images,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required content,
+      required List<String> images,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendFloor', () async {
       try {
         var formData = FormData.fromMap({
@@ -786,7 +762,7 @@ class FeedbackService with AsyncTimer {
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor', formData: formData);
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -794,11 +770,11 @@ class FeedbackService with AsyncTimer {
   }
 
   static replyFloor(
-      {@required id,
-      @required content,
-      @required List<String> images,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required content,
+      required List<String> images,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyFloor', () async {
       try {
         var formData = FormData.fromMap({
@@ -810,7 +786,7 @@ class FeedbackService with AsyncTimer {
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('floor/reply', formData: formData);
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -818,11 +794,11 @@ class FeedbackService with AsyncTimer {
   }
 
   static replyOfficialFloor(
-      {@required id,
-      @required content,
-      @required List<String> images,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required content,
+      required List<String> images,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('replyOfficialFloor', () async {
       try {
         var formData = FormData.fromMap({
@@ -834,7 +810,7 @@ class FeedbackService with AsyncTimer {
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('post/reply', formData: formData);
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -842,15 +818,15 @@ class FeedbackService with AsyncTimer {
   }
 
   static sendPost(
-      {@required type,
-      @required title,
-      @required content,
+      {required type,
+      required title,
+      required content,
       departmentId,
       tagId,
-      @required campus,
-      @required List<String> images,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      required campus,
+      required List<String> images,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('sendPost', () async {
       try {
         var formData = FormData.fromMap({
@@ -866,7 +842,7 @@ class FeedbackService with AsyncTimer {
             formData.fields.addAll([MapEntry('images', images[i])]);
         }
         await feedbackDio.post('post', formData: formData);
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -875,20 +851,20 @@ class FeedbackService with AsyncTimer {
 
   ///暂时没有接口，后面改
   static rate(
-      {@required id,
-      @required rating,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required String id,
+      required String rating,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('rate', () async {
       try {
         await feedbackDio.post(
           'post/solve',
           formData: FormData.fromMap({
-            'post_id': '$id',
-            'rating': '$rating',
+            'post_id': id,
+            'rating': rating,
           }),
         );
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -896,18 +872,16 @@ class FeedbackService with AsyncTimer {
   }
 
   static deletePost(
-      {@required id,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('deletePost', () async {
       try {
         await feedbackDio.get(
           'post/delete',
-          queryParameters: {
-            'post_id': id,
-          },
+          queryParameters: {'post_id': id},
         );
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -916,12 +890,12 @@ class FeedbackService with AsyncTimer {
 
   /// 举报问题 / 评论
   static report(
-      {@required id,
+      {required id,
       floorId,
-      @required isQuestion,
-      @required reason,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      required isQuestion,
+      required reason,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('report', () async {
       try {
         var formData = FormData();
@@ -939,11 +913,8 @@ class FeedbackService with AsyncTimer {
             'reason': reason,
           });
         }
-        await feedbackDio.post(
-          'report',
-          formData: formData,
-        );
-        onSuccess?.call();
+        await feedbackDio.post('report', formData: formData);
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -951,18 +922,16 @@ class FeedbackService with AsyncTimer {
   }
 
   static deleteFloor(
-      {@required id,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('deleteFloor', () async {
       try {
         await feedbackDio.get(
           'floor/delete',
-          queryParameters: {
-            'floor_id': '$id',
-          },
+          queryParameters: {'floor_id': '$id'},
         );
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -970,18 +939,16 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminDeletePost(
-      {@required id,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminDeletePost', () async {
       try {
         await feedbackAdminPostDio.get(
           'post/delete',
-          queryParameters: {
-            'id': id,
-          },
+          queryParameters: {'id': id},
         );
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -989,18 +956,16 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminDeleteReply(
-      {@required floorId,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required floorId,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminDeleteReply', () async {
       try {
         await feedbackAdminPostDio.get(
           'floor/delete',
-          queryParameters: {
-            'floor_id': floorId,
-          },
+          queryParameters: {'floor_id': floorId},
         );
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -1008,10 +973,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminTopPost(
-      {@required id,
-      @required hotIndex,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required hotIndex,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminTopPost', () async {
       try {
         await feedbackAdminPostDio.post('post/value',
@@ -1019,7 +984,7 @@ class FeedbackService with AsyncTimer {
               'post_id': id,
               'value': hotIndex,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -1027,10 +992,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminFloorTopPost(
-      {@required id,
-        @required hotIndex,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      {required id,
+      required hotIndex,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminFloorTopPost', () async {
       try {
         await feedbackAdminPostDio.post('floor/value',
@@ -1038,7 +1003,7 @@ class FeedbackService with AsyncTimer {
               'floor_id': id,
               'value': hotIndex,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -1046,10 +1011,10 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminChangeETag(
-      {@required id,
-      @required value,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required value,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminChangeETag', () async {
       try {
         await feedbackAdminPostDio.post('post/etag',
@@ -1057,7 +1022,7 @@ class FeedbackService with AsyncTimer {
               'post_id': id,
               'value': value,
             }));
-        onSuccess?.call();
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -1065,16 +1030,14 @@ class FeedbackService with AsyncTimer {
   }
 
   static superAdminOpenBox(
-      {@required uid,
-      @required OnResult<Map<String, String>> onResult,
-      @required OnFailure onFailure}) async {
+      {required uid,
+      required OnResult<Map<String, String>> onResult,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('superAdminDeleteReply', () async {
       try {
         var response = await feedbackAdminPostDio.get(
           'user/detail',
-          queryParameters: {
-            'uid': uid,
-          },
+          queryParameters: {'uid': uid},
         );
         var obd = response.data['data']['detail'];
         Map<String, String> openBoxDetail = {};
@@ -1100,16 +1063,14 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminResetName(
-      {@required id,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminResetName', () async {
       try {
         await feedbackAdminPostDio.post('user/nickname/reset',
-            formData: FormData.fromMap({
-              'uid': id,
-            }));
-        onSuccess?.call();
+            formData: FormData.fromMap({'uid': id}));
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }
@@ -1117,16 +1078,14 @@ class FeedbackService with AsyncTimer {
   }
 
   static adminResetAva(
-      {@required id,
-      @required OnSuccess onSuccess,
-      @required OnFailure onFailure}) async {
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminResetAva', () async {
       try {
         await feedbackAdminPostDio.post('user/avatar/reset',
-            formData: FormData.fromMap({
-              'uid': id,
-            }));
-        onSuccess?.call();
+            formData: FormData.fromMap({'uid': id}));
+        onSuccess.call();
       } on DioError catch (e) {
         onFailure(e);
       }

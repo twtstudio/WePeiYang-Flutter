@@ -1,17 +1,15 @@
-import 'dart:async';
-
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
-
-import '../../../feedback_router.dart';
-import '../../search_result_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
 class CommentIdentificationContainer extends StatelessWidget {
   final String text;
@@ -35,39 +33,28 @@ class ETagUtil {
   final Color colorA, colorB;
   final String text, fullName;
 
-  ETagUtil._(this.colorA, this.colorB, this.text, this.fullName);
-
-  factory ETagUtil.empty() {
-    return ETagUtil._(Colors.white, Colors.white, '', '');
-  }
+  ETagUtil(this.colorA, this.colorB, this.text, this.fullName);
 }
 
 class ETagWidget extends StatefulWidget {
-  @required
   final String entry;
   final bool full;
 
-  @required
-  const ETagWidget({Key key, this.entry, this.full}) : super(key: key);
+  const ETagWidget({Key? key, required this.entry, required this.full})
+      : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return _ETagWidgetState();
-  }
+  State<StatefulWidget> createState() => _ETagWidgetState();
 }
 
 class _ETagWidgetState extends State<ETagWidget> {
-  _ETagWidgetState();
-
   bool colorState = false;
-  Timer timer;
-  Duration timeDuration = Duration(milliseconds: 1900);
+  var timeDuration = Duration(milliseconds: 1900);
   Map<String, ETagUtil> tagUtils = {
-    'recommend': new ETagUtil._(Color.fromRGBO(232, 178, 27, 1.0),
+    'recommend': ETagUtil(Color.fromRGBO(232, 178, 27, 1.0),
         Color.fromRGBO(236, 120, 57, 1.0), '精', '精华帖'),
-    'theme': new ETagUtil._(Color.fromRGBO(66, 161, 225, 1.0),
+    'theme': ETagUtil(Color.fromRGBO(66, 161, 225, 1.0),
         Color.fromRGBO(57, 90, 236, 1.0), '活动', '活动帖'),
-    'top': new ETagUtil._(Color.fromRGBO(223, 108, 171, 1.0),
+    'top': ETagUtil(Color.fromRGBO(223, 108, 171, 1.0),
         Color.fromRGBO(243, 16, 73, 1.0), '置顶', '置顶帖')
   };
 
@@ -78,8 +65,8 @@ class _ETagWidgetState extends State<ETagWidget> {
       margin: EdgeInsets.only(right: 5),
       child: Text(
         widget.full
-            ? tagUtils[widget.entry].fullName
-            : tagUtils[widget.entry].text ?? '',
+            ? tagUtils[widget.entry]!.fullName
+            : tagUtils[widget.entry]!.text,
         style: TextUtil.base.NotoSansSC.w800.sp(12).white,
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
@@ -90,8 +77,8 @@ class _ETagWidgetState extends State<ETagWidget> {
           begin: Alignment.topLeft,
           end: Alignment(0.4, 1.6),
           colors: [
-            tagUtils[widget.entry].colorA,
-            tagUtils[widget.entry].colorB
+            tagUtils[widget.entry]!.colorA,
+            tagUtils[widget.entry]!.colorB
           ],
         ),
       ),
@@ -99,17 +86,6 @@ class _ETagWidgetState extends State<ETagWidget> {
   }
 }
 
-class MPWidget extends StatelessWidget {
-  final String text;
-
-  MPWidget(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text('#MP' + this.text,
-        style: TextUtil.base.ProductSans.w400.grey97.sp(12));
-  }
-}
 
 class SolveOrNotWidget extends StatelessWidget {
   final int index;
@@ -170,39 +146,39 @@ class TagShowWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        id == -1
-            ? Navigator.pushNamed(
-                context,
-                FeedbackRouter.searchResult,
-                arguments:
-                    SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
-              )
-            : type == 0
-                ? {
-                    Navigator.pushNamed(
-                      context,
-                      FeedbackRouter.searchResult,
-                      arguments:
-                          SearchResultPageArgs('', '', '', '$tag 分区详情', tar, 0),
-                    )
-                  }
-                : type == 1
-                    ? Navigator.pushNamed(
-                        context,
-                        FeedbackRouter.searchResult,
-                        arguments: SearchResultPageArgs(
-                            '', '', '$id', '部门 #$tag', 1, 0),
-                      )
-                    : Navigator.pushNamed(
-                        context,
-                        FeedbackRouter.searchResult,
-                        arguments: SearchResultPageArgs(
-                            '', '$id', '', '标签 #$tag', 0, lakeType),
-                      );
+        if (id == -1) {
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments:
+            SearchResultPageArgs('$tag', '', '', '模糊搜索#$tag', 2, 0),
+          );
+        } else if (type == 0) {
+            Navigator.pushNamed(
+              context,
+              FeedbackRouter.searchResult,
+              arguments:
+              SearchResultPageArgs('', '', '', '$tag 分区详情', tar, 0),
+            );
+        } else if (type == 1) {
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments: SearchResultPageArgs(
+                '', '', '$id', '部门 #$tag', 1, 0),
+          );
+        } else {
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments: SearchResultPageArgs(
+                '', '$id', '', '标签 #$tag', 0, lakeType),
+          );
+        }
       },
       child: Container(
         height: 20,
-        child: (tag != null && tag != "")
+        child: (tag != '')
             ? Row(
                 children: [
                   Container(
@@ -231,7 +207,7 @@ class TagShowWidget extends StatelessWidget {
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: width - 30),
                     child: Text(
-                      tag ?? '',
+                      tag,
                       style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
@@ -270,14 +246,13 @@ class TextPod extends StatelessWidget {
 class ProfileImageWithDetailedPopup extends StatefulWidget {
   final int postOrCommentId;
   final bool fromPostCard;
-  final int type;
   final int uid;
   final String avatar;
   final String nickName;
   final String level;
 
   ProfileImageWithDetailedPopup(this.postOrCommentId, this.fromPostCard,
-      this.type, this.avatar, this.uid, this.nickName, this.level);
+      this.avatar, this.uid, this.nickName, this.level);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -300,7 +275,6 @@ class _ProfileImageWithDetailedPopupState
           arguments: PersonPageArgs(
               widget.postOrCommentId,
               widget.fromPostCard,
-              widget.type,
               widget.uid,
               widget.avatar,
               widget.nickName,
@@ -310,7 +284,7 @@ class _ProfileImageWithDetailedPopupState
         child: Hero(
           tag: 'personImage',
           child: WpyPic(
-            widget.avatar == ""
+            widget.avatar == ''
                 ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                 : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
             width: 34.w,

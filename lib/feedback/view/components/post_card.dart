@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async';
 import 'dart:ui' as ui;
 
@@ -19,6 +20,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -51,7 +53,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     context.read<LakeModel>().tabList.forEach((e) {
       typeName.addAll({e.id: e.shortname});
     });
-    return typeName[type];
+    return typeName[type]!;
   }
 
   @override
@@ -63,14 +65,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(
             width: 34,
             height: 34,
-            child: ProfileImageWithDetailedPopup(
-                post.id,
-                true,
-                post.type,
-                post.avatar ?? post.nickname,
-                post.uid,
-                post.nickname,
-                post.level.toString()),
+            child: ProfileImageWithDetailedPopup(post.id, true, post.avatar,
+                post.uid, post.nickname, post.level.toString()),
           ),
           SizedBox(width: 8.w),
           Container(
@@ -106,7 +102,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                     ),
                     Text(
                       DateFormat('yyyy-MM-dd HH:mm:ss')
-                          .format(post.createAt.toLocal()),
+                          .format(post.createAt!.toLocal()),
                       textAlign: TextAlign.left,
                       style: TextUtil.base.grey6C.normal.ProductSans.sp(10),
                     )
@@ -116,7 +112,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           if (post.type != 1)
             GestureDetector(
               onLongPress: () {
-                return Clipboard.setData(ClipboardData(
+                Clipboard.setData(ClipboardData(
                         text: '#MP' + post.id.toString().padLeft(6, '0')))
                     .whenComplete(
                         () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
@@ -130,7 +126,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     /// 标题eTag
     var eTagAndTitle = Row(children: [
-      if (post.eTag != '' && post.eTag != null)
+      if (post.eTag != '')
         Center(child: ETagWidget(entry: widget.post.eTag, full: !widget.outer)),
       Expanded(
         child: Text(
@@ -226,9 +222,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           ),
           Spacer(),
           Text(
-            post.visitCount == null
-                ? '0次浏览'
-                : post.visitCount.toString() + "次浏览",
+            post.visitCount.toString() + "次浏览",
             style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
           )
         ]);
@@ -240,11 +234,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
         children: [
           if (post.tag != null)
             TagShowWidget(
-                post.tag.name,
+                post.tag!.name,
                 (WePeiYangApp.screenWidth - 24.w) / 2 -
                     (post.campus > 0 ? 100.w : 60.w),
                 post.type,
-                post.tag.id,
+                post.tag!.id,
                 0,
                 post.type),
           if (post.tag != null) SizedBox(width: 8),
@@ -276,9 +270,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(width: 8),
           Spacer(),
           Text(
-            post.visitCount == null
-                ? '0次浏览'
-                : post.visitCount.toString() + "次浏览",
+            post.visitCount.toString() + "次浏览",
             style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
           )
         ]);
@@ -368,12 +360,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
         children: List.generate(
           post.imageUrls.length,
           (index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(context, FeedbackRouter.imageView,
-                arguments: {
-                  "urlList": post.imageUrls,
-                  "urlListLength": post.imageUrls.length,
-                  "indexNow": index,
-                }),
+            onTap: () => Navigator.pushNamed(
+              context,
+              FeedbackRouter.imageView,
+              arguments: ImageViewPageArgs(
+                  post.imageUrls, post.imageUrls.length, index, false),
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
               child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
@@ -445,8 +437,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
         return Container(
           width: 350.w,
           child: snapshot.hasData
-              ? snapshot.data.height / snapshot.data.width > 2.0
-                  ? _picFullView ?? false
+              ? snapshot.data!.height / snapshot.data!.width > 2.0
+                  ? _picFullView
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -455,13 +447,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                   BorderRadius.all(Radius.circular(12.r)),
                               child: GestureDetector(
                                   onTap: () => Navigator.pushNamed(
-                                          context, FeedbackRouter.imageView,
-                                          arguments: {
-                                            "urlList": [widget.imageUrl],
-                                            "urlListLength": 1,
-                                            "indexNow": 0,
-                                            "isLongPic": true
-                                          }),
+                                        context,
+                                        FeedbackRouter.imageView,
+                                        arguments: ImageViewPageArgs(
+                                            [widget.imageUrl], 1, 0, true),
+                                      ),
                                   child: image),
                             ),
                             TextButton(
@@ -490,13 +480,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             child: Stack(children: [
                               GestureDetector(
                                   onTap: () => Navigator.pushNamed(
-                                          context, FeedbackRouter.imageView,
-                                          arguments: {
-                                            "urlList": [widget.imageUrl],
-                                            "urlListLength": 1,
-                                            "indexNow": 0,
-                                            "isLongPic": true
-                                          }),
+                                        context,
+                                        FeedbackRouter.imageView,
+                                        arguments: ImageViewPageArgs(
+                                            [widget.imageUrl], 1, 0, true),
+                                      ),
                                   child: image),
                               Positioned(top: 8, left: 8, child: TextPod('长图')),
                               Align(
@@ -557,13 +545,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                       borderRadius: BorderRadius.all(Radius.circular(12.r)),
                       child: GestureDetector(
                           onTap: () => Navigator.pushNamed(
-                                  context, FeedbackRouter.imageView,
-                                  arguments: {
-                                    "urlList": [widget.imageUrl],
-                                    "urlListLength": 1,
-                                    "indexNow": 0,
-                                    "isLongPic": false
-                                  }),
+                                context,
+                                FeedbackRouter.imageView,
+                                arguments: ImageViewPageArgs(
+                                    [widget.imageUrl], 1, 0, false),
+                              ),
                           child: image),
                     )
               : Icon(

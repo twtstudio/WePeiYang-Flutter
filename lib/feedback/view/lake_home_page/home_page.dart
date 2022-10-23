@@ -1,6 +1,6 @@
+// @dart = 2.12
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -14,13 +14,12 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
-import '../search_result_page.dart';
-
 class FeedbackHomePage extends StatefulWidget {
-  FeedbackHomePage({Key key}) : super(key: key);
+  FeedbackHomePage({Key? key}) : super(key: key);
 
   @override
   FeedbackHomePageState createState() => FeedbackHomePageState();
@@ -28,13 +27,7 @@ class FeedbackHomePage extends StatefulWidget {
 
 class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
-  List<bool> shouldBeInitialized;
   final fbKey = new GlobalKey<FbTagsWrapState>();
-
-  /// 根据tab的index得到对应type
-  final postTypeNotifier = ValueNotifier(int);
-
-  bool scroll = false;
 
   bool initializeRefresh = false;
 
@@ -46,7 +39,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   /// 50.h
   double get tabBarHeight => 46.h;
 
-  FbDepartmentsProvider _departmentsProvider;
+  late final FbDepartmentsProvider _departmentsProvider;
 
   initPage() {
     context.read<LakeModel>().checkTokenAndGetTabList(_departmentsProvider,
@@ -81,13 +74,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             .lakeAreas[context
                 .read<LakeModel>()
                 .tabList[context.read<LakeModel>().tabController.index]
-                .id]
+                .id]!
             .controller
             .offset >
         1500) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]
+          .lakeAreas[context.read<LakeModel>().tabController.index]!
           .controller
           .jumpTo(1500);
     }
@@ -96,7 +89,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         .lakeAreas[context
             .read<LakeModel>()
             .tabList[context.read<LakeModel>().tabController.index]
-            .id]
+            .id]!
         .controller
         .animateTo(-85,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
@@ -106,13 +99,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (!context.read<LakeModel>().tabController.indexIsChanging) {
       if (canSee) {
         context.read<LakeModel>().onFeedbackOpen();
-        fbKey.currentState.tap();
+        fbKey.currentState?.tap();
         setState(() {
           canSee = false;
         });
       } else {
         context.read<LakeModel>().onFeedbackOpen();
-        fbKey.currentState.tap();
+        fbKey.currentState?.tap();
         setState(() {
           canSee = true;
         });
@@ -130,7 +123,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (initializeRefresh == true) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]
+          .lakeAreas[context.read<LakeModel>().tabController.index]!
           .controller
           .animateTo(-85,
               duration: Duration(milliseconds: 1000),
@@ -163,7 +156,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         child: Text(
                           data.recTag == null
                               ? '搜索发现'
-                              : '#${data.recTag.name}#',
+                              : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                         ),
@@ -274,10 +267,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             context
                                 .read<LakeModel>()
                                 .tabController
-                                .animation
+                                .animation!
                                 .value) {
                           WPYTab tab =
-                              context.read<LakeModel>().lakeAreas[1].tab;
+                              context.read<LakeModel>().lakeAreas[1]!.tab;
                           if (context.read<LakeModel>().tabController.index !=
                                   tabList.indexOf(tab) &&
                               canSee) _onFeedbackTapped();
@@ -289,13 +282,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               }
               int cacheNum = 0;
               return ExtendedTabBarView(
-                  cacheExtent: cacheNum,
-                  controller: context.read<LakeModel>().tabController,
-                  children: List<Widget>.generate(
-                      tabs == null ? 1 : tabs.length,
-                      (i) => NSubPage(
-                            index: tabList[i].id,
-                          )));
+                cacheExtent: cacheNum,
+                controller: context.read<LakeModel>().tabController,
+                children: List<Widget>.generate(
+                  tabs.length,
+                  (i) => NSubPage(index: tabList[i].id),
+                ),
+              );
             }),
           ),
           Padding(
@@ -390,7 +383,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 }
 
 class FbTagsWrap extends StatefulWidget {
-  FbTagsWrap({Key key}) : super(key: key);
+  FbTagsWrap({Key? key}) : super(key: key);
 
   @override
   FbTagsWrapState createState() => FbTagsWrapState();
@@ -398,21 +391,10 @@ class FbTagsWrap extends StatefulWidget {
 
 class FbTagsWrapState extends State<FbTagsWrap>
     with SingleTickerProviderStateMixin {
-  FbTagsWrapState();
-
-  bool _tagsContainerCanAnimate,
-      _tagsContainerBackgroundIsShow,
-      _tagsWrapIsShow;
+  bool _tagsContainerCanAnimate = true;
+  bool _tagsContainerBackgroundIsShow = false;
+  bool _tagsWrapIsShow = false;
   double _tagsContainerBackgroundOpacity = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _tagsWrapIsShow = false;
-    _tagsContainerCanAnimate = true;
-    _tagsContainerBackgroundIsShow = false;
-    _tagsContainerBackgroundOpacity = 0;
-  }
 
   _offstageTheBackground() {
     _tagsContainerCanAnimate = true;

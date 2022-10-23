@@ -1,14 +1,14 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:linkfy_text/linkfy_text.dart';
 import 'package:simple_url_preview/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-
-import '../../../feedback_router.dart';
 
 class LinkText extends StatefulWidget {
   final TextStyle style;
@@ -18,23 +18,27 @@ class LinkText extends StatefulWidget {
   @override
   _LinkTextState createState() => _LinkTextState();
 
-  LinkText({this.style, this.text, this.maxLine});
+  LinkText({required this.style, required this.text, this.maxLine = 100});
 }
 
 class _LinkTextState extends State<LinkText> {
   @override
   Widget build(BuildContext context) {
-    return LinkifyText(widget.text ?? '',
-        maxLines: widget.maxLine ?? 100,
+    return LinkifyText(widget.text,
+        maxLines: widget.maxLine,
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
         textStyle: widget.style.NotoSansSC.w400.sp(16),
         linkStyle: widget.style.linkBlue.w500.sp(16), onTap: (link) async {
-      //粗暴地解决了，但是肯定不是个长久之计
-      if (link.value.startsWith('#MP') &&
-          RegExp(r'^-?[0-9]+').hasMatch(link.value.substring(3))) {
+      if (link.value != null) {
+        ToastProvider.error('无效的帖子编号！');
+        return;
+      }
+      // 粗暴地解决了，但是肯定不是个长久之计
+      if (link.value!.startsWith('#MP') &&
+          RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
         FeedbackService.getPostById(
-          id: int.parse(link.value.substring(3)),
+          id: int.parse(link.value!.substring(3)),
           onResult: (post) {
             Navigator.pushNamed(
               context,
@@ -48,8 +52,8 @@ class _LinkTextState extends State<LinkText> {
           },
         );
       } else if (link.type == LinkType.url) {
-        var url = link.value.startsWith('http')
-            ? link.value
+        var url = link.value!.startsWith('http')
+            ? link.value!
             : 'https://${link.value}';
         if (await canLaunchUrl(Uri.parse(url))) {
           showDialog(
@@ -117,8 +121,9 @@ class _LinkTextState extends State<LinkText> {
         } else {
           ToastProvider.error('请检查网址是否有误或检查网络状态');
         }
-      } else
+      } else {
         ToastProvider.error('无效的帖子编号！');
+      }
     });
   }
 }

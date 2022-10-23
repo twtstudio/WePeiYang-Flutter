@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
@@ -22,6 +23,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../feedback_router.dart';
 import 'components/widget/pop_menu_shape.dart';
 import 'components/widget/tag_search_card.dart';
+import 'image_view/local_image_view_page.dart';
 import 'lake_home_page/lake_notifier.dart';
 
 class NewPostPage extends StatefulWidget {
@@ -49,11 +51,7 @@ class _NewPostPageState extends State<NewPostPage> {
   bool tapAble = true;
 
   _showLoading() {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return Loading();
-        });
+    showDialog(context: context, builder: (_) => Loading());
   }
 
   _submit() async {
@@ -79,13 +77,8 @@ class _NewPostPageState extends State<NewPostPage> {
                 type: args.isFollowing ? args.type : dataModel.type,
                 title: dataModel.title,
                 content: dataModel.content,
-                tagId: args.isFollowing
-                    ? args.tagId
-                    : dataModel.tag == null
-                        ? ''
-                        : dataModel.tag.id,
-                departmentId:
-                    dataModel.department == null ? '' : dataModel.department.id,
+                tagId: args.isFollowing ? args.tagId : dataModel.tag?.id ?? '',
+                departmentId: dataModel.department?.id ?? '',
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
@@ -114,13 +107,8 @@ class _NewPostPageState extends State<NewPostPage> {
         type: args.isFollowing ? args.type : dataModel.type,
         title: dataModel.title,
         content: dataModel.content,
-        tagId: args.isFollowing
-            ? args.tagId
-            : dataModel.tag == null
-                ? ''
-                : dataModel.tag.id,
-        departmentId:
-            dataModel.department == null ? '' : dataModel.department.id,
+        tagId: args.isFollowing ? args.tagId : dataModel.tag?.id ?? '',
+        departmentId: dataModel.department?.id ?? '',
         images: [],
         campus: campusNotifier.value,
         onSuccess: () {
@@ -258,17 +246,12 @@ class LakeSelector extends StatefulWidget {
 }
 
 class _LakeSelectorState extends State<LakeSelector> {
-  ScrollController controller = new ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  var controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final notifier =
-        context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+        context.findAncestorStateOfType<_NewPostPageState>()!.postTypeNotifier;
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
     notifier.value = tabList[1].id;
@@ -391,20 +374,20 @@ class _LakeSelectorState extends State<LakeSelector> {
 class departmentTagView extends StatefulWidget {
   final ValueNotifier postTypeNotifier;
 
-  const departmentTagView(this.postTypeNotifier, {Key key}) : super(key: key);
+  const departmentTagView(this.postTypeNotifier, {Key? key}) : super(key: key);
 
   @override
   _departmentTagViewState createState() => _departmentTagViewState();
 }
 
 class _departmentTagViewState extends State<departmentTagView> {
-  ValueNotifier<Department> department;
+  late final ValueNotifier<Department> department;
 
   @override
   void initState() {
     super.initState();
     var dataModel = context.read<NewPostProvider>();
-    department = ValueNotifier(dataModel.department)
+    department = ValueNotifier(dataModel.department!)
       ..addListener(() {
         dataModel.department = department.value;
       });
@@ -413,7 +396,7 @@ class _departmentTagViewState extends State<departmentTagView> {
   @override
   Widget build(BuildContext context) {
     final notifier =
-        context.findAncestorStateOfType<_NewPostPageState>().postTypeNotifier;
+        context.findAncestorStateOfType<_NewPostPageState>()!.postTypeNotifier;
     return ValueListenableBuilder<int>(
         valueListenable: notifier,
         builder: (context, type, _) {
@@ -426,9 +409,7 @@ class _departmentTagViewState extends State<departmentTagView> {
             margin: const EdgeInsets.only(bottom: 6),
             padding: const EdgeInsets.fromLTRB(18, 0, 10, 4),
             child: notifier.value == 1
-                ? TabGridView(
-                    department: department.value,
-                  )
+                ? TabGridView(department: department.value)
                 : SearchTagCard(),
           );
         });
@@ -436,7 +417,7 @@ class _departmentTagViewState extends State<departmentTagView> {
 }
 
 class CampusSelector extends StatefulWidget {
-  final ValueNotifier campusNotifier;
+  final ValueNotifier<int> campusNotifier;
 
   CampusSelector(this.campusNotifier);
 
@@ -451,7 +432,7 @@ class _CampusSelectorState extends State<CampusSelector> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.campusNotifier,
-      builder: (context, value, _) {
+      builder: (context, int value, _) {
         return PopupMenuButton(
           padding: EdgeInsets.zero,
           shape: RacTangle(),
@@ -472,7 +453,7 @@ class _CampusSelectorState extends State<CampusSelector> {
               SizedBox(width: 18),
             ],
           ),
-          onSelected: (value) {
+          onSelected: (int value) {
             widget.campusNotifier.value = value;
           },
           itemBuilder: (context) {
@@ -515,8 +496,8 @@ class TitleInputField extends StatefulWidget {
 }
 
 class _TitleInputFieldState extends State<TitleInputField> {
-  ValueNotifier<String> titleCounter;
-  TextEditingController _titleController;
+  late final ValueNotifier<String> titleCounter;
+  late final TextEditingController _titleController;
 
   @override
   void initState() {
@@ -593,8 +574,8 @@ class ContentInputField extends StatefulWidget {
 }
 
 class _ContentInputFieldState extends State<ContentInputField> {
-  ValueNotifier<String> contentCounter;
-  TextEditingController _contentController;
+  late final ValueNotifier<String> contentCounter;
+  late final TextEditingController _contentController;
 
   @override
   void initState() {
@@ -671,13 +652,18 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         maxAssets: maxImage - context.read<NewPostProvider>().images.length,
         requestType: RequestType.image,
         themeColor: ColorUtil.selectionButtonColor);
+    if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
-      File file = await assets[i].file;
-      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      File? file = await assets[i].file;
+      if (file == null) {
+        ToastProvider.error('选取图片异常，请重新尝试');
+        return;
+      }
+      for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         file = await FlutterNativeImage.compressImage(file.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
@@ -690,7 +676,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     setState(() {});
   }
 
-  Future<String> _showDialog() {
+  Future<String?> _showDialog() {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -716,11 +702,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return Stack(fit: StackFit.expand, children: [
       InkWell(
         onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
-            arguments: {
-              "uriList": data,
-              "uriListLength": length,
-              "indexNow": index
-            }),
+            arguments: LocalImageViewPageArgs(data, [], length, index)),
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -801,8 +783,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
 
 class _ImagePickerWidget extends StatelessWidget {
   const _ImagePickerWidget({
-    Key key,
-    this.onTap,
+    Key? key,
+    required this.onTap,
   }) : super(key: key);
 
   final VoidCallback onTap;

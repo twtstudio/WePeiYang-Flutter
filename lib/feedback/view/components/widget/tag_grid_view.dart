@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -8,7 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 class TabGridView extends StatefulWidget {
   final Department department;
 
-  const TabGridView({Key key, this.department}) : super(key: key);
+  const TabGridView({Key? key, required this.department}) : super(key: key);
 
   @override
   _TabGridViewState createState() => _TabGridViewState();
@@ -16,7 +17,7 @@ class TabGridView extends StatefulWidget {
 
 class _TabGridViewState extends State<TabGridView>
     with TickerProviderStateMixin {
-  ValueNotifier<Department> currentTab;
+  late ValueNotifier<Department?> currentTab;
 
   @override
   void initState() {
@@ -64,15 +65,11 @@ class _TabGridViewState extends State<TabGridView>
     );
   }
 
-  void updateGroupValue(Department department) {
-    currentTab.value = department;
-  }
-
-  _tagButton(tag) {
+  Widget _tagButton(tag) {
     return ValueListenableBuilder(
       valueListenable: currentTab,
-      builder: (_, value, __) {
-        return tag.id == value?.id ? _tagChip(true, tag) : _tagChip(false, tag);
+      builder: (_, Department? value, __) {
+        return _tagChip(tag.id == value?.id, tag);
       },
     );
   }
@@ -87,15 +84,15 @@ class _TabGridViewState extends State<TabGridView>
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {
-          if (chose == false) {
+          if (chose) {
+            setState(() {
+              context.read<NewPostProvider>().department = null;
+              currentTab.value = null;
+            });
+          } else {
             setState(() {
               context.read<NewPostProvider>().department = tag;
-              updateGroupValue(tag);
-            });
-          } else if (chose == true) {
-            setState(() {
-              context.read<NewPostProvider>().department = Department();
-              updateGroupValue(Department());
+              currentTab.value = tag;
             });
           }
         },

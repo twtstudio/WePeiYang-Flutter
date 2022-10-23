@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +12,11 @@ class ClipCopy extends StatelessWidget {
   final int id;
 
   const ClipCopy({
-    Key key,
-    @required this.child,
-    @required this.copy,
-    @required this.toast,
-    this.id,
+    Key? key,
+    required this.child,
+    required this.copy,
+    required this.toast,
+    required this.id,
   }) : super(key: key);
 
   @override
