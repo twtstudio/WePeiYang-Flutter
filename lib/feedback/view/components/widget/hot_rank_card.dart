@@ -53,9 +53,9 @@ class _HotCardState extends State<HotCard> {
 
     return Consumer<FbHotTagsProvider>(
         builder: (_, data, __) => data.hotTagCardState == 4
-            ? SizedBox()
+            ? SizedBox(height: 14.h)
             : Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
