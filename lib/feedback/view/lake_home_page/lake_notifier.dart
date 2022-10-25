@@ -43,15 +43,25 @@ class ChangeHintTextProvider extends ChangeNotifier {
 
 class FbHotTagsProvider extends ChangeNotifier {
   List<Tag> hotTagsList = [];
+
+  /// 0：未加载 1：加载中 2：加载完成 3：加载失败 4：加载成功但无数据
+  int hotTagCardState = 0;
   Tag recTag;
 
   Future<void> initHotTags({OnSuccess success, OnFailure failure}) async {
+    hotTagCardState = 1;
     await FeedbackService.getHotTags(onSuccess: (list) {
       hotTagsList.clear();
-      hotTagsList.addAll(list);
+      if (list.length == 0) {
+        hotTagCardState = 4;
+      } else {
+        hotTagCardState = 2;
+        hotTagsList.addAll(list);
+      }
       notifyListeners();
       success?.call();
     }, onFailure: (e) {
+      hotTagCardState = 3;
       failure.call(e);
       ToastProvider.error(e.error.toString());
     });

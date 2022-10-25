@@ -51,73 +51,88 @@ class _HotCardState extends State<HotCard> {
       )
     ]);
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          title,
-          SizedBox(height: 8.h),
-          Consumer<FbHotTagsProvider>(
-            builder: (_, data, __) => data.hotTagsList.length > 0
-                ? Column(
-                    children: List.generate(
-                        data.hotTagsList.length <= 5
-                            ? data.hotTagsList.length
-                            : 5,
-                        (index) => InkWell(
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.searchResult,
-                                arguments: SearchResultPageArgs(
-                                    '',
-                                    '${data.hotTagsList[index].tagId}',
-                                    '',
-                                    '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
-                                    0,
-                                    0),
+    return Consumer<FbHotTagsProvider>(
+        builder: (_, data, __) => data.hotTagCardState == 4
+            ? SizedBox()
+            : Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    title,
+                    SizedBox(height: 8.h),
+                    data.hotTagCardState == 1
+                        ? Text(
+                            '     loading...',
+                            style: TextUtil.base.w400.NotoSansSC.sp(18).black4E,
+                          )
+                        : data.hotTagCardState == 2
+                            ? Column(
+                                children: List.generate(
+                                    data.hotTagsList.length <= 5
+                                        ? data.hotTagsList.length
+                                        : 5,
+                                    (index) => InkWell(
+                                          onTap: () => Navigator.pushNamed(
+                                            context,
+                                            FeedbackRouter.searchResult,
+                                            arguments: SearchResultPageArgs(
+                                                '',
+                                                '${data.hotTagsList[index].tagId}',
+                                                '',
+                                                '热搜：${data.hotTagsList[index].name}\n点击标签参加话题讨论',
+                                                0,
+                                                0),
+                                          ),
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 3.h),
+                                            child: Row(
+                                              children: [
+                                                leads[index],
+                                                SizedBox(width: 5),
+                                                Expanded(
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      data.hotTagsList[index]
+                                                          .name,
+                                                      style: TextUtil
+                                                          .base.w400.NotoSansSC
+                                                          .sp(16)
+                                                          .black2A,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 5),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Text(
+                                                    data.hotTagsList[index]
+                                                            .point
+                                                            .toString() ??
+                                                        '0',
+                                                    style: TextUtil
+                                                        .base.w400.NotoSansSC
+                                                        .sp(14)
+                                                        .black2A,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )))
+                            : Text(
+                                '     加载失败',
+                                style:
+                                    TextUtil.base.w400.NotoSansSC.sp(18).redD9,
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 3.h),
-                                child: Row(
-                                  children: [
-                                    leads[index],
-                                    SizedBox(width: 5),
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          data.hotTagsList[index].name,
-                                          style: TextUtil.base.w400.NotoSansSC
-                                              .sp(16)
-                                              .black2A,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        data.hotTagsList[index].point
-                                                .toString() ??
-                                            '0',
-                                        style: TextUtil.base.w400.NotoSansSC
-                                            .sp(14)
-                                            .black2A,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )))
-                : Text(
-                    '     loading...',
-                    style: TextUtil.base.w400.NotoSansSC.sp(18).black2A,
-                  ),
-          ),
-        ],
-      ),
-    );
+                  ],
+                ),
+              ));
   }
 }
