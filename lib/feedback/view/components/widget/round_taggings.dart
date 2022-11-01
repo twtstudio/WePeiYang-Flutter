@@ -275,9 +275,17 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
   final String avatar;
   final String nickName;
   final String level;
+  final String heroTag;
 
-  ProfileImageWithDetailedPopup(this.postOrCommentId, this.fromPostCard,
-      this.type, this.avatar, this.uid, this.nickName, this.level);
+  ProfileImageWithDetailedPopup(
+      this.postOrCommentId,
+      this.fromPostCard,
+      this.type,
+      this.avatar,
+      this.uid,
+      this.nickName,
+      this.level,
+      this.heroTag);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -304,11 +312,12 @@ class _ProfileImageWithDetailedPopupState
               widget.uid,
               widget.avatar,
               widget.nickName,
-              widget.level)),
+              widget.level,
+              widget.heroTag)),
       child: Hero(
-        tag: widget.avatar ?? widget.uid,
+        tag: widget.heroTag,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(100)),
+          borderRadius: BorderRadius.all(Radius.circular(20.w)),
           child: WpyPic(
             widget.avatar == ""
                 ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'

@@ -58,11 +58,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: 35.w,
+        height: 38.w,
         child: Row(children: [
           SizedBox(
-            width: 34,
-            height: 34,
+            width: 34.w,
+            height: 34.w,
             child: ProfileImageWithDetailedPopup(
                 post.id,
                 true,
@@ -70,7 +70,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 post.avatar ?? post.nickname,
                 post.uid,
                 post.nickname,
-                post.level.toString()),
+                post.level.toString(),
+                post.id.toString()),
           ),
           SizedBox(width: 8.w),
           Container(
@@ -180,52 +181,52 @@ class _PostCardNormalState extends State<PostCardNormal> {
             style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
           ),
           if (post.isLike != null)
-          IconWidget(
-            IconType.like,
-            count: post.likeCount,
-            onLikePressed: (isLike, likeCount, success, failure) async {
-              await FeedbackService.postHitLike(
-                id: post.id,
-                isLike: post.isLike,
-                onSuccess: () {
-                  post.isLike = !post.isLike;
-                  post.likeCount = likeCount;
-                  if (post.isLike && post.isDis) {
-                    post.isDis = !post.isDis;
-                    setState(() {});
-                  }
-                  success.call();
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                  failure.call();
-                },
-              );
-            },
-            isLike: post.isLike,
-          ),
-          if (post.isDis != null)
-          DislikeWidget(
-            size: 15.w,
-            isDislike: widget.post.isDis,
-            onDislikePressed: (dislikeNotifier) async {
-              await FeedbackService.postHitDislike(
-                id: post.id,
-                isDisliked: post.isDis,
-                onSuccess: () {
-                  post.isDis = !post.isDis;
-                  if (post.isLike && post.isDis) {
+            IconWidget(
+              IconType.like,
+              count: post.likeCount,
+              onLikePressed: (isLike, likeCount, success, failure) async {
+                await FeedbackService.postHitLike(
+                  id: post.id,
+                  isLike: post.isLike,
+                  onSuccess: () {
                     post.isLike = !post.isLike;
-                    post.likeCount--;
-                    setState(() {});
-                  }
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            },
-          ),
+                    post.likeCount = likeCount;
+                    if (post.isLike && post.isDis) {
+                      post.isDis = !post.isDis;
+                      setState(() {});
+                    }
+                    success.call();
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                    failure.call();
+                  },
+                );
+              },
+              isLike: post.isLike,
+            ),
+          if (post.isDis != null)
+            DislikeWidget(
+              size: 15.w,
+              isDislike: widget.post.isDis,
+              onDislikePressed: (dislikeNotifier) async {
+                await FeedbackService.postHitDislike(
+                  id: post.id,
+                  isDisliked: post.isDis,
+                  onSuccess: () {
+                    post.isDis = !post.isDis;
+                    if (post.isLike && post.isDis) {
+                      post.isLike = !post.isLike;
+                      post.likeCount--;
+                      setState(() {});
+                    }
+                  },
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  },
+                );
+              },
+            ),
           Spacer(),
           Text(
             post.visitCount == null
@@ -311,7 +312,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               );
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 8.h),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,7 +328,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
         // inner 框架
         : Container(
-            padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 10.h),
+            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 8.h),
             decoration: BoxDecoration(
                 border: Border(
                     bottom:
@@ -596,72 +597,72 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
         SizedBox(width: 10),
         if (widget.post.isLike != null)
           IconWidget(
-          IconType.bottomLike,
-          count: widget.post.likeCount,
-          onLikePressed: (isLike, likeCount, success, failure) async {
-            await FeedbackService.postHitLike(
-              id: widget.post.id,
-              isLike: widget.post.isLike,
-              onSuccess: () {
-                widget.post.isLike = !widget.post.isLike;
-                widget.post.likeCount = likeCount;
-                if (widget.post.isLike && widget.post.isDis) {
-                  widget.post.isDis = !widget.post.isDis;
-                  setState(() {});
-                }
-                success.call();
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-                failure.call();
-              },
-            );
-          },
-          isLike: widget.post.isLike,
-        ),
+            IconType.bottomLike,
+            count: widget.post.likeCount,
+            onLikePressed: (isLike, likeCount, success, failure) async {
+              await FeedbackService.postHitLike(
+                id: widget.post.id,
+                isLike: widget.post.isLike,
+                onSuccess: () {
+                  widget.post.isLike = !widget.post.isLike;
+                  widget.post.likeCount = likeCount;
+                  if (widget.post.isLike && widget.post.isDis) {
+                    widget.post.isDis = !widget.post.isDis;
+                    setState(() {});
+                  }
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: widget.post.isLike,
+          ),
         if (widget.post.isFav != null)
           IconWidget(
-          IconType.bottomFav,
-          count: widget.post.favCount,
-          onLikePressed: (isFav, favCount, success, failure) async {
-            await FeedbackService.postHitFavorite(
-              id: widget.post.id,
-              isFavorite: widget.post.isFav,
-              onSuccess: () {
-                widget.post.isFav = !isFav;
-                widget.post.favCount = favCount;
-                success.call();
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-                failure.call();
-              },
-            );
-          },
-          isLike: widget.post.isFav,
-        ),
+            IconType.bottomFav,
+            count: widget.post.favCount,
+            onLikePressed: (isFav, favCount, success, failure) async {
+              await FeedbackService.postHitFavorite(
+                id: widget.post.id,
+                isFavorite: widget.post.isFav,
+                onSuccess: () {
+                  widget.post.isFav = !isFav;
+                  widget.post.favCount = favCount;
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: widget.post.isFav,
+          ),
         if (widget.post.isDis != null)
           DislikeWidget(
-          size: 22.w,
-          isDislike: widget.post.isDis,
-          onDislikePressed: (dislikeNotifier) async {
-            await FeedbackService.postHitDislike(
-              id: widget.post.id,
-              isDisliked: widget.post.isDis,
-              onSuccess: () {
-                widget.post.isDis = !widget.post.isDis;
-                if (widget.post.isLike && widget.post.isDis) {
-                  widget.post.isLike = !widget.post.isLike;
-                  widget.post.likeCount--;
-                  setState(() {});
-                }
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
-              },
-            );
-          },
-        ),
+            size: 22.w,
+            isDislike: widget.post.isDis,
+            onDislikePressed: (dislikeNotifier) async {
+              await FeedbackService.postHitDislike(
+                id: widget.post.id,
+                isDisliked: widget.post.isDis,
+                onSuccess: () {
+                  widget.post.isDis = !widget.post.isDis;
+                  if (widget.post.isLike && widget.post.isDis) {
+                    widget.post.isLike = !widget.post.isLike;
+                    widget.post.likeCount--;
+                    setState(() {});
+                  }
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            },
+          ),
         SizedBox(width: 10)
       ],
     );

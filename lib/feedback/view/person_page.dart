@@ -32,9 +32,10 @@ class PersonPageArgs {
   final String avatar;
   final String nickName;
   final String level;
+  final String heroTag;
 
   PersonPageArgs(this.postOrCommentId, this.fromPostCard, this.type, this.uid,
-      this.avatar, this.nickName, this.level);
+      this.avatar, this.nickName, this.level, this.heroTag);
 }
 
 class _PersonPageState extends State<PersonPage> {
@@ -167,7 +168,7 @@ class _PersonPageState extends State<PersonPage> {
                     });
             },
             child: Hero(
-              tag: avatar ?? uid,
+              tag: widget.args.heroTag,
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
                 child: WpyPic(
@@ -313,7 +314,38 @@ class _PersonPageState extends State<PersonPage> {
                 onLoading: _onLoading,
                 child: body,
               )
-            : SingleChildScrollView(child: appBar),
+            : Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: WpyPic(
+                      avatar == ""
+                          ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
+                          : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                      width: 1.sw,
+                      height: 1.sw,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                          height: 1.sw,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                            Colors.white,
+                            Colors.white70,
+                            Colors.white54,
+                            Colors.white10
+                          ], stops: [
+                            0,
+                            0.4,
+                            0.7,
+                            1
+                          ], begin: Alignment(0, -1), end: Alignment(0, 1))))),
+                  SingleChildScrollView(child: appBar),
+                ],
+              ),
       ),
     );
   }

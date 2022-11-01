@@ -29,8 +29,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-import '../detail_page.dart';
-
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
 
@@ -405,7 +403,7 @@ class _NCommentCardState extends State<NCommentCard>
               if (widget.comment.value != 0)
                 Text(
                   "  置顶贴",
-                    style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C,
+                  style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C,
                 ),
             ],
           ),
@@ -653,8 +651,8 @@ class _NCommentCardState extends State<NCommentCard>
 
     var mainBody = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
-        width: 34,
-        height: 34,
+        width: 34.w,
+        height: 34.w,
         child: ProfileImageWithDetailedPopup(
             widget.comment.id,
             false,
@@ -662,7 +660,8 @@ class _NCommentCardState extends State<NCommentCard>
             widget.comment.avatar ?? widget.comment.nickname,
             widget.comment.uid,
             widget.comment.nickname,
-            widget.comment.level.toString()),
+            widget.comment.level.toString(),
+            widget.comment.id.toString()),
       ),
       SizedBox(width: 10.w),
       Expanded(
@@ -708,7 +707,7 @@ class _NCommentCardState extends State<NCommentCard>
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(16.w, 0, 14.w, 12.h),
+                    padding: EdgeInsets.fromLTRB(16.w, 6.h, 14.w, 6.h),
                     color: Colors.transparent,
                     child: mainBody,
                   ),
