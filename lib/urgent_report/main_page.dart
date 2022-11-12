@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:location_permissions/location_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -191,7 +192,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
             CurrentPlace(),
             CurrentState(),
             Builder(
-              builder: (_) => ReportButton(onTap: () => _reportButtonOnTap()),
+              builder: (_) => ReportButton(onTap: _reportButtonOnTap),
             ),
             SizedBox(height: 40),
             Text(
@@ -256,7 +257,7 @@ class _ReportMainPageState extends State<ReportMainPage> {
     return ReportBasePage(
         action: _action,
         body: AnimatedSwitcher(
-          duration: Duration(milliseconds: 500),
+          duration: Duration(milliseconds: 200),
           child: body,
         ));
   }
@@ -710,6 +711,7 @@ class _PickImageState extends State<PickImage> {
         maxAssets: 1,
         requestType: RequestType.image,
         themeColor: ColorUtil.selectionButtonColor);
+    if (assets == null) return;
     for (int i = 0; i < assets.length; i++) {
       _image = await assets[i].file;
       for (int j = 0; _image.lengthSync() > 2000 * 1024 && j < 10; j++) {
@@ -795,7 +797,7 @@ class _PickImageState extends State<PickImage> {
                       _image,
                       width: imageWidth,
                       height: imageWidth,
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 )
@@ -805,8 +807,8 @@ class _PickImageState extends State<PickImage> {
                           color: Color(0xffd0d1d6), style: BorderStyle.solid),
                       borderRadius: BorderRadius.all(Radius.circular(18))),
                   child: SizedBox(
-                    width: imageWidth - 32,
-                    height: imageWidth - 32,
+                    width: imageWidth,
+                    height: imageWidth,
                     child: Icon(Icons.add_circle,
                         size: 40, color: Color(0xffd0d1d6)),
                   ),
@@ -824,60 +826,66 @@ class CurrentPlace extends StatefulWidget {
 
 class _CurrentPlaceState extends State<CurrentPlace> {
   bool canInputAddress = false;
+  bool canRequestPosition = true;
+  Location location;
   TextEditingController _controller = TextEditingController();
 
-  _allowLocationPermission() async {
-    final status = await LocationPermissions().requestPermissions(
-      permissionLevel: LocationPermissionLevel.locationWhenInUse,
-    );
-    switch (status) {
-      case PermissionStatus.granted:
-        return true;
-      default:
-        _inputLocationBySelf();
-        return false;
-    }
-  }
-
-  _inputLocationBySelf() {
-    _allowInputAddress();
-    ToastProvider.error("请手动填写您当前所在位置");
-  }
-
   _checkLocationPermissions() async {
-    final status = await LocationPermissions().checkPermissionStatus(
-      level: LocationPermissionLevel.locationWhenInUse,
-    );
-    switch (status) {
-      case PermissionStatus.denied:
-        if (!await _allowLocationPermission()) return;
-        break;
-      case PermissionStatus.granted:
-        // continue
-        break;
-      default:
-        _inputLocationBySelf();
-        return;
-    }
-    switch (await LocationPermissions().checkServiceStatus()) {
-      case ServiceStatus.disabled:
-        ToastProvider.error("请打开手机定位服务或手动填写");
+    if (!canRequestPosition) return;
+    ServiceStatus serviceStatus;
+    PermissionStatus permission;
+
+    permission = await Permission.locationWhenInUse.status;
+    if (permission == PermissionStatus.denied) {
+      permission = await Permission.locationWhenInUse.request();
+      if (permission == PermissionStatus.denied ||
+          permission == PermissionStatus.permanentlyDenied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        ToastProvider.error("请授予App定位权限或手动填写");
         _allowInputAddress();
-        break;
-      case ServiceStatus.enabled:
-        try {
-          final location = await LocationManager.getLocation();
-          _reportLocation(location);
-          _setLocation(location.address);
-        } catch (_) {
-          ToastProvider.error("获取位置信息失败");
-          _allowInputAddress();
-        }
-        break;
-      default:
-        _inputLocationBySelf();
         return;
+      }
     }
+    // Test if location services are enabled.
+    serviceStatus = await Permission.locationWhenInUse.serviceStatus;
+    if (serviceStatus == ServiceStatus.disabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      ToastProvider.error("请打开手机定位服务或手动填写");
+      _allowInputAddress();
+      return;
+    }
+    canRequestPosition = false;
+    ToastProvider.running('定位中...有点慢请稍等');
+    try {
+      location = await AmapLocation.instance
+          .fetchLocation(mode: LocationAccuracy.High, needAddress: true);
+    } catch (_) {
+      canRequestPosition = true;
+      ToastProvider.error('定位失败，请手动填写');
+      _allowInputAddress();
+      return;
+    }
+    final locationData = _transToData(location);
+    _reportLocation(locationData);
+    _setLocation(locationData.address);
+    canRequestPosition = true;
+  }
+
+  LocationData _transToData(Location position) {
+    return LocationData(
+        longitude: position.latLng.longitude,
+        latitude: position.latLng.latitude,
+        nation: position.country,
+        province: position.province,
+        city: position.city,
+        district: position.district,
+        address: position.address);
   }
 
   _reportLocation(LocationData data) {

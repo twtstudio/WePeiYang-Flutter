@@ -19,8 +19,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-
   async: ^2.8.2
+  amap_location_fluttify: ^0.22.0
 
   badges: ^2.0.1
 
@@ -51,7 +51,6 @@ dependencies:
 
   like_button: ^2.0.3
   linkfy_text: ^1.1.5
-  location_permissions: ^4.0.1
   mutex: ^3.0.0
 
   optimized_cached_image: ^3.0.0
@@ -77,7 +76,6 @@ dependencies:
 
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0
-
 
 dev_dependencies:
   flutter_test:

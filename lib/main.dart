@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
@@ -60,6 +61,12 @@ void main() async {
 
     /// 初始化Connectivity
     await NetStatusListener.init();
+
+    /// 初始化高德API
+    await AmapLocation.instance.updatePrivacyAgree(true);
+    await AmapLocation.instance.updatePrivacyShow(true);
+    await AmapLocation.instance
+        .init(iosKey: '02b9aee6190b4afe20b0ddd7ec0eb374');
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
