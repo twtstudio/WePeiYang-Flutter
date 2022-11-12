@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class ReportBasePage extends StatelessWidget {
   final Widget body;
@@ -12,47 +15,44 @@ class ReportBasePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xfff7f7f8),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(140),
-          child: Container(
-            color: Color(0xff63677b),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Hero(
-              tag: 'appbar',
-              transitionOnUserGestures: true,
-              child: AppBar(
-                titleSpacing: 0,
-                leadingWidth: 30,
-                elevation: 0,
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                title: Text(
-                  '健康信息填报',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-                leading: IconButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.arrow_back, size: 30, color: Colors.white),
-                ),
-                backgroundColor: Colors.transparent,
-                actions: [action],
-                bottom: PreferredSize(
-                    preferredSize: const Size.fromHeight(50),
-                    child: SelfInformation()),
-                systemOverlayStyle: SystemUiOverlayStyle.dark,
+    return Scaffold(
+      backgroundColor: ColorUtil.whiteF8Color,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(140),
+        child: Container(
+          color: ColorUtil.blue2CColor,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Hero(
+            tag: 'appbar',
+            transitionOnUserGestures: true,
+            child: AppBar(
+              titleSpacing: 0,
+              leadingWidth: 30,
+              elevation: 0,
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+              title: Text(
+                '健康信息填报',
+                style: TextUtil.base.bold.whiteFD.sp(18),
               ),
+              leading: IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(CupertinoIcons.back, size: 25, color: Colors.white),
+              ),
+              backgroundColor: Colors.transparent,
+              actions: [action],
+              bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(50),
+                  child: SelfInformation()),
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
             ),
           ),
         ),
-        body: body,
       ),
+      body: body,
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/commons/channel/location/location.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -584,7 +583,8 @@ class _TodayTempState extends State<TodayTemp> {
                     child: TextField(
                       buildCounter: null,
                       controller: _temperature,
-                      keyboardType: TextInputType.number,
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
                       textInputAction: TextInputAction.done,
                       style: TextUtil.base.regular
                           .sp(12)
@@ -963,9 +963,9 @@ class _CurrentPlaceState extends State<CurrentPlace> {
         children: [
           Text(
             '选择地区',
-            style: TextStyle(fontSize: 13, color: Color(0xff63677b)),
+            style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
           ),
-          Icon(Icons.chevron_right, size: 20, color: Color(0xff63677b)),
+          Icon(Icons.chevron_right, size: 20, color: ColorUtil.grey108),
         ],
       ),
     );
@@ -979,7 +979,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           SizedBox(width: 10),
           Padding(
             padding: const EdgeInsets.only(top: 15, right: 3),
-            child: Icon(Icons.place, size: 20, color: Color(0xff63677b)),
+            child: Icon(Icons.place, size: 20, color: ColorUtil.grey108),
           ),
           Column(
             mainAxisSize: MainAxisSize.max,
@@ -1099,7 +1099,7 @@ class StateItem extends StatelessWidget {
             ? BoxDecoration(
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(itemHeight / 2),
-                color: Color(0XFF62677B))
+                color: ColorUtil.blue2CColor)
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(itemHeight / 2),
                 border: Border.all(color: Color(0XFF62677B), width: 1)),
@@ -1142,13 +1142,14 @@ class _ReportButtonState extends State<ReportButton> {
             child: Center(
               child: Text(
                 '提交',
-                style: TextStyle(fontSize: 12, color: Colors.white),
+                style: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ),
             style: ButtonStyle(
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(height / 2))),
-                backgroundColor: MaterialStateProperty.all(Color(0XFF62677B)),
+                backgroundColor:
+                    MaterialStateProperty.all(ColorUtil.blue2CColor),
                 minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
         ],
