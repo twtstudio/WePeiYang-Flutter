@@ -168,9 +168,9 @@ class LakeModel extends ChangeNotifier {
 
   void initLakeArea(int index, WPYTab tab, RefreshController rController,
       ScrollController sController) {
-    LakeArea lakeArea = new LakeArea._(
-        WPYTab(), {}, rController, sController, LakePageStatus.unload);
-    lakeAreas[index] = lakeArea;
+    // LakeArea lakeArea = new LakeArea._(
+    //     WPYTab(), {}, rController, sController, LakePageStatus.unload);
+    // lakeAreas[index] = lakeArea;
   }
 
   void fillLakeAreaAndInitPostList(

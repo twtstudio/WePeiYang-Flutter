@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
@@ -91,10 +92,15 @@ class _TabGridViewState extends State<TabGridView>
             setState(() {
               context.read<NewPostProvider>().department = tag;
               updateGroupValue(tag);
+              ToastProvider.success(
+                  context.read<NewPostProvider>().department.name);
             });
           } else if (chose == true) {
             setState(() {
               context.read<NewPostProvider>().department = Department();
+              ToastProvider.error(
+                  (context.read<NewPostProvider>().department == null).toString());
+
               updateGroupValue(Department());
             });
           }
