@@ -9,93 +9,51 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
+@available(iOSApplicationExtension 16.0, *)
 struct LockRectView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
+    @State var courses : [WCourse] = []
+    @State var time = String()
     let entry: DataEntry
-    var currentCourseTable: [Course] { courseTable.courseArray }
-    var hour: Int {
-        let hourFormatter = DateFormatter()
-        hourFormatter.dateFormat = "HH"
-        let hrString = hourFormatter.string(from: Date())
-        let hour = Int(hrString) ?? 0
-        return hour
-    }
-    var time: Int {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH mm"
-        let s = formatter.string(from: Date())
-        let t = s.split(separator: " ").map{ Int($0) ?? 0 }
-        
-        return 60 * t[0] + t[1]
-    }
-    
-    @State var preCourse = WidgetCourse()
-    @State var nextCourse = WidgetCourse()
-    
-    
     var body: some View {
-        ZStack {
-            VStack {
-                GeometryReader { geo in
-                    VStack(alignment: .leading) {
-                        if !currentCourseTable.isEmpty {
-                            HStack {
-                                RoundedRectangle(cornerRadius: 3)
-                                    .fill(colorScheme == .dark ? Color(#colorLiteral(red: 0.2358871102, green: 0.5033512712, blue: 0.9931854606, alpha: 1)) : Color(#colorLiteral(red: 0.3056178987, green: 0.3728546202, blue: 0.4670386314, alpha: 1)))
-                                    .frame(width: 3, height: 33)
-                                    .padding(.leading, 6)
-                                    if !nextCourse.isEmpty {
-                                        VStack(alignment: .leading) {
-                                            Text("\(nextCourse.course.name)")
-                                                .font(.system(size: 16))
-                                                .fontWeight(.bold)
-                                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                                                .lineLimit(1)
-                                            HStack {
-                                                Text("\(nextCourse.course.activeArrange(courseTable.currentDay).location)")
-                                                    .font(.system(size: 11))
-                                                    .foregroundColor(colorScheme == .dark ? .white : .gray)
-                                                
-                                                Text("\(nextCourse.course.activeArrange(courseTable.currentDay).startTimeString)-\(nextCourse.course.activeArrange(courseTable.currentDay).endTimeString)")
-                                                    .font(.system(size: 11))
-                                                    .foregroundColor(colorScheme == .dark ? .white : .gray)
-                                            }
-                                        }
-                                    } else {
-                                        Text("接下来没有课:)")
-                                            .font(.footnote)
-                                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                                    }
-                            }
+        ZStack(alignment: .leading) {
+            if((courses.count) != 0){
+                VStack(alignment: .leading){
+                    HStack{
+                        Image(systemName: "clock")
+                            .resizable()
+                            .frame(width: 14, height: 14)
+                            .padding(.trailing, -4)
+                        Text("\(courses[0].arrange.unitTimeString)")
+                            .lineLimit(1)
+                            .font(.system(size: 15,weight: .semibold))
                             
-                        } else {
-                            Text((hour>21 || hour<4) ? "夜深了\n做个早睡的人吧" : "今日无课:)\n做点有意义的事情吧")
-                                .font(.footnote)
-                                .bold()
-                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                                .padding([.leading, .top])
-                        }
-                        
+
                     }
+                    .padding(.bottom, -6)
+                    
+                    Text(courses[0].course.name)
+                        .lineLimit(1)
+                        .font(.system(size: 15, weight: .medium))
+                    Text("\(courses[0].arrange.location)")
+                        .lineLimit(1)
+                        .font(.system(size: 15, weight: .medium))
+                        .opacity(0.76)
                 }
+            } else {
+                Text("接下来没有课呢！")
+                    .font(.system(size: 15))
             }
-            .padding(.top, 15)
         }
+        .padding(.leading, -12)
         .onAppear {
-            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentDay, time: time)
-            if preCourse.isNext {
-                nextCourse = preCourse
-                preCourse = WidgetCourse()
-            }
+            store.reloadData()
+            courses = WidgetCourseManager.getCourses(courseTable: courseTable)
         }
     }
 }
-
-
-
-
 
 
 
@@ -183,62 +141,31 @@ struct LockRingView: View {
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var store = SwiftStorage.courseTable
     private var courseTable: CourseTable { store.object }
+    @State var courses : [WCourse] = []
+
     let entry: DataEntry
-    var currentCourseTable: [Course] { courseTable.courseArray }
-    var hour: Int {
-        let hourFormatter = DateFormatter()
-        hourFormatter.dateFormat = "HH"
-        let hrString = hourFormatter.string(from: Date())
-        let hour = Int(hrString) ?? 0
-        return hour
-    }
-    var time: Int {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH mm"
-        let s = formatter.string(from: Date())
-        let t = s.split(separator: " ").map{ Int($0) ?? 0 }
-
-        return 60 * t[0] + t[1]
-    }
-
-    @State var preCourse = WidgetCourse()
-    @State var nextCourse = WidgetCourse()
-
-
     var body: some View {
         ZStack {
-            VStack {
-                GeometryReader { geo in
-                    if !nextCourse.isEmpty {
-                        ZStack{
-                            Text("\(nextCourse.course.name)")
-                                .font(.footnote)
-                                .fontWeight(.bold)
-                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                                .lineLimit(2)
-                                .frame(width: 45)
-//                            RingView
-                        }
-                    } else {
-                        ZStack{
-                            AccessoryWidgetBackground()
-                            Text("没有课:)")
-                                .font(.footnote)
-                                .foregroundColor(colorScheme == .dark ? .white : .black)
-                        }
-                    }
+            AccessoryWidgetBackground()
+            if(courses.count != 0) {
+                VStack(spacing: -1){
+                    Text(courses[0].arrange.startTimeString)
+                        .font(.system(size: 12, weight: .regular))
+                    Text((courses[0].arrange.location.components(separatedBy: "楼").count >= 2) ? courses[0].arrange.location.components(separatedBy: "楼")[0] : " ")
+                        .font(.system(size: 15,weight: .bold))
+                    Text((courses[0].arrange.location.components(separatedBy: "楼").count >= 2) ? courses[0].arrange.location.components(separatedBy: "楼")[1] : " ")
+                        .font(.system(size: 12, weight: .regular))
+                        .opacity(0.98)
                 }
+            } else {
+                Text("暂时没课")
             }
-            .padding(.top, 15)
         }
         .onAppear {
-            (preCourse, nextCourse) = WidgetCourseManager.getPresentAndNextCourse(courseArray: currentCourseTable, weekday: courseTable.currentDay, time: time)
-            if preCourse.isNext {
-                nextCourse = preCourse
-                preCourse = WidgetCourse()
-            }
+            store.reloadData()
+            courses = WidgetCourseManager.getCourses(courseTable: courseTable)
         }
     }
 }
-//
+
 

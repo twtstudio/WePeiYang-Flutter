@@ -5,6 +5,7 @@
 //  Created by Zr埋 on 2022/10/6.
 //
 import SwiftUI
+import UIKit
 
 enum WColorTheme: CaseIterable {
     case white, blue
@@ -15,40 +16,39 @@ enum WColor: CaseIterable {
          title,
          body
     
-    private func sumColor(_ c1: Color, _ c2: Color, _ darkColor: Color, _ theme: WColorTheme) -> Color {
-        @Environment(\.colorScheme) var colorScheme
+    private func sumColor(_ c1: Color, _ c2: Color, _ darkColor: Color, _ theme: WColorTheme, _ colorScheme: ColorScheme) -> Color {
         if colorScheme == .dark {
             return darkColor
         }
-        if theme == .white {
+        switch theme {
+        case .white:
             return c1
-        } else {
+        case .blue:
             return c2
-        }
+        }   
     }
     
-    func color(theme: WColorTheme) -> Color {
+    func color(theme: WColorTheme, colorScheme: ColorScheme) -> Color {
         switch self {
         case .main:
-            return sumColor(.hex("#376EE8"), .hex("#FFFFFF"), .hex("#FFFFFF"), theme)
+            return sumColor(.hex("#376EE8"), .hex("#FFFFFF"), .hex("#4976DA"), theme, colorScheme)
         case .title:
-            return sumColor(.hex("#2A2A2A"), .hex("#FFFFFF"), .hex("#FFFFFF"), theme)
+            return sumColor(.hex("#2A2A2A"), .hex("#FFFFFF"), .hex("#FFFFFF").opacity(0.8), theme, colorScheme)
         case .body:
-            return sumColor(.hex("#7D7B7E"), .hex("#FFFFFF"), .hex("#FFFFFF"), theme)
+            return sumColor(.hex("#7D7B7E"), .hex("#FFFFFF"), .hex("#C2C2C2"), theme, colorScheme)
         }
     }
 }
-
 
 extension Color {
     static func hex(_ h:String) -> Color {
         var cString:String = h.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
-        if (cString.hasPrefix("#")) {
+        if cString.hasPrefix("#") {
             cString.remove(at: cString.startIndex)
         }
 
-        if ((cString.count) != 6) {
+        if cString.count != 6 {
             if #available(iOSApplicationExtension 15.0, *) {
                 return Color(uiColor: UIColor.gray)
             } else {
@@ -74,7 +74,12 @@ extension Color {
         
     }
     
-    static func wColor(_ type: WColor, _ theme: WColorTheme) -> Color {
-        return type.color(theme: theme)
+    static func wColor(_ type: WColor, _ property: ColorProperty) -> Color {
+        type.color(theme: property.wTheme, colorScheme: property.colorTheme)
     }
+}
+
+struct ColorProperty {
+    var wTheme: WColorTheme
+    var colorTheme: ColorScheme
 }
