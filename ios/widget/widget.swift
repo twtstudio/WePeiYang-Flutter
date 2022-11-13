@@ -42,7 +42,7 @@ struct WhiteColorWidget: Widget {
         }
         .configurationDisplayName("课表信息-白")
         .description("快速查看今明课表信息。")
-        .supportedFamilies([.systemSmall,.systemMedium])
+        .supportedFamilies([.systemSmall])
     }
 }
 
@@ -53,7 +53,7 @@ struct BlueColorWidget: Widget {
         }
         .configurationDisplayName("课表信息-蓝")
         .description("快速查看今明课表信息。")
-        .supportedFamilies([.systemSmall,.systemMedium])
+        .supportedFamilies([.systemSmall])
     }
 }
 
