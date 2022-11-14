@@ -8,7 +8,6 @@
   "wiki": "PeiYang-Wiki",
   "check_new": "",
   "current_version": "",
-
   "lounge": "",
   "ok": "",
   "pleaseWaiting": "",
@@ -30,7 +29,6 @@
   "like": "",
   "comment": "",
   "reply": "",
-
   "feedback_message": "",
   "like_a_question": "",
   "comment_a_question": "",
@@ -45,7 +43,6 @@
   "no_more_data": "",
   "have_read": "",
   "not_read": "",
-
   "login": "",
   "login2": "",
   "login3": "",
@@ -106,7 +103,6 @@
   "tju_unbind_hint": "",
   "phone_unbind_hint": "",
   "email_unbind_hint": "",
-
   "setting": "",
   "setting_general": "",
   "setting_language": "",
@@ -125,7 +121,6 @@
   "mon_sun": "",
   "setting_other_week": "",
   "setting_other_week_hint": "",
-
   "schedule": "",
   "curve": "",
   "wrong": "",
@@ -189,7 +184,6 @@
   "feedback_anonymous": "",
   "feedback_official": "",
   "feedback_profile": "",
-  "feedback_set_all_read":"",
-
+  "feedback_set_all_read": "",
   "report": ""
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
@@ -56,13 +57,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       final manager = context.read<PushManager>();
       final cid = (await manager.getCid()) ?? '';
+      final now = DateTime.now();
+      DateTime lastTime;
+      try {
+        lastTime = DateTime.tryParse(CommonPreferences.pushTime.value);
+      } catch (_) {
+        lastTime = now.subtract(Duration(days: 3));
+      }
       if (cid != CommonPreferences.pushCid.value ||
           CommonPreferences.userNumber.value !=
-              CommonPreferences.pushUser.value) {
+              CommonPreferences.pushUser.value ||
+          now.difference(lastTime).inDays >= 3) {
         AuthService.updateCid(cid, onResult: (_) {
           debugPrint('cid $cid 更新成功');
           CommonPreferences.pushCid.value = cid;
           CommonPreferences.pushUser.value = CommonPreferences.userNumber.value;
+          CommonPreferences.pushTime.value =
+              DateFormat('yyyy-MM-dd').format(now);
         }, onFailure: (_) {
           debugPrint('cid $cid 更新失败');
         });

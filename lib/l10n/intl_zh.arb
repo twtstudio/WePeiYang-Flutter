@@ -8,7 +8,6 @@
   "wiki": "北洋维基",
   "check_new": "检查更新",
   "current_version": "当前版本",
-
   "lounge": "自习室",
   "ok": "确定",
   "pleaseWaiting": "正在加载数据，请稍后",
@@ -30,7 +29,6 @@
   "like": "点赞",
   "comment": "评论",
   "reply": "官方回复",
-
   "feedback_message": "校务消息",
   "like_a_question": "为你点赞",
   "comment_a_question": "评论了问题",
@@ -46,7 +44,6 @@
   "no_more_data": "没有更多数据了!",
   "have_read": "已读",
   "not_read": "未读",
-
   "login": "登录",
   "login2": "提交并登录",
   "login3": "前往登录",
@@ -107,7 +104,6 @@
   "tju_unbind_hint": "解除办公网绑定后无法正常使用课表、GPA、考表功能。您是否确定解除绑定？",
   "phone_unbind_hint": "解除手机号绑定后无法使用手机号登录微北洋。若本次登录为手机号登录则将退出登录，需要您重新进行账号密码登录。您是否确定解除绑定？",
   "email_unbind_hint": "解除邮箱绑定后无法使用邮箱登录微北洋。若本次登录为邮箱登录则将退出登录，需要您重新进行账号密码登录。您是否确定解除绑定？",
-
   "setting": "设置",
   "setting_general": "通用",
   "setting_language": "系统语言",
@@ -126,7 +122,6 @@
   "mon_sun": "周一至周日",
   "setting_other_week": "课表显示非本周课程",
   "setting_other_week_hint": "课表中将会展示当周并未开课的课程",
-
   "schedule": "课程表",
   "curve": "曲线",
   "wrong": "出错了",
@@ -140,7 +135,7 @@
   "time": "时间",
   "not_this_week": "非本周",
   "feedback_search": "搜索",
-   "feedback_add_tag_hint": "试试添加话题...",
+  "feedback_add_tag_hint": "试试添加话题...",
   "feedback_search_hint": "搜索问题",
   "feedback_search_result": "搜索结果",
   "feedback_empty_keyword": "关键词不能为空",
@@ -190,9 +185,8 @@
   "feedback_anonymous": "匿名",
   "feedback_official": "官方",
   "feedback_profile": "个人中心",
-  "feedback_set_all_read":"确定要设置所有消息已读吗？",
-  "feedback_solved":"已解决",
-  "feedback_unsolved":"未解决",
-
+  "feedback_set_all_read": "确定要设置所有消息已读吗？",
+  "feedback_solved": "已解决",
+  "feedback_unsolved": "未解决",
   "report": "健康信息"
 }

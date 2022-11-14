@@ -119,6 +119,7 @@ class CommonPreferences {
   static final canPush = PrefsBean<bool>('can_push', false);
   static final pushCid = PrefsBean<String>('pushCid', '');
   static final pushUser = PrefsBean<String>('pushUser', '');
+  static final pushTime = PrefsBean<String>('pushTime', '2019-01-01');
 
   /// 清除天外天账号系统缓存
   static void clearUserPrefs() {
