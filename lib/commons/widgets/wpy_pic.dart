@@ -2,7 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart' hide Logger;
+import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
@@ -93,8 +94,11 @@ class _WpyPicState extends State<WpyPic> {
               }
             : null,
         errorBuilder: widget.withHolder
-            ? (context, exception, stacktrace) =>
-                Text('💔[图片加载失败]', style: TextUtil.base.grey6C.w400.sp(12))
+            ? (context, exception, stacktrace) {
+                Logger.reportError(exception, stacktrace);
+                return Text('💔[图片加载失败]',
+                    style: TextUtil.base.grey6C.w400.sp(12));
+              }
             : null,
       );
     }
