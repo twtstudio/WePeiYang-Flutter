@@ -365,7 +365,11 @@ class _NCommentCardState extends State<NCommentCard>
                     ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: 0.37.sw),
                       child: Text(
-                        widget.comment.replyToName ?? "",
+                        widget.comment.replyToName.isEmpty
+                            ? ""
+                            : widget.comment.replyToName.length > 8
+                                ? "${widget.comment.replyToName.substring(0, 7)}..."
+                                : widget.comment.replyToName,
                         style: TextUtil.base.w700.NotoSansSC.sp(16).black2A,
                       ),
                     ),

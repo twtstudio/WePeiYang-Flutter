@@ -100,8 +100,11 @@ class TodayCoursesWidget extends StatelessWidget {
                         ],
                       ),
                       Spacer(),
-                      Image.asset('assets/images/schedule/circle.png',
-                          width: 50.r, height: 50.r),
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
+                        child: Image.asset('assets/images/schedule/circle.png',
+                            width: 50.r, height: 50.r),
+                      ),
                     ],
                   ),
                 ),

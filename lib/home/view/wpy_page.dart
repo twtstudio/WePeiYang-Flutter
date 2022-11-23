@@ -161,7 +161,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       fit: StackFit.expand,
       children: [
         AnimatedContainer(
-            duration: Duration(milliseconds: 800),
+            duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
             decoration: BoxDecoration(
                 gradient: showSchedule
@@ -195,7 +195,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                       children: <Widget>[
                         TodayCoursesWidget(),
                         AnimatedContainer(
-                            duration: const Duration(milliseconds: 800),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeIn,
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
@@ -218,7 +218,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   style: showSchedule
                       ? TextUtil.base.white.w400.sp(22)
                       : TextUtil.base.black00.w400.sp(22),
-                  duration: const Duration(milliseconds: 800),
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                   onEnd: () => setState(() => useRound = showSchedule),
                   child: SizedBox(
