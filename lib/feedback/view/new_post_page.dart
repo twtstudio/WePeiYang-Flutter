@@ -619,7 +619,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
     Widget inputField = TextField(
       controller: _contentController,
       keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.done,
+      textInputAction: TextInputAction.newline,
       minLines: 1,
       maxLines: 100,
       style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
