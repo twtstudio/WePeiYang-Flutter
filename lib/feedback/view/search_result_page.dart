@@ -48,7 +48,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   final String departmentId;
   final String title;
   final int type;
-
+  int searchMode = 1;
   int currentPage = 1, totalPage = 1;
   SearchPageStatus status;
 
@@ -60,25 +60,34 @@ class _SearchResultPageState extends State<SearchResultPage> {
   _SearchResultPageState(this.keyword, this.tagId, this.departmentId,
       this.title, this.type, this.lakeType);
 
-  _onRefresh() {
-    currentPage = 1;
-    FeedbackService.getPosts(
+  _refreshPost() async {
+    await FeedbackService.getPosts(
       type: '$type',
       departmentId: departmentId,
       page: currentPage,
       tagId: tagId,
       keyword: keyword,
+      searchMode: searchMode,
       onSuccess: (list, page) {
+        status = SearchPageStatus.idle;
         totalPage = page;
         _list.clear();
         setState(() => _list.addAll(list));
-        _refreshController.refreshCompleted();
       },
       onFailure: (e) {
+        status = SearchPageStatus.idle;
         ToastProvider.error(e.error.toString());
         _refreshController.refreshFailed();
       },
     );
+  }
+
+  _onRefresh() async {
+    currentPage = 1;
+    setState(() {
+      status = SearchPageStatus.loading;
+    });
+    _refreshPost();
   }
 
   _onLoading() {
@@ -90,6 +99,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         page: currentPage,
         tagId: tagId,
         keyword: keyword,
+        searchMode: searchMode,
         onSuccess: (list, page) {
           totalPage = page;
           setState(() => _list.addAll(list));
@@ -120,6 +130,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         page: currentPage,
         tagId: tagId,
         keyword: keyword,
+        searchMode: searchMode,
         onSuccess: (list, page) {
           totalPage = page;
           setState(() {
@@ -191,7 +202,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           if (lakeType == 0)
             SizedBox(
               width: 40,
-            ),
+            )
         ]);
 
     Widget body;
@@ -216,6 +227,49 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 controller: _sc,
                 childrenDelegate: SliverChildBuilderDelegate(
                   (context, index) {
+                    if (index == 0) {
+                      return Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () async {
+                                    searchMode = 0;
+                                    await _refreshController.requestRefresh();
+                                  },
+                                  child: Text('发帖时间正序',
+                                      style: searchMode == 0
+                                          ? TextUtil.base.black2A.w700
+                                              .sp(14)
+                                              .blue2C
+                                          : TextUtil.base.black2A.w500.sp(14)),
+                                ),
+                                const SizedBox(width: 15),
+                                GestureDetector(
+                                  onTap: () {
+                                    searchMode = 1;
+                                    _refreshController.requestRefresh();
+                                  },
+                                  child: Text('更新时间正序',
+                                      style: searchMode == 1
+                                          ? TextUtil.base.black2A.w700
+                                              .sp(14)
+                                              .blue2C
+                                          : TextUtil.base.black2A.w500.sp(14)),
+                                ),
+                                Spacer(),
+                                const SizedBox(width: 15),
+                              ],
+                            ),
+                            SizedBox(height: 10), //topCard,
+                          ],
+                        ),
+                      );
+                    }
                     Widget post = PostCardNormal(_list[index]);
                     return post;
                   },

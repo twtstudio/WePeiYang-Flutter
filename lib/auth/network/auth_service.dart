@@ -204,6 +204,21 @@ class AuthService with AsyncTimer {
       }
     });
   }
+  ///发通知用
+  ///友盟flutter推送sdk直接接不进来，文档依托答辩，正在试别的方法
+  // static postMessage()async
+  // {
+  //   AsyncTimer.runRepeatChecked('Message', () async {
+  //     try {
+  //       await authDio.post("notification/toUser",
+  //           data: {"userNumbers": "3020233414", "title": "fxxk", "content": "yeeeeeeeee", "url": "https://img-blog.csdnimg.cn/img_convert/f9ba8d1271c648183b5097c409cb5028.png",},
+  //           options: Options(contentType: Headers.formUrlEncodedContentType));
+  //       ToastProvider.success("成啦兄弟");
+  //     } on DioError catch (e) {
+  //       ToastProvider.error(e.message);
+  //     }
+  //   });
+  // }
 
   /// 登录状态下修改密码
   static resetPwByLogin(String password,

@@ -1,13 +1,13 @@
-name: we_pei_yang_flutter
+﻿name: we_pei_yang_flutter
 description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-# 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
-# 中的 version 和 versionCode 保持一致
-version: 4.3.7+121
+# 璇蜂繚璇?'package:we_pei_yang_flutter/commons/environment/config.dart'
+# 涓殑 version 鍜?versionCode 淇濇寔涓€鑷?
+version: 4.3.8+122
 
-# 打包代码 flutter build apk --split-per-abi
+# 鎵撳寘浠ｇ爜 flutter build apk --split-per-abi
 # flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
 
 environment:

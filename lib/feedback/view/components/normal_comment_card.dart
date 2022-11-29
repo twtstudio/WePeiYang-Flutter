@@ -406,7 +406,7 @@ class _NCommentCardState extends State<NCommentCard>
               //       '回复ID：' + widget.comment.replyTo.toString(), false),
               if (widget.comment.value != 0)
                 Text(
-                  "  置顶贴",
+                  "  置顶评论",
                   style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C,
                 ),
             ],
