@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -135,6 +136,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState.listToTop();
+            // 获取剪切板微口令
+            context.read<LakeModel>().getClipboardWeKoContents(context);
           } else
             _tabController.animateTo(1);
         },

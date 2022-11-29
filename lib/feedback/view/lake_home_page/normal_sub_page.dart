@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -17,7 +18,6 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -94,7 +94,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   onRefresh() async {
     context.read<LakeModel>().lakeAreas[index].status = LakePageStatus.loading;
     FeedbackService.getToken(onResult: (_) {
-      context.read<LakeModel>().getClipboardWeKoContents(context);
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(index, success: () {
@@ -479,8 +478,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        isOpa
-                         ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
+                        isOpa ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
                         !isOpa ? Color(0x32FFFFFF) : Color(0x90FFFFFF),
                       ],
                     ),
@@ -526,7 +524,8 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
 
   @override
   Widget build(BuildContext context) {
-    var errorImg = WpyPic('assets/images/lake_butt_icons/monkie.png', height: 160, width: 160);
+    var errorImg = WpyPic('assets/images/lake_butt_icons/monkie.png',
+        height: 160, width: 160);
 
     var errorText = Text(
         widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
