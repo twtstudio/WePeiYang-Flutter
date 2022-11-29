@@ -797,7 +797,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         context: context,
         builder: (context) {
           return Stack(
-
             children: [
               ManagerPopUp(post: post),
             ],
@@ -1200,28 +1199,14 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                 ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
                 style: TextUtil.base.ProductSans.black2A.medium.sp(18),
               ),
-              if (CommonPreferences.isSuper.value)
-                AnimatedOption(
-                    origin: false,
-                    id: widget.post.uid,
-                    color1: Color.fromRGBO(95, 127, 0, 1.0),
-                    color2: Color.fromRGBO(8, 96, 0, 1.0),
-                    title: '开盒楼主',
-                    action: 200),
-              if (originTag != 3)
-                AnimatedOption(
-                    origin: false,
-                    id: widget.post.id,
-                    color1: Color.fromRGBO(131, 130, 130, 1.0),
-                    color2: Color.fromRGBO(107, 107, 107, 1.0),
-                    title: '恢复正常帖子',
-                    action: 0),
               AnimatedOption(
-                  origin: originTag == 0,
-                  id: widget.post.id,
-                  color1: Color.fromRGBO(208, 104, 160, 1.0),
-                  color2: Color.fromRGBO(134, 103, 111, 1.0),
-                  title: originTag == 0 ? '× 已置顶' : '将此帖置顶'),
+                origin: originTag == 0,
+                id: widget.post.id,
+                color1: Color.fromRGBO(208, 104, 160, 1.0),
+                color2: Color.fromRGBO(134, 103, 111, 1.0),
+                title: originTag == 0 ? '× 已置顶' : '将此帖置顶',
+                action: 0,
+              ),
               AnimatedOption(
                   origin: originTag == 1,
                   id: widget.post.id,
@@ -1295,7 +1280,6 @@ class _AnimatedOptionState extends State<AnimatedOption>
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if (origin) return;
         setState(() {
           isSelected = !isSelected;
         });
@@ -1323,32 +1307,37 @@ class _AnimatedOptionState extends State<AnimatedOption>
                 widget.title,
                 style: TextUtil.base.white.medium.sp(20),
               ),
-              if (isSelected && widget.title == '将此帖置顶')
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    '0为取消置顶，只能为0~30000',
-                    style: TextUtil.base.white.medium.sp(10),
-                  ),
-                ),
-              if (isSelected && widget.title == '将此帖置顶')
-                TextField(
-                  controller: tc,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle().white.NotoSansSC.w400.sp(16),
-                    hintStyle: TextStyle().white.NotoSansSC.w800.sp(16),
-                    hintText: '置顶数值',
-                    contentPadding: const EdgeInsets.all(0),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
+              // 置顶动作
+              if (isSelected && widget.action == 0 && !widget.origin)
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        '0为取消置顶，只能为0~30000',
+                        style: TextUtil.base.white.medium.sp(10),
+                      ),
                     ),
-                  ),
-                  style: TextUtil.base.white.medium.sp(16),
+                    TextField(
+                      controller: tc,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle().white.NotoSansSC.w400.sp(16),
+                        hintStyle: TextStyle().white.NotoSansSC.w800.sp(16),
+                        hintText: '置顶数值',
+                        contentPadding: const EdgeInsets.all(0),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      style: TextUtil.base.white.medium.sp(16),
+                    ),
+                    Container(
+                        height: 1.5,
+                        width: double.infinity,
+                        color: Colors.white),
+                  ],
                 ),
-              if (isSelected && widget.title == '将此帖置顶')
-                Container(
-                    height: 1.5, width: double.infinity, color: Colors.white),
               if (isSelected)
                 InkWell(
                   onTap: _inkWellOnTap,
@@ -1358,7 +1347,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                       children: [
                         Spacer(),
                         Text(
-                          '确认',
+                          origin ? '取消' : '确认',
                           style: TextUtil.base.white.medium.sp(18),
                         ),
                       ],
@@ -1373,65 +1362,90 @@ class _AnimatedOptionState extends State<AnimatedOption>
   }
 
   _inkWellOnTap() async {
-    if (widget.action == null) {
-      if (tc != null && tc.text != '') {
-        await FeedbackService.adminTopPost(
-          id: widget.id,
-          hotIndex: tc.text,
+    if (widget.action == null) return;
+    switch (widget.action) {
+      // 加精处理
+      case 0:
+        if (widget.origin) {
+          // 如果是已经置顶的状态
+          await FeedbackService.adminTopPost(
+            id: widget.id,
+            hotIndex: 0,
+            onSuccess: () {
+              ToastProvider.success('取消成功');
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            },
+          );
+          // 退出帖子
+          Navigator.of(context).pop(true);
+          Navigator.of(context).pop(true);
+        } else {
+          if (tc != null && tc.text != '') {
+            await FeedbackService.adminTopPost(
+              id: widget.id,
+              hotIndex: tc.text,
+              onSuccess: () {
+                ToastProvider.success('加精成功');
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            );
+            // 退出帖子
+            Navigator.of(context).pop(true);
+            Navigator.of(context).pop(true);
+          } else {
+            ToastProvider.error('请输入数值！');
+          }
+        }
+        break;
+      // 删帖
+      case 100:
+        FeedbackService.adminDeletePost(
+          id: widget.id.toString(),
           onSuccess: () {
-            ToastProvider.success('加精成功');
+            context
+                .read<LakeModel>()
+                .lakeAreas[context
+                    .read<LakeModel>()
+                    .tabList[context.read<LakeModel>().currentTab]
+                    .id]
+                .refreshController
+                .requestRefresh();
+            ToastProvider.success(S.current.feedback_delete_success);
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
           onFailure: (e) {
+            Navigator.of(context).pop();
             ToastProvider.error(e.error.toString());
           },
         );
-        Navigator.of(context).pop(true);
-      } else {
-        ToastProvider.error('请输入数值！');
-      }
-    } else if (widget.action == 100) {
-      FeedbackService.adminDeletePost(
-        id: widget.id.toString(),
-        onSuccess: () {
-          context
-              .read<LakeModel>()
-              .lakeAreas[context
-                  .read<LakeModel>()
-                  .tabList[context.read<LakeModel>().currentTab]
-                  .id]
-              .refreshController
-              .requestRefresh();
-          ToastProvider.success(S.current.feedback_delete_success);
-          Navigator.of(context).pop();
-          Navigator.of(context).pop();
-        },
-        onFailure: (e) {
-          Navigator.of(context).pop();
-          ToastProvider.error(e.error.toString());
-        },
-      );
-    } else if (widget.action == 200) {
-      Navigator.popAndPushNamed(context, FeedbackRouter.openBox,
-          arguments: widget.id);
-    } else {
-      FeedbackService.adminChangeETag(
-          id: widget.id.toString(),
-          value: widget.action.toString(),
-          onSuccess: () => setState(() {
-                isSelected = false;
-                context
-                    .read<LakeModel>()
-                    .lakeAreas[context
-                        .read<LakeModel>()
-                        .tabList[context.read<LakeModel>().currentTab]
-                        .id]
-                    .refreshController
-                    .requestRefresh();
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-                ToastProvider.running('成功');
-              }),
-          onFailure: (e) => ToastProvider.error(e.message));
+        break;
+      default:
+        // 修改etag
+        // 如果是已加精、和活动状态
+        var val = origin ? 0 : widget.action;
+        FeedbackService.adminChangeETag(
+            id: widget.id,
+            value: val,
+            onSuccess: () => setState(() {
+                  isSelected = false;
+                  context
+                      .read<LakeModel>()
+                      .lakeAreas[context
+                          .read<LakeModel>()
+                          .tabList[context.read<LakeModel>().currentTab]
+                          .id]
+                      .refreshController
+                      .requestRefresh();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                  ToastProvider.running('成功');
+                }),
+            onFailure: (e) => ToastProvider.error(e.message));
     }
   }
 }

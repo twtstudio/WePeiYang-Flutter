@@ -4,12 +4,12 @@ import 'package:flutter/foundation.dart';
 /// 动态打包配置
 class EnvConfig {
   static void init() {
-    QNHD = isDevelop
+    QNHD = !isDevelop
         // 测试服务器域名
         ? "https://www.zrzz.site:7013/"
         // 正式服务器域名
         : "https://qnhd.twt.edu.cn/";
-    QNHDPIC = isDevelop
+    QNHDPIC = !isDevelop
         // 测试服务器域名
         ? "https://www.zrzz.site:7015/"
         // 正式服务器域名
@@ -35,13 +35,13 @@ class EnvConfig {
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSION = String.fromEnvironment(
     "VERSION",
-    defaultValue : "4.3.6",
+    defaultValue: "4.3.6",
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSIONCODE = int.fromEnvironment(
     "VERSIONCODE",
-    defaultValue : 121,
+    defaultValue: 121,
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"
