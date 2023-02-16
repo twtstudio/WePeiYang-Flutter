@@ -67,9 +67,9 @@ class CommonPreferences {
 
   /// 学期信息
   /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
-  static final termStart = PrefsBean<int>('termStart', 1660492800);
-  static final termName = PrefsBean<String>('termName', '22231');
-  static final termStartDate = PrefsBean<String>('termStartDate', '2022-08-15');
+  static final termStart = PrefsBean<int>('termStart', 1676822400);
+  static final termName = PrefsBean<String>('termName', '22232');
+  static final termStartDate = PrefsBean<String>('termStartDate', '2023-02-20');
 
   /// cookies in classes.tju.edu.cn
   static final gSessionId = PrefsBean<String>('gsessionid'); // GSESSIONID

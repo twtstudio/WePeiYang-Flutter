@@ -22,7 +22,7 @@ fun readCourseList(context: Context): List<Course> {
         if (nightMode) (today + 1) % 7 else today
     }
     val nowTime: Int = (Calendar.getInstance().timeInMillis / 1000).toInt()
-    val termStart: Int = pref.getLong("flutter.termStart", 1660492800).toInt()
+    val termStart: Int = pref.getLong("flutter.termStart", 1676822400).toInt()
     val weeks: Double = (nowTime - termStart) / 604800.0
 
     val nowWeek = ceil(weeks).roundToInt().let {
