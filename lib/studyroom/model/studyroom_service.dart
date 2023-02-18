@@ -126,7 +126,11 @@ class StudyroomService {
     StudyRoomDate date,
   ) async {
     final term = CommonPreferences.termName.value;
+    // 非有效范围内返回空
+    if (date.week < 1 || date.week > 24) return [];
+
     final requestDate = '$term/${date.week}/${date.day}';
+    print('${requestDate}');
     try {
       final response = await _studyroomDio.get('getDayData/$requestDate');
       List<Building> buildings =

@@ -57,7 +57,7 @@ class ScheduleService {
 
   static String get _currentSemester {
     final date = DateTime.now();
-    final year = date.hour;
+    final year = date.year;
     final month = date.month;
     if (month > 7)
       return "${year}-${year + 1} 1";

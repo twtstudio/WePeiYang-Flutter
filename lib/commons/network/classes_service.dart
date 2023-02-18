@@ -2,6 +2,7 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart' show BuildContext;
 import 'package:path/path.dart' as p;
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -44,6 +45,10 @@ class ClassesService {
       CommonPreferences.tjuuname.value = name;
       CommonPreferences.tjupasswd.value = pw;
       CommonPreferences.isBindTju.value = true;
+
+      // 刷新学期数据
+      await AuthService.getSemesterInfo();
+
       onSuccess();
     } on DioError catch (e) {
       onFailure(e);

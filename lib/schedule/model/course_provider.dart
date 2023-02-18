@@ -106,7 +106,11 @@ class CourseProvider with ChangeNotifier {
       if (onFailure != null) onFailure(e);
     });
 
-    refreshCustomCourse();
+    try {
+      refreshCustomCourse();
+    } catch (e) {
+      // TODO: 非校内环境
+    }
   }
 
   void refreshCustomCourse() {
