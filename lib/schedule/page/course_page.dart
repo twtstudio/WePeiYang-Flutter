@@ -53,7 +53,7 @@ class _CoursePageState extends State<CoursePage> {
             barrierDismissible: true,
             builder: (context) => ClassesNeedVPNDialog());
       }
-      if (widget.pairs.isNotEmpty) {
+      if (widget.pairs != null && widget.pairs.isNotEmpty) {
         showCourseDialog(context, widget.pairs);
       }
     });

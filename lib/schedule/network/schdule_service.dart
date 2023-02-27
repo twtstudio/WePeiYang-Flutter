@@ -21,7 +21,8 @@ class ScheduleService {
       {required OnResult<List<Course>> onResult,
       required OnFailure onFailure}) async {
     try {
-      var res = await ClassesService.fetch(
+      var res;
+      res = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/stdDetail.action");
       var html = res.data.toString();
       var s = html.find(r"项目：</td>(.+?)</td>");
@@ -68,13 +69,15 @@ class ScheduleService {
   }
 
   static _dataQuery() async {
+    var res;
     // 初始化学期查询
+    await Future.delayed(Duration(milliseconds: 300));
     try {
       await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/dataQuery.action");
     } catch (_) {}
     // 查询学期
-    var res;
+    await Future.delayed(Duration(milliseconds: 300));
     try {
       res = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/dataQuery.action",
@@ -89,6 +92,7 @@ class ScheduleService {
     await ClassesService.fetch(
         "http://classes.tju.edu.cn/eams/dataQuery.action");
     // 查询学期
+    await Future.delayed(Duration(milliseconds: 300));
     res = await ClassesService.fetch(
         "http://classes.tju.edu.cn/eams/dataQuery.action",
         isPost: true,
@@ -106,6 +110,7 @@ class ScheduleService {
     }
 
     // 查询主辅修
+    await Future.delayed(Duration(milliseconds: 300));
     res = await ClassesService.fetch(
         "http://classes.tju.edu.cn/eams/dataQuery.action",
         isPost: true,
