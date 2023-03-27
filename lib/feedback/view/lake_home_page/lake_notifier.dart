@@ -31,9 +31,15 @@ class FbDepartmentsProvider {
 class ChangeHintTextProvider extends ChangeNotifier {
   bool timeEnded = false;
 
+  void resetTimer() {
+    timeEnded = false;
+    notifyListeners();
+    calculateTime();
+  }
+
   void calculateTime() {
     if (!timeEnded) {
-      Future.delayed(Duration(seconds: 4), () {
+      Future.delayed(Duration(seconds: 6), () {
         timeEnded = true;
         notifyListeners();
       });

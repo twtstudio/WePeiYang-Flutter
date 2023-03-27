@@ -193,9 +193,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             onTap: () {
                               var model = context.read<LakeModel>();
                               model.mainStatus = LakePageStatus.loading;
+                              loadingProvider.resetTimer();
                               initPage();
                             },
-                            child: Text('点我重新加载'))
+                            child: Text('重新加载'))
                         : Loading();
                   },
                 ),

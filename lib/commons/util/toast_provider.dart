@@ -90,9 +90,14 @@ class ToastProvider with AsyncTimer {
                 width: 15,
             ),
             SizedBox(width: 10),
-            Text(
-              msg,
-              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              child: Text(
+                msg,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -124,9 +129,14 @@ class ToastProvider with AsyncTimer {
               width: 15,
             ),
             SizedBox(width: 10),
-            Text(
-              msg,
-              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              child: Text(
+                msg,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -158,9 +168,14 @@ class ToastProvider with AsyncTimer {
               width: 15,
             ),
             SizedBox(width: 10),
-            Text(
-              msg,
-              style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              child: Text(
+                msg,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
