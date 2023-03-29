@@ -1162,6 +1162,20 @@ class FeedbackService with AsyncTimer {
     return avatarBoxList;
   }
 
+  static Future<List<AvatarBox>> getTypeAvatarBox(String type) async {
+    List<AvatarBox> avatarBoxList = [];
+    try {
+      var res = await feedbackDio
+          .get('frame/type_url', queryParameters: {'type': type});
+      var list = AvatarBoxList.fromJson(res.data['data']);
+      avatarBoxList.clear();
+      avatarBoxList.addAll(list.avatarFrameList);
+    } on DioError catch (e) {
+      print(e.error);
+    }
+    return avatarBoxList;
+  }
+
   static Future<void> setAvatarBox(AvatarBox avatarBox) async {
     try {
       var res = await feedbackDio.post('frame/set',

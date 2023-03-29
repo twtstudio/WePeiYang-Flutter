@@ -7,14 +7,23 @@ import '../../../commons/widgets/wpy_pic.dart';
 class UserAvatarImage extends StatelessWidget {
   final double size;
   final Color iconColor;
+  final String tempUrl;
+  final bool useTemp;
 
-  UserAvatarImage(
-      {@required this.size,
-      this.iconColor = const Color.fromRGBO(98, 103, 124, 1)});
+  UserAvatarImage({
+    @required this.size,
+    this.iconColor = const Color.fromRGBO(98, 103, 124, 1),
+    this.tempUrl = "",
+    this.useTemp = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     var avatar = CommonPreferences.avatar.value;
+
+    var avatarBox =
+        useTemp == true ? tempUrl : CommonPreferences.avatarBoxMyUrl.value;
+
     return avatar == ''
         //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
         ? ClipRRect(

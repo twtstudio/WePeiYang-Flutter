@@ -30,6 +30,7 @@ class ColorUtil {
   static const blue2CColor = Color(0xFF2C7EDF);
   static const blueA6Color = Color(0xFFA6CFFF);
   static const biliPink = Color(0xFFF97198);
+  static const begoniaPink = Color(0xFFFFCCD1);
   static const warning = Color(0xFFFFBC6B);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
   static const grey229 = Color.fromARGB(255, 229, 229, 229);
