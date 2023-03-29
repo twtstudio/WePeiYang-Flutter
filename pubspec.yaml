@@ -5,7 +5,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # 璇蜂繚璇?'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 涓殑 version 鍜?versionCode 淇濇寔涓€鑷?
-version: 4.3.8+122
+version: 4.3.9+123
 
 # 鎵撳寘浠ｇ爜 flutter build apk --split-per-abi
 # flutter build apk --target-platform android-arm,android-arm64 --split-per-abi

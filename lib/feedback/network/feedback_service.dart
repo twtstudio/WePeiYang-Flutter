@@ -5,11 +5,13 @@ import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  //String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  String baseUrl = 'http://8.141.166.181:7013/api/v1/f/';
 
   @override
   List<InterceptorsWrapper> interceptors = [
@@ -115,6 +117,8 @@ class FeedbackService with AsyncTimer {
               response.data['data']['user']['is_stu_admin'];
           CommonPreferences.isUser.value =
               response.data['data']['user']['is_user'];
+          CommonPreferences.avatarBoxMyUrl.value =
+              response.data['data']['user']['avatar_frame'];
         }
         if (onResult != null) onResult(response.data['data']['token']);
       }
@@ -705,6 +709,8 @@ class FeedbackService with AsyncTimer {
           response.data['data']['user']['level_info']['cur_level_point'];
       CommonPreferences.levelName.value =
           response.data['data']['user']['level_info']['level_name'];
+      CommonPreferences.avatarBoxMyUrl.value =
+          response.data['data']['user']['avatar_frame'];
       onSuccess?.call();
     } on DioError catch (e) {
       onFailure(e);
@@ -1028,9 +1034,9 @@ class FeedbackService with AsyncTimer {
 
   static adminFloorTopPost(
       {@required id,
-        @required hotIndex,
-        @required OnSuccess onSuccess,
-        @required OnFailure onFailure}) async {
+      @required hotIndex,
+      @required OnSuccess onSuccess,
+      @required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminFloorTopPost', () async {
       try {
         await feedbackAdminPostDio.post('floor/value',
@@ -1140,6 +1146,51 @@ class FeedbackService with AsyncTimer {
       return res.data['data']['data']['ios_lahei'];
     } catch (e) {
       return false;
+    }
+  }
+
+  static Future<List<AvatarBox>> getAllAvatarBox() async {
+    List<AvatarBox> avatarBoxList = [];
+    try {
+      var res = await feedbackDio.get('frame/all');
+      var list = AvatarBoxList.fromJson(res.data['data']);
+      avatarBoxList.clear();
+      avatarBoxList.addAll(list.avatarFrameList);
+    } on DioError catch (e) {
+      print(e.error);
+    }
+    return avatarBoxList;
+  }
+
+  static Future<void> setAvatarBox(AvatarBox avatarBox) async {
+    try {
+      var res = await feedbackDio.post('frame/set',
+          formData: FormData.fromMap({'aid': avatarBox.id}));
+      if (res.data['code'] == 200) {
+        ToastProvider.success('好耶!头像框设置成功!(≧ω≦)/');
+        CommonPreferences.avatarBoxMyUrl.value = avatarBox.addr;
+      } else {
+        ToastProvider.error('坏耶!头像框设置失败!');
+      }
+    } on DioError catch (e) {
+      ToastProvider.error('坏耶!头像框设置失败!');
+      print(e.error);
+    }
+  }
+
+  static Future<void> updateAvatarBox(AvatarBox avatarBox) async {
+    try {
+      var res = await feedbackDio.post('frame/update',
+          formData: FormData.fromMap({'aid': avatarBox.id}));
+      if (res.data['code'] == 200) {
+        ToastProvider.success('好耶!头像框设置成功!(≧ω≦)/');
+        CommonPreferences.avatarBoxMyUrl.value = avatarBox.addr;
+      } else {
+        ToastProvider.error('坏耶!头像框设置失败!');
+      }
+    } on DioError catch (e) {
+      ToastProvider.error('坏耶!头像框设置失败!');
+      print(e.error);
     }
   }
 }

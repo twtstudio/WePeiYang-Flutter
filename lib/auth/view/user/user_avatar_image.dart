@@ -18,13 +18,13 @@ class UserAvatarImage extends StatelessWidget {
     return avatar == ''
         //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
         ? ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20.r)),
+            borderRadius: BorderRadius.all(Radius.circular(500.r)),
             child: WpyPic(
               'assets/images/default_image.png',
               withHolder: true,
             ))
         : ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(20.r)),
+            borderRadius: BorderRadius.all(Radius.circular(500.r)),
             child: WpyPic(
               'https://qnhdpic.twt.edu.cn/download/origin/' + avatar,
               withHolder: true,
