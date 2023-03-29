@@ -58,11 +58,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: 38.w,
+        height: 60.w,
         child: Row(children: [
           SizedBox(
-            width: 34.w,
-            height: 34.w,
+            width: 60.w,
+            height: 60.w,
             child: ProfileImageWithDetailedPopup(
                 post.id,
                 true,
@@ -73,14 +73,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 post.level.toString(),
                 post.id.toString()),
           ),
-          SizedBox(width: 8.w),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
               color: Colors.transparent, // 没他就没有点击域
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 11.h),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -105,6 +104,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 4.h),
                     Text(
                       DateFormat('yyyy-MM-dd HH:mm:ss')
                           .format(post.createAt.toLocal()),
@@ -290,9 +290,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
     // （因为 outer 和 inner 的这部分几乎完全相同）
     List<Widget> head = [
       avatarAndSolve,
-      SizedBox(height: 10.h),
-      eTagAndTitle,
-      if (post.content.isNotEmpty) content, // 行数的区别在内部判断
+      Padding(
+        padding: EdgeInsets.only(left: 12.w),
+        child: eTagAndTitle,
+      ),
+      if (post.content.isNotEmpty)
+        Padding(
+            padding: EdgeInsets.only(left: 12.w), child: content), // 行数的区别在内部判断
       SizedBox(height: 10.h)
     ];
 
@@ -312,15 +316,20 @@ class _PostCardNormalState extends State<PostCardNormal> {
               );
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 8.h),
+              padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ...head,
-                  if (post.imageUrls.isNotEmpty) outerImages,
-                  SizedBox(height: 8.h),
-                  likeUnlikeVisit
+                  if (post.imageUrls.isNotEmpty)
+                    Padding(
+                        padding: EdgeInsets.only(left: 12.w, bottom: 8.h),
+                        child: outerImages),
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.w),
+                    child: likeUnlikeVisit,
+                  )
                 ],
               ),
             ),
