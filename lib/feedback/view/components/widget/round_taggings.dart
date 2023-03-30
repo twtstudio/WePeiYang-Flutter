@@ -276,6 +276,7 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
   final String nickName;
   final String level;
   final String heroTag;
+  final String avatarBox;
 
   ProfileImageWithDetailedPopup(
       this.postOrCommentId,
@@ -285,7 +286,8 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
       this.uid,
       this.nickName,
       this.level,
-      this.heroTag);
+      this.heroTag,
+      this.avatarBox);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -329,18 +331,19 @@ class _ProfileImageWithDetailedPopupState
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: 37.w,
-                    height: 37.w,
+                    width: 35.w,
+                    height: 35.w,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
-              WpyPic(
-                'https://qnhdpic.twt.edu.cn/download/origin/71611d9e98a52bfcbb2d9846785d4395.png',
-                width: 60.w,
-                height: 60.w,
-                fit: BoxFit.contain,
-              ),
+              if (widget.avatarBox != '')
+                WpyPic(
+                  widget.avatarBox,
+                  width: 60.w,
+                  height: 60.w,
+                  fit: BoxFit.contain,
+                ),
             ],
           ),
         ),

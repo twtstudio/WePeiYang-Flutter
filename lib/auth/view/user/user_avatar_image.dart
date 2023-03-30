@@ -8,38 +8,53 @@ class UserAvatarImage extends StatelessWidget {
   final double size;
   final Color iconColor;
   final String tempUrl;
-  final bool useTemp;
 
   UserAvatarImage({
     @required this.size,
     this.iconColor = const Color.fromRGBO(98, 103, 124, 1),
     this.tempUrl = "",
-    this.useTemp = false,
   });
 
   @override
   Widget build(BuildContext context) {
     var avatar = CommonPreferences.avatar.value;
 
-    var avatarBox =
-        useTemp == true ? tempUrl : CommonPreferences.avatarBoxMyUrl.value;
+    var avatarBoxUrl = tempUrl == '' ? CommonPreferences.avatarBoxMyUrl.value : tempUrl;
 
-    return avatar == ''
-        //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
-        ? ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(500.r)),
-            child: WpyPic(
-              'assets/images/default_image.png',
-              withHolder: true,
-            ))
-        : ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(500.r)),
-            child: WpyPic(
-              'https://qnhdpic.twt.edu.cn/download/origin/' + avatar,
-              withHolder: true,
-              width: size,
-              height: size,
-            ),
-          );
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          avatar == ''
+              //? Icon(Icons.account_box_rounded, size: size, color: iconColor)
+              ? ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(500.r)),
+                  child: WpyPic(
+                    'assets/images/default_image.png',
+                    withHolder: true,
+                    width: avatarBoxUrl == "" ? size : 0.58 * size,
+                    height: avatarBoxUrl == "" ? size : 0.58 * size,
+                  ))
+              : ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(500.r)),
+                  child: WpyPic(
+                    'https://qnhdpic.twt.edu.cn/download/origin/' + avatar,
+                    withHolder: true,
+                    width: avatarBoxUrl == "" ? size : 0.58 * size,
+                    height: avatarBoxUrl == "" ? size : 0.58 * size,
+                  ),
+                ),
+          if (avatarBoxUrl != "")
+          WpyPic(
+            avatarBoxUrl,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+          )
+        ],
+      ),
+    );
   }
 }

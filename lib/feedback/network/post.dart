@@ -501,18 +501,21 @@ class AvatarBox {
     this.addr,
     this.createdAt,
     this.comment,
+    this.type
   });
 
   int id;
   String addr;
   String createdAt;
   String comment;
+  String type;
 
   AvatarBox.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     addr = json['addr'];
     createdAt = json['created_at'];
     comment = json['comment'];
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -521,6 +524,7 @@ class AvatarBox {
     _data['addr'] = addr;
     _data['created_at'] = createdAt;
     _data['comment'] = comment;
+    _data['type'] = type;
     return _data;
   }
 }

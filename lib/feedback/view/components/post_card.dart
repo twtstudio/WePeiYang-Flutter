@@ -71,7 +71,9 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 post.uid,
                 post.nickname,
                 post.level.toString(),
-                post.id.toString()),
+                post.id.toString(),
+              post.avatarBox.toString()
+            ),
           ),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,

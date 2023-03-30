@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_screenutil/size_extension.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -33,9 +33,6 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -57,8 +54,8 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
         child: Column(
           children: [
             Container(
-              width: width,
-              height: height * 0.3,
+              width: 1.sw,
+              height: 0.3.sh,
               child: Stack(
                 children: [
                   ValueListenableBuilder<String>(
@@ -68,9 +65,8 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                           child: Hero(
                             tag: 'avatar',
                             child: UserAvatarImage(
-                              size: width * 0.35,
+                              size: 0.3.sw,
                               iconColor: Colors.white,
-                              useTemp: true,
                               tempUrl: _valueNotifier.value,
                             ),
                           ),
@@ -111,11 +107,11 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
 
   Future<void> loadAvatarBox() async {
     avatarList.clear();
-    avatarList = await FeedbackService.getTypeAvatarBox('测试头像框');
+    avatarList = await FeedbackService.getAllAvatarBox();
     canChange.clear();
     avatarList.forEach((e) {
       int degree = 0;
-      degree = int.parse(e.comment);
+      degree = int.tryParse(e.type) ?? 100;
       if (CommonPreferences.level.value < degree) {
         canChange.add(false);
       } else
@@ -125,8 +121,6 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
     return FutureBuilder(
       future: loadAvatarBox(),
       builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
@@ -145,11 +139,11 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                 child: Column(
                   children: [
                     Container(
-                      width: width * 0.9,
                       height: 300.h,
                       child: GridView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: avatarList.length,
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -162,39 +156,25 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  canChange[index] == false
-                                      ? WButton(
-                                          onPressed: () async {
-                                            widget.valueNotifier.value =
-                                                avatarList[index].addr;
-                                            currentIndex.value = index;
-                                          },
-                                          child: ValueListenableBuilder(
-                                            valueListenable: currentIndex,
-                                            builder: (a, i, c) {
-                                              return avatarBoxCard(
-                                                  avatarList[index],
-                                                  currentIndex.value == index);
-                                            },
-                                          ),
-                                        )
-                                      : WButton(
-                                          onPressed: () async {
-                                            ToastProvider.running(
-                                                '(ó﹏ò｡)还没解锁哦~');
-                                          },
-                                          child: ShaderMask(
-                                            shaderCallback: (Rect bounds) {
-                                              return LinearGradient(colors: [
-                                                Colors.black,
-                                                Colors.white
-                                              ]).createShader(bounds);
-                                            },
-                                            blendMode: BlendMode.color,
-                                            child: avatarBoxCard(
-                                                avatarList[index], false),
-                                          ),
-                                        ),
+                                  SizedBox(height: 14.h),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      if (canChange[index]) {
+                                        widget.valueNotifier.value =
+                                            avatarList[index].addr;
+                                        currentIndex.value = index;
+                                      }
+                                    },
+                                    child: ValueListenableBuilder(
+                                      valueListenable: currentIndex,
+                                      builder: (a, i, c) {
+                                        return avatarBoxCard(
+                                            avatarList[index],
+                                            currentIndex.value == index,
+                                            canChange[index]);
+                                      },
+                                    ),
+                                  ),
                                   Padding(
                                     padding: EdgeInsets.only(top: 5.h),
                                     child: Text('${avatarList[index].comment}'),
@@ -219,6 +199,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                               FeedbackService.updateAvatarBox(
                                   avatarList[currentIndex.value]);
                             }
+                            CommonPreferences.avatarBoxMyUrl.value =
+                                avatarList[currentIndex.value].addr;
                           }
                         },
                         child: Container(
@@ -247,31 +229,33 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
     );
   }
 
-  Widget avatarBoxCard(AvatarBox avatarBox, bool choose) {
+  Widget avatarBoxCard(AvatarBox avatarBox, bool choose, bool canChange) {
     return Container(
-      width: 100.w,
-      height: 100.w,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10.r)),
-        boxShadow: [
-          choose == true
-              ? BoxShadow(
-                  color: ColorUtil.begoniaPink,
-                  blurRadius: 30,
-                )
-              : BoxShadow(
-                  color: Colors.white,
-                ),
-        ],
-      ),
-      child: Center(
-        child: WpyPic(
-          'https://qnhdpic.twt.edu.cn/download/origin/${avatarBox.addr}',
-          withCache: true,
-          withHolder: true,
-        ),
-      ),
-    );
+        width: 100.w,
+        height: 100.w,
+        foregroundDecoration: canChange
+            ? null
+            : BoxDecoration(
+                color: Colors.grey,
+                backgroundBlendMode: BlendMode.saturation,
+                borderRadius: BorderRadius.all(Radius.circular(10.r)),
+              ),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+            boxShadow: [
+              choose == true
+                  ? BoxShadow(
+                      color: ColorUtil.begoniaPink,
+                      blurRadius: 8,
+                      spreadRadius: 5)
+                  : BoxShadow(
+                      color: Colors.white,
+                    ),
+            ],
+            image: DecorationImage(
+              image: NetworkImage(avatarBox.addr),
+              fit: BoxFit.cover,
+            )));
   }
 }
