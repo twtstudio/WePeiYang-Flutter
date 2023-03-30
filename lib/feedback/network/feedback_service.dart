@@ -1149,6 +1149,7 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  /// 后端只返回hidden = false的所有数据
   static Future<List<AvatarBox>> getAllAvatarBox() async {
     List<AvatarBox> avatarBoxList = [];
     try {
@@ -1179,22 +1180,6 @@ class FeedbackService with AsyncTimer {
   static Future<void> setAvatarBox(AvatarBox avatarBox) async {
     try {
       var res = await feedbackDio.post('frame/set',
-          formData: FormData.fromMap({'aid': avatarBox.id}));
-      if (res.data['code'] == 200) {
-        ToastProvider.success('好耶!头像框设置成功!(≧ω≦)/');
-        CommonPreferences.avatarBoxMyUrl.value = avatarBox.addr;
-      } else {
-        ToastProvider.error('坏耶!头像框设置失败!');
-      }
-    } on DioError catch (e) {
-      ToastProvider.error('坏耶!头像框设置失败!');
-      print(e.error);
-    }
-  }
-
-  static Future<void> updateAvatarBox(AvatarBox avatarBox) async {
-    try {
-      var res = await feedbackDio.post('frame/update',
           formData: FormData.fromMap({'aid': avatarBox.id}));
       if (res.data['code'] == 200) {
         ToastProvider.success('好耶!头像框设置成功!(≧ω≦)/');

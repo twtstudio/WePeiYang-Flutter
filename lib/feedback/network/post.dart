@@ -477,20 +477,24 @@ class Error {
 class AvatarBoxList {
   AvatarBoxList({
     this.avatarFrameList,
+    this.total,
   });
 
   List<AvatarBox> avatarFrameList;
+  int total;
 
   AvatarBoxList.fromJson(Map<String, dynamic> json) {
     avatarFrameList = List.from(json['avatar_frame_list'])
         .map((e) => AvatarBox.fromJson(e))
         .toList();
+    total = json['total'];
   }
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
     _data['avatar_frame_list'] =
         avatarFrameList.map((e) => e.toJson()).toList();
+    _data['total'] = total;
     return _data;
   }
 }
@@ -501,14 +505,20 @@ class AvatarBox {
     this.addr,
     this.createdAt,
     this.comment,
-    this.type
+    this.type,
+    this.name,
+    this.hidden,
   });
 
   int id;
   String addr;
   String createdAt;
+
+  /// 在comment里面上传的对应头像框能够被使用的最低等级。例 11-15 则为11
   String comment;
   String type;
+  String name;
+  String hidden;
 
   AvatarBox.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -516,6 +526,8 @@ class AvatarBox {
     createdAt = json['created_at'];
     comment = json['comment'];
     type = json['type'];
+    name = json['name'];
+    hidden = json['hidden'];
   }
 
   Map<String, dynamic> toJson() {
@@ -525,6 +537,8 @@ class AvatarBox {
     _data['created_at'] = createdAt;
     _data['comment'] = comment;
     _data['type'] = type;
+    _data['name'] = name;
+    _data['hidden'] = hidden;
     return _data;
   }
 }

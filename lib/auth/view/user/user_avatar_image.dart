@@ -7,6 +7,8 @@ import '../../../commons/widgets/wpy_pic.dart';
 class UserAvatarImage extends StatelessWidget {
   final double size;
   final Color iconColor;
+
+  /// tempUrl是为了头像框切换预览而设置的，如果填入的话则不会存入本地SharePreference,用于临时预览
   final String tempUrl;
 
   UserAvatarImage({
@@ -47,12 +49,12 @@ class UserAvatarImage extends StatelessWidget {
                   ),
                 ),
           if (avatarBoxUrl != "")
-          WpyPic(
-            avatarBoxUrl,
-            width: size,
-            height: size,
-            fit: BoxFit.contain,
-          )
+            WpyPic(
+              avatarBoxUrl,
+              width: size,
+              height: size,
+              fit: BoxFit.contain,
+            )
         ],
       ),
     );

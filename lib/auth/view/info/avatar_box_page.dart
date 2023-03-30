@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_screenutil/size_extension.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -101,6 +102,8 @@ class AvatarListBuilder extends StatefulWidget {
 
 class _AvatarListBuilderState extends State<AvatarListBuilder> {
   ValueNotifier<int> currentIndex = ValueNotifier<int>(-1);
+
+  /// 当level < comment时，判断为不可用
   List<bool> canChange = [];
 
   List<AvatarBox> avatarList = [];
@@ -111,9 +114,9 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
     canChange.clear();
     avatarList.forEach((e) {
       int degree = 0;
-      degree = int.tryParse(e.type) ?? 100;
+      degree = int.tryParse(e.comment) ?? 100;
       if (CommonPreferences.level.value < degree) {
-        canChange.add(false);
+        canChange.add(true);
       } else
         canChange.add(true);
     });
@@ -157,8 +160,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   SizedBox(height: 14.h),
-                                  GestureDetector(
-                                    onTap: () async {
+                                  WButton(
+                                    onPressed: () async {
                                       if (canChange[index]) {
                                         widget.valueNotifier.value =
                                             avatarList[index].addr;
@@ -177,7 +180,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(top: 5.h),
-                                    child: Text('${avatarList[index].comment}'),
+                                    child: Text('${avatarList[index].name}'),
                                   ),
                                 ],
                               ),
@@ -192,13 +195,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           if (currentIndex.value < 0) {
                             ToastProvider.error('(›´ω`‹ )请选择一个头像框~');
                           } else {
-                            if (CommonPreferences.avatarBoxMyUrl.value == "") {
-                              FeedbackService.setAvatarBox(
-                                  avatarList[currentIndex.value]);
-                            } else {
-                              FeedbackService.updateAvatarBox(
-                                  avatarList[currentIndex.value]);
-                            }
+                            FeedbackService.setAvatarBox(
+                                avatarList[currentIndex.value]);
                             CommonPreferences.avatarBoxMyUrl.value =
                                 avatarList[currentIndex.value].addr;
                           }
@@ -231,31 +229,32 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
 
   Widget avatarBoxCard(AvatarBox avatarBox, bool choose, bool canChange) {
     return Container(
-        width: 100.w,
-        height: 100.w,
-        foregroundDecoration: canChange
-            ? null
-            : BoxDecoration(
-                color: Colors.grey,
-                backgroundBlendMode: BlendMode.saturation,
-                borderRadius: BorderRadius.all(Radius.circular(10.r)),
-              ),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(10.r)),
-            boxShadow: [
-              choose == true
-                  ? BoxShadow(
-                      color: ColorUtil.begoniaPink,
-                      blurRadius: 8,
-                      spreadRadius: 5)
-                  : BoxShadow(
-                      color: Colors.white,
-                    ),
-            ],
-            image: DecorationImage(
-              image: NetworkImage(avatarBox.addr),
-              fit: BoxFit.cover,
-            )));
+      width: 100.w,
+      height: 100.w,
+      foregroundDecoration: canChange
+          ? null
+          : BoxDecoration(
+              color: Colors.grey,
+              backgroundBlendMode: BlendMode.saturation,
+              borderRadius: BorderRadius.all(Radius.circular(10.r)),
+            ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+        boxShadow: [
+          choose == true
+              ? BoxShadow(
+                  color: ColorUtil.begoniaPink, blurRadius: 8, spreadRadius: 5)
+              : BoxShadow(
+                  color: Colors.white,
+                ),
+        ],
+        image: DecorationImage(
+          image: NetworkImage(
+              '${avatarBox.addr}'),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 }
