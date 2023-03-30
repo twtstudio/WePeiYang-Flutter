@@ -331,8 +331,8 @@ class _ProfileImageWithDetailedPopupState
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: 35.w,
-                    height: 35.w,
+                    width: 32.w,
+                    height: 32.w,
                     fit: BoxFit.cover,
                   ),
                 ),

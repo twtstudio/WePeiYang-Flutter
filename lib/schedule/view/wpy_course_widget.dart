@@ -92,16 +92,22 @@ class TodayCoursesWidget extends StatelessWidget {
                                 .sp(14)
                                 .customColor(Colors.white54),
                           ),
-                          SizedBox(height: 2.h),
-                          Text(
-                            todayPairs[i].first.name,
-                            style: TextUtil.base.PingFangSC.white.bold.sp(14),
+                          SizedBox(height: 4.h),
+                          SizedBox(
+                            width: 1.sw - 125.w - 50.r,
+                            child: Text(
+                              todayPairs[i].first.name,
+                              style: TextUtil.base.PingFangSC.white.bold.sp(14),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
                       Spacer(),
                       GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, ScheduleRouter.course),
+                        onTap: () =>
+                            Navigator.pushNamed(context, ScheduleRouter.course),
                         child: Image.asset('assets/images/schedule/circle.png',
                             width: 50.r, height: 50.r),
                       ),
