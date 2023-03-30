@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
 import 'package:flutter_screenutil/size_extension.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -180,7 +179,13 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                   ),
                                   Padding(
                                     padding: EdgeInsets.only(top: 5.h),
-                                    child: Text('${avatarList[index].name}'),
+                                    child: SizedBox(
+                                        width: 100.h,
+                                        child: Text(
+                                          '${avatarList[index].name}',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
                                   ),
                                 ],
                               ),
@@ -250,8 +255,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                 ),
         ],
         image: DecorationImage(
-          image: NetworkImage(
-              '${avatarBox.addr}'),
+          image: NetworkImage('${avatarBox.addr}'),
           fit: BoxFit.cover,
         ),
       ),

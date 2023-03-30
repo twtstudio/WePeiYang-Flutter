@@ -60,21 +60,16 @@ class _PostCardNormalState extends State<PostCardNormal> {
     var avatarAndSolve = SizedBox(
         height: 60.w,
         child: Row(children: [
-          SizedBox(
-            width: 60.w,
-            height: 60.w,
-            child: ProfileImageWithDetailedPopup(
-                post.id,
-                true,
-                post.type,
-                post.avatar ?? post.nickname,
-                post.uid,
-                post.nickname,
-                post.level.toString(),
-                post.id.toString(),
-              post.avatarBox.toString()
-            ),
-          ),
+          ProfileImageWithDetailedPopup(
+              post.id,
+              true,
+              post.type,
+              post.avatar ?? post.nickname,
+              post.uid,
+              post.nickname,
+              post.level.toString(),
+              post.id.toString(),
+              post.avatarBox.toString()),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
               color: Colors.transparent, // 没他就没有点击域
@@ -339,7 +334,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
         // inner 框架
         : Container(
-            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 8.h),
+            padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
             decoration: BoxDecoration(
                 border: Border(
                     bottom:
@@ -348,9 +343,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ...head,
-                if (post.imageUrls.isNotEmpty) innerImages,
-                SizedBox(height: 8.h),
-                tagCampusVisit
+                if (post.imageUrls.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
+                    child: innerImages,
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w),
+                  child: tagCampusVisit,
+                ),
               ],
             ),
           );

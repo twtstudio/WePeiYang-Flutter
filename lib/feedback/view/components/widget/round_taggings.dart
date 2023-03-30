@@ -333,7 +333,7 @@ class _ProfileImageWithDetailedPopupState
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
                     width: 35.w,
                     height: 35.w,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -170,6 +171,20 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               Hero(tag: 'avatar', child: getAvatar()),
               Spacer(),
               Divider(height: 1.0, color: Colors.white),
+              SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AuthRouter.avatarBox)
+                      .then((_) => this.setState(() {}));
+                },
+                child: Text(
+                  '更换头像框',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 10),
+              Divider(height: 1.0, color: Colors.white),
+              SizedBox(height: 10),
               TextButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(

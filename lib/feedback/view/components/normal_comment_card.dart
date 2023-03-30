@@ -654,29 +654,24 @@ class _NCommentCardState extends State<NCommentCard>
     );
 
     var mainBody = Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      SizedBox(
-        width: 34.w,
-        height: 34.w,
-        child: ProfileImageWithDetailedPopup(
-            widget.comment.id,
-            false,
-            widget.type,
-            widget.comment.avatar ?? widget.comment.nickname,
-            widget.comment.uid,
-            widget.comment.nickname,
-            widget.comment.level.toString(),
-            widget.comment.id.toString(),
-            widget.comment.avatarBox.toString()),
-      ),
-      SizedBox(width: 10.w),
+      ProfileImageWithDetailedPopup(
+          widget.comment.id,
+          false,
+          widget.type,
+          widget.comment.avatar ?? widget.comment.nickname,
+          widget.comment.uid,
+          widget.comment.nickname,
+          widget.comment.level.toString(),
+          widget.comment.id.toString(),
+          widget.comment.avatarBox.toString()),
       Expanded(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 4),
+            SizedBox(height: 10.h),
             topWidget,
-            SizedBox(height: 6),
+            SizedBox(height: 4.h),
             commentContent,
             if (widget.comment.imageUrl != '') commentImage,
             _picFullView == true
@@ -696,10 +691,9 @@ class _NCommentCardState extends State<NCommentCard>
                             style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
                       ],
                     ))
-                : SizedBox(height: 8),
-            SizedBox(height: 2),
+                : SizedBox(height: 8.h),
             bottomWidget,
-            SizedBox(height: 4)
+            SizedBox(height: 4.h)
           ],
         ),
       )
@@ -712,7 +706,7 @@ class _NCommentCardState extends State<NCommentCard>
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(16.w, 6.h, 14.w, 6.h),
+                    padding: EdgeInsets.fromLTRB(6.w, 2.h, 14.w, 8.h),
                     color: Colors.transparent,
                     child: mainBody,
                   ),
