@@ -669,7 +669,7 @@ class _NCommentCardState extends State<NCommentCard>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10.h),
+            SizedBox(height: 9.h),
             topWidget,
             SizedBox(height: 4.h),
             commentContent,
@@ -706,7 +706,7 @@ class _NCommentCardState extends State<NCommentCard>
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(6.w, 2.h, 14.w, 8.h),
+                    padding: EdgeInsets.fromLTRB(6.w, 0, 14.w, 6.h),
                     color: Colors.transparent,
                     child: mainBody,
                   ),

@@ -101,7 +101,7 @@ class Post {
       level: json["user_info"]["level"],
       avatar: json["user_info"]["avatar"],
       avatarBox:
-          json["user_info"] == null ? "" : json["user_info"]["avatar_frame"]);
+          json["user_info"] == null ? "" : json["user_info"]["avatar_frame"] ?? "");
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -258,7 +258,7 @@ class Floor {
         isDis: json["is_dis"],
         avatar: json["user_info"] == null ? null : json["user_info"]["avatar"],
         avatarBox:
-            json["user_info"] == null ? "" : json["user_info"]["avatar_frame"],
+            json["user_info"] == null ? "" : json["user_info"]["avatar_frame"] ?? "",
         level: json["user_info"] == null ? null : json["user_info"]["level"],
         isOwner: json["is_owner"],
       );

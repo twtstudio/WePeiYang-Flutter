@@ -135,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   GestureDetector(
                     onTap: () =>
                         Navigator.pushNamed(context, AuthRouter.setting)
-                            .then((_) => this.setState(() {})),
+                            ..then((_) => _refreshController.requestRefresh()),
                     child: Image.asset(
                       'assets/images/setting.png',
                       width: 24,

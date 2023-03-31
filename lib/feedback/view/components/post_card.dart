@@ -76,7 +76,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 11.h),
+                    SizedBox(height: 14.h),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [

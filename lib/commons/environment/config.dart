@@ -29,6 +29,7 @@ class EnvConfig {
   /// 测试版还是正式版 "RELEASE", "DEVELOP", "ONLINE_TEST"（默认）
   static const ENVIRONMENT = String.fromEnvironment(
     "ENVIRONMENT",
+    defaultValue: "RELEASE"
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成

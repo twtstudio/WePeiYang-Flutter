@@ -30,7 +30,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 .sp(16)
                 .customColor(Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
-        brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: Padding(
@@ -47,7 +46,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         children: [
           SizedBox(height: 15.h),
           Container(
-            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            padding: EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12.r),
@@ -65,13 +64,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         child: Text(S.current.avatar, style: mainTextStyle),
                       ),
                       Hero(tag: 'avatar', child: UserAvatarImage(size: 45)),
-                      SizedBox(width: 6.w),
                       arrow,
                       SizedBox(width: 15.w)
                     ],
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 8.h),
                 Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
                 SizedBox(height: 20.h),
                 InkWell(
