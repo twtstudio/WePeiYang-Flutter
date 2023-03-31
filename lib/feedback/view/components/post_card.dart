@@ -288,12 +288,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
     List<Widget> head = [
       avatarAndSolve,
       Padding(
-        padding: EdgeInsets.only(left: 12.w),
+        padding: EdgeInsets.only(left: 14.w),
         child: eTagAndTitle,
       ),
       if (post.content.isNotEmpty)
         Padding(
-            padding: EdgeInsets.only(left: 12.w), child: content), // 行数的区别在内部判断
+            padding: EdgeInsets.only(left: 14.w), child: content), // 行数的区别在内部判断
       SizedBox(height: 10.h)
     ];
 
@@ -313,7 +313,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               );
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
+              padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +324,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                         padding: EdgeInsets.only(left: 12.w, bottom: 8.h),
                         child: outerImages),
                   Padding(
-                    padding: EdgeInsets.only(left: 12.w),
+                    padding: EdgeInsets.only(left: 16.w),
                     child: likeUnlikeVisit,
                   )
                 ],
