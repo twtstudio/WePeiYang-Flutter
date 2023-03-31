@@ -43,6 +43,7 @@ class CommonPreferences {
   static final feedbackFloorSortType =
       PrefsBean<int>('feedbackFloorSortType', 0);
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
+  static final avatarBoxMyUrl = PrefsBean<String>('avatarBoxMyUrl');
 
   /// 求实论坛--等级系统
   static final levelPoint = PrefsBean<int>('levelPoint');
@@ -115,6 +116,7 @@ class CommonPreferences {
       PrefsBean<String>('lastCheckUpdateTime', '');
   static final ignoreUpdateVersion =
       PrefsBean<String>('ignoreUpdateVersion', '');
+
   // 推送
   static final canPush = PrefsBean<bool>('can_push', false);
   static final pushCid = PrefsBean<String>('pushCid', '');
@@ -154,6 +156,7 @@ class CommonPreferences {
     isUser.clear();
     feedbackFloorSortType.clear();
     feedbackLastWeCo.clear();
+    avatarBoxMyUrl.clear();
 
     /// 等级系统
     levelPoint.clear();

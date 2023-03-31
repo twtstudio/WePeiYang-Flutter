@@ -138,6 +138,25 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     ],
                   ),
                 ),
+                SizedBox(height: 20.h),
+                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                SizedBox(height: 20.h),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, AuthRouter.avatarBox)
+                        .then((_) => this.setState(() {}));
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text('更换头像框',
+                            style: mainTextStyle),
+                      ),
+                      arrow,
+                      SizedBox(width: 15.w)
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

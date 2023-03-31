@@ -34,7 +34,8 @@ class Post {
     this.eTag,
     this.nickname,
     this.level,
-    this.avatar
+    this.avatar,
+    this.avatarBox,
   });
 
   int id;
@@ -60,46 +61,47 @@ class Post {
   int visitCount;
   int level;
   String avatar;
+  String avatarBox;
   String eTag;
   String nickname;
 
   bool operator ==(Object other) => other is Post && other.id == id;
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
-        id: json["id"],
-        createAt: json["created_at"] == ""
-            ? null
-            : DateTime.parse(json["created_at"]),
-        uid: json["uid"],
-        type: json["type"],
-        campus: json["campus"],
-        solved: json["solved"],
-        title: json["title"],
-        content: json["content"],
-        favCount: json["fav_count"],
-        likeCount: json["like_count"],
-        rating: json["rating"],
-        tag: json["tag"] == null ? null : Tag.fromJson(json["tag"]),
-        floors: json["floors"] == null
-            ? null
-            : List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
-        commentCount: json["comment_count"],
-        isLike: json["is_like"],
-        isDis: json["is_dis"],
-        isFav: json["is_fav"],
-        isOwner: json["is_owner"],
-        imageUrls: json["image_urls"] == null
-            ? null
-            : List<String>.from(json["image_urls"].map((x) => x)),
-        department: json["department"] == null
-            ? null
-            : Department.fromJson(json["department"]),
-        visitCount: json["visit_count"],
-        eTag: json["e_tag"],
-        nickname: json["nickname"],
-        level: json["user_info"]["level"],
-        avatar: json["user_info"]["avatar"]
-      );
+      id: json["id"],
+      createAt:
+          json["created_at"] == "" ? null : DateTime.parse(json["created_at"]),
+      uid: json["uid"],
+      type: json["type"],
+      campus: json["campus"],
+      solved: json["solved"],
+      title: json["title"],
+      content: json["content"],
+      favCount: json["fav_count"],
+      likeCount: json["like_count"],
+      rating: json["rating"],
+      tag: json["tag"] == null ? null : Tag.fromJson(json["tag"]),
+      floors: json["floors"] == null
+          ? null
+          : List<Floor>.from(json["floors"].map((x) => Floor.fromJson(x))),
+      commentCount: json["comment_count"],
+      isLike: json["is_like"],
+      isDis: json["is_dis"],
+      isFav: json["is_fav"],
+      isOwner: json["is_owner"],
+      imageUrls: json["image_urls"] == null
+          ? null
+          : List<String>.from(json["image_urls"].map((x) => x)),
+      department: json["department"] == null
+          ? null
+          : Department.fromJson(json["department"]),
+      visitCount: json["visit_count"],
+      eTag: json["e_tag"],
+      nickname: json["nickname"],
+      level: json["user_info"]["level"],
+      avatar: json["user_info"]["avatar"],
+      avatarBox:
+          json["user_info"] == null ? "" : json["user_info"]["avatar_frame"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -126,7 +128,8 @@ class Post {
         "e_tag": eTag,
         "nickname": nickname,
         "level": level,
-        "avatar": avatar
+        "avatar": avatar,
+        "avatar_frame": avatarBox,
       };
 
   Post.nullExceptId(int questionId) {
@@ -202,6 +205,7 @@ class Floor {
     this.isDis,
     this.isOwner,
     this.avatar,
+    this.avatarBox,
     this.level,
   });
 
@@ -224,8 +228,10 @@ class Floor {
   bool isLike;
   bool isDis;
   String avatar;
+  String avatarBox;
   bool isOwner;
   int level;
+
   factory Floor.fromJson(Map<String, dynamic> json) => Floor(
         id: json["id"],
         createAt: json["created_at"] == ""
@@ -241,7 +247,7 @@ class Floor {
         replyToName: json["reply_to_name"],
         rating: json["rating"],
         subTo: json["sub_to"],
-        value:json["value"],
+        value: json["value"],
         likeCount: json["like_count"],
         subFloors: json["sub_floors"] == null
             ? null
@@ -251,6 +257,8 @@ class Floor {
         isLike: json["is_like"],
         isDis: json["is_dis"],
         avatar: json["user_info"] == null ? null : json["user_info"]["avatar"],
+        avatarBox:
+            json["user_info"] == null ? "" : json["user_info"]["avatar_frame"],
         level: json["user_info"] == null ? null : json["user_info"]["level"],
         isOwner: json["is_owner"],
       );
@@ -267,7 +275,7 @@ class Floor {
         "reply_to": replyTo,
         "reply_to_name": replyToName,
         "sub_to": subTo,
-        "value":value,
+        "value": value,
         "like_count": likeCount,
         "sub_floors": subFloors == null
             ? null
@@ -276,7 +284,8 @@ class Floor {
         "is_like": isLike,
         "is_dis": isDis,
         "is_owner": isOwner,
-        "avatar":avatar
+        "avatar": avatar,
+        "avatar_frame": avatarBox
       };
 
   @override
@@ -463,4 +472,73 @@ class Error {
   Map<String, dynamic> toJson() => {
         "error": error,
       };
+}
+
+class AvatarBoxList {
+  AvatarBoxList({
+    this.avatarFrameList,
+    this.total,
+  });
+
+  List<AvatarBox> avatarFrameList;
+  int total;
+
+  AvatarBoxList.fromJson(Map<String, dynamic> json) {
+    avatarFrameList = List.from(json['avatar_frame_list'])
+        .map((e) => AvatarBox.fromJson(e))
+        .toList();
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['avatar_frame_list'] =
+        avatarFrameList.map((e) => e.toJson()).toList();
+    _data['total'] = total;
+    return _data;
+  }
+}
+
+class AvatarBox {
+  AvatarBox({
+    this.id,
+    this.addr,
+    this.createdAt,
+    this.comment,
+    this.type,
+    this.name,
+    this.hidden,
+  });
+
+  int id;
+  String addr;
+  String createdAt;
+
+  /// 在comment里面上传的对应头像框能够被使用的最低等级。例 11-15 则为11
+  String comment;
+  String type;
+  String name;
+  String hidden;
+
+  AvatarBox.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    addr = json['addr'];
+    createdAt = json['created_at'];
+    comment = json['comment'];
+    type = json['type'];
+    name = json['name'];
+    hidden = json['hidden'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['id'] = id;
+    _data['addr'] = addr;
+    _data['created_at'] = createdAt;
+    _data['comment'] = comment;
+    _data['type'] = type;
+    _data['name'] = name;
+    _data['hidden'] = hidden;
+    return _data;
+  }
 }

@@ -173,7 +173,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                 width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
                 color: Colors.black12,
-              )
+              ),
+              SizedBox(height: 6.h)
             ],
           );
         }

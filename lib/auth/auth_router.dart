@@ -1,5 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
+import 'package:we_pei_yang_flutter/auth/view/info/avatar_box_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/email_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/phone_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/reset_password_page.dart';
@@ -43,6 +44,7 @@ class AuthRouter {
   static String resetPassword = 'info/resetPassword';
   static String userInfo = 'info/home';
   static String avatarCrop = 'info/avatar_crop';
+  static String avatarBox = 'info/avatar_box';
 
   /// 个人页 & 设置页
   static String setting = 'setting/home';
@@ -62,7 +64,8 @@ class AuthRouter {
     register1: (_) => RegisterPageOne(),
     register2: (arg) {
       var map = arg as Map;
-      return RegisterPageTwo(map['userNum'], map['nickname'],map['idNum'], map['email']);
+      return RegisterPageTwo(
+          map['userNum'], map['nickname'], map['idNum'], map['email']);
     },
     register3: (arg) {
       var map = arg as Map;
@@ -81,6 +84,7 @@ class AuthRouter {
     resetPassword: (_) => ResetPasswordPage(), // 这个是个人信息页面的修改密码
     userInfo: (_) => UserInfoPage(),
     avatarCrop: (_) => AvatarCropPage(),
+    avatarBox: (_) => AvatarBoxPage(),
     setting: (_) => SettingPage(),
     generalSetting: (_) => GeneralSettingPage(),
     languageSetting: (_) => LanguageSettingPage(),

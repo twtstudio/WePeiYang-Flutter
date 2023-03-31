@@ -276,6 +276,7 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
   final String nickName;
   final String level;
   final String heroTag;
+  final String avatarBox;
 
   ProfileImageWithDetailedPopup(
       this.postOrCommentId,
@@ -285,7 +286,8 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
       this.uid,
       this.nickName,
       this.level,
-      this.heroTag);
+      this.heroTag,
+      this.avatarBox);
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
@@ -316,15 +318,33 @@ class _ProfileImageWithDetailedPopupState
               widget.heroTag)),
       child: Hero(
         tag: widget.heroTag,
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(20.w)),
-          child: WpyPic(
-            widget.avatar == ""
-                ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
-                : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-            width: 34.w,
-            height: 34.w,
-            fit: BoxFit.cover,
+        child: SizedBox(
+          width: 60.w,
+          height: 60.w,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.w)),
+                  child: WpyPic(
+                    widget.avatar == ""
+                        ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
+                        : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
+                    width: 32.w,
+                    height: 32.w,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              if (widget.avatarBox != '')
+                WpyPic(
+                  widget.avatarBox,
+                  width: 60.w,
+                  height: 60.w,
+                  fit: BoxFit.contain,
+                ),
+            ],
           ),
         ),
       ),

@@ -155,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 30.w + 0.25.sw),
+                      SizedBox(width: 18.w + 0.3.sw),
                       ConstrainedBox(
                           constraints: BoxConstraints(
                             maxWidth: 0.33.sw,
@@ -213,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 30.w + 0.25.sw),
+                        SizedBox(width: 18.w + 0.3.sw),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -288,21 +288,19 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         Positioned(
-          top: 148.h - 0.125.sw,
+          top: 148.h - 0.15.sw,
+          left: 12.w,
           child: GestureDetector(
             onTap: () {
               // 进之前request出来之后就可以刷新
               Navigator.pushNamed(context, AuthRouter.avatarCrop)
                   .then((_) => _refreshController.requestRefresh());
             },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w),
-              child: Hero(
-                tag: 'avatar',
-                child: UserAvatarImage(
-                  size: 0.25.sw,
-                  iconColor: Colors.white,
-                ),
+            child: Hero(
+              tag: 'avatar',
+              child: UserAvatarImage(
+                size: 0.3.sw,
+                iconColor: Colors.white,
               ),
             ),
           ),
