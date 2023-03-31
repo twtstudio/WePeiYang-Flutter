@@ -1182,7 +1182,7 @@ class FeedbackService with AsyncTimer {
       var res = await feedbackDio.post('frame/set',
           formData: FormData.fromMap({'aid': avatarBox.id}));
       if (res.data['code'] == 200) {
-        ToastProvider.success('好耶!头像框设置成功!(≧ω≦)/');
+        ToastProvider.success('好耶!头像框设置成功! (≧ω≦)/');
         CommonPreferences.avatarBoxMyUrl.value = avatarBox.addr;
       } else {
         ToastProvider.error('坏耶!头像框设置失败!');

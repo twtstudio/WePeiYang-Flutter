@@ -115,7 +115,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
       int degree = 0;
       degree = int.tryParse(e.comment) ?? 100;
       if (CommonPreferences.level.value < degree) {
-        canChange.add(true);
+        canChange.add(false);
       } else
         canChange.add(true);
     });
@@ -165,6 +165,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                         widget.valueNotifier.value =
                                             avatarList[index].addr;
                                         currentIndex.value = index;
+                                      }else{
+                                        ToastProvider.running('(つд⊂)还未解锁哦~');
                                       }
                                     },
                                     child: ValueListenableBuilder(
@@ -198,7 +200,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                       child: WButton(
                         onPressed: () async {
                           if (currentIndex.value < 0) {
-                            ToastProvider.error('(›´ω`‹ )请选择一个头像框~');
+                            ToastProvider.running('(›´ω`‹ )请选择一个头像框~');
                           } else {
                             FeedbackService.setAvatarBox(
                                 avatarList[currentIndex.value]);
