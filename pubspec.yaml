@@ -3,11 +3,11 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-# 璇蜂繚璇?'package:we_pei_yang_flutter/commons/environment/config.dart'
-# 涓殑 version 鍜?versionCode 淇濇寔涓€鑷?
-version: 4.3.9+123
+# 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
+# 中的 version 和 versionCode 保持一致
+version: 4.3.10+124
 
-# 鎵撳寘浠ｇ爜 flutter build apk --split-per-abi
+# 打包代码 flutter build apk --split-per-abi
 # flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
 
 environment:
@@ -41,8 +41,11 @@ dependencies:
   flutter_smart_dialog: ^3.3.5
   flutter_svg: ^0.22.0
   flutter_swiper: ^1.1.6
+
   fluttertoast: ^8.0.8
+
   gallery_saver: ^2.3.2
+
   http_parser: ^4.0.0
 
   image_cropper: ^1.5.0
@@ -51,6 +54,7 @@ dependencies:
 
   like_button: ^2.0.3
   linkfy_text: ^1.1.5
+
   mutex: ^3.0.0
 
   optimized_cached_image: ^3.0.0
@@ -63,7 +67,7 @@ dependencies:
 
   retry: ^3.1.0
 
-  screenshot: ^1.2.3 # 杩樻病鐢ㄥ埌
+  screenshot: ^1.2.3 # 还没用到
   share_plus: ^4.0.10+1
   shared_preferences: ^2.0.7
   simple_html_css: ^3.0.1
@@ -76,6 +80,7 @@ dependencies:
 
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0
+
 
 dev_dependencies:
   flutter_test:

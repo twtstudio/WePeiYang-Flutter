@@ -114,10 +114,10 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
     avatarList.forEach((e) {
       int degree = 0;
       degree = int.tryParse(e.comment) ?? 100;
-      if (CommonPreferences.level.value < degree) {
-        canChange.add(false);
-      } else
+      if (CommonPreferences.level.value >= degree) {
         canChange.add(true);
+      } else
+        canChange.add(false);
     });
   }
 
@@ -187,6 +187,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                           '${avatarList[index].name}',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
+                                          style: TextUtil.base.w200.black4E.sp(16),
                                         )),
                                   ),
                                 ],
