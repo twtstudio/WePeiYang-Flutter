@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
@@ -34,7 +35,7 @@ extension _SState on LocationState {
 }
 
 class ReportMainPage extends StatefulWidget {
-  const ReportMainPage({Key key}) : super(key: key);
+  const ReportMainPage({Key? key}) : super(key: key);
 
   @override
   _ReportMainPageState createState() => _ReportMainPageState();
@@ -46,8 +47,8 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
   ValueNotifier<bool> clearAll = ValueNotifier(true);
 
-  _Page _page;
-  Widget _action;
+  late _Page _page;
+  late Widget _action;
 
   @override
   void initState() {
@@ -224,34 +225,32 @@ class _ReportMainPageState extends State<ReportMainPage> {
         break;
       case _Page.list:
         body = FutureBuilder<List<ReportItem>>(
-            future: ReportService.getReportHistoryList(),
-            builder: (_, snapshot) {
-              if (snapshot.hasData) {
-                if (snapshot.data.length == 0) {
-                  return Center(
-                    child: Text(
-                      '当前无填报记录，请新建填报记录',
-                      style: TextStyle(color: Color(0xff63677b)),
-                    ),
-                  );
-                } else {
-                  var list = snapshot.data.reversed.toList();
-                  return ListView.builder(
-                    itemExtent: 150,
-                    itemCount: list.length,
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (_, index) {
-                      return _ReportListItem(data: list[index]);
-                    },
-                  );
-                }
+          future: ReportService.getReportHistoryList(),
+          builder: (_, snapshot) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.length == 0) {
+                return Center(
+                  child: Text(
+                    '当前无填报记录，请新建填报记录',
+                    style: TextStyle(color: Color(0xff63677b)),
+                  ),
+                );
               } else {
-                return Container();
+                var list = snapshot.data!.reversed.toList();
+                return ListView.builder(
+                  itemExtent: 150,
+                  itemCount: list.length,
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (_, index) {
+                    return _ReportListItem(data: list[index]);
+                  },
+                );
               }
-            });
-        break;
-      default:
-        break;
+            } else {
+              return Container();
+            }
+          },
+        );
     }
 
     return ReportBasePage(
@@ -265,9 +264,9 @@ class _ReportMainPageState extends State<ReportMainPage> {
 
 class _ReportResultDialog extends StatelessWidget {
   const _ReportResultDialog({
-    Key key,
-    @required this.width,
-    @required this.height,
+    Key? key,
+    required this.width,
+    required this.height,
   }) : super(key: key);
 
   final double width;
@@ -334,7 +333,7 @@ class _ReportResultDialog extends StatelessWidget {
 class _ReportListItem extends StatelessWidget {
   final ReportItem data;
 
-  const _ReportListItem({this.data, Key key}) : super(key: key);
+  const _ReportListItem({Key? key, required this.data}) : super(key: key);
 
   String _tryParseMonthAndDay(String text) {
     try {
@@ -511,16 +510,15 @@ class TodayTemp extends StatefulWidget {
 }
 
 class _TodayTempState extends State<TodayTemp> {
-  TextEditingController _temperature;
+  TextEditingController _temperature = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _temperature = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setText("");
       });
@@ -697,26 +695,30 @@ extension _Name on _Image {
 class PickImage extends StatefulWidget {
   final _Image image;
 
-  const PickImage({Key key, this.image}) : super(key: key);
+  const PickImage({Key? key, required this.image}) : super(key: key);
 
   @override
   _PickImageState createState() => _PickImageState();
 }
 
 class _PickImageState extends State<PickImage> {
-  File _image;
+  File? _image;
 
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(context,
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         maxAssets: 1,
         requestType: RequestType.image,
         themeColor: ColorUtil.selectionButtonColor);
-    if (assets == null) return;
+    if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
       _image = await assets[i].file;
-      for (int j = 0; _image.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      if (_image == null) {
+        ToastProvider.error('选取图片异常，请重新尝试');
+        return;
+      }
+      for (int j = 0; _image!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         _image =
-            await FlutterNativeImage.compressImage(_image.path, quality: 80);
+            await FlutterNativeImage.compressImage(_image!.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
           return;
@@ -725,8 +727,8 @@ class _PickImageState extends State<PickImage> {
     }
     if (!mounted) return;
     if (_image != null) {
-      _setImg(File(_image.path));
-      _reportImage(_image);
+      _setImg(File(_image!.path));
+      _reportImage(_image!);
     }
     setState(() {});
   }
@@ -742,7 +744,7 @@ class _PickImageState extends State<PickImage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setImg(null);
       });
@@ -757,7 +759,7 @@ class _PickImageState extends State<PickImage> {
     }
   }
 
-  _setImg(File value) {
+  _setImg(File? value) {
     setState(() {
       _image = value;
     });
@@ -794,7 +796,7 @@ class _PickImageState extends State<PickImage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.file(
-                      _image,
+                      _image!,
                       width: imageWidth,
                       height: imageWidth,
                       fit: BoxFit.cover,
@@ -827,7 +829,6 @@ class CurrentPlace extends StatefulWidget {
 class _CurrentPlaceState extends State<CurrentPlace> {
   bool canInputAddress = false;
   bool canRequestPosition = true;
-  Location location;
   TextEditingController _controller = TextEditingController();
 
   _checkLocationPermissions() async {
@@ -862,6 +863,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     }
     canRequestPosition = false;
     ToastProvider.running('定位中...有点慢请稍等');
+    Location location;
     try {
       location = await AmapLocation.instance
           .fetchLocation(mode: LocationAccuracy.High, needAddress: true);
@@ -879,13 +881,13 @@ class _CurrentPlaceState extends State<CurrentPlace> {
 
   LocationData _transToData(Location position) {
     return LocationData(
-        longitude: position.latLng.longitude,
-        latitude: position.latLng.latitude,
-        nation: position.country,
-        province: position.province,
-        city: position.city,
-        district: position.district,
-        address: position.address);
+        longitude: position.latLng?.longitude ?? 0,
+        latitude: position.latLng?.latitude ?? 0,
+        nation: position.country ?? '',
+        province: position.province ?? '',
+        city: position.city ?? '',
+        district: position.district ?? '',
+        address: position.address ?? '');
   }
 
   _reportLocation(LocationData data) {
@@ -899,7 +901,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         canInputAddress = false;
         _setLocation("");
@@ -1014,7 +1016,7 @@ class _CurrentStateState extends State<CurrentState> {
     LocationState.school,
     LocationState.travel
   ];
-  LocationState currentState;
+  LocationState? currentState;
 
   @override
   void initState() {
@@ -1022,7 +1024,7 @@ class _CurrentStateState extends State<CurrentState> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context
           .findAncestorStateOfType<_ReportMainPageState>()
-          .clearAll
+          ?.clearAll
           .addListener(() {
         _setState(null);
       });
@@ -1037,7 +1039,7 @@ class _CurrentStateState extends State<CurrentState> {
     }
   }
 
-  _setState(LocationState value) {
+  _setState(LocationState? value) {
     setState(() {
       currentState = value;
     });
@@ -1087,10 +1089,10 @@ class StateItem extends StatelessWidget {
   final VoidCallback onclick;
 
   const StateItem({
-    @required this.state,
-    @required this.isSelected,
-    @required this.onclick,
-    Key key,
+    required this.state,
+    required this.isSelected,
+    required this.onclick,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -1128,7 +1130,7 @@ class StateItem extends StatelessWidget {
 class ReportButton extends StatefulWidget {
   final VoidCallback onTap;
 
-  ReportButton({this.onTap, Key key}) : super(key: key);
+  ReportButton({required this.onTap, Key? key}) : super(key: key);
 
   @override
   _ReportButtonState createState() => _ReportButtonState();
@@ -1170,14 +1172,17 @@ class BackgroundColorListener extends StatelessWidget {
   final ReportPart part;
   final ValueWidgetBuilder<Color> builder;
 
-  const BackgroundColorListener({Key key, this.part, this.builder})
-      : super(key: key);
+  const BackgroundColorListener({
+    Key? key,
+    required this.part,
+    required this.builder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
         valueListenable: context
-            .findAncestorStateOfType<_ReportMainPageState>()
+            .findAncestorStateOfType<_ReportMainPageState>()!
             ._partBackgroundColor[part.index],
         builder: builder);
   }

@@ -1,14 +1,14 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-// ignore: must_be_immutable
 class GamePage extends StatelessWidget {
-  List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
-  List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
-  List<bool> _used = [true, true, false];
+  final List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
+  final List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
+  final List<bool> _used = [true, true, false];
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 
 class UserAvatarImage extends StatelessWidget {
   final double size;
@@ -12,7 +12,7 @@ class UserAvatarImage extends StatelessWidget {
   final String tempUrl;
 
   UserAvatarImage({
-    @required this.size,
+    required this.size,
     this.iconColor = const Color.fromRGBO(98, 103, 124, 1),
     this.tempUrl = "",
   });

@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
@@ -27,23 +28,23 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   List<Post> _postList = [];
-  MessageProvider messageProvider;
   var _refreshController = RefreshController(initialRefresh: true);
   bool tap = false;
   int currentPage = 1;
 
-  _getMyPosts({Function(List<Post>) onSuccess, Function onFail, int current}) {
+  _getMyPosts(
+      {required Function(List<Post>) onSuccess, required Function onFail}) {
     FeedbackService.getMyPosts(
-        page: current ?? currentPage,
+        page: currentPage,
         page_size: 10,
         onResult: (list) {
           setState(() {
-            onSuccess?.call(list);
+            onSuccess.call(list);
           });
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
-          onFail?.call();
+          onFail.call();
         });
   }
 
@@ -176,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(width: 5.w),
                       InkWell(
                         onTap: () {
-                          return showDialog(
+                          showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (BuildContext context) =>
@@ -357,14 +358,18 @@ class CustomCard extends StatelessWidget {
   final String text;
   final Function onPressed;
 
-  const CustomCard({Key key, this.image, this.text, this.onPressed})
+  const CustomCard(
+      {Key? key,
+      required this.image,
+      required this.text,
+      required this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onPressed?.call();
+        onPressed.call();
       },
       child: Container(
         width: 113.w,

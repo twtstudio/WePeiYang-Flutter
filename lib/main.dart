@@ -255,56 +255,54 @@ class WePeiYangAppState extends State<WePeiYangApp>
         // 获取友盟在线参数
         context.read<RemoteConfig>().getRemoteConfig();
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          title: '微北洋',
-          navigatorKey: WePeiYangApp.navigatorState,
-          onGenerateRoute: RouterManager.create,
-          navigatorObservers: [
-            AppRouteAnalysis(),
-            PageStackObserver(),
-            FlutterSmartDialog.observer
-          ],
-          localizationsDelegates: [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          localeListResolutionCallback: (List<Locale> preferredLocales,
-              Iterable<Locale> supportedLocales) {
-            var supportedLanguages =
-                supportedLocales.map((e) => e.languageCode).toList();
-            var preferredLanguages =
-                preferredLocales.map((e) => e.languageCode).toList();
-            var availableLanguages = preferredLanguages
-                .where((element) => supportedLanguages.contains(element))
-                .toList();
-            return Locale(availableLanguages.first);
-          },
-          locale: localModel.locale(),
-          home: StartUpWidget(),
-          builder: FlutterSmartDialog.init(builder: _builder),
-        );
+        return ScreenUtilInit(
+            designSize: const Size(390, 844),
+            minTextAdapt: true,
+            child: StartUpWidget(),
+            builder: ((context, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                title: '微北洋',
+                navigatorKey: WePeiYangApp.navigatorState,
+                onGenerateRoute: RouterManager.create,
+                navigatorObservers: [
+                  AppRouteAnalysis(),
+                  PageStackObserver(),
+                  FlutterSmartDialog.observer
+                ],
+                localizationsDelegates: [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                localeListResolutionCallback: (List<Locale> preferredLocales,
+                    Iterable<Locale> supportedLocales) {
+                  var supportedLanguages =
+                      supportedLocales.map((e) => e.languageCode).toList();
+                  var preferredLanguages =
+                      preferredLocales.map((e) => e.languageCode).toList();
+                  var availableLanguages = preferredLanguages
+                      .where((element) => supportedLanguages.contains(element))
+                      .toList();
+                  return Locale(availableLanguages.first);
+                },
+                locale: localModel.locale(),
+                home: child,
+                builder: FlutterSmartDialog.init(builder: _builder),
+              );
+            }));
       }),
     );
   }
 
   Widget _builder(BuildContext context, Widget child) {
-    // 设置标准设计图尺寸
-    ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
-        designSize: const Size(390, 844),
-        orientation: Orientation.portrait);
     // 点击空白区域取消TextField焦点
-    // return child;
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {

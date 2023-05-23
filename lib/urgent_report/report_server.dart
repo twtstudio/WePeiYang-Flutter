@@ -1,5 +1,7 @@
+// @dart = 2.12
 import 'dart:collection';
 
+import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -40,9 +42,9 @@ final _reportDio = ReportDio();
 
 class ReportService with AsyncTimer {
   static Future<void> report(
-      {@required UnmodifiableMapView<ReportPart, dynamic> data,
-      @required Function onResult,
-      @required OnFailure onFailure}) async {
+      {required UnmodifiableMapView<ReportPart, dynamic> data,
+      required Function onResult,
+      required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked("report", () async {
       try {
         var token = CommonPreferences.token.value;
@@ -88,7 +90,7 @@ class ReportService with AsyncTimer {
         if (responseData.errorCode == 0 ? true : false) {
           onResult();
         } else {
-          onFailure(Exception(responseData.message));
+          onFailure(WpyDioError(error: responseData.message));
         }
       } on DioError catch (e) {
         onFailure(e);
@@ -112,7 +114,7 @@ class ReportService with AsyncTimer {
       var data = ReportList.fromJson(response.data);
       return data.result;
     } catch (e) {
-      return null;
+      return [];
     }
   }
 
@@ -148,42 +150,38 @@ class LocationData {
   String address;
   int time;
 
-  LocationData(
-      {this.longitude,
-      this.latitude,
-      this.nation,
-      this.province,
-      this.city,
-      this.cityCode,
-      this.district,
-      this.address,
-      this.time});
+  LocationData({
+    required this.longitude,
+    required this.latitude,
+    required this.nation,
+    required this.province,
+    required this.city,
+    required this.district,
+    required this.address,
+  })  : this.cityCode = '',
+        this.time = DateTime.now().millisecondsSinceEpoch;
 
-  LocationData.onlyAddress(String address) {
-    this.latitude = 0;
-    this.longitude = 0;
-    this.nation = "";
-    this.province = "";
-    this.city = "";
-    this.cityCode = "";
-    this.district = "";
-    this.address = address;
-    this.time = DateTime.now().millisecondsSinceEpoch;
-  }
+  LocationData.onlyAddress(String address)
+      : this.latitude = 0,
+        this.longitude = 0,
+        this.nation = '',
+        this.province = '',
+        this.city = '',
+        this.cityCode = '',
+        this.district = '',
+        this.address = address,
+        this.time = DateTime.now().millisecondsSinceEpoch;
 
-  factory LocationData.fromJson(Map<String, dynamic> json) {
-    return LocationData(
-      longitude: json['longitude'],
-      latitude: json['latitude'],
-      nation: json['nation'],
-      province: json['province'],
-      city: json['city'],
-      cityCode: json['cityCode'],
-      district: json['district'],
-      address: json['address'],
-      time: json['time'],
-    );
-  }
+  LocationData.fromJson(Map<String, dynamic> json)
+      : this.longitude = json['longitude'],
+        this.latitude = json['latitude'],
+        this.nation = json['nation'],
+        this.province = json['province'],
+        this.city = json['city'],
+        this.cityCode = json['cityCode'],
+        this.district = json['district'],
+        this.address = json['address'],
+        this.time = json['time'];
 }
 
 // TODO: 上传数据的接口返回类型和这个相似，只是result为null，先用这个代替
@@ -192,15 +190,10 @@ class ReportState {
   final String message;
   final int result;
 
-  ReportState({this.errorCode, this.message, this.result});
-
-  factory ReportState.fromJson(Map<String, dynamic> json) {
-    return ReportState(
-      errorCode: json['error_code'],
-      message: json['message'],
-      result: json['result'],
-    );
-  }
+  ReportState.fromJson(Map<String, dynamic> json)
+      : this.errorCode = json['error_code'],
+        this.message = json['message'],
+        this.result = json['result'];
 }
 
 class ReportList {
@@ -208,16 +201,11 @@ class ReportList {
   final String message;
   final List<ReportItem> result;
 
-  ReportList({this.errorCode, this.message, this.result});
-
-  factory ReportList.fromJson(Map<String, dynamic> json) {
-    return ReportList(
-      errorCode: json['error_code'],
-      message: json['message'],
-      result: []..addAll(
-          (json['result'] as List ?? []).map((e) => ReportItem.fromJson(e))),
-    );
-  }
+  ReportList.fromJson(Map<String, dynamic> json)
+      : this.errorCode = json['error_code'],
+        this.message = json['message'],
+        this.result = []..addAll(((json['result'] ?? <ReportItem>[]) as List)
+            .map((e) => ReportItem.fromJson(e)));
 }
 
 class ReportItem {
@@ -233,32 +221,16 @@ class ReportItem {
   final String travelCode;
   final int state;
 
-  ReportItem(
-      {this.longitude,
-      this.latitude,
-      this.province,
-      this.city,
-      this.district,
-      this.address,
-      this.time,
-      this.temperature,
-      this.healthCode,
-      this.travelCode,
-      this.state});
-
-  factory ReportItem.fromJson(Map<String, dynamic> json) {
-    return ReportItem(
-      longitude: json['longitude'],
-      latitude: json['latitude'],
-      province: json['provinceName'],
-      city: json['cityName'],
-      district: json['regionName'],
-      address: json['address'],
-      time: json['uploadAt'],
-      temperature: json['temperature'],
-      healthCode: json['healthCodeUrl'],
-      travelCode: json['travelCodeUrl'],
-      state: json['curStatus'],
-    );
-  }
+  ReportItem.fromJson(Map<String, dynamic> json)
+      : this.longitude = json['longitude'],
+        this.latitude = json['latitude'],
+        this.province = json['provinceName'],
+        this.city = json['cityName'],
+        this.district = json['regionName'],
+        this.address = json['address'],
+        this.time = json['uploadAt'],
+        this.temperature = json['temperature'],
+        this.healthCode = json['healthCodeUrl'],
+        this.travelCode = json['travelCodeUrl'],
+        this.state = json['curStatus'];
 }

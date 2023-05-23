@@ -72,7 +72,7 @@ class _TableCalenderState extends State<_TableCalender>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         _selectedDay = context.read<StudyroomProvider>().dateTime;
       });

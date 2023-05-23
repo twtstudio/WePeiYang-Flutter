@@ -1,19 +1,20 @@
+// @dart = 2.12
 import 'dart:core';
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-
-import '../../../feedback_router.dart';
 
 class ActivityCard extends StatefulWidget {
   @override
@@ -97,7 +98,7 @@ class _ActivityCardState extends State<ActivityCard> {
     return Container(
       height: 0.32 * WePeiYangApp.screenWidth,
       child: Consumer<FestivalProvider>(
-          builder: (BuildContext context, value, Widget child) {
+          builder: (BuildContext context, value, Widget? child) {
         return ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(8)),
             clipBehavior: Clip.hardEdge,

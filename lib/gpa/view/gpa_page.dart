@@ -37,7 +37,7 @@ class _GPAPageState extends State<GPAPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (CommonPreferences.firstClassesDialog.value) {
         CommonPreferences.firstClassesDialog.value = false;
         showDialog(

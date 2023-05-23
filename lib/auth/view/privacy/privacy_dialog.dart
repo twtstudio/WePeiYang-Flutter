@@ -1,10 +1,11 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class PrivacyDialog extends Dialog {
-  final ValueNotifier check;
+  final ValueNotifier? check;
   final String result;
 
   PrivacyDialog(this.result, {this.check});
@@ -63,7 +64,7 @@ class PrivacyDialog extends Dialog {
         children: [
           GestureDetector(
             onTap: () {
-              check.value = false;
+              check!.value = false;
               Navigator.pop(context);
             },
             child: Container(
@@ -74,7 +75,7 @@ class PrivacyDialog extends Dialog {
           ),
           GestureDetector(
             onTap: () {
-              check.value = true;
+              check!.value = true;
               Navigator.pop(context);
             },
             child: Container(

@@ -1,12 +1,12 @@
+// @dart = 2.12
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-
 
 class MessageCount {
   MessageCount({
-    this.like,
-    this.floor,
-    this.reply,
-    this.notice,
+    required this.like,
+    required this.floor,
+    required this.reply,
+    required this.notice,
   });
 
   int like;
@@ -32,58 +32,32 @@ class MessageCount {
 }
 
 class LikeMessage {
-  LikeMessage({
-    this.type,
-    this.post,
-    this.floor,
-  });
-
   int type;
   Post post;
   Floor floor;
 
-  factory LikeMessage.fromJson(Map<String, dynamic> json) => LikeMessage(
-    type: json["type"],
-    post: Post.fromJson(json["post"]),
-    floor: Floor.fromJson(json["floor"]),
-  );
+  LikeMessage.fromJson(Map<String, dynamic> json):
+    this.type = json["type"],
+    this.post = Post.fromJson(json["post"]),
+    this.floor = Floor.fromJson(json["floor"]);
 }
 
 class FloorMessage {
-  FloorMessage({
-    this.type,
-    this.isRead,
-    this.toFloor,
-    this.post,
-    this.floor,
-  });
-
   int type;
   bool isRead;
-  Floor toFloor;
+  Floor? toFloor;
   Post post;
   Floor floor;
 
-  factory FloorMessage.fromJson(Map<String, dynamic> json) => FloorMessage(
-    type: json["type"],
-    isRead: json["is_read"],
-    toFloor: json["to_floor"] == null ? null : Floor.fromJson(json["to_floor"]),
-    post: Post.fromJson(json["post"]),
-    floor: Floor.fromJson(json["floor"]),
-  );
+  FloorMessage.fromJson(Map<String, dynamic> json):
+    this.type = json["type"],
+    this.isRead = json["is_read"],
+    this.toFloor = json["to_floor"] == null ? null : Floor.fromJson(json["to_floor"]),
+    this.post = Post.fromJson(json["post"]),
+    this.floor = Floor.fromJson(json["floor"]);
 }
 
 class NoticeMessage {
-  NoticeMessage({
-    this.id,
-    this.createdAt,
-    this.sender,
-    this.title,
-    this.content,
-    this.url,
-    this.isRead,
-  });
-
   int id;
   DateTime createdAt;
   String sender;
@@ -92,15 +66,14 @@ class NoticeMessage {
   String url;
   bool isRead;
 
-  factory NoticeMessage.fromJson(Map<String, dynamic> json) => NoticeMessage(
-    id: json["id"],
-    createdAt: DateTime.parse(json["created_at"]),
-    sender: json["sender"],
-    title: json["title"],
-    content: json["content"],
-    url: json["url"],
-    isRead: json["is_read"],
-  );
+  NoticeMessage.fromJson(Map<String, dynamic> json):
+    this.id = json["id"],
+    this.createdAt = DateTime.parse(json["created_at"]),
+    this.sender = json["sender"],
+    this.title = json["title"],
+    this.content = json["content"],
+    this.url = json["url"],
+    this.isRead = json["is_read"];
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -114,21 +87,14 @@ class NoticeMessage {
 }
 
 class ReplyMessage {
-  ReplyMessage({
-    this.isRead,
-    this.post,
-    this.reply,
-  });
-
   bool isRead;
   Post post;
   Reply reply;
 
-  factory ReplyMessage.fromJson(Map<String, dynamic> json) => ReplyMessage(
-    isRead: json["is_read"],
-    post: Post.fromJson(json["post"]),
-    reply: Reply.fromJson(json["reply"]),
-  );
+  ReplyMessage.fromJson(Map<String, dynamic> json):
+    this.isRead = json["is_read"],
+    this.post = Post.fromJson(json["post"]),
+    this.reply = Reply.fromJson(json["reply"]);
 
   Map<String, dynamic> toJson() => {
     "is_read": isRead,
@@ -138,15 +104,6 @@ class ReplyMessage {
 }
 
 class Reply {
-  Reply({
-    this.id,
-    this.createdAt,
-    this.postId,
-    this.sender,
-    this.content,
-    this.imageUrls,
-  });
-
   int id;
   DateTime createdAt;
   int postId;
@@ -154,14 +111,13 @@ class Reply {
   String content;
   List<String> imageUrls;
 
-  factory Reply.fromJson(Map<String, dynamic> json) => Reply(
-    id: json["id"],
-    createdAt: DateTime.parse(json["created_at"]),
-    postId: json["post_id"],
-    sender: json["sender"],
-    content: json["content"],
-    imageUrls: List<String>.from(json["image_urls"].map((x) => x)),
-  );
+  Reply.fromJson(Map<String, dynamic> json):
+    this.id = json["id"],
+    this.createdAt = DateTime.parse(json["created_at"]),
+    this.postId = json["post_id"],
+    this.sender = json["sender"],
+    this.content = json["content"],
+    this.imageUrls = List<String>.from(json["image_urls"].map((x) => x));
 
   Map<String, dynamic> toJson() => {
     "id": id,

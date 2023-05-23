@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async';
 import 'dart:math';
 
@@ -26,7 +27,7 @@ import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 class NSubPage extends StatefulWidget {
   final int index;
 
-  const NSubPage({Key key, this.index}) : super(key: key);
+  const NSubPage({Key? key, required this.index}) : super(key: key);
 
   @override
   NSubPageState createState() => NSubPageState(this.index);
@@ -52,13 +53,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     if (context
             .read<LakeModel>()
             .lakeAreas[index]
-            .refreshController
+            !.refreshController
             .isRefresh &&
         scrollInfo.metrics.pixels >= 2)
       context
           .read<LakeModel>()
           .lakeAreas[index]
-          .refreshController
+          !.refreshController
           .refreshToIdle();
     if (scrollInfo.metrics.pixels <
         12.h + FeedbackHomePageState().searchBarHeight)
@@ -92,7 +93,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   onRefresh() async {
-    context.read<LakeModel>().lakeAreas[index].status = LakePageStatus.loading;
+    context.read<LakeModel>().lakeAreas[index]?.status = LakePageStatus.loading;
     FeedbackService.getToken(onResult: (_) {
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
@@ -100,7 +101,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         context
             .read<LakeModel>()
             .lakeAreas[index]
-            .refreshController
+            ?.refreshController
             .refreshCompleted();
       }, failure: (e) {
         if (e.type == DioErrorType.connectTimeout ||
@@ -109,12 +110,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           context
               .read<LakeModel>()
               .lakeAreas[index]
-              .refreshController
+              ?.refreshController
               .refreshToIdle();
         context
             .read<LakeModel>()
             .lakeAreas[index]
-            .refreshController
+            ?.refreshController
             .refreshFailed();
       });
       context.read<FestivalProvider>().initFestivalList();
@@ -124,7 +125,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       context
           .read<LakeModel>()
           .lakeAreas[index]
-          .refreshController
+          ?.refreshController
           .refreshFailed();
     });
   }
@@ -136,24 +137,24 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         context
             .read<LakeModel>()
             .lakeAreas[index]
-            .refreshController
+            ?.refreshController
             .loadComplete();
       },
       failure: (e) {
         context
             .read<LakeModel>()
             .lakeAreas[index]
-            .refreshController
+            ?.refreshController
             .loadFailed();
       },
     );
   }
 
   void listToTop() {
-    if (context.read<LakeModel>().lakeAreas[index].controller.offset > 1500) {
-      context.read<LakeModel>().lakeAreas[index].controller.jumpTo(1500);
+    if (context.read<LakeModel>().lakeAreas[index]!.controller.offset > 1500) {
+      context.read<LakeModel>().lakeAreas[index]!.controller.jumpTo(1500);
     }
-    context.read<LakeModel>().lakeAreas[index].controller.animateTo(-85,
+    context.read<LakeModel>().lakeAreas[index]!.controller.animateTo(-85,
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
@@ -165,7 +166,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     context.read<FestivalProvider>().initFestivalList();
     context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeAreaAndInitPostList(
-        index, RefreshController(initialRefresh: false), ScrollController());
+        index, RefreshController(), ScrollController());
     super.initState();
   }
 
@@ -177,14 +178,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
 
     var status =
-        context.select((LakeModel model) => model.lakeAreas[index].status);
+        context.select((LakeModel model) => model.lakeAreas[index]!.status);
 
     if (status == LakePageStatus.idle)
       return NotificationListener<ScrollNotification>(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller:
-              context.read<LakeModel>().lakeAreas[index].refreshController,
+              context.read<LakeModel>().lakeAreas[index]!.refreshController,
           header: ClassicHeader(
             height: 5.h,
             completeDuration: Duration(milliseconds: 300),
@@ -206,12 +207,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
           enablePullUp: true,
           onLoading: _onLoading,
           child: ListView.builder(
-            controller: context.read<LakeModel>().lakeAreas[index].controller,
+            controller: context.read<LakeModel>().lakeAreas[index]!.controller,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: context.select((LakeModel model) => index == 0
-                ? model.lakeAreas[index].dataList.values.toList().length + 3
-                : model.lakeAreas[index].dataList.values.toList().length + 2),
+                ? model.lakeAreas[index]!.dataList.values.toList().length + 3
+                : model.lakeAreas[index]!.dataList.values.toList().length + 2),
             itemBuilder: (context, ind) {
               return Builder(builder: (context) {
                 if (ind == 0)
@@ -347,7 +348,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 final post = context
                     .read<LakeModel>()
                     .lakeAreas[index]
-                    .dataList
+                    !.dataList
                     .values
                     .toList()[ind];
                 return PostCardNormal(post);
@@ -381,7 +382,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
     with SingleTickerProviderStateMixin {
   bool isOpa = false;
   bool showBtn = false;
-  Timer _timer;
+  late final Timer _timer;
   int count = 0;
 
   @override
@@ -502,11 +503,11 @@ class HomeErrorContainer extends StatefulWidget {
 
 class _HomeErrorContainerState extends State<HomeErrorContainer>
     with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation animation;
+  late final AnimationController controller;
+  late final Animation<double> animation;
 
-  LakeModel _listProvider;
-  FbDepartmentsProvider _tagsProvider;
+  late final LakeModel _listProvider;
+  late final FbDepartmentsProvider _tagsProvider;
 
   @override
   void initState() {
@@ -514,6 +515,8 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
     controller =
         AnimationController(duration: const Duration(seconds: 1), vsync: this);
     animation = CurveTween(curve: Curves.easeInOutCubic).animate(controller);
+    _listProvider = Provider.of<LakeModel>(context, listen: false);
+    _tagsProvider = Provider.of<FbDepartmentsProvider>(context, listen: false);
   }
 
   @override
@@ -559,7 +562,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
             });
         if (!controller.isAnimating) {
           controller.repeat();
-          widget.onPressed?.call();
+          widget.onPressed.call();
         }
       },
       mini: true,

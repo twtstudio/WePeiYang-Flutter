@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -18,7 +19,7 @@ class LogoutDialog extends Dialog {
     if (CommonPreferences.lakeToken.value != '')
       context.read<LakeModel>().clearAll();
     Navigator.pushNamedAndRemoveUntil(
-        WePeiYangApp.navigatorState.currentContext,
+        WePeiYangApp.navigatorState.currentContext!,
         AuthRouter.login,
         (route) => false);
   }

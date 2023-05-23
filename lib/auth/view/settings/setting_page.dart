@@ -1,9 +1,10 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 
+import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';

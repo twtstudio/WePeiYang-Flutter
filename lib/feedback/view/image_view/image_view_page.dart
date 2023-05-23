@@ -1,7 +1,8 @@
+// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_screenutil/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -11,28 +12,31 @@ import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
+class ImageViewPageArgs {
+  final List<String> urlList;
+  final int urlListLength;
+  final int indexNow;
+  final bool isLongPic;
+
+  ImageViewPageArgs(
+      this.urlList, this.urlListLength, this.indexNow, this.isLongPic);
+}
+
 class ImageViewPage extends StatefulWidget {
+  final ImageViewPageArgs args;
+
+  ImageViewPage(this.args);
+
   @override
   _ImageViewPageState createState() => _ImageViewPageState();
 }
 
 class _ImageViewPageState extends State<ImageViewPage> {
-  List<String> urlList;
-  int urlListLength = 0;
-  int indexNow = 0;
-  int tempSelect;
-  bool isLongPic;
-
   final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
 
   @override
   Widget build(BuildContext context) {
     timeDilation = 0.5;
-    dynamic obj = ModalRoute.of(context).settings.arguments;
-    urlList = obj['urlList'];
-    urlListLength = obj['urlListLength'];
-    indexNow = obj['indexNow'];
-    isLongPic = obj['isLongPic'] ?? false;
 
     return Stack(
       alignment: Alignment.center,
@@ -43,34 +47,33 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   width: 20.0,
                   height: 20.0,
                   child: CircularProgressIndicator(
-                    value: event == null
+                    value: (event == null || event.expectedTotalBytes == null)
                         ? 0
                         : event.cumulativeBytesLoaded /
-                            event.expectedTotalBytes,
+                            event.expectedTotalBytes!,
                   ))),
           scrollPhysics: const BouncingScrollPhysics(),
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
-              basePosition: isLongPic ? Alignment.topCenter : Alignment.center,
-              imageProvider: NetworkImage(baseUrl + urlList[index]),
-              maxScale: isLongPic
+              basePosition: widget.args.isLongPic
+                  ? Alignment.topCenter
+                  : Alignment.center,
+              imageProvider: NetworkImage(baseUrl + widget.args.urlList[index]),
+              maxScale: widget.args.isLongPic
                   ? PhotoViewComputedScale.contained * 20
                   : PhotoViewComputedScale.contained * 5.0,
               minScale: PhotoViewComputedScale.contained * 1.0,
-              initialScale: isLongPic
+              initialScale: widget.args.isLongPic
                   ? PhotoViewComputedScale.covered
                   : PhotoViewComputedScale.contained,
             );
           },
           scrollDirection: Axis.horizontal,
-          itemCount: urlListLength,
+          itemCount: widget.args.urlListLength,
           backgroundDecoration: BoxDecoration(color: Colors.black),
           pageController: PageController(
-            initialPage: indexNow,
+            initialPage: widget.args.indexNow,
           ),
-          onPageChanged: (index) => setState(() {
-            tempSelect = index;
-          }),
         ),
         SafeArea(
           child: Align(
@@ -136,15 +139,17 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   void saveImage() async {
     ToastProvider.running('保存中');
-    await GallerySaver.saveImage(baseUrl + urlList[indexNow], albumName: "微北洋");
+    await GallerySaver.saveImage(
+        baseUrl + widget.args.urlList[widget.args.indexNow],
+        albumName: "微北洋");
     ToastProvider.success('保存成功');
   }
 
   void showSaveImageBottomSheet() async {
     ToastProvider.running('请稍后');
     final path = await StorageUtil.saveTempFileFromNetwork(
-        baseUrl + urlList[indexNow],
-        filename: urlList[indexNow]);
+        baseUrl + widget.args.urlList[widget.args.indexNow],
+        filename: widget.args.urlList[widget.args.indexNow]);
     Share.shareFiles([path]);
   }
 }

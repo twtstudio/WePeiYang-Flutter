@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -50,7 +51,7 @@ class UserMailList extends StatefulWidget {
 }
 
 class _UserMailListState extends State<UserMailList> {
-  UserMessages _messages;
+  UserMessages? _messages;
 
   @override
   void initState() {
@@ -67,9 +68,9 @@ class _UserMailListState extends State<UserMailList> {
       return Center(child: Text("waiting"));
     }
     return ListView.builder(
-      itemCount: _messages.mails.length,
+      itemCount: _messages!.mails.length,
       itemBuilder: (_, i) {
-        return MailItem(data: _messages.mails[i]);
+        return MailItem(data: _messages!.mails[i]);
       },
     );
   }
@@ -78,7 +79,7 @@ class _UserMailListState extends State<UserMailList> {
 class MailItem extends StatefulWidget {
   final UserMail data;
 
-  const MailItem({Key key, this.data}) : super(key: key);
+  const MailItem({Key? key, required this.data}) : super(key: key);
 
   @override
   _MailItemState createState() => _MailItemState();
@@ -160,7 +161,7 @@ class _MailItemState extends State<MailItem> {
 class MailPage extends StatelessWidget {
   final UserMail data;
 
-  const MailPage({Key key, this.data}) : super(key: key);
+  const MailPage({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +254,7 @@ class MailPage extends StatelessWidget {
 class _TextMailContent extends StatelessWidget {
   final UserMail data;
 
-  const _TextMailContent({Key key, this.data}) : super(key: key);
+  const _TextMailContent({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,14 +14,12 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class SearchPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _SearchPageState();
-  }
+  State<StatefulWidget> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  ValueNotifier<List<String>> _searchHistoryList;
-  SharedPreferences _prefs;
+  late final ValueNotifier<List<String>> _searchHistoryList;
+  late final SharedPreferences _prefs;
 
   _addHistory() {
     _prefs.setStringList('feedback_search_history', _searchHistoryList.value);
@@ -39,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
         _addHistory();
       } else {
         _searchHistoryList.value =
-            _prefs.getStringList('feedback_search_history');
+            _prefs.getStringList('feedback_search_history')!;
       }
     });
     super.initState();

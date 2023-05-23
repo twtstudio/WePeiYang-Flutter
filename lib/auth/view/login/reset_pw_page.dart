@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -26,7 +27,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       ToastProvider.error("两次输入密码不一致");
       return;
     }
-    String phone = ModalRoute.of(context).settings.arguments;
+    String phone = ModalRoute.of(context)?.settings.arguments as String;
     AuthService.resetPwByPhone(phone, password1,
         onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
         onFailure: (e) => ToastProvider.error(e.error.toString()));

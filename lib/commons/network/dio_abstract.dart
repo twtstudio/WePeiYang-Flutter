@@ -61,7 +61,7 @@ extension DioRequests on DioAbstract {
   Future<Response<dynamic>> get(String path,
       {Map<String, dynamic>? queryParameters,
       Options? options,
-      bool debug = true}) {
+      bool debug = false}) {
     return retry(
       // Make a GET request
       () => (debug ? _dio_debug : _dio)
@@ -81,7 +81,7 @@ extension DioRequests on DioAbstract {
       FormData? formData,
       data,
       Options? options,
-      bool debug = true}) {
+      bool debug = false}) {
     return retry(
       () => (debug ? _dio_debug : _dio)
           .post(path,

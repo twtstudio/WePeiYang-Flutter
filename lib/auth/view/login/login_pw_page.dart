@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -119,7 +120,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                         children: [
                           ValueListenableBuilder(
                             valueListenable: checkNotifier,
-                            builder: (context, value, _) {
+                            builder: (context, bool value, _) {
                               return Checkbox(
                                 value: value,
                                 materialTapTargetSize:
@@ -238,7 +239,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           constraints: BoxConstraints(maxHeight: 55),
           child: ValueListenableBuilder(
             valueListenable: visNotifier,
-            builder: (context, value, _) {
+            builder: (context, bool value, _) {
               return Theme(
                 data: Theme.of(context)
                     .copyWith(primaryColor: Color.fromRGBO(53, 59, 84, 1)),

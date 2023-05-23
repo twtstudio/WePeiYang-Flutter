@@ -2,10 +2,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
 class MapCalenderPage extends StatefulWidget {
   MapCalenderPage();
@@ -39,7 +41,8 @@ class MapCalenderState extends State<MapCalenderPage> {
           elevation: 0,
         ),
         body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(), child: Padding(
+            physics: BouncingScrollPhysics(),
+            child: Padding(
               padding: EdgeInsets.only(top: 16.h),
               child: MapAndCalender(),
             )));
@@ -86,14 +89,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: {
-                      "assetList": [
-                        'assets/images/account/map_wei_jin.jpg',
-                        'assets/images/account/map_pei_yang.jpg'
-                      ],
-                      "uriListLength": 2,
-                      "indexNow": 0,
-                    });
+                    arguments: LocalImageViewPageArgs([], [
+                      'assets/images/account/map_wei_jin.jpg',
+                      'assets/images/account/map_pei_yang.jpg'
+                    ], 2, 0));
               },
               child: Stack(
                 children: [
@@ -126,14 +125,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
             GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: {
-                      "assetList": [
-                        'assets/images/account/map_wei_jin.jpg',
-                        'assets/images/account/map_pei_yang.jpg'
-                      ],
-                      "uriListLength": 2,
-                      "indexNow": 1,
-                    });
+                    arguments: LocalImageViewPageArgs([], [
+                      'assets/images/account/map_wei_jin.jpg',
+                      'assets/images/account/map_pei_yang.jpg'
+                    ], 2, 1));
               },
               child: Stack(
                 children: [
@@ -182,15 +177,14 @@ class MapAndCalenderState extends State<MapAndCalender> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, FeedbackRouter.imageView,
-                    arguments: {
-                      "urlList": [
-                        'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
-                        '211c5620dfd2299398428879336e8044.jpg'
-                      ],
-                      "urlListLength": 2,
-                      "indexNow": 0,
-                    });
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.imageView,
+                  arguments: ImageViewPageArgs([
+                    'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
+                    '211c5620dfd2299398428879336e8044.jpg'
+                  ], 2, 0, false),
+                );
               },
               child: Stack(
                 children: [
@@ -222,15 +216,14 @@ class MapAndCalenderState extends State<MapAndCalender> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, FeedbackRouter.imageView,
-                    arguments: {
-                      "urlList": [
-                        'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
-                        '211c5620dfd2299398428879336e8044.jpg'
-                      ],
-                      "urlListLength": 2,
-                      "indexNow": 1,
-                    });
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.imageView,
+                  arguments: ImageViewPageArgs([
+                    'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
+                    '211c5620dfd2299398428879336e8044.jpg'
+                  ], 2, 1, false),
+                );
               },
               child: Stack(
                 children: [

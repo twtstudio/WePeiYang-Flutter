@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import '../../search_result_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -20,11 +21,8 @@ typedef ChangeCallback = void Function(String);
 
 class SearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
-  final VoidCallback tapField;
-  final ChangeCallback onChanged;
 
-  const SearchBar({Key key, this.onSubmitted, this.tapField, this.onChanged})
-      : super(key: key);
+  const SearchBar({Key? key, required this.onSubmitted}) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -34,7 +32,7 @@ class _SearchBarState extends State<SearchBar>
     with SingleTickerProviderStateMixin {
   TextEditingController _controller = TextEditingController();
   FocusNode _fNode = FocusNode();
-  bool _showSearch;
+  bool _showSearch = false;
   List<Widget> tagList = [SizedBox(height: 4)];
 
   @override
@@ -45,7 +43,6 @@ class _SearchBarState extends State<SearchBar>
 
   @override
   void initState() {
-    _showSearch = false;
     super.initState();
     initSearchTag();
     _controller.addListener(() {
@@ -111,8 +108,9 @@ class _SearchBarState extends State<SearchBar>
   }
 
   refreshSearchTag(String text) {
-    if (_controller.text != '#MP' && (!_controller.text.startsWith('#MP') ||
-        !RegExp(r'^-?[0-9]+').hasMatch(_controller.text.substring(3))))
+    if (_controller.text != '#MP' &&
+        (!_controller.text.startsWith('#MP') ||
+            !RegExp(r'^-?[0-9]+').hasMatch(_controller.text.substring(3))))
       FeedbackService.searchTags(
           name: text,
           onResult: (list) {
@@ -145,7 +143,7 @@ class _SearchBarState extends State<SearchBar>
                       hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
                           ? '搜索发现'
-                          : '#${data.recTag.name}#，输入“#”号搜索更多Tag',
+                          : '#${data.recTag?.name}#，输入“#”号搜索更多Tag',
                       contentPadding: const EdgeInsets.only(right: 6),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
@@ -162,24 +160,19 @@ class _SearchBarState extends State<SearchBar>
                     enabled: true,
                     onSubmitted: (content) {
                       if (content.isNotEmpty) {
-                        widget.onSubmitted?.call(content);
+                        widget.onSubmitted.call(content);
                       } else {
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.searchResult,
                           arguments: SearchResultPageArgs(
                               '',
-                              '${data.recTag.tagId}',
+                              '${data.recTag?.tagId}',
                               '',
-                              '推荐：#${data.recTag.name}',
+                              '推荐：#${data.recTag?.name}',
                               0,
                               0),
                         );
-                      }
-                    },
-                    onChanged: (content) {
-                      if (content.isNotEmpty) {
-                        widget.onChanged?.call(content);
                       }
                     },
                     textInputAction: TextInputAction.search,
@@ -219,14 +212,6 @@ class _SearchBarState extends State<SearchBar>
             ],
           )),
     );
-    if (widget.tapField != null) {
-      searchInputField = InkWell(
-        child: AbsorbPointer(
-          child: searchInputField,
-        ),
-        onTap: widget.tapField,
-      );
-    }
 
     return Column(
       children: [
@@ -259,61 +244,61 @@ class _SearchBarState extends State<SearchBar>
                         ]),
                     child: Column(
                       children: [
-                        if (_controller.text.startsWith('#MP') || _controller.text.startsWith('#'))
-                        GestureDetector(
-                          onTap: () {
-                            if (_controller.text.startsWith('#MP') &&
-                                RegExp(r'^-?[0-9]+')
-                                    .hasMatch(_controller.text.substring(3))) {
-                              FeedbackService.getPostById(
-                                id: int.parse(_controller.text.substring(3)),
-                                onResult: (post) {
-                                  Navigator.popAndPushNamed(
-                                    context,
-                                    FeedbackRouter.detail,
-                                    arguments: post,
-                                  );
-                                },
-                                onFailure: (e) {
-                                  ToastProvider.error(
-                                      '无法找到对应帖子，报错信息：${e.error}');
-                                  return;
-                                },
-                              );
-                            } else {
-                              _controller.text = '#MP';
-                            }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/svg_pics/lake_butt_icons/send.svg",
-                                  width: 14,
-                                ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                    child: Text(
-                                  _controller.text.length < 3
-                                      ? '按照MP号跳转'
-                                      : '跳转至：${_controller.text}',
-                                  style: TextUtil.base.w500.NotoSansSC
-                                      .sp(16)
-                                      .grey6C,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                                SizedBox(width: 4),
-                              ],
+                        if (_controller.text.startsWith('#MP') ||
+                            _controller.text.startsWith('#'))
+                          GestureDetector(
+                            onTap: () {
+                              if (_controller.text.startsWith('#MP') &&
+                                  RegExp(r'^-?[0-9]+').hasMatch(
+                                      _controller.text.substring(3))) {
+                                FeedbackService.getPostById(
+                                  id: int.parse(_controller.text.substring(3)),
+                                  onResult: (post) {
+                                    Navigator.popAndPushNamed(
+                                      context,
+                                      FeedbackRouter.detail,
+                                      arguments: post,
+                                    );
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(
+                                        '无法找到对应帖子，报错信息：${e.error}');
+                                    return;
+                                  },
+                                );
+                              } else {
+                                _controller.text = '#MP';
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    "assets/svg_pics/lake_butt_icons/send.svg",
+                                    width: 14,
+                                  ),
+                                  SizedBox(width: 16),
+                                  Expanded(
+                                      child: Text(
+                                    _controller.text.length < 3
+                                        ? '按照MP号跳转'
+                                        : '跳转至：${_controller.text}',
+                                    style: TextUtil.base.w500.NotoSansSC
+                                        .sp(16)
+                                        .grey6C,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                                  SizedBox(width: 4),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        if (_controller.text != '#MP' && (!_controller.text.startsWith('#MP') ||
+                        if (_controller.text != '#MP' &&
+                            (!_controller.text.startsWith('#MP') ||
                                 !RegExp(r'^-?[0-9]+')
                                     .hasMatch(_controller.text.substring(3))))
-                          Column(
-                              children: tagList ??
-                                  [SizedBox(width: double.infinity)]),
+                          Column(children: tagList),
                       ],
                     ))
                 : SizedBox(),

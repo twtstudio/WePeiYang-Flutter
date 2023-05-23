@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -30,18 +31,15 @@ class OfficialReplyDetailPage extends StatefulWidget {
 
 class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     with SingleTickerProviderStateMixin {
-  int index;
   int currentPage = 1;
-  List<Floor> floors;
-  Post post;
-  int rating;
+  List<Floor>? floors;
+  Post? post;
+  int? rating;
   double _previousOffset = 0;
   final launchKey = GlobalKey<CommentInputFieldState>();
   final imageSelectionKey = GlobalKey<ImageSelectAndViewState>();
 
   var _refreshController = RefreshController(initialRefresh: false);
-
-  _OfficialReplyDetailPageState();
 
   Future<bool> _initPost(int id) async {
     bool success = false;
@@ -50,7 +48,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       onResult: (Post result) {
         success = true;
         post = result;
-        rating = post.rating;
+        rating = post?.rating;
         setState(() {});
       },
       onFailure: (e) {
@@ -85,7 +83,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
             _refreshController.loadNoData();
             currentPage--;
           } else {
-            floors.addAll(comments);
+            floors?.addAll(comments);
             _refreshController.loadComplete();
           }
         },
@@ -123,10 +121,12 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
   }
 
   Future<bool> _getComment(
-      {Function(List<Floor>) onSuccess, Function onFail, int page}) async {
+      {required Function(List<Floor>) onSuccess,
+      required Function onFail,
+      required int page}) async {
     bool success = false;
     await FeedbackService.getOfficialComment(
-      id: floors[0].postId,
+      id: floors?[0].postId,
       onSuccess: (floor) {
         floors = floor;
         _refreshController.refreshCompleted();
@@ -135,7 +135,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
         _refreshController.refreshFailed();
-        onFail?.call();
+        onFail.call();
       },
     );
     return success;
@@ -152,10 +152,10 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     Widget body;
     Widget checkButton = InkWell(
       onTap: () {
-        if (CommonPreferences.lakeUid.value.toString() != post.uid.toString())
+        if (CommonPreferences.lakeUid.value.toString() != post?.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
-          launchKey.currentState.send(true);
+          launchKey.currentState?.send(true);
         setState(() {
           _refreshController.requestRefresh();
         });
@@ -171,25 +171,23 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       mainList1 = Loading();
     } else {
       mainList1 = ListView.builder(
-        itemCount: floors.length,
+        itemCount: floors?.length,
         itemBuilder: (context, index) {
-          var data = floors[index];
+          var data = floors![index];
           return Column(
             children: [
               if (data.sender == 1)
                 OfficialReplyCard.reply(
+                  tag: post!.department!.name,
                   comment: data,
                   placeAppeared: index,
-                  detail: false,
-                  tag: post.department.name ?? '',
-                  ratings: rating,
+                  ratings: rating!,
                   ancestorId: widget.floor[0].uid,
                 ),
               if (data.sender == 0)
                 OfficialReplyCard.reply(
                   comment: data,
-                  ratings: rating,
-                  detail: false,
+                  ratings: rating!,
                   placeAppeared: index,
                   ancestorId: widget.floor[0].postId,
                 ),
@@ -222,13 +220,12 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     );
 
     var inputField =
-        CommentInputField(postId: floors[0].postId, key: launchKey);
+        CommentInputField(postId: floors![0].postId, key: launchKey);
 
     body = Column(
       children: [
         mainList,
-        Consumer<NewFloorProvider>(
-            builder: (BuildContext context, value, Widget child) {
+        Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
           return AnimatedSize(
             clipBehavior: Clip.antiAlias,
             duration: Duration(milliseconds: 300),

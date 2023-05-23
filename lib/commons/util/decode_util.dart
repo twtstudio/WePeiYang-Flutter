@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:convert';
 
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';

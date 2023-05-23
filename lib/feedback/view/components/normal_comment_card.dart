@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:io';
 import 'dart:math';
 
@@ -24,6 +25,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.da
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -38,9 +40,9 @@ class NCommentCard extends StatefulWidget {
   final Floor comment;
   final int uid;
   final int commentFloor;
-  final int type;
-  final LikeCallback likeSuccessCallback;
-  final DislikeCallback dislikeSuccessCallback;
+  final int? type;
+  final LikeCallback? likeSuccessCallback;
+  final DislikeCallback? dislikeSuccessCallback;
   final bool isSubFloor;
   final bool isFullView;
   final bool showBlockButton;
@@ -49,15 +51,15 @@ class NCommentCard extends StatefulWidget {
   _NCommentCardState createState() => _NCommentCardState();
 
   NCommentCard({
-    this.ancestorName,
-    this.ancestorUId,
-    this.comment,
-    this.uid,
-    this.commentFloor,
+    required this.ancestorName,
+    required this.ancestorUId,
+    required this.comment,
+    required this.uid,
+    required this.commentFloor,
     this.likeSuccessCallback,
     this.dislikeSuccessCallback,
-    this.isSubFloor,
-    this.isFullView,
+    required this.isSubFloor,
+    required this.isFullView,
     this.type,
     this.showBlockButton = false,
   });
@@ -65,47 +67,44 @@ class NCommentCard extends StatefulWidget {
 
 class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
-  ScrollController _sc;
-
   //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
 
-  Future<bool> _showDeleteConfirmDialog(String quote) {
+  Future<bool?> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return LakeDialogWidget(
-              title: '$quote评论',
-              content: Text('您确定要$quote这条评论吗？'),
-              cancelText: "取消",
-              confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-              cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
-              confirmText: quote == '摧毁' ? 'BOOM' : "确认",
-              cancelFun: () {
-                Navigator.of(context).pop();
-              },
-              confirmFun: () {
-                Navigator.of(context).pop(true);
-              });
-        });
+      context: context,
+      builder: (context) {
+        return LakeDialogWidget(
+          title: '$quote评论',
+          content: Text('您确定要$quote这条评论吗？'),
+          cancelText: "取消",
+          confirmTextStyle: TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+          cancelTextStyle: TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+          confirmText: quote == '摧毁' ? 'BOOM' : "确认",
+          cancelFun: () {
+            Navigator.of(context).pop();
+          },
+          confirmFun: () {
+            Navigator.of(context).pop(true);
+          },
+        );
+      },
+    );
   }
 
   ///弹出评论置顶窗口
-  Future<bool> _showFloorUpDialog(String id) async {
+  Future<bool?> _showFloorUpDialog(String id) async {
     return showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return Stack(
-            children: [
-              AdminPopUp(
-                floorId: id,
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return Stack(
+          children: [
+            AdminPopUp(floorId: id),
+          ],
+        );
+      },
+    );
   }
 
   ///评论置顶重置
@@ -123,11 +122,10 @@ class _NCommentCardState extends State<NCommentCard>
   }
 
   ///判断管理员权限
-  judgeAdmin() {
-    return CommonPreferences.isSchAdmin.value ||
-        CommonPreferences.isStuAdmin.value ||
-        CommonPreferences.isSuper.value;
-  }
+  bool get hasAdmin =>
+      CommonPreferences.isSchAdmin.value ||
+      CommonPreferences.isStuAdmin.value ||
+      CommonPreferences.isSuper.value;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +144,7 @@ class _NCommentCardState extends State<NCommentCard>
             builder: (context) {
               return CupertinoActionSheet(
                 actions: <Widget>[
-                  if (judgeAdmin())
+                  if (hasAdmin)
                     CupertinoActionSheetAction(
                       onPressed: () {
                         cleanTopFloor(widget.comment.id.toString())
@@ -159,7 +157,7 @@ class _NCommentCardState extends State<NCommentCard>
                       ),
                     ),
 
-                  if (judgeAdmin())
+                  if (hasAdmin)
                     CupertinoActionSheetAction(
                       onPressed: () {
                         _showFloorUpDialog(widget.comment.id.toString())
@@ -226,8 +224,9 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.comment.isOwner
                       ? CupertinoActionSheetAction(
                           onPressed: () async {
-                            bool confirm = await _showDeleteConfirmDialog('删除');
-                            if (confirm) {
+                            bool? confirm =
+                                await _showDeleteConfirmDialog('删除');
+                            if (confirm ?? false) {
                               FeedbackService.deleteFloor(
                                 id: widget.comment.id,
                                 onSuccess: () {
@@ -263,13 +262,12 @@ class _NCommentCardState extends State<NCommentCard>
                                 .sp(16),
                           ),
                         ),
-                  if ((CommonPreferences.isSuper.value ||
-                          CommonPreferences.isStuAdmin.value) ??
-                      false)
+                  if (CommonPreferences.isSuper.value ||
+                      CommonPreferences.isStuAdmin.value)
                     CupertinoActionSheetAction(
                       onPressed: () async {
-                        bool confirm = await _showDeleteConfirmDialog('摧毁');
-                        if (confirm) {
+                        bool? confirm = await _showDeleteConfirmDialog('摧毁');
+                        if (confirm ?? false) {
                           FeedbackService.adminDeleteReply(
                             floorId: widget.comment.id,
                             onSuccess: () {
@@ -315,7 +313,7 @@ class _NCommentCardState extends State<NCommentCard>
               ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: 0.37.sw),
                 child: Text(
-                  widget.comment.nickname ?? "匿名用户",
+                  widget.comment.nickname,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextUtil.base.w400.bold.NotoSansSC.sp(16).black2A,
@@ -330,30 +328,27 @@ class _NCommentCardState extends State<NCommentCard>
                   level: widget.comment.level.toString(),
                 ),
               ),
-              if (widget.comment.isOwner != null)
-                CommentIdentificationContainer(
-                    widget.comment.isOwner
-                        ? '我的评论'
-                        : widget.comment.uid == widget.uid
-                            ? widget.isSubFloor &&
-                                    widget.comment.nickname ==
-                                        widget.ancestorName
-                                ? '楼主 层主'
-                                : '楼主'
-                            : widget.isSubFloor &&
-                                    widget.comment.nickname ==
-                                        widget.ancestorName
-                                ? '层主'
-                                : '',
-                    true),
-              //回复自己那条时出现
+              CommentIdentificationContainer(
+                  widget.comment.isOwner
+                      ? '我的评论'
+                      : widget.comment.uid == widget.uid
+                          ? widget.isSubFloor &&
+                                  widget.comment.nickname == widget.ancestorName
+                              ? '楼主 层主'
+                              : '楼主'
+                          : widget.isSubFloor &&
+                                  widget.comment.nickname == widget.ancestorName
+                              ? '层主'
+                              : '',
+                  true),
+              // 回复自己那条时出现
               if (widget.comment.replyToName != '' &&
                   widget.comment.replyTo != widget.ancestorUId)
                 widget.comment.isOwner &&
                         widget.comment.replyToName == widget.comment.nickname
                     ? CommentIdentificationContainer('回复我', true)
                     : SizedBox(),
-              //后面有东西时出现
+              // 后面有东西时出现
               if (widget.comment.replyToName != '' &&
                   widget.comment.replyTo != widget.ancestorUId)
                 Row(
@@ -376,10 +371,9 @@ class _NCommentCardState extends State<NCommentCard>
                     SizedBox(width: 2)
                   ],
                 ),
-              //回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
-              //回的是层主但回复的不是这条评论
-              if (widget.comment.isOwner != null &&
-                  !widget.comment.isOwner &&
+              // 回的是楼主并且楼主不是层主或者楼主是层主的时候回复的不是这条评论
+              // 回的是层主但回复的不是这条评论
+              if (!widget.comment.isOwner &&
                   widget.comment.replyToName != widget.comment.nickname)
                 CommentIdentificationContainer(
                     widget.isSubFloor
@@ -449,12 +443,11 @@ class _NCommentCardState extends State<NCommentCard>
                       ? InkWell(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, FeedbackRouter.imageView,
-                                arguments: {
-                                  "urlList": [widget.comment.imageUrl],
-                                  "urlListLength": 1,
-                                  "indexNow": 0
-                                });
+                              context,
+                              FeedbackRouter.imageView,
+                              arguments: ImageViewPageArgs(
+                                  [widget.comment.imageUrl], 1, 0, false),
+                            );
                           },
                           child: ConstrainedBox(
                             constraints: BoxConstraints(
@@ -472,9 +465,7 @@ class _NCommentCardState extends State<NCommentCard>
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(4)),
                                 child: WpyPic(
-                                  picBaseUrl +
-                                      'thumb/' +
-                                      widget.comment.imageUrl,
+                                  '${picBaseUrl}thumb/${widget.comment.imageUrl}',
                                   width: 70.w,
                                   height: 68.h,
                                   fit: BoxFit.cover,
@@ -486,18 +477,18 @@ class _NCommentCardState extends State<NCommentCard>
               : _picFullView
                   ? InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, FeedbackRouter.imageView,
-                            arguments: {
-                              "urlList": [widget.comment.imageUrl],
-                              "urlListLength": 1,
-                              "indexNow": 0
-                            });
+                        Navigator.pushNamed(
+                          context,
+                          FeedbackRouter.imageView,
+                          arguments: ImageViewPageArgs(
+                              [widget.comment.imageUrl], 1, 0, false),
+                        );
                       },
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                             maxHeight: WePeiYangApp.screenWidth * 2),
                         child: WpyPic(
-                          picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                          '${picBaseUrl}origin/${widget.comment.imageUrl}',
                           withHolder: true,
                           holderHeight: 64.h,
                         ),
@@ -515,7 +506,7 @@ class _NCommentCardState extends State<NCommentCard>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(4)),
                               child: WpyPic(
-                                picBaseUrl + 'thumb/' + widget.comment.imageUrl,
+                                '${picBaseUrl}thumb/${widget.comment.imageUrl}',
                                 width: 70.w,
                                 height: 68.h,
                                 fit: BoxFit.cover,
@@ -549,12 +540,11 @@ class _NCommentCardState extends State<NCommentCard>
         ));
 
     var subFloor;
-    if (widget.comment.subFloors != null && !widget.isSubFloor) {
+    if (!widget.isSubFloor) {
       subFloor = ListView.custom(
         key: Key('nCommentCardView'),
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        controller: _sc,
         childrenDelegate: SliverChildBuilderDelegate(
           (context, index) {
             return NCommentCard(
@@ -574,9 +564,8 @@ class _NCommentCardState extends State<NCommentCard>
                   : min(widget.comment.subFloorCnt,
                       widget.comment.subFloors.length),
           findChildIndexCallback: (key) {
-            final ValueKey<String> valueKey = key;
-            return widget.comment.subFloors
-                .indexWhere((m) => 'ncm-${m.id}' == valueKey.value);
+            return widget.comment.subFloors.indexWhere(
+                (m) => 'ncm-${m.id}' == (key as ValueKey<String>).value);
           },
         ),
       );
@@ -601,11 +590,11 @@ class _NCommentCardState extends State<NCommentCard>
           failure.call();
         },
       );
-    }, isLike: widget.comment.isLike ?? false);
+    }, isLike: widget.comment.isLike);
 
     var dislikeWidget = DislikeWidget(
       size: 15.w,
-      isDislike: widget.comment.isDis ?? false,
+      isDislike: widget.comment.isDis,
       onDislikePressed: (dislikeNotifier) async {
         await FeedbackService.commentHitDislike(
           id: widget.comment.id,
@@ -635,15 +624,15 @@ class _NCommentCardState extends State<NCommentCard>
         Padding(
           padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
           child: Text(
-            DateTime.now().difference(widget.comment.createAt).inHours >= 11
-                ? widget.comment.createAt
+            DateTime.now().difference(widget.comment.createAt!).inHours >= 11
+                ? widget.comment.createAt!
                     .toLocal()
                     .toIso8601String()
                     .replaceRange(10, 11, ' ')
                     .replaceAllMapped('-', (_) => '/')
                     .substring(2, 19)
                 : DateTime.now()
-                    .difference(widget.comment.createAt)
+                    .difference(widget.comment.createAt!)
                     .dayHourMinuteSecondFormatted(),
             style: TextUtil.base.ProductSans.grey97.regular
                 .sp(12)
@@ -657,7 +646,7 @@ class _NCommentCardState extends State<NCommentCard>
       ProfileImageWithDetailedPopup(
           widget.comment.id,
           false,
-          widget.type,
+          widget.type ?? 0,
           widget.comment.avatar ?? widget.comment.nickname,
           widget.comment.uid,
           widget.comment.nickname,
@@ -759,13 +748,10 @@ class _NCommentCardState extends State<NCommentCard>
 }
 
 class AdminPopUp extends StatefulWidget {
-  @required
   final String floorId;
 
-  @required
-  const AdminPopUp({Key key, this.floorId}) : super(key: key);
+  const AdminPopUp({Key? key, required this.floorId}) : super(key: key);
 
-  @override
   State<StatefulWidget> createState() => AdminPopUpState();
 }
 

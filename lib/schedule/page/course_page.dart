@@ -44,7 +44,7 @@ class _CoursePageState extends State<CoursePage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       /// 初次使用课表时展示办公网dialog
       if (CommonPreferences.firstClassesDialog.value) {
         CommonPreferences.firstClassesDialog.value = false;

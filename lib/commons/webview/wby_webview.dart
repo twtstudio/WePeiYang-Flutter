@@ -123,7 +123,7 @@ class WbyWebViewState extends State<WbyWebView> {
           child: WebView(
             onWebViewCreated: (controller) {
               _controller = controller;
-              WidgetsBinding.instance?.addPostFrameCallback((_) => initUrl());
+              WidgetsBinding.instance.addPostFrameCallback((_) => initUrl());
             },
             javascriptMode: JavascriptMode.unrestricted,
             gestureNavigationEnabled: true,

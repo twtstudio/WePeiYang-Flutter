@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,9 +14,8 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 List<SearchTag> tagUtil = [];
 
 class SearchTagCard extends StatefulWidget {
-  final String name;
+  const SearchTagCard({Key? key}) : super(key: key);
 
-  const SearchTagCard({Key key, this.name}) : super(key: key);
   @override
   _SearchTagCardState createState() => _SearchTagCardState();
 }
@@ -23,12 +23,8 @@ class SearchTagCard extends StatefulWidget {
 class _SearchTagCardState extends State<SearchTagCard>
     with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
-  Tag tag = Tag();
-  bool _showAdd;
-  bool _useThisTag;
+  bool _useThisTag = false;
   List<Widget> tagList = [SizedBox(height: 4)];
-
-  _SearchTagCardState();
 
   @override
   void initState() {
@@ -44,7 +40,7 @@ class _SearchTagCardState extends State<SearchTagCard>
     tagList.clear();
     tagList.add(SizedBox(height: 4));
     tagUtil = list;
-    _showAdd = true;
+    var _showAdd = true;
     if (!_useThisTag) {
       for (int total = 0; total < tagUtil.length; total++) {
         if (tagUtil[total].name == _controller.text.toString()) _showAdd = false;
@@ -199,7 +195,7 @@ class _SearchTagCardState extends State<SearchTagCard>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 6),
-          if (_useThisTag ?? false)
+          if (_useThisTag)
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
@@ -213,7 +209,7 @@ class _SearchTagCardState extends State<SearchTagCard>
             child: AnimatedSize(
                 duration: Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                child: Column(children: tagList ?? [SizedBox()])),
+                child: Column(children: tagList)),
           ),
         ],
       ),

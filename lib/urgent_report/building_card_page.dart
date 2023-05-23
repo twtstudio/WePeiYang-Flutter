@@ -1,3 +1,4 @@
+// @dart = 2.12
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class NucPassportPage extends StatefulWidget {
 }
 
 class _NucPassportPageState extends State<NucPassportPage> {
-  Timer _timer;
+  late Timer _timer;
   Map<String, Color> mainColor = {
     '格园': Color(0xFFFF3D3F),
     '知园': Color(0xFFFF9449),
@@ -187,7 +188,8 @@ class _NucPassportPageState extends State<NucPassportPage> {
                         '${CommonPreferences.department.value}  ${CommonPreferences.realName.value}',
                         style: TextUtil.base.white.sp(17).w700),
                     SizedBox(height: 4.w),
-                    Text('${CommonPreferences.userNumber.value ?? '请绑定办公网'}',
+                    Text(
+                        '${CommonPreferences.userNumber.value == '' ? '请绑定办公网' : CommonPreferences.userNumber.value}',
                         style: TextUtil.base.white.sp(17).w700),
                     Spacer(),
                     Text(
