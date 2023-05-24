@@ -470,9 +470,6 @@ class CaptchaWidget extends StatefulWidget {
 class CaptchaWidgetState extends State<CaptchaWidget> {
   void refresh() async {
     id += 0.001;
-    try {
-      await ClassesService.cookieJar.deleteAll();
-    } catch (_) {}
     var res = await ClassesService.fetch(
         "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
         options: Options(responseType: ResponseType.bytes));

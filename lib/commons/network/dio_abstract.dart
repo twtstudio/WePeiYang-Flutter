@@ -24,16 +24,17 @@ abstract class DioAbstract {
         connectTimeout: Duration(seconds: 5),
         receiveTimeout: Duration(seconds: 5),
         responseType: responseType,
-        headers: headers);
+        headers: headers,
+        validateStatus: (status) => status! < 400);
 
-    _dio = Dio()..options = options;
+    _dio = Dio(options);
     _dio.interceptors.addAll([
       NetCheckInterceptor(),
       ...interceptors,
       errorInterceptor ?? ErrorInterceptor()
     ]);
 
-    _dio_debug = Dio()..options = options;
+    _dio_debug = Dio(options);
     _dio_debug.interceptors.addAll([
       NetCheckInterceptor(),
       LogInterceptor(requestBody: true, responseBody: true),

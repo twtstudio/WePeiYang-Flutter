@@ -12,8 +12,12 @@ class GPAService {
       required OnFailure onFailure}) async {
     try {
       var info = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/stdDetail.action",
-      );
+          "http://classes.tju.edu.cn/eams/stdDetail.action",
+          options: Options(headers: {'Connection': 'close'}));
+      while (info.isRedirect) {
+        info = await ClassesService.fetch(info.headers.value('location')!,
+            options: Options(headers: {'Connection': 'close'}));
+      }
 
       var html = info.data.toString();
       var s = html.find(r"项目：</td>(.+?)</td>");

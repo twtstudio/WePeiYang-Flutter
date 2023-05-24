@@ -22,13 +22,12 @@ dependencies:
   async: ^2.8.2
   amap_location_fluttify: ^0.22.0
 
-  cookie_jar: ^4.0.0
   connectivity_plus: ^2.3.7
   card_swiper: ^2.0.1
 
   dio: ^5.1.2
   dio_smart_retry: ^5.0.0
-  dio_cookie_manager: ^3.0.0
+  dio_cookie_caching_handler: ^0.0.7
 
   extended_tabs: ^2.3.0
   extended_image: ^4.0.0
@@ -79,9 +78,6 @@ dependencies:
 
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^6.2.0
-
-  cookie_manager_kit: ^3.0.0
-  dio_cookie_caching_handler: ^0.0.7
 
 dev_dependencies:
   flutter_test:

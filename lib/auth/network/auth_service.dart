@@ -2,12 +2,11 @@
 import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_caching_handler/dio_cookie_interceptor.dart';
 import 'package:flutter/material.dart' show Navigator, debugPrint;
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
-import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -26,9 +25,7 @@ class AuthDio extends DioAbstract {
   Map<String, String>? headers = {"DOMAIN": DOMAIN, "ticket": ticket};
 
   @override
-  List<Interceptor> interceptors = [
-    CookieManager(CookieJar()),
-  ];
+  List<Interceptor> interceptors = [cookieCachedHandler()];
 
   @override
   InterceptorsWrapper? get errorInterceptor =>

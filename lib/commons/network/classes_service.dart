@@ -1,7 +1,5 @@
 // @dart = 2.12
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio_cookie_caching_handler/dio_cookie_interceptor.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/material.dart' show BuildContext;
 import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -11,11 +9,9 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 
 class _SpiderDio extends DioAbstract {
-  static final cookieJar = PersistCookieJar(
-      storage: FileStorage(p.join(StorageUtil.tempDir.path, 'cookie')));
   @override
   List<Interceptor> interceptors = [
-    // CookieManager(cookieJar),
+    // CookieManager(CookieJa r()),
     cookieCachedHandler(),
     ClassesErrorInterceptor()
   ];
@@ -60,7 +56,6 @@ class ClassesService {
   /// 退出登录
   static void logout() async {
     await fetch("http://classes.tju.edu.cn/eams/logoutExt.action");
-    await _SpiderDio.cookieJar.deleteAll();
   }
 
   /// 获取包含 session、execution 的 map
@@ -84,8 +79,6 @@ class ClassesService {
 
   static final _spiderDio = _SpiderDio();
 
-  static CookieJar get cookieJar => _SpiderDio.cookieJar;
-
   /// 负责爬虫请求的方法
   static Future<Response<dynamic>> fetch(String url,
       {String? cookie,
@@ -96,15 +89,23 @@ class ClassesService {
     if (isPost) {
       if (options == null)
         options = Options(
-            contentType: Headers.formUrlEncodedContentType,
-            followRedirects: false);
+          contentType: Headers.formUrlEncodedContentType,
+          followRedirects: false,
+        );
       else {
         options.contentType = Headers.formUrlEncodedContentType;
         options.followRedirects = false;
       }
-      return _spiderDio.post(url, data: params, options: options, debug: true);
+      return _spiderDio.post(
+        url,
+        data: params,
+        options: options,
+      );
     } else
-      return _spiderDio.get(url,
-          queryParameters: params, options: options, debug: true);
+      return _spiderDio.get(
+        url,
+        queryParameters: params,
+        options: options,
+      );
   }
 }
