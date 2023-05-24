@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -21,7 +20,8 @@ class UserAvatarImage extends StatelessWidget {
   Widget build(BuildContext context) {
     var avatar = CommonPreferences.avatar.value;
 
-    var avatarBoxUrl = tempUrl == '' ? CommonPreferences.avatarBoxMyUrl.value : tempUrl;
+    var avatarBoxUrl =
+        tempUrl == '' ? CommonPreferences.avatarBoxMyUrl.value : tempUrl;
 
     return SizedBox(
       width: size,

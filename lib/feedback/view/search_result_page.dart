@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -190,14 +189,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
                             image: DecorationImage(
                                 image: AssetImage(
                                     "assets/images/lake_butt_icons/add_post.png")))),
+                    SizedBox(width: 14)
                   ],
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, FeedbackRouter.newPost,
                       arguments: NewPostArgs(true, tagId, lakeType, title));
-                }),
-          if (lakeType != 0) SizedBox(width: 14),
-          if (lakeType == 0)
+                })
+          else
             SizedBox(
               width: 40,
             )

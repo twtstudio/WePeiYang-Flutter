@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:convert' show jsonDecode;
 
 import 'package:flutter/foundation.dart' show compute;

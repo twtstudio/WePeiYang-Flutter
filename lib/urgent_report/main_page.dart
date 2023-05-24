@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
@@ -705,10 +704,13 @@ class _PickImageState extends State<PickImage> {
   File? _image;
 
   loadAssets() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
-        maxAssets: 1,
-        requestType: RequestType.image,
-        themeColor: ColorUtil.selectionButtonColor);
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: AssetPickerConfig(
+          maxAssets: 1,
+          requestType: RequestType.image,
+          themeColor: ColorUtil.selectionButtonColor),
+    );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
       _image = await assets[i].file;

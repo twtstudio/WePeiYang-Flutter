@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -148,8 +147,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text('更换头像框',
-                            style: mainTextStyle),
+                        child: Text('更换头像框', style: mainTextStyle),
                       ),
                       arrow,
                       SizedBox(width: 15.w)

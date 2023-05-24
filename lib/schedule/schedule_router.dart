@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -15,11 +14,10 @@ class ScheduleRouter {
   static String customCourse = 'schedule/customCourse';
   static String editDetail = 'schedule/editDetail';
 
-
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     course: (args) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(course);
-      return CoursePage(args as List<Pair<Course, int>>);
+      return CoursePage((args as List<Pair<Course, int>>?) ?? []);
     },
     exam: (_) {
       if (!CommonPreferences.isBindTju.value) return TjuBindPage(exam);

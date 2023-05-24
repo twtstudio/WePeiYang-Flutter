@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -175,7 +174,6 @@ class _EditDetailPageState extends State<EditDetailPage> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.white,
-          brightness: Brightness.light,
           leading: Center(
             child: GestureDetector(
               onTap: () {
@@ -222,7 +220,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
           children: [
             Expanded(
               child: Theme(
-                data: ThemeData(accentColor: Colors.white),
+                data: Theme.of(context)
+                    .copyWith(secondaryHeaderColor: Colors.white),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,

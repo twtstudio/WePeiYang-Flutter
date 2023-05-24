@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -100,12 +99,12 @@ class _ExamPageState extends State<ExamPage> {
   }
 
   List<Color> get _scheduleColor => [
-    Color.fromRGBO(114, 117, 136, 1), // #727588
-    Color.fromRGBO(143, 146, 165, 1), // #8F92A5
-    Color.fromRGBO(122, 119, 138, 1), // #7A778A
-    Color.fromRGBO(142, 122, 150, 1), // #8E7A96
-    Color.fromRGBO(130, 134, 161, 1), // #8286A1
-  ];
+        Color.fromRGBO(114, 117, 136, 1), // #727588
+        Color.fromRGBO(143, 146, 165, 1), // #8F92A5
+        Color.fromRGBO(122, 119, 138, 1), // #7A778A
+        Color.fromRGBO(142, 122, 150, 1), // #8E7A96
+        Color.fromRGBO(130, 134, 161, 1), // #8286A1
+      ];
 
   Widget examCard(BuildContext context, Exam exam, bool finished) {
     int code = exam.name.hashCode + DateTime.now().day;
@@ -133,7 +132,8 @@ class _ExamPageState extends State<ExamPage> {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
+            color:
+                finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
           ),
           child: InkWell(
             onTap: () {},
@@ -148,7 +148,7 @@ class _ExamPageState extends State<ExamPage> {
                           : Colors.white),
                   child: Padding(
                     padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

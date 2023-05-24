@@ -1,4 +1,3 @@
-// @dart = 2.12
 part of 'wpy_dio.dart';
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败

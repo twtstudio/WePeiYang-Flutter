@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:core';
 
 import 'package:card_swiper/card_swiper.dart';

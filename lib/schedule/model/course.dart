@@ -1,4 +1,3 @@
-// @dart = 2.12
 /// 本地缓存用
 class CourseTable {
   List<Course> schoolCourses;

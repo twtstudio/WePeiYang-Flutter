@@ -1,16 +1,14 @@
-// @dart = 2.12
 class ExamTable {
   List<Exam> exams;
 
   ExamTable(this.exams);
 
   ExamTable.fromJson(Map<String, dynamic> map)
-      : exams = []
-    ..addAll((map['exams'] as List).map((e) => Exam.fromJson(e)));
+      : exams = []..addAll((map['exams'] as List).map((e) => Exam.fromJson(e)));
 
   Map<String, dynamic> toJson() => {
-    'exams': exams.map((e) => e.toJson()).toList(),
-  };
+        'exams': exams.map((e) => e.toJson()).toList(),
+      };
 }
 
 class Exam {
@@ -39,14 +37,14 @@ class Exam {
         ext = map['ext'];
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'type': type,
-    'date': date,
-    'arrange': arrange,
-    'location': location,
-    'seat': seat,
-    'state': state,
-    'ext': ext,
-  };
+        'id': id,
+        'name': name,
+        'type': type,
+        'date': date,
+        'arrange': arrange,
+        'location': location,
+        'seat': seat,
+        'state': state,
+        'ext': ext,
+      };
 }

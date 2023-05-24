@@ -1,4 +1,3 @@
-// @dart = 2.12
 part of 'wpy_dio.dart';
 
 class NetStatusListener {

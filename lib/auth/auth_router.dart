@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/auth/view/info/avatar_box_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/email_bind_page.dart';

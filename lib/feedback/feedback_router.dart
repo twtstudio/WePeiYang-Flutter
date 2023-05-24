@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';

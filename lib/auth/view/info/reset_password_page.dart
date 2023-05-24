@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -62,7 +61,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   .sp(16)
                   .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
-          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(

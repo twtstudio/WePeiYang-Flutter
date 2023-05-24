@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +49,6 @@ class _SettingPageState extends State<SettingPage> {
                 .sp(16)
                 .customColor(Color.fromRGBO(36, 43, 69, 1))),
         elevation: 0,
-        brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: Padding(

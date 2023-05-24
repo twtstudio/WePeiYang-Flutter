@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -81,12 +80,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         page: currentPage);
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         scrollInfo.metrics.pixels - _previousOffset >= 20) {
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+    return true;
   }
 
   @override

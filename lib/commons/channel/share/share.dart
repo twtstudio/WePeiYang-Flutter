@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'package:flutter/services.dart';
 
 class ShareManager {

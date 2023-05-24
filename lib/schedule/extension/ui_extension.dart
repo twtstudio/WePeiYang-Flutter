@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';

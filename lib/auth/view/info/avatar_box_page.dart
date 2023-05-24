@@ -20,8 +20,8 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
 
   @override
   void initState() {
-    _valueNotifier.value = CommonPreferences.avatarBoxMyUrl.value;
     super.initState();
+    _valueNotifier.value = CommonPreferences.avatarBoxMyUrl.value;
   }
 
   @override

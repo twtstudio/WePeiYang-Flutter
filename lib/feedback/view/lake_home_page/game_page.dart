@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -46,11 +45,17 @@ class GameCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: WePeiYangApp.screenWidth - 160,child: Text(this.title,style: TextUtil.base.w600.black2A.NotoSansSC.sp(18), maxLines: 3,)),
+                SizedBox(
+                    width: WePeiYangApp.screenWidth - 160,
+                    child: Text(
+                      this.title,
+                      style: TextUtil.base.w600.black2A.NotoSansSC.sp(18),
+                      maxLines: 3,
+                    )),
                 Container(
                   width: 100,
                   decoration: BoxDecoration(
-                      color: _color,
+                    color: _color,
                     borderRadius: BorderRadius.all(Radius.circular(13)),
                   ),
                 ),

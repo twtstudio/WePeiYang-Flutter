@@ -1,4 +1,3 @@
-// @dart = 2.12
 library wpy_dio;
 
 import 'dart:async';

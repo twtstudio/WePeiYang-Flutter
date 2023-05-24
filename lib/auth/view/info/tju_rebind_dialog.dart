@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
@@ -129,16 +128,16 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             mtx.release();
           },
         );
-        // await mtx.acquire();
-        // courseProvider.refreshCourse(
-        //   onSuccess: () {
-        //     mtx.release();
-        //   },
-        //   onFailure: (e) {
-        //     ToastProvider.error(e.error.toString());
-        //     mtx.release();
-        //   },
-        // );
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
       });
       Navigator.pop(context);
     }, onFailure: (e) {

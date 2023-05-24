@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -26,7 +25,6 @@ class FiftyTwoHzPage extends StatelessWidget {
                     .sp(16)
                     .customColor(Color.fromRGBO(36, 43, 69, 1))),
             elevation: 0,
-            brightness: Brightness.light,
             centerTitle: true,
             backgroundColor: Colors.white,
             leading: Padding(

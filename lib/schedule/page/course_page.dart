@@ -1,6 +1,3 @@
-// @dart = 2.12
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,7 +50,7 @@ class _CoursePageState extends State<CoursePage> {
             barrierDismissible: true,
             builder: (context) => ClassesNeedVPNDialog());
       }
-      if (widget.pairs != null && widget.pairs.isNotEmpty) {
+      if (widget.pairs.isNotEmpty && widget.pairs.isNotEmpty) {
         showCourseDialog(context, widget.pairs);
       }
     });
@@ -89,7 +86,7 @@ class _CoursePageState extends State<CoursePage> {
 }
 
 /// 课表页默认AppBar
-class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
+class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     var leading = Align(

@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'font_test_page.dart';
 import 'push_test_page.dart';

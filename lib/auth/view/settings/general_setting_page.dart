@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -92,8 +91,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     children: [
                       Text('主页显示校园地图和校历', style: mainTextStyle),
                       SizedBox(height: 3.h),
-                      Text('默认关闭',
-                          style: hintTextStyle)
+                      Text('默认关闭', style: hintTextStyle)
                     ],
                   ),
                 ),

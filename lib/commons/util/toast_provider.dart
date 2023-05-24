@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -85,9 +84,9 @@ class ToastProvider with AsyncTimer {
           mainAxisSize: MainAxisSize.min,
           children: [
             SvgPicture.asset(
-                'assets/svg_pics/lake_butt_icons/error_background.svg',
-                color: Colors.white,
-                width: 15,
+              'assets/svg_pics/lake_butt_icons/error_background.svg',
+              color: Colors.white,
+              width: 15,
             ),
             SizedBox(width: 10),
             ConstrainedBox(

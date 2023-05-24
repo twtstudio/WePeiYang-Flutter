@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';

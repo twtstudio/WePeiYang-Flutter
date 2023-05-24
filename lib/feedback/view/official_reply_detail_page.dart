@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -93,12 +92,13 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         page: currentPage);
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         scrollInfo.metrics.pixels - _previousOffset >= 20) {
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+    return true;
   }
 
   @override
@@ -349,7 +349,6 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         ),
       ),
       elevation: 0,
-      brightness: Brightness.light,
     );
 
     return WillPopScope(

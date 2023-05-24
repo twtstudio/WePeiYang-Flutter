@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';

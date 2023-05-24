@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -144,7 +143,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     });
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (_bottomIsOpen) if (context.read<NewFloorProvider>().inputFieldEnabled ==
             true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
@@ -152,6 +151,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+    return true;
   }
 
   // 逻辑有点问题
@@ -1011,9 +1011,10 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   loadAssets() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
-      maxAssets: 1,
-      requestType: RequestType.image,
-      themeColor: ColorUtil.selectionButtonColor,
+      pickerConfig: AssetPickerConfig(
+          maxAssets: 1,
+          requestType: RequestType.image,
+          themeColor: ColorUtil.selectionButtonColor),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {

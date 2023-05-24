@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -17,7 +16,6 @@ class FindPwWidget extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
@@ -139,7 +137,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(

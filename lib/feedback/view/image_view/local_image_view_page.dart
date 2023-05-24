@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -48,7 +47,10 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
                   ))),
           scrollPhysics: const BouncingScrollPhysics(),
           builder: (BuildContext context, int index) {
-            ImageProvider image = FileImage(widget.args.uriList[index]);
+            late ImageProvider image;
+            if (widget.args.uriList.isNotEmpty) {
+              image = FileImage(widget.args.uriList[index]);
+            }
             if (widget.args.assetList.isNotEmpty) {
               image = AssetImage(widget.args.assetList[index]);
             }

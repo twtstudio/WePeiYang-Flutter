@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonPreferences {

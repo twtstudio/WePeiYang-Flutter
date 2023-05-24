@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +42,8 @@ class _SearchTagCardState extends State<SearchTagCard>
     var _showAdd = true;
     if (!_useThisTag) {
       for (int total = 0; total < tagUtil.length; total++) {
-        if (tagUtil[total].name == _controller.text.toString()) _showAdd = false;
+        if (tagUtil[total].name == _controller.text.toString())
+          _showAdd = false;
         tagList.add(GestureDetector(
           onTap: () {
             _controller.text = tagUtil[total].name;
@@ -79,8 +79,7 @@ class _SearchTagCardState extends State<SearchTagCard>
       }
       if (tagList.length > 5) tagList = tagList.sublist(0, 5);
       _showAdd
-          ? tagList.add(
-          GestureDetector(
+          ? tagList.add(GestureDetector(
               onTap: () async {
                 await FeedbackService.postTags(
                   name: _controller.text,
@@ -104,8 +103,8 @@ class _SearchTagCardState extends State<SearchTagCard>
                         });
                   },
                   onFailure: (e) async {
-                   // context.read<NewPostProvider>().tag = Tag(id: tags.id);
-                      ToastProvider.error(e.toString());
+                    // context.read<NewPostProvider>().tag = Tag(id: tags.id);
+                    ToastProvider.error(e.toString());
                   },
                 );
               },

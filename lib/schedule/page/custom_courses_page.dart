@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +25,6 @@ class CustomCoursesPage extends StatelessWidget {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
-            brightness: Brightness.light,
             leading: Center(
               child: GestureDetector(
                 onTap: () {
@@ -49,7 +47,8 @@ class CustomCoursesPage extends StatelessWidget {
                 style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
           ),
           body: Theme(
-            data: ThemeData(accentColor: Colors.white),
+            data:
+                Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
             child: ListView.builder(
               itemCount: customCourses.length,
               itemBuilder: (context, index) {

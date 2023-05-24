@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -73,11 +72,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                           defaultTextStyle: style,
                         ),
                       )
-                    : LinkText(
-                        style: style,
-                        text: text,
-                        maxLine: maxLines
-                      ),
+                    : LinkText(style: style, text: text, maxLine: maxLines),
             if (buttonIsShown)
               InkWell(
                 onTap: () {

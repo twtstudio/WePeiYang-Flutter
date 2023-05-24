@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -55,7 +54,6 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       ),
       centerTitle: true,
       elevation: 0,
-      brightness: Brightness.light,
     );
 
     var reportButton = Container(

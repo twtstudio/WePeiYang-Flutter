@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:math' show min;
 
 import 'package:flutter/cupertino.dart' show CupertinoPicker;

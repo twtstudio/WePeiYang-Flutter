@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:dio_cookie_caching_handler/dio_cookie_interceptor.dart';
 import 'package:flutter/material.dart' show BuildContext;
 import 'package:path/path.dart' as p;

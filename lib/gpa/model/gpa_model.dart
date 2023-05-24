@@ -1,4 +1,3 @@
-// @dart = 2.12
 class GPABean {
   Total total;
   List<GPAStat> stats;

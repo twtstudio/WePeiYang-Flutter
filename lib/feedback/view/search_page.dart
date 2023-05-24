@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +7,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
-import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart'
+    as wpySearchBar;
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -46,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    var searchBar = SearchBar(
+    var searchBar = wpySearchBar.SearchBar(
       onSubmitted: (text) {
         _searchHistoryList.unequalAdd(text);
         Navigator.pushNamed(

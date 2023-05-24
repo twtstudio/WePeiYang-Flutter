@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';

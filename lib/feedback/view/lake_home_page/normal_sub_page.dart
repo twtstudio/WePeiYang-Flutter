@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async';
 import 'dart:math';
 
@@ -49,7 +48,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     });
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (context
             .read<LakeModel>()
             .lakeAreas[index]!
@@ -74,6 +73,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         context.read<LakeModel>().onFeedbackClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+    return true;
   }
 
   String get _getGreetText {
@@ -387,6 +387,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
 
   @override
   void initState() {
+    super.initState();
     isOpa = true;
     _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       count++;
@@ -402,7 +403,6 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
       }
       setState(() {});
     });
-    super.initState();
   }
 
   @override

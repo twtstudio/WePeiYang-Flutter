@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -54,7 +52,6 @@ class WbyWebViewState extends State<WbyWebView> {
         ),
         elevation: 0,
         toolbarHeight: 40,
-        brightness: Brightness.light,
         centerTitle: true,
         backgroundColor: Colors.white,
         leading: Padding(

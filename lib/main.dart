@@ -83,8 +83,9 @@ void main() async {
     }
 
     /// 设置沉浸式状态栏
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light));
 
     /// 修改debugPrint
     debugPrint = (message, {wrapWidth}) => print(message);
@@ -98,7 +99,7 @@ void main() async {
               maxDescendentsTruncatableNode: 5)
           .render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.flat))
           .trimRight();
-      Zone.current.handleUncaughtError(text, null);
+      Zone.current.handleUncaughtError(text, details.stack ?? StackTrace.empty);
     };
   }, (Object error, StackTrace stack) {
     /// 这里是处理所有 unhandled sync & async error 的地方
@@ -123,8 +124,8 @@ class IntentEvent {
 }
 
 class WePeiYangApp extends StatefulWidget {
-  static double screenWidth;
-  static double screenHeight;
+  static late double screenWidth;
+  static late double screenHeight;
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
@@ -147,7 +148,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
-          WePeiYangApp.navigatorState.currentState.overlay.context;
+          WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
@@ -169,8 +170,12 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   checkEventList() async {
     if (Platform.isIOS) return;
-    var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
-    await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+    var baseContext =
+        WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
+    await _messageChannel.invokeMethod<Map>("getLastEvent").then((eventMap) {
+      if (eventMap == null) {
+        return;
+      }
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           Navigator.pushNamed(
@@ -208,9 +213,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   showDialog(String content) {
-    if (content != null && content.isNotEmpty) {
+    if (content.isNotEmpty) {
       showMessageDialog(
-        WePeiYangApp.navigatorState.currentState.overlay.context,
+        WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context,
         content,
       );
     } else {
@@ -281,12 +286,14 @@ class WePeiYangAppState extends State<WePeiYangApp>
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: S.delegate.supportedLocales,
-                localeListResolutionCallback: (List<Locale> preferredLocales,
-                    Iterable<Locale> supportedLocales) {
+                localeListResolutionCallback: (List<Locale>? preferredLocales,
+                    Iterable<Locale>? supportedLocales) {
                   var supportedLanguages =
-                      supportedLocales.map((e) => e.languageCode).toList();
+                      supportedLocales?.map((e) => e.languageCode).toList() ??
+                          [];
                   var preferredLanguages =
-                      preferredLocales.map((e) => e.languageCode).toList();
+                      preferredLocales?.map((e) => e.languageCode).toList() ??
+                          [];
                   var availableLanguages = preferredLanguages
                       .where((element) => supportedLanguages.contains(element))
                       .toList();
@@ -301,7 +308,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     );
   }
 
-  Widget _builder(BuildContext context, Widget child) {
+  Widget _builder(BuildContext context, Widget? child) {
     // 点击空白区域取消TextField焦点
     return GestureDetector(
       child: child,
@@ -309,7 +316,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus &&
             currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus.unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
         }
       },
     );

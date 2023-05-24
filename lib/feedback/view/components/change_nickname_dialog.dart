@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -32,20 +31,20 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
       confirmButtonColor: Color.fromRGBO(44, 126, 223, 1),
       confirmFun: () {
         FeedbackService.changeNickname(
-          onSuccess: () {
-            ToastProvider.success('修改成功喵');
-            FeedbackService.getUserInfo(
-                onSuccess: () {},
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                });
-            Navigator.pop(context);
-          },
-          onFailure: (e) {
-            _focus.unfocus();
-            ToastProvider.error(e.error.toString());
-          },
-          nickName: _textEditingController.text);
+            onSuccess: () {
+              ToastProvider.success('修改成功喵');
+              FeedbackService.getUserInfo(
+                  onSuccess: () {},
+                  onFailure: (e) {
+                    ToastProvider.error(e.error.toString());
+                  });
+              Navigator.pop(context);
+            },
+            onFailure: (e) {
+              _focus.unfocus();
+              ToastProvider.error(e.error.toString());
+            },
+            nickName: _textEditingController.text);
       },
       confirmTextStyle: TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).white,
       confirmText: '确定',

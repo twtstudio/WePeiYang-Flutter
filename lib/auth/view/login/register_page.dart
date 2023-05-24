@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -378,7 +377,6 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
   }
 
   _toNextPage() async {
-    print('gagga');
     if (phone == "")
       ToastProvider.error("手机号码不能为空");
     else if (code == "")

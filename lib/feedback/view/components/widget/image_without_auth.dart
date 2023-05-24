@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
@@ -25,12 +24,13 @@ class NetworkImageSSL extends ImageProvider<NetworkImageSSL> {
 
   @override
   ImageStreamCompleter load(NetworkImageSSL key, DecoderCallback decode) {
-    return MultiFrameImageStreamCompleter(codec: _loadAsync(key), scale: key.scale);
+    return MultiFrameImageStreamCompleter(
+        codec: _loadAsync(key), scale: key.scale);
   }
 
   static final HttpClient _httpClient = new HttpClient()
     ..badCertificateCallback =
-    ((X509Certificate cert, String host, int port) => true);
+        ((X509Certificate cert, String host, int port) => true);
 
   Future<ui.Codec> _loadAsync(NetworkImageSSL key) async {
     assert(key == this);
@@ -42,8 +42,7 @@ class NetworkImageSSL extends ImageProvider<NetworkImageSSL> {
     });
     final HttpClientResponse response = await request.close();
     if (response.statusCode != HttpStatus.ok)
-      throw new Exception(
-          'HTTP请求失败，状态码: ${response.statusCode}, $resolved');
+      throw new Exception('HTTP请求失败，状态码: ${response.statusCode}, $resolved');
 
     final Uint8List bytes = await consolidateHttpClientResponseBytes(response);
     if (bytes.lengthInBytes == 0)

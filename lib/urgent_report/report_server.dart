@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:collection';
 
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';

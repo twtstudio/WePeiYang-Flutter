@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 
@@ -24,6 +23,7 @@ class FontTestPage extends StatelessWidget {
       ),
     );
   }
+
   static const type1 = 'PingFangSC';
   static const type2 = 'NotoSansSC';
 

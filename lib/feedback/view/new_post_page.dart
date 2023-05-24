@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 
 import 'package:extended_image/extended_image.dart';
@@ -129,7 +128,6 @@ class _NewPostPageState extends State<NewPostPage> {
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-      centerTitle: true,
       title: Text(
         S.current.feedback_new_post,
         style: TextUtil.base.NotoSansSC.w700.sp(18).black2A,
@@ -145,10 +143,6 @@ class _NewPostPageState extends State<NewPostPage> {
           size: 36,
         ),
         onPressed: () => Navigator.of(context).pop(),
-      ),
-      bottom: PreferredSize(
-        preferredSize: Size.fromHeight(50.h),
-        child: TitleInputField(),
       ),
       backgroundColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -183,57 +177,52 @@ class _NewPostPageState extends State<NewPostPage> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: appBar,
-        body: Stack(
+        body: Column(
           children: [
-            ListView(
-              shrinkWrap: true,
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.only(left: 20),
-              children: [
-                Container(
-                    margin: widget.args.isFollowing
-                        ? const EdgeInsets.only(right: 20, top: 4, bottom: 10)
-                        : EdgeInsets.zero,
-                    padding: widget.args.isFollowing
-                        ? const EdgeInsets.fromLTRB(22, 10, 22, 10)
-                        : EdgeInsets.zero,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          widget.args.isFollowing
+            TitleInputField(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                          padding: widget.args.isFollowing
+                              ? const EdgeInsets.fromLTRB(0, 14, 0, 20)
+                              : EdgeInsets.zero,
+                          child: widget.args.isFollowing
                               ? Text('跟帖:',
                                   style: TextUtil.base.NotoSansSC.w500
                                       .sp(14)
                                       .black2A)
-                              : LakeSelector(),
-                          SizedBox(height: 6),
-                        ])),
-                Container(
-                    margin: const EdgeInsets.only(right: 20, top: 4),
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 22),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ContentInputField(),
-                          SizedBox(height: 10),
-                          ImagesGridView(),
-                          SizedBox(height: 20),
-                          Row(
-                            children: [
-                              Spacer(),
-                              CampusSelector(campusNotifier),
-                              submitButton,
-                            ],
-                          ),
-                        ])),
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: widget.args.isFollowing
-                      ? Text('${widget.args.tagName}'.substring(3),
-                          style: TextUtil.base.NotoSansSC.w500.sp(14).black2A)
-                      : departmentTagView(postTypeNotifier),
+                              : LakeSelector()),
+                      SizedBox(height: 30),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ContentInputField(),
+                            SizedBox(height: 10),
+                            ImagesGridView(),
+                            SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Spacer(),
+                                CampusSelector(campusNotifier),
+                                submitButton,
+                              ],
+                            ),
+                          ]),
+                      SizedBox(height: 22),
+                      widget.args.isFollowing
+                          ? Text('${widget.args.tagName}'.substring(3),
+                              style:
+                                  TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                          : departmentTagView(postTypeNotifier),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           ],
         ));
@@ -387,7 +376,7 @@ class _departmentTagViewState extends State<departmentTagView> {
   void initState() {
     super.initState();
     var dataModel = context.read<NewPostProvider>();
-    department = ValueNotifier(dataModel.department!)
+    department = ValueNotifier(dataModel.department ?? Department())
       ..addListener(() {
         dataModel.department = department.value;
       });
@@ -625,21 +614,15 @@ class _ContentInputFieldState extends State<ContentInputField> {
       },
     );
 
-    return ListView(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      children: [
-        Container(
-            constraints: BoxConstraints(
-                minHeight: WePeiYangApp.screenHeight > 800
-                    ? WePeiYangApp.screenHeight - 700
-                    : 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [inputField, SizedBox(height: 20), bottomTextCounter],
-            )),
-      ],
-    );
+    return Container(
+        constraints: BoxConstraints(
+            minHeight: WePeiYangApp.screenHeight > 800
+                ? WePeiYangApp.screenHeight - 700
+                : 100),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [inputField, SizedBox(height: 20), bottomTextCounter],
+        ));
   }
 }
 
@@ -652,10 +635,13 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
-        maxAssets: maxImage - context.read<NewPostProvider>().images.length,
-        requestType: RequestType.image,
-        themeColor: ColorUtil.selectionButtonColor);
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: AssetPickerConfig(
+          maxAssets: maxImage - context.read<NewPostProvider>().images.length,
+          requestType: RequestType.image,
+          themeColor: ColorUtil.selectionButtonColor),
+    );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
       File? file = await assets[i].file;

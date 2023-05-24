@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,9 +18,7 @@ class WpyExamWidget extends StatelessWidget {
 
   Widget _detail(ExamProvider provider, BuildContext context) {
     if (provider.unscheduled.length == 0) {
-      var msg = provider.unfinished.length == 0
-              ? '目前没有考试哦'
-              : '没有已安排时间的考试哦';
+      var msg = provider.unfinished.length == 0 ? '目前没有考试哦' : '没有已安排时间的考试哦';
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
         child: provider.unfinished.length == 0
@@ -33,7 +30,7 @@ class WpyExamWidget extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(msg),
               ),
-            );
+      );
     }
     return SizedBox(
       height: 430.h,

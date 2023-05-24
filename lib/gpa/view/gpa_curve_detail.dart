@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -178,10 +177,7 @@ class _GPACurveState extends State<GPACurve>
       }
       List<Point<double>> points = [];
       List<double> curveData = notifier.curveData;
-      _initPoints(
-          points,
-          curveData,
-          constraints.maxWidth);
+      _initPoints(points, curveData, constraints.maxWidth);
       return GestureDetector(
 
           /// 点击监听

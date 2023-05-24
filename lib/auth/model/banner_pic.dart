@@ -1,4 +1,3 @@
-// @dart = 2.12
 class BannerPic {
   final int id;
   final String picUrl;

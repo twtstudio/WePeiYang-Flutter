@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:provider/provider.dart';

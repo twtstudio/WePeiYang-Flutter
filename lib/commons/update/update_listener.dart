@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 part of 'update_manager.dart';
 
 abstract class UpdateStatusListener extends ChangeNotifier {

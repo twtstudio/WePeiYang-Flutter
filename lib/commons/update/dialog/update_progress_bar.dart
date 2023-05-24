@@ -1,27 +1,28 @@
-// @dart = 2.12
-
 import 'package:flutter/material.dart';
 
 // https://blog.csdn.net/shving/article/details/111146673
 class GradientLinearProgressBar extends StatelessWidget {
   ///画笔的宽度，其实是进度条的高度
   final double strokeWidth;
+
   ///是否需要圆角
   final bool strokeCapRound;
+
   ///进度值
   final double value;
+
   ///进度条背景色
   final Color backgroundColor;
+
   ///渐变的颜色列表
   final List<Color> colors;
 
-  GradientLinearProgressBar({
-    this.strokeWidth = 2.0,
-    required this.colors,
-    required this.value,
-    this.backgroundColor = const Color(0xFFEEEEEE),
-    this.strokeCapRound = false
-  });
+  GradientLinearProgressBar(
+      {this.strokeWidth = 2.0,
+      required this.colors,
+      required this.value,
+      this.backgroundColor = const Color(0xFFEEEEEE),
+      this.strokeCapRound = false});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +42,7 @@ class GradientLinearProgressBar extends StatelessWidget {
   }
 }
 
-class _GradientLinearProgressPainter extends CustomPainter{
-
+class _GradientLinearProgressPainter extends CustomPainter {
   final double strokeWidth;
   final bool strokeCapRound;
   final double value;
@@ -51,14 +51,13 @@ class _GradientLinearProgressPainter extends CustomPainter{
   final List<double>? stops;
   final p = Paint();
 
-  _GradientLinearProgressPainter({
-    this.strokeWidth = 2.0,
-    required this.colors,
-    this.value = 0.0,
-    this.backgroundColor = const Color(0xFFEEEEEE),
-    this.strokeCapRound = false,
-    this.stops
-  });
+  _GradientLinearProgressPainter(
+      {this.strokeWidth = 2.0,
+      required this.colors,
+      this.value = 0.0,
+      this.backgroundColor = const Color(0xFFEEEEEE),
+      this.strokeCapRound = false,
+      this.stops});
 
   @override
   void paint(Canvas canvas, Size size) {

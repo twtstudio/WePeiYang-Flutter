@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async' show Timer;
 import 'package:flutter/widgets.dart';
 
@@ -15,7 +14,7 @@ class AnimationExecutor extends StatefulWidget {
     required this.duration,
     this.delay = Duration.zero,
     required this.builder,
-  })  : super(key: key);
+  }) : super(key: key);
 
   @override
   _AnimationExecutorState createState() => _AnimationExecutorState();

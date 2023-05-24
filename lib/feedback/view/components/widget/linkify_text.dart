@@ -1,7 +1,6 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:linkfy_text/linkfy_text.dart';
-import 'package:simple_url_preview/simple_url_preview.dart';
+import 'package:simple_url_preview_v2/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';

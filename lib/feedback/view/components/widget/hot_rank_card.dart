@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

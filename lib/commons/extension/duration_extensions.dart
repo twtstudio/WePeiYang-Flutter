@@ -1,4 +1,3 @@
-// @dart = 2.12
 part of 'extensions.dart';
 
 extension DurationFormatter on Duration {
@@ -16,9 +15,13 @@ extension DurationFormatter on Duration {
     String h = this.inHours.remainder(24).toString() + '小时';
     String m = this.inMinutes.remainder(60).toString() + '分钟';
     String s = this.inSeconds.remainder(60).toString() + '秒';
-    if(this.inDays > 0) return d + h + '前';
-    else if(this.inHours > 0) return h + m + '前';
-    else if(this.inMinutes > 0) return m + '前';
-    else return s + '前';
+    if (this.inDays > 0)
+      return d + h + '前';
+    else if (this.inHours > 0)
+      return h + m + '前';
+    else if (this.inMinutes > 0)
+      return m + '前';
+    else
+      return s + '前';
   }
 }

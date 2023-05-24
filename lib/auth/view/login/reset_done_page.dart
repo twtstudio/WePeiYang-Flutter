@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -10,7 +9,6 @@ class ResetDoneWidget extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          brightness: Brightness.light,
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
           leading: Padding(

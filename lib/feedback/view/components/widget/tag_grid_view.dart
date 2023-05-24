@@ -89,7 +89,7 @@ class _TabGridViewState extends State<TabGridView>
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {
-          if (chose) {
+          if (!chose) {
             setState(() {
               context.read<NewPostProvider>().department = tag;
               updateGroupValue(tag);

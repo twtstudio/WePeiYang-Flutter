@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,8 @@ class ReportBasePage extends StatelessWidget {
   final Widget body;
   final Widget action;
 
-  const ReportBasePage({Key? key, required this.body, required this.action}) : super(key: key);
+  const ReportBasePage({Key? key, required this.body, required this.action})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

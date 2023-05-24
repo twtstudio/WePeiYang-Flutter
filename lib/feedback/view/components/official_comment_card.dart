@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,9 +33,11 @@ class OfficialReplyCard extends StatefulWidget {
   final int ancestorId;
   final ContentPressedCallback? onContentPressed;
   final LikeCallback? onLikePressed;
+
   ///是否显示楼中楼
   final bool detail;
   final int placeAppeared;
+
   ///评分数
   final int ratings;
   OfficialReplyCard.reply({
@@ -47,7 +48,8 @@ class OfficialReplyCard extends StatefulWidget {
     this.onContentPressed,
     this.onLikePressed,
     required this.placeAppeared,
-  }) : type = Official.reply, detail = false;
+  })  : type = Official.reply,
+        detail = false;
 
   OfficialReplyCard.subFloor({
     this.tag = '',
@@ -57,7 +59,8 @@ class OfficialReplyCard extends StatefulWidget {
     this.onContentPressed,
     this.onLikePressed,
     required this.placeAppeared,
-  }) : type = Official.subFloor, detail = true;
+  })  : type = Official.subFloor,
+        detail = true;
 
   @override
   _OfficialReplyCardState createState() => _OfficialReplyCardState();
@@ -129,8 +132,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                                 .difference(widget.comment.createAt!)
                                 .inHours >=
                             11
-                        ? widget.comment.createAt
-                            !.toLocal()
+                        ? widget.comment.createAt!
+                            .toLocal()
                             .toIso8601String()
                             .replaceRange(10, 11, ' ')
                             .substring(0, 19)
@@ -171,8 +174,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                                 .difference(widget.comment.createAt!)
                                 .inHours >=
                             11
-                        ? widget.comment.createAt
-                            !.toLocal()
+                        ? widget.comment.createAt!
+                            .toLocal()
                             .toIso8601String()
                             .replaceRange(10, 11, ' ')
                             .substring(0, 19)
@@ -185,6 +188,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               )
             ],
           );
+
     ///举报/删除区
     var popMenu = PopupMenuButton(
       padding: EdgeInsets.zero,
@@ -217,8 +221,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String>>[
-          CommonPreferences.lakeUid.value.toString() ==
-                  widget.comment.postId
+          CommonPreferences.lakeUid.value.toString() == widget.comment.postId
               ? PopupMenuItem<String>(
                   value: '删除',
                   child: Center(
@@ -240,8 +243,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ];
       },
     );
+
     ///致敬lxx的box封装
     var box = SizedBox(height: 6);
+
     ///头像区
     var createTime = Row(
       children: [
@@ -250,6 +255,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         if (widget.comment.sender == 0) popMenu
       ],
     );
+
     ///评分系统，只有楼主可评分
     Widget starWidget;
     if (CommonPreferences.lakeUid.value.toString() ==
@@ -301,7 +307,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ]);
     }
-  ///楼中楼笨方法，建议先去看lyx版本
+
+    ///楼中楼笨方法，建议先去看lyx版本
     var bottomWidget = Row(
       children: [if (widget.comment.sender == 1) starWidget, Spacer()],
     );
@@ -338,10 +345,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ));
     switch (widget.type) {
       case Official.reply:
-        var comment =  ExpandableText(
-          text:  widget.comment.content,
+        var comment = ExpandableText(
+          text: widget.comment.content,
           maxLines: 5,
-          style:TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+          style: TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
           expand: false,
           buttonIsShown: true,
           isHTML: true,

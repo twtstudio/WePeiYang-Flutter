@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +24,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
 
   loadAssets() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
-        maxAssets: 1,
-        requestType: RequestType.image,
-        themeColor: ColorUtil.blueA6Color);
+        pickerConfig: AssetPickerConfig(
+            maxAssets: 1,
+            requestType: RequestType.image,
+            themeColor: ColorUtil.blueA6Color));
     if (assets == null) return; // 取消选择图片的情况
     File? file = await assets[0].file;
     if (file == null) {
@@ -79,7 +79,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
   }
 
   pickAndCropImage(BuildContext context, ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source, imageQuality: 50);
+    final image =
+        await ImagePicker().pickImage(source: source, imageQuality: 50);
     if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
     File? croppedFile = await ImageCropper().cropImage(

@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,10 +11,12 @@ class NewPostProvider {
   Tag? tag;
 
   List<File> images = [];
+
   ///标题非空且内容非空为必要，非校务贴或者校务贴时部门不能为空
   bool get check =>
       title.isNotEmpty &&
-      content.isNotEmpty && ((type == 1 && department != null) || (type != 1));
+      content.isNotEmpty &&
+      ((type == 1 && department != null) || (type != 1));
 
   void clear() {
     title = "";

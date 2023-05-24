@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -88,7 +87,8 @@ class _GPAPageState extends State<GPAPage> {
           ),
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
-            data: ThemeData(accentColor: Colors.white),
+            data:
+                Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
             child: ListView(
               children: [
                 RadarChartWidget(widget._gpaColors),
@@ -140,7 +140,6 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: gpaColors[0],
       elevation: 0,
-      brightness: Brightness.dark,
       leading: leading,
       leadingWidth: 40.w,
       title: Text(

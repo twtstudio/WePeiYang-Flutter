@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
