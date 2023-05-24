@@ -207,12 +207,13 @@ class Floor {
         subFloorCnt = json["sub_floor_cnt"] ?? 0,
         isLike = json["is_like"] ?? false,
         isDis = json["is_dis"] ?? false,
-        avatar = json["user_info"] == null ? null : json["user_info"]["avatar"],
+        avatar =
+            json["user_info"] == null ? '' : json["user_info"]["avatar"] ?? '',
         avatarBox = json["user_info"] == null
-            ? null
-            : json["user_info"]["avatar_frame"],
+            ? ''
+            : json["user_info"]["avatar_frame"] ?? '',
         isOwner = json["is_owner"] ?? false,
-        level = json["user_info"] == null ? 0 : json["user_info"]["level"];
+        level = json["user_info"] == null ? 0 : json["user_info"]["level"] ?? 0;
 
   Map<String, dynamic> toJson() => {
         "id": id,

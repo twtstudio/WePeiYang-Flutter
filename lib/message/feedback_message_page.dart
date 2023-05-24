@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 import 'model/message_model.dart';
+import 'package:badges/badges.dart' as badges;
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
 enum MessageType { like, floor, reply }
@@ -226,9 +227,9 @@ class _MessageTabState extends State<MessageTab> {
           SizedBox(width: _tabPaddingWidth),
           count == 0
               ? Text('湖底通知')
-              : Badge(
+              : badges.Badge(
                   child: Text('湖底通知'),
-                  label: Text(
+                  badgeContent: Text(
                     count.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 8),
                   )),
@@ -253,9 +254,9 @@ class _MessageTabState extends State<MessageTab> {
           SizedBox(width: _tabPaddingWidth),
           count == 0
               ? tab
-              : Badge(
+              : badges.Badge(
                   child: tab,
-                  label: Text(
+                  badgeContent: Text(
                     count.toString(),
                     style: TextStyle(color: Colors.white, fontSize: 8),
                   )),
@@ -605,9 +606,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           ));
     }
 
-    Widget messageWrapper = Badge(
-      padding: const EdgeInsets.all(5),
-      label: Text(""),
+    Widget messageWrapper = badges.Badge(
+      position: badges.BadgePosition.topEnd(end: -2, top: -5),
+      badgeContent: Padding(padding: EdgeInsets.all(1)),
       child: questionItem,
     );
 
@@ -969,9 +970,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
 
     Widget? messageWrapper;
     if (!widget.data.isRead) {
-      messageWrapper = Badge(
-        padding: const EdgeInsets.all(5),
-        label: Text(""),
+      messageWrapper = badges.Badge(
+        position: badges.BadgePosition.topEnd(end: -2, top: -5),
+        badgeContent: Padding(padding: EdgeInsets.all(1)),
         child: questionItem,
       );
     }
@@ -1327,9 +1328,9 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
 
     Widget? messageWrapper;
     if (!widget.data.isRead) {
-      messageWrapper = Badge(
-        padding: const EdgeInsets.all(5),
-        label: Text(""),
+      messageWrapper = badges.Badge(
+        position: badges.BadgePosition.topEnd(end: -2, top: -5),
+        badgeContent: Padding(padding: EdgeInsets.all(1)),
         child: questionItem,
       );
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:badges/badges.dart' as badges;
 
 class FeedbackBadgeWidget extends StatefulWidget {
   final Widget child;
@@ -18,11 +19,13 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
         messageProvider.messageCount.total);
     return count == 0
         ? widget.child
-        : Badge(
-            padding: EdgeInsets.all(4),
-            label: Text(
-              count.toString(),
-              style: TextStyle(color: Colors.white, fontSize: 7),
+        : badges.Badge(
+            badgeContent: Padding(
+              padding: EdgeInsets.all(4),
+              child: Text(
+                count.toString(),
+                style: TextStyle(color: Colors.white, fontSize: 7),
+              ),
             ),
             child: widget.child,
           );
