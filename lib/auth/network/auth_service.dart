@@ -204,6 +204,7 @@ class AuthService with AsyncTimer {
       }
     });
   }
+
   ///发通知用
   ///友盟flutter推送sdk直接接不进来，文档依托答辩，正在试别的方法
   // static postMessage()async
@@ -537,7 +538,7 @@ class AuthService with AsyncTimer {
       else
         return NAcidInfo.fromJson(rsp.data['result']);
     } on DioError catch (e) {
-      debugPrint(e.error);
+      debugPrint(e.error.toString());
     }
     return NAcidInfo(id: -1);
   }

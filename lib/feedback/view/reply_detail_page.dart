@@ -359,7 +359,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               context.read<MessageProvider>().refreshFeedbackCount();
             },
             onFailure: (e) {
-              ToastProvider.error(e.message);
+              ToastProvider.error(e.message ?? '获取帖子失败');
             });
       },
     );

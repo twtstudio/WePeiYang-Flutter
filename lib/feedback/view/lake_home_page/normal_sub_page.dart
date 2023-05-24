@@ -52,14 +52,14 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   _onScrollNotification(ScrollNotification scrollInfo) {
     if (context
             .read<LakeModel>()
-            .lakeAreas[index]
-            !.refreshController
+            .lakeAreas[index]!
+            .refreshController
             .isRefresh &&
         scrollInfo.metrics.pixels >= 2)
       context
           .read<LakeModel>()
-          .lakeAreas[index]
-          !.refreshController
+          .lakeAreas[index]!
+          .refreshController
           .refreshToIdle();
     if (scrollInfo.metrics.pixels <
         12.h + FeedbackHomePageState().searchBarHeight)
@@ -104,7 +104,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             ?.refreshController
             .refreshCompleted();
       }, failure: (e) {
-        if (e.type == DioErrorType.connectTimeout ||
+        if (e.type == DioErrorType.connectionTimeout ||
             e.type == DioErrorType.receiveTimeout ||
             e.type == DioErrorType.sendTimeout)
           context
@@ -347,8 +347,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 ind--;
                 final post = context
                     .read<LakeModel>()
-                    .lakeAreas[index]
-                    !.dataList
+                    .lakeAreas[index]!
+                    .dataList
                     .values
                     .toList()[ind];
                 return PostCardNormal(post);

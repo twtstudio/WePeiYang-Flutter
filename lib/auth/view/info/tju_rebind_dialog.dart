@@ -142,8 +142,9 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
       });
       Navigator.pop(context);
     }, onFailure: (e) {
-      if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
-      ToastProvider.error(e.error.toString());
+      var str = e.error.toString();
+      if (str == '网络连接超时') str = '请连接校园网后再次尝试';
+      ToastProvider.error(str);
       captchaKey.currentState?.refresh();
     });
     codeController.clear();

@@ -1423,7 +1423,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                   Navigator.of(context).pop();
                   ToastProvider.running('成功');
                 }),
-            onFailure: (e) => ToastProvider.error(e.message));
+            onFailure: (e) => ToastProvider.error(e.message ?? '失败'));
     }
   }
 }

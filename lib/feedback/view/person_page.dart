@@ -223,7 +223,7 @@ class _PersonPageState extends State<PersonPage> {
                         ToastProvider.success('重置成功');
                       },
                       onFailure: (e) {
-                        ToastProvider.error(e.message);
+                        ToastProvider.error(e.message ?? '重置失败');
                       });
               }),
               child: Row(
@@ -252,7 +252,7 @@ class _PersonPageState extends State<PersonPage> {
                         ToastProvider.success('重置成功');
                       },
                       onFailure: (e) {
-                        ToastProvider.error(e.message);
+                        ToastProvider.error(e.message ?? '重置失败');
                       });
               }),
               child: Row(

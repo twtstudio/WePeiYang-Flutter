@@ -21,8 +21,8 @@ abstract class DioAbstract {
   DioAbstract() {
     BaseOptions options = BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 5000,
-        receiveTimeout: 5000,
+        connectTimeout: Duration(seconds: 5),
+        receiveTimeout: Duration(seconds: 5),
         responseType: responseType,
         headers: headers);
 

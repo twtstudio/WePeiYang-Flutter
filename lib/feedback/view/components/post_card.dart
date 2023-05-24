@@ -53,7 +53,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     context.read<LakeModel>().tabList.forEach((e) {
       typeName.addAll({e.id: e.shortname});
     });
-    return typeName[type]!;
+    return typeName[type] ?? '';
   }
 
   @override
