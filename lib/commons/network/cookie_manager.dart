@@ -12,6 +12,10 @@ class CookieManager extends InterceptorsWrapper {
 
   CookieManager(this.cookieJar);
 
+  final defaultUri = Uri.parse('https://tju.edu.cn');
+
+  Map<String, List<Cookie>> cookiesMap = {};
+
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
@@ -19,8 +23,7 @@ class CookieManager extends InterceptorsWrapper {
 
     if (options.uri.host.contains("tju.edu.cn")) {
       try {
-        final cookies = await cookieJar
-            .loadForRequest(Uri.parse('https://sso.tju.edu.cn/cas/login'));
+        final cookies = cookiesMap[defaultUri.host] ?? [];
         cookieList.addAll(cookies);
       } catch (_) {}
     }
@@ -70,12 +73,29 @@ class CookieManager extends InterceptorsWrapper {
   }
 
   Future<void> _saveCookies(Response response) async {
-    var cookies = response.headers[HttpHeaders.setCookieHeader];
+    var cookies = (response.headers[HttpHeaders.setCookieHeader] ?? [])
+        .map((str) => Cookie.fromSetCookieValue(str))
+        .toList();
 
-    if (cookies != null) {
+    if (cookies.isNotEmpty) {
+      if (response.requestOptions.uri.host.contains("tju.edu.cn")) {
+        // 更新cookie
+        final oldCookies = cookiesMap[defaultUri.host] ?? [];
+        for (var cookie in cookies) {
+          final findIndex =
+              oldCookies.indexWhere((element) => element.name == cookie.name);
+          if (findIndex >= 0) {
+            oldCookies[findIndex] = cookie;
+          } else {
+            oldCookies.add(cookie);
+          }
+        }
+        cookiesMap[defaultUri.host] = oldCookies;
+      }
+
       await cookieJar.saveFromResponse(
         response.requestOptions.uri,
-        cookies.map((str) => Cookie.fromSetCookieValue(str)).toList(),
+        cookies,
       );
     }
   }

@@ -26,7 +26,7 @@ class AuthDio extends DioAbstract {
   Map<String, String>? headers = {"DOMAIN": DOMAIN, "ticket": ticket};
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     CookieManager(CookieJar()),
   ];
 

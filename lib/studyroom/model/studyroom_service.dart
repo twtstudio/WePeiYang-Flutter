@@ -24,7 +24,7 @@ class _StudyroomDio extends DioAbstract {
       };
 
   @override
-  List<InterceptorsWrapper> get interceptors => [
+  List<Interceptor> get interceptors => [
         _StyApiInterceptor(),
         InterceptorsWrapper(
           onRequest: (options, handler) {

@@ -8,7 +8,7 @@ class ThemeDio extends DioAbstract {
   String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(
       onResponse: (response, handler) {
         var code = response.data['error_code'] ?? 0;

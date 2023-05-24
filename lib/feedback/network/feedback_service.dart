@@ -13,7 +13,7 @@ class FeedbackDio extends DioAbstract {
   //String baseUrl = 'http://8.141.166.181:7013/api/v1/f/';
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
@@ -46,7 +46,7 @@ class FeedbackPicPostDio extends DioAbstract {
   String baseUrl = EnvConfig.QNHDPIC;
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
@@ -67,7 +67,7 @@ class FeedbackAdminPostDio extends DioAbstract {
   String baseUrl = '${EnvConfig.QNHD}api/v1/b/';
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);

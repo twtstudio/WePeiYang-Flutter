@@ -10,7 +10,7 @@ typedef OnFailure = void Function(DioError e);
 abstract class DioAbstract {
   String baseUrl = '';
   Map<String, String>? headers;
-  List<InterceptorsWrapper> interceptors = [];
+  List<Interceptor> interceptors = [];
   InterceptorsWrapper? errorInterceptor = null;
   ResponseType responseType = ResponseType.json;
 

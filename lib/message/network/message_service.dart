@@ -184,7 +184,7 @@ class MessageDio extends DioAbstract {
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/message/';
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.lakeToken.value;
       return handler.next(options);
