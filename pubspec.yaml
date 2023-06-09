@@ -43,7 +43,7 @@ dependencies:
   flutter_smart_dialog: ^3.3.5
   flutter_svg: ^0.22.0
 
-  fluttertoast: ^8.0.8
+  fluttertoast: ^8.2.2
 
   gallery_saver: ^2.3.2
 

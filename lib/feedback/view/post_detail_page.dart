@@ -36,16 +36,17 @@ enum DetailPageStatus {
 }
 
 // ignore: must_be_immutable
-class DetailPage extends StatefulWidget {
+class PostDetailPage extends StatefulWidget {
   Post post;
 
-  DetailPage(this.post);
+  PostDetailPage(this.post);
 
   @override
-  _DetailPageState createState() => _DetailPageState();
+  _PostDetailPageState createState() => _PostDetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
+class _PostDetailPageState extends State<PostDetailPage>
+    with TickerProviderStateMixin {
   DetailPageStatus status = DetailPageStatus.loading;
   List<Floor> _commentList = [];
   List<Floor> _officialCommentList = [];
@@ -459,11 +460,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                       Row(
                                         children: [
                                           SizedBox(width: 4),
-                                          if (context
-                                                  .read<NewFloorProvider>()
-                                                  .images
-                                                  .length ==
-                                              0)
+                                          if (value.images.length == 0)
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/image.png',
@@ -474,11 +471,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                     imageSelectionKey
                                                         .currentState
                                                         ?.loadAssets()),
-                                          if (context
-                                                  .read<NewFloorProvider>()
-                                                  .images
-                                                  .length ==
-                                              0)
+                                          if (value.images.length == 0)
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/camera.png',
@@ -523,10 +516,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                         '清空成功';
                                                   });
                                                 } else {
-                                                  Provider.of<NewFloorProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .clearAndClose();
+                                                  value.clearAndClose();
                                                 }
                                               }),
                                           Spacer(),
@@ -542,13 +532,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                 child: InkWell(
                                   onTap: () {
                                     _bottomIsOpen = true;
-                                    Provider.of<NewFloorProvider>(context,
-                                            listen: false)
-                                        .inputFieldOpenAndReplyTo(0);
-                                    FocusScope.of(context).requestFocus(
-                                        Provider.of<NewFloorProvider>(context,
-                                                listen: false)
-                                            .focusNode);
+                                    value.inputFieldOpenAndReplyTo(0);
+                                    FocusScope.of(context)
+                                        .requestFocus(value.focusNode);
                                   },
                                   child: Container(
                                       height: 36,
@@ -577,7 +563,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        if (!context.read<NewFloorProvider>().inputFieldEnabled)
+                        if (!value.inputFieldEnabled)
                           BottomLikeFavDislike(widget.post),
                       ],
                     ),

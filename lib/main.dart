@@ -9,8 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
@@ -226,6 +228,30 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
+    // return MaterialApp(
+    //   title: 'Flutter Demo',
+    //   theme: ThemeData(
+    //     // This is the theme of your application.
+    //     //
+    //     // TRY THIS: Try running your application with "flutter run". You'll see
+    //     // the application has a blue toolbar. Then, without quitting the app,
+    //     // try changing the seedColor in the colorScheme below to Colors.green
+    //     // and then invoke "hot reload" (save your changes or press the "hot
+    //     // reload" button in a Flutter-supported IDE, or press "r" if you used
+    //     // the command line to start the app).
+    //     //
+    //     // Notice that the counter didn't reset back to zero; the application
+    //     // state is not lost during the reload. To reset the state, use hot
+    //     // restart instead.
+    //     //
+    //     // This works for code too, not just values: Most code changes can be
+    //     // tested with just a hot reload.
+    //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    //     useMaterial3: true,
+    //   ),
+    //   home: MyHomePage(title: 'a'),
+    // );
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RemoteConfig()),
@@ -262,6 +288,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
         return ScreenUtilInit(
             designSize: const Size(390, 844),
+            useInheritedMediaQuery: true,
             minTextAdapt: true,
             child: StartUpWidget(),
             builder: ((context, child) {
@@ -301,7 +328,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
                 },
                 locale: localModel.locale(),
                 home: child,
-                builder: FlutterSmartDialog.init(builder: _builder),
+                // builder: FlutterSmartDialog.init(builder: _builder),
+                builder: FToastBuilder(),
               );
             }));
       }),
@@ -403,5 +431,59 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      // This call to setState tells the Flutter framework that something has
+      // changed in this State, which causes it to rerun the build method below
+      // so that the display can reflect the updated values. If we changed
+      // _counter without calling setState(), then the build method would not be
+      // called again, and so nothing would appear to happen.
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            width: double.infinity,
+            height: 700,
+            color: Colors.orange,
+          ),
+          TextField(
+            decoration: InputDecoration(labelText: "Type something"),
+            onChanged: (_) {
+              print(MediaQuery.of(context).viewInsets.bottom);
+            },
+          )
+        ]),
+      ),
+    );
   }
 }
