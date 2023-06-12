@@ -328,8 +328,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
                 },
                 locale: localModel.locale(),
                 home: child,
-                // builder: FlutterSmartDialog.init(builder: _builder),
-                builder: FToastBuilder(),
+                builder: FlutterSmartDialog.init(builder: _builder),
+                // builder: FToastBuilder(),
               );
             }));
       }),
