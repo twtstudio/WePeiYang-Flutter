@@ -34,8 +34,8 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
         context.sendBroadcast(intent)
     }
 
-    override fun onNewIntent(intent: Intent?): Boolean {
-        intent?.runCatching {
+    override fun onNewIntent(intent: Intent): Boolean {
+        intent.runCatching {
             return handleIntent(this)
         }
         return false

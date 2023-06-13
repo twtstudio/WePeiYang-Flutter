@@ -104,14 +104,14 @@ internal class SharePermissionResultListener(val plugin: WbySharePlugin) :
     PluginRegistry.RequestPermissionsResultListener {
     override fun onRequestPermissionsResult(
         requestCode: Int,
-        permissions: Array<out String>?,
-        grantResults: IntArray?
+        permissions: Array<out String>,
+        grantResults: IntArray
     ): Boolean {
         if (REQUEST_CODE != requestCode) {
             return false
         }
 
-        if (permissions == null || grantResults == null || plugin.continueDo == null) {
+        if (plugin.continueDo == null) {
             plugin.result.error("", "permissions and grantResults both null", null)
             return true
         }
@@ -153,7 +153,7 @@ internal class SharePermissionResultListener(val plugin: WbySharePlugin) :
         return mPermissions.isNotEmpty()
     }
 
-    internal val mPermissions = mutableListOf<String>()
+    private val mPermissions = mutableListOf<String>()
 
     companion object {
         const val REQUEST_CODE = 10086
