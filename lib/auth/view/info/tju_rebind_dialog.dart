@@ -21,14 +21,13 @@ class TjuRebindDialog extends Dialog {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 35),
+        // 防止验证码被键盘遮挡
+        margin: EdgeInsets.fromLTRB(
+            25, 0, 25, 25 + MediaQuery.of(context).viewInsets.bottom / 2),
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Colors.white),
-        child: Material(
-          color: Colors.white,
-          child: _TjuRebindWidget(reason),
-        ),
+        child: _TjuRebindWidget(reason),
       ),
     );
   }
