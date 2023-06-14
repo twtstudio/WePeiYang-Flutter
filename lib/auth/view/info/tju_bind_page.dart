@@ -88,12 +88,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
       var examProvider = Provider.of<ExamProvider>(context, listen: false);
       Future.sync(() async {
         var mtx = Mutex();
-        await mtx.acquire();
+
         // TODO: 重定向错误不知道怎么忽略，多请求一次课程表是可以的，同时把GPA放在课程表
         // 前面，防止刷到辅修成绩的bug情况。此外在判断是否刷新时，去掉了来自课程表页面的
         // 多刷新课程表总能刷出来，所以不判断了，之后要重新对一遍办公网的登录流程
         // 这里provider先拿出来，页面pop掉就没了
         if (widget.routeAfterBind != GPARouter.gpa) {
+          await mtx.acquire();
           gpaProvider.refreshGPA(
             onSuccess: () {
               mtx.release();
@@ -113,8 +114,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
           },
         );
 
-        await mtx.acquire();
         if (widget.routeAfterBind != ScheduleRouter.exam) {
+          await mtx.acquire();
           examProvider.refreshExam(
             onSuccess: () {
               mtx.release();
@@ -124,15 +125,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
             },
           );
         }
-        await mtx.acquire();
-        courseProvider.refreshCourse(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            mtx.release();
-          },
-        );
       });
       if (widget.routeAfterBind != null) {
         Navigator.pushReplacementNamed(context, widget.routeAfterBind!);
@@ -469,6 +461,7 @@ class CaptchaWidget extends StatefulWidget {
 class CaptchaWidgetState extends State<CaptchaWidget> {
   void refresh() async {
     id += 0.001;
+    await ClassesService.logout();
     var res = await ClassesService.fetch(
         "https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}",
         options: Options(responseType: ResponseType.bytes));

@@ -1,7 +1,6 @@
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 class GPAService {
@@ -10,29 +9,12 @@ class GPAService {
       {required OnResult<GPABean> onResult,
       required OnFailure onFailure}) async {
     try {
-      var info = await ClassesService.fetch(
-          "http://classes.tju.edu.cn/eams/stdDetail.action",
-          options: Options(headers: {'Connection': 'close'}));
-      while (info.isRedirect) {
-        info = await ClassesService.fetch(info.headers.value('location')!,
-            options: Options(headers: {'Connection': 'close'}));
-      }
+      var isMaster = ClassesService.isMaster;
 
-      var html = info.data.toString();
-      var s = html.find(r"项目：</td>(.+?)</td>");
-      if (s.isEmpty) s = html;
-      var isMaster = s.contains("研究");
-
-      if (isMaster)
-        // 如果是研究生，切换至研究生成绩
-        await ClassesService.fetch(
-            "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-            params: {'projectId': '22'});
-      else
-        await ClassesService.fetch(
-            "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-            cookieList: CommonPreferences.cookies,
-            params: {'projectId': '1'});
+      // 如果是研究生，切换至研究生成绩
+      await ClassesService.fetch(
+          "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
+          params: {'projectId': isMaster ? '22' : '1'});
       var response = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
       onResult(_data2GPABean(response.data.toString(), isMaster));
