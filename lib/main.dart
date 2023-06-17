@@ -344,8 +344,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus &&
             currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
+              FocusManager.instance.primaryFocus?.unfocus();
+          }
       },
     );
   }
