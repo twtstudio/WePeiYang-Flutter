@@ -119,7 +119,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
 
-    if (initializeRefresh == true) {
+    if (initializeRefresh) {
       context
           .read<LakeModel>()
           .lakeAreas[context.read<LakeModel>().tabController.index]!

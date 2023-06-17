@@ -113,6 +113,9 @@ class ScheduleService {
       res = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
+    if (res.data.toString().contains('统一认证系统')) {
+      throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+    }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     // 获取课表
     res = await ClassesService.fetch(
@@ -251,9 +254,13 @@ class ScheduleService {
     try {
       var response = await ClassesService.fetch(
           "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
+      if (response.data.toString().contains('统一认证系统')) {
+        throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+      }
       var exams = <Exam>[];
       String tbody =
           response.data.toString().match(r'(?<=<tbody)[^]*?(?=</tbody>)');
+
       if (!tbody.contains('<td>')) {
         onResult([]);
         return;
