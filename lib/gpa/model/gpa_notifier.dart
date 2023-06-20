@@ -1,8 +1,8 @@
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure, OnSuccess;
+import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart' show DioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -116,18 +116,33 @@ class GPANotifier with ChangeNotifier {
 
   bool get hideGPA => CommonPreferences.hideGPA.value;
 
-  void refreshGPA(
-      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
-    if (hint) ToastProvider.running("刷新数据中……");
+  /// 使用后端爬虫
+  void refreshGPAByBackend() {
+    ClassesBackendService.getClasses().then((data) {
+      if (data == null) {
+        ToastProvider.error('刷新失败');
+      } else {
+        _gpaStats = data.item3.stats;
+        total = data.item3.total;
+        notifyListeners();
+        CommonPreferences.gpaData.value = json.encode(data.item3);
+      }
+    });
+  }
+
+  /// 使用前端爬虫
+  void refreshGPA({
+    void Function()? onSuccess,
+    void Function(DioError)? onFailure,
+  }) {
     GPAService.getGPABean(onResult: (gpaBean) {
-      if (hint) ToastProvider.success("刷新gpa数据成功");
       _gpaStats = gpaBean.stats;
       total = gpaBean.total;
       notifyListeners();
-      onSuccess?.call();
       CommonPreferences.gpaData.value = json.encode(gpaBean);
+      onSuccess?.call();
     }, onFailure: (e) {
-      if (onFailure != null) onFailure(e);
+      onFailure?.call(e);
     });
   }
 

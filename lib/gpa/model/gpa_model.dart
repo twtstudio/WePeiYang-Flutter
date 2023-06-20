@@ -58,6 +58,7 @@ class GPAStat {
 }
 
 class GPACourse {
+  String semester; // `2021-2022 1`
   String name; // 课程名称
   String classType; // 课程类别 （必修/选修/...）
   double score; // 课程成绩
@@ -65,11 +66,12 @@ class GPACourse {
   double credit; // 课程学分
   double gpa; // 课程绩点
 
-  GPACourse(this.name, this.classType, this.score, this.rawScore, this.credit,
+  GPACourse(this.semester, this.name, this.classType, this.score, this.rawScore, this.credit,
       this.gpa);
 
   GPACourse.fromJson(Map<String, dynamic> map)
-      : name = map['name'],
+      : semester = map['semester'],
+        name = map['name'],
         classType = map['classType'],
         score = map['score'],
         rawScore = map['rawScore'],
@@ -77,6 +79,7 @@ class GPACourse {
         gpa = map['gpa'];
 
   Map<String, dynamic> toJson() => {
+        'semester': semester,
         'name': name,
         'classType': classType,
         'score': score,

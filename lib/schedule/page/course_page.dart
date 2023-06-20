@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -30,12 +31,12 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
-  /// 进入课程表页面后重设选中周并自动刷新数据
+  /// 进入课程表页面后重设选中周并自动刷新自定义课程
   _CoursePageState() {
     var provider =
         WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
     provider.quietResetWeek();
-    provider.refreshCourse();
+    provider.refreshCustomCourse();
   }
 
   @override
@@ -109,17 +110,20 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          context.read<CourseProvider>().refreshCourse(
-              hint: true,
-              onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                    reason: e is WpyDioError ? e.error.toString() : null,
-                  ),
-                );
-              });
+          ToastProvider.running("刷新数据中……");
+          if (CommonPreferences.useClassesBackend.value) {
+            context.read<CourseProvider>().refreshCourseByBackend();
+          } else {
+            context.read<CourseProvider>().refreshCourse(onFailure: (e) {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (BuildContext context) => TjuRebindDialog(
+                  reason: e is WpyDioError ? e.error.toString() : null,
+                ),
+              );
+            });
+          }
         },
         child: Container(
           decoration: BoxDecoration(),

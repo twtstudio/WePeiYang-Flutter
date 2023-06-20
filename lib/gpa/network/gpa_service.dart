@@ -104,6 +104,7 @@ class GPAService {
         /// 这里的[ =":a-z]*?的作用是适配重修课的红色span
         var courseData = courseDataList[i]
             .matches(r'(?<=<td[ =":a-z]*?>)[\s\S]*?(?=<)')
+            // semester '2021-2022 1' -> '2021-20221'
             .map((e) => e.replaceAll(RegExp(r'\s'), ''))
             .toList(); // 这里去掉了数据中的转义符
         var semester = courseData[0];
@@ -121,8 +122,8 @@ class GPAService {
         );
       }
       List<GPAStat> stats = [];
-      semesterMap.forEach((term, courses) {
-        stats.add(_calculateStat(term, courses));
+      semesterMap.forEach((semester, courses) {
+        stats.add(_calculateStat(semester, courses));
       });
 
       return GPABean(total, stats);
@@ -141,14 +142,14 @@ class GPAService {
     double credit = double.tryParse(data['credit'] ?? '0.0') ?? 0.0;
     double gpa = double.tryParse(data['gpa'] ?? '0.0') ?? 0.0;
 
-    return GPACourse(data['name'] ?? '', data['type'] ?? '', score,
-        data['score'] ?? '', credit, gpa);
+    return GPACourse(data['semester'] ?? '', data['name'] ?? '',
+        data['type'] ?? '', score, data['score'] ?? '', credit, gpa);
   }
 
-  /// 计算每学期的总加权/绩点/学分，此处term格式为`2021-20221`
-  static GPAStat _calculateStat(String term, List<GPACourse> courses) {
-    term = term.split('-').last; // `20221`
-    term = '${term[4]}H${term[2]}${term[3]}'; // `1H22`
+  /// 计算每学期的总加权/绩点/学分，此处semester格式为`2021-20221`
+  static GPAStat _calculateStat(String semester, List<GPACourse> courses) {
+    semester = semester.split('-').last; // `20221`
+    semester = '${semester[4]}H${semester[2]}${semester[3]}'; // `1H22`
     var totalCredit = 0.0;
     var totalScore = 0.0;
     var totalGPA = 0.0;
@@ -169,6 +170,6 @@ class GPAService {
     }
 
     return GPAStat(
-        term, totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
+        semester, totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
   }
 }

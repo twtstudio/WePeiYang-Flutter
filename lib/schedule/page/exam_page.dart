@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show WpyDioError;
@@ -16,12 +17,6 @@ class ExamPage extends StatefulWidget {
 }
 
 class _ExamPageState extends State<ExamPage> {
-  _ExamPageState() {
-    WePeiYangApp.navigatorState.currentContext!
-        .read<ExamProvider>()
-        .refreshExam();
-  }
-
   get _color => Color.fromRGBO(98, 103, 123, 1);
 
   @override
@@ -36,16 +31,18 @@ class _ExamPageState extends State<ExamPage> {
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),
           onPressed: () {
-            context.read<ExamProvider>().refreshExam(
-                hint: true,
-                onFailure: (e) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) => TjuRebindDialog(
-                          reason:
-                              e is WpyDioError ? e.error.toString() : null));
-                });
+            ToastProvider.running("刷新数据中……");
+            if (CommonPreferences.useClassesBackend.value) {
+              context.read<ExamProvider>().refreshExamByBackend();
+            } else {
+              context.read<ExamProvider>().refreshExam(onFailure: (e) {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context) => TjuRebindDialog(
+                        reason: e is WpyDioError ? e.error.toString() : null));
+              });
+            }
           },
         ),
         SizedBox(width: 10.w),

@@ -1,8 +1,8 @@
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure, OnSuccess;
+import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart' show DioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
@@ -72,18 +72,29 @@ class ExamProvider with ChangeNotifier {
 
   bool get hideExam => CommonPreferences.hideExam.value;
 
-  /// 通过爬虫刷新数据
-  void refreshExam(
-      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
-    if (hint) ToastProvider.running("刷新数据中……");
+  /// 使用后端爬虫
+  void refreshExamByBackend() {
+    ClassesBackendService.getClasses().then((data) {
+      if (data == null) {
+        ToastProvider.error('刷新失败');
+      } else {
+        this.exams = data.item2;
+        CommonPreferences.examData.value = json.encode(ExamTable(_exams));
+      }
+    });
+  }
+
+  /// 使用前端爬虫
+  void refreshExam({
+    void Function()? onSuccess,
+    void Function(DioError)? onFailure,
+  }) {
     ScheduleService.fetchExam(onResult: (exams) {
-      if (hint) ToastProvider.success("刷新考表数据成功");
       this.exams = exams;
-      CommonPreferences.examData.value =
-          json.encode(ExamTable(_exams)); // 刷新本地缓存
+      CommonPreferences.examData.value = json.encode(ExamTable(_exams));
       onSuccess?.call();
     }, onFailure: (e) {
-      if (onFailure != null) onFailure(e);
+      onFailure?.call(e);
     });
   }
 
