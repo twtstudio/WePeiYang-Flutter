@@ -25,6 +25,6 @@ class NetCheckInterceptor extends InterceptorsWrapper {
     if (NetStatusListener().hasNetwork)
       return handler.next(options);
     else
-      return handler.reject(WpyDioError(error: '网络未连接'));
+      return handler.reject(WpyDioException(error: '网络未连接'));
   }
 }

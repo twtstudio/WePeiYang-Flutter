@@ -1,3 +1,4 @@
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -149,6 +150,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final path = await StorageUtil.saveTempFileFromNetwork(
         baseUrl + widget.args.urlList[widget.args.indexNow],
         filename: widget.args.urlList[widget.args.indexNow]);
-    Share.shareFiles([path]);
+    Share.shareXFiles([XFile(path)]);
   }
 }

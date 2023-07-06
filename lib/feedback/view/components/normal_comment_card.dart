@@ -646,7 +646,7 @@ class _NCommentCardState extends State<NCommentCard>
           widget.comment.id,
           false,
           widget.type ?? 0,
-          widget.comment.avatar ?? widget.comment.nickname,
+          widget.comment.avatar,
           widget.comment.uid,
           widget.comment.nickname,
           widget.comment.level.toString(),

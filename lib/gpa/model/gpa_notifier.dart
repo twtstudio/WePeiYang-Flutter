@@ -144,7 +144,7 @@ class GPANotifier with ChangeNotifier {
       try {
         var captcha = await ClassesBackendService.ocr();
         await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
-      } on DioError catch (_) {
+      } on DioException catch (_) {
         showDialog(
           context: context,
           barrierDismissible: true,
@@ -157,7 +157,7 @@ class GPANotifier with ChangeNotifier {
   /// 使用前端爬虫
   void refreshGPA({
     void Function()? onSuccess,
-    void Function(DioError)? onFailure,
+    void Function(DioException)? onFailure,
   }) {
     GPAService.getGPABean(onResult: (gpaBean) {
       _gpaStats = gpaBean.stats;

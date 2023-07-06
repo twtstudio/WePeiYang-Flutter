@@ -3,7 +3,7 @@ part of 'wpy_dio.dart';
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();
 typedef OnResult<T> = void Function(T data);
-typedef OnFailure = void Function(DioError e);
+typedef OnFailure = void Function(DioException e);
 
 // TODO: 是否考虑删除 abstract ，这样有些简单使用的地方就不用再继承一个类了？
 abstract class DioAbstract {

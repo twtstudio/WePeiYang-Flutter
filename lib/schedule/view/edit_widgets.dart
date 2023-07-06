@@ -552,7 +552,7 @@ class WeekPicker extends Dialog {
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            primary: index == _weekTypes.indexOf(type)
+                            backgroundColor: index == _weekTypes.indexOf(type)
                                 ? Color.fromRGBO(44, 126, 223, 1)
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(

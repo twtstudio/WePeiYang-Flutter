@@ -19,7 +19,7 @@ class GPAService {
       var response = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
       onResult(_data2GPABean(response.data.toString(), isMaster));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -27,10 +27,10 @@ class GPAService {
   /// 用请求到的html数据生成gpaBean对象
   static GPABean _data2GPABean(String data, bool isMaster) {
     if (!data.contains("在校汇总") || data.contains("本次会话已经被过期")) {
-      throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     if (data.contains("就差一个评教的距离啦")) {
-      throw WpyDioError(error: "存在未评教的课程，请先前往评教");
+      throw WpyDioException(error: "存在未评教的课程，请先前往评教");
     }
 
     /// 这里加一个try-catch捕获解析数据中抛出的异常（空指针之类的）
@@ -129,7 +129,7 @@ class GPAService {
 
       return GPABean(total, stats);
     } catch (e) {
-      throw WpyDioError(error: "解析GPA数据出错，请重新尝试");
+      throw WpyDioException(error: "解析GPA数据出错，请重新尝试");
     }
   }
 

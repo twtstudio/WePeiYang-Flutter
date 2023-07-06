@@ -227,7 +227,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     _saveAndQuit(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: mainColor,
+                    backgroundColor: mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),

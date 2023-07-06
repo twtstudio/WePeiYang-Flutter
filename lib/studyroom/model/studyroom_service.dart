@@ -50,7 +50,7 @@ class _StyApiInterceptor extends InterceptorsWrapper {
       return handler.resolve(response);
     } else {
       return handler.reject(
-        DioError(
+        DioException(
           error: respData.message ?? "未知错误",
           requestOptions: response.requestOptions,
         ),

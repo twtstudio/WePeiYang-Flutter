@@ -99,7 +99,7 @@ class ExamProvider with ChangeNotifier {
       try {
         var captcha = await ClassesBackendService.ocr();
         await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
-      } on DioError catch (_) {
+      } on DioException catch (_) {
         showDialog(
           context: context,
           barrierDismissible: true,
@@ -112,7 +112,7 @@ class ExamProvider with ChangeNotifier {
   /// 使用前端爬虫
   void refreshExam({
     void Function()? onSuccess,
-    void Function(DioError)? onFailure,
+    void Function(DioException)? onFailure,
   }) {
     ScheduleService.fetchExam(onResult: (exams) {
       this.exams = exams;

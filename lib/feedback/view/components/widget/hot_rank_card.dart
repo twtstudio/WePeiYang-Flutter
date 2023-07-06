@@ -113,8 +113,7 @@ class _HotCardState extends State<HotCard> {
                                                   child: Text(
                                                     data.hotTagsList[index]
                                                             .point
-                                                            .toString() ??
-                                                        '0',
+                                                            .toString(),
                                                     style: TextUtil
                                                         .base.w400.NotoSansSC
                                                         .sp(14)

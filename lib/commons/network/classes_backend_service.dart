@@ -40,7 +40,7 @@ class ClassesBackendService {
       CommonPreferences.examData.value = json.encode(ExamTable(exams));
       CommonPreferences.gpaData.value = json.encode(gpaBean);
       return Tuple3(courses, exams, gpaBean);
-    } on DioError catch (e, s) {
+    } on DioException catch (e, s) {
       Logger.reportError(e, s);
       return null;
     }

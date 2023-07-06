@@ -403,8 +403,8 @@ class CardBean {
 
 class WPYScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
     return GlowingOverscrollIndicator(
       child: child,
       showLeading: false,

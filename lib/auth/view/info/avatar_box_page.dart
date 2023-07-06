@@ -230,7 +230,6 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                 ),
               );
         }
-        return Container();
       },
     );
   }

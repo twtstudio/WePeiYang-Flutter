@@ -16,7 +16,7 @@ class ThemeDio extends DioAbstract {
             return handler.next(response);
           default: // 其他错误
             return handler.reject(
-                WpyDioError(error: response.data['message']), true);
+                WpyDioException(error: response.data['message']), true);
         }
       },
     )

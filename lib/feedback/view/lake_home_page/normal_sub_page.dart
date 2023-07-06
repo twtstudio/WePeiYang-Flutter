@@ -104,9 +104,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             ?.refreshController
             .refreshCompleted();
       }, failure: (e) {
-        if (e.type == DioErrorType.connectionTimeout ||
-            e.type == DioErrorType.receiveTimeout ||
-            e.type == DioErrorType.sendTimeout)
+        if (e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.receiveTimeout ||
+            e.type == DioExceptionType.sendTimeout)
           context
               .read<LakeModel>()
               .lakeAreas[index]

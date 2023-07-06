@@ -13,7 +13,7 @@ class MessageService {
     try {
       var response = await messageDio.get("count");
       onResult(MessageCount.fromJson(response.data['count']));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -32,7 +32,7 @@ class MessageService {
         list.add(LikeMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -51,7 +51,7 @@ class MessageService {
         list.add(FloorMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -70,7 +70,7 @@ class MessageService {
         list.add(ReplyMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -89,7 +89,7 @@ class MessageService {
         list.add(NoticeMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -100,7 +100,7 @@ class MessageService {
       await messageDio.post("like/read",
           formData: FormData.fromMap({"id": id, "type": type}));
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
 
@@ -115,7 +115,7 @@ class MessageService {
       await messageDio.post("reply/read",
           formData: FormData.fromMap({"id": id}));
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
 
@@ -130,7 +130,7 @@ class MessageService {
       await messageDio.post("floor/read",
           formData: FormData.fromMap({"id": id}));
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
 
@@ -145,7 +145,7 @@ class MessageService {
       await messageDio.post("floor/read_in_post",
           formData: FormData.fromMap({"post_id": postId}));
       onSuccess?.call();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure?.call(e);
     }
   }
@@ -156,7 +156,7 @@ class MessageService {
       await messageDio.post("notice/read",
           formData: FormData.fromMap({"id": id}));
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
 
@@ -170,7 +170,7 @@ class MessageService {
     try {
       await messageDio.post("all");
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -208,7 +208,7 @@ class ApiInterceptor extends InterceptorsWrapper {
       response.data = respData.data;
       return handler.resolve(response);
     } else {
-      return handler.reject(WpyDioError(error: respData.message), true);
+      return handler.reject(WpyDioException(error: respData.message), true);
     }
   }
 }

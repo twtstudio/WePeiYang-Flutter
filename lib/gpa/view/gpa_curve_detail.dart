@@ -366,7 +366,6 @@ class _GPACurvePainter extends CustomPainter {
 
   final Paint _linePaint;
   final Paint _pointPaint;
-  final Paint _downPaint;
 
   _GPACurvePainter(List<Color> gpaColors,
       {required this.isPreview, required this.points, required this.taped})
@@ -376,11 +375,7 @@ class _GPACurvePainter extends CustomPainter {
           ..strokeWidth = 5.0,
         _pointPaint = Paint()
           ..color = isPreview ? _pointPreview : gpaColors[1]
-          ..style = PaintingStyle.fill,
-        _downPaint = Paint()
-          ..color = isPreview ? _linePreview : gpaColors[3]
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1;
+          ..style = PaintingStyle.fill;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     var path = Path()

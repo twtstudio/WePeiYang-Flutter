@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -89,9 +88,9 @@ class ReportService with AsyncTimer {
         if (responseData.errorCode == 0 ? true : false) {
           onResult();
         } else {
-          onFailure(WpyDioError(error: responseData.message));
+          onFailure(WpyDioException(error: responseData.message));
         }
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });

@@ -36,7 +36,7 @@ class ScheduleService {
       }
 
       onResult(courseList);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -113,7 +113,7 @@ class ScheduleService {
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
     if (res.data.toString().contains('统一认证系统')) {
-      throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     // 获取课表
@@ -134,7 +134,7 @@ class ScheduleService {
   /// 解析请求到的html课程数据
   static List<Course> _parseCourseHTML(String data) {
     /// 判断会话是否过期
-    if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+    if (data.contains("本次会话已经被过期")) throw WpyDioException(error: "办公网绑定失效，请重新绑定");
 
     try {
       /// 先整理出所有的arrange对象
@@ -237,7 +237,7 @@ class ScheduleService {
       });
       return courseList;
     } catch (e) {
-      throw WpyDioError(error: '解析课程数据出错，请重新尝试');
+      throw WpyDioException(error: '解析课程数据出错，请重新尝试');
     }
   }
 
@@ -255,7 +255,7 @@ class ScheduleService {
       var response = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
       if (response.data.toString().contains('统一认证系统')) {
-        throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+        throw WpyDioException(error: "办公网绑定失效，请重新绑定");
       }
       var exams = <Exam>[];
       String tbody =
@@ -278,7 +278,7 @@ class ScheduleService {
       });
       onResult(exams);
     } catch (e) {
-      onFailure(e is DioError ? e : WpyDioError(error: '解析考表数据出错，请重新尝试'));
+      onFailure(e is DioException ? e : WpyDioException(error: '解析考表数据出错，请重新尝试'));
     }
   }
 }

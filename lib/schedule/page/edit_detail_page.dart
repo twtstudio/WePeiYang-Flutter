@@ -202,7 +202,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 child: ElevatedButton(
                   onPressed: () => _saveAndQuit(context),
                   style: ElevatedButton.styleFrom(
-                    primary: mainColor,
+                    backgroundColor: mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),

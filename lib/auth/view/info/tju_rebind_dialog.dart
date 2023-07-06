@@ -62,7 +62,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
     try {
       await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
       Navigator.pop(context);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       var str = e.error.toString();
       if (str == '网络连接超时') str = '请连接校园网后再次尝试';
       ToastProvider.error(str);

@@ -83,9 +83,10 @@ class _FavorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        onPrimary: Colors.transparent,
-        onSurface: Colors.transparent,
+        foregroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        disabledForegroundColor: Colors.transparent.withOpacity(0.38),
+        disabledBackgroundColor: Colors.transparent.withOpacity(0.12),
         shadowColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.r),

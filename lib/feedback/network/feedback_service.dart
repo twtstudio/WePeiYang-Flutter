@@ -34,7 +34,7 @@ class FeedbackDio extends DioAbstract {
         default: // 其他错误
           var data = response.data['data'];
           if (data == null || data['error'] == null) return;
-          return handler.reject(WpyDioError(error: data['error']), true);
+          return handler.reject(WpyDioException(error: data['error']), true);
       }
     })
   ];
@@ -55,7 +55,7 @@ class FeedbackPicPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioError(error: response.data['msg']), true);
+          return handler.reject(WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -76,7 +76,7 @@ class FeedbackAdminPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioError(error: response.data['msg']), true);
+          return handler.reject(WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -120,7 +120,7 @@ class FeedbackService with AsyncTimer {
         }
         if (onResult != null) onResult(response.data['data']['token']);
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (!forceRefresh) {
         getToken(forceRefresh: true);
       } else if (onFailure != null) onFailure(e);
@@ -141,7 +141,7 @@ class FeedbackService with AsyncTimer {
       if (response.data['data']['token'] != null)
         CommonPreferences.lakeToken.value = response.data['data']['token'];
       onSuccess();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -158,9 +158,9 @@ class FeedbackService with AsyncTimer {
         }
         onResult(departmentList);
       } else {
-        throw WpyDioError(error: '校务专区获取标签失败, 请刷新');
+        throw WpyDioException(error: '校务专区获取标签失败, 请刷新');
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -174,7 +174,7 @@ class FeedbackService with AsyncTimer {
         });
         feedbackDio.post("user/avatar", formData: data);
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -209,7 +209,7 @@ class FeedbackService with AsyncTimer {
           list.add(json);
         }
         onResult(list);
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -235,7 +235,7 @@ class FeedbackService with AsyncTimer {
         list.add(Tag.fromJson(json));
       }
       onSuccess(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -251,7 +251,7 @@ class FeedbackService with AsyncTimer {
         list.add(Festival.fromJson(json));
       }
       onSuccess(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -269,7 +269,7 @@ class FeedbackService with AsyncTimer {
         list.add(Notice.fromJson(json));
       }
       onResult(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -285,7 +285,7 @@ class FeedbackService with AsyncTimer {
       tag = Tag.fromJson(json);
 
       onSuccess(tag);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -306,7 +306,7 @@ class FeedbackService with AsyncTimer {
         list.add(SearchTag.fromJson(json));
       }
       onResult(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -324,7 +324,7 @@ class FeedbackService with AsyncTimer {
             }));
         Map<String, dynamic> json = response.data['data'];
         onSuccess.call(PostTagId.fromJson(json));
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -344,7 +344,7 @@ class FeedbackService with AsyncTimer {
               'type': type,
             }));
         onSuccess?.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -381,7 +381,7 @@ class FeedbackService with AsyncTimer {
         list.add(Post.fromJson(json));
       }
       onSuccess(list, response.data['data']['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -405,7 +405,7 @@ class FeedbackService with AsyncTimer {
         list.add(Post.fromJson(json));
       }
       onResult(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -433,7 +433,7 @@ class FeedbackService with AsyncTimer {
         list.add(Post.fromJson(json));
       }
       onResult(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -457,7 +457,7 @@ class FeedbackService with AsyncTimer {
         list.add(Post.fromJson(json));
       }
       onResult(list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -480,7 +480,7 @@ class FeedbackService with AsyncTimer {
       );
       final floor = FloorList.fromJson(response.data['data']);
       onResult(floor.list);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -492,7 +492,7 @@ class FeedbackService with AsyncTimer {
     try {
       await feedbackDio.post('post/visit',
           formData: FormData.fromMap({'post_id': '$id'}));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -509,7 +509,7 @@ class FeedbackService with AsyncTimer {
       );
       var post = Post.fromJson(response.data['data']['post']);
       onResult(post);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -529,7 +529,7 @@ class FeedbackService with AsyncTimer {
         officialCommentList.add(Floor.fromJson(json));
       }
       onSuccess(officialCommentList);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -546,7 +546,7 @@ class FeedbackService with AsyncTimer {
       );
       var floor = Floor.fromJson(response.data['data']['floor']);
       onResult(floor);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -576,7 +576,7 @@ class FeedbackService with AsyncTimer {
         commentList.add(Floor.fromJson(json));
       }
       onSuccess(commentList, commentResponse.data['data']['total']);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -595,7 +595,7 @@ class FeedbackService with AsyncTimer {
               'op': isLike ? 0 : 1,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -615,7 +615,7 @@ class FeedbackService with AsyncTimer {
               'op': isFavorite ? 0 : 1,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -635,7 +635,7 @@ class FeedbackService with AsyncTimer {
               'op': isDisliked ? 0 : 1,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -651,7 +651,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post('user/name',
             formData: FormData.fromMap({'name': '$nickName'}));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -685,7 +685,7 @@ class FeedbackService with AsyncTimer {
       CommonPreferences.levelName.value =
           response.data['data']['user']['level_info']['level_name'];
       onSuccess.call();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -703,7 +703,7 @@ class FeedbackService with AsyncTimer {
               'op': isLike ? 0 : 1,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -722,7 +722,7 @@ class FeedbackService with AsyncTimer {
               'op': isDis ? 0 : 1,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -742,7 +742,7 @@ class FeedbackService with AsyncTimer {
               'token': CommonPreferences.lakeToken.value,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -766,7 +766,7 @@ class FeedbackService with AsyncTimer {
         }
         await feedbackDio.post('floor', formData: formData);
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -790,7 +790,7 @@ class FeedbackService with AsyncTimer {
         }
         await feedbackDio.post('floor/reply', formData: formData);
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -814,7 +814,7 @@ class FeedbackService with AsyncTimer {
         }
         await feedbackDio.post('post/reply', formData: formData);
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -846,7 +846,7 @@ class FeedbackService with AsyncTimer {
         }
         await feedbackDio.post('post', formData: formData);
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -868,7 +868,7 @@ class FeedbackService with AsyncTimer {
           }),
         );
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -885,7 +885,7 @@ class FeedbackService with AsyncTimer {
           queryParameters: {'post_id': id},
         );
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -918,7 +918,7 @@ class FeedbackService with AsyncTimer {
         }
         await feedbackDio.post('report', formData: formData);
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -935,7 +935,7 @@ class FeedbackService with AsyncTimer {
           queryParameters: {'floor_id': '$id'},
         );
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -952,7 +952,7 @@ class FeedbackService with AsyncTimer {
           queryParameters: {'id': id},
         );
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -969,7 +969,7 @@ class FeedbackService with AsyncTimer {
           queryParameters: {'floor_id': floorId},
         );
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -988,7 +988,7 @@ class FeedbackService with AsyncTimer {
               'value': hotIndex,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1007,7 +1007,7 @@ class FeedbackService with AsyncTimer {
               'value': hotIndex,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1026,7 +1026,7 @@ class FeedbackService with AsyncTimer {
               'value': value,
             }));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1059,7 +1059,7 @@ class FeedbackService with AsyncTimer {
             '校区': obd["campus"] ?? '无校区',
           };
         onResult(openBoxDetail);
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1074,7 +1074,7 @@ class FeedbackService with AsyncTimer {
         await feedbackAdminPostDio.post('user/nickname/reset',
             formData: FormData.fromMap({'uid': id}));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1089,7 +1089,7 @@ class FeedbackService with AsyncTimer {
         await feedbackAdminPostDio.post('user/avatar/reset',
             formData: FormData.fromMap({'uid': id}));
         onSuccess.call();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -1113,7 +1113,7 @@ class FeedbackService with AsyncTimer {
       var list = AvatarBoxList.fromJson(res.data['data']);
       avatarBoxList.clear();
       avatarBoxList.addAll(list.avatarFrameList);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.error);
     }
     return avatarBoxList;
@@ -1127,7 +1127,7 @@ class FeedbackService with AsyncTimer {
       var list = AvatarBoxList.fromJson(res.data['data']);
       avatarBoxList.clear();
       avatarBoxList.addAll(list.avatarFrameList);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print(e.error);
     }
     return avatarBoxList;
@@ -1143,7 +1143,7 @@ class FeedbackService with AsyncTimer {
       } else {
         ToastProvider.error('坏耶!头像框设置失败!');
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       ToastProvider.error('坏耶!头像框设置失败!');
       print(e.error);
     }

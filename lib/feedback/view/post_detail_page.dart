@@ -1347,7 +1347,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
           Navigator.of(context).pop(true);
           Navigator.of(context).pop(true);
         } else {
-          if (tc != null && tc.text != '') {
+          if (tc.text != '') {
             await FeedbackService.adminTopPost(
               id: widget.id,
               hotIndex: tc.text,

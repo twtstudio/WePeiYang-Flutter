@@ -385,12 +385,8 @@ class _ReportListItem extends StatelessWidget {
       ),
     );
 
-    var healthCode = data.healthCode != null
-        ? _code('健康码', Color(0xc14caf50), codeHeight, codeWidth)
-        : SizedBox.shrink();
-    var travelCode = data.travelCode != null
-        ? _code('行程码', Color(0xc14caf50), codeHeight, codeWidth)
-        : SizedBox.shrink();
+    var healthCode = _code('健康码', Color(0xc14caf50), codeHeight, codeWidth);
+    var travelCode = _code('行程码', Color(0xc14caf50), codeHeight, codeWidth);
 
     var codeColumn = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

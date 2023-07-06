@@ -320,7 +320,7 @@ class _TextMailContent extends StatelessWidget {
                 ],
               ),
             ),
-            if (data.url != null && data.url != '')
+            if (data.url != '')
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
