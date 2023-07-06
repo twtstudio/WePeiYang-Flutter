@@ -1,7 +1,6 @@
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 
@@ -101,16 +100,16 @@ class ScheduleService {
     Response<dynamic> res;
     if (!isMaster) {
       final projectId = getMinor ? 2 : 1;
-      await ClassesService.fetch(
+      await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action?projectId=$projectId");
 
       await Future.delayed(Duration(milliseconds: 100));
-      res = await ClassesService.fetch(
+      res = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=$projectId");
     }
     // 如果是研究生
     else {
-      res = await ClassesService.fetch(
+      res = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
     if (res.data.toString().contains('统一认证系统')) {
@@ -118,16 +117,17 @@ class ScheduleService {
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     // 获取课表
-    res = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
-        isPost: true,
-        params: {
+    res = await ClassesService.spiderDio.post(
+        'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
+        data: {
           "ignoreHead": "1",
           "setting.kind": "std",
           "startWeek": "",
           "semester.id": semesterId,
           "ids": ids
-        });
+        },
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
     return _parseCourseHTML(res.data.toString());
   }
 
@@ -252,7 +252,7 @@ class ScheduleService {
       {required OnResult<List<Exam>> onResult,
       required OnFailure onFailure}) async {
     try {
-      var response = await ClassesService.fetch(
+      var response = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
       if (response.data.toString().contains('统一认证系统')) {
         throw WpyDioError(error: "办公网绑定失效，请重新绑定");

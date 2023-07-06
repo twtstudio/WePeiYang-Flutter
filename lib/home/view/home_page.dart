@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -55,6 +56,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      /// 若没有绑定办公网，前往绑定页
+      if (!CommonPreferences.isBindTju.value) {
+        Navigator.pushNamed(context, AuthRouter.tjuBind);
+      }
+
       context.read<PushManager>().initGeTuiSdk();
 
       final manager = context.read<PushManager>();

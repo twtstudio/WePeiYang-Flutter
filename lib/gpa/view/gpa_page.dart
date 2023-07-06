@@ -5,11 +5,7 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -131,19 +127,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
             height: 28.h,
           ),
           onTap: () {
-            ToastProvider.running("刷新数据中……");
-            if (CommonPreferences.useClassesBackend.value) {
-              context.read<GPANotifier>().refreshGPAByBackend();
-            } else {
-              context.read<GPANotifier>().refreshGPA(onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                      reason: e is WpyDioError ? e.error.toString() : null),
-                );
-              });
-            }
+            context.read<GPANotifier>().refreshGPABackend(context);
           },
         ),
         SizedBox(width: 18.w),

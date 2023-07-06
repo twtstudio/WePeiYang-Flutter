@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -31,18 +26,7 @@ class _ExamPageState extends State<ExamPage> {
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),
           onPressed: () {
-            ToastProvider.running("刷新数据中……");
-            if (CommonPreferences.useClassesBackend.value) {
-              context.read<ExamProvider>().refreshExamByBackend();
-            } else {
-              context.read<ExamProvider>().refreshExam(onFailure: (e) {
-                showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context) => TjuRebindDialog(
-                        reason: e is WpyDioError ? e.error.toString() : null));
-              });
-            }
+            context.read<ExamProvider>().refreshExamByBackend(context);
           },
         ),
         SizedBox(width: 10.w),

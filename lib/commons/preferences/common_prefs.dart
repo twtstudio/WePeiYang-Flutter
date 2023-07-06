@@ -20,7 +20,6 @@ class CommonPreferences {
   static final email = PrefsBean<String>('email');
   static final account = PrefsBean<String>('account');
   static final password = PrefsBean<String>('password');
-  static final captchaCookie = PrefsBean<String>('Cookie');
   static final realName = PrefsBean<String>('realName');
   static final department = PrefsBean<String>('department');
   static final major = PrefsBean<String>('major');
@@ -136,7 +135,6 @@ class CommonPreferences {
     email.clear();
     account.clear();
     password.clear();
-    captchaCookie.clear();
     realName.clear();
     department.clear();
     major.clear();

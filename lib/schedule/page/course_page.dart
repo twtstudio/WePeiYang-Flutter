@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -110,20 +106,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          ToastProvider.running("刷新数据中……");
-          if (CommonPreferences.useClassesBackend.value) {
-            context.read<CourseProvider>().refreshCourseByBackend();
-          } else {
-            context.read<CourseProvider>().refreshCourse(onFailure: (e) {
-              showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext context) => TjuRebindDialog(
-                  reason: e is WpyDioError ? e.error.toString() : null,
-                ),
-              );
-            });
-          }
+          context.read<CourseProvider>().refreshCourseByBackend(context);
         },
         child: Container(
           decoration: BoxDecoration(),

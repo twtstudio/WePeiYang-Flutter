@@ -1,5 +1,7 @@
 import 'dart:convert' show json;
+import 'dart:math';
 
+import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
@@ -8,16 +10,15 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 
+class _ClassesBackendDio extends DioAbstract {}
+
 class ClassesBackendService {
-  /// 获取办公网上的课表、考表、GPA数据
+  static final _classesBackedDio = _ClassesBackendDio();
+
+  /// 从twt后端获取办公网上的课表、考表、GPA数据
   static Future<Tuple3<List<Course>, List<Exam>, GPABean>?> getClasses() async {
     try {
-      var dio = Dio()
-        ..options = BaseOptions(
-            connectTimeout: Duration(seconds: 5),
-            receiveTimeout: Duration(seconds: 5),
-            responseType: ResponseType.json);
-      var res = await dio.post(
+      var res = await _classesBackedDio.post(
         'https://learning.twt.edu.cn/classes',
         data: FormData.fromMap({
           'username': CommonPreferences.tjuuname.value,
@@ -43,6 +44,21 @@ class ClassesBackendService {
       Logger.reportError(e, s);
       return null;
     }
+  }
+
+  /// 图形验证码识别
+  static Future<String> ocr() async {
+    var resp = await _classesBackedDio.get(
+        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${Random().nextInt(100)}',
+        options: Options(responseType: ResponseType.bytes));
+    var form = FormData();
+    form.files.add(MapEntry(
+        'image',
+        MultipartFile.fromBytes(resp.data,
+            filename: '123.png', contentType: MediaType("image", "jpg"))));
+    resp = await _classesBackedDio.post('https://learning.twt.edu.cn/ocr',
+        data: form);
+    return resp.data['data'];
   }
 
   static List<Course> _parseCourses(Map<String, dynamic> data) {
