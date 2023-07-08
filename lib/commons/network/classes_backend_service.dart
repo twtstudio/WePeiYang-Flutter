@@ -1,7 +1,7 @@
 import 'dart:convert' show json;
-import 'dart:math';
-
 import 'package:http_parser/http_parser.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
@@ -19,16 +19,15 @@ class ClassesBackendService {
   static Future<Tuple3<List<Course>, List<Exam>, GPABean>?> getClasses() async {
     try {
       var res = await _classesBackedDio.post(
-        'https://learning.twt.edu.cn/classes',
+        'https://learning.twt.edu.cn/get_classes',
         data: FormData.fromMap({
           'username': CommonPreferences.tjuuname.value,
           'passwd': CommonPreferences.tjupasswd.value,
         }),
       );
-      var data = json.decode(res.data);
-      var courses = _parseCourses(data['data']['courses']);
-      var exams = _parseExams(data['data']['exams']);
-      var gpaBean = _parseGPABean(data['data']['gpa']);
+      var courses = _parseCourses(res.data['data']['courses']);
+      var exams = _parseExams(res.data['data']['exams']);
+      var gpaBean = _parseGPABean(res.data['data']['gpa']);
       var customCourses = <Course>[];
       if (CommonPreferences.courseData.value != '') {
         customCourses = CourseTable.fromJson(
@@ -48,8 +47,8 @@ class ClassesBackendService {
 
   /// 图形验证码识别
   static Future<String> ocr() async {
-    var resp = await _classesBackedDio.get(
-        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${Random().nextInt(100)}',
+    var resp = await ClassesService.spiderDio.get(
+        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${CaptchaWidgetState.id}',
         options: Options(responseType: ResponseType.bytes));
     var form = FormData();
     form.files.add(MapEntry(

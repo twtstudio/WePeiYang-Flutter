@@ -30,7 +30,8 @@ dependencies:
 
   dio: ^5.1.2
   dio_smart_retry: ^5.0.0
-  dio_cookie_caching_handler: ^0.0.7
+  dio_cookie_caching_handler:
+    path: ./lib/commons/network/dio_cookie_cached_handler
 
   extended_tabs: ^4.1.0
   extended_image: ^8.0.1
