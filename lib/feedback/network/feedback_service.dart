@@ -104,26 +104,6 @@ class FeedbackLostAndFoundDio extends DioAbstract {
   ];
 }
 
-class FeedbackLostAndFoundDio extends DioAbstract {
-  @override
-  String baseUrl = '${EnvConfig.LAF}v1/';
-
-  @override
-  List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      return handler.next(options);
-    }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
-      switch (code) {
-        case "200": // 成功
-          return handler.next(response);
-        default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['message']), true);
-      }
-    })
-  ];
-}
-
 final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
