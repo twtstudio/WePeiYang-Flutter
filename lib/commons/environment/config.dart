@@ -19,6 +19,9 @@ class EnvConfig {
         ? "http://101.42.225.75:8081/"
         // 正式服务器域名
         : "https://activity.twt.edu.cn/";
+    LAF = isDevelop
+        ? "http://121.36.230.111:80/"
+        : "http://121.36.230.111:80/";
   }
 
   static bool get isDevelop => ENVIRONMENT == "DEVELOP";
@@ -52,4 +55,7 @@ class EnvConfig {
 
   /// 自定义课表域名 "https://activity.twt.edu.cn/" (DEFAULT) 或 "http://101.42.225.75:8081//"
   static late String CUSTOM_CLASS;
+
+  /// 失物招领地址 "http://121.36.230.111:80/"
+  static late String LAF;
 }

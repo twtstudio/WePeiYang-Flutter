@@ -82,6 +82,12 @@ dependencies:
   wechat_assets_picker: ^6.2.0
 
 
+  waterfall_flow: ^3.0.2
+
+  image_size_getter: ^2.1.2
+  image_size_getter_http_input: ^2.0.0
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -106,6 +112,7 @@ flutter:
     - assets/images/lake_butt_icons/
     - assets/svg_pics/
     - assets/svg_pics/lake_butt_icons/
+    - assets/svg_pics/laf_butt_icons/
     - privacy/
 
   fonts:
