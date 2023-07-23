@@ -4,7 +4,9 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
@@ -82,9 +84,30 @@ class FeedbackAdminPostDio extends DioAbstract {
   ];
 }
 
+class FeedbackLostAndFoundDio extends DioAbstract {
+  @override
+  String baseUrl = '${EnvConfig.LAF}v1/';
+
+  @override
+  List<Interceptor> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      var code = response?.data['code'] ?? 0;
+      switch (code) {
+        case "200": // 成功
+          return handler.next(response);
+        default: // 其他错误
+          return handler.reject(WpyDioException(error: response.data['message']), true);
+      }
+    })
+  ];
+}
+
 final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
+final feedbackLostAndFoundDio = FeedbackLostAndFoundDio();
 
 class FeedbackService with AsyncTimer {
   static getToken(
@@ -1146,6 +1169,37 @@ class FeedbackService with AsyncTimer {
     } on DioException catch (e) {
       ToastProvider.error('坏耶!头像框设置失败!');
       print(e.error);
+    }
+  }
+
+  static getLostAndFoundPosts({
+    num,
+    required String history,
+    required String category,
+    required String type,
+    required void Function(List<LostAndFoundPost> list) onSuccess,
+    required OnFailure onFailure,
+  }) async{
+    try{
+      Options requestOptions = new Options(headers: {"history" : history});
+      var res = await feedbackLostAndFoundDio.get(
+        category != '全部'
+            ? 'sort/getbytypeandcategorywithnum'
+            : 'sort/getbytypewithnum',
+        queryParameters: {
+          'type' : type,
+          'num' : num,
+          'category' : category,
+        },
+        options: requestOptions
+      );
+      List<LostAndFoundPost> list = [];
+      for (Map<String, dynamic> json in res.data['result']) {
+        list.add(LostAndFoundPost.fromJson(json));
+      }
+      onSuccess(list);
+    } on DioError catch(e){
+      onFailure(e);
     }
   }
 }
