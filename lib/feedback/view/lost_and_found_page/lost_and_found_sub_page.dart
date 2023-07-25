@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
@@ -12,6 +11,10 @@ import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
+import '../../../main.dart';
+import '../../feedback_router.dart';
+import '../../util/color_util.dart';
+import '../lake_home_page/lake_notifier.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -21,6 +24,7 @@ class LostAndFoundSubPage extends StatefulWidget {
   @override
   LostAndFoundSubPageState createState() => LostAndFoundSubPageState();
 }
+double get searchBarHeight => 42.h;
 
 class LostAndFoundSubPageState extends State<LostAndFoundSubPage>{
   void _onRefresh() async{
@@ -66,20 +70,49 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>{
         context.read<LostAndFoundModel>().lostAndFoundSubPageStatus[widget.type] == LostAndFoundSubPageStatus.error
     ) _onRefresh();
 
+    var searchBar = InkWell(
+      onTap: () => Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch),
+      child: Container(
+        height: searchBarHeight - 8,
+        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
+        decoration: BoxDecoration(
+            color: ColorUtil.greyEAColor,
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        child: Row(children: [
+          SizedBox(width: 14),
+          Icon(
+            Icons.search,
+            size: 19,
+            color: ColorUtil.grey108,
+          ),
+          SizedBox(width: 12),
+          Consumer<FbHotTagsProvider>(
+              builder: (_, data, __) => Row(
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: WePeiYangApp.screenWidth - 260),
+                    child: Text(
+                      data.recTag == null
+                          ? '天大不能没有微北洋'
+                          : '#${data.recTag?.name}#',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                    ),
+                  ),
+                ],
+              )),
+          Spacer()
+        ]),
+      ),
+    );
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsetsDirectional.only(top: 6.h, bottom: 6.h, start: 13.w, end: 13.w),
-            child: Container(
-              height: 30.h,
-              width: MediaQuery.of(context).size.width,
-              child: Center(child: Text('这里是搜索框')),
-              color: Colors.grey,
-            ),
-          ),
-
+          searchBar,
+          SizedBox(height: 7,),
           Padding(
             padding: EdgeInsetsDirectional.only(bottom: 8.h),
             child: Selector<LostAndFoundModel,String>(
