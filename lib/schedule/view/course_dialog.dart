@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +23,8 @@ class CourseDialog extends Dialog {
 
   final _nameStyle = TextUtil.base.bold.white.noLine.sp(20);
   final _teacherStyle = TextUtil.base.regular.white.noLine.sp(12);
-  final _hintNameStyle = TextUtil.base.regular.white.noLine.sp(10).space(letterSpacing: 1);
+  final _hintNameStyle =
+      TextUtil.base.regular.white.noLine.sp(10).space(letterSpacing: 1);
   final _hintValueStyle =
       TextUtil.base.Swis.white.noLine.sp(9).space(letterSpacing: 0.5);
   final _width = 1.sw - 120.w;
@@ -37,7 +37,8 @@ class CourseDialog extends Dialog {
         child: _pairs.length == 1
             ? _getSingleCard(context, _pairs[0])
             : Theme(
-                data: ThemeData(accentColor: Colors.white),
+                data: Theme.of(context)
+                    .copyWith(secondaryHeaderColor: Colors.white),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 40.w),

@@ -147,8 +147,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text('更换头像框',
-                            style: mainTextStyle),
+                        child: Text('更换头像框', style: mainTextStyle),
                       ),
                       arrow,
                       SizedBox(width: 15.w)

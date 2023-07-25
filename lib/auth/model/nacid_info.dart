@@ -1,4 +1,3 @@
-// @dart = 2.12
 class NAcidInfo {
   NAcidInfo({
     required this.id,

@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -51,7 +52,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     context.read<LakeModel>().tabList.forEach((e) {
       typeName.addAll({e.id: e.shortname});
     });
-    return typeName[type];
+    return typeName[type] ?? '';
   }
 
   @override
@@ -64,7 +65,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.id,
               true,
               post.type,
-              post.avatar ?? post.nickname,
+              post.avatar,
               post.uid,
               post.nickname,
               post.level.toString(),
@@ -104,7 +105,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                     SizedBox(height: 4.h),
                     Text(
                       DateFormat('yyyy-MM-dd HH:mm:ss')
-                          .format(post.createAt.toLocal()),
+                          .format(post.createAt!.toLocal()),
                       textAlign: TextAlign.left,
                       style: TextUtil.base.grey6C.normal.ProductSans.sp(10),
                     )
@@ -114,7 +115,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           if (post.type != 1)
             GestureDetector(
               onLongPress: () {
-                return Clipboard.setData(ClipboardData(
+                Clipboard.setData(ClipboardData(
                         text: '#MP' + post.id.toString().padLeft(6, '0')))
                     .whenComplete(
                         () => ToastProvider.success('复制帖子id成功，快去分享吧！'));
@@ -128,7 +129,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     /// 标题eTag
     var eTagAndTitle = Row(children: [
-      if (post.eTag != '' && post.eTag != null)
+      if (post.eTag != '')
         Center(child: ETagWidget(entry: widget.post.eTag, full: !widget.outer)),
       Expanded(
         child: Text(
@@ -177,58 +178,54 @@ class _PostCardNormalState extends State<PostCardNormal> {
             post.commentCount.toString() + '   ',
             style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
           ),
-          if (post.isLike != null)
-            IconWidget(
-              IconType.like,
-              count: post.likeCount,
-              onLikePressed: (isLike, likeCount, success, failure) async {
-                await FeedbackService.postHitLike(
-                  id: post.id,
-                  isLike: post.isLike,
-                  onSuccess: () {
-                    post.isLike = !post.isLike;
-                    post.likeCount = likeCount;
-                    if (post.isLike && post.isDis) {
-                      post.isDis = !post.isDis;
-                      setState(() {});
-                    }
-                    success.call();
-                  },
-                  onFailure: (e) {
-                    ToastProvider.error(e.error.toString());
-                    failure.call();
-                  },
-                );
-              },
-              isLike: post.isLike,
-            ),
-          if (post.isDis != null)
-            DislikeWidget(
-              size: 15.w,
-              isDislike: widget.post.isDis,
-              onDislikePressed: (dislikeNotifier) async {
-                await FeedbackService.postHitDislike(
-                  id: post.id,
-                  isDisliked: post.isDis,
-                  onSuccess: () {
+          IconWidget(
+            IconType.like,
+            count: post.likeCount,
+            onLikePressed: (isLike, likeCount, success, failure) async {
+              await FeedbackService.postHitLike(
+                id: post.id,
+                isLike: post.isLike,
+                onSuccess: () {
+                  post.isLike = !post.isLike;
+                  post.likeCount = likeCount;
+                  if (post.isLike && post.isDis) {
                     post.isDis = !post.isDis;
-                    if (post.isLike && post.isDis) {
-                      post.isLike = !post.isLike;
-                      post.likeCount--;
-                      setState(() {});
-                    }
-                  },
-                  onFailure: (e) {
-                    ToastProvider.error(e.error.toString());
-                  },
-                );
-              },
-            ),
+                    setState(() {});
+                  }
+                  success.call();
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                  failure.call();
+                },
+              );
+            },
+            isLike: post.isLike,
+          ),
+          DislikeWidget(
+            size: 15.w,
+            isDislike: widget.post.isDis,
+            onDislikePressed: (dislikeNotifier) async {
+              await FeedbackService.postHitDislike(
+                id: post.id,
+                isDisliked: post.isDis,
+                onSuccess: () {
+                  post.isDis = !post.isDis;
+                  if (post.isLike && post.isDis) {
+                    post.isLike = !post.isLike;
+                    post.likeCount--;
+                    setState(() {});
+                  }
+                },
+                onFailure: (e) {
+                  ToastProvider.error(e.error.toString());
+                },
+              );
+            },
+          ),
           Spacer(),
           Text(
-            post.visitCount == null
-                ? '0次浏览'
-                : post.visitCount.toString() + "次浏览",
+            post.visitCount.toString() + "次浏览",
             style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
           )
         ]);
@@ -240,11 +237,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
         children: [
           if (post.tag != null)
             TagShowWidget(
-                post.tag.name,
+                post.tag!.name,
                 (WePeiYangApp.screenWidth - 24.w) / 2 -
                     (post.campus > 0 ? 100.w : 60.w),
                 post.type,
-                post.tag.id,
+                post.tag!.id,
                 0,
                 post.type),
           if (post.tag != null) SizedBox(width: 8),
@@ -276,9 +273,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(width: 8),
           Spacer(),
           Text(
-            post.visitCount == null
-                ? '0次浏览'
-                : post.visitCount.toString() + "次浏览",
+            post.visitCount.toString() + "次浏览",
             style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
           )
         ]);
@@ -345,7 +340,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 ...head,
                 if (post.imageUrls.isNotEmpty)
                   Padding(
-                    padding: EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
+                    padding:
+                        EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
                     child: innerImages,
                   ),
                 Padding(
@@ -383,12 +379,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
         children: List.generate(
           post.imageUrls.length,
           (index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(context, FeedbackRouter.imageView,
-                arguments: {
-                  "urlList": post.imageUrls,
-                  "urlListLength": post.imageUrls.length,
-                  "indexNow": index,
-                }),
+            onTap: () => Navigator.pushNamed(
+              context,
+              FeedbackRouter.imageView,
+              arguments: ImageViewPageArgs(
+                  post.imageUrls, post.imageUrls.length, index, false),
+            ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
               child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
@@ -460,8 +456,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
         return Container(
           width: 350.w,
           child: snapshot.hasData
-              ? snapshot.data.height / snapshot.data.width > 2.0
-                  ? _picFullView ?? false
+              ? snapshot.data!.height / snapshot.data!.width > 2.0
+                  ? _picFullView
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -470,13 +466,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                   BorderRadius.all(Radius.circular(12.r)),
                               child: GestureDetector(
                                   onTap: () => Navigator.pushNamed(
-                                          context, FeedbackRouter.imageView,
-                                          arguments: {
-                                            "urlList": [widget.imageUrl],
-                                            "urlListLength": 1,
-                                            "indexNow": 0,
-                                            "isLongPic": true
-                                          }),
+                                        context,
+                                        FeedbackRouter.imageView,
+                                        arguments: ImageViewPageArgs(
+                                            [widget.imageUrl], 1, 0, true),
+                                      ),
                                   child: image),
                             ),
                             TextButton(
@@ -505,13 +499,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             child: Stack(children: [
                               GestureDetector(
                                   onTap: () => Navigator.pushNamed(
-                                          context, FeedbackRouter.imageView,
-                                          arguments: {
-                                            "urlList": [widget.imageUrl],
-                                            "urlListLength": 1,
-                                            "indexNow": 0,
-                                            "isLongPic": true
-                                          }),
+                                        context,
+                                        FeedbackRouter.imageView,
+                                        arguments: ImageViewPageArgs(
+                                            [widget.imageUrl], 1, 0, true),
+                                      ),
                                   child: image),
                               Positioned(top: 8, left: 8, child: TextPod('长图')),
                               Align(
@@ -572,13 +564,11 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                       borderRadius: BorderRadius.all(Radius.circular(12.r)),
                       child: GestureDetector(
                           onTap: () => Navigator.pushNamed(
-                                  context, FeedbackRouter.imageView,
-                                  arguments: {
-                                    "urlList": [widget.imageUrl],
-                                    "urlListLength": 1,
-                                    "indexNow": 0,
-                                    "isLongPic": false
-                                  }),
+                                context,
+                                FeedbackRouter.imageView,
+                                arguments: ImageViewPageArgs(
+                                    [widget.imageUrl], 1, 0, false),
+                              ),
                           child: image),
                     )
               : Icon(
@@ -607,74 +597,71 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
     return Row(
       children: [
         SizedBox(width: 10),
-        if (widget.post.isLike != null)
-          IconWidget(
-            IconType.bottomLike,
-            count: widget.post.likeCount,
-            onLikePressed: (isLike, likeCount, success, failure) async {
-              await FeedbackService.postHitLike(
-                id: widget.post.id,
-                isLike: widget.post.isLike,
-                onSuccess: () {
-                  widget.post.isLike = !widget.post.isLike;
-                  widget.post.likeCount = likeCount;
-                  if (widget.post.isLike && widget.post.isDis) {
-                    widget.post.isDis = !widget.post.isDis;
-                    setState(() {});
-                  }
-                  success.call();
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                  failure.call();
-                },
-              );
-            },
-            isLike: widget.post.isLike,
-          ),
-        if (widget.post.isFav != null)
-          IconWidget(
-            IconType.bottomFav,
-            count: widget.post.favCount,
-            onLikePressed: (isFav, favCount, success, failure) async {
-              await FeedbackService.postHitFavorite(
-                id: widget.post.id,
-                isFavorite: widget.post.isFav,
-                onSuccess: () {
-                  widget.post.isFav = !isFav;
-                  widget.post.favCount = favCount;
-                  success.call();
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                  failure.call();
-                },
-              );
-            },
-            isLike: widget.post.isFav,
-          ),
-        if (widget.post.isDis != null)
-          DislikeWidget(
-            size: 22.w,
-            isDislike: widget.post.isDis,
-            onDislikePressed: (dislikeNotifier) async {
-              await FeedbackService.postHitDislike(
-                id: widget.post.id,
-                isDisliked: widget.post.isDis,
-                onSuccess: () {
+        IconWidget(
+          IconType.bottomLike,
+          count: widget.post.likeCount,
+          onLikePressed: (isLike, likeCount, success, failure) async {
+            await FeedbackService.postHitLike(
+              id: widget.post.id,
+              isLike: widget.post.isLike,
+              onSuccess: () {
+                widget.post.isLike = !widget.post.isLike;
+                widget.post.likeCount = likeCount;
+                if (widget.post.isLike && widget.post.isDis) {
                   widget.post.isDis = !widget.post.isDis;
-                  if (widget.post.isLike && widget.post.isDis) {
-                    widget.post.isLike = !widget.post.isLike;
-                    widget.post.likeCount--;
-                    setState(() {});
-                  }
-                },
-                onFailure: (e) {
-                  ToastProvider.error(e.error.toString());
-                },
-              );
-            },
-          ),
+                  setState(() {});
+                }
+                success.call();
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+                failure.call();
+              },
+            );
+          },
+          isLike: widget.post.isLike,
+        ),
+        IconWidget(
+          IconType.bottomFav,
+          count: widget.post.favCount,
+          onLikePressed: (isFav, favCount, success, failure) async {
+            await FeedbackService.postHitFavorite(
+              id: widget.post.id,
+              isFavorite: widget.post.isFav,
+              onSuccess: () {
+                widget.post.isFav = !isFav;
+                widget.post.favCount = favCount;
+                success.call();
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+                failure.call();
+              },
+            );
+          },
+          isLike: widget.post.isFav,
+        ),
+        DislikeWidget(
+          size: 22.w,
+          isDislike: widget.post.isDis,
+          onDislikePressed: (dislikeNotifier) async {
+            await FeedbackService.postHitDislike(
+              id: widget.post.id,
+              isDisliked: widget.post.isDis,
+              onSuccess: () {
+                widget.post.isDis = !widget.post.isDis;
+                if (widget.post.isLike && widget.post.isDis) {
+                  widget.post.isLike = !widget.post.isLike;
+                  widget.post.likeCount--;
+                  setState(() {});
+                }
+              },
+              onFailure: (e) {
+                ToastProvider.error(e.error.toString());
+              },
+            );
+          },
+        ),
         SizedBox(width: 10)
       ],
     );

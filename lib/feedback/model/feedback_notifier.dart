@@ -7,27 +7,28 @@ class NewPostProvider {
   String title = "";
   String content = "";
   int type = 1;
-  Department department;
-  Tag tag = Tag();
+  Department? department;
+  Tag? tag;
 
   List<File> images = [];
+
   ///标题非空且内容非空为必要，非校务贴或者校务贴时部门不能为空
   bool get check =>
       title.isNotEmpty &&
-      content.isNotEmpty && ((type == 1 && department != null) || (type != 1));
+      content.isNotEmpty &&
+      ((type == 1 && department != null) || (type != 1));
 
   void clear() {
     title = "";
     content = "";
     type = 1;
     images = [];
-    tag = Tag();
+    tag = null;
     department = null;
   }
 }
 
 class NewFloorProvider extends ChangeNotifier {
-  int locate;
   int replyTo = 0;
   List<File> images = [];
   String floorSentContent = '';

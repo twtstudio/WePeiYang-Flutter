@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
@@ -228,7 +227,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     _saveAndQuit(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: mainColor,
+                    backgroundColor: mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r),
                     ),
@@ -241,7 +240,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             ),
             Expanded(
               child: Theme(
-                data: ThemeData(accentColor: Colors.white),
+                data: Theme.of(context)
+                    .copyWith(secondaryHeaderColor: Colors.white),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

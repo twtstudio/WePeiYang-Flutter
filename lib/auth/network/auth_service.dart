@@ -1,13 +1,11 @@
-// @dart = 2.12
 import 'dart:convert' show utf8, base64Encode;
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio_cookie_caching_handler/dio_cookie_interceptor.dart';
 import 'package:flutter/material.dart' show Navigator, debugPrint;
 import 'package:flutter/services.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
-import 'package:we_pei_yang_flutter/commons/network/cookie_manager.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -26,9 +24,7 @@ class AuthDio extends DioAbstract {
   Map<String, String>? headers = {"DOMAIN": DOMAIN, "ticket": ticket};
 
   @override
-  List<InterceptorsWrapper> interceptors = [
-    CookieManager(CookieJar()),
-  ];
+  List<Interceptor> interceptors = [cookieCachedHandler()];
 
   @override
   InterceptorsWrapper? get errorInterceptor =>
@@ -125,7 +121,7 @@ class AuthDio extends DioAbstract {
         if (error == "")
           return handler.next(response);
         else
-          return handler.reject(WpyDioError(error: error), true);
+          return handler.reject(WpyDioException(error: error), true);
       });
 }
 
@@ -140,7 +136,7 @@ class AuthService with AsyncTimer {
         await authDio
             .post("register/phone/msg", queryParameters: {"phone": phone});
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -155,7 +151,7 @@ class AuthService with AsyncTimer {
             data: {"phone": phone},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -169,7 +165,7 @@ class AuthService with AsyncTimer {
         await authDio
             .post("password/reset/msg", queryParameters: {"phone": phone});
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -184,7 +180,7 @@ class AuthService with AsyncTimer {
             data: {"phone": phone, "code": code},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -199,11 +195,12 @@ class AuthService with AsyncTimer {
             data: {"phone": phone, "password": password},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
   }
+
   ///发通知用
   ///友盟flutter推送sdk直接接不进来，文档依托答辩，正在试别的方法
   // static postMessage()async
@@ -229,7 +226,7 @@ class AuthService with AsyncTimer {
             queryParameters: {"password": password});
         CommonPreferences.password.value = password;
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -253,7 +250,7 @@ class AuthService with AsyncTimer {
             },
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -295,7 +292,7 @@ class AuthService with AsyncTimer {
 
         /// 登录成功后尝试更新学期信息
         await getSemesterInfo();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -310,7 +307,7 @@ class AuthService with AsyncTimer {
             data: {"phone": phone},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -350,7 +347,7 @@ class AuthService with AsyncTimer {
 
         /// 登录成功后尝试更新学期信息
         await getSemesterInfo();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -367,7 +364,7 @@ class AuthService with AsyncTimer {
           CommonPreferences.token.value = result;
         }
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -386,7 +383,7 @@ class AuthService with AsyncTimer {
         CommonPreferences.phone.value = telephone;
         CommonPreferences.email.value = email;
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -401,7 +398,7 @@ class AuthService with AsyncTimer {
             queryParameters: {'phone': phone, 'code': code});
         CommonPreferences.phone.value = phone;
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -416,7 +413,7 @@ class AuthService with AsyncTimer {
             .put("user/single/email", queryParameters: {'email': email});
         CommonPreferences.email.value = email;
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -431,7 +428,7 @@ class AuthService with AsyncTimer {
             queryParameters: {'username': username});
         CommonPreferences.nickname.value = username;
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -445,7 +442,7 @@ class AuthService with AsyncTimer {
         await authDio.get("register/checking/$userNumber/$username",
             debug: true);
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -460,7 +457,7 @@ class AuthService with AsyncTimer {
             data: {'idNumber': idNumber, 'email': email, 'phone': phone},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -476,7 +473,7 @@ class AuthService with AsyncTimer {
       CommonPreferences.termStartDate.value = result['semesterStartAt'];
       MethodChannel('com.twt.service/widget')
           .invokeMethod("refreshScheduleWidget");
-    } on DioError catch (_) {}
+    } on DioException catch (_) {}
   }
 
   /// 上传头像
@@ -493,7 +490,7 @@ class AuthService with AsyncTimer {
         });
         await authDio.post("user/avatar", formData: data);
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -506,7 +503,7 @@ class AuthService with AsyncTimer {
       try {
         await authDio.post("auth/logoff");
         onSuccess();
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -523,7 +520,7 @@ class AuthService with AsyncTimer {
             options: Options(contentType: Headers.formUrlEncodedContentType));
 
         onResult(res.data.toString());
-      } on DioError catch (e) {
+      } on DioException catch (e) {
         onFailure(e);
       }
     });
@@ -536,8 +533,8 @@ class AuthService with AsyncTimer {
         return NAcidInfo(id: -1);
       else
         return NAcidInfo.fromJson(rsp.data['result']);
-    } on DioError catch (e) {
-      debugPrint(e.error);
+    } on DioException catch (e) {
+      debugPrint(e.error.toString());
     }
     return NAcidInfo(id: -1);
   }

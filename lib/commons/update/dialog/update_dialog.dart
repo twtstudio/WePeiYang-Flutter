@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 

@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:math' show min;
 
 import 'package:flutter/cupertino.dart' show CupertinoPicker;
@@ -553,7 +552,7 @@ class WeekPicker extends Dialog {
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            primary: index == _weekTypes.indexOf(type)
+                            backgroundColor: index == _weekTypes.indexOf(type)
                                 ? Color.fromRGBO(44, 126, 223, 1)
                                 : ColorUtil.greyF7F8Color,
                             shape: RoundedRectangleBorder(

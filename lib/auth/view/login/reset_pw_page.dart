@@ -26,7 +26,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       ToastProvider.error("两次输入密码不一致");
       return;
     }
-    String phone = ModalRoute.of(context).settings.arguments;
+    String phone = ModalRoute.of(context)?.settings.arguments as String;
     AuthService.resetPwByPhone(phone, password1,
         onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
         onFailure: (e) => ToastProvider.error(e.error.toString()));
@@ -46,7 +46,6 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(

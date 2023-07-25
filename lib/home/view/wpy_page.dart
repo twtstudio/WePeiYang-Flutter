@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show SystemChrome, SystemUiOverlayStyle, rootBundle;
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
@@ -34,15 +32,44 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   bool showSchedule = true;
   bool useRound = true;
 
-  ScrollController _sc = ScrollController();
-  TabController _tc;
+  final ScrollController _sc = ScrollController();
+  late final TabController _tc;
 
-  List<CardBean> cards;
+  final List<CardBean> cards = [
+    CardBean(
+        Image.asset(
+          'assets/svg_pics/lake_butt_icons/daily.png',
+          width: 24.w,
+        ),
+        '课程表',
+        'Schedule',
+        ScheduleRouter.course),
+    CardBean(
+        Image.asset(
+          'assets/images/schedule/add.png',
+          width: 24.w,
+        ),
+        '地图·校历',
+        'Map-\nCalender',
+        HomeRouter.mapCalenderPage),
+    CardBean(
+        Image.asset(
+          'assets/svg_pics/lake_butt_icons/wiki.png',
+          width: 24.w,
+        ),
+        '北洋维基',
+        'Wiki',
+        'https://wiki.tjubot.cn/'),
+    CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
+    CardBean(Icon(Icons.domain, size: 25), '楼宇牌', 'Building\nCard',
+        ReportRouter.pass),
+    CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
+        ReportRouter.main),
+  ];
   String md = '';
 
-  Timer _timer;
   ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());
-  Future<NAcidInfo> acidInfo;
+  Future<NAcidInfo> acidInfo = AuthService.checkNuclearAcid();
   bool hasShow = false;
 
   void showActivityDialog() {
@@ -59,14 +86,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       builder: (context) {
         return AcidCheckDialog(acidInfo, _now);
       },
-    ).then((_) => _timer.cancel());
+    );
   }
 
   @override
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
-    acidInfo = AuthService.checkNuclearAcid();
     if (CommonPreferences.firstPrivacy.value == true) {
       rootBundle.loadString('privacy/privacy_content.md').then((str) {
         setState(() {
@@ -74,38 +100,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         });
       });
     }
-    cards = [
-      CardBean(
-          Image.asset(
-            'assets/svg_pics/lake_butt_icons/daily.png',
-            width: 24.w,
-          ),
-          '课程表',
-          'Schedule',
-          ScheduleRouter.course),
-      CardBean(
-          Image.asset(
-            'assets/images/schedule/add.png',
-            width: 24.w,
-          ),
-          '地图·校历',
-          'Map-\nCalender',
-          HomeRouter.mapCalenderPage),
-      CardBean(
-          Image.asset(
-            'assets/svg_pics/lake_butt_icons/wiki.png',
-            width: 24.w,
-          ),
-          '北洋维基',
-          'Wiki',
-          'https://wiki.tjubot.cn/'),
-      CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
-      CardBean(Icon(Icons.domain, size: 25), '楼宇牌', 'Building\nCard',
-          ReportRouter.pass),
-      CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
-          ReportRouter.main),
-    ];
-
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (CommonPreferences.firstPrivacy.value == true) {
         showDialog(
@@ -119,7 +113,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       var info = await acidInfo;
       if (info.id != -1 &&
           hasShow == false &&
-          DateTime.now().isBefore(info.endTime.add(Duration(hours: 1)))) {
+          info.endTime != null &&
+          DateTime.now().isBefore(info.endTime!.add(Duration(hours: 1)))) {
         showAcidCheckDialog();
         hasShow = true;
       }
@@ -342,7 +337,7 @@ class SliverCardsWidget extends StatelessWidget {
     );
   }
 
-  Widget generateCard(BuildContext context, CardBean bean, {Color textColor}) {
+  Widget generateCard(BuildContext context, CardBean bean) {
     return Container(
       width: 150.w,
       height: 80.h,
@@ -403,13 +398,13 @@ class CardBean {
   String eng;
   String route;
 
-  CardBean(this.icon, this.label, this.eng, [this.route]);
+  CardBean(this.icon, this.label, this.eng, this.route);
 }
 
 class WPYScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildOverscrollIndicator(
+      BuildContext context, Widget child, ScrollableDetails details) {
     return GlowingOverscrollIndicator(
       child: child,
       showLeading: false,

@@ -42,7 +42,6 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
                   .sp(17)
                   .customColor(Color.fromRGBO(36, 43, 69, 1))),
           elevation: 0,
-          brightness: Brightness.light,
           centerTitle: true,
           backgroundColor: Colors.white,
           leading: Padding(

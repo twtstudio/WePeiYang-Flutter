@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
@@ -8,7 +7,7 @@ class ThemeDio extends DioAbstract {
   String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(
       onResponse: (response, handler) {
         var code = response.data['error_code'] ?? 0;
@@ -17,7 +16,7 @@ class ThemeDio extends DioAbstract {
             return handler.next(response);
           default: // 其他错误
             return handler.reject(
-                WpyDioError(error: response.data['message']), true);
+                WpyDioException(error: response.data['message']), true);
         }
       },
     )

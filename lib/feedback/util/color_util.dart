@@ -1,8 +1,7 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 
 class ColorUtil {
-  static ColorUtil instance = ColorUtil();
+  ColorUtil._();
   static const mainColor = Color.fromARGB(255, 54, 60, 84);
   static const backgroundColor = Color.fromARGB(255, 248, 248, 248);
   static const searchBarIconColor = Color.fromARGB(255, 132, 135, 145);

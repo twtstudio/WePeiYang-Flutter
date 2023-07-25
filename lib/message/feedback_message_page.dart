@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart' show CupertinoActivityIndicator;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +22,7 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 import 'model/message_model.dart';
+import 'package:badges/badges.dart' as badges;
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
 enum MessageType { like, floor, reply }
@@ -50,7 +50,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   List<Widget> wd = [];
   List<Widget> tb = [];
 
-  TabController _tabController;
+  late TabController _tabController;
 
   ValueNotifier<int> currentIndex = ValueNotifier(0);
   ValueNotifier<int> refresh = ValueNotifier(0);
@@ -60,15 +60,16 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     super.initState();
     wd.clear();
     tb.clear();
-    _tabController = TabController(
-        length: types.length + 1, vsync: this, initialIndex: 0)
-      ..addListener(() {
-        ///这个if避免点击tab时回调两次
-        ///https://blog.csdn.net/u010960265/article/details/104982299
-        if (_tabController.index.toDouble() == _tabController.animation.value) {
-          currentIndex.value = _tabController.index;
-        }
-      });
+    _tabController =
+        TabController(length: types.length + 1, vsync: this, initialIndex: 0)
+          ..addListener(() {
+            ///这个if避免点击tab时回调两次
+            ///https://blog.csdn.net/u010960265/article/details/104982299
+            if (_tabController.index.toDouble() ==
+                _tabController.animation?.value) {
+              currentIndex.value = _tabController.index;
+            }
+          });
     tb = types.map((t) {
       return MessageTab(type: t);
     }).toList();
@@ -195,23 +196,23 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
 }
 
 class MessageTab extends StatefulWidget {
-  final MessageType type;
-  final bool isEmail;
+  final MessageType? type;
+  final bool? isEmail;
 
-  const MessageTab({Key key, this.type, this.isEmail}) : super(key: key);
+  const MessageTab({Key? key, this.type, this.isEmail}) : super(key: key);
 
   @override
   _MessageTabState createState() => _MessageTabState();
 }
 
 class _MessageTabState extends State<MessageTab> {
-  _FeedbackMessagePageState pageState;
+  late _FeedbackMessagePageState pageState;
   double _tabPaddingWidth = 0;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    pageState = context.findAncestorStateOfType<_FeedbackMessagePageState>();
+    pageState = context.findAncestorStateOfType<_FeedbackMessagePageState>()!;
   }
 
   @override
@@ -226,7 +227,7 @@ class _MessageTabState extends State<MessageTab> {
           SizedBox(width: _tabPaddingWidth),
           count == 0
               ? Text('湖底通知')
-              : Badge(
+              : badges.Badge(
                   child: Text('湖底通知'),
                   badgeContent: Text(
                     count.toString(),
@@ -240,9 +241,7 @@ class _MessageTabState extends State<MessageTab> {
       Widget tab = ValueListenableBuilder(
         valueListenable: pageState.currentIndex,
         builder: (_, int current, __) {
-          return Text(
-            widget.type.name,
-          );
+          return Text(widget.type?.name ?? '');
         },
       );
 
@@ -255,7 +254,7 @@ class _MessageTabState extends State<MessageTab> {
           SizedBox(width: _tabPaddingWidth),
           count == 0
               ? tab
-              : Badge(
+              : badges.Badge(
                   child: tab,
                   badgeContent: Text(
                     count.toString(),
@@ -269,7 +268,7 @@ class _MessageTabState extends State<MessageTab> {
 }
 
 class LikeMessagesList extends StatefulWidget {
-  LikeMessagesList({Key key}) : super(key: key);
+  LikeMessagesList({Key? key}) : super(key: key);
 
   @override
   _LikeMessagesListState createState() => _LikeMessagesListState();
@@ -282,7 +281,6 @@ class _LikeMessagesListState extends State<LikeMessagesList>
       initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
 
   onRefresh({bool refreshCount = true}) async {
-    if (widget == null) return;
     // monitor network fetch
     try {
       await MessageService.getLikeMessages(
@@ -345,10 +343,8 @@ class _LikeMessagesListState extends State<LikeMessagesList>
         setState(() {});
         context
             .findAncestorStateOfType<_FeedbackMessagePageState>()
-            .refresh
-            .addListener(() => onRefresh(
-                  refreshCount: false,
-                ));
+            ?.refresh
+            .addListener(() => onRefresh(refreshCount: false));
       }
     });
   }
@@ -395,7 +391,7 @@ class _LikeMessagesListState extends State<LikeMessagesList>
       enablePullUp: true,
       header: WaterDropHeader(),
       footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
+        builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
             body = Text('加载完成:)');
@@ -429,14 +425,16 @@ class LikeMessageItem extends StatefulWidget {
   final LikeMessage data;
   final VoidFutureCallBack onTapDown;
 
-  const LikeMessageItem({Key key, this.data, this.onTapDown}) : super(key: key);
+  const LikeMessageItem({Key? key, required this.data, required this.onTapDown})
+      : super(key: key);
 
   @override
   _LikeMessageItemState createState() => _LikeMessageItemState();
 }
 
 class _LikeMessageItemState extends State<LikeMessageItem> {
-  Post post;
+  Post? post;
+  bool? success;
 
   final String baseUrl = '${EnvConfig.QNHDPIC}download/thumb/';
 
@@ -450,12 +448,11 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               : widget.data.floor.postId,
           onResult: (result) {
             post = result;
+            success = true;
             setState(() {});
           },
           onFailure: (e) {
-            post = Post();
-            post.title = '这个冒泡淹没在了湖底，找不到了';
-            post.id = -1;
+            success = false;
             setState(() {});
           });
     });
@@ -512,7 +509,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
     Widget likeFloorFav = Row(
       children: [
         Text(
-          post == null ? '0' : post.likeCount.toString(),
+          post?.likeCount.toString() ?? '0',
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -521,7 +518,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.commentCount.toString(),
+          post?.commentCount.toString() ?? '0',
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -530,7 +527,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
         pointText,
         Text(
-          post == null ? '0' : post.favCount.toString(),
+          post?.favCount.toString() ?? '0',
           style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
         ),
         Text(
@@ -539,6 +536,10 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         ),
       ],
     );
+
+    var text = '...'; // success为空代表请求未完成
+    if (success == true) text = post!.title;
+    if (success == false) text = '这个冒泡淹没在了湖底，找不到了';
 
     Widget questionItem = Container(
       decoration: BoxDecoration(
@@ -559,7 +560,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post == null ? '...' : post.title,
+                    text,
                     maxLines: 2,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
@@ -570,9 +571,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                 ],
               ),
             ),
-            if (post != null && post.id != -1 && post.imageUrls.isNotEmpty)
+            if (post != null && success! && post!.imageUrls.isNotEmpty)
               Image.network(
-                baseUrl + post.imageUrls[0],
+                baseUrl + post!.imageUrls[0],
                 fit: BoxFit.cover,
                 height: 50,
                 width: 70,
@@ -605,19 +606,18 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           ));
     }
 
-    Widget messageWrapper = Badge(
-      position: BadgePosition.topEnd(end: -2, top: -14),
-      padding: const EdgeInsets.all(5),
-      badgeContent: Text(""),
+    Widget messageWrapper = badges.Badge(
+      position: badges.BadgePosition.topEnd(end: -2, top: -5),
+      badgeContent: Padding(padding: EdgeInsets.all(1)),
       child: questionItem,
     );
 
     return GestureDetector(
       onTap: () async {
-        await widget.onTapDown?.call();
+        await widget.onTapDown.call();
 
         ///点内部的帖子区域块跳转到帖子
-        if (post.id != -1) {
+        if (success ?? false) {
           await Navigator.pushNamed(
             context,
             FeedbackRouter.detail,
@@ -633,7 +633,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
             children: [
               sender,
               SizedBox(height: 8.w),
-              messageWrapper ?? questionItem,
+              messageWrapper,
             ],
           ),
         ),
@@ -643,7 +643,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
 }
 
 class FloorMessagesList extends StatefulWidget {
-  FloorMessagesList({Key key}) : super(key: key);
+  FloorMessagesList({Key? key}) : super(key: key);
 
   @override
   _FloorMessagesListState createState() => _FloorMessagesListState();
@@ -656,7 +656,6 @@ class _FloorMessagesListState extends State<FloorMessagesList>
       initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
 
   onRefresh({bool refreshCount = true}) async {
-    if (widget == null) return;
     // monitor network fetch
     try {
       await MessageService.getFloorMessages(
@@ -750,7 +749,7 @@ class _FloorMessagesListState extends State<FloorMessagesList>
       enablePullUp: true,
       header: WaterDropHeader(),
       footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
+        builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
             body = Text('加载完成:)');
@@ -784,7 +783,8 @@ class FloorMessageItem extends StatefulWidget {
   final FloorMessage data;
   final VoidFutureCallBack onTapDown;
 
-  const FloorMessageItem({Key key, this.data, this.onTapDown})
+  const FloorMessageItem(
+      {Key? key, required this.data, required this.onTapDown})
       : super(key: key);
 
   @override
@@ -839,14 +839,14 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             ),
             SizedBox(height: 2.w),
             Text(
-              DateTime.now().difference(widget.data.floor.createAt).inDays >= 1
-                  ? widget.data.floor.createAt
+              DateTime.now().difference(widget.data.floor.createAt!).inDays >= 1
+                  ? widget.data.floor.createAt!
                       .toLocal()
                       .toIso8601String()
                       .replaceRange(10, 11, ' ')
                       .substring(0, 19)
                   : DateTime.now()
-                      .difference(widget.data.floor.createAt)
+                      .difference(widget.data.floor.createAt!)
                       .dayHourMinuteSecondFormatted(),
               style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
             ),
@@ -956,9 +956,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.data.toFloor.nickname +
+                  widget.data.toFloor!.nickname +
                       ': ' +
-                      widget.data.toFloor.content,
+                      widget.data.toFloor!.content,
                   style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
                 ),
                 SizedBox(height: 8.w),
@@ -968,19 +968,18 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           ));
     }
 
-    Widget messageWrapper;
+    Widget? messageWrapper;
     if (!widget.data.isRead) {
-      messageWrapper = Badge(
-        position: BadgePosition.topEnd(end: -2, top: -14),
-        padding: const EdgeInsets.all(5),
-        badgeContent: Text(""),
+      messageWrapper = badges.Badge(
+        position: badges.BadgePosition.topEnd(end: -2, top: -5),
+        badgeContent: Padding(padding: EdgeInsets.all(1)),
         child: questionItem,
       );
     }
 
     return GestureDetector(
       onTap: () async {
-        await widget.onTapDown?.call();
+        await widget.onTapDown.call();
         if (widget.data.type == 0) {
           await Navigator.pushNamed(
             context,
@@ -1057,7 +1056,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
 }
 
 class ReplyMessagesList extends StatefulWidget {
-  ReplyMessagesList({Key key}) : super(key: key);
+  ReplyMessagesList({Key? key}) : super(key: key);
 
   @override
   _ReplyMessagesListState createState() => _ReplyMessagesListState();
@@ -1070,7 +1069,6 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
       initialRefresh: true, initialRefreshStatus: RefreshStatus.refreshing);
 
   onRefresh({bool refreshCount = true}) async {
-    if (widget == null) return;
     // monitor network fetch
     try {
       await MessageService.getReplyMessages(
@@ -1160,7 +1158,7 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
       enablePullUp: true,
       header: WaterDropHeader(),
       footer: CustomFooter(
-        builder: (BuildContext context, LoadStatus mode) {
+        builder: (BuildContext context, LoadStatus? mode) {
           Widget body;
           if (mode == LoadStatus.idle) {
             body = Text('加载完成:)');
@@ -1194,7 +1192,8 @@ class ReplyMessageItem extends StatefulWidget {
   final ReplyMessage data;
   final VoidFutureCallBack onTapDown;
 
-  const ReplyMessageItem({Key key, this.data, this.onTapDown})
+  const ReplyMessageItem(
+      {Key? key, required this.data, required this.onTapDown})
       : super(key: key);
 
   @override
@@ -1327,19 +1326,18 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       ),
     );
 
-    Widget messageWrapper;
+    Widget? messageWrapper;
     if (!widget.data.isRead) {
-      messageWrapper = Badge(
-        position: BadgePosition.topEnd(end: -2, top: -14),
-        padding: const EdgeInsets.all(5),
-        badgeContent: Text(""),
+      messageWrapper = badges.Badge(
+        position: badges.BadgePosition.topEnd(end: -2, top: -5),
+        badgeContent: Padding(padding: EdgeInsets.all(1)),
         child: questionItem,
       );
     }
 
     return GestureDetector(
       onTap: () async {
-        await widget.onTapDown?.call();
+        await widget.onTapDown.call();
         await Navigator.pushNamed(
           context,
           FeedbackRouter.detail,
@@ -1384,8 +1382,7 @@ class CustomIndicator extends Decoration {
     this.left = false,
     this.borderSide = const BorderSide(width: 2, color: Colors.white),
     this.insets = EdgeInsets.zero,
-  })  : assert(borderSide != null),
-        assert(insets != null);
+  });
 
   final bool left;
 
@@ -1394,35 +1391,33 @@ class CustomIndicator extends Decoration {
   final EdgeInsetsGeometry insets;
 
   @override
-  Decoration lerpFrom(Decoration a, double t) {
+  Decoration? lerpFrom(Decoration? a, double t) {
     if (a is CustomIndicator) {
       return CustomIndicator(
         borderSide: BorderSide.lerp(a.borderSide, borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t),
+        insets: EdgeInsetsGeometry.lerp(a.insets, insets, t)!,
       );
     }
     return super.lerpFrom(a, t);
   }
 
   @override
-  Decoration lerpTo(Decoration b, double t) {
+  Decoration? lerpTo(Decoration? b, double t) {
     if (b is CustomIndicator) {
       return CustomIndicator(
         borderSide: BorderSide.lerp(borderSide, b.borderSide, t),
-        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t),
+        insets: EdgeInsetsGeometry.lerp(insets, b.insets, t)!,
       );
     }
     return super.lerpTo(b, t);
   }
 
   @override
-  _UnderlinePainter createBoxPainter([VoidCallback onChanged]) {
+  _UnderlinePainter createBoxPainter([VoidCallback? onChanged]) {
     return _UnderlinePainter(this, onChanged);
   }
 
   Rect _indicatorRectFor(Rect rect, TextDirection textDirection) {
-    assert(rect != null);
-    assert(textDirection != null);
     final Rect indicator = insets.resolve(textDirection).deflateRect(rect);
     double wantWidth = left ? 30 : 32;
     double cw = (indicator.left + indicator.right) / 2;
@@ -1444,18 +1439,16 @@ class CustomIndicator extends Decoration {
 }
 
 class _UnderlinePainter extends BoxPainter {
-  _UnderlinePainter(this.decoration, VoidCallback onChanged)
-      : assert(decoration != null),
-        super(onChanged);
+  _UnderlinePainter(this.decoration, VoidCallback? onChanged)
+      : super(onChanged);
 
   final CustomIndicator decoration;
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    assert(configuration != null);
-    assert(configuration.size != null);
-    final Rect rect = offset & configuration.size;
-    final TextDirection textDirection = configuration.textDirection;
+    assert(configuration.size != null && configuration.textDirection != null);
+    final Rect rect = offset & configuration.size!;
+    final TextDirection textDirection = configuration.textDirection!;
     final Rect indicator = decoration
         ._indicatorRectFor(rect, textDirection)
         .deflate(decoration.borderSide.width / 2);

@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,7 +7,7 @@ class TextUtil {
   static late TextStyle base;
 
   static init(BuildContext context) {
-    base = Theme.of(context).textTheme.bodyText2 ?? TextStyle();
+    base = Theme.of(context).textTheme.bodyMedium ?? TextStyle();
     base = base.Swis;
   }
 }

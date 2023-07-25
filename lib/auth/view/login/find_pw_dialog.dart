@@ -4,8 +4,9 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class FindPwDialog extends Dialog {
-  static final _hintStyle = TextUtil.base.w600.noLine.sp(13).customColor(
-      Color.fromRGBO(79, 88, 107, 1));
+  static final _hintStyle = TextUtil.base.w600.noLine
+      .sp(13)
+      .customColor(Color.fromRGBO(79, 88, 107, 1));
 
   @override
   Widget build(BuildContext context) {

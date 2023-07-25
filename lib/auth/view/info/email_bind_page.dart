@@ -134,7 +134,6 @@ class _EmailBindPageState extends State<EmailBindPage> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(

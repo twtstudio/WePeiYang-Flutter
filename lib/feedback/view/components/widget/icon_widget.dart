@@ -3,7 +3,6 @@ import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 typedef WithCountNotifierCallback = Future<void> Function(
     bool, int, Function onSuccess, Function onFailure);
 
@@ -64,7 +63,8 @@ class IconWidget extends StatefulWidget {
   final ValueNotifier<int> countNotifier;
   final ValueNotifier<bool> isLikedNotifier;
 
-  IconWidget(this.iconType, {this.count, this.isLike, this.onLikePressed})
+  IconWidget(this.iconType,
+      {required this.count, required this.isLike, required this.onLikePressed})
       : countNotifier = ValueNotifier(count),
         isLikedNotifier = ValueNotifier(isLike);
 
@@ -82,7 +82,7 @@ class _IconWidgetState extends State<IconWidget> {
       ),
       child: ValueListenableBuilder(
         valueListenable: widget.isLikedNotifier,
-        builder: (_, value, __) {
+        builder: (_, bool value, __) {
           return LikeButton(
             size: widget.iconType.size,
             likeCountPadding: EdgeInsets.only(right: 5.17.w),
@@ -122,7 +122,7 @@ class _IconWidgetState extends State<IconWidget> {
 
     var likeCount = ValueListenableBuilder(
         valueListenable: widget.countNotifier,
-        builder: (_, value, __) {
+        builder: (_, int value, __) {
           return Text(
             value.toString() + (value < 100 ? '   ' : ' '),
             style: TextUtil.base.black2A.bold.ProductSans
@@ -146,14 +146,17 @@ class DislikeWidget extends StatelessWidget {
   final ValueNotifier<bool> isDislikedNotifier;
   final double size;
 
-  DislikeWidget({this.onDislikePressed, this.isDislike, this.size})
+  DislikeWidget(
+      {required this.onDislikePressed,
+      required this.isDislike,
+      required this.size})
       : isDislikedNotifier = ValueNotifier(isDislike);
 
   @override
   Widget build(BuildContext context) {
     var dislikeButton = ValueListenableBuilder(
       valueListenable: isDislikedNotifier,
-      builder: (_, value, __) {
+      builder: (_, bool value, __) {
         return LikeButton(
           size: size,
           likeBuilder: (bool isDisliked) {
@@ -166,12 +169,13 @@ class DislikeWidget extends StatelessWidget {
             }
           },
           onTap: (value) async {
-            onDislikePressed?.call(isDislikedNotifier.value);
+            onDislikePressed.call(isDislikedNotifier.value);
             return !value;
           },
           isLiked: value,
+          // end的值是Colors.blue[200]
           circleColor:
-              CircleColor(start: Colors.black12, end: Colors.blue[200]),
+              CircleColor(start: Colors.black12, end: Color(0xFF90CAF9)),
           bubblesColor: BubblesColor(
             dotPrimaryColor: Colors.blueGrey,
             dotSecondaryColor: Colors.black26,

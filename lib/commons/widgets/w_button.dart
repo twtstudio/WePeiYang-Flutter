@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/cupertino.dart';
 
 /// 统一Button样式

@@ -91,8 +91,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     children: [
                       Text('主页显示校园地图和校历', style: mainTextStyle),
                       SizedBox(height: 3.h),
-                      Text('默认关闭',
-                          style: hintTextStyle)
+                      Text('默认关闭', style: hintTextStyle)
                     ],
                   ),
                 ),
@@ -197,6 +196,40 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(S.current.schedule, style: titleTextStyle),
+          ),
+          SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('智能云端服务（BETA）', style: mainTextStyle),
+                      SizedBox(height: 3.h),
+                      Text('获取课表、GPA、考表无需输入图形验证码',
+                          style: hintTextStyle)
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: CommonPreferences.useClassesBackend.value,
+                  onChanged: (value) {
+                    setState(() => CommonPreferences.useClassesBackend.value = value);
+                  },
+                  activeColor: Color.fromRGBO(105, 109, 127, 1),
+                  inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
+                  activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                ),
+              ],
+            ),
           ),
           SizedBox(height: 10.h),
           Container(

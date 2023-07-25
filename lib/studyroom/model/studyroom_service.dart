@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -24,7 +22,7 @@ class _StudyroomDio extends DioAbstract {
       };
 
   @override
-  List<InterceptorsWrapper> get interceptors => [
+  List<Interceptor> get interceptors => [
         _StyApiInterceptor(),
         InterceptorsWrapper(
           onRequest: (options, handler) {
@@ -52,7 +50,7 @@ class _StyApiInterceptor extends InterceptorsWrapper {
       return handler.resolve(response);
     } else {
       return handler.reject(
-        DioError(
+        DioException(
           error: respData.message ?? "未知错误",
           requestOptions: response.requestOptions,
         ),

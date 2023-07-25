@@ -1,9 +1,10 @@
-// @dart = 2.12
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure, OnSuccess;
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
@@ -73,18 +74,52 @@ class ExamProvider with ChangeNotifier {
 
   bool get hideExam => CommonPreferences.hideExam.value;
 
-  /// 通过爬虫刷新数据
-  void refreshExam(
-      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
-    if (hint) ToastProvider.running("刷新数据中……");
+  /// 使用后端爬虫（无需填写图形验证码）
+  /// [CommonPreferences.useClassesBackend.value]决定了爬虫方式
+  ///   --true: 使用后端的完整爬虫接口，直接获取办公网信息
+  ///   --false: 仅使用后端ocr接口识别验证码
+  /// 若失败则弹出TjuRebindDialog，用户手动填写图形验证码
+  void refreshExamByBackend(BuildContext context) async {
+    ToastProvider.running("刷新数据中……");
+    if (CommonPreferences.useClassesBackend.value) {
+      var data = await ClassesBackendService.getClasses();
+      if (data != null) {
+        exams = data.item2;
+        notifyListeners();
+      } else {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) => TjuRebindDialog(),
+        );
+      }
+    } else {
+      var tjuuname = CommonPreferences.tjuuname.value;
+      var tjupasswd = CommonPreferences.tjupasswd.value;
+      try {
+        var captcha = await ClassesBackendService.ocr();
+        await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
+      } on DioException catch (_) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) => TjuRebindDialog(),
+        );
+      }
+    }
+  }
+
+  /// 使用前端爬虫
+  void refreshExam({
+    void Function()? onSuccess,
+    void Function(DioException)? onFailure,
+  }) {
     ScheduleService.fetchExam(onResult: (exams) {
-      if (hint) ToastProvider.success("刷新考表数据成功");
       this.exams = exams;
-      CommonPreferences.examData.value =
-          json.encode(ExamTable(_exams)); // 刷新本地缓存
+      CommonPreferences.examData.value = json.encode(ExamTable(_exams));
       onSuccess?.call();
     }, onFailure: (e) {
-      if (onFailure != null) onFailure(e);
+      onFailure?.call(e);
     });
   }
 

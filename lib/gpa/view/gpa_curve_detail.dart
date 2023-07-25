@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -178,10 +177,7 @@ class _GPACurveState extends State<GPACurve>
       }
       List<Point<double>> points = [];
       List<double> curveData = notifier.curveData;
-      _initPoints(
-          points,
-          curveData,
-          constraints.maxWidth);
+      _initPoints(points, curveData, constraints.maxWidth);
       return GestureDetector(
 
           /// 点击监听
@@ -370,7 +366,6 @@ class _GPACurvePainter extends CustomPainter {
 
   final Paint _linePaint;
   final Paint _pointPaint;
-  final Paint _downPaint;
 
   _GPACurvePainter(List<Color> gpaColors,
       {required this.isPreview, required this.points, required this.taped})
@@ -380,11 +375,7 @@ class _GPACurvePainter extends CustomPainter {
           ..strokeWidth = 5.0,
         _pointPaint = Paint()
           ..color = isPreview ? _pointPreview : gpaColors[1]
-          ..style = PaintingStyle.fill,
-        _downPaint = Paint()
-          ..color = isPreview ? _linePreview : gpaColors[3]
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1;
+          ..style = PaintingStyle.fill;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     var path = Path()

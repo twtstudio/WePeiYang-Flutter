@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
@@ -8,7 +7,7 @@ import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/summary_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/detail_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
@@ -44,14 +43,14 @@ class FeedbackRouter {
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     home: (args) => HomePage(args),
     profile: (_) => ProfilePage(),
-    detail: (args) => DetailPage(args),
+    detail: (args) => PostDetailPage(args),
     commentDetail: (args) => ReplyDetailPage(args),
     officialCommentDetail: (args) => OfficialReplyDetailPage(args),
     newPost: (args) => NewPostPage(args),
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
-    imageView: (_) => ImageViewPage(),
-    localImageView: (_) => LocalImageViewPage(),
+    imageView: (args) => ImageViewPage(args),
+    localImageView: (args) => LocalImageViewPage(args),
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),

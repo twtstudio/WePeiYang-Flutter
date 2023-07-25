@@ -6,10 +6,13 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 class FeedbackBannerWidget extends StatelessWidget {
   final int questionId;
   final bool showBanner;
-  final Widget Function(VoidFutureCallBack tap) builder;
+  final Widget Function(VoidFutureCallBack? tap) builder;
 
   const FeedbackBannerWidget(
-      {Key key, this.questionId, this.showBanner = false, this.builder})
+      {Key? key,
+      required this.questionId,
+      this.showBanner = false,
+      required this.builder})
       : super(key: key);
 
   @override
@@ -29,7 +32,7 @@ class FeedbackBannerWidget extends StatelessWidget {
         //     ),
         //   );
         // } else {
-          result = builder(null);
+        result = builder(null);
         // }
 
         return result;

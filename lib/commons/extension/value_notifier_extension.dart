@@ -1,4 +1,3 @@
-// @dart = 2.12
 part of 'extensions.dart';
 
 extension ListValueNotifierExt<T> on ValueNotifier<List<T>> {

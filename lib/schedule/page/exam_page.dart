@@ -1,13 +1,8 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -17,12 +12,6 @@ class ExamPage extends StatefulWidget {
 }
 
 class _ExamPageState extends State<ExamPage> {
-  _ExamPageState() {
-    WePeiYangApp.navigatorState.currentContext!
-        .read<ExamProvider>()
-        .refreshExam();
-  }
-
   get _color => Color.fromRGBO(98, 103, 123, 1);
 
   @override
@@ -37,16 +26,7 @@ class _ExamPageState extends State<ExamPage> {
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),
           onPressed: () {
-            context.read<ExamProvider>().refreshExam(
-                hint: true,
-                onFailure: (e) {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) => TjuRebindDialog(
-                          reason:
-                              e is WpyDioError ? e.error.toString() : null));
-                });
+            context.read<ExamProvider>().refreshExamByBackend(context);
           },
         ),
         SizedBox(width: 10.w),
@@ -100,12 +80,12 @@ class _ExamPageState extends State<ExamPage> {
   }
 
   List<Color> get _scheduleColor => [
-    Color.fromRGBO(114, 117, 136, 1), // #727588
-    Color.fromRGBO(143, 146, 165, 1), // #8F92A5
-    Color.fromRGBO(122, 119, 138, 1), // #7A778A
-    Color.fromRGBO(142, 122, 150, 1), // #8E7A96
-    Color.fromRGBO(130, 134, 161, 1), // #8286A1
-  ];
+        Color.fromRGBO(114, 117, 136, 1), // #727588
+        Color.fromRGBO(143, 146, 165, 1), // #8F92A5
+        Color.fromRGBO(122, 119, 138, 1), // #7A778A
+        Color.fromRGBO(142, 122, 150, 1), // #8E7A96
+        Color.fromRGBO(130, 134, 161, 1), // #8286A1
+      ];
 
   Widget examCard(BuildContext context, Exam exam, bool finished) {
     int code = exam.name.hashCode + DateTime.now().day;
@@ -133,7 +113,8 @@ class _ExamPageState extends State<ExamPage> {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            color: finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
+            color:
+                finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
           ),
           child: InkWell(
             onTap: () {},
@@ -148,7 +129,7 @@ class _ExamPageState extends State<ExamPage> {
                           : Colors.white),
                   child: Padding(
                     padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

@@ -1,158 +1,80 @@
+import 'dart:typed_data';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mutex/mutex.dart';
-import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
-import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 class TjuRebindDialog extends Dialog {
-  final String reason;
-
-  TjuRebindDialog({String reason})
-      : reason = (reason == null ? S.current.re_login_text : reason);
-
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 35),
+        // 防止验证码被键盘遮挡
+        margin: EdgeInsets.fromLTRB(
+            25, 0, 25, 25 + MediaQuery.of(context).viewInsets.bottom / 2),
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10), color: Colors.white),
-        child: Material(
-          color: Colors.white,
-          child: _TjuRebindWidget(reason),
-        ),
+        child: _TjuRebindWidget(),
       ),
     );
   }
 }
 
 class _TjuRebindWidget extends StatefulWidget {
-  final String reason;
-
-  _TjuRebindWidget(this.reason);
-
   @override
   _TjuRebindWidgetState createState() => _TjuRebindWidgetState();
 }
 
 class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
-  String tjuuname = "";
-  String tjupasswd = "";
-  String captcha = "";
+  String captcha = '';
 
-  TextEditingController nameController;
-  TextEditingController pwController;
   TextEditingController codeController = TextEditingController();
   final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
-  CaptchaWidget captchaWidget;
+  late final CaptchaWidget captchaWidget;
 
   @override
   void initState() {
     super.initState();
     captchaWidget = CaptchaWidget(captchaKey);
-    tjuuname = CommonPreferences.tjuuname.value;
-    tjupasswd = CommonPreferences.tjupasswd.value;
-    nameController =
-        TextEditingController.fromValue(TextEditingValue(text: tjuuname));
-    pwController =
-        TextEditingController.fromValue(TextEditingValue(text: tjupasswd));
     // 检测办公网
     _checkClasses();
   }
 
   @override
   void dispose() {
-    nameController?.dispose();
-    pwController?.dispose();
-    codeController?.dispose();
+    codeController.dispose();
     super.dispose();
   }
 
-  void _bind() {
-    if (tjuuname == "" || tjupasswd == "" || captcha == "") {
-      var message = "";
-      if (tjuuname == "")
-        message = "用户名不能为空";
-      else if (tjupasswd == "")
-        message = "密码不能为空";
-      else
-        message = "验证码不能为空";
-      ToastProvider.error(message);
+  void _bind() async {
+    if (captcha == '') {
+      ToastProvider.error('验证码不能为空');
       return;
     }
-    ClassesService.login(context, tjuuname, tjupasswd, captcha, onSuccess: () {
-      ToastProvider.success("办公网重新绑定成功");
-      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
-      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
-      var examProvider = Provider.of<ExamProvider>(context, listen: false);
-      Future.sync(() async {
-        var mtx = Mutex();
-        // 这里既然第一次课程表有问题，那么最后多请求一次
-        await mtx.acquire();
-
-        gpaProvider.refreshGPA(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            mtx.release();
-          },
-        );
-        await mtx.acquire();
-        courseProvider.refreshCourse(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            mtx.release();
-          },
-        );
-
-        await mtx.acquire();
-        examProvider.refreshExam(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            mtx.release();
-          },
-        );
-        await mtx.acquire();
-        courseProvider.refreshCourse(
-          onSuccess: () {
-            mtx.release();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-            mtx.release();
-          },
-        );
-      });
+    var tjuuname = CommonPreferences.tjuuname.value;
+    var tjupasswd = CommonPreferences.tjupasswd.value;
+    try {
+      await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
       Navigator.pop(context);
-    }, onFailure: (e) {
-      if (e.error.toString() == '网络连接超时') e.error = '请连接校园网后再次尝试';
-      ToastProvider.error(e.error.toString());
-      captchaKey.currentState.refresh();
-    });
-    codeController.clear();
+    } on DioException catch (e) {
+      var str = e.error.toString();
+      if (str == '网络连接超时') str = '请连接校园网后再次尝试';
+      ToastProvider.error(str);
+      captchaKey.currentState?.refresh();
+    } finally {
+      codeController.clear();
+    }
   }
-
-  final FocusNode _accountFocus = FocusNode();
-  final FocusNode _passwordFocus = FocusNode();
 
   /// 能否连接到办公网
   bool _canConnectToClasses = true;
+
   _checkClasses() async {
     _canConnectToClasses = await ClassesService.check();
     setState(() {});
@@ -180,7 +102,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                   .customColor(Color.fromRGBO(79, 88, 107, 1)))
         ]),
         SizedBox(height: 8),
-        Text(widget.reason,
+        Text('请求异常，请手动输入验证码',
             style: TextUtil.base.regular
                 .sp(12)
                 .customColor(Color.fromRGBO(79, 88, 107, 1))),
@@ -191,63 +113,6 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 style: TextUtil.base.regular.sp(10).redD9),
           ),
         SizedBox(height: 18),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 55,
-          ),
-          child: TextField(
-            textInputAction: TextInputAction.next,
-            controller: nameController,
-            focusNode: _accountFocus,
-            decoration: InputDecoration(
-                hintText: S.current.user_name,
-                hintStyle: hintStyle,
-                filled: true,
-                fillColor: Color.fromRGBO(235, 238, 243, 1),
-                isCollapsed: true,
-                contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none)),
-            onChanged: (input) => setState(() => tjuuname = input),
-            onTap: () {
-              nameController?.clear();
-              nameController = null;
-            },
-            onEditingComplete: () {
-              _accountFocus.unfocus();
-              FocusScope.of(context).requestFocus(_passwordFocus);
-            },
-          ),
-        ),
-        SizedBox(height: 22),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 55,
-          ),
-          child: TextField(
-            keyboardType: TextInputType.visiblePassword,
-            controller: pwController,
-            focusNode: _passwordFocus,
-            decoration: InputDecoration(
-                hintText: S.current.password,
-                hintStyle: hintStyle,
-                filled: true,
-                fillColor: Color.fromRGBO(235, 238, 243, 1),
-                isCollapsed: true,
-                contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none)),
-            obscureText: true,
-            onChanged: (input) => setState(() => tjupasswd = input),
-            onTap: () {
-              pwController?.clear();
-              pwController = null;
-            },
-          ),
-        ),
-        SizedBox(height: 22),
         Row(
           children: [
             Expanded(
@@ -298,5 +163,47 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             )),
       ],
     );
+  }
+}
+
+class CaptchaWidget extends StatefulWidget {
+  CaptchaWidget(Key key) : super(key: key);
+
+  @override
+  State<CaptchaWidget> createState() => CaptchaWidgetState();
+}
+
+class CaptchaWidgetState extends State<CaptchaWidget> {
+  Uint8List? data;
+
+  static double _id = 0.000;
+
+  static double get id {
+    _id += 0.001;
+    return _id;
+  }
+
+  void refresh() async {
+    await ClassesService.logout();
+    var res = await ClassesService.spiderDio.get(
+        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}',
+        options: Options(responseType: ResponseType.bytes));
+    setState(() {
+      data = res.data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refresh();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: refresh,
+        child:
+            data == null ? CupertinoActivityIndicator() : Image.memory(data!));
   }
 }

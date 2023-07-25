@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 class FeedbackNoticePage extends StatelessWidget {
   final NoticeMessage notice;
 
-  const FeedbackNoticePage(this.notice, {Key key}) : super(key: key);
+  const FeedbackNoticePage(this.notice, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -10,20 +10,17 @@ class TimeHandler {
     var secLag = timeLag.inSeconds;
 
     if (dayLag > 1 || dayLag == 1) {
-    //如果时间差大于24小时,显示：x天前
-    return "${dayLag}天了";
+      //如果时间差大于24小时,显示：x天前
+      return "${dayLag}天了";
     } else if (hourLag < 24 && hourLag > 1) {
-    //如果时间差小于24小时，显示：x小时
-    return "${hourLag}小时了";
+      //如果时间差小于24小时，显示：x小时
+      return "${hourLag}小时了";
     } else if (minLag > 0 && minLag < 60) {
-    //如果时间差小于1小时，显示：x分钟
-    return "${minLag}分钟了";
+      //如果时间差小于1小时，显示：x分钟
+      return "${minLag}分钟了";
     } else if (secLag > 0 && secLag < 60) {
-    //如果时间差小于1分钟
-    return "${secLag}秒，冲浪达人啊";
+      //如果时间差小于1分钟
+      return "${secLag}秒，冲浪达人啊";
     }
   }
-
-
 }
-

@@ -11,7 +11,8 @@ class ReportBasePage extends StatelessWidget {
   final Widget body;
   final Widget action;
 
-  const ReportBasePage({this.body, Key key, this.action}) : super(key: key);
+  const ReportBasePage({Key? key, required this.body, required this.action})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,21 +64,11 @@ class SelfInformation extends StatefulWidget {
 }
 
 class _SelfInformationState extends State<SelfInformation> {
-  String name;
-  String id;
-  String department;
-  String type;
-  String major;
-
-  @override
-  void initState() {
-    super.initState();
-    name = CommonPreferences.realName.value;
-    id = 'ID: ${CommonPreferences.userNumber.value}';
-    department = CommonPreferences.department.value;
-    type = CommonPreferences.stuType.value;
-    major = CommonPreferences.major.value;
-  }
+  String name = CommonPreferences.realName.value;
+  String id = 'ID: ${CommonPreferences.userNumber.value}';
+  String department = CommonPreferences.department.value;
+  String type = CommonPreferences.stuType.value;
+  String major = CommonPreferences.major.value;
 
   @override
   Widget build(BuildContext context) {
@@ -139,23 +130,22 @@ class TextScroller extends StatefulWidget {
   final List<Widget> children; //内容
 
   TextScroller(
-      {@required this.paddingLeft,
-      @required this.duration,
-      @required this.stepOffset,
-      @required this.children});
+      {required this.paddingLeft,
+      required this.duration,
+      required this.stepOffset,
+      required this.children});
 
   _TextScrollerState createState() => _TextScrollerState();
 }
 
 class _TextScrollerState extends State<TextScroller> {
-  ScrollController _controller; // 执行动画的controller
-  Timer _timer; // 定时器timer
+  late ScrollController _controller; // 执行动画的controller
+  late Timer _timer; // 定时器timer
   double _offset = 0.0; // 执行动画的偏移量
 
   @override
   void initState() {
     super.initState();
-
     _controller = ScrollController(initialScrollOffset: _offset);
     _timer = Timer.periodic(widget.duration, (timer) {
       double newOffset = _controller.offset + widget.stepOffset;

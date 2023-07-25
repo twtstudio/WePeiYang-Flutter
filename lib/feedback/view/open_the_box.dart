@@ -36,7 +36,7 @@ class _OpenBoxState extends State<OpenBox> {
           });
         },
         onFailure: (e) {
-          ToastProvider.error(e.message);
+          ToastProvider.error(e.message ?? "开盒失败");
         });
     super.initState();
   }
@@ -79,7 +79,7 @@ class _OpenBoxState extends State<OpenBox> {
                         });
                       },
                       onFailure: (e) {
-                        ToastProvider.error(e.message);
+                        ToastProvider.error(e.message ?? "开盒失败");
                       });
                 },
                 icon: Icon(

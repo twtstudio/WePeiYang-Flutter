@@ -18,7 +18,7 @@ class LogoutDialog extends Dialog {
     if (CommonPreferences.lakeToken.value != '')
       context.read<LakeModel>().clearAll();
     Navigator.pushNamedAndRemoveUntil(
-        WePeiYangApp.navigatorState.currentContext,
+        WePeiYangApp.navigatorState.currentContext!,
         AuthRouter.login,
         (route) => false);
   }

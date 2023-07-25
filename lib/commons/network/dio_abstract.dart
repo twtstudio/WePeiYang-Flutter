@@ -1,16 +1,15 @@
-// @dart = 2.12
 part of 'wpy_dio.dart';
 
 /// [OnSuccess]和[OnResult]均为请求成功；[OnFailure]为请求失败
 typedef OnSuccess = void Function();
 typedef OnResult<T> = void Function(T data);
-typedef OnFailure = void Function(DioError e);
+typedef OnFailure = void Function(DioException e);
 
 // TODO: 是否考虑删除 abstract ，这样有些简单使用的地方就不用再继承一个类了？
 abstract class DioAbstract {
   String baseUrl = '';
   Map<String, String>? headers;
-  List<InterceptorsWrapper> interceptors = [];
+  List<Interceptor> interceptors = [];
   InterceptorsWrapper? errorInterceptor = null;
   ResponseType responseType = ResponseType.json;
 
@@ -21,19 +20,20 @@ abstract class DioAbstract {
   DioAbstract() {
     BaseOptions options = BaseOptions(
         baseUrl: baseUrl,
-        connectTimeout: 5000,
-        receiveTimeout: 5000,
+        connectTimeout: Duration(seconds: 5),
+        receiveTimeout: Duration(seconds: 5),
         responseType: responseType,
-        headers: headers);
+        headers: headers,
+        validateStatus: (status) => status! < 400);
 
-    _dio = Dio()..options = options;
+    _dio = Dio(options);
     _dio.interceptors.addAll([
       NetCheckInterceptor(),
       ...interceptors,
       errorInterceptor ?? ErrorInterceptor()
     ]);
 
-    _dio_debug = Dio()..options = options;
+    _dio_debug = Dio(options);
     _dio_debug.interceptors.addAll([
       NetCheckInterceptor(),
       LogInterceptor(requestBody: true, responseBody: true),
@@ -61,7 +61,7 @@ extension DioRequests on DioAbstract {
   Future<Response<dynamic>> get(String path,
       {Map<String, dynamic>? queryParameters,
       Options? options,
-      bool debug = true}) {
+      bool debug = false}) {
     return retry(
       // Make a GET request
       () => (debug ? _dio_debug : _dio)
@@ -81,7 +81,7 @@ extension DioRequests on DioAbstract {
       FormData? formData,
       data,
       Options? options,
-      bool debug = true}) {
+      bool debug = false}) {
     return retry(
       () => (debug ? _dio_debug : _dio)
           .post(path,

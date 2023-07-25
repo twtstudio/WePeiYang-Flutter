@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show MethodChannel, SystemUiOverlayStyle;
+import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -19,7 +20,7 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 class HomePage extends StatefulWidget {
-  final int page;
+  final int? page;
 
   HomePage(this.page);
 
@@ -31,8 +32,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   /// bottomNavigationBar对应的分页
   List<Widget> pages = [];
   int _currentIndex = 0;
-  DateTime _lastPressedAt;
-  TabController _tabController;
+  DateTime? _lastPressedAt;
+  late final TabController _tabController;
   final feedbackKey = GlobalKey<FeedbackHomePageState>();
 
   @override
@@ -54,6 +55,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      /// 若没有绑定办公网，前往绑定页
+      if (!CommonPreferences.isBindTju.value) {
+        Navigator.pushNamed(context, AuthRouter.tjuBind);
+      }
+
       context.read<PushManager>().initGeTuiSdk();
 
       final manager = context.read<PushManager>();
@@ -61,7 +67,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final now = DateTime.now();
       DateTime lastTime;
       try {
-        lastTime = DateTime.tryParse(CommonPreferences.pushTime.value);
+        lastTime = DateTime.tryParse(CommonPreferences.pushTime.value)!;
       } catch (_) {
         lastTime = now.subtract(Duration(days: 3));
       }
@@ -87,14 +93,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CommonPreferences.reportTime.value = '';
       }
       // 检查当前是否有未处理的事件
-      context.findAncestorStateOfType<WePeiYangAppState>().checkEventList();
+      context.findAncestorStateOfType<WePeiYangAppState>()?.checkEventList();
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
       context.read<StudyroomProvider>().init();
     });
     if (widget.page != null) {
-      _tabController.animateTo(widget.page);
+      _tabController.animateTo(widget.page!);
     }
   }
 
@@ -135,7 +141,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         color: Colors.white,
         onPressed: () {
           if (_currentIndex == 1) {
-            feedbackKey.currentState.listToTop();
+            feedbackKey.currentState?.listToTop();
             // 获取剪切板微口令
             context.read<LakeModel>().getClipboardWeKoContents(context);
           } else
@@ -191,7 +197,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           onWillPop: () async {
             if (_tabController.index == 0) {
               if (_lastPressedAt == null ||
-                  DateTime.now().difference(_lastPressedAt) >
+                  DateTime.now().difference(_lastPressedAt!) >
                       Duration(seconds: 1)) {
                 //两次点击间隔超过1秒则重新计时
                 _lastPressedAt = DateTime.now();
@@ -199,7 +205,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 return false;
               }
             } else {
-              await _tabController.animateTo(0);
+              _tabController.animateTo(0);
               return false;
             }
             return true;

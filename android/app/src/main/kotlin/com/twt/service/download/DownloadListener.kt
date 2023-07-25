@@ -20,7 +20,7 @@ class DownloadListener(val plugin: WbyDownloadPlugin) {
             messageList.clear()
         }
 
-        override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+        override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
             WbyDownloadPlugin.log("$errorCode + $errorMessage + $errorDetails")
         }
 

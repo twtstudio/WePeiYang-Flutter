@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';

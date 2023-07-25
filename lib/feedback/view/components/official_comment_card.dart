@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -17,10 +18,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.da
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
+import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-
-import '../../feedback_router.dart';
-import '../report_question_page.dart';
 
 enum Official { subFloor, reply }
 
@@ -30,51 +29,48 @@ typedef ContentPressedCallback = void Function(void Function(List<Floor>));
 class OfficialReplyCard extends StatefulWidget {
   final String tag;
   final Floor comment;
-  final String title;
   final Official type;
   final int ancestorId;
-  final ContentPressedCallback onContentPressed;
-  final LikeCallback onLikePressed;
+  final ContentPressedCallback? onContentPressed;
+  final LikeCallback? onLikePressed;
+
   ///是否显示楼中楼
   final bool detail;
   final int placeAppeared;
+
   ///评分数
   final int ratings;
   OfficialReplyCard.reply({
-    this.tag,
-    this.comment,
-    this.ratings,
-    this.title,
-    this.ancestorId,
+    this.tag = '',
+    required this.comment,
+    required this.ratings,
+    required this.ancestorId,
     this.onContentPressed,
     this.onLikePressed,
-    this.detail,
-    this.placeAppeared,
-  }) : type = Official.reply;
+    required this.placeAppeared,
+  })  : type = Official.reply,
+        detail = false;
 
   OfficialReplyCard.subFloor({
-    this.tag,
-    this.comment,
-    this.ratings,
-    this.title,
-    this.ancestorId,
+    this.tag = '',
+    required this.comment,
+    required this.ratings,
+    required this.ancestorId,
     this.onContentPressed,
     this.onLikePressed,
-    this.detail,
-    this.placeAppeared,
-  }) : type = Official.subFloor;
+    required this.placeAppeared,
+  })  : type = Official.subFloor,
+        detail = true;
 
   @override
   _OfficialReplyCardState createState() => _OfficialReplyCardState();
 }
 
 class _OfficialReplyCardState extends State<OfficialReplyCard> {
-  double _rating;
-  double _initialRating = 0;
-  String postRating;
-  String postId;
+  late double _rating;
+  late double _initialRating;
 
-  Future<bool> _showDeleteConfirmDialog() {
+  Future<bool?> _showDeleteConfirmDialog() {
     return showDialog<bool>(
         context: context,
         builder: (context) {
@@ -98,14 +94,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         });
   }
 
-  static WidgetBuilder defaultPlaceholderBuilder =
-      (BuildContext ctx) => Loading();
-
   @override
   void initState() {
+    super.initState();
     _initialRating = widget.ratings.toDouble();
     _rating = _initialRating;
-    super.initState();
   }
 
   @override
@@ -129,23 +122,23 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Text(widget.tag ?? '官方',
+                        Text(widget.tag,
                             style: TextUtil.base.NotoSansSC.black2A.normal.w500
                                 .sp(14)),
                         CommentIdentificationContainer('官方', true),
                       ]),
                   Text(
                     DateTime.now()
-                                .difference(widget.comment.createAt)
+                                .difference(widget.comment.createAt!)
                                 .inHours >=
                             11
-                        ? widget.comment.createAt
+                        ? widget.comment.createAt!
                             .toLocal()
                             .toIso8601String()
                             .replaceRange(10, 11, ' ')
                             .substring(0, 19)
                         : DateTime.now()
-                            .difference(widget.comment.createAt)
+                            .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
                     style: TextUtil.base.ProductSans.grey97.regular.sp(10),
                   ),
@@ -162,7 +155,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   width: 30,
                   height: 24,
                   fit: BoxFit.fitHeight,
-                  placeholderBuilder: defaultPlaceholderBuilder,
+                  placeholderBuilder: (_) => Loading(),
                 ),
               ),
               Column(
@@ -178,16 +171,16 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                       ]),
                   Text(
                     DateTime.now()
-                                .difference(widget.comment.createAt)
+                                .difference(widget.comment.createAt!)
                                 .inHours >=
                             11
-                        ? widget.comment.createAt
+                        ? widget.comment.createAt!
                             .toLocal()
                             .toIso8601String()
                             .replaceRange(10, 11, ' ')
                             .substring(0, 19)
                         : DateTime.now()
-                            .difference(widget.comment.createAt)
+                            .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
                     style: TextUtil.base.ProductSans.grey97.regular.sp(10),
                   ),
@@ -195,6 +188,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               )
             ],
           );
+
     ///举报/删除区
     var popMenu = PopupMenuButton(
       padding: EdgeInsets.zero,
@@ -210,8 +204,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               arguments: ReportPageArgs(widget.ancestorId, false,
                   floorId: widget.comment.id));
         } else if (value == '删除') {
-          bool confirm = await _showDeleteConfirmDialog();
-          if (confirm) {
+          bool? confirm = await _showDeleteConfirmDialog();
+          if (confirm ?? false) {
             FeedbackService.deleteFloor(
               id: widget.comment.id,
               onSuccess: () {
@@ -227,8 +221,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       },
       itemBuilder: (context) {
         return <PopupMenuEntry<String>>[
-          CommonPreferences.lakeUid.value.toString() ==
-                  widget.comment.postId
+          CommonPreferences.lakeUid.value.toString() == widget.comment.postId
               ? PopupMenuItem<String>(
                   value: '删除',
                   child: Center(
@@ -250,8 +243,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ];
       },
     );
+
     ///致敬lxx的box封装
     var box = SizedBox(height: 6);
+
     ///头像区
     var createTime = Row(
       children: [
@@ -260,6 +255,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         if (widget.comment.sender == 0) popMenu
       ],
     );
+
     ///评分系统，只有楼主可评分
     Widget starWidget;
     if (CommonPreferences.lakeUid.value.toString() ==
@@ -311,7 +307,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ]);
     }
-  ///楼中楼笨方法，建议先去看lyx版本
+
+    ///楼中楼笨方法，建议先去看lyx版本
     var bottomWidget = Row(
       children: [if (widget.comment.sender == 1) starWidget, Spacer()],
     );
@@ -348,10 +345,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ));
     switch (widget.type) {
       case Official.reply:
-        var comment =  ExpandableText(
-          text:  widget.comment.content,
+        var comment = ExpandableText(
+          text: widget.comment.content,
           maxLines: 5,
-          style:TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+          style: TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
           expand: false,
           buttonIsShown: true,
           isHTML: true,
@@ -508,11 +505,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                 Navigator.pop(context);
               },
               confirmFun: () {
-                postRating = _rating.toInt().toString();
-                postId = widget.comment.postId.toString();
                 FeedbackService.rate(
-                    id: postId,
-                    rating: postRating,
+                    id: widget.comment.postId.toString(),
+                    rating: _rating.toInt().toString(),
                     onSuccess: () {
                       ToastProvider.success("评分成功！");
                       setState(() {

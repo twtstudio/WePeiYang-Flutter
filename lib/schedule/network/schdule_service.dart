@@ -1,47 +1,32 @@
-// @dart = 2.12
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 
 class ScheduleService {
-  /// 是否有辅修
-  static bool _hasMinor = false;
+  // /// 是否有辅修
+  // static bool _hasMinor = false;
 
-  /// 0 本科生 1 研究生
-  static int _identityType = 0;
+  // /// 0 本科生 1 研究生
+  // static int _identityType = 0;
 
-  /// 学期id
-  static String _semesterId = "";
+  // /// 学期id
+  // static String _semesterId = "";
 
   /// 爬取课程表信息
   static void fetchCourses(
       {required OnResult<List<Course>> onResult,
       required OnFailure onFailure}) async {
     try {
-      var res;
-      res = await ClassesService.fetch(
-          "http://classes.tju.edu.cn/eams/stdDetail.action");
-      var html = res.data.toString();
-      var s = html.find(r"项目：</td>(.+?)</td>");
-      if (s.isEmpty) s = html;
-      if (s.contains("本科")) _identityType = 0;
-      // 这里不能是else if
-      if (s.contains("研究")) _identityType = 1;
-
-      // 请求dataQuery，获取学期id和辅修信息
-      await _dataQuery();
-
       final courseList = <Course>[];
 
       // 获取主修课程
       final majorCourses = await _getDetailTable(false);
       courseList.addAll(majorCourses);
 
-      if (_hasMinor) {
-        await Future.delayed(Duration(seconds: 1)); // 防止过快点击
+      if (ClassesService.hasMinor) {
+        await Future.delayed(Duration(milliseconds: 500)); // 防止过快点击
         // 获取辅修课程
         final minorCourses = await _getDetailTable(true);
         courseList.addAll(minorCourses);
@@ -51,108 +36,105 @@ class ScheduleService {
       }
 
       onResult(courseList);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
 
-  static String get _currentSemester {
-    final date = DateTime.now();
-    final year = date.year;
-    final month = date.month;
-    if (month > 7)
-      return "${year}-${year + 1} 1";
-    else if (month < 2)
-      return "${year - 1}-${year} 1";
-    else
-      return "${year - 1}-${year} 2";
-  }
+  // static _dataQuery() async {
+  //   var res;
+  //   // 初始化学期查询
+  //   await Future.delayed(Duration(milliseconds: 300));
+  //   try {
+  //     await ClassesService.fetch(
+  //         "http://classes.tju.edu.cn/eams/dataQuery.action");
+  //   } catch (_) {}
+  //   // 查询学期
+  //   await Future.delayed(Duration(milliseconds: 300));
+  //   try {
+  //     res = await ClassesService.fetch(
+  //         "http://classes.tju.edu.cn/eams/dataQuery.action",
+  //         isPost: true,
+  //         params: {"dataType": "semesterCalendar"});
+  //   } catch (_) {}
 
-  static _dataQuery() async {
-    var res;
-    // 初始化学期查询
-    await Future.delayed(Duration(milliseconds: 300));
-    try {
-      await ClassesService.fetch(
-          "http://classes.tju.edu.cn/eams/dataQuery.action");
-    } catch (_) {}
-    // 查询学期
-    await Future.delayed(Duration(milliseconds: 300));
-    try {
-      res = await ClassesService.fetch(
-          "http://classes.tju.edu.cn/eams/dataQuery.action",
-          isPost: true,
-          params: {"dataType": "semesterCalendar"});
-    } catch (_) {}
+  //   // 这里最开始两次会跳转错误
+  //   // 舍弃掉，重新开始请求
+  //   await Future.delayed(Duration(milliseconds: 300));
+  //   // 初始化学期查询
+  //   await ClassesService.fetch(
+  //       "http://classes.tju.edu.cn/eams/dataQuery.action");
+  //   // 查询学期
+  //   await Future.delayed(Duration(milliseconds: 300));
+  //   res = await ClassesService.fetch(
+  //       "http://classes.tju.edu.cn/eams/dataQuery.action",
+  //       isPost: true,
+  //       params: {"dataType": "semesterCalendar"});
 
-    // 这里最开始两次会跳转错误
-    // 舍弃掉，重新开始请求
-    await Future.delayed(Duration(milliseconds: 300));
-    // 初始化学期查询
-    await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/dataQuery.action");
-    // 查询学期
-    await Future.delayed(Duration(milliseconds: 300));
-    res = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/dataQuery.action",
-        isPost: true,
-        params: {"dataType": "semesterCalendar"});
+  //   final html = res.data.toString();
+  //   final allSemester = html.findArrays(
+  //       "id:([0-9]+),schoolYear:\"([0-9]+)-([0-9]+)\",name:\"(1|2)\"");
 
-    final html = res.data.toString();
-    final allSemester = html.findArrays(
-        "id:([0-9]+),schoolYear:\"([0-9]+)-([0-9]+)\",name:\"(1|2)\"");
+  //   for (var arr in allSemester) {
+  //     if ("${arr[1]}-${arr[2]} ${arr[3]}" == _currentSemester) {
+  //       _semesterId = arr[0];
+  //       break;
+  //     }
+  //   }
 
-    for (var arr in allSemester) {
-      if ("${arr[1]}-${arr[2]} ${arr[3]}" == _currentSemester) {
-        _semesterId = arr[0];
-        break;
-      }
-    }
-
-    // 查询主辅修
-    await Future.delayed(Duration(milliseconds: 300));
-    res = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/dataQuery.action",
-        isPost: true,
-        params: {"entityId": ""});
-    _hasMinor = res.data.toString().contains("辅修");
-  }
+  //   // 查询主辅修
+  //   await Future.delayed(Duration(milliseconds: 300));
+  //   res = await ClassesService.fetch(
+  //       "http://classes.tju.edu.cn/eams/dataQuery.action",
+  //       isPost: true,
+  //       params: {"entityId": ""});
+  //   _hasMinor = res.data.toString().contains("辅修");
+  // }
 
   /// [getMinor] 是否获取辅修课表
   static Future<List<Course>> _getDetailTable(bool getMinor) async {
-    final projectId = getMinor ? 2 : 1;
-    var ids = "";
+    final isMaster = ClassesService.isMaster;
+    final semesterId = ClassesService.semesterId;
     // 如果是本科生
-    if (_identityType == 0) {
-      await ClassesService.fetch(
+
+    Response<dynamic> res;
+    if (!isMaster) {
+      final projectId = getMinor ? 2 : 1;
+      await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action?projectId=$projectId");
-      final res = await ClassesService.fetch(
+
+      await Future.delayed(Duration(milliseconds: 100));
+      res = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=$projectId");
-      ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     }
     // 如果是研究生
     else {
-      final res = await ClassesService.fetch(
-          "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action");
-      ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
+      res = await ClassesService.spiderDio.get(
+          "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
+    if (res.data.toString().contains('统一认证系统')) {
+      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
+    }
+    final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     // 获取课表
-    final res = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action",
-        isPost: true,
-        params: {
+    res = await ClassesService.spiderDio.post(
+        'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
+        data: {
           "ignoreHead": "1",
           "setting.kind": "std",
-          "semester.id": _semesterId,
+          "startWeek": "",
+          "semester.id": semesterId,
           "ids": ids
-        });
+        },
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
     return _parseCourseHTML(res.data.toString());
   }
 
   /// 解析请求到的html课程数据
   static List<Course> _parseCourseHTML(String data) {
     /// 判断会话是否过期
-    if (data.contains("本次会话已经被过期")) throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+    if (data.contains("本次会话已经被过期")) throw WpyDioException(error: "办公网绑定失效，请重新绑定");
 
     try {
       /// 先整理出所有的arrange对象
@@ -255,7 +237,7 @@ class ScheduleService {
       });
       return courseList;
     } catch (e) {
-      throw WpyDioError(error: '解析课程数据出错，请重新尝试');
+      throw WpyDioException(error: '解析课程数据出错，请重新尝试');
     }
   }
 
@@ -270,11 +252,15 @@ class ScheduleService {
       {required OnResult<List<Exam>> onResult,
       required OnFailure onFailure}) async {
     try {
-      var response = await ClassesService.fetch(
+      var response = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
+      if (response.data.toString().contains('统一认证系统')) {
+        throw WpyDioException(error: "办公网绑定失效，请重新绑定");
+      }
       var exams = <Exam>[];
       String tbody =
           response.data.toString().match(r'(?<=<tbody)[^]*?(?=</tbody>)');
+
       if (!tbody.contains('<td>')) {
         onResult([]);
         return;
@@ -292,7 +278,7 @@ class ScheduleService {
       });
       onResult(exams);
     } catch (e) {
-      onFailure(e is DioError ? e : WpyDioError(error: '解析考表数据出错，请重新尝试'));
+      onFailure(e is DioException ? e : WpyDioException(error: '解析考表数据出错，请重新尝试'));
     }
   }
 }

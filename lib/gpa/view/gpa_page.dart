@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:async' show Timer;
 import 'dart:math';
 import 'package:flutter/material.dart';
@@ -6,18 +5,13 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
-
-import 'package:we_pei_yang_flutter/main.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
-import '../../commons/util/text_util.dart';
 
 class GPAPage extends StatefulWidget {
   final List<Color> _gpaColors = GPAColor.blue;
@@ -27,17 +21,10 @@ class GPAPage extends StatefulWidget {
 }
 
 class _GPAPageState extends State<GPAPage> {
-  /// 进入gpa页面后自动刷新数据
-  _GPAPageState() {
-    WePeiYangApp.navigatorState.currentContext!
-        .read<GPANotifier>()
-        .refreshGPA();
-  }
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (CommonPreferences.firstClassesDialog.value) {
         CommonPreferences.firstClassesDialog.value = false;
         showDialog(
@@ -57,24 +44,8 @@ class _GPAPageState extends State<GPAPage> {
         appBar: GPAppBar(widget._gpaColors),
         backgroundColor: widget._gpaColors[0],
         body: Container(
-          decoration:
-              // CommonPreferences.isSkinUsed.value
-              //     ? BoxDecoration(
-              //         gradient: new LinearGradient(
-              //             begin: Alignment.topCenter,
-              //             end: Alignment.bottomCenter,
-              //             stops: [
-              //               0,
-              //               0.8
-              //             ],
-              //             colors: [
-              //               widget._gpaColors[0],
-              //               widget._gpaColors[3],
-              //             ]),
-              //       )
-              //     :
-              BoxDecoration(
-            gradient: new LinearGradient(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 stops: [
@@ -88,7 +59,8 @@ class _GPAPageState extends State<GPAPage> {
           ),
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
-            data: ThemeData(accentColor: Colors.white),
+            data:
+                Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
             child: ListView(
               children: [
                 RadarChartWidget(widget._gpaColors),
@@ -140,7 +112,6 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: gpaColors[0],
       elevation: 0,
-      brightness: Brightness.dark,
       leading: leading,
       leadingWidth: 40.w,
       title: Text(
@@ -156,17 +127,7 @@ class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
             height: 28.h,
           ),
           onTap: () {
-            Provider.of<GPANotifier>(context, listen: false).refreshGPA(
-              hint: true,
-              onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                      reason: e is WpyDioError ? e.error.toString() : null),
-                );
-              },
-            );
+            context.read<GPANotifier>().refreshGPABackend(context);
           },
         ),
         SizedBox(width: 18.w),

@@ -4,11 +4,10 @@ import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
-// ignore: must_be_immutable
 class GamePage extends StatelessWidget {
-  List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
-  List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
-  List<bool> _used = [true, true, false];
+  final List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
+  final List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
+  final List<bool> _used = [true, true, false];
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +45,17 @@ class GameCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: WePeiYangApp.screenWidth - 160,child: Text(this.title,style: TextUtil.base.w600.black2A.NotoSansSC.sp(18), maxLines: 3,)),
+                SizedBox(
+                    width: WePeiYangApp.screenWidth - 160,
+                    child: Text(
+                      this.title,
+                      style: TextUtil.base.w600.black2A.NotoSansSC.sp(18),
+                      maxLines: 3,
+                    )),
                 Container(
                   width: 100,
                   decoration: BoxDecoration(
-                      color: _color,
+                    color: _color,
                     borderRadius: BorderRadius.all(Radius.circular(13)),
                   ),
                 ),

@@ -1,13 +1,7 @@
-// @dart = 2.12
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show WpyDioError;
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -33,18 +27,18 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
-  /// 进入课程表页面后重设选中周并自动刷新数据
+  /// 进入课程表页面后重设选中周并自动刷新自定义课程
   _CoursePageState() {
     var provider =
         WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
     provider.quietResetWeek();
-    provider.refreshCourse();
+    provider.refreshCustomCourse();
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       /// 初次使用课表时展示办公网dialog
       if (CommonPreferences.firstClassesDialog.value) {
         CommonPreferences.firstClassesDialog.value = false;
@@ -53,7 +47,7 @@ class _CoursePageState extends State<CoursePage> {
             barrierDismissible: true,
             builder: (context) => ClassesNeedVPNDialog());
       }
-      if (widget.pairs != null && widget.pairs.isNotEmpty) {
+      if (widget.pairs.isNotEmpty && widget.pairs.isNotEmpty) {
         showCourseDialog(context, widget.pairs);
       }
     });
@@ -89,7 +83,7 @@ class _CoursePageState extends State<CoursePage> {
 }
 
 /// 课表页默认AppBar
-class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
+class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     var leading = Align(
@@ -112,17 +106,7 @@ class _CourseAppBar extends StatelessWidget with PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          context.read<CourseProvider>().refreshCourse(
-              hint: true,
-              onFailure: (e) {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (BuildContext context) => TjuRebindDialog(
-                    reason: e is WpyDioError ? e.error.toString() : null,
-                  ),
-                );
-              });
+          context.read<CourseProvider>().refreshCourseByBackend(context);
         },
         child: Container(
           decoration: BoxDecoration(),

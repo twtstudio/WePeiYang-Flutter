@@ -25,7 +25,7 @@ class MessageProvider extends ChangeNotifier {
 
   MessageCount get messageCount => _messageCount;
 
-  bool get isEmpty => (likeMessages?.length ?? 0) == 0;
+  bool get isEmpty => likeMessages.length == 0;
 
   refreshFeedbackCount() async {
     if (CommonPreferences.lakeToken.value != "") {
@@ -65,15 +65,15 @@ class MessageProvider extends ChangeNotifier {
     _likeMessages.clear();
   }
 
-  int getMessageCount({MessageType type, bool isEmail = false}) {
-    if (isEmail) return _messageCount?.notice ?? 0;
+  int getMessageCount({MessageType? type, bool isEmail = false}) {
+    if (isEmail) return _messageCount.notice;
     switch (type) {
       case MessageType.like:
-        return _messageCount?.like ?? 0;
+        return _messageCount.like;
       case MessageType.floor:
-        return _messageCount?.floor ?? 0;
+        return _messageCount.floor;
       case MessageType.reply:
-        return _messageCount?.reply ?? 0;
+        return _messageCount.reply;
       default:
         return 0;
     }

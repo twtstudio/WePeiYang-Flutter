@@ -1,5 +1,3 @@
-// @dart = 2.12
-
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 

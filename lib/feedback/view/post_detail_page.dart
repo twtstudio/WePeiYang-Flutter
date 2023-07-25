@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -34,27 +35,25 @@ enum DetailPageStatus {
   error,
 }
 
-enum PostOrigin { home, profile, favorite, mailbox }
+// ignore: must_be_immutable
+class PostDetailPage extends StatefulWidget {
+  Post post;
 
-class DetailPage extends StatefulWidget {
-  final Post post;
-
-  DetailPage(this.post);
+  PostDetailPage(this.post);
 
   @override
-  _DetailPageState createState() => _DetailPageState(this.post);
+  _PostDetailPageState createState() => _PostDetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
-  Post post;
-  DetailPageStatus status;
-  List<Floor> _commentList;
-  List<Floor> _officialCommentList;
+class _PostDetailPageState extends State<PostDetailPage>
+    with TickerProviderStateMixin {
+  DetailPageStatus status = DetailPageStatus.loading;
+  List<Floor> _commentList = [];
+  List<Floor> _officialCommentList = [];
   bool _showPostCard = true;
-  bool _bottomIsOpen;
+  bool _bottomIsOpen = false;
   int currentPage = 1;
   int rating = 0;
-  Widget topCard;
   final onlyOwner = ValueNotifier<int>(0);
   final order =
       ValueNotifier<int>(CommonPreferences.feedbackFloorSortType.value);
@@ -66,10 +65,44 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
 
+  @override
+  void initState() {
+    super.initState();
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      /// 如果是从通知栏点进来的
+      if (widget.post.fromNotify) {
+        _initCommentsOnly(onSuccess: (comments) {
+          _commentList.addAll(comments);
+          setState(() {
+            status = DetailPageStatus.idle;
+          });
+        }, onFail: () {
+          setState(() {
+            status = DetailPageStatus.error;
+          });
+        });
+      } else {
+        _getOfficialComment();
+        _getComments(
+            onSuccess: (comments) {
+              _commentList.addAll(comments);
+            },
+            onFail: () {},
+            current: currentPage);
+        status = DetailPageStatus.idle;
+      }
+    });
+    _getIOSShowBlock();
+    order.addListener(() {
+      _refreshController.requestRefresh();
+      CommonPreferences.feedbackFloorSortType.value = order.value;
+    });
+  }
+
   /// iOS显示拉黑按钮
   bool _showBlockButton = false;
-
-  _DetailPageState(this.post);
 
   _onRefresh() {
     currentPage = 1;
@@ -111,20 +144,20 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     });
   }
 
-  _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_bottomIsOpen ?? false) if (context
-                .read<NewFloorProvider>()
-                .inputFieldEnabled ==
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
+    if (_bottomIsOpen) if (context.read<NewFloorProvider>().inputFieldEnabled ==
             true &&
         (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
       _bottomIsOpen = false;
       Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
+    return true;
   }
 
   // 逻辑有点问题
-  _initPostAndComments({Function(List<Floor>) onSuccess, Function onFail}) {
+  _initPostAndComments(
+      {required Function(List<Floor>) onSuccess, required Function onFail}) {
     _initPost(onFail).then((success) {
       if (success) {
         _getOfficialComment(onFail: onFail);
@@ -137,7 +170,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     });
   }
 
-  _initCommentsOnly({Function(List<Floor>) onSuccess, Function onFail}) {
+  _initCommentsOnly(
+      {required Function(List<Floor>) onSuccess, required Function onFail}) {
     _getOfficialComment(onFail: onFail);
     _getComments(
       onSuccess: onSuccess,
@@ -146,20 +180,20 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
   }
 
-  Future<bool> _initPost([Function onFail]) async {
+  Future<bool> _initPost(Function onFail) async {
     bool success = false;
     await FeedbackService.getPostById(
-      id: post.id,
+      id: widget.post.id,
       onResult: (Post result) {
         success = true;
-        post = result;
-        rating = post.rating;
+        widget.post = result;
+        rating = widget.post.rating;
         setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
         success = false;
-        onFail?.call();
+        onFail.call();
         return;
       },
     );
@@ -167,31 +201,32 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   }
 
   _getComments(
-      {Function(List<Floor>) onSuccess, Function onFail, int current}) {
+      {required Function(List<Floor>) onSuccess,
+      required Function onFail,
+      int? current}) {
     FeedbackService.getComments(
-      id: post.id,
+      id: widget.post.id,
       page: current ?? currentPage,
       order: order.value,
       onlyOwner: onlyOwner.value,
       onSuccess: (comments, totalFloor) {
-        onSuccess?.call(comments);
+        onSuccess.call(comments);
         setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
-        onFail?.call();
+        onFail.call();
       },
     );
   }
 
-  _getOfficialComment({Function onSuccess, Function onFail}) {
+  _getOfficialComment({Function? onFail}) {
     // 非官方贴不请求
     if (widget.post.type != 1) return;
     FeedbackService.getOfficialComment(
-      id: post.id,
+      id: widget.post.id,
       onSuccess: (floor) {
         _officialCommentList = floor;
-        onSuccess?.call();
         setState(() {});
       },
       onFailure: (e) {
@@ -207,45 +242,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   }
 
   @override
-  void initState() {
-    super.initState();
-    status = DetailPageStatus.loading;
-    context.read<NewFloorProvider>().inputFieldEnabled = false;
-    context.read<NewFloorProvider>().replyTo = 0;
-    _officialCommentList = [];
-    _commentList = [];
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /// 如果是从通知栏点进来的
-      if (post == null || post.isLike == null || post.isOwner == null) {
-        _initCommentsOnly(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.error;
-          });
-        });
-      } else {
-        _getOfficialComment();
-        _getComments(
-            onSuccess: (comments) {
-              _commentList.addAll(comments);
-            },
-            onFail: () {},
-            current: currentPage);
-        status = DetailPageStatus.idle;
-      }
-    });
-    _getIOSShowBlock();
-    order.addListener(() {
-      _refreshController.requestRefresh();
-      CommonPreferences.feedbackFloorSortType.value = order.value;
-    });
-  }
-
-  @override
   void dispose() {
     _refreshController.dispose();
     super.dispose();
@@ -258,7 +254,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
     Widget checkButton = InkWell(
       onTap: () {
-        launchKey.currentState.send(false);
+        launchKey.currentState?.send(false);
         setState(() {});
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
@@ -266,26 +262,22 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
 
     if (status == DetailPageStatus.loading) {
-      if (post == null) {
-        body = Center(child: Loading());
-      } else {
-        body = ListView(
-          children: [
-            PostCardNormal(post, outer: false),
-            SizedBox(
-              height: 120,
-              child: Center(child: Loading()),
-            )
-          ],
-        );
-      }
+      body = ListView(
+        children: [
+          PostCardNormal(widget.post, outer: false),
+          SizedBox(
+            height: 120,
+            child: Center(child: Loading()),
+          )
+        ],
+      );
     } else if (status == DetailPageStatus.idle) {
       Widget contentList = ListView.builder(
         itemBuilder: (BuildContext context, int i) {
           if (i == 0) {
             return Column(
               children: [
-                if (_showPostCard) PostCardNormal(post, outer: false),
+                if (_showPostCard) PostCardNormal(widget.post, outer: false),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -355,12 +347,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             var list = _officialCommentList;
             return i == 0
                 ? OfficialReplyCard.reply(
-                    tag: post.department.name ?? '',
+                    tag: widget.post.department?.name ?? '',
                     comment: data,
                     placeAppeared: i,
-                    ratings: post.rating,
-                    ancestorId: post.uid,
-                    detail: false,
+                    ratings: widget.post.rating,
+                    ancestorId: widget.post.uid,
                     onContentPressed: (refresh) async {
                       refresh.call(list);
                     },
@@ -368,12 +359,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 : i == 1
                     // 楼中楼显示
                     ? OfficialReplyCard.subFloor(
-                        tag: "",
                         comment: data,
                         placeAppeared: i,
-                        ratings: post.rating,
-                        ancestorId: post.uid,
-                        detail: true,
+                        ratings: widget.post.rating,
+                        ancestorId: widget.post.uid,
                         onContentPressed: (refresh) async {
                           refresh.call(list);
                         },
@@ -382,13 +371,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           } else {
             var data = _commentList[i - _officialCommentList.length];
             return NCommentCard(
-              uid: post.uid,
+              uid: widget.post.uid,
               comment: data,
-              ancestorUId: post.id,
+              ancestorUId: widget.post.id,
+              ancestorName: widget.post.nickname,
               commentFloor: i + 1,
               isSubFloor: false,
               isFullView: false,
-              type: post.type,
               showBlockButton: _showBlockButton,
             );
           }
@@ -425,13 +414,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             _onScrollNotification(scrollInfo),
       );
 
-      var inputField = CommentInputField(postId: post.id, key: launchKey);
+      var inputField =
+          CommentInputField(postId: widget.post.id, key: launchKey);
 
       bottomInput = Column(
         children: [
           Spacer(),
-          Consumer<NewFloorProvider>(
-              builder: (BuildContext context, value, Widget child) {
+          Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
             return AnimatedSize(
               clipBehavior: Clip.antiAlias,
               duration: Duration(milliseconds: 300),
@@ -471,11 +460,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                       Row(
                                         children: [
                                           SizedBox(width: 4),
-                                          if (context
-                                                  .read<NewFloorProvider>()
-                                                  .images
-                                                  .length ==
-                                              0)
+                                          if (value.images.length == 0)
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/image.png',
@@ -485,12 +470,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                 onPressed: () =>
                                                     imageSelectionKey
                                                         .currentState
-                                                        .loadAssets()),
-                                          if (context
-                                                  .read<NewFloorProvider>()
-                                                  .images
-                                                  .length ==
-                                              0)
+                                                        ?.loadAssets()),
+                                          if (value.images.length == 0)
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/camera.png',
@@ -501,7 +482,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                 onPressed: () =>
                                                     imageSelectionKey
                                                         .currentState
-                                                        .shotPic()),
+                                                        ?.shotPic()),
                                           IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/paste.png',
@@ -511,7 +492,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                               ),
                                               onPressed: () => launchKey
                                                   .currentState
-                                                  .getClipboardData()),
+                                                  ?.getClipboardData()),
                                           IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/x.png',
@@ -521,24 +502,21 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                               ),
                                               onPressed: () {
                                                 if (launchKey
-                                                    .currentState
+                                                    .currentState!
                                                     .textEditingController
                                                     .text
                                                     .isNotEmpty) {
-                                                  launchKey.currentState
+                                                  launchKey.currentState!
                                                       .textEditingController
                                                       .clear();
                                                   launchKey.currentState
-                                                      .setState(() {
+                                                      ?.setState(() {
                                                     launchKey.currentState
-                                                            .commentLengthIndicator =
+                                                            ?.commentLengthIndicator =
                                                         '清空成功';
                                                   });
                                                 } else {
-                                                  Provider.of<NewFloorProvider>(
-                                                          context,
-                                                          listen: false)
-                                                      .clearAndClose();
+                                                  value.clearAndClose();
                                                 }
                                               }),
                                           Spacer(),
@@ -554,13 +532,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                 child: InkWell(
                                   onTap: () {
                                     _bottomIsOpen = true;
-                                    Provider.of<NewFloorProvider>(context,
-                                            listen: false)
-                                        .inputFieldOpenAndReplyTo(0);
-                                    FocusScope.of(context).requestFocus(
-                                        Provider.of<NewFloorProvider>(context,
-                                                listen: false)
-                                            .focusNode);
+                                    value.inputFieldOpenAndReplyTo(0);
+                                    FocusScope.of(context)
+                                        .requestFocus(value.focusNode);
                                   },
                                   child: Container(
                                       height: 36,
@@ -570,7 +544,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                           EdgeInsets.symmetric(horizontal: 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
-                                        child: post.type == 1
+                                        child: widget.post.type == 1
                                             ? Text('校务帖子为实名发言!!!',
                                                 style: TextUtil.base.NotoSansSC
                                                     .w500.dangerousRed
@@ -589,8 +563,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        if (!context.read<NewFloorProvider>().inputFieldEnabled)
-                          BottomLikeFavDislike(post),
+                        if (!value.inputFieldEnabled)
+                          BottomLikeFavDislike(widget.post),
                       ],
                     ),
                   ],
@@ -647,14 +621,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                       if (!_refreshController.isLoading &&
                           !_refreshController.isRefresh) {
                         String weCo =
-                            '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                            '我在微北洋发现了个有趣的问题【${widget.post.title}】\n#MP${widget.post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.post.id}';
                         ClipboardData data = ClipboardData(text: weCo);
                         Clipboard.setData(data);
                         CommonPreferences.feedbackLastWeCo.value =
-                            post.id.toString();
+                            widget.post.id.toString();
                         ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
                         FeedbackService.postShare(
-                            id: post.id.toString(),
+                            id: widget.post.id.toString(),
                             type: 0,
                             onSuccess: () {},
                             onFailure: () {});
@@ -681,15 +655,16 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           ))
                       : CupertinoActionSheetAction(
                           onPressed: () async {
-                            bool confirm = await _showDeleteConfirmDialog('删除');
-                            if (confirm) {
+                            bool? confirm =
+                                await _showDeleteConfirmDialog('删除');
+                            if (confirm ?? false) {
                               FeedbackService.deletePost(
                                 id: widget.post.id,
                                 onSuccess: () {
                                   final lake = context.read<LakeModel>();
                                   lake
                                       .lakeAreas[
-                                          lake.tabList[lake.currentTab].id]
+                                          lake.tabList[lake.currentTab].id]!
                                       .refreshController
                                       .requestRefresh();
                                   ToastProvider.success(
@@ -744,12 +719,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           CupertinoIcons.back,
           color: Color(0XFF252525),
         ),
-        onPressed: () => Navigator.pop(context, post),
+        onPressed: () => Navigator.pop(context, widget.post),
       ),
       actions: [
-        if ((CommonPreferences.isSuper.value ||
-                CommonPreferences.isSchAdmin.value) ??
-            false)
+        if (CommonPreferences.isSuper.value ||
+            CommonPreferences.isSchAdmin.value)
           manageButton,
         menuButton,
         SizedBox(width: 10)
@@ -762,7 +736,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              post.type == 1 ? '校务提问：实名' : '冒泡',
+              widget.post.type == 1 ? '校务提问：实名' : '冒泡',
               style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
             ),
           ),
@@ -774,7 +748,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, post);
+        Navigator.pop(context, widget.post);
         return true;
       },
       child: GestureDetector(
@@ -785,26 +759,26 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           if (details.delta.dx > 20) {
-            Navigator.pop(context, post);
+            Navigator.pop(context, widget.post);
           }
         },
       ),
     );
   }
 
-  Future<bool> _showManageDialog() {
+  Future<bool?> _showManageDialog() {
     return showDialog<bool>(
         context: context,
         builder: (context) {
           return Stack(
             children: [
-              ManagerPopUp(post: post),
+              ManagerPopUp(post: widget.post),
             ],
           );
         });
   }
 
-  Future<bool> _showDeleteConfirmDialog(String quote) {
+  Future<bool?> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
@@ -839,7 +813,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 class CommentInputField extends StatefulWidget {
   final int postId;
 
-  const CommentInputField({Key key, this.postId}) : super(key: key);
+  const CommentInputField({Key? key, required this.postId}) : super(key: key);
 
   @override
   CommentInputFieldState createState() => CommentInputFieldState();
@@ -930,11 +904,11 @@ class CommentInputFieldState extends State<CommentInputField> {
 
   getClipboardData() async {
     var clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-    if (clipboardData != null) {
+    if (clipboardData != null && clipboardData.text != null) {
       ///将获取的粘贴板的内容进行展示
-      textEditingController.text += clipboardData.text;
+      textEditingController.text += clipboardData.text!;
       setState(() {
-        commentLengthIndicator = '${clipboardData.text.length}/200';
+        commentLengthIndicator = '${clipboardData.text!.length}/200';
       });
     }
   }
@@ -944,10 +918,10 @@ class CommentInputFieldState extends State<CommentInputField> {
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: textEditingController.text,
-      images: list == [] ? '' : list,
+      images: list.isEmpty ? [''] : list,
       onSuccess: () {
         setState(() => commentLengthIndicator = '0/200');
-        FocusManager.instance.primaryFocus.unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
         Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
         textEditingController.text = '';
         ToastProvider.success("评论成功 (❁´◡`❁)");
@@ -964,10 +938,10 @@ class CommentInputFieldState extends State<CommentInputField> {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: textEditingController.text,
-        images: list == [] ? '' : list,
+        images: list.isEmpty ? [''] : list,
         onSuccess: () {
           setState(() => commentLengthIndicator = '0/200');
-          FocusManager.instance.primaryFocus.unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
           Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
           textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
@@ -980,10 +954,10 @@ class CommentInputFieldState extends State<CommentInputField> {
       FeedbackService.replyOfficialFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
         content: textEditingController.text,
-        images: list == [] ? '' : list,
+        images: list.isEmpty ? [''] : list,
         onSuccess: () {
           setState(() => commentLengthIndicator = '0/200');
-          FocusManager.instance.primaryFocus.unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
           Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
           textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
@@ -997,7 +971,7 @@ class CommentInputFieldState extends State<CommentInputField> {
 }
 
 class ImageSelectAndView extends StatefulWidget {
-  const ImageSelectAndView({Key key}) : super(key: key);
+  const ImageSelectAndView({Key? key}) : super(key: key);
 
   @override
   ImageSelectAndViewState createState() => ImageSelectAndViewState();
@@ -1006,6 +980,7 @@ class ImageSelectAndView extends StatefulWidget {
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
   shotPic() async {
     final asset = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (asset == null) return;
     File file = await File(asset.path);
     for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
       file = await FlutterNativeImage.compressImage(file.path, quality: 80);
@@ -1020,15 +995,21 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   }
 
   loadAssets() async {
-    final List<AssetEntity> assets = await AssetPicker.pickAssets(
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
-      maxAssets: 1,
-      requestType: RequestType.image,
-      themeColor: ColorUtil.selectionButtonColor,
+      pickerConfig: AssetPickerConfig(
+          maxAssets: 1,
+          requestType: RequestType.image,
+          themeColor: ColorUtil.selectionButtonColor),
     );
+    if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
-      File file = await assets[i].file;
-      for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
+      File? file = await assets[i].file;
+      if (file == null) {
+        ToastProvider.error('选取图片异常，请重新尝试');
+        return;
+      }
+      for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         file = await FlutterNativeImage.compressImage(file.path, quality: 80);
         if (j == 10) {
           ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
@@ -1041,7 +1022,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     setState(() {});
   }
 
-  Future<String> _showDialog() {
+  Future<String?> _showDialog() {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -1078,11 +1059,11 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                       alignment: Alignment.centerRight,
                       child: InkWell(
                         onTap: () => Navigator.pushNamed(
-                            context, FeedbackRouter.localImageView, arguments: {
-                          "uriList": data.images,
-                          "uriListLength": 1,
-                          "indexNow": 0
-                        }),
+                          context,
+                          FeedbackRouter.localImageView,
+                          arguments:
+                              LocalImageViewPageArgs(data.images, [], 1, 0),
+                        ),
                         child: Container(
                           height: 80,
                           width: 82,
@@ -1138,23 +1119,17 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
 }
 
 class ManagerPopUp extends StatefulWidget {
-  @required
   final Post post;
 
-  @required
-  const ManagerPopUp({Key key, this.post}) : super(key: key);
+  const ManagerPopUp({Key? key, required this.post}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _ManagerPopUpState();
-  }
+  State<StatefulWidget> createState() => _ManagerPopUpState();
 }
 
 class _ManagerPopUpState extends State<ManagerPopUp>
     with SingleTickerProviderStateMixin {
-  _ManagerPopUpState();
-
-  int originTag;
+  late final int originTag;
 
   static const originTagMap = {
     'top': 0,
@@ -1178,7 +1153,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                 .read<LakeModel>()
                 .tabList[context.read<LakeModel>().currentTab]
                 .id]
-            .refreshController
+            ?.refreshController
             .requestRefresh();
         return true;
       },
@@ -1237,44 +1212,34 @@ class _ManagerPopUpState extends State<ManagerPopUp>
 }
 
 class AnimatedOption extends StatefulWidget {
-  @required
   final bool origin;
   final Color color1;
   final Color color2;
   final String title;
   final int id;
-  final int action;
+  final int? action;
 
-  @required
   const AnimatedOption(
-      {Key key,
-      this.origin,
+      {Key? key,
+      required this.origin,
       this.action,
-      this.color1,
-      this.color2,
-      this.title,
-      this.id})
+      required this.color1,
+      required this.color2,
+      required this.title,
+      required this.id})
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _AnimatedOptionState(origin);
-  }
+  State<StatefulWidget> createState() => _AnimatedOptionState(origin);
 }
 
 class _AnimatedOptionState extends State<AnimatedOption>
     with SingleTickerProviderStateMixin {
   bool isSelected = false;
   bool origin;
-  TextEditingController tc;
+  TextEditingController tc = TextEditingController();
 
   _AnimatedOptionState(this.origin);
-
-  @override
-  void initState() {
-    tc = new TextEditingController();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1382,7 +1347,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
           Navigator.of(context).pop(true);
           Navigator.of(context).pop(true);
         } else {
-          if (tc != null && tc.text != '') {
+          if (tc.text != '') {
             await FeedbackService.adminTopPost(
               id: widget.id,
               hotIndex: tc.text,
@@ -1412,7 +1377,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                     .read<LakeModel>()
                     .tabList[context.read<LakeModel>().currentTab]
                     .id]
-                .refreshController
+                ?.refreshController
                 .requestRefresh();
             ToastProvider.success(S.current.feedback_delete_success);
             Navigator.of(context).pop();
@@ -1439,13 +1404,13 @@ class _AnimatedOptionState extends State<AnimatedOption>
                           .read<LakeModel>()
                           .tabList[context.read<LakeModel>().currentTab]
                           .id]
-                      .refreshController
+                      ?.refreshController
                       .requestRefresh();
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                   ToastProvider.running('成功');
                 }),
-            onFailure: (e) => ToastProvider.error(e.message));
+            onFailure: (e) => ToastProvider.error(e.message ?? '失败'));
     }
   }
 }

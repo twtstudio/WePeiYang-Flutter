@@ -12,7 +12,7 @@ class ReportPageArgs {
   final int floorId;
   final bool isQuestion; // 是举报问题还是举报评论
 
-  ReportPageArgs(this.id, this.isQuestion, {this.floorId});
+  ReportPageArgs(this.id, this.isQuestion, {this.floorId = -1});
 }
 
 class ReportQuestionPage extends StatefulWidget {
@@ -54,7 +54,6 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       ),
       centerTitle: true,
       elevation: 0,
-      brightness: Brightness.light,
     );
 
     var reportButton = Container(
@@ -67,7 +66,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
             }
             FeedbackService.report(
                 id: widget.args.id,
-                floorId: widget.args.floorId ?? '',
+                floorId: widget.args.floorId,
                 isQuestion: widget.args.isQuestion,
                 reason: textInput,
                 onSuccess: () {

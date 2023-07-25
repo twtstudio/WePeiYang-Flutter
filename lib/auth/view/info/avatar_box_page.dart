@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/shims/dart_ui_real.dart';
-import 'package:flutter_screenutil/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -21,8 +20,8 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
 
   @override
   void initState() {
-    _valueNotifier.value = CommonPreferences.avatarBoxMyUrl.value;
     super.initState();
+    _valueNotifier.value = CommonPreferences.avatarBoxMyUrl.value;
   }
 
   @override
@@ -165,6 +164,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                         widget.valueNotifier.value =
                                             avatarList[index].addr;
                                         currentIndex.value = index;
+                                      } else {
+                                        ToastProvider.running('(つд⊂)还未解锁哦~');
                                       }
                                     },
                                     child: ValueListenableBuilder(
@@ -185,7 +186,8 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                           '${avatarList[index].name}',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextUtil.base.w200.black4E.sp(16),
+                                          style:
+                                              TextUtil.base.w200.black4E.sp(16),
                                         )),
                                   ),
                                 ],
@@ -199,7 +201,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                       child: WButton(
                         onPressed: () async {
                           if (currentIndex.value < 0) {
-                            ToastProvider.error('(›´ω`‹ )请选择一个头像框~');
+                            ToastProvider.running('(›´ω`‹ )请选择一个头像框~');
                           } else {
                             FeedbackService.setAvatarBox(
                                 avatarList[currentIndex.value]);
@@ -228,7 +230,6 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                 ),
               );
         }
-        return Container();
       },
     );
   }

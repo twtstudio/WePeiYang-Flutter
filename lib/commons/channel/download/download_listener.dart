@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'download_item.dart';
 
 typedef PendingCallback = void Function(DownloadTask task);

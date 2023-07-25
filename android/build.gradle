@@ -1,5 +1,4 @@
 buildscript {
-    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         // 友盟 Maven仓库
@@ -9,8 +8,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:7.4.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         // 增加agcp插件配置。
         classpath 'com.huawei.agconnect:agcp:1.6.0.300'
     }
@@ -46,6 +45,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

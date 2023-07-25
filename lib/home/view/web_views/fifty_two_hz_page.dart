@@ -7,14 +7,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 class FiftyTwoHzPage extends StatelessWidget {
   final String url =
       'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences.token.value}';
-  WebViewController _controller;
+  WebViewController? _controller;
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        var flag = await _controller.canGoBack();
-        if (flag) _controller.goBack();
+        var flag = await _controller?.canGoBack() ?? false;
+        if (flag) _controller!.goBack();
         return !flag;
       },
       child: Scaffold(
@@ -25,7 +25,6 @@ class FiftyTwoHzPage extends StatelessWidget {
                     .sp(16)
                     .customColor(Color.fromRGBO(36, 43, 69, 1))),
             elevation: 0,
-            brightness: Brightness.light,
             centerTitle: true,
             backgroundColor: Colors.white,
             leading: Padding(

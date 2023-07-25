@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 
 class DaTab extends StatefulWidget {
-  @required
   final String text;
-  @required
   final bool withDropDownButton;
 
-  const DaTab({Key key, this.text, this.withDropDownButton})
+  const DaTab({Key? key, required this.text, required this.withDropDownButton})
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _DaTabState();
-  }
+  State<StatefulWidget> createState() => _DaTabState();
 }
 
 class _DaTabState extends State<DaTab> {
-  _DaTabState();
-
   @override
   Widget build(BuildContext context) {
     var _tabPaddingWidth = MediaQuery.of(context).size.width / 30;

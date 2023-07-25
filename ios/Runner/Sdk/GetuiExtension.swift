@@ -5,6 +5,17 @@
 //  Created by Zr埋 on 2022/9/6.
 //
 
+// MARK: - PushMessage
+struct PushMessage: Codable {
+    let data: PushData
+    let type: Int
+}
+
+// MARK: - PushData
+struct PushData: Codable {
+    let title, content, url: String
+}
+
 extension AppDelegate {
     // [ GTSDK回调 ] 已注册客户端
     func geTuiSdkDidRegisterClient(_ clientId: String) {
@@ -62,6 +73,40 @@ extension AppDelegate {
 //        }
         
         print("[ GTSDK回调 ] 接收到透传通知: \(fromGetui ? "个推消息" : "APNs消息") appId:\(appId ?? "") offLine:\(offLine ? "离线" : "在线") taskId:\(taskId ?? "") msgId:\(msgId ?? "") userInfo:\(userInfo.keys) \(userInfo.debugDescription)")
+        
+        guard let msg = try? JSONDecoder().decode(PushMessage.self, from: (userInfo["payload"] as? String)?.data(using: .utf8) ?? Data()) else {
+            return
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = msg.data.title
+        content.body = msg.data.content
+        content.sound = UNNotificationSound.default
+
+        // 创建触发条件，例如，在5秒后触发通知
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+
+        // 创建通知请求
+        let request = UNNotificationRequest(identifier: "notificationIdentifier", content: content, trigger: trigger)
+
+        // 获取通知中心实例
+        let center = UNUserNotificationCenter.current()
+
+        // 请求授权以显示通知
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+            if granted {
+                // 发送通知请求
+                center.add(request) { (error) in
+                    if let error = error {
+                        print("发送通知失败：\(error.localizedDescription)")
+                    } else {
+                        print("通知已发送")
+                    }
+                }
+            } else {
+                print("用户未授权显示通知")
+            }
+        }
     }
     
 //    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

@@ -4,12 +4,12 @@ import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class NoticesPage extends WbyWebView {
-  NoticesPage({Key key})
+  NoticesPage({Key? key})
       : super(
-      page: '部门通知',
-      backgroundColor: ColorUtil.backgroundColor,
-      fullPage: false,
-      key: key);
+            page: '部门通知',
+            backgroundColor: ColorUtil.backgroundColor,
+            fullPage: false,
+            key: key);
 
   @override
   _NoticesPageState createState() => _NoticesPageState();

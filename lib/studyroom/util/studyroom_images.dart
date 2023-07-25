@@ -1,4 +1,3 @@
-// @dart = 2.12
 class StudyroomImages {
   static const String collectedBuilding =
       'assets/images/studyroom_icons/collected_room.png';

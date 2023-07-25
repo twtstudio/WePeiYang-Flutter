@@ -1,4 +1,3 @@
-// @dart =2.12
 part of 'extensions.dart';
 
 extension StringExtension on String {

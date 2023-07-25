@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class UserAgreementDialog extends Dialog {
-  final ValueNotifier check;
+  final ValueNotifier? check;
 
   UserAgreementDialog({this.check});
 
@@ -155,7 +155,7 @@ class UserAgreementDialog extends Dialog {
         children: [
           GestureDetector(
             onTap: () {
-              check.value = false;
+              check!.value = false;
               Navigator.pop(context);
             },
             child: Container(
@@ -166,7 +166,7 @@ class UserAgreementDialog extends Dialog {
           ),
           GestureDetector(
             onTap: () {
-              check.value = true;
+              check!.value = true;
               Navigator.pop(context);
             },
             child: Container(

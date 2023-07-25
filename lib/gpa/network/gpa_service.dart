@@ -1,8 +1,6 @@
-// @dart = 2.12
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 
 class GPAService {
@@ -11,29 +9,17 @@ class GPAService {
       {required OnResult<GPABean> onResult,
       required OnFailure onFailure}) async {
     try {
-      var info = await ClassesService.fetch(
-        "http://classes.tju.edu.cn/eams/stdDetail.action",
+      var isMaster = ClassesService.isMaster;
+
+      // 如果是研究生，切换至研究生成绩
+      await ClassesService.spiderDio.get(
+        'http://classes.tju.edu.cn/eams/courseTableForStd!index.action',
+        queryParameters: {'projectId': isMaster ? '22' : '1'},
       );
-
-      var html = info.data.toString();
-      var s = html.find(r"项目：</td>(.+?)</td>");
-      if (s.isEmpty) s = html;
-      var isMaster = s.contains("研究");
-
-      if (isMaster)
-        // 如果是研究生，切换至研究生成绩
-        await ClassesService.fetch(
-            "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-            params: {'projectId': '22'});
-      else
-        await ClassesService.fetch(
-            "http://classes.tju.edu.cn/eams/courseTableForStd!index.action",
-            cookieList: CommonPreferences.cookies,
-            params: {'projectId': '1'});
-      var response = await ClassesService.fetch(
+      var response = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
       onResult(_data2GPABean(response.data.toString(), isMaster));
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
@@ -41,10 +27,10 @@ class GPAService {
   /// 用请求到的html数据生成gpaBean对象
   static GPABean _data2GPABean(String data, bool isMaster) {
     if (!data.contains("在校汇总") || data.contains("本次会话已经被过期")) {
-      throw WpyDioError(error: "办公网绑定失效，请重新绑定");
+      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     if (data.contains("就差一个评教的距离啦")) {
-      throw WpyDioError(error: "存在未评教的课程，请先前往评教");
+      throw WpyDioException(error: "存在未评教的课程，请先前往评教");
     }
 
     /// 这里加一个try-catch捕获解析数据中抛出的异常（空指针之类的）
@@ -119,6 +105,7 @@ class GPAService {
         /// 这里的[ =":a-z]*?的作用是适配重修课的红色span
         var courseData = courseDataList[i]
             .matches(r'(?<=<td[ =":a-z]*?>)[\s\S]*?(?=<)')
+            // semester '2021-2022 1' -> '2021-20221'
             .map((e) => e.replaceAll(RegExp(r'\s'), ''))
             .toList(); // 这里去掉了数据中的转义符
         var semester = courseData[0];
@@ -136,13 +123,13 @@ class GPAService {
         );
       }
       List<GPAStat> stats = [];
-      semesterMap.forEach((term, courses) {
-        stats.add(_calculateStat(term, courses));
+      semesterMap.forEach((semester, courses) {
+        stats.add(_calculateStat(semester, courses));
       });
 
       return GPABean(total, stats);
     } catch (e) {
-      throw WpyDioError(error: "解析GPA数据出错，请重新尝试");
+      throw WpyDioException(error: "解析GPA数据出错，请重新尝试");
     }
   }
 
@@ -156,14 +143,14 @@ class GPAService {
     double credit = double.tryParse(data['credit'] ?? '0.0') ?? 0.0;
     double gpa = double.tryParse(data['gpa'] ?? '0.0') ?? 0.0;
 
-    return GPACourse(data['name'] ?? '', data['type'] ?? '', score,
-        data['score'] ?? '', credit, gpa);
+    return GPACourse(data['semester'] ?? '', data['name'] ?? '',
+        data['type'] ?? '', score, data['score'] ?? '', credit, gpa);
   }
 
-  /// 计算每学期的总加权/绩点/学分，此处term格式为`2021-20221`
-  static GPAStat _calculateStat(String term, List<GPACourse> courses) {
-    term = term.split('-').last; // `20221`
-    term = '${term[4]}H${term[2]}${term[3]}'; // `1H22`
+  /// 计算每学期的总加权/绩点/学分，此处semester格式为`2021-20221`
+  static GPAStat _calculateStat(String semester, List<GPACourse> courses) {
+    semester = semester.split('-').last; // `20221`
+    semester = '${semester[4]}H${semester[2]}${semester[3]}'; // `1H22`
     var totalCredit = 0.0;
     var totalScore = 0.0;
     var totalGPA = 0.0;
@@ -184,6 +171,6 @@ class GPAService {
     }
 
     return GPAStat(
-        term, totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
+        semester, totalScore, totalGPA, totalCredit, [...courses]); // 这里需要深拷贝
   }
 }

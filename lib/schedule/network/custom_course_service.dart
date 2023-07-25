@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'dart:convert';
 
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
@@ -12,7 +11,7 @@ class CustomCourseDio extends DioAbstract {
   String baseUrl = EnvConfig.CUSTOM_CLASS;
 
   @override
-  List<InterceptorsWrapper> interceptors = [
+  List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) {
       options.headers['token'] = CommonPreferences.customCourseToken.value;
       return handler.next(options);
@@ -77,8 +76,7 @@ class CustomCourseService with AsyncTimer {
   /// 返回null时紧接着调用[postCustomTable]接口更新远程端
   static Future<List<Course>?> getCustomTable() async {
     try {
-      var response =
-          await customCourseDio.get('customClassTable');
+      var response = await customCourseDio.get('customClassTable');
       int local = CommonPreferences.customUpdatedAt.value;
       int remote = response.data['result']['customUpdatedAt'] ?? 0;
 
@@ -145,8 +143,7 @@ class CustomCourseService with AsyncTimer {
                 })
             .toList()
       };
-      await customCourseDio.post('customClassTable',
-          data: json.encode(map));
+      await customCourseDio.post('customClassTable', data: json.encode(map));
     } catch (e) {
       // ToastProvider.error('上传自定义课表失败');
     }

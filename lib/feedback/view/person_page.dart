@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
 import 'components/widget/refresh_header.dart';
+import 'image_view/image_view_page.dart';
 
 class PersonPage extends StatefulWidget {
   final PersonPageArgs args;
@@ -44,25 +45,25 @@ class _PersonPageState extends State<PersonPage> {
   bool tap = false;
   int currentPage = 1;
 
-  int uid;
-  String avatar;
-  String nickName;
-  String level;
+  int? uid;
+  String? avatar;
+  String? nickName;
+  String? level;
 
   _getAnyonePosts(
-      {Function(List<Post>) onSuccess, Function onFail, int current}) {
+      {required Function(List<Post>) onSuccess, required Function onFail}) {
     FeedbackService.getAnyonePosts(
         uid: uid,
-        page: current ?? currentPage,
+        page: currentPage,
         page_size: 10,
         onResult: (list) {
           setState(() {
-            onSuccess?.call(list);
+            onSuccess.call(list);
           });
         },
         onFailure: (e) {
           ToastProvider.error(e.error.toString());
-          onFail?.call();
+          onFail.call();
         });
   }
 
@@ -159,13 +160,12 @@ class _PersonPageState extends State<PersonPage> {
         child: Row(children: [
           GestureDetector(
             onTap: () {
-              if (avatar != '')
-                Navigator.pushNamed(context, FeedbackRouter.imageView,
-                    arguments: {
-                      "urlList": [avatar],
-                      "urlListLength": 1,
-                      "indexNow": 0
-                    });
+              if (avatar != null && avatar != '')
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.imageView,
+                  arguments: ImageViewPageArgs([avatar!], 1, 0, false),
+                );
             },
             child: Hero(
               tag: widget.args.heroTag,
@@ -199,7 +199,7 @@ class _PersonPageState extends State<PersonPage> {
                   textAlign: TextAlign.start,
                   style: TextUtil.base.ProductSans.black4E.w400.sp(14)),
               LevelUtil(
-                level: level,
+                level: level ?? '',
                 width: 34,
                 height: 17,
                 style: TextUtil.base.white.bold.sp(9),
@@ -215,14 +215,14 @@ class _PersonPageState extends State<PersonPage> {
               CommonPreferences.isStuAdmin.value)
             InkWell(
               onTap: () => _showResetConfirmDialog(context, '昵称').then((value) {
-                if (value)
+                if (value ?? false)
                   FeedbackService.adminResetName(
                       id: uid,
                       onSuccess: () {
                         ToastProvider.success('重置成功');
                       },
                       onFailure: (e) {
-                        ToastProvider.error(e.message);
+                        ToastProvider.error(e.message ?? '重置失败');
                       });
               }),
               child: Row(
@@ -244,14 +244,14 @@ class _PersonPageState extends State<PersonPage> {
               CommonPreferences.isStuAdmin.value)
             InkWell(
               onTap: () => _showResetConfirmDialog(context, '头像').then((value) {
-                if (value)
+                if (value ?? false)
                   FeedbackService.adminResetAva(
                       id: uid,
                       onSuccess: () {
                         ToastProvider.success('重置成功');
                       },
                       onFailure: (e) {
-                        ToastProvider.error(e.message);
+                        ToastProvider.error(e.message ?? '重置失败');
                       });
               }),
               child: Row(
@@ -350,7 +350,7 @@ class _PersonPageState extends State<PersonPage> {
     );
   }
 
-  Future<bool> _showResetConfirmDialog(BuildContext context, String quote) {
+  Future<bool?> _showResetConfirmDialog(BuildContext context, String quote) {
     return showDialog<bool>(
         context: context,
         builder: (context) {
@@ -371,55 +371,5 @@ class _PersonPageState extends State<PersonPage> {
                 Navigator.of(context).pop(true);
               });
         });
-  }
-}
-
-class CustomCard extends StatelessWidget {
-  final String image;
-  final String text;
-  final Function onPressed;
-
-  const CustomCard({Key key, this.image, this.text, this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onPressed?.call();
-      },
-      child: Container(
-        width: 113.w,
-        height: 90.h,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 4),
-              blurRadius: 8,
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(
-                  image,
-                  width: 24.w,
-                ),
-              ],
-            ),
-            SizedBox(height: 7.h),
-            Text(text,
-                maxLines: 1, style: TextUtil.base.w400.black2A.sp(12).medium),
-          ],
-        ),
-      ),
-    );
   }
 }

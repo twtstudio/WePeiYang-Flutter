@@ -427,8 +427,8 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     /**
      * 应用在后台，点击推送或 url scheme拉起
      */
-    override fun onNewIntent(intent: Intent?): Boolean {
-        intent?.runCatching {
+    override fun onNewIntent(intent: Intent): Boolean {
+        intent.runCatching {
             return handleIntent(this)
         }
         return false

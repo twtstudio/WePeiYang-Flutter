@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,7 +67,7 @@ class WeekSelectWidget extends StatelessWidget {
     );
 
     return Theme(
-      data: ThemeData(accentColor: Colors.white),
+      data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
       child: Builder(
         builder: (context) {
           var shrink =

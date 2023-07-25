@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
@@ -59,16 +58,16 @@ class DownloadManager {
         final progress = item['progress'];
         final reason = item['reason'];
         switch (status) {
-          case 1 << 0: // DownloadManager.STATUS_PENDING
+          case const (1 << 0): // DownloadManager.STATUS_PENDING
             listener.pending?.call(task);
             break;
-          case 1 << 1: // DownloadManager.STATUS_RUNNING
+          case const (1 << 1): // DownloadManager.STATUS_RUNNING
             listener.running?.call(task, progress);
             break;
-          case 1 << 2: // DownloadManager.STATUS_PAUSED
+          case const (1 << 2): // DownloadManager.STATUS_PAUSED
             listener.paused?.call(task, progress);
             break;
-          case 1 << 3: // DownloadManager.STATUS_SUCCESSFUL
+          case const (1 << 3): // DownloadManager.STATUS_SUCCESSFUL
             listener.success.call(task);
             listener.downloadList.add(taskId);
 
@@ -86,7 +85,7 @@ class DownloadManager {
               listener.allComplete?.call(successNum, failedNum);
             }
             break;
-          case 1 << 4: // DownloadManager.STATUS_FAILED
+          case const (1 << 4): // DownloadManager.STATUS_FAILED
             listener.failed(task, progress, reason);
             listener.failedList.add(taskId);
             break;

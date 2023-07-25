@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_dialog.dart';
@@ -16,7 +16,6 @@ class FindPwWidget extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
@@ -138,7 +137,6 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(250, 250, 250, 1),
           elevation: 0,
-          brightness: Brightness.light,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(

@@ -1,4 +1,3 @@
-// @dart = 2.12
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/map_calender_page.dart';
@@ -18,6 +17,6 @@ class HomeRouter {
     wiki: (_) => WikiPage(),
     mapCalenderPage: (_) => MapCalenderPage(),
     hz: (_) => FiftyTwoHzPage(),
-    notice:(_) => NoticesPage()
+    notice: (_) => NoticesPage()
   };
 }

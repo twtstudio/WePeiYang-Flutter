@@ -5,6 +5,7 @@
 //  Created by TwT on 2022/9/19.
 //
 import Flutter
+import UserNotifications
 
 extension Channel {
     func localSettingHandler() -> FlutterMethodCallHandler {

@@ -4,29 +4,23 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 
 class ExpandableText extends StatefulWidget {
-  @required
   final String text;
-  @required
   final int maxLines;
-  @required
   final TextStyle style;
-  @required
   final bool expand;
-  @required
   final bool buttonIsShown;
-  @required
   final bool isHTML;
   final String replyTo;
 
   const ExpandableText(
-      {Key key,
-      this.text,
-      this.maxLines,
-      this.style,
-      this.expand,
-      this.buttonIsShown,
-      this.isHTML,
-      this.replyTo})
+      {Key? key,
+      required this.text,
+      required this.maxLines,
+      required this.style,
+      required this.expand,
+      required this.buttonIsShown,
+      required this.isHTML,
+      this.replyTo = ''})
       : super(key: key);
 
   @override
@@ -41,19 +35,16 @@ class _ExpandableTextState extends State<ExpandableText> {
   final TextStyle style;
   bool expand;
 
-  ///显示全文字样
+  /// 显示全文字样
   bool buttonIsShown;
 
   _ExpandableTextState(
-      this.text, this.maxLines, this.style, this.expand, this.buttonIsShown) {
-    if (expand == null) expand = false;
-    if (buttonIsShown == null) buttonIsShown = false;
-  }
+      this.text, this.maxLines, this.style, this.expand, this.buttonIsShown);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, size) {
-      final span = TextSpan(text: text ?? '', style: style);
+      final span = TextSpan(text: text, style: style);
       final tp = TextPainter(
           text: span, maxLines: maxLines, textDirection: TextDirection.ltr);
       tp.layout(maxWidth: size.maxWidth);
@@ -66,26 +57,22 @@ class _ExpandableTextState extends State<ExpandableText> {
                     ? RichText(
                         text: HTML.toTextSpan(
                           context,
-                          text ?? '',
+                          text,
                           defaultTextStyle: style,
                         ),
                       )
-                    : LinkText(style: style, text: text ?? '')
+                    : LinkText(style: style, text: text)
                 : widget.isHTML
                     ? RichText(
                         overflow: TextOverflow.clip,
                         maxLines: maxLines,
                         text: HTML.toTextSpan(
                           context,
-                          text ?? '',
+                          text,
                           defaultTextStyle: style,
                         ),
                       )
-                    : LinkText(
-                        style: style,
-                        text: text ?? '',
-                        maxLine: maxLines,
-                      ),
+                    : LinkText(style: style, text: text, maxLine: maxLines),
             if (buttonIsShown)
               InkWell(
                 onTap: () {
@@ -112,7 +99,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           ],
         );
       } else {
-        return LinkText(style: style, text: text ?? '');
+        return LinkText(style: style, text: text);
       }
     });
   }

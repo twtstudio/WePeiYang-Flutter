@@ -1,10 +1,11 @@
-// @dart = 2.12
 import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
-    show OnFailure, OnSuccess;
+import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
+import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -89,48 +90,82 @@ class CourseProvider with ChangeNotifier {
 
   final _widgetChannel = MethodChannel('com.twt.service/widget');
 
-  /// 通过爬虫刷新数据，并通知小组件更新
-  void refreshCourse(
-      {bool hint = false, OnSuccess? onSuccess, OnFailure? onFailure}) {
-    if (hint) ToastProvider.running("刷新数据中……");
-    ScheduleService.fetchCourses(onResult: (courses) {
-      if (hint) ToastProvider.success("刷新课程表数据成功");
-      _schoolCourses = courses;
-      notifyListeners();
-      CommonPreferences.courseData.value =
-          json.encode(CourseTable(_schoolCourses, _customCourses));
-
-      _widgetChannel.invokeMethod("refreshScheduleWidget");
-      onSuccess?.call();
-    }, onFailure: (e) {
-      if (onFailure != null) onFailure(e);
-    });
-
-    try {
-      refreshCustomCourse();
-    } catch (e) {
-      // TODO: 非校内环境
+  /// 使用后端爬虫（无需填写图形验证码）
+  /// [CommonPreferences.useClassesBackend.value]决定了爬虫方式
+  ///   --true: 使用后端的完整爬虫接口，直接获取办公网信息
+  ///   --false: 仅使用后端ocr接口识别验证码
+  /// 若失败则弹出TjuRebindDialog，用户手动填写图形验证码
+  void refreshCourseByBackend(BuildContext context) async {
+    ToastProvider.running("刷新数据中……");
+    if (CommonPreferences.useClassesBackend.value) {
+      var data = await ClassesBackendService.getClasses();
+      if (data != null) {
+        _schoolCourses = data.item1;
+        notifyListeners();
+        _widgetChannel.invokeMethod("refreshScheduleWidget");
+      } else {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) => TjuRebindDialog(),
+        );
+      }
+    } else {
+      var tjuuname = CommonPreferences.tjuuname.value;
+      var tjupasswd = CommonPreferences.tjupasswd.value;
+      try {
+        var captcha = await ClassesBackendService.ocr();
+        await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
+      } on DioException catch (_) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) => TjuRebindDialog(),
+        );
+      }
     }
   }
 
-  void refreshCustomCourse() {
-    CustomCourseService.getToken().then((success) {
-      if (!success) return;
-      CustomCourseService.getCustomTable().then((courseList) {
-        if (courseList == null) {
-          // 本地比较新
-          var time = CommonPreferences.customUpdatedAt.value;
-          CustomCourseService.postCustomTable(_customCourses, time);
-        } else {
-          // 远程端比较新，[CommonPreferences.customUpdatedAt]已经在[getCustomTable]中更新过了
-          _customCourses = courseList;
-          notifyListeners();
-          CommonPreferences.courseData.value =
-              json.encode(CourseTable(_schoolCourses, _customCourses));
-          _widgetChannel.invokeMethod("refreshScheduleWidget");
-        }
-      });
+  /// 使用前端爬虫
+  void refreshCourse({
+    void Function()? onSuccess,
+    void Function(DioException)? onFailure,
+  }) {
+    ScheduleService.fetchCourses(onResult: (courses) {
+      _schoolCourses = courses;
+      notifyListeners();
+      // 通知小组件更新
+      _widgetChannel.invokeMethod("refreshScheduleWidget");
+      CommonPreferences.courseData.value =
+          json.encode(CourseTable(_schoolCourses, _customCourses));
+      onSuccess?.call();
+    }, onFailure: (e) {
+      onFailure?.call(e);
     });
+  }
+
+  void refreshCustomCourse() {
+    try {
+      CustomCourseService.getToken().then((success) {
+        if (!success) return;
+        CustomCourseService.getCustomTable().then((courseList) {
+          if (courseList == null) {
+            // 本地比较新
+            var time = CommonPreferences.customUpdatedAt.value;
+            CustomCourseService.postCustomTable(_customCourses, time);
+          } else {
+            // 远程端比较新，[CommonPreferences.customUpdatedAt]已经在[getCustomTable]中更新过了
+            _customCourses = courseList;
+            notifyListeners();
+            CommonPreferences.courseData.value =
+                json.encode(CourseTable(_schoolCourses, _customCourses));
+            _widgetChannel.invokeMethod("refreshScheduleWidget");
+          }
+        });
+      });
+    } catch (e) {
+      // TODO：非校内环境
+    }
   }
 
   /// 从缓存中读课表的数据，进入主页之前调用

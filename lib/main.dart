@@ -83,8 +83,9 @@ void main() async {
     }
 
     /// 设置沉浸式状态栏
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light));
 
     /// 修改debugPrint
     debugPrint = (message, {wrapWidth}) => print(message);
@@ -98,7 +99,7 @@ void main() async {
               maxDescendentsTruncatableNode: 5)
           .render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.flat))
           .trimRight();
-      Zone.current.handleUncaughtError(text, null);
+      Zone.current.handleUncaughtError(text, details.stack ?? StackTrace.empty);
     };
   }, (Object error, StackTrace stack) {
     /// 这里是处理所有 unhandled sync & async error 的地方
@@ -123,8 +124,8 @@ class IntentEvent {
 }
 
 class WePeiYangApp extends StatefulWidget {
-  static double screenWidth;
-  static double screenHeight;
+  static late double screenWidth;
+  static late double screenHeight;
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
@@ -147,7 +148,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
-          WePeiYangApp.navigatorState.currentState.overlay.context;
+          WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
       var mediaQueryData = MediaQuery.of(baseContext);
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
@@ -169,8 +170,12 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   checkEventList() async {
     if (Platform.isIOS) return;
-    var baseContext = WePeiYangApp.navigatorState.currentState.overlay.context;
-    await _messageChannel.invokeMethod<Map>("getLastEvent")?.then((eventMap) {
+    var baseContext =
+        WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
+    await _messageChannel.invokeMethod<Map>("getLastEvent").then((eventMap) {
+      if (eventMap == null) {
+        return;
+      }
       switch (eventMap['event']) {
         case IntentEvent.FeedbackPostPage:
           Navigator.pushNamed(
@@ -208,9 +213,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
   }
 
   showDialog(String content) {
-    if (content != null && content.isNotEmpty) {
+    if (content.isNotEmpty) {
       showMessageDialog(
-        WePeiYangApp.navigatorState.currentState.overlay.context,
+        WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context,
         content,
       );
     } else {
@@ -255,63 +260,65 @@ class WePeiYangAppState extends State<WePeiYangApp>
         // 获取友盟在线参数
         context.read<RemoteConfig>().getRemoteConfig();
 
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          title: '微北洋',
-          navigatorKey: WePeiYangApp.navigatorState,
-          onGenerateRoute: RouterManager.create,
-          navigatorObservers: [
-            AppRouteAnalysis(),
-            PageStackObserver(),
-            FlutterSmartDialog.observer
-          ],
-          localizationsDelegates: [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: S.delegate.supportedLocales,
-          localeListResolutionCallback: (List<Locale> preferredLocales,
-              Iterable<Locale> supportedLocales) {
-            var supportedLanguages =
-                supportedLocales.map((e) => e.languageCode).toList();
-            var preferredLanguages =
-                preferredLocales.map((e) => e.languageCode).toList();
-            var availableLanguages = preferredLanguages
-                .where((element) => supportedLanguages.contains(element))
-                .toList();
-            return Locale(availableLanguages.first);
-          },
-          locale: localModel.locale(),
-          home: StartUpWidget(),
-          builder: FlutterSmartDialog.init(builder: _builder),
-        );
+        return ScreenUtilInit(
+            designSize: const Size(390, 844),
+            useInheritedMediaQuery: true,
+            minTextAdapt: true,
+            child: StartUpWidget(),
+            builder: ((context, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                theme: ThemeData(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                title: '微北洋',
+                navigatorKey: WePeiYangApp.navigatorState,
+                onGenerateRoute: RouterManager.create,
+                navigatorObservers: [
+                  AppRouteAnalysis(),
+                  PageStackObserver(),
+                  FlutterSmartDialog.observer
+                ],
+                localizationsDelegates: [
+                  S.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: S.delegate.supportedLocales,
+                localeListResolutionCallback: (List<Locale>? preferredLocales,
+                    Iterable<Locale>? supportedLocales) {
+                  var supportedLanguages =
+                      supportedLocales?.map((e) => e.languageCode).toList() ??
+                          [];
+                  var preferredLanguages =
+                      preferredLocales?.map((e) => e.languageCode).toList() ??
+                          [];
+                  var availableLanguages = preferredLanguages
+                      .where((element) => supportedLanguages.contains(element))
+                      .toList();
+                  return Locale(availableLanguages.first);
+                },
+                locale: localModel.locale(),
+                home: child,
+                builder: FlutterSmartDialog.init(builder: _builder),
+                // builder: FToastBuilder(),
+              );
+            }));
       }),
     );
   }
 
-  Widget _builder(BuildContext context, Widget child) {
-    // 设置标准设计图尺寸
-    ScreenUtil.init(
-        BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height),
-        designSize: const Size(390, 844),
-        orientation: Orientation.portrait);
+  Widget _builder(BuildContext context, Widget? child) {
     // 点击空白区域取消TextField焦点
-    // return child;
     return GestureDetector(
       child: child,
       onTapDown: (TapDownDetails details) {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus &&
             currentFocus.focusedChild != null) {
-          FocusManager.instance.primaryFocus.unfocus();
+          FocusManager.instance.primaryFocus?.unfocus();
         }
       },
     );
@@ -358,8 +365,8 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (CommonPreferences.updateTime.value != "20220822") {
-      CommonPreferences.updateTime.value = "20220822";
+    if (CommonPreferences.updateTime.value != "20221019") {
+      CommonPreferences.updateTime.value = "20221019";
       CommonPreferences.clearTjuPrefs();
       CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
