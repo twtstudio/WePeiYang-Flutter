@@ -90,18 +90,6 @@ dependencies:
   image_size_getter_http_input: ^2.0.0
 
 
-  waterfall_flow: ^3.0.2
-
-  image_size_getter: ^2.1.2
-  image_size_getter_http_input: ^2.0.0
-
-
-  waterfall_flow: ^3.0.2
-
-  image_size_getter: ^2.1.2
-  image_size_getter_http_input: ^2.0.0
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
