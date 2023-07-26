@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 
 class FeedbackDio extends DioAbstract {
   @override
@@ -92,7 +93,7 @@ class FeedbackLostAndFoundDio extends DioAbstract {
     InterceptorsWrapper(onRequest: (options, handler) {
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response.data['code'] ?? 0;
+      var code = response?.data['code'] ?? 0;
       switch (code) {
         case "200": // 成功
           return handler.next(response);
