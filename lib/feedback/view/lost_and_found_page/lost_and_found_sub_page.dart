@@ -109,7 +109,10 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
     } else if (difference.inMinutes > 0) {
       return '${difference.inMinutes} 分钟前发布';
     } else {
-      return '${difference.inSeconds} 秒前发布';
+      if (difference.inSeconds < 0) {
+        return '刚刚发布';
+      } else
+        return '${difference.inSeconds} 秒前发布';
     }
   }
 
@@ -248,6 +251,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                       itemBuilder: (BuildContext context, int index) => InkWell(
                           onTap: () {},
                           child: Card(
+                            elevation: 0.5,
                             margin: const EdgeInsets.all(16.0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -285,17 +289,21 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                                   ?.height
                                                   .toDouble() ??
                                               0;
-                                          return Container(
-                                            child: WpyPic(
-                                              postList[index].coverPhotoPath!,
-                                              withHolder: false,
-                                              holderHeight:
-                                                  height * maxWidth / width,
-                                              width: width,
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0), // 设置圆角半径为10.0
+                                            child: Container(
+                                              child: WpyPic(
+                                                postList[index].coverPhotoPath!,
+                                                withHolder: false,
+                                                holderHeight:
+                                                    height * maxWidth / width,
+                                                width: width,
+                                              ),
+                                              height: height >= 3 * width
+                                                  ? 3 * maxWidth
+                                                  : height * maxWidth / width,
                                             ),
-                                            height: height >= 3 * width
-                                                ? 3 * maxWidth
-                                                : height * maxWidth / width,
                                           );
                                         },
                                       )),
