@@ -1,3 +1,4 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,6 +17,7 @@ import '../../../main.dart';
 import '../../feedback_router.dart';
 import '../../util/color_util.dart';
 import '../lake_home_page/lake_notifier.dart';
+import 'lost_and_found_detail_page.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -249,7 +251,15 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                       crossAxisCount: 2,
                       itemCount: postList.length,
                       itemBuilder: (BuildContext context, int index) => InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        LostAndFoundDetailPage(
+                                          post: postList[index],
+                                        )));
+                          },
                           child: Card(
                             elevation: 0.5,
                             margin: const EdgeInsets.all(16.0),
@@ -265,11 +275,16 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                     ? SizedBox(
                                         width: double.infinity,
                                         child: Card(
-                                          child: Text(
-                                            postList[index].text,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xff898989),
+                                          child: Padding(
+                                            // 添加Padding组件
+                                            padding: EdgeInsets.all(
+                                                10), // 设置所有方向的内边距为15个像素
+                                            child: Text(
+                                              postList[index].text,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xff898989),
+                                              ),
                                             ),
                                           ),
                                           elevation: 0,
@@ -311,7 +326,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     postList[index].title,
-                                    style: const TextStyle(fontSize: 16.0),
+                                    style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Padding(
@@ -330,7 +347,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                       Row(
                                         children: <Widget>[
                                           SvgPicture.asset(
-                                              'assets/images/icon_flame.svg',
+                                              'assets/svg_pics/icon_flame.svg',
                                               width: 16.0,
                                               height: 16.0),
                                           Text(

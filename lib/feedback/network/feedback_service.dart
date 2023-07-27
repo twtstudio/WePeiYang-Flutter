@@ -1211,12 +1211,11 @@ class FeedbackService with AsyncTimer {
     required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackDio.get(
-        'laf/get',
-        queryParameters: {'id': '$id'},
+      var response = await feedbackLostAndFoundDio.get(
+        'laf/get?id=${id}',
       );
-      var post = LostAndFoundPost.fromJson(response.data['result']);
-      onResult(post);
+      var detail = LostAndFoundPost.fromJson(response.data['result']);
+      onResult(detail);
     } on DioException catch (e) {
       onFailure(e);
     }
