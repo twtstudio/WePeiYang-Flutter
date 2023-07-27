@@ -56,7 +56,8 @@ class FeedbackPicPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -77,7 +78,8 @@ class FeedbackAdminPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -97,7 +99,8 @@ class FeedbackLostAndFoundDio extends DioAbstract {
         case "200": // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['message']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['message']), true);
       }
     })
   ];
@@ -1199,9 +1202,9 @@ class FeedbackService with AsyncTimer {
     required String type,
     required void Function(List<LostAndFoundPost> list) onSuccess,
     required OnFailure onFailure,
-  }) async{
-    try{
-      Options requestOptions = new Options(headers: {"history" : history});
+  }) async {
+    try {
+      Options requestOptions = new Options(headers: {"history": history});
       var res = await feedbackLostAndFoundDio.get(
           keyword != null
             ? 'sort/search'
@@ -1222,6 +1225,23 @@ class FeedbackService with AsyncTimer {
       }
       onSuccess(list);
     } on DioException catch(e){
+      onFailure(e);
+    }
+  }
+
+  static getLostAndFoundPostDetail({
+    required int id,
+    required OnResult<LostAndFoundPost> onResult,
+    required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'laf/get',
+        queryParameters: {'id': '$id'},
+      );
+      var post = LostAndFoundPost.fromJson(response.data['result']);
+      onResult(post);
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
