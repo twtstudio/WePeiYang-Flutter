@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_result_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/official_reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/open_the_box.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
@@ -30,6 +31,7 @@ class FeedbackRouter {
   static String search = 'feedback/search';
   static String searchResult = 'feedback/search_result';
   static String lostAndFoundSearch = 'feedback/lost_and_found_search';
+  static String lostAndFoundSearchResult = 'feedback/lost_and_found_search_result';
   static String mailbox = 'feedback/mailbox';
   static String imageView = 'feedback/image_view';
   static String localImageView = 'feedback/local_image_view';
@@ -52,6 +54,7 @@ class FeedbackRouter {
     search: (_) => SearchPage(),
     searchResult: (args) => SearchResultPage(args),
     lostAndFoundSearch: (_) => LostAndFoundSearchPage(),
+    lostAndFoundSearchResult: (args) => LostAndFoundSearchResultPage(args),
     imageView: (args) => ImageViewPage(args),
     localImageView: (args) => LocalImageViewPage(args),
     mailbox: (_) => FeedbackMessagePage(),

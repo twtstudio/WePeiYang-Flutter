@@ -16,6 +16,7 @@ import '../../../main.dart';
 import '../../feedback_router.dart';
 import '../../util/color_util.dart';
 import '../lake_home_page/lake_notifier.dart';
+import 'lost_and_found_search_notifier.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -125,8 +126,10 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
             LostAndFoundSubPageStatus.error) _onRefresh();
 
     var searchBar = InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch),
+      onTap: (){
+        context.read<LostAndFoundModel2>().currentType = widget.type;
+        Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
+      },
       child: Container(
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
