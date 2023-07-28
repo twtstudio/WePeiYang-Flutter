@@ -150,7 +150,8 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               (index) {
             var lostAndFoundSearchResultArgument = LostAndFoundSearchResultPageArgs(
                 context.read<LostAndFoundModel2>().currentType,
-                '全部',
+                context.read<LostAndFoundModel2>()
+                    .currentCategory[context.read<LostAndFoundModel2>().currentType]!,
                 list[list.length - index - 1]);
             return InkResponse(
               radius: 30,

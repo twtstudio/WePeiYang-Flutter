@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import '../../../commons/util/toast_provider.dart';
 import '../../network/lost_and_found_post.dart';
+import 'lost_and_found_detail_page.dart';
 import 'lost_and_found_home_page.dart';
 import 'lost_and_found_search_notifier.dart';
 
@@ -34,6 +36,7 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
   final String type;
   final String category;
   final String keyword;
+  final ScrollController _scrollController = ScrollController();
 
   _LostAndFoundSearchResultPageState(this.type, this.category, this.keyword);
 
@@ -107,6 +110,32 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
       ),
     );
 
+    //用于计算时间差
+    String _timeAgo(String dateTimeStr) {
+      final year = int.parse(dateTimeStr.substring(0, 4));
+      final month = int.parse(dateTimeStr.substring(4, 6));
+      final day = int.parse(dateTimeStr.substring(6, 8));
+      final hour = int.parse(dateTimeStr.substring(8, 10));
+      final minute = int.parse(dateTimeStr.substring(10, 12));
+      final second = int.parse(dateTimeStr.substring(12, 14));
+
+      final dateTime = DateTime(year, month, day, hour, minute, second);
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      if (difference.inDays > 0) {
+        return '${difference.inDays} 天前发布';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours} 小时前发布';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes} 分钟前发布';
+      } else {
+        if (difference.inSeconds < 0) {
+          return '刚刚发布';
+        } else
+          return '${difference.inSeconds} 秒前发布';
+      }
+    }
 
     return Scaffold(
         body: Column(
@@ -132,7 +161,9 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
                           completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
                           failedText: '刷新失败（；´д｀）ゞ',
                         ),
-                        controller: context.read<LostAndFoundModel2>().refreshController[context.read<LostAndFoundModel2>().currentType]!,
+                        controller: context
+                            .read<LostAndFoundModel2>()
+                            .refreshController[context.read<LostAndFoundModel2>().currentType]!,
                         footer: ClassicFooter(
                           idleText: '下拉以刷新',
                           noDataText: '无数据',
@@ -141,57 +172,126 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
                         ),
                         onRefresh: _onRefresh,
                         onLoading: _onLoading,
-                        child: WaterfallFlow.builder(
-                            gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 8.w,
-                              mainAxisSpacing: 8.w,
-                            ),
-                            itemCount: postList.length,
-                            itemBuilder: (context,index){
-                              return Container(
-                                color: Colors.grey,
+                        child: StaggeredGridView.countBuilder(
+                          controller: _scrollController,
+                          crossAxisCount: 2,
+                          itemCount: postList.length,
+                          itemBuilder: (BuildContext context, int index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            LostAndFoundDetailPage(
+                                              postId: postList[index].id,
+                                            )));
+                              },
+                              child: Card(
+                                elevation: 0.5,
+                                margin: const EdgeInsets.all(16.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: const BorderSide(
+                                      color: Colors.transparent, width: 0.0),
+                                ),
                                 child: Column(
-                                  children: [
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
                                     postList[index].coverPhotoPath == null
-                                        ? Container(
-                                      child: Text(postList[index].text),
-                                    )
-                                        : Container(
-                                        child: LayoutBuilder(
-                                          builder: (context, constrains){
-                                            final maxWidth = constrains.constrainWidth();
-                                            final width = postList[index].coverPhotoSize?.width.toDouble() ?? 1;
-                                            final height = postList[index].coverPhotoSize?.height.toDouble() ?? 0;
-                                            return Container(
-                                              child: WpyPic(
-                                                postList[index].coverPhotoPath!,
-                                                withHolder: true,
-                                                holderHeight: height * maxWidth / width,
-                                                width: width,
+                                        ? SizedBox(
+                                        width: double.infinity,
+                                        child: Card(
+                                          child: Padding(
+                                            // 添加Padding组件
+                                            padding: EdgeInsets.all(
+                                                10), // 设置所有方向的内边距为15个像素
+                                            child: Text(
+                                              postList[index].text,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xff898989),
                                               ),
-                                              height: height >= 3 * width
-                                                  ? 3 * maxWidth
-                                                  : height * maxWidth / width,
-                                            );
-                                          },
-                                        )
-                                    ),/// 后面的同学写卡片时可以用item.coverPhotoSize来在网络图片获取前获取图片大小，从而预留占位
-                                    Padding(padding: EdgeInsetsDirectional.only(bottom: 20.h)),
-                                    Container(
-                                        child: Text(postList[index].title)
+                                            ),
+                                          ),
+                                          elevation: 0,
+                                          color: Color(0xfff8f8f8),
+                                        ))
+                                        : Container(child: LayoutBuilder(
+                                      builder: (context, constrains) {
+                                        final maxWidth =
+                                        constrains.constrainWidth();
+                                        final width = postList[index]
+                                            .coverPhotoSize
+                                            ?.width
+                                            .toDouble() ??
+                                            1;
+                                        final height = postList[index]
+                                            .coverPhotoSize
+                                            ?.height
+                                            .toDouble() ??
+                                            0;
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                              10.0), // 设置圆角半径为10.0
+                                          child: Container(
+                                            child: WpyPic(
+                                              postList[index].coverPhotoPath!,
+                                              withHolder: false,
+                                              holderHeight:
+                                              height * maxWidth / width,
+                                              width: width,
+                                            ),
+                                            height: height >= 3 * width
+                                                ? 3 * maxWidth
+                                                : height * maxWidth / width,
+                                          ),
+                                        );
+                                      },
+                                    )),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        postList[index].title,
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(postList[index].uploadTime),
-                                        Text('hot:${postList[index].hot.toString()}')
-                                      ],
-                                    )
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            _timeAgo(
+                                                postList[index].detailedUploadTime),
+                                            style: TextStyle(
+                                              color: Color(0xff898989),
+                                            ),
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              SvgPicture.asset(
+                                                  'assets/svg_pics/icon_flame.svg',
+                                                  width: 16.0,
+                                                  height: 16.0),
+                                              Text(
+                                                '${postList[index].hot.toString()}',
+                                                style: TextStyle(
+                                                  color: Color(0xff898989),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              );
-                            }
+                              )),
+                          staggeredTileBuilder: (int index) =>
+                          const StaggeredTile.fit(1),
                         ),
                       );
                     }

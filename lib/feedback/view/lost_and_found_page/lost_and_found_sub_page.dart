@@ -91,6 +91,33 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
         );
   }
 
+  //用于计算时间差
+  String _timeAgo(String dateTimeStr) {
+    final year = int.parse(dateTimeStr.substring(0, 4));
+    final month = int.parse(dateTimeStr.substring(4, 6));
+    final day = int.parse(dateTimeStr.substring(6, 8));
+    final hour = int.parse(dateTimeStr.substring(8, 10));
+    final minute = int.parse(dateTimeStr.substring(10, 12));
+    final second = int.parse(dateTimeStr.substring(12, 14));
+
+    final dateTime = DateTime(year, month, day, hour, minute, second);
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays} 天前发布';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} 小时前发布';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} 分钟前发布';
+    } else {
+      if (difference.inSeconds < 0) {
+        return '刚刚发布';
+      } else
+        return '${difference.inSeconds} 秒前发布';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (context
@@ -353,11 +380,11 @@ class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
   final String? tag;
-  const LostAndFoundTag({Key? key, required this.type, required this.category, this.tag,}) : super(key: key);
   const LostAndFoundTag({
     Key? key,
     required this.type,
     required this.category,
+    this.tag,
   }) : super(key: key);
 
   @override

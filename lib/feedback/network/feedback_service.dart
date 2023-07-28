@@ -1197,15 +1197,7 @@ class FeedbackService with AsyncTimer {
         },
         options: requestOptions
       );
-          category != '全部'
-              ? 'sort/getbytypeandcategorywithnum'
-              : 'sort/getbytypewithnum',
-          queryParameters: {
-            'type': type,
-            'num': num,
-            'category': category,
-          },
-          options: requestOptions);
+
       List<LostAndFoundPost> list = [];
       for (Map<String, dynamic> json in res.data['result']) {
         list.add(LostAndFoundPost.fromJson(json));
