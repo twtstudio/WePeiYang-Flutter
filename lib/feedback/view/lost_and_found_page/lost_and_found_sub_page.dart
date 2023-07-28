@@ -257,7 +257,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         LostAndFoundDetailPage(
-                                          post: postList[index],
+                                          postId: postList[index].id,
                                         )));
                           },
                           child: Card(

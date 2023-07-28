@@ -12,14 +12,81 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_home_page.dart';
 
-// 失物招领帖子详情页
-class LostAndFoundDetailPage extends StatelessWidget {
-  final LostAndFoundPost post;
-
-  LostAndFoundDetailPage({required this.post});
+class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
+  LostAndFoundDetailAppBar({
+    Key? key,
+    required Widget leading,
+    required Widget action,
+    required Widget title,
+  }) : super(key: key, leading: leading, action: action, title: title);
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      height: 65.h,
+      color: Colors.white, // Change the background color to white
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0.w,
+            bottom: 0.h,
+            child: leading,
+          ),
+          Align(
+            alignment: AlignmentDirectional.bottomCenter,
+            child: title,
+          ),
+          Positioned(
+            right: 0.w,
+            bottom: 0.h,
+            child: action,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class LostAndFoundDetailPage extends StatelessWidget {
+  final int postId;
+
+  LostAndFoundDetailPage({required this.postId});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: fetchPost(postId),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return buildDetailUI(context, snapshot.data!);
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text("获取失败: ${snapshot.error}"),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  // 获取详情
+  Future<LostAndFoundPost?> fetchPost(int id) async {
+    LostAndFoundPost? post;
+    try {
+      post = await FeedbackService.getLostAndFoundPostDetail(
+          id: id, onResult: (p) {}, onFailure: (e) {});
+    } catch (e) {
+      // 处理错误
+    }
+    return post;
+  }
+
+  // 构建UI
+  Widget buildDetailUI(BuildContext context, LostAndFoundPost post) {
+    // 使用post数据构建UI
     return Scaffold(
       appBar: LostAndFoundDetailAppBar(
         leading: Padding(
@@ -77,7 +144,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '创作者某某',
+                                  post.author,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black,
@@ -289,41 +356,6 @@ class LostAndFoundDetailPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
-  LostAndFoundDetailAppBar({
-    Key? key,
-    required Widget leading,
-    required Widget action,
-    required Widget title,
-  }) : super(key: key, leading: leading, action: action, title: title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 65.h,
-      color: Colors.white, // Change the background color to white
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0.w,
-            bottom: 0.h,
-            child: leading,
-          ),
-          Align(
-            alignment: AlignmentDirectional.bottomCenter,
-            child: title,
-          ),
-          Positioned(
-            right: 0.w,
-            bottom: 0.h,
-            child: action,
-          )
-        ],
       ),
     );
   }

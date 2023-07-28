@@ -1214,8 +1214,9 @@ class FeedbackService with AsyncTimer {
       var response = await feedbackLostAndFoundDio.get(
         'laf/get?id=${id}',
       );
-      var detail = LostAndFoundPost.fromJson(response.data['result']);
-      onResult(detail);
+      var post = LostAndFoundPost.fromJson(response.data['result']);
+      onResult(post);
+      return post;
     } on DioException catch (e) {
       onFailure(e);
     }
