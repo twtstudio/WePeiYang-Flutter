@@ -15,6 +15,7 @@ import '../../../main.dart';
 import '../../feedback_router.dart';
 import '../../util/color_util.dart';
 import '../lake_home_page/lake_notifier.dart';
+import 'lost_and_found_search_notifier.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -71,7 +72,10 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>{
     ) _onRefresh();
 
     var searchBar = InkWell(
-      onTap: () => Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch),
+      onTap: (){
+        context.read<LostAndFoundModel2>().currentType = widget.type;
+        Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
+      },
       child: Container(
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
@@ -93,9 +97,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>{
                     constraints: BoxConstraints(
                         maxWidth: WePeiYangApp.screenWidth - 260),
                     child: Text(
-                      data.recTag == null
-                          ? '天大不能没有微北洋'
-                          : '#${data.recTag?.name}#',
+                      '天大不能没有微北洋',
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                     ),
@@ -228,7 +230,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>{
 class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
-  const LostAndFoundTag({Key? key, required this.type, required this.category,}) : super(key: key);
+  final String? tag;
+  const LostAndFoundTag({Key? key, required this.type, required this.category, this.tag,}) : super(key: key);
 
   @override
   LostAndFoundTagState createState() => LostAndFoundTagState();

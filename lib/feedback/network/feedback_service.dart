@@ -1174,6 +1174,7 @@ class FeedbackService with AsyncTimer {
 
   static getLostAndFoundPosts({
     num,
+    keyword,
     required String history,
     required String category,
     required String type,
@@ -1183,10 +1184,13 @@ class FeedbackService with AsyncTimer {
     try{
       Options requestOptions = new Options(headers: {"history" : history});
       var res = await feedbackLostAndFoundDio.get(
-        category != '全部'
-            ? 'sort/getbytypeandcategorywithnum'
-            : 'sort/getbytypewithnum',
+          keyword != null
+            ? 'sort/search'
+              : (category != '全部'
+              ? 'sort/getbytypeandcategorywithnum'
+              : 'sort/getbytypewithnum'),
         queryParameters: {
+            'q' : keyword,
           'type' : type,
           'num' : num,
           'category' : category,
