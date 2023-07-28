@@ -21,7 +21,6 @@ class LostAndFoundDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: LostAndFoundDetailAppBar(
         leading: Padding(
           padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
@@ -53,65 +52,242 @@ class LostAndFoundDetailPage extends StatelessWidget {
         ),
         title: Text(''),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                post.title,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // body
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 91),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/icon_peiyang.png',
+                              width: 32,
+                              height: 32,
+                            ),
+                            SizedBox(width: 13),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '创作者某某',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Column(
+                                  children: [
+                                    Text(
+                                      '2021-11-07',
+                                      style: TextStyle(
+                                        fontSize: 8,
+                                        color: Color(0xFF909090),
+                                      ),
+                                    ),
+                                    Text(
+                                      '12:17:05',
+                                      style: TextStyle(
+                                        fontSize: 8,
+                                        color: Color(0xFF909090),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '#MP000001',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF909090),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 14),
+                    Text(
+                      '急!狗丢了!!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Image.asset(
+                      'assets/images/schedule_empty.png',
+                      width: 360,
+                      height: 204,
+                    ),
+                    SizedBox(height: 14),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF8F8F8),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '#',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 2),
+                              Text(
+                                '其他',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Color(0xFF909090),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '11445次浏览',
+                          style: TextStyle(
+                            fontSize: 9,
+                            color: Color(0xFF909090),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 28),
+                    Text(
+                      '求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴',
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: 28),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '丢失日期',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '2023-03-31',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF2C7EDF),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '丢失地点',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '图书馆到诚八沿途',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF2C7EDF),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 92),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF2C7EDF),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '我找到了',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/schedule_empty.png',
+                              width: 24,
+                              height: 20,
+                            ),
+                            SizedBox(width: 10),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Color(0xFF2C7EDF),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                '擦亮',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF2C7EDF),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 8),
-              Text(
-                '作者: ${post.author}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '类型: ${post.type}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '分类: ${post.category}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '时间: ${post.uploadTime}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '地点: ${post.location}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '联系电话: ${post.phone}',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 16),
-              Text(
-                '详情:',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                post.text,
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 16),
-              post.coverPhotoPath != null
-                  ? Image.network(
-                      post.coverPhotoPath!,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    )
-                  : Text('No Cover Photo'),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
