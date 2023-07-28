@@ -5,12 +5,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
 List<SearchTag> tagUtil = [];
@@ -159,7 +158,31 @@ class _SearchBarState extends State<SearchBar>
                     enabled: true,
                     onSubmitted: (content) {
                       if (content.isNotEmpty) {
-                        widget.onSubmitted.call(content);
+                        if (_controller.text.startsWith('#MP') &&
+                            RegExp(r'^-?[0-9]+')
+                                .hasMatch(_controller.text.substring(3))) {
+                          FeedbackService.getPostById(
+                            id: int.parse(_controller.text.substring(3)),
+                            onResult: (post) {
+                              Navigator.popAndPushNamed(
+                                context,
+                                FeedbackRouter.detail,
+                                arguments: post,
+                              );
+                            },
+                            onFailure: (e) {
+                              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
+                              return;
+                            },
+                          );
+                        } else if (!(_controller.text.startsWith('#MP') &&
+                            RegExp(r'^-?[0-9]+')
+                                .hasMatch(_controller.text.substring(3)))) {
+                          _controller.text = '#MP';
+                          ToastProvider.error('后面跟数字啦！！！');
+                        } else {
+                          widget.onSubmitted?.call(content);
+                        }
                       } else {
                         Navigator.pushNamed(
                           context,
@@ -267,6 +290,7 @@ class _SearchBarState extends State<SearchBar>
                                 );
                               } else {
                                 _controller.text = '#MP';
+                                ToastProvider.error('后面跟数字啦！！！');
                               }
                             },
                             child: Padding(
