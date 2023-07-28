@@ -1180,9 +1180,9 @@ class FeedbackService with AsyncTimer {
     required String type,
     required void Function(List<LostAndFoundPost> list) onSuccess,
     required OnFailure onFailure,
-  }) async{
-    try{
-      Options requestOptions = new Options(headers: {"history" : history});
+  }) async {
+    try {
+      Options requestOptions = new Options(headers: {"history": history});
       var res = await feedbackLostAndFoundDio.get(
           keyword != null
             ? 'sort/search'
@@ -1197,12 +1197,38 @@ class FeedbackService with AsyncTimer {
         },
         options: requestOptions
       );
+          category != '全部'
+              ? 'sort/getbytypeandcategorywithnum'
+              : 'sort/getbytypewithnum',
+          queryParameters: {
+            'type': type,
+            'num': num,
+            'category': category,
+          },
+          options: requestOptions);
       List<LostAndFoundPost> list = [];
       for (Map<String, dynamic> json in res.data['result']) {
         list.add(LostAndFoundPost.fromJson(json));
       }
       onSuccess(list);
-    } on DioError catch(e){
+    } on DioError catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getLostAndFoundPostDetail({
+    required int id,
+    required OnResult<LostAndFoundPost> onResult,
+    required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackLostAndFoundDio.get(
+        'laf/get?id=${id}',
+      );
+      var post = LostAndFoundPost.fromJson(response.data['result']);
+      onResult(post);
+      return post;
+    } on DioException catch (e) {
       onFailure(e);
     }
   }

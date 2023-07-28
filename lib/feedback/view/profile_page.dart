@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
@@ -136,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   GestureDetector(
                     onTap: () =>
                         Navigator.pushNamed(context, AuthRouter.setting)
-                            ..then((_) => _refreshController.requestRefresh()),
+                          ..then((_) => _refreshController.requestRefresh()),
                     child: Image.asset(
                       'assets/images/setting.png',
                       width: 24,
@@ -238,11 +237,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             SizedBox(height: 6.h),
                             LevelProgress(
-                              value: CommonPreferences.curLevelPoint.value
+                              value: (CommonPreferences.levelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble() /
-                                  (CommonPreferences.curLevelPoint.value +
-                                          CommonPreferences
-                                              .nextLevelPoint.value)
+                                  (CommonPreferences.nextLevelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble(),
                             )
                           ],
