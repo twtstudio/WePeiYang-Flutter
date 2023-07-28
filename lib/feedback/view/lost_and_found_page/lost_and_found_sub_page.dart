@@ -382,10 +382,12 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
 class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
+  final String? tag;
   const LostAndFoundTag({
     Key? key,
     required this.type,
     required this.category,
+    this.tag,
   }) : super(key: key);
 
   @override
