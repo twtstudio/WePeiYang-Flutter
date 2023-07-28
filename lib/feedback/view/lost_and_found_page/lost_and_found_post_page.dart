@@ -1,18 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 
-class LostAndFoundPostPage extends StatefulWidget{
+class LostAndFoundPostPage extends StatefulWidget {
   @override
-  State<LostAndFoundPostPage> createState()=>_LostAndFoundPostPageState();
-
+  State<LostAndFoundPostPage> createState() => _LostAndFoundPostPageState();
 }
-class _LostAndFoundPostPageState extends State<LostAndFoundPostPage>{
-  String _selecttitle = "发布失物";
+
+class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
+  String _selectTitle = "发布失物";
   String _selectClass = "选择分类";
+
+  _submit() async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          padding: EdgeInsets.zero,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          icon: Icon(
+            Icons.keyboard_arrow_left,
+            color: Color(0XFF62677B),
+            size: 36,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text("${_selectTitle}"),
+        actions: [
+          Container(
+            width: 36,
+            height: 36,
+            child: Column(
+              children: [
+                Image.asset("assets/images/post_swap.png"),
+                Text(
+                  "招领",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 10,
+                      color: Color.fromARGB(255, 81, 137, 220)),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+        ],
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+      ),
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Column(
@@ -67,21 +106,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage>{
                           color: Color.fromARGB(255, 44, 126, 223)),
                     )),
                 const SizedBox(width: 8),
-                SizedBox(
-                  width: 63,
-                  height: 32,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(0),
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 44, 126, 223)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(16)))),
-                      onPressed: () {},
-                      child: const Text('发送')),
-                )
+                LostAndFoundPostButton()
               ],
             )
           ],
@@ -90,7 +115,23 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage>{
     );
   }
 
+  SizedBox LostAndFoundPostButton() {
+    return SizedBox(
+      width: 63,
+      height: 32,
+      child: ElevatedButton(
+          style: ButtonStyle(
+              elevation: MaterialStateProperty.all(0),
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 44, 126, 223)),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)))),
+          onPressed: () {},
+          child: const Text('发送')),
+    );
+  }
 }
+
 class SelectButton extends StatelessWidget {
   final Icon frontIcon;
   final String buttonText;
