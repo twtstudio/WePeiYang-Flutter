@@ -1,11 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_size_getter/image_size_getter.dart';
-import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -88,33 +82,40 @@ class LostAndFoundDetailPage extends StatelessWidget {
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post) {
     // 使用post数据构建UI
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: LostAndFoundDetailAppBar(
         leading: Padding(
-          padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
-          child: WButton(
-            child: WpyPic(
-              'assets/svg_pics/laf_butt_icons/back_black.svg',
-              width: 20.w,
-              height: 20.w,
+          padding: EdgeInsets.only(top: 46, left: 30),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: WButton(
+              child: WpyPic(
+                'assets/svg_pics/laf_butt_icons/back_black.svg',
+                width: 20.w,
+                height: 20.w,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              // Other onPressed logic goes here
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-
-            ///to do
           ),
         ),
         action: Padding(
-          padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),
-          child: WButton(
-            child: WpyPic(
-              'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
-              width: 20.w,
-              height: 20.w,
-            ),
-            onPressed: () {},
+          padding: EdgeInsets.only(top: 46, right: 30),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: WButton(
+              child: WpyPic(
+                'assets/images/more-horizontal.png',
+                width: 30.w,
+                height: 30.w,
+              ),
+              onPressed: () {
 
-            ///to do
+              },
+              // Other onPressed logic goes here
+            ),
           ),
         ),
         title: Text(''),
@@ -135,7 +136,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset(
-                              'assets/images/icon_peiyang.png',
+                              'assets/images/school.png',
                               width: 32,
                               height: 32,
                             ),
@@ -185,7 +186,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                     ),
                     SizedBox(height: 14),
                     Text(
-                      '急!狗丢了!!',
+                      ' 急 ! 狗丢了 ! ! !',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -235,7 +236,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '11445次浏览',
+                          '11445次浏览'+'       ',
                           style: TextStyle(
                             fontSize: 9,
                             color: Color(0xFF909090),
@@ -244,35 +245,34 @@ class LostAndFoundDetailPage extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 28),
-                    Text(
-                      '求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
+                    Padding(
+                      padding: EdgeInsets.all(7), // Add 10-pixel padding around the Text widget
+                      child: Text(
+                        '求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴',
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5,
+                          color: Color.fromRGBO(42, 42, 42, 1), // Set the text color here
+                        ),
                       ),
                     ),
-                    SizedBox(height: 28),
+                    SizedBox(height: 45),
                     Padding(
                       padding: EdgeInsets.only(left: 4),
-                      child: Column(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '丢失日期',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            '2023-03-31',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF2C7EDF),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          Text('丢失日期',
+                              style:
+                              TextStyle(fontSize: 14, color: Colors.black)),
+                          SizedBox(
+                              width:
+                              15), // Add some horizontal spacing between the text and date
+                          Text('2023-03-31',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF2C7EDF),
+                                  fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ),
@@ -289,7 +289,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 15),
                           Text(
                             '图书馆到诚八沿途',
                             style: TextStyle(
@@ -301,12 +301,13 @@ class LostAndFoundDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 92),
+                    SizedBox(height: 85),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                          width: 110,
+                          margin: EdgeInsets.only(left: 50),
+                          padding: EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                             color: Color(0xFF2C7EDF),
                             borderRadius: BorderRadius.circular(20),
@@ -319,34 +320,37 @@ class LostAndFoundDetailPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/schedule_empty.png',
-                              width: 24,
-                              height: 20,
+                        const SizedBox(width:30,),
+                        Container(
+                          width: 110,
+                          height: 40,
+                          margin: EdgeInsets.only(left: 30),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Color(0xFF2C7EDF),
+                              width: 1,
                             ),
-                            SizedBox(width: 10),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Color(0xFF2C7EDF),
-                                  width: 1,
-                                ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/images/octicon_light-bulb-24.png',
+                                width: 24,
+                                height: 20,
                               ),
-                              child: Text(
+                              SizedBox(width: 8),
+                              Text(
                                 '擦亮',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFF2C7EDF),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
