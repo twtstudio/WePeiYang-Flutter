@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -8,8 +9,12 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import '../../../commons/widgets/w_button.dart';
 import '../../../commons/widgets/wpy_pic.dart';
+import '../../feedback_router.dart';
 import '../components/widget/lost_and_found_search_bar.dart';
+import 'lost_and_found_search_notifier.dart';
+import 'lost_and_found_search_result_page.dart';
 
 class LostAndFoundSearchPage extends StatefulWidget {
   @override
@@ -45,35 +50,54 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final String type = context.read<LostAndFoundModel2>().currentType;
+
     var searchBar = LostAndFoundSearchBar(
       onSubmitted: (text) {
         _foundSearchHistoryList.unequalAdd(text);
-        // Navigator.pushNamed(
-        //   context,
-        //   FeedbackRouter.searchResult,
-        //   arguments: SearchResultPageArgs(
-        //       text, '', '', S.current.feedback_search_result, 0, 0),
-        // ).then((_) {
-        //   Navigator.pop(context);
-        // });
       },
     );
 
     var topView = SafeArea(
-        child: Stack(
-          alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            searchBar,
-            InkWell(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 12, left: 12),
-                child: Icon(
-                  CupertinoIcons.back,
-                  color: Color(0XFF252525),
-                  size: 27,
+            Stack(children: [
+              searchBar,
+              InkWell(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12, left: 12),
+                  child: Icon(
+                    CupertinoIcons.back,
+                    color: Color(0XFF252525),
+                    size: 27,
+                  ),
                 ),
+                onTap: () => Navigator.pop(context),
               ),
-              onTap: () => Navigator.pop(context),
+            ]
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(bottom: 8.h),
+              child: Selector<LostAndFoundModel2,String>(
+                selector: (context, model){
+                  return model.currentCategory[type]!;
+                },
+                builder:(context, category, _){
+                  return Flex(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    direction: Axis.horizontal,
+                    children: <Widget>[
+                      Expanded(child: LostAndFoundTag(category: '全部',type: type), flex: 4,),
+                      Expanded(child: LostAndFoundTag(category: '生活日用',type: type), flex: 5,),
+                      Expanded(child: LostAndFoundTag(category: '数码产品',type: type), flex: 5,),
+                      Expanded(child: LostAndFoundTag(category: '钱包卡证',type: type), flex: 5,),
+                      Expanded(child: LostAndFoundTag(category: '其他',type: type), flex: 4,),
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ));
@@ -124,25 +148,23 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         searchHistory.addAll(List.generate(
           list.length,
               (index) {
-            // var searchArgument = SearchResultPageArgs(
-            //     list[list.length - index - 1],
-            //     '',
-            //     '',
-            //     S.current.feedback_search_history,
-            //     0,
-            //     0);
+            var lostAndFoundSearchResultArgument = LostAndFoundSearchResultPageArgs(
+                context.read<LostAndFoundModel2>().currentType,
+                context.read<LostAndFoundModel2>()
+                    .currentCategory[context.read<LostAndFoundModel2>().currentType]!,
+                list[list.length - index - 1]);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
-                // Navigator.pushNamed(
-                //   context,
-                //   FeedbackRouter.searchResult,
-                //   arguments: searchArgument,
-                // ).then((_) {
-                //   Navigator.pop(context);
-                // });
+                Navigator.pushNamed(
+                  context,
+                  FeedbackRouter.lostAndFoundSearchResult,
+                  arguments: lostAndFoundSearchResultArgument,
+                ).then((_) {
+                  Navigator.pop(context);
+                });
               },
               child: Chip(
                 elevation: 1,
@@ -219,5 +241,48 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               },
               content: Text(S.current.feedback_clear_history));
         });
+  }
+}
+
+
+class LostAndFoundTag extends StatefulWidget {
+  final String type;
+  final String category;
+  final String? tag;
+  const LostAndFoundTag({Key? key, required this.type, required this.category, this.tag,}) : super(key: key);
+
+  @override
+  LostAndFoundTagState createState() => LostAndFoundTagState();
+}
+
+class LostAndFoundTagState extends State<LostAndFoundTag> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 8.w,right: 8.w),
+      child: WButton(
+        onPressed: () {
+          context.read<LostAndFoundModel2>().resetCategory(type: widget.type, category: widget.category);
+          context.read<LostAndFoundModel2>().clearByType(widget.type);
+        },
+        child: Container(
+          height: 30.w,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
+                  ? Color.fromARGB(255, 234, 243, 254)
+                  : Color.fromARGB(248, 248, 248, 248)
+          ),
+          child: Center(
+            child: Text(
+                widget.category,
+                style: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
+                    ? TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).blue2C
+                    : TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).black2A
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

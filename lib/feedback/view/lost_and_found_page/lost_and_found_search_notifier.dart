@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 
-class LostAndFoundModel with ChangeNotifier{
+class LostAndFoundModel2 with ChangeNotifier{
   Map<String, List<LostAndFoundPost>> postList = {
     '失物招领' : [],
     '寻物启事' : []
@@ -15,9 +15,9 @@ class LostAndFoundModel with ChangeNotifier{
 
   String currentType = '失物招领';
 
-  Map<String, LostAndFoundSubPageStatus> lostAndFoundSubPageStatus = {
-    '失物招领' : LostAndFoundSubPageStatus.unload,
-    '寻物启事' : LostAndFoundSubPageStatus.unload
+  Map<String, LostAndFoundSubPageStatus2> lostAndFoundSubPageStatus = {
+    '失物招领' : LostAndFoundSubPageStatus2.unload,
+    '寻物启事' : LostAndFoundSubPageStatus2.unload
   };
 
   Map<String, RefreshController> refreshController = {
@@ -32,7 +32,7 @@ class LostAndFoundModel with ChangeNotifier{
 
   clearByType(type){
     postList[type]?.clear();
-    lostAndFoundSubPageStatus[type] = LostAndFoundSubPageStatus.unload;
+    lostAndFoundSubPageStatus[type] = LostAndFoundSubPageStatus2.unload;
   }
 
   Map<String, bool> searchAndTagVisibility = {
@@ -51,36 +51,36 @@ class LostAndFoundModel with ChangeNotifier{
     String? keyword,
     int? num }) async{
     await FeedbackService.getLostAndFoundPosts(
-        type: type,
-        keyword: keyword,
-        category: category,
-        num: num ?? 10,
-        onSuccess: (list) async{
-          if(list.isEmpty){
-            ToastProvider.cancelAll();
-            ToastProvider.running('没有更多内容了');
-          }else{
-            for(LostAndFoundPost item in list){
-              if(item.coverPhotoPath != null){
-                if(_imageSizeCache[item.coverPhotoPath] != null)
-                  item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
-                else{
-                  final httpInput = await HttpInput.createHttpInput(item.coverPhotoPath!);
-                  item.coverPhotoSize = await ImageSizeGetter.getSizeAsync(httpInput);
-                  _cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
-                }
+      type: type,
+      keyword: keyword,
+      category: category,
+      num: num ?? 10,
+      onSuccess: (list) async{
+        if(list.isEmpty){
+          ToastProvider.cancelAll();
+          ToastProvider.running('没有更多内容了');
+        }else{
+          for(LostAndFoundPost item in list){
+            if(item.coverPhotoPath != null){
+              if(_imageSizeCache[item.coverPhotoPath] != null)
+                item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
+              else{
+                final httpInput = await HttpInput.createHttpInput(item.coverPhotoPath!);
+                item.coverPhotoSize = await ImageSizeGetter.getSizeAsync(httpInput);
+                _cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
               }
             }
           }
-          postList[type]?.addAll(list);
+        }
+        postList[type]?.addAll(list);
 
-          success();
-          notifyListeners();
-        },
-        onFailure: (e){
-          failure(e);
-        },
-        history: postList[type]!.isEmpty? '0' :  postList[type]!.map((e) => e.id).toList().join(','),
+        success();
+        notifyListeners();
+      },
+      onFailure: (e){
+        failure(e);
+      },
+      history: postList[type]!.isEmpty? '0' :  postList[type]!.map((e) => e.id).toList().join(','),
     );
   }
 
@@ -103,7 +103,7 @@ class LostAndFoundModel with ChangeNotifier{
   }
 }
 
-enum LostAndFoundSubPageStatus{
+enum LostAndFoundSubPageStatus2{
   loading,
   unload,
   ready,

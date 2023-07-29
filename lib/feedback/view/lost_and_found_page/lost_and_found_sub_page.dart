@@ -16,6 +16,8 @@ import '../../../main.dart';
 import '../../feedback_router.dart';
 import '../../util/color_util.dart';
 import '../lake_home_page/lake_notifier.dart';
+import 'lost_and_found_search_notifier.dart';
+import 'lost_and_found_detail_page.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -109,7 +111,10 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
     } else if (difference.inMinutes > 0) {
       return '${difference.inMinutes} 分钟前发布';
     } else {
-      return '${difference.inSeconds} 秒前发布';
+      if (difference.inSeconds < 0) {
+        return '刚刚发布';
+      } else
+        return '${difference.inSeconds} 秒前发布';
     }
   }
 
@@ -125,8 +130,10 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
             LostAndFoundSubPageStatus.error) _onRefresh();
 
     var searchBar = InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch),
+      onTap: (){
+        context.read<LostAndFoundModel2>().currentType = widget.type;
+        Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
+      },
       child: Container(
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
@@ -143,20 +150,18 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
           SizedBox(width: 12),
           Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
-                        child: Text(
-                          data.recTag == null
-                              ? '天大不能没有微北洋'
-                              : '#${data.recTag?.name}#',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
-                        ),
-                      ),
-                    ],
-                  )),
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: WePeiYangApp.screenWidth - 260),
+                    child: Text(
+                      '天大不能没有微北洋',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                    ),
+                  ),
+                ],
+              )),
           Spacer()
         ]),
       ),
@@ -240,14 +245,22 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                     ),
                     onRefresh: _onRefresh,
                     onLoading: _onLoading,
-                    //使用StaggeredGridView.countBuilder构造瀑布流
                     child: StaggeredGridView.countBuilder(
                       controller: _scrollController,
                       crossAxisCount: 2,
                       itemCount: postList.length,
                       itemBuilder: (BuildContext context, int index) => InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        LostAndFoundDetailPage(
+                                          postId: postList[index].id,
+                                        )));
+                          },
                           child: Card(
+                            elevation: 0.5,
                             margin: const EdgeInsets.all(16.0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
@@ -261,11 +274,16 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                     ? SizedBox(
                                         width: double.infinity,
                                         child: Card(
-                                          child: Text(
-                                            postList[index].text,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xff898989),
+                                          child: Padding(
+                                            // 添加Padding组件
+                                            padding: EdgeInsets.all(
+                                                10), // 设置所有方向的内边距为15个像素
+                                            child: Text(
+                                              postList[index].text,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xff898989),
+                                              ),
                                             ),
                                           ),
                                           elevation: 0,
@@ -285,17 +303,21 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                                   ?.height
                                                   .toDouble() ??
                                               0;
-                                          return Container(
-                                            child: WpyPic(
-                                              postList[index].coverPhotoPath!,
-                                              withHolder: false,
-                                              holderHeight:
-                                                  height * maxWidth / width,
-                                              width: width,
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0), // 设置圆角半径为10.0
+                                            child: Container(
+                                              child: WpyPic(
+                                                postList[index].coverPhotoPath!,
+                                                withHolder: true,
+                                                holderHeight:
+                                                    height * maxWidth / width,
+                                                width: width,
+                                              ),
+                                              height: height >= 3 * width
+                                                  ? 3 * maxWidth
+                                                  : height * maxWidth / width,
                                             ),
-                                            height: height >= 3 * width
-                                                ? 3 * maxWidth
-                                                : height * maxWidth / width,
                                           );
                                         },
                                       )),
@@ -303,7 +325,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     postList[index].title,
-                                    style: const TextStyle(fontSize: 16.0),
+                                    style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 Padding(
@@ -322,7 +346,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
                                       Row(
                                         children: <Widget>[
                                           SvgPicture.asset(
-                                              'assets/images/icon_flame.svg',
+                                              'assets/svg_pics/icon_flame.svg',
                                               width: 16.0,
                                               height: 16.0),
                                           Text(
@@ -354,10 +378,12 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> {
 class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
+  final String? tag;
   const LostAndFoundTag({
     Key? key,
     required this.type,
     required this.category,
+    this.tag,
   }) : super(key: key);
 
   @override
