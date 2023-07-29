@@ -1217,7 +1217,7 @@ class FeedbackService with AsyncTimer {
         list.add(LostAndFoundPost.fromJson(json));
       }
       onSuccess(list);
-    } on DioError catch(e){
+    } on DioException catch(e){
       onFailure(e);
     }
   }
