@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_sub_page.dart';
 
 class LostAndFoundHomePage extends StatefulWidget {
@@ -62,12 +63,43 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                 ),
               ),
             ),
-            body: TabBarView(
+            body: Stack(
               children: [
-                LostAndFoundSubPage(type: '寻物启事'),
-                LostAndFoundSubPage(type: '失物招领')
+                Container(
+                  child: TabBarView(
+                    children: [
+                      LostAndFoundSubPage(type: '寻物启事'),
+                      LostAndFoundSubPage(type: '失物招领')
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: ScreenUtil().bottomBarHeight + 90.h,
+                  right: 20.w,
+                  child: Hero(
+                    tag: "addNewPost",
+                    child: InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                          height: 72.r,
+                          width: 72.r,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/add_post.png"),
+                            ),
+                          ),
+                        ),
+                        onTap: () {Navigator.of(context).push(
+                            MaterialPageRoute(builder:(BuildContext context){
+                              return LostAndFoundPostPage();
+                            })
+                        );}
+                    ),
+                  ),
+                )
               ],
-            ),
+            )
           ),
         )
     );

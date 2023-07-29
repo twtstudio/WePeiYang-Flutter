@@ -27,22 +27,31 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("${_selectTitle}"),
+        title: Text(
+          "${_selectTitle}",
+          style: TextStyle(
+              color: Color.fromARGB(255, 42, 42, 42),
+              fontSize: 18,
+              fontWeight: FontWeight.w400),
+        ),
         actions: [
-          Container(
-            width: 36,
-            height: 36,
-            child: Column(
-              children: [
-                Image.asset("assets/images/post_swap.png"),
-                Text(
-                  "招领",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 10,
-                      color: Color.fromARGB(255, 81, 137, 220)),
-                )
-              ],
+          InkWell(
+            onTap: (){},
+            child: Container(
+              width: 36,
+              height: 36,
+              child: Column(
+                children: [
+                  Image.asset("assets/images/post_swap.png"),
+                  Text(
+                    "招领",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10,
+                        color: Color.fromARGB(255, 81, 137, 220)),
+                  )
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -51,6 +60,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         ],
         centerTitle: true,
         backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
