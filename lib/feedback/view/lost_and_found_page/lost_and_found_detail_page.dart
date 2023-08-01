@@ -150,7 +150,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 6.h),
-                                Column(
+                                Row(
                                   children: [
                                     Text(
                                       '2021-11-07',
@@ -159,6 +159,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                                         color: Color(0xFF909090),
                                       ),
                                     ),
+                                    SizedBox(width:3.w,),
                                     Text(
                                       '12:17:05',
                                       style: TextStyle(
@@ -207,6 +208,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 padding: EdgeInsets.all(2),
