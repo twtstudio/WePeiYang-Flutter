@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_home_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
@@ -41,15 +42,21 @@ class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   }
 }
 
-class LostAndFoundDetailPage extends StatelessWidget {
+class LostAndFoundDetailPage extends StatefulWidget {
   final int postId;
 
   LostAndFoundDetailPage({required this.postId});
 
   @override
+  _LostAndFoundDetailPageState createState() => _LostAndFoundDetailPageState();
+}
+
+class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
+  bool brightened = false;
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchPost(postId),
+      future: fetchPost(widget.postId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return buildDetailUI(context, snapshot.data!);
@@ -66,7 +73,6 @@ class LostAndFoundDetailPage extends StatelessWidget {
     );
   }
 
-  // 获取详情
   Future<LostAndFoundPost?> fetchPost(int id) async {
     LostAndFoundPost? post;
     try {
@@ -153,13 +159,15 @@ class LostAndFoundDetailPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text(
-                                      '2021-11-07',
+                                      post.uploadTime,
                                       style: TextStyle(
                                         fontSize: 8,
                                         color: Color(0xFF909090),
                                       ),
                                     ),
-                                    SizedBox(width:3.w,),
+                                    SizedBox(
+                                      width: 3.w,
+                                    ),
                                     Text(
                                       '12:17:05',
                                       style: TextStyle(
@@ -185,7 +193,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                     ),
                     SizedBox(height: 14),
                     Text(
-                      ' 急 ! 狗丢了 ! ! !',
+                      post.title,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -248,7 +256,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.all(7),
                       child: Text(
-                        '求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴',
+                        post.text,
                         style: TextStyle(
                           fontSize: 15,
                           height: 1.5.h,
@@ -289,7 +297,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                           ),
                           SizedBox(width: 15.w),
                           Text(
-                            '图书馆到诚八沿途',
+                            post.location,
                             style: TextStyle(
                               fontSize: 14,
                               color: Color(0xFF2C7EDF),
@@ -332,30 +340,45 @@ class LostAndFoundDetailPage extends StatelessWidget {
                           height: 40.h,
                           margin: EdgeInsets.only(left: 30.w),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: brightened ? Colors.grey[200] : Colors.white,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Color(0xFF2C7EDF),
-                              width: 1.w,
-                            ),
+                            border: brightened
+                                ? null
+                                : Border.all(
+                                    color: Color(0xFF2C7EDF),
+                                    width: 1.w,
+                                  ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/images/octicon_light-bulb-24.png',
-                                width: 24.w,
-                                height: 20.h,
-                              ),
-                              SizedBox(width: 8.w),
-                              Text(
-                                '擦亮',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFF2C7EDF),
+                          child: WButton(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  brightened
+                                      ? 'assets/images/octicon_light-bulb-24-dark.png'
+                                      : 'assets/images/octicon_light-bulb-24.png',
+                                  width: 24.w,
+                                  height: 20.h,
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 8.w,
+                                ),
+                                Text(
+                                  brightened ? '已擦亮' : '擦亮',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: brightened
+                                        ? Colors.grey
+                                        : Color(0xFF2C7EDF),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                brightened = true;
+                              });
+                            },
                           ),
                         ),
                       ],
