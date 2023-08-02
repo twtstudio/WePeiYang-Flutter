@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_home_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
@@ -86,6 +85,64 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
 
   // 构建UI
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post) {
+    String phoneNum = '';
+
+    void _showConfirmationDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Column(
+              children: [
+                Image.asset(
+                  'assets/images/octicon_light-bulb-24.png',
+                  width: 24.w,
+                  height: 20.h,
+                ),
+              ],
+            ),
+            content: Text(
+              phoneNum != '' ? phoneNum : '确定找到了吗？\n每天最多只能获取三次联系方式哦',
+              style: TextStyle(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  '取消',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    phoneNum = post.phone;
+                  });
+                  Navigator.of(context).pop();
+                  _showConfirmationDialog();
+                },
+                child: Text(
+                  '确定',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     // 使用post数据构建UI
     return Scaffold(
       backgroundColor: Colors.white,
@@ -321,17 +378,16 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               color: Color(0xFF2C7EDF),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '我找到了',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ])),
+                            child: WButton(
+                              child: Text(
+                                '我找到了',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onPressed: _showConfirmationDialog,
+                            )),
                         SizedBox(
                           width: 30.w,
                         ),
