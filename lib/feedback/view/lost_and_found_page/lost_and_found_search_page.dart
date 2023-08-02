@@ -56,6 +56,16 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
     var searchBar = LostAndFoundSearchBar(
       onSubmitted: (text) {
         _foundSearchHistoryList.unequalAdd(text);
+        Navigator.pushNamed(
+          context,
+          FeedbackRouter.lostAndFoundSearchResult,
+          arguments: LostAndFoundSearchResultPageArgs(
+              context.read<LostAndFoundModel2>().currentType,
+              context.read<LostAndFoundModel2>().currentCategory[context.read<LostAndFoundModel2>().currentType]!,
+              text),
+        ).then((_) {
+          Navigator.pop(context);
+        });
       },
     );
 
