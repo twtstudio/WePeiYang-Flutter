@@ -92,52 +92,93 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
             backgroundColor: Colors.white,
-            title: Column(
-              children: [
-                Image.asset(
-                  'assets/images/octicon_light-bulb-24.png',
-                  width: 24.w,
-                  height: 20.h,
-                ),
-              ],
-            ),
-            content: Text(
-              phoneNum != '' ? phoneNum : '确定找到了吗？\n每天最多只能获取三次联系方式哦',
-              style: TextStyle(fontSize: 14),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  '取消',
-                  style: TextStyle(
-                    color: Colors.black,
+            content: Container(
+                width: 280.w,
+                height: 150.h,
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Image.asset(
+                    'assets/images/tip.png',
+                    width: 28.w,
+                    height: 28.h,
                   ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    phoneNum = post.phone;
-                  });
-                  Navigator.of(context).pop();
-                  _showConfirmationDialog();
-                },
-                child: Text(
-                  '确定',
-                  style: TextStyle(
-                    color: Colors.white,
+                  SizedBox(height: 15.h),
+                  Text(
+                    phoneNum != ''
+                        ? phoneNum + '\n'
+                        : '确定找到了吗？\n每天最多只能获取三次联系方式哦',
+                    style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.blue),
-                ),
-              ),
-            ],
+                  SizedBox(height: 20.h),
+                  Align(
+                      alignment:Alignment.bottomCenter,
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ButtonStyle(
+                              minimumSize:
+                              MaterialStateProperty.all<Size>(Size(110, 40)),
+                              shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '取消',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20.w,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                phoneNum = post.phone;
+                              });
+                              Navigator.of(context).pop();
+                              _showConfirmationDialog();
+                            },
+                            style: ButtonStyle(
+                              minimumSize:
+                              MaterialStateProperty.all<Size>(Size(110, 40)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromRGBO(44, 126, 223, 1)),
+                              shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '确定',
+                              style: TextStyle(
+                                color: Colors.white,
+                                //fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                  )
+                ])),
           );
         },
       );
@@ -329,7 +370,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         children: [
                           Text('丢失日期',
                               style:
-                                  TextStyle(fontSize: 14, color: Colors.black)),
+                              TextStyle(fontSize: 14, color: Colors.black)),
                           SizedBox(width: 15.w),
                           Text('2023-03-31',
                               style: TextStyle(
@@ -401,9 +442,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             border: brightened
                                 ? null
                                 : Border.all(
-                                    color: Color(0xFF2C7EDF),
-                                    width: 1.w,
-                                  ),
+                              color: Color(0xFF2C7EDF),
+                              width: 1.w,
+                            ),
                           ),
                           child: WButton(
                             child: Row(
