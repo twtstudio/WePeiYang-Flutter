@@ -106,8 +106,9 @@ class LostAndFoundModel with ChangeNotifier{
 enum LostAndFoundSubPageStatus{
   loading,
   unload,
-  ready,
-  error
+  idle,
+  error,
+  refreshing,
 }
 
 
