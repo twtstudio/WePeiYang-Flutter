@@ -1,11 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_size_getter/image_size_getter.dart';
-import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
-import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -47,15 +41,21 @@ class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   }
 }
 
-class LostAndFoundDetailPage extends StatelessWidget {
+class LostAndFoundDetailPage extends StatefulWidget {
   final int postId;
 
   LostAndFoundDetailPage({required this.postId});
 
   @override
+  _LostAndFoundDetailPageState createState() => _LostAndFoundDetailPageState();
+}
+
+class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
+  bool brightened = false;
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: fetchPost(postId),
+      future: fetchPost(widget.postId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return buildDetailUI(context, snapshot.data!);
@@ -72,7 +72,6 @@ class LostAndFoundDetailPage extends StatelessWidget {
     );
   }
 
-  // 获取详情
   Future<LostAndFoundPost?> fetchPost(int id) async {
     LostAndFoundPost? post;
     try {
@@ -86,38 +85,101 @@ class LostAndFoundDetailPage extends StatelessWidget {
 
   // 构建UI
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post) {
+    String phoneNum = '';
+
+    void _showConfirmationDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Column(
+              children: [
+                Image.asset(
+                  'assets/images/octicon_light-bulb-24.png',
+                  width: 24.w,
+                  height: 20.h,
+                ),
+              ],
+            ),
+            content: Text(
+              phoneNum != '' ? phoneNum : '确定找到了吗？\n每天最多只能获取三次联系方式哦',
+              style: TextStyle(fontSize: 14),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  '取消',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    phoneNum = post.phone;
+                  });
+                  Navigator.of(context).pop();
+                  _showConfirmationDialog();
+                },
+                child: Text(
+                  '确定',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     // 使用post数据构建UI
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: LostAndFoundDetailAppBar(
         leading: Padding(
-          padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
-          child: WButton(
-            child: WpyPic(
-              'assets/svg_pics/laf_butt_icons/back_black.svg',
-              width: 20.w,
-              height: 20.w,
+          padding: EdgeInsets.only(top: 46.h, left: 16.w),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: WButton(
+              child: WpyPic(
+                'assets/images/back.png',
+                width: 30.w,
+                height: 30.w,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              // Other onPressed logic goes here
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-
-            ///to do
           ),
         ),
         action: Padding(
-          padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),
-          child: WButton(
-            child: WpyPic(
-              'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
-              width: 20.w,
-              height: 20.w,
+          padding: EdgeInsets.only(top: 46.h, right: 16.w),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: WButton(
+              child: WpyPic(
+                'assets/images/more-horizontal.png',
+                width: 30.w,
+                height: 30.w,
+              ),
+              onPressed: () {},
+              // Other onPressed logic goes here
             ),
-            onPressed: () {},
-
-            ///to do
           ),
         ),
-        title: Text(''),
+        title: Text('   '),
       ),
       body: SafeArea(
         child: Column(
@@ -135,11 +197,11 @@ class LostAndFoundDetailPage extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset(
-                              'assets/images/icon_peiyang.png',
-                              width: 32,
-                              height: 32,
+                              'assets/images/school.png',
+                              width: 32.w,
+                              height: 32.h,
                             ),
-                            SizedBox(width: 13),
+                            SizedBox(width: 13.w),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -150,15 +212,18 @@ class LostAndFoundDetailPage extends StatelessWidget {
                                     color: Colors.black,
                                   ),
                                 ),
-                                SizedBox(height: 6),
-                                Column(
+                                SizedBox(height: 6.h),
+                                Row(
                                   children: [
                                     Text(
-                                      '2021-11-07',
+                                      post.uploadTime,
                                       style: TextStyle(
                                         fontSize: 8,
                                         color: Color(0xFF909090),
                                       ),
+                                    ),
+                                    SizedBox(
+                                      width: 3.w,
                                     ),
                                     Text(
                                       '12:17:05',
@@ -185,19 +250,19 @@ class LostAndFoundDetailPage extends StatelessWidget {
                     ),
                     SizedBox(height: 14),
                     Text(
-                      '急!狗丢了!!',
+                      post.title,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    SizedBox(height: 5.h),
                     Image.asset(
                       'assets/images/schedule_empty.png',
                       width: 360,
                       height: 204,
                     ),
-                    SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -208,6 +273,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 padding: EdgeInsets.all(2),
@@ -223,7 +289,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 2),
+                              SizedBox(width: 2.w),
                               Text(
                                 '其他',
                                 style: TextStyle(
@@ -235,7 +301,7 @@ class LostAndFoundDetailPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '11445次浏览',
+                          '11445次浏览' + '       ',
                           style: TextStyle(
                             fontSize: 9,
                             color: Color(0xFF909090),
@@ -243,43 +309,40 @@ class LostAndFoundDetailPage extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(height: 28),
-                    Text(
-                      '求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴求好心人带回可爱柴柴',
-                      style: TextStyle(
-                        fontSize: 14,
-                        height: 1.5,
+                    SizedBox(height: 28.h),
+                    Padding(
+                      padding: EdgeInsets.all(7),
+                      child: Text(
+                        post.text,
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.5.h,
+                          color: Color.fromRGBO(42, 42, 42, 1),
+                        ),
                       ),
                     ),
-                    SizedBox(height: 28),
+                    SizedBox(height: 45.h),
                     Padding(
-                      padding: EdgeInsets.only(left: 4),
-                      child: Column(
+                      padding: EdgeInsets.only(left: 4.w),
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            '丢失日期',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            '2023-03-31',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF2C7EDF),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          Text('丢失日期',
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.black)),
+                          SizedBox(width: 15.w),
+                          Text('2023-03-31',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFF2C7EDF),
+                                  fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ),
-                    SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                     Padding(
-                      padding: EdgeInsets.only(left: 4),
-                      child: Column(
+                      padding: EdgeInsets.only(left: 4.w),
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -289,9 +352,9 @@ class LostAndFoundDetailPage extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(width: 15.w),
                           Text(
-                            '图书馆到诚八沿途',
+                            post.location,
                             style: TextStyle(
                               fontSize: 14,
                               color: Color(0xFF2C7EDF),
@@ -301,52 +364,78 @@ class LostAndFoundDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 92),
+                    SizedBox(height: 85.h),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF2C7EDF),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '我找到了',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
+                        SizedBox(
+                          width: 10.w,
                         ),
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/schedule_empty.png',
-                              width: 24,
-                              height: 20,
+                        Container(
+                            width: 110.w,
+                            height: 40.h,
+                            margin: EdgeInsets.only(left: 30.w),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF2C7EDF),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            SizedBox(width: 10),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Color(0xFF2C7EDF),
-                                  width: 1,
-                                ),
-                              ),
+                            child: WButton(
                               child: Text(
-                                '擦亮',
+                                '我找到了',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Color(0xFF2C7EDF),
+                                  color: Colors.white,
                                 ),
                               ),
+                              onPressed: _showConfirmationDialog,
+                            )),
+                        SizedBox(
+                          width: 30.w,
+                        ),
+                        Container(
+                          width: 110.w,
+                          height: 40.h,
+                          margin: EdgeInsets.only(left: 30.w),
+                          decoration: BoxDecoration(
+                            color: brightened ? Colors.grey[200] : Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: brightened
+                                ? null
+                                : Border.all(
+                                    color: Color(0xFF2C7EDF),
+                                    width: 1.w,
+                                  ),
+                          ),
+                          child: WButton(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  brightened
+                                      ? 'assets/images/octicon_light-bulb-24-dark.png'
+                                      : 'assets/images/octicon_light-bulb-24.png',
+                                  width: 24.w,
+                                  height: 20.h,
+                                ),
+                                SizedBox(
+                                  width: 8.w,
+                                ),
+                                Text(
+                                  brightened ? '已擦亮' : '擦亮',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: brightened
+                                        ? Colors.grey
+                                        : Color(0xFF2C7EDF),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                            onPressed: () {
+                              setState(() {
+                                brightened = true;
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
