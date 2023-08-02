@@ -1,25 +1,25 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
-import '../../../commons/util/type_util.dart';
-import '../../../commons/widgets/loading.dart';
-import '../../../main.dart';
-import '../../feedback_router.dart';
-import '../../util/color_util.dart';
-import '../lake_home_page/lake_notifier.dart';
-import 'lost_and_found_search_notifier.dart';
-import 'lost_and_found_detail_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_detail_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/main.dart';
+
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -34,15 +34,16 @@ double get searchBarHeight => 42.h;
 
 class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with AutomaticKeepAliveClientMixin{
   final ScrollController _scrollController = ScrollController();
+
   void _onRefresh() async {
     context.read<LostAndFoundModel>().clearByType(widget.type);
     await context.read<LostAndFoundModel>().getNext(
           type: widget.type,
           success: () {
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.idle;
+                .read<LostAndFoundModel>()
+                .lostAndFoundSubPageStatus[widget.type]
+            = LostAndFoundSubPageStatus.idle;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
@@ -50,9 +51,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
           },
           failure: (e) {
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.error;
+                .read<LostAndFoundModel>()
+                .lostAndFoundSubPageStatus[widget.type]
+            = LostAndFoundSubPageStatus.error;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
@@ -69,9 +70,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
           type: widget.type,
           success: () {
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.idle;
+                .read<LostAndFoundModel>()
+                .lostAndFoundSubPageStatus[widget.type]
+            = LostAndFoundSubPageStatus.idle;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
@@ -79,9 +80,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
           },
           failure: (e) {
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.error;
+                .read<LostAndFoundModel>()
+                .lostAndFoundSubPageStatus[widget.type]
+            = LostAndFoundSubPageStatus.error;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
@@ -119,6 +120,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
         return '${difference.inSeconds} 秒前发布';
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -322,12 +326,13 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
                                                         borderRadius: BorderRadius.circular(
                                                             10.0), // 设置圆角半径为10.0
                                                         child: Container(
+                                                          width: maxWidth,
                                                           child: WpyPic(
                                                             tuple.item1[index].coverPhotoPath!,
                                                             withHolder: true,
                                                             holderHeight:
                                                                 height * maxWidth / width,
-                                                            width: width,
+                                                            fit: BoxFit.fitWidth,
                                                           ),
                                                           height: height >= 3 * width
                                                               ? 3 * maxWidth
@@ -386,11 +391,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage> with Automatic
               ),
             )
           ],
-        ));
+        )
+    );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class LostAndFoundTag extends StatefulWidget {
