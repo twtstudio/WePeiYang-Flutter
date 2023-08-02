@@ -82,14 +82,6 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                     onSubmitted: (content) {
                       if (content.isNotEmpty) {
                         widget.onSubmitted.call(content);
-                        Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.lostAndFoundSearchResult,
-                          arguments: LostAndFoundSearchResultPageArgs(
-                              context.read<LostAndFoundModel2>().currentType,
-                              context.read<LostAndFoundModel2>().currentCategory[context.read<LostAndFoundModel2>().currentType]!,
-                              content),
-                        );
                       } else {
 
                       }

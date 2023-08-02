@@ -82,13 +82,7 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
   @override
   Widget build(BuildContext context) {
 
-    if(context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] == LostAndFoundSubPageStatus2.unload ||
-        context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] == LostAndFoundSubPageStatus2.error
-    ) {
-      context.read<LostAndFoundModel2>().clearByType(type);
-      _onRefresh();
-      print(100);
-    };
+    _onRefresh();
 
     var appBar = LostAndFoundAppBar(
       leading: Padding(
