@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -72,15 +74,21 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     );
   }
 
-  Future<LostAndFoundPost?> fetchPost(int id) async {
-    LostAndFoundPost? post;
+  Future<LostAndFoundPost?> fetchPost(int id) {
+    Completer<LostAndFoundPost?> completer = Completer();
     try {
-      post = await FeedbackService.getLostAndFoundPostDetail(
-          id: id, onResult: (p) {}, onFailure: (e) {});
+      FeedbackService.getLostAndFoundPostDetail(
+          id: id,
+          onResult: (p) {
+            completer.complete(p);
+          },
+          onFailure: (e) {
+            // 处理错误
+          });
     } catch (e) {
       // 处理错误
     }
-    return post;
+    return completer.future;
   }
 
   // 构建UI
@@ -115,8 +123,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                   ),
                   SizedBox(height: 20.h),
                   Align(
-                      alignment:Alignment.bottomCenter,
-                      child:Row(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           SizedBox(
@@ -127,10 +135,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               Navigator.of(context).pop();
                             },
                             style: ButtonStyle(
-                              minimumSize:
-                              MaterialStateProperty.all<Size>(Size(110, 40)),
-                              shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -156,12 +164,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               _showConfirmationDialog();
                             },
                             style: ButtonStyle(
-                              minimumSize:
-                              MaterialStateProperty.all<Size>(Size(110, 40)),
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Color.fromRGBO(44, 126, 223, 1)),
-                              shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -176,12 +184,54 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                           ),
                         ],
-                      )
-                  )
+                      ))
                 ])),
           );
         },
       );
+    }
+
+    void _showMenu() {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Padding(
+              padding: EdgeInsets.all(10.0), // 设置与屏幕边缘的距离
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: ListTile(
+                        title: Center(child: Text('分享')),
+                        onTap: () => {},
+                      ),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: ListTile(
+                        title: Center(child: Text('举报')),
+                        onTap: () => {},
+                      ),
+                    ),
+                    Divider(),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)),
+                      child: ListTile(
+                        title: Center(child: Text('取消')),
+                        onTap: () => {
+                          Navigator.pop(context),
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          });
     }
 
     // 使用post数据构建UI
@@ -215,7 +265,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                 width: 30.w,
                 height: 30.w,
               ),
-              onPressed: () {},
+              onPressed: () {
+                _showMenu();
+              },
               // Other onPressed logic goes here
             ),
           ),
@@ -370,7 +422,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         children: [
                           Text('丢失日期',
                               style:
-                              TextStyle(fontSize: 14, color: Colors.black)),
+                                  TextStyle(fontSize: 14, color: Colors.black)),
                           SizedBox(width: 15.w),
                           Text('2023-03-31',
                               style: TextStyle(
@@ -442,9 +494,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             border: brightened
                                 ? null
                                 : Border.all(
-                              color: Color(0xFF2C7EDF),
-                              width: 1.w,
-                            ),
+                                    color: Color(0xFF2C7EDF),
+                                    width: 1.w,
+                                  ),
                           ),
                           child: WButton(
                             child: Row(

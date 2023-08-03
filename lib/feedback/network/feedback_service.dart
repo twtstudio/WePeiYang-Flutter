@@ -106,26 +106,6 @@ class FeedbackLostAndFoundDio extends DioAbstract {
   ];
 }
 
-class FeedbackLostAndFoundDio extends DioAbstract {
-  @override
-  String baseUrl = '${EnvConfig.LAF}v1/';
-
-  @override
-  List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      return handler.next(options);
-    }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
-      switch (code) {
-        case "200": // 成功
-          return handler.next(response);
-        default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['message']), true);
-      }
-    })
-  ];
-}
-
 final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
@@ -1207,7 +1187,7 @@ class FeedbackService with AsyncTimer {
       Options requestOptions = new Options(headers: {"history": history});
       var res = await feedbackLostAndFoundDio.get(
           keyword != null
-            ? 'sort/search'
+              ? 'sort/search'
               : (category != '全部'
               ? 'sort/getbytypeandcategorywithnum'
               : 'sort/getbytypewithnum'),
@@ -1219,6 +1199,7 @@ class FeedbackService with AsyncTimer {
         },
         options: requestOptions
       );
+
       List<LostAndFoundPost> list = [];
       for (Map<String, dynamic> json in res.data['result']) {
         list.add(LostAndFoundPost.fromJson(json));
@@ -1229,7 +1210,7 @@ class FeedbackService with AsyncTimer {
     }
   }
 
-  static getLostAndFoundPostDetail({
+  static void getLostAndFoundPostDetail({
     required int id,
     required OnResult<LostAndFoundPost> onResult,
     required OnFailure onFailure,
@@ -1240,7 +1221,6 @@ class FeedbackService with AsyncTimer {
       );
       var post = LostAndFoundPost.fromJson(response.data['result']);
       onResult(post);
-      return post;
     } on DioException catch (e) {
       onFailure(e);
     }
