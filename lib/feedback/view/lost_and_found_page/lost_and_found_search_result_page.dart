@@ -96,6 +96,7 @@ class _LostAndFoundSearchResultPageState
     _onRefresh();
 
     var appBar = LostAndFoundAppBar(
+      height: 100,
       leading: Padding(
         padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
         child: WButton(

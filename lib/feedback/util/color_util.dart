@@ -25,9 +25,11 @@ class ColorUtil {
   static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
   static const greyB2B6Color = Color(0xFFB2B6BB);
+  static const greyB4AFColor = Color(0xFFB4AFAF);
   static const blue363CColor = Color(0xFF363C54);
   static const blue2CColor = Color(0xFF2C7EDF);
   static const blueA6Color = Color(0xFFA6CFFF);
+  static const blue64Color = Color(0xFF64A3EE);
   static const biliPink = Color(0xFFF97198);
   static const begoniaPink = Color(0xFFFFCCD1);
   static const warning = Color(0xFFFFBC6B);

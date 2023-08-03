@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -15,7 +15,6 @@ import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_detail_page.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -28,8 +27,6 @@ class LostAndFoundSubPage extends StatefulWidget {
   @override
   LostAndFoundSubPageState createState() => LostAndFoundSubPageState();
 }
-
-double get searchBarHeight => 42.h;
 
 class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     with AutomaticKeepAliveClientMixin {
@@ -136,39 +133,37 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                 .lostAndFoundSubPageStatus[widget.type] ==
             LostAndFoundSubPageStatus.error) _onRefresh();
 
-    var searchBar = InkWell(
+    var searchBar =
+    InkWell(
       onTap: () {
         context.read<LostAndFoundModel2>().currentType = widget.type;
         Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
       },
       child: Container(
-        height: searchBarHeight - 8,
-        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
+        height: searchBarHeight,
         decoration: BoxDecoration(
-            color: ColorUtil.greyEAColor,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+            color: ColorUtil.greyF7F8Color,
+            borderRadius: BorderRadius.all(Radius.circular(45))
+        ),
         child: Row(children: [
-          SizedBox(width: 14),
-          Icon(
-            Icons.search,
-            size: 19,
-            color: ColorUtil.grey108,
+          SizedBox(width: 14.w),
+          Container(
+            child: WpyPic(
+              'assets/svg_pics/laf_butt_icons/search.svg',
+              height: 21.sp,
+              width: 21.sp,
+            ),
           ),
-          SizedBox(width: 12),
-          Consumer<FbHotTagsProvider>(
-              builder: (_, data, __) => Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
-                        child: Text(
-                          '天大不能没有微北洋',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
-                        ),
-                      ),
-                    ],
-                  )),
+          SizedBox(width: 12.w),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: WePeiYangApp.screenWidth - 260),
+            child: Text(
+              '天大不能没有微北洋',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+            ),
+          ),
           Spacer()
         ]),
       ),
@@ -179,12 +174,12 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            searchBar,
-            SizedBox(
-              height: 7,
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: widgetPadding, bottom: widgetPadding, start: 15.w, end: 15.w),
+              child: searchBar,
             ),
             Padding(
-              padding: EdgeInsetsDirectional.only(bottom: 8.h),
+              padding: EdgeInsetsDirectional.only(bottom: widgetPadding-6),
               child: Selector<LostAndFoundModel, String>(
                 selector: (context, model) {
                   return model.currentCategory[widget.type]!;
@@ -196,27 +191,39 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                     children: <Widget>[
                       Expanded(
                         child:
-                            LostAndFoundTag(category: '全部', type: widget.type),
+                            Padding(
+                              padding: EdgeInsetsDirectional.only(start: 15.w, end: 7.w),
+                              child: LostAndFoundTag(category: '全部', type: widget.type),
+                            ),
                         flex: 4,
                       ),
                       Expanded(
-                        child: LostAndFoundTag(
-                            category: '生活日用', type: widget.type),
+                        child:Padding(
+                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(category: '生活日用', type: widget.type),
+                        ),
                         flex: 5,
                       ),
                       Expanded(
-                        child: LostAndFoundTag(
-                            category: '数码产品', type: widget.type),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(category: '数码产品', type: widget.type),
+                        ),
                         flex: 5,
                       ),
                       Expanded(
-                        child: LostAndFoundTag(
-                            category: '钱包卡证', type: widget.type),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(category: '钱包卡证', type: widget.type),
+                        ),
                         flex: 5,
                       ),
                       Expanded(
                         child:
-                            LostAndFoundTag(category: '其他', type: widget.type),
+                        Padding(
+                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 15.w),
+                          child: LostAndFoundTag(category: '其他', type: widget.type),
+                        ),
                         flex: 4,
                       ),
                     ],
@@ -226,7 +233,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsetsDirectional.only(start: 17.w, end: 17.w),
+                padding: EdgeInsetsDirectional.only(start: 20.w, end: 20.w),
                 child: Selector<
                     LostAndFoundModel,
                     Tuple2<List<LostAndFoundPost>,
@@ -270,9 +277,13 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               ),
                               onRefresh: _onRefresh,
                               onLoading: _onLoading,
-                              child: StaggeredGridView.countBuilder(
+                              child: WaterfallFlow.builder(
+                                gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                                  mainAxisSpacing: 13.w,
+                                  crossAxisSpacing: 25.w,
+                                  crossAxisCount: 2,
+                                ),
                                 controller: _scrollController,
-                                crossAxisCount: 2,
                                 itemCount: tuple.item1.length,
                                 itemBuilder: (BuildContext context,
                                         int index) =>
@@ -289,8 +300,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       )));
                                         },
                                         child: Card(
-                                          elevation: 0.5,
-                                          margin: const EdgeInsets.all(16.0),
+                                          elevation: 3,
+                                          shadowColor: ColorUtil.greyB4AFColor.withOpacity(0.1),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
@@ -329,6 +340,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                             Color(0xfff8f8f8),
                                                       ))
                                                   : Container(
+                                                      padding: EdgeInsets.all(10),
                                                       child: LayoutBuilder(
                                                       builder: (context,
                                                           constrains) {
@@ -423,8 +435,6 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                             ],
                                           ),
                                         )),
-                                staggeredTileBuilder: (int index) =>
-                                    const StaggeredTile.fit(1),
                               ),
                             ));
                 }),
@@ -434,6 +444,9 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
         ));
   }
 }
+
+double get searchBarHeight => 30.h;
+double get widgetPadding => 10.h;
 
 class LostAndFoundTag extends StatefulWidget {
   final String type;
@@ -453,8 +466,7 @@ class LostAndFoundTag extends StatefulWidget {
 class LostAndFoundTagState extends State<LostAndFoundTag> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 8.w, right: 8.w),
+    return Container(
       child: WButton(
         onPressed: () async {
           context
@@ -494,15 +506,16 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
               );
         },
         child: Container(
-          height: 30.w,
+          height: 28.w,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               color: widget.category ==
                       context
                           .read<LostAndFoundModel>()
                           .currentCategory[widget.type]
-                  ? Color.fromARGB(255, 234, 243, 254)
-                  : Color.fromARGB(248, 248, 248, 248)),
+                  ? ColorUtil.blue2CColor.withOpacity(0.1)
+                  : ColorUtil.whiteF8Color,
+          ),
           child: Center(
             child: Text(widget.category,
                 style: widget.category ==
