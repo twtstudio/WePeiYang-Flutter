@@ -245,11 +245,15 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                           ),
                           child: InkWell(
-                            onTap: () => {
-                              Navigator.pushNamed(
-                                  context, FeedbackRouter.report,
-                                  arguments: LostAndFounfReportPage(post.id, true))
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LostAndFoundReportPage(ReportPageArgs(post.id, true)),
+                                ),
+                              );
                             },
+
                             child: Container(
                               width: 380.0,
                               height: 42.0,
