@@ -14,13 +14,13 @@ import 'lost_and_found_home_page.dart';
 import 'lost_and_found_search_notifier.dart';
 
 class LostAndFoundSearchResultPage extends StatefulWidget {
-
   final LostAndFoundSearchResultPageArgs args;
   LostAndFoundSearchResultPage(this.args);
 
   @override
-  _LostAndFoundSearchResultPageState createState()=> _LostAndFoundSearchResultPageState(args.type,
-      args.category, args.keyword);
+  _LostAndFoundSearchResultPageState createState() =>
+      _LostAndFoundSearchResultPageState(
+          args.type, args.category, args.keyword);
 }
 
 class LostAndFoundSearchResultPageArgs {
@@ -31,8 +31,8 @@ class LostAndFoundSearchResultPageArgs {
   LostAndFoundSearchResultPageArgs(this.type, this.category, this.keyword);
 }
 
-class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultPage> {
-
+class _LostAndFoundSearchResultPageState
+    extends State<LostAndFoundSearchResultPage> {
   final String type;
   final String category;
   final String keyword;
@@ -40,48 +40,59 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
 
   _LostAndFoundSearchResultPageState(this.type, this.category, this.keyword);
 
-  void _onRefresh() async{
+  void _onRefresh() async {
     context.read<LostAndFoundModel2>().clearByType(type);
     await context.read<LostAndFoundModel2>().getNext(
-      type: type,
-      category: category,
-      keyword: keyword,
-      success: () {
-        context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-            LostAndFoundSubPageStatus2.ready;
-        context.read<LostAndFoundModel2>().refreshController[type]?.refreshCompleted();
-      },
-      failure: (e) {
-        context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-            LostAndFoundSubPageStatus2.error;
-        context.read<LostAndFoundModel2>().refreshController[type]?.refreshFailed();
-        ToastProvider.error(e.error.toString());
-      },
-    );
+          type: type,
+          category: category,
+          keyword: keyword,
+          success: () {
+            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
+                LostAndFoundSubPageStatus2.ready;
+            context
+                .read<LostAndFoundModel2>()
+                .refreshController[type]
+                ?.refreshCompleted();
+          },
+          failure: (e) {
+            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
+                LostAndFoundSubPageStatus2.error;
+            context
+                .read<LostAndFoundModel2>()
+                .refreshController[type]
+                ?.refreshFailed();
+            ToastProvider.error(e.error.toString());
+          },
+        );
   }
 
-  void _onLoading() async{
+  void _onLoading() async {
     await context.read<LostAndFoundModel2>().getNext(
-      type: type,
-      category: category,
-      keyword: keyword,
-      success: () {
-        context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-            LostAndFoundSubPageStatus2.ready;
-        context.read<LostAndFoundModel2>().refreshController[type]?.loadComplete();
-      },
-      failure: (e) {
-        context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-            LostAndFoundSubPageStatus2.error;
-        context.read<LostAndFoundModel2>().refreshController[type]?.loadFailed();
-        ToastProvider.error(e.error.toString());
-      },
-    );
+          type: type,
+          category: category,
+          keyword: keyword,
+          success: () {
+            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
+                LostAndFoundSubPageStatus2.ready;
+            context
+                .read<LostAndFoundModel2>()
+                .refreshController[type]
+                ?.loadComplete();
+          },
+          failure: (e) {
+            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
+                LostAndFoundSubPageStatus2.error;
+            context
+                .read<LostAndFoundModel2>()
+                .refreshController[type]
+                ?.loadFailed();
+            ToastProvider.error(e.error.toString());
+          },
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-
     _onRefresh();
 
     var appBar = LostAndFoundAppBar(
@@ -93,14 +104,20 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
             width: 28.w,
             height: 28.w,
           ),
-          onPressed: () => Navigator.pop(context), ///to do
+          onPressed: () => Navigator.pop(context),
+
+          ///to do
         ),
       ),
       action: Padding(
-        padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),),
+        padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),
+      ),
       title: Padding(
         padding: EdgeInsets.only(bottom: 8.h),
-        child: Text('搜索结果', style: TextStyle().white.NotoSansSC.w400.sp(20),),
+        child: Text(
+          '搜索结果',
+          style: TextStyle().white.NotoSansSC.w400.sp(20),
+        ),
       ),
     );
 
@@ -133,167 +150,168 @@ class _LostAndFoundSearchResultPageState extends State<LostAndFoundSearchResultP
 
     return Scaffold(
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            appBar,
-            SizedBox(height: 7,),
-            Expanded(
-              child: Container(
-                padding: EdgeInsetsDirectional.only(start: 17.w, end: 17.w),
-                child: Selector<LostAndFoundModel2, List<LostAndFoundPost>>(
-                    selector: (context, model){
-                      return model.postList[context.read<LostAndFoundModel2>().currentType]!.toList();
-                    },
-                    builder: (context, postList, _) {
-                      return SmartRefresher(
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        header: ClassicHeader(
-                          idleText: '下拉以刷新 (乀*･ω･)乀',
-                          releaseText: '下拉以刷新',
-                          refreshingText: "正在刷新喵",
-                          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-                          failedText: '刷新失败（；´д｀）ゞ',
-                        ),
-                        controller: context
-                            .read<LostAndFoundModel2>()
-                            .refreshController[context.read<LostAndFoundModel2>().currentType]!,
-                        footer: ClassicFooter(
-                          idleText: '下拉以刷新',
-                          noDataText: '无数据',
-                          loadingText: '加载中，请稍等  ;P',
-                          failedText: '加载失败（；´д｀）ゞ',
-                        ),
-                        onRefresh: _onRefresh,
-                        onLoading: _onLoading,
-                        child: StaggeredGridView.countBuilder(
-                          controller: _scrollController,
-                          crossAxisCount: 2,
-                          itemCount: postList.length,
-                          itemBuilder: (BuildContext context, int index) => InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LostAndFoundDetailPage(
-                                              postId: postList[index].id,
-                                            )));
-                              },
-                              child: Card(
-                                elevation: 0.5,
-                                margin: const EdgeInsets.all(16.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  side: const BorderSide(
-                                      color: Colors.transparent, width: 0.0),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    postList[index].coverPhotoPath == null
-                                        ? SizedBox(
-                                        width: double.infinity,
-                                        child: Card(
-                                          child: Padding(
-                                            // 添加Padding组件
-                                            padding: EdgeInsets.all(
-                                                10), // 设置所有方向的内边距为15个像素
-                                            child: Text(
-                                              postList[index].text,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xff898989),
-                                              ),
-                                            ),
-                                          ),
-                                          elevation: 0,
-                                          color: Color(0xfff8f8f8),
-                                        ))
-                                        : Container(child: LayoutBuilder(
-                                      builder: (context, constrains) {
-                                        final maxWidth =
-                                        constrains.constrainWidth();
-                                        final width = postList[index]
-                                            .coverPhotoSize
-                                            ?.width
-                                            .toDouble() ??
-                                            1;
-                                        final height = postList[index]
-                                            .coverPhotoSize
-                                            ?.height
-                                            .toDouble() ??
-                                            0;
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              10.0), // 设置圆角半径为10.0
-                                          child: Container(
-                                            child: WpyPic(
-                                              postList[index].coverPhotoPath!,
-                                              withHolder: false,
-                                              holderHeight:
-                                              height * maxWidth / width,
-                                              width: width,
-                                            ),
-                                            height: height >= 3 * width
-                                                ? 3 * maxWidth
-                                                : height * maxWidth / width,
-                                          ),
-                                        );
-                                      },
-                                    )),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        postList[index].title,
-                                        style: const TextStyle(
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            _timeAgo(
-                                                postList[index].detailedUploadTime),
-                                            style: TextStyle(
-                                              color: Color(0xff898989),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              SvgPicture.asset(
-                                                  'assets/svg_pics/icon_flame.svg',
-                                                  width: 16.0,
-                                                  height: 16.0),
-                                              Text(
-                                                '${postList[index].hot.toString()}',
-                                                style: TextStyle(
-                                                  color: Color(0xff898989),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                          staggeredTileBuilder: (int index) =>
-                          const StaggeredTile.fit(1),
-                        ),
-                      );
-                    }
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        appBar,
+        SizedBox(
+          height: 7,
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsetsDirectional.only(start: 17.w, end: 17.w),
+            child: Selector<LostAndFoundModel2, List<LostAndFoundPost>>(
+                selector: (context, model) {
+              return model
+                  .postList[context.read<LostAndFoundModel2>().currentType]!
+                  .toList();
+            }, builder: (context, postList, _) {
+              return SmartRefresher(
+                enablePullDown: true,
+                enablePullUp: true,
+                header: ClassicHeader(
+                  idleText: '下拉以刷新 (乀*･ω･)乀',
+                  releaseText: '下拉以刷新',
+                  refreshingText: "正在刷新喵",
+                  completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+                  failedText: '刷新失败（；´д｀）ゞ',
                 ),
-              ),
-            )
-          ],
+                controller:
+                    context.read<LostAndFoundModel2>().refreshController[
+                        context.read<LostAndFoundModel2>().currentType]!,
+                footer: ClassicFooter(
+                  idleText: '下拉以刷新',
+                  noDataText: '无数据',
+                  loadingText: '加载中，请稍等  ;P',
+                  failedText: '加载失败（；´д｀）ゞ',
+                ),
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: StaggeredGridView.countBuilder(
+                  controller: _scrollController,
+                  crossAxisCount: 2,
+                  itemCount: postList.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LostAndFoundDetailPage(
+                                      findOwner: false,
+                                      postId: postList[index].id,
+                                    )));
+                      },
+                      child: Card(
+                        elevation: 0.5,
+                        margin: const EdgeInsets.all(16.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          side: const BorderSide(
+                              color: Colors.transparent, width: 0.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            postList[index].coverPhotoPath == null
+                                ? SizedBox(
+                                    width: double.infinity,
+                                    child: Card(
+                                      child: Padding(
+                                        // 添加Padding组件
+                                        padding: EdgeInsets.all(
+                                            10), // 设置所有方向的内边距为15个像素
+                                        child: Text(
+                                          postList[index].text,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xff898989),
+                                          ),
+                                        ),
+                                      ),
+                                      elevation: 0,
+                                      color: Color(0xfff8f8f8),
+                                    ))
+                                : Container(child: LayoutBuilder(
+                                    builder: (context, constrains) {
+                                      final maxWidth =
+                                          constrains.constrainWidth();
+                                      final width = postList[index]
+                                              .coverPhotoSize
+                                              ?.width
+                                              .toDouble() ??
+                                          1;
+                                      final height = postList[index]
+                                              .coverPhotoSize
+                                              ?.height
+                                              .toDouble() ??
+                                          0;
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(
+                                            10.0), // 设置圆角半径为10.0
+                                        child: Container(
+                                          child: WpyPic(
+                                            postList[index].coverPhotoPath!,
+                                            withHolder: false,
+                                            holderHeight:
+                                                height * maxWidth / width,
+                                            width: width,
+                                          ),
+                                          height: height >= 3 * width
+                                              ? 3 * maxWidth
+                                              : height * maxWidth / width,
+                                        ),
+                                      );
+                                    },
+                                  )),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                postList[index].title,
+                                style: const TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    _timeAgo(
+                                        postList[index].detailedUploadTime),
+                                    style: TextStyle(
+                                      color: Color(0xff898989),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      SvgPicture.asset(
+                                          'assets/svg_pics/icon_flame.svg',
+                                          width: 16.0,
+                                          height: 16.0),
+                                      Text(
+                                        '${postList[index].hot.toString()}',
+                                        style: TextStyle(
+                                          color: Color(0xff898989),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  staggeredTileBuilder: (int index) =>
+                      const StaggeredTile.fit(1),
+                ),
+              );
+            }),
+          ),
         )
-    );
+      ],
+    ));
   }
 }
