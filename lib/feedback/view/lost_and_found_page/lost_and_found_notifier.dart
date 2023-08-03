@@ -13,8 +13,6 @@ class LostAndFoundModel with ChangeNotifier{
     '寻物启事' : []
   };
 
-  String currentType = '失物招领';
-
   Map<String, LostAndFoundSubPageStatus> lostAndFoundSubPageStatus = {
     '失物招领' : LostAndFoundSubPageStatus.unload,
     '寻物启事' : LostAndFoundSubPageStatus.unload

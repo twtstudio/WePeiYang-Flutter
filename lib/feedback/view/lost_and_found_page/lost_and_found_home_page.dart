@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_sub_page.dart';
 
@@ -27,6 +28,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
           bottom: false,
           child: Scaffold(
             appBar: LostAndFoundAppBar(
+              height: 100,
               leading: Padding(
                 padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
                 child: WButton(
@@ -52,8 +54,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
               title: Padding(
                 padding: EdgeInsets.only(bottom: 2.h),
                 child: TabBar(
-                  labelStyle: TextUtil.base.bold.sp(22),
-                  unselectedLabelStyle: TextUtil.base.normal.sp(22),
+                  labelStyle: TextUtil.base.bold.sp(20).whiteO60,
+                  unselectedLabelStyle: TextUtil.base.normal.sp(20).whiteO60,
                   labelPadding: EdgeInsetsDirectional.only(start: 55.w,end: 55.w),
                   isScrollable: true,
                   indicatorSize: TabBarIndicatorSize.label,
@@ -115,17 +117,18 @@ class LostAndFoundAppBar extends StatelessWidget implements PreferredSizeWidget 
   final Widget leading;
   final Widget action;
   final Widget title;
-  const LostAndFoundAppBar({Key? key, required this.leading, required this.action, required this.title}) : super(key: key);
+  final double height;
+  LostAndFoundAppBar({Key? key, required this.leading, required this.action, required this.title, required this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 65.h,
+        height: height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.blueAccent, Colors.lightBlueAccent]
+              colors: [ColorUtil.blue2CColor, ColorUtil.blue64Color]
           ),
         ),
         child: Stack(
