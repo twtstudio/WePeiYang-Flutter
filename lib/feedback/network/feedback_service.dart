@@ -57,7 +57,8 @@ class FeedbackPicPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -78,7 +79,8 @@ class FeedbackAdminPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -98,7 +100,8 @@ class FeedbackLostAndFoundDio extends DioAbstract {
         case "200": // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['message']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['message']), true);
       }
     })
   ];
@@ -1185,30 +1188,29 @@ class FeedbackService with AsyncTimer {
       Options requestOptions = new Options(headers: {"history": history});
       var res = await feedbackLostAndFoundDio.get(
           keyword != null
-            ? 'sort/search'
+              ? 'sort/search'
               : (category != '全部'
-              ? 'sort/getbytypeandcategorywithnum'
-              : 'sort/getbytypewithnum'),
-        queryParameters: {
-            'q' : keyword,
-          'type' : type,
-          'num' : num,
-          'category' : category,
-        },
-        options: requestOptions
-      );
+                  ? 'sort/getbytypeandcategorywithnum'
+                  : 'sort/getbytypewithnum'),
+          queryParameters: {
+            'q': keyword,
+            'type': type,
+            'num': num,
+            'category': category,
+          },
+          options: requestOptions);
 
       List<LostAndFoundPost> list = [];
       for (Map<String, dynamic> json in res.data['result']) {
         list.add(LostAndFoundPost.fromJson(json));
       }
       onSuccess(list);
-    } on DioException catch(e){
+    } on DioException catch (e) {
       onFailure(e);
     }
   }
 
-  static getLostAndFoundPostDetail({
+  static void getLostAndFoundPostDetail({
     required int id,
     required OnResult<LostAndFoundPost> onResult,
     required OnFailure onFailure,
@@ -1219,7 +1221,6 @@ class FeedbackService with AsyncTimer {
       );
       var post = LostAndFoundPost.fromJson(response.data['result']);
       onResult(post);
-      return post;
     } on DioException catch (e) {
       onFailure(e);
     }
