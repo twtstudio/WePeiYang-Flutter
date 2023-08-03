@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_home_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
@@ -45,8 +47,9 @@ class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
 
 class LostAndFoundDetailPage extends StatefulWidget {
   final int postId;
+  final bool findOwner;
 
-  LostAndFoundDetailPage({required this.postId});
+  LostAndFoundDetailPage({required this.postId, required this.findOwner});
 
   @override
   _LostAndFoundDetailPageState createState() => _LostAndFoundDetailPageState();
@@ -60,7 +63,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       future: fetchPost(widget.postId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return buildDetailUI(context, snapshot.data!);
+          return buildDetailUI(context, snapshot.data!, widget.findOwner);
         } else if (snapshot.hasError) {
           return Center(
             child: Text("获取失败: ${snapshot.error}"),
@@ -92,7 +95,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   }
 
   // 构建UI
-  Widget buildDetailUI(BuildContext context, LostAndFoundPost post) {
+  Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
+    // 寻物或寻主，待对接
     String phoneNum = '';
 
     void _showConfirmationDialog() {
@@ -117,7 +121,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                   Text(
                     phoneNum != ''
                         ? phoneNum + '\n'
-                        : '确定找到了吗？\n每天最多只能获取三次联系方式哦',
+                        : (findOwner
+                            ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
+                            : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
                     style: TextStyle(fontSize: 14),
                     textAlign: TextAlign.center,
                   ),
@@ -213,7 +219,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           borderRadius: BorderRadius.circular(10.0)),
                       child: ListTile(
                         title: Center(child: Text('举报')),
-                        onTap: () => {},
+                        onTap: () => {
+                          Navigator.pushNamed(context, FeedbackRouter.report,
+                              arguments: ReportPageArgs(post.id, true))
+                        },
                       ),
                     ),
                     Divider(),
@@ -473,7 +482,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: WButton(
                               child: Text(
-                                '我找到了',
+                                findOwner ? '我遗失的' : '我找到了',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.white,
