@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 
+import 'lost_and_found_report_page.dart';
+
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
     Key? key,
@@ -200,46 +202,102 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     void _showMenu() {
       showModalBottomSheet(
           context: context,
+          backgroundColor: Colors.transparent,
           builder: (BuildContext context) {
-            return Padding(
-              padding: EdgeInsets.all(10.0), // 设置与屏幕边缘的距离
-              child: Container(
-                child: Wrap(
-                  children: <Widget>[
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      child: ListTile(
-                        title: Center(child: Text('分享')),
-                        onTap: () => {},
-                      ),
+            return Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                  child: Container(
+                    child: Wrap(
+                      children: <Widget>[
+                        Card(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0),
+                              topRight: Radius.circular(10.0),
+                            ),
+                          ),
+                          child: InkWell(
+                            onTap: () => {},
+                            child: Container(
+                              width: 380.0,
+                              height: 42.0,
+                              alignment: Alignment.center, // 居中对齐
+                              child: Text(
+                                '分享',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          color: Colors.white.withOpacity(0.9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                            ),
+                          ),
+                          child: InkWell(
+                            onTap: () => {
+                              Navigator.pushNamed(
+                                  context, FeedbackRouter.report,
+                                  arguments: LostAndFounfReportPage(post.id, true))
+                            },
+                            child: Container(
+                              width: 380.0,
+                              height: 42.0,
+                              alignment: Alignment.center, // 居中对齐
+                              child: Text(
+                                '举报',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                        ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Card(
+                            color: Colors.white.withOpacity(0.9),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                width: 380.0,
+                                height: 42.0,
+                                alignment: Alignment.center, // 居中对齐
+                                child: Text(
+                                  '取消',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            )
+                        ),
+                        Container(
+                          height: 20.h,
+                          color: Colors.transparent,
+                        )
+
+                      ],
                     ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      child: ListTile(
-                        title: Center(child: Text('举报')),
-                        onTap: () => {
-                          Navigator.pushNamed(context, FeedbackRouter.report,
-                              arguments: ReportPageArgs(post.id, true))
-                        },
-                      ),
-                    ),
-                    Divider(),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0)),
-                      child: ListTile(
-                        title: Center(child: Text('取消')),
-                        onTap: () => {
-                          Navigator.pop(context),
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+                  ),
+                ));
           });
     }
 
@@ -354,8 +412,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Text(
                       post.title,
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                     SizedBox(height: 5.h),
@@ -393,7 +451,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               ),
                               SizedBox(width: 2.w),
                               Text(
-                                '其他',
+                                '其他' + '  ',
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: Color(0xFF909090),
@@ -432,12 +490,18 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           Text('丢失日期',
                               style:
                                   TextStyle(fontSize: 14, color: Colors.black)),
-                          SizedBox(width: 15.w),
-                          Text('2023-03-31',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF2C7EDF),
-                                  fontWeight: FontWeight.w600)),
+                          SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 3.h),
+                              Text('2023-03-31',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF2C7EDF),
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -455,14 +519,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                           ),
                           SizedBox(width: 15.w),
-                          Text(
-                            post.location,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF2C7EDF),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 3.h),
+                                Text(
+                                  post.location,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF2C7EDF),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ])
                         ],
                       ),
                     ),
