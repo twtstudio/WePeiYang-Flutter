@@ -6,6 +6,8 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_sub_page.dart';
 
+import '../../feedback_router.dart';
+
 class LostAndFoundHomePage extends StatefulWidget {
 
   LostAndFoundHomePage({Key? key}) : super(key: key);
@@ -15,6 +17,7 @@ class LostAndFoundHomePage extends StatefulWidget {
 }
 
 class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -90,11 +93,12 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                             ),
                           ),
                         ),
-                        onTap: () {Navigator.of(context).push(
-                            MaterialPageRoute(builder:(BuildContext context){
-                              return LostAndFoundPostPage();
-                            })
-                        );}
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return LostAndFoundPostPage();
+                              }));
+                         }
                     ),
                   ),
                 )
