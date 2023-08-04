@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -18,7 +21,14 @@ class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
     required Widget leading,
     required Widget action,
     required Widget title,
-  }) : super(key: key, leading: leading, action: action, title: title);
+    required double height,
+  }) : super(
+          key: key,
+          leading: leading,
+          action: action,
+          title: title,
+          height: height,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -199,116 +209,146 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
+    String _formatDate(String originalString) {
+      DateTime parsedDate = DateTime.parse(originalString.substring(0, 4) +
+          '-' +
+          originalString.substring(4, 6) +
+          '-' +
+          originalString.substring(6, 8) +
+          ' ' +
+          originalString.substring(8, 10) +
+          ':' +
+          originalString.substring(10, 12) +
+          ':' +
+          originalString.substring(12, 14));
+      String isoDate = parsedDate.toIso8601String();
+      return isoDate.substring(0, isoDate.length - 4).replaceAll('T', ' ');
+    }
+
     void _showMenu() {
       showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          builder: (BuildContext context) {
-            return Container(
-                color: Colors.transparent,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-                  child: Container(
-                    child: Wrap(
-                      children: <Widget>[
-                        Card(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.0),
-                              topRight: Radius.circular(10.0),
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return Container(
+            color: Colors.transparent,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    Card(
+                      color: Colors.white.withOpacity(0.9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          {
+                            String weCo =
+                                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                            ClipboardData data = ClipboardData(text: weCo);
+                            Clipboard.setData(data);
+                            CommonPreferences.feedbackLastWeCo.value =
+                                post.id.toString();
+                            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                            FeedbackService.postShare(
+                                id: post.id.toString(),
+                                type: 0,
+                                onSuccess: () {},
+                                onFailure: () {});
+                          }
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 42.0,
+                          alignment: Alignment.center, // 居中对齐
+                          child: Text(
+                            '分享',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
                           ),
-                          child: InkWell(
-                            onTap: () => {},
-                            child: Container(
-                              width: 380.0,
-                              height: 42.0,
-                              alignment: Alignment.center, // 居中对齐
-                              child: Text(
-                                '分享',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
-                        Card(
-                          color: Colors.white.withOpacity(0.9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(10.0),
-                              bottomRight: Radius.circular(10.0),
-                            ),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LostAndFoundReportPage(ReportPageArgs(post.id, true)),
-                                ),
-                              );
-                            },
-
-                            child: Container(
-                              width: 380.0,
-                              height: 42.0,
-                              alignment: Alignment.center, // 居中对齐
-                              child: Text(
-                                '举报',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                        ),
-                        ),
-                        SizedBox(height: 10.h),
-                        Card(
-                            color: Colors.white.withOpacity(0.9),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                width: 380.0,
-                                height: 42.0,
-                                alignment: Alignment.center, // 居中对齐
-                                child: Text(
-                                  '取消',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            )
-                        ),
-                        Container(
-                          height: 20.h,
-                          color: Colors.transparent,
-                        )
-
-                      ],
+                      ),
                     ),
-                  ),
-                ));
-          });
+                    Card(
+                      color: Colors.white.withOpacity(0.9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10.0),
+                          bottomRight: Radius.circular(10.0),
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () => {
+                          Navigator.pushNamed(context, FeedbackRouter.report,
+                              arguments: ReportPageArgs(post.id, true))
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 42.0,
+                          alignment: Alignment.center, // 居中对齐
+                          child: Text(
+                            '举报',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    Card(
+                      color: Colors.white.withOpacity(0.9),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 42.0,
+                          alignment: Alignment.center, // 居中对齐
+                          child: Text(
+                            '取消',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20.h,
+                      color: Colors.transparent,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
     }
 
     // 使用post数据构建UI
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: LostAndFoundDetailAppBar(
+        height: 65,
         leading: Padding(
           padding: EdgeInsets.only(top: 46.h, left: 16.w),
           child: Align(
@@ -380,17 +420,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 Row(
                                   children: [
                                     Text(
-                                      post.uploadTime,
-                                      style: TextStyle(
-                                        fontSize: 8,
-                                        color: Color(0xFF909090),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 3.w,
-                                    ),
-                                    Text(
-                                      '12:17:05',
+                                      _formatDate(post.detailedUploadTime),
                                       style: TextStyle(
                                         fontSize: 8,
                                         color: Color(0xFF909090),
@@ -403,7 +433,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           ],
                         ),
                         Text(
-                          '#MP000001',
+                          '#MP${post.id.toString().padLeft(6, '0')}',
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF909090),
@@ -499,7 +529,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 3.h),
-                              Text('2023-03-31',
+                              Text(
+                                  "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: Color(0xFF2C7EDF),
@@ -605,11 +636,14 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 ),
                               ],
                             ),
-                            onPressed: () {
-                              setState(() {
-                                brightened = true;
-                              });
-                            },
+                            onPressed: brightened
+                                ? null // 如果brightened为true，则禁用按钮
+                                : () {
+                                    setState(() {
+                                      brightened = true;
+                                    });
+                                    ToastProvider.success('成功擦亮');
+                                  },
                           ),
                         ),
                       ],
