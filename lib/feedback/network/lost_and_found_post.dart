@@ -14,7 +14,7 @@ class LostAndFoundPost {
     required this.phone,
     this.coverPhotoPath,
     required this.hot,
-    this.coverPhotoPathInDetail,
+    required this.coverPhotoPathInDetail,
   });
   int id;
   String author;
@@ -33,7 +33,7 @@ class LostAndFoundPost {
   String? coverPhotoPath;
   int hot;
   Size? coverPhotoSize;
-  List? coverPhotoPathInDetail;
+  List<String> coverPhotoPathInDetail;
 
   LostAndFoundPost.fromJson(Map<String, dynamic> json)
       : id = json['laf']['id'],
@@ -48,5 +48,9 @@ class LostAndFoundPost {
         phone = json['laf']['phone'],
         hot = json['laf']['hot'],
         coverPhotoPath = json['pho'] != null ? json['pho']['url'] : null,
-        coverPhotoPathInDetail = json['phos'] != null ? json['phos'] : null;
+        coverPhotoPathInDetail = json['phos'] != null
+            ? (json['phos'] as List)
+                .map((item) => item['url'] as String)
+                .toList()
+            : [];
 }

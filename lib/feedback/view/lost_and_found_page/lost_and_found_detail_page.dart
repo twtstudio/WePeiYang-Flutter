@@ -114,29 +114,26 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   Widget MultipleImage(LostAndFoundPost post) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
-          post.coverPhotoPathInDetail!.length,
+          post.coverPhotoPathInDetail.length,
           (index) => GestureDetector(
             onTap: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs(
-                  post.coverPhotoPathInDetail![index]['url'],
-                  post.coverPhotoPathInDetail!.length,
-                  index,
-                  false),
+              arguments: ImageViewPageArgs(post.coverPhotoPathInDetail,
+                  post.coverPhotoPathInDetail.length, index, false),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
-              child: WpyPic(post.coverPhotoPathInDetail![index]['url'],
+              child: WpyPic(post.coverPhotoPathInDetail[index],
                   fit: BoxFit.cover,
                   width: (1.sw -
                           40.w -
-                          (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
-                      post.coverPhotoPathInDetail!.length,
+                          (post.coverPhotoPathInDetail.length - 1) * 10.w) /
+                      post.coverPhotoPathInDetail.length,
                   height: (1.sw -
                           40.w -
-                          (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
-                      post.coverPhotoPathInDetail!.length,
+                          (post.coverPhotoPathInDetail.length - 1) * 10.w) /
+                      post.coverPhotoPathInDetail.length,
                   withHolder: true),
             ),
           ),
@@ -381,8 +378,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
-    var innerImages = post.coverPhotoPathInDetail!.length == 1
-        ? SingleImageWidget(post.coverPhotoPathInDetail![0]['url'])
+    var innerImages = post.coverPhotoPathInDetail.length == 1
+        ? SingleImageWidget(post.coverPhotoPathInDetail[0])
         : MultipleImage(post);
 
     // 使用post数据构建UI
@@ -492,7 +489,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       ),
                     ),
                     SizedBox(height: 5.h),
-                    (post.coverPhotoPathInDetail?.isNotEmpty ?? false)
+                    (post.coverPhotoPathInDetail.isNotEmpty)
                         ? Padding(
                             padding: EdgeInsets.only(
                                 top: 4.h, left: 12.w, bottom: 14.h),
@@ -696,50 +693,6 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class MultipleImage extends StatelessWidget {
-  final LostAndFoundPost post;
-
-  const MultipleImage({
-    Key? key,
-    required this.post,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(
-        post.coverPhotoPathInDetail!.length,
-        (index) => GestureDetector(
-          onTap: () => Navigator.pushNamed(
-            context,
-            FeedbackRouter.imageView,
-            arguments: ImageViewPageArgs(
-                post.coverPhotoPathInDetail![index]['url'],
-                post.coverPhotoPathInDetail!.length,
-                index,
-                false),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8.r)),
-            child: WpyPic(post.coverPhotoPathInDetail![index]['url'],
-                fit: BoxFit.cover,
-                width: (1.sw -
-                        40.w -
-                        (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
-                    post.coverPhotoPathInDetail!.length,
-                height: (1.sw -
-                        40.w -
-                        (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
-                    post.coverPhotoPathInDetail!.length,
-                withHolder: true),
-          ),
         ),
       ),
     );
