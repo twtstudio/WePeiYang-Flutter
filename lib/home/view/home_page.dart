@@ -19,6 +19,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
+import '../../auth/view/user/account_upgrade_dialog.dart';
+
 class HomePage extends StatefulWidget {
   final int? page;
 
@@ -102,6 +104,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (widget.page != null) {
       _tabController.animateTo(widget.page!);
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(CommonPreferences.accountUpgrade.value.isNotEmpty){
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AccountUpgradeDialog(),
+        );
+      }
+    });
   }
 
   @override

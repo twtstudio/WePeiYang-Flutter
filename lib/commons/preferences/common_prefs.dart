@@ -30,6 +30,7 @@ class CommonPreferences {
   static final floor = PrefsBean<String>('floor');
   static final room = PrefsBean<String>('room');
   static final bed = PrefsBean<String>('bed');
+  static final accountUpgrade = PrefsBean<List>('accountUpgrade');
 
   /// 求实论坛相关
   static final lakeToken = PrefsBean<String>('lakeToken', '');
@@ -145,6 +146,7 @@ class CommonPreferences {
     floor.clear();
     room.clear();
     bed.clear();
+    accountUpgrade.clear();
 
     /// 求实论坛相关
     lakeToken.clear();

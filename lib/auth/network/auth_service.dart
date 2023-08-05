@@ -1,4 +1,4 @@
-import 'dart:convert' show utf8, base64Encode;
+import 'dart:convert' show base64Encode, json, utf8;
 import 'dart:io';
 
 import 'package:dio_cookie_caching_handler/dio_cookie_interceptor.dart';
@@ -288,6 +288,7 @@ class AuthService with AsyncTimer {
         CommonPreferences.room.value = result['room'] ?? "";
         CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
+        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null ? [] : List<String>.from(result['upgradeNeed'].map((x) => json.encode(x)));
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -343,6 +344,7 @@ class AuthService with AsyncTimer {
         CommonPreferences.room.value = result['room'] ?? "";
         CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
+        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null ? [] : List<String>.from(result['upgradeNeed'].map((x) => json.encode(x)));
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -537,5 +539,19 @@ class AuthService with AsyncTimer {
       debugPrint(e.error.toString());
     }
     return NAcidInfo(id: -1);
+  }
+
+  static Future<bool> accountUpgrade() async {
+      try {
+        var tmp = CommonPreferences.accountUpgrade.value;
+        var res = json.decode(tmp[0]);
+        print(CommonPreferences.token.value);
+        print(res['id']);
+        var rsp = await authDio.put("upgrade",queryParameters: {"typeId": res['id']});
+        print(rsp.data['result']);
+        return false;
+      } on DioException catch (e) {
+        return false;
+      }
   }
 }
