@@ -111,6 +111,38 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     return completer.future;
   }
 
+  Widget MultipleImage(LostAndFoundPost post) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(
+          post.coverPhotoPathInDetail!.length,
+          (index) => GestureDetector(
+            onTap: () => Navigator.pushNamed(
+              context,
+              FeedbackRouter.imageView,
+              arguments: ImageViewPageArgs(
+                  post.coverPhotoPathInDetail![index]['url'],
+                  post.coverPhotoPathInDetail!.length,
+                  index,
+                  false),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(8.r)),
+              child: WpyPic(post.coverPhotoPathInDetail![index]['url'],
+                  fit: BoxFit.cover,
+                  width: (1.sw -
+                          40.w -
+                          (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
+                      post.coverPhotoPathInDetail!.length,
+                  height: (1.sw -
+                          40.w -
+                          (post.coverPhotoPathInDetail!.length - 1) * 10.w) /
+                      post.coverPhotoPathInDetail!.length,
+                  withHolder: true),
+            ),
+          ),
+        ),
+      );
+
   // 构建UI
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
     // 寻物或寻主，待对接
@@ -349,6 +381,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
+    var innerImages = post.coverPhotoPathInDetail!.length == 1
+        ? SingleImageWidget(post.coverPhotoPathInDetail![0]['url'])
+        : MultipleImage(post);
+
     // 使用post数据构建UI
     return Scaffold(
       backgroundColor: Colors.white,
@@ -456,11 +492,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       ),
                     ),
                     SizedBox(height: 5.h),
-                    Image.asset(
-                      'assets/images/schedule_empty.png',
-                      width: 360,
-                      height: 204,
-                    ),
+                    (post.coverPhotoPathInDetail?.isNotEmpty ?? false)
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                top: 4.h, left: 12.w, bottom: 14.h),
+                            child: innerImages,
+                          )
+                        : Container(),
                     SizedBox(height: 14.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
