@@ -708,16 +708,16 @@ class MultipleImage extends StatelessWidget {
   }
 }
 
-class InnerSingleImageWidget extends StatefulWidget {
+class SingleImageWidget extends StatefulWidget {
   final String imageUrl;
 
-  InnerSingleImageWidget(this.imageUrl);
+  SingleImageWidget(this.imageUrl);
 
   @override
-  State<InnerSingleImageWidget> createState() => _InnerSingleImageWidgetState();
+  State<SingleImageWidget> createState() => _SingleImageWidgetState();
 }
 
-class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
+class _SingleImageWidgetState extends State<SingleImageWidget> {
   bool _picFullView = false;
 
   @override
