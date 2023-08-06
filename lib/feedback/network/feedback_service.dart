@@ -1242,4 +1242,20 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  //失物招领删除
+  static deleteLostAndFoundPost(
+      {required id,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('deleteLostAndFoundPost', () async {
+      try {
+        await feedbackLostAndFoundDio.post('laf/deletelaf',
+            formData: FormData.fromMap({'id': id}));
+        onSuccess.call();
+      } on DioException catch (e) {
+        onFailure(e);
+      }
+    });
+  }
 }
