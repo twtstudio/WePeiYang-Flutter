@@ -73,7 +73,7 @@ class LostAndFoundDetailPage extends StatefulWidget {
 }
 
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
-  bool isMine = true;
+  bool isMine = false;
   bool brightened = false;
   @override
   Widget build(BuildContext context) {
@@ -373,72 +373,66 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10.0),
-                          topRight: Radius.circular(10.0),
-                        ),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: InkWell(
-                        onTap: () {
-                          String weCo =
-                              '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-                          ClipboardData data = ClipboardData(text: weCo);
-                          Clipboard.setData(data);
-                          CommonPreferences.feedbackLastWeCo.value =
-                              post.id.toString();
-                          ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                          FeedbackService.postShare(
-                              id: post.id.toString(),
-                              type: 0,
-                              onSuccess: () {},
-                              onFailure: () {});
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 42.0,
-                          alignment: Alignment.center,
-                          child: Text(
-                            '分享',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              String weCo =
+                                  '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                              ClipboardData data = ClipboardData(text: weCo);
+                              Clipboard.setData(data);
+                              CommonPreferences.feedbackLastWeCo.value =
+                                  post.id.toString();
+                              ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                              FeedbackService.postShare(
+                                  id: post.id.toString(),
+                                  type: 0,
+                                  onSuccess: () {},
+                                  onFailure: () {});
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 42.0,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '分享',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Card(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10.0),
-                          bottomRight: Radius.circular(10.0),
-                        ),
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          if (isMine) {
-                            _showDeleteDialog();
-                          } else {
-                            Navigator.pushNamed(context, FeedbackRouter.report,
-                                arguments: ReportPageArgs(post.id, true));
-                          }
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 42.0,
-                          alignment: Alignment.center,
-                          child: Text(
-                            isMine ? '删除' : '举报',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                          Divider(), // 添加分隔线
+                          InkWell(
+                            onTap: () {
+                              if (isMine) {
+                                _showDeleteDialog();
+                              } else {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.report,
+                                    arguments: ReportPageArgs(post.id, true));
+                              }
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 42.0,
+                              alignment: Alignment.center,
+                              child: Text(
+                                isMine ? '删除' : '举报',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                     Card(
