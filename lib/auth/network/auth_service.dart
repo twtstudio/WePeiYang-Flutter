@@ -549,8 +549,9 @@ class AuthService with AsyncTimer {
         print(res['id']);
         var rsp = await authDio.put("upgrade",queryParameters: {"typeId": res['id']});
         print(rsp.data['result']);
-        return false;
-      } on DioException catch (e) {
+        if(rsp.data['code'] == '200') return true;
+        else return false;
+      } on DioException{
         return false;
       }
   }

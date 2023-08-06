@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class AccountUpgradeDialog extends Dialog {
   static final _hintStyle = TextUtil.base.bold.noLine
@@ -34,6 +35,7 @@ class AccountUpgradeDialog extends Dialog {
                     onTap: () async {
                       var rsp = await AuthService.accountUpgrade();
                       if(rsp) Navigator.pop(context);
+                      else ToastProvider.error("升级失败，请联系开发人员!");
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
