@@ -250,20 +250,112 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
+    void _showDeleteDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            backgroundColor: Colors.white,
+            content: Flexible(
+              child: Container(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    child: Image.asset(
+                      'assets/images/tip.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Flexible(
+                    child: Text(
+                      '确定要删除吗？',
+                      style: TextStyle(fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '取消',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                FeedbackService.deleteLostAndFoundPost(
+                                    id: post.id,
+                                    onSuccess: () {
+                                      ToastProvider.success('删除成功');
+                                      Navigator.pop(context);
+                                    },
+                                    onFailure: (e) {
+                                      ToastProvider.error('删除失败');
+                                    }),
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromRGBO(44, 126, 223, 1)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '确定',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     String _formatDate(String originalString) {
-      DateTime parsedDate = DateTime.parse(originalString.substring(0, 4) +
-          '-' +
-          originalString.substring(4, 6) +
-          '-' +
-          originalString.substring(6, 8) +
-          ' ' +
-          originalString.substring(8, 10) +
-          ':' +
-          originalString.substring(10, 12) +
-          ':' +
-          originalString.substring(12, 14));
-      String isoDate = parsedDate.toIso8601String();
-      return isoDate.substring(0, isoDate.length - 4).replaceAll('T', ' ');
+      if (originalString.length != 14) {
+        throw FormatException('Invalid input length');
+      }
+      return '${originalString.substring(0, 4)}-${originalString.substring(4, 6)}-${originalString.substring(6, 8)} ${originalString.substring(8, 10)}:${originalString.substring(10, 12)}:${originalString.substring(12, 14)}';
     }
 
     void _showMenu() {
@@ -320,26 +412,15 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: isMine
-                            ? BorderRadius.circular(10.0)
-                            : BorderRadius.only(
-                                bottomLeft: Radius.circular(10.0),
-                                bottomRight: Radius.circular(10.0),
-                              ),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10.0),
+                          bottomRight: Radius.circular(10.0),
+                        ),
                       ),
                       child: InkWell(
                         onTap: () {
                           if (isMine) {
-                            // 当isMine为true时，删除帖子
-                            FeedbackService.deleteLostAndFoundPost(
-                                id: post.id,
-                                onSuccess: () {
-                                  ToastProvider.success('删除成功');
-                                  Navigator.pop(context);
-                                },
-                                onFailure: (e) {
-                                  ToastProvider.error('删除失败');
-                                });
+                            _showDeleteDialog();
                           } else {
                             Navigator.pushNamed(context, FeedbackRouter.report,
                                 arguments: ReportPageArgs(post.id, true));
@@ -360,7 +441,6 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         ),
                       ),
                     ),
-                    if (!isMine) SizedBox(height: 10.h),
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
