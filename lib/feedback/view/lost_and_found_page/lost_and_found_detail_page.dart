@@ -73,6 +73,7 @@ class LostAndFoundDetailPage extends StatefulWidget {
 }
 
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
+  bool isMine = true;
   bool brightened = false;
   @override
   Widget build(BuildContext context) {
@@ -287,26 +288,24 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          {
-                            String weCo =
-                                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-                            ClipboardData data = ClipboardData(text: weCo);
-                            Clipboard.setData(data);
-                            CommonPreferences.feedbackLastWeCo.value =
-                                post.id.toString();
-                            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                            FeedbackService.postShare(
-                                id: post.id.toString(),
-                                type: 0,
-                                onSuccess: () {},
-                                onFailure: () {});
-                          }
+                          String weCo =
+                              '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                          ClipboardData data = ClipboardData(text: weCo);
+                          Clipboard.setData(data);
+                          CommonPreferences.feedbackLastWeCo.value =
+                              post.id.toString();
+                          ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                          FeedbackService.postShare(
+                              id: post.id.toString(),
+                              type: 0,
+                              onSuccess: () {},
+                              onFailure: () {});
                           Navigator.pop(context);
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
+                          alignment: Alignment.center,
                           child: Text(
                             '分享',
                             style: TextStyle(
@@ -321,22 +320,37 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10.0),
-                          bottomRight: Radius.circular(10.0),
-                        ),
+                        borderRadius: isMine
+                            ? BorderRadius.circular(10.0)
+                            : BorderRadius.only(
+                                bottomLeft: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                              ),
                       ),
                       child: InkWell(
-                        onTap: () => {
-                          Navigator.pushNamed(context, FeedbackRouter.report,
-                              arguments: ReportPageArgs(post.id, true))
+                        onTap: () {
+                          if (isMine) {
+                            // 当isMine为true时，删除帖子
+                            FeedbackService.deleteLostAndFoundPost(
+                                id: post.id,
+                                onSuccess: () {
+                                  ToastProvider.success('删除成功');
+                                  Navigator.pop(context);
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error('删除失败');
+                                });
+                          } else {
+                            Navigator.pushNamed(context, FeedbackRouter.report,
+                                arguments: ReportPageArgs(post.id, true));
+                          }
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
+                          alignment: Alignment.center,
                           child: Text(
-                            '举报',
+                            isMine ? '删除' : '举报',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -346,7 +360,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.h),
+                    if (!isMine) SizedBox(height: 10.h),
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
@@ -359,7 +373,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
+                          alignment: Alignment.center,
                           child: Text(
                             '取消',
                             style: TextStyle(
