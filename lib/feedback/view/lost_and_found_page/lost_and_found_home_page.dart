@@ -74,8 +74,14 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   Container(
                     child: TabBarView(
                       children: [
-                        LostAndFoundSubPage(type: '寻物启事'),
-                        LostAndFoundSubPage(type: '失物招领')
+                        LostAndFoundSubPage(
+                          type: '寻物启事',
+                          findOwner: false,
+                        ),
+                        LostAndFoundSubPage(
+                          type: '失物招领',
+                          findOwner: true,
+                        )
                       ],
                     ),
                   ),

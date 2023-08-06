@@ -24,8 +24,11 @@ import 'package:we_pei_yang_flutter/main.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
+  final bool findOwner;
 
-  const LostAndFoundSubPage({Key? key, required this.type}) : super(key: key);
+  const LostAndFoundSubPage(
+      {Key? key, required this.type, required this.findOwner})
+      : super(key: key);
 
   @override
   LostAndFoundSubPageState createState() => LostAndFoundSubPageState();
@@ -136,8 +139,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                 .lostAndFoundSubPageStatus[widget.type] ==
             LostAndFoundSubPageStatus.error) _onRefresh();
 
-    var searchBar =
-    InkWell(
+    var searchBar = InkWell(
       onTap: () {
         context.read<LostAndFoundModel2>().currentType = widget.type;
         Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
@@ -146,8 +148,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
         height: searchBarHeight,
         decoration: BoxDecoration(
             color: ColorUtil.greyF7F8Color,
-            borderRadius: BorderRadius.all(Radius.circular(45))
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(45))),
         child: Row(children: [
           SizedBox(width: 14.w),
           Container(
@@ -185,11 +186,15 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: EdgeInsetsDirectional.only(top: widgetPadding, bottom: widgetPadding, start: 15.w, end: 15.w),
+              padding: EdgeInsetsDirectional.only(
+                  top: widgetPadding,
+                  bottom: widgetPadding,
+                  start: 15.w,
+                  end: 15.w),
               child: searchBar,
             ),
             Padding(
-              padding: EdgeInsetsDirectional.only(bottom: widgetPadding-6),
+              padding: EdgeInsetsDirectional.only(bottom: widgetPadding - 6),
               child: Selector<LostAndFoundModel, String>(
                 selector: (context, model) {
                   return model.currentCategory[widget.type]!;
@@ -200,39 +205,47 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                     direction: Axis.horizontal,
                     children: <Widget>[
                       Expanded(
-                        child:
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(start: 15.w, end: 7.w),
-                              child: LostAndFoundTag(category: '全部', type: widget.type),
-                            ),
+                        child: Padding(
+                          padding:
+                              EdgeInsetsDirectional.only(start: 15.w, end: 7.w),
+                          child: LostAndFoundTag(
+                              category: '全部', type: widget.type),
+                        ),
                         flex: 4,
                       ),
                       Expanded(
-                        child:Padding(
-                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(category: '生活日用', type: widget.type),
+                        child: Padding(
+                          padding:
+                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(
+                              category: '生活日用', type: widget.type),
                         ),
                         flex: 5,
                       ),
                       Expanded(
                         child: Padding(
-                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(category: '数码产品', type: widget.type),
+                          padding:
+                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(
+                              category: '数码产品', type: widget.type),
                         ),
                         flex: 5,
                       ),
                       Expanded(
                         child: Padding(
-                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(category: '钱包卡证', type: widget.type),
+                          padding:
+                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                          child: LostAndFoundTag(
+                              category: '钱包卡证', type: widget.type),
                         ),
                         flex: 5,
                       ),
                       Expanded(
-                        child:
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(start: 7.w, end: 15.w),
-                          child: LostAndFoundTag(category: '其他', type: widget.type),
+                        child: Padding(
+                          padding:
+                              EdgeInsetsDirectional.only(start: 7.w, end: 15.w),
+                          child: LostAndFoundTag(
+                              category: '其他', type: widget.type),
                         ),
                         flex: 4,
                       ),
@@ -253,14 +266,17 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                 }, builder: (context, tuple, _) {
                   return tuple.item2 == LostAndFoundSubPageStatus.error
                       ? TextButton(
-                      onPressed: (){
-                        context.read<LostAndFoundModel>().lostAndFoundSubPageStatus[widget.type] = LostAndFoundSubPageStatus.unload;
-                        _onRefresh();
-                      },
-                      child: Text(
-                        '点击重新加载',
-                        style: TextUtil.base.normal.grey6C,
-                      ))
+                          onPressed: () {
+                            context
+                                    .read<LostAndFoundModel>()
+                                    .lostAndFoundSubPageStatus[widget.type] =
+                                LostAndFoundSubPageStatus.unload;
+                            _onRefresh();
+                          },
+                          child: Text(
+                            '点击重新加载',
+                            style: TextUtil.base.normal.grey6C,
+                          ))
                       : (tuple.item2 == LostAndFoundSubPageStatus.unload
                           ? Loading()
                           : SmartRefresher(
@@ -285,7 +301,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               onRefresh: _onRefresh,
                               onLoading: _onLoading,
                               child: WaterfallFlow.builder(
-                                gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                                   mainAxisSpacing: 13.w,
                                   crossAxisSpacing: 25.w,
                                   crossAxisCount: 2,
@@ -303,12 +320,14 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       LostAndFoundDetailPage(
                                                         postId: tuple
                                                             .item1[index].id,
-                                                        findOwner: true,
+                                                        findOwner:
+                                                            widget.findOwner,
                                                       )));
                                         },
                                         child: Card(
                                           elevation: 3,
-                                          shadowColor: ColorUtil.greyB4AFColor.withOpacity(0.1),
+                                          shadowColor: ColorUtil.greyB4AFColor
+                                              .withOpacity(0.1),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
@@ -347,52 +366,57 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                             Color(0xfff8f8f8),
                                                       ))
                                                   : Container(
-                                                      padding: EdgeInsets.all(10),
+                                                      padding:
+                                                          EdgeInsets.all(10),
                                                       child: LayoutBuilder(
-                                                      builder: (context,
-                                                          constrains) {
-                                                        final maxWidth =
-                                                            constrains
-                                                                .constrainWidth();
-                                                        final width = tuple
-                                                                .item1[index]
-                                                                .coverPhotoSize
-                                                                ?.width
-                                                                .toDouble() ??
-                                                            1;
-                                                        final height = tuple
-                                                                .item1[index]
-                                                                .coverPhotoSize
-                                                                ?.height
-                                                                .toDouble() ??
-                                                            0;
-                                                        return ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  10.0), // 设置圆角半径为10.0
-                                                          child: Container(
-                                                            width: maxWidth,
-                                                            child: WpyPic(
-                                                              tuple.item1[index]
-                                                                  .coverPhotoPath!,
-                                                              withHolder: true,
-                                                              holderHeight:
-                                                                  height *
+                                                        builder: (context,
+                                                            constrains) {
+                                                          final maxWidth =
+                                                              constrains
+                                                                  .constrainWidth();
+                                                          final width = tuple
+                                                                  .item1[index]
+                                                                  .coverPhotoSize
+                                                                  ?.width
+                                                                  .toDouble() ??
+                                                              1;
+                                                          final height = tuple
+                                                                  .item1[index]
+                                                                  .coverPhotoSize
+                                                                  ?.height
+                                                                  .toDouble() ??
+                                                              0;
+                                                          return ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0), // 设置圆角半径为10.0
+                                                            child: Container(
+                                                              width: maxWidth,
+                                                              child: WpyPic(
+                                                                tuple
+                                                                    .item1[
+                                                                        index]
+                                                                    .coverPhotoPath!,
+                                                                withHolder:
+                                                                    true,
+                                                                holderHeight:
+                                                                    height *
+                                                                        maxWidth /
+                                                                        width,
+                                                                fit: BoxFit
+                                                                    .fitWidth,
+                                                              ),
+                                                              height: height >=
+                                                                      3 * width
+                                                                  ? 3 * maxWidth
+                                                                  : height *
                                                                       maxWidth /
                                                                       width,
-                                                              fit: BoxFit
-                                                                  .fitWidth,
                                                             ),
-                                                            height: height >=
-                                                                    3 * width
-                                                                ? 3 * maxWidth
-                                                                : height *
-                                                                    maxWidth /
-                                                                    width,
-                                                          ),
-                                                        );
-                                                      },
-                                                    )),
+                                                          );
+                                                        },
+                                                      )),
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
@@ -515,13 +539,13 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
         child: Container(
           height: 28.w,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              color: widget.category ==
-                      context
-                          .read<LostAndFoundModel>()
-                          .currentCategory[widget.type]
-                  ? ColorUtil.blue2CColor.withOpacity(0.1)
-                  : ColorUtil.whiteF8Color,
+            borderRadius: BorderRadius.circular(24),
+            color: widget.category ==
+                    context
+                        .read<LostAndFoundModel>()
+                        .currentCategory[widget.type]
+                ? ColorUtil.blue2CColor.withOpacity(0.1)
+                : ColorUtil.whiteF8Color,
           ),
           child: Center(
             child: Text(widget.category,

@@ -1225,4 +1225,21 @@ class FeedbackService with AsyncTimer {
       onFailure(e);
     }
   }
+
+  //擦亮
+  static polish(
+      {required id,
+      required user,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('polish', () async {
+      try {
+        await feedbackLostAndFoundDio.post('record/polish',
+            formData: FormData.fromMap({'id': id, 'user': user}));
+        onSuccess.call();
+      } on DioException catch (e) {
+        onFailure(e);
+      }
+    });
+  }
 }
