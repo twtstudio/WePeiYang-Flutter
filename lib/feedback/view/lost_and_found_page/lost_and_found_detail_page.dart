@@ -154,35 +154,36 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
               borderRadius: BorderRadius.circular(20.0),
             ),
             backgroundColor: Colors.white,
-            content: Container(
-                width: 280.w,
-                height: 150.h,
+            content: Flexible(
+              child: Container(
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Image.asset(
-                    'assets/images/tip.png',
-                    width: 28.w,
-                    height: 28.h,
+                  Container(
+                    child: Image.asset(
+                      'assets/images/tip.png',
+                      width: 30,
+                      height: 30,
+                    ),
                   ),
-                  SizedBox(height: 15.h),
-                  Text(
-                    phoneNum != ''
-                        ? phoneNum + '\n'
-                        : (findOwner
-                            ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
-                            : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
-                    style: TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
+                  SizedBox(height: 15),
+                  Flexible(
+                    child: Text(
+                      phoneNum != ''
+                          ? phoneNum + '\n'
+                          : (findOwner
+                              ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
+                              : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
+                      style: TextStyle(fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 20),
                   Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          TextButton(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -204,17 +205,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 20.w,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                phoneNum = post.phone;
-                              });
-                              Navigator.of(context).pop();
-                              _showConfirmationDialog();
-                            },
+                        ),
+                        SizedBox(width: 20),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: phoneNum != ''
+                                ? null
+                                : () {
+                                    setState(() {
+                                      phoneNum = post.phone;
+                                    });
+                                    Navigator.of(context).pop();
+                                    _showConfirmationDialog();
+                                  },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110, 40)),
@@ -231,13 +234,16 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               '确定',
                               style: TextStyle(
                                 color: Colors.white,
-                                //fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        ],
-                      ))
-                ])),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ),
           );
         },
       );
@@ -638,54 +644,64 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           width: 30.w,
                         ),
                         Container(
-                          width: 110.w,
-                          height: 40.h,
-                          margin: EdgeInsets.only(left: 30.w),
-                          decoration: BoxDecoration(
-                            color: brightened ? Colors.grey[200] : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: brightened
-                                ? null
-                                : Border.all(
-                                    color: Color(0xFF2C7EDF),
-                                    width: 1.w,
-                                  ),
-                          ),
-                          child: WButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  brightened
-                                      ? 'assets/images/octicon_light-bulb-24-dark.png'
-                                      : 'assets/images/octicon_light-bulb-24.png',
-                                  width: 24.w,
-                                  height: 20.h,
-                                ),
-                                SizedBox(
-                                  width: 8.w,
-                                ),
-                                Text(
-                                  brightened ? '已擦亮' : '擦亮',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: brightened
-                                        ? Colors.grey
-                                        : Color(0xFF2C7EDF),
-                                  ),
-                                ),
-                              ],
+                            width: 110.w,
+                            height: 40.h,
+                            margin: EdgeInsets.only(left: 30.w),
+                            decoration: BoxDecoration(
+                              color:
+                                  brightened ? Colors.grey[200] : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: brightened
+                                  ? null
+                                  : Border.all(
+                                      color: Color(0xFF2C7EDF),
+                                      width: 1.w,
+                                    ),
                             ),
-                            onPressed: brightened
-                                ? null // 如果brightened为true，则禁用按钮
-                                : () {
-                                    setState(() {
-                                      brightened = true;
-                                    });
-                                    ToastProvider.success('成功擦亮');
-                                  },
-                          ),
-                        ),
+                            child: WButton(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    brightened
+                                        ? 'assets/images/octicon_light-bulb-24-dark.png'
+                                        : 'assets/images/octicon_light-bulb-24.png',
+                                    width: 24.w,
+                                    height: 20.h,
+                                  ),
+                                  SizedBox(
+                                    width: 8.w,
+                                  ),
+                                  Text(
+                                    brightened ? '已擦亮' : '擦亮',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: brightened
+                                          ? Colors.grey
+                                          : Color(0xFF2C7EDF),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: brightened
+                                  ? null // 如果brightened为true，则禁用按钮
+                                  : () async {
+                                      setState(() {
+                                        brightened = true;
+                                      });
+
+                                      await FeedbackService.polish(
+                                        id: post.id,
+                                        user: post.author,
+                                        onSuccess: () {
+                                          ToastProvider.success('成功擦亮');
+                                        },
+                                        onFailure: (e) {
+                                          // 在此处理请求失败的情况
+                                        },
+                                      );
+                                    },
+                            )),
                       ],
                     ),
                   ],
