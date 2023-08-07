@@ -250,6 +250,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
+    // 删除弹窗
     void _showDeleteDialog() {
       showDialog(
         context: context,
