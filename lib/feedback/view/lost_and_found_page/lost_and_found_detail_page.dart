@@ -223,7 +223,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 : () {
                                     FeedbackService.getRecordNum(
                                       yyyymmdd: formattedDate,
-                                      user: "作者1",
+                                      user: "作者19",
                                       onResult: (num) {
                                         if (num > 3) {
                                           setState(() {
@@ -235,25 +235,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                           setState(() {
                                             phoneNum = post.phone;
                                           });
+
+                                          FeedbackService.locationAddRecord(
+                                            yyyymmdd: formattedDate,
+                                            user: "作者19",
+                                            onSuccess: () {},
+                                            onFailure: (e) {},
+                                          );
+                                          Navigator.of(context).pop();
+                                          _showConfirmationDialog();
                                         }
                                       },
                                       onFailure: (e) {},
                                     );
-
-                                    if (isLimited == false) {
-                                      setState(() {
-                                        phoneNum = post.phone;
-                                      });
-
-                                      FeedbackService.locationAddRecord(
-                                        yyyymmdd: formattedDate,
-                                        user: "作者1",
-                                        onSuccess: () {},
-                                        onFailure: (e) {},
-                                      );
-                                      Navigator.of(context).pop();
-                                      _showConfirmationDialog();
-                                    }
                                   },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
