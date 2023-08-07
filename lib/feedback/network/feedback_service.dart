@@ -1258,4 +1258,42 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  // 失物招领的联系方式记录
+  static locationAddRecord(
+      {required id,
+      required user,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('locationAddRecord', () async {
+      try {
+        await feedbackLostAndFoundDio.post('record/addrecord',
+            formData: FormData.fromMap({'id': id, 'user': user}));
+        onSuccess.call();
+      } on DioException catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
+  // 查询用户今天获取了几次联系方式
+  static getRecordNum({
+    required int id,
+    required String user,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
+  }) async {
+    try {
+      await feedbackLostAndFoundDio.get(
+        'record/recordnum',
+        queryParameters: {
+          'id': id,
+          'user': user,
+        },
+      );
+      onSuccess.call();
+    } on DioException catch (e) {
+      onFailure(e);
+    }
+  }
 }
