@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -145,8 +146,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
     // 寻物或寻主，待对接
     String phoneNum = '';
+    bool isLimited = false;
 
     void _showConfirmationDialog() {
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyyMMdd');
+      String formattedDate = formatter.format(now);
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -168,11 +174,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                   SizedBox(height: 15),
                   Flexible(
                     child: Text(
-                      phoneNum != ''
-                          ? phoneNum + '\n'
-                          : (findOwner
-                              ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
-                              : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
+                      isLimited
+                          ? '今日已达上限了哦，明天再来吧'
+                          : (phoneNum != '' && !isLimited
+                              ? phoneNum + '\n'
+                              : (findOwner
+                                  ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
+                                  : '确定找到了吗？\n每天最多只能获取三次联系方式哦')),
                       style: TextStyle(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
@@ -210,14 +218,42 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         SizedBox(width: 20),
                         Flexible(
                           child: ElevatedButton(
-                            onPressed: phoneNum != ''
+                            onPressed: phoneNum != '' || isLimited
                                 ? null
                                 : () {
-                                    setState(() {
-                                      phoneNum = post.phone;
-                                    });
-                                    Navigator.of(context).pop();
-                                    _showConfirmationDialog();
+                                    FeedbackService.getRecordNum(
+                                      yyyymmdd: formattedDate,
+                                      user: "作者1",
+                                      onResult: (num) {
+                                        if (num > 3) {
+                                          setState(() {
+                                            isLimited = true;
+                                          });
+                                          Navigator.of(context).pop();
+                                          _showConfirmationDialog();
+                                        } else {
+                                          setState(() {
+                                            phoneNum = post.phone;
+                                          });
+                                        }
+                                      },
+                                      onFailure: (e) {},
+                                    );
+
+                                    if (isLimited == false) {
+                                      setState(() {
+                                        phoneNum = post.phone;
+                                      });
+
+                                      FeedbackService.locationAddRecord(
+                                        yyyymmdd: formattedDate,
+                                        user: "作者1",
+                                        onSuccess: () {},
+                                        onFailure: (e) {},
+                                      );
+                                      Navigator.of(context).pop();
+                                      _showConfirmationDialog();
+                                    }
                                   },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
