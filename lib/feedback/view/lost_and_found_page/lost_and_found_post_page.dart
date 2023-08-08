@@ -1,11 +1,15 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 
 import '../../../commons/util/text_util.dart';
 import '../../../commons/widgets/loading.dart';
+import '../../../generated/l10n.dart';
 import '../../../main.dart';
 import '../../util/color_util.dart';
 
@@ -16,6 +20,8 @@ class NewLostAndFoundPostProvider {
   String date = "";
   String location = "";
   String phone = "";
+
+  List<File> images = [];
 
   bool get check =>
       title.isNotEmpty &&
@@ -78,7 +84,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     showDialog(context: context, builder: (_) => Loading());
   }
 
-  _LAFsubmit() async {
+  _submit() async {
     //final args = widget.args;
     var dataModel = context.read<NewLostAndFoundPostProvider>();
     if (!dataModel.check) {
@@ -87,6 +93,30 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     }
     ToastProvider.running("创建中...");
     _showLoading();
+    if (dataModel.images.isNotEmpty) {
+    } else {
+      FeedbackService.sendLostAndFoundPost(
+        type: 1,
+        category: dataModel.category,
+        title: dataModel.title,
+        text: dataModel.content,
+        yyyymmdd: dataModel.date,
+        location: dataModel.location,
+        phone: dataModel.phone,
+        images: [],
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          dataModel.clear();
+          ToastProvider.error(e.error.toString());
+          Navigator.pop(context);
+        },
+      );
+      dataModel.clear();
+    }
   }
 
   @override
@@ -303,7 +333,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           onPressed: () async {
             if (tapAble) {
               tapAble = false;
-              await _LAFsubmit();
+              await _submit();
               await Future.delayed(Duration(milliseconds: 3000));
               tapAble = true;
             }

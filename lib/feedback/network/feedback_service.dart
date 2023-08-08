@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+
   //String baseUrl = 'http://8.141.166.181:7013/api/v1/f/';
 
   @override
@@ -1296,5 +1297,40 @@ class FeedbackService with AsyncTimer {
     } on DioException catch (e) {
       onFailure(e);
     }
+  }
+
+  static sendLostAndFoundPost(
+      {required type,
+      required category,
+      required title,
+      required text,
+      required yyyymmdd,
+      required location,
+      required phone,
+      required List<String> images,
+      required OnSuccess onSuccess,
+      required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('sendLostAndFoundPost', () async {
+      try {
+        var formData = FormData.fromMap({
+          'type': type,
+          'category': category,
+          'title': title,
+          'text': text,
+          'yyyymmdd': yyyymmdd,
+          'location': location,
+          'phone': phone
+        });
+        if(images.isNotEmpty){
+          for(int i=0;i<images.length;i++){
+            formData.fields.addAll([MapEntry('images', images[i])]);
+          }
+        }
+        await feedbackLostAndFoundDio.post('post',formData: formData);
+        onSuccess.call();
+      } on DioException catch (e) {
+        onFailure(e);
+      }
+    });
   }
 }
