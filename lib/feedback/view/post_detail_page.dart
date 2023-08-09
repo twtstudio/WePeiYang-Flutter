@@ -65,6 +65,12 @@ class _PostDetailPageState extends State<PostDetailPage>
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
 
+  ///判断管理员权限
+  bool get hasAdmin =>
+      CommonPreferences.isSchAdmin.value ||
+      CommonPreferences.isStuAdmin.value ||
+      CommonPreferences.isSuper.value;
+
   @override
   void initState() {
     super.initState();
@@ -721,13 +727,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
         onPressed: () => Navigator.pop(context, widget.post),
       ),
-      actions: [
-        if (CommonPreferences.isSuper.value ||
-            CommonPreferences.isSchAdmin.value)
-          manageButton,
-        menuButton,
-        SizedBox(width: 10)
-      ],
+      actions: [if (hasAdmin) manageButton, menuButton, SizedBox(width: 10)],
       title: InkWell(
         onTap: () => _refreshController.requestRefresh(),
         child: SizedBox(
