@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class AuthDio extends DioAbstract {
@@ -545,11 +546,12 @@ class AuthService with AsyncTimer {
       try {
         var tmp = CommonPreferences.accountUpgrade.value;
         var res = json.decode(tmp[0]);
-        print(CommonPreferences.token.value);
-        print(res['id']);
         var rsp = await authDio.put("upgrade",queryParameters: {"typeId": res['id']});
-        print(rsp.data['result']);
-        if(rsp.data['code'] == '200') return true;
+        if(rsp.data['error_code'] == 0){
+          CommonPreferences.token.value = rsp.data['result'];
+          ToastProvider.success('账号升级成功!');
+          return true;
+        }
         else return false;
       } on DioException{
         return false;
