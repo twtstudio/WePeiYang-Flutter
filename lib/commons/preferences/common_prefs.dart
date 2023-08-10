@@ -126,58 +126,60 @@ class CommonPreferences {
 
   /// 清除天外天账号系统缓存
   static void clearUserPrefs() {
-    /// 天外天账号系统
-    isLogin.clear();
-    token.clear();
-    nickname.clear();
-    lakeNickname.clear();
-    userNumber.clear();
-    phone.clear();
-    email.clear();
-    account.clear();
-    password.clear();
-    realName.clear();
-    department.clear();
-    major.clear();
-    stuType.clear();
-    avatar.clear();
-    area.clear();
-    building.clear();
-    floor.clear();
-    room.clear();
-    bed.clear();
-    accountUpgrade.clear();
+    // 清除所有缓存
+    sharedPref.clear();
+    // /// 天外天账号系统
+    // isLogin.clear();
+    // token.clear();
+    // nickname.clear();
+    // lakeNickname.clear();
+    // userNumber.clear();
+    // phone.clear();
+    // email.clear();
+    // account.clear();
+    // password.clear();
+    // realName.clear();
+    // department.clear();
+    // major.clear();
+    // stuType.clear();
+    // avatar.clear();
+    // area.clear();
+    // building.clear();
+    // floor.clear();
+    // room.clear();
+    // bed.clear();
+    // accountUpgrade.clear();
 
-    /// 求实论坛相关
-    lakeToken.clear();
-    lakeUid.clear();
-    isSuper.clear();
-    isSchAdmin.clear();
-    isStuAdmin.clear();
-    isUser.clear();
-    feedbackFloorSortType.clear();
-    feedbackLastWeCo.clear();
-    avatarBoxMyUrl.clear();
+    // /// 求实论坛相关
+    // lakeToken.clear();
+    // lakeUid.clear();
+    // isSuper.clear();
+    // isSchAdmin.clear();
+    // isStuAdmin.clear();
+    // isUser.clear();
+    // feedbackFloorSortType.clear();
+    // feedbackLastWeCo.clear();
+    // avatarBoxMyUrl.clear();
 
-    /// 等级系统
-    levelPoint.clear();
-    levelName.clear();
-    level.clear();
-    nextLevelPoint.clear();
-    curLevelPoint.clear();
+    // /// 等级系统
+    // levelPoint.clear();
+    // levelName.clear();
+    // level.clear();
+    // nextLevelPoint.clear();
+    // curLevelPoint.clear();
 
-    /// 自定义课表
-    customCourseToken.clear();
+    // /// 自定义课表
+    // customCourseToken.clear();
 
-    /// 杂项
-    lastCheckUpdateTime.clear();
-    ignoreUpdateVersion.clear();
-    canPush.clear();
-    pushCid.clear();
-    pushUser.clear();
-    lastActivityDialogShownDate.clear();
-    firstPrivacy.clear();
-    firstClassesDialog.clear();
+    // /// 杂项
+    // lastCheckUpdateTime.clear();
+    // ignoreUpdateVersion.clear();
+    // canPush.clear();
+    // pushCid.clear();
+    // pushUser.clear();
+    // lastActivityDialogShownDate.clear();
+    // firstPrivacy.clear();
+    // firstClassesDialog.clear();
   }
 
   /// 清除办公网缓存
