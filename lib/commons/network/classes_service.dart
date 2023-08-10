@@ -32,8 +32,9 @@ class ClassesService {
   static final spiderDio = _SpiderDio();
 
   /// 获取办公网GPA、课表、考表信息
-  static Future<void> getClasses(BuildContext context, String name, String pw, String captcha) async {
-    await login(name, pw, captcha);
+  static Future<void> getClasses(
+      BuildContext context, String name, String pw, String code) async {
+    await login(name, pw, code);
     var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
     var courseProvider = Provider.of<CourseProvider>(context, listen: false);
     var examProvider = Provider.of<ExamProvider>(context, listen: false);
@@ -85,11 +86,21 @@ class ClassesService {
     }
   }
 
-  /// 登录总流程：获取session与 execution -> 填写captcha -> 进行sso登录
-  static Future<void> login(String name, String pw, String captcha) async {
+  /// 登录总流程：填写图形验证码code -> 获取session和lt -> 在后端加密得到rsa -> 进行sso登录 -> 判断本科/研究生
+  static Future<void> login(String name, String pw, String code) async {
+    // 获取session和lt
+    var response = await spiderDio.get("https://sso.tju.edu.cn/cas/login");
+    var execution =
+        response.data.toString().find(r'name="execution" value="(\w+)"');
+    var lt = response.data.toString().find(r'name="lt" value="([\w\-]+)"');
+
+    // 获取rsa
+    response = await spiderDio.post("https://learning.twt.edu.cn/enc",
+        data: FormData.fromMap({'val': name + pw + lt}));
+    var rsa = response.data['data'].toString();
+
     // 登录sso
-    final execution = await _getExecution();
-    await _ssoLogin(name, pw, captcha, execution);
+    await _ssoLogin(name, pw, code, execution, lt, rsa);
     await _getIdentity();
 
     // 刷新学期数据
@@ -101,23 +112,19 @@ class ClassesService {
     await spiderDio.get("http://classes.tju.edu.cn/eams/logoutExt.action");
   }
 
-  /// 获取包含 session、execution 的 map
-  static Future<String> _getExecution() async {
-    var response = await spiderDio.get("https://sso.tju.edu.cn/cas/login");
-    return response.data.toString().find(r'name="execution" value="(\w+)"');
-  }
-
   /// 进行sso登录
-  static Future<dynamic> _ssoLogin(
-      String name, String pw, String captcha, String execution) async {
+  static Future<dynamic> _ssoLogin(String name, String pw, String code,
+      String execution, String lt, String rsa) async {
     await spiderDio.post(
       "https://sso.tju.edu.cn/cas/login",
       data: {
-        "username": name,
-        "password": pw,
-        "captcha": captcha,
+        'code': code,
+        'ul': name.length,
+        'pl': pw.length,
+        'lt': lt,
+        'rsa': rsa,
         "execution": execution,
-        "_eventId": "submit"
+        "_eventId": "submit",
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );

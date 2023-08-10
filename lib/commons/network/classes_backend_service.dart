@@ -1,6 +1,5 @@
 import 'dart:convert' show json;
 import 'package:http_parser/http_parser.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -48,7 +47,7 @@ class ClassesBackendService {
   /// 图形验证码识别
   static Future<String> ocr() async {
     var resp = await ClassesService.spiderDio.get(
-        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${CaptchaWidgetState.id}',
+        'https://sso.tju.edu.cn/cas/code',
         options: Options(responseType: ResponseType.bytes));
     var form = FormData();
     form.files.add(MapEntry(

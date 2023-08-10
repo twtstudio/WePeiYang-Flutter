@@ -176,17 +176,10 @@ class CaptchaWidget extends StatefulWidget {
 class CaptchaWidgetState extends State<CaptchaWidget> {
   Uint8List? data;
 
-  static double _id = 0.000;
-
-  static double get id {
-    _id += 0.001;
-    return _id;
-  }
-
   void refresh() async {
     await ClassesService.logout();
     var res = await ClassesService.spiderDio.get(
-        'https://sso.tju.edu.cn/cas/images/kaptcha.jpg?id=${id}',
+        'https://sso.tju.edu.cn/cas/code',
         options: Options(responseType: ResponseType.bytes));
     setState(() {
       data = res.data;
