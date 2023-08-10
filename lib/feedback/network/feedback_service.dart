@@ -106,11 +106,34 @@ class FeedbackLostAndFoundDio extends DioAbstract {
     })
   ];
 }
+class FeedbackLostAndFoundPicPostDio extends DioAbstract {
+  @override
+  String baseUrl = 'http://121.36.230.111:80';
+
+  @override
+  List<Interceptor> interceptors = [
+    InterceptorsWrapper(onRequest: (options, handler) {
+      options.headers['token'] = CommonPreferences.lakeToken.value;
+      return handler.next(options);
+    }, onResponse: (response, handler) {
+      var code = response.data['code'] ?? 0;
+      switch (code) {
+        case 200: // 成功
+          return handler.next(response);
+        default: // 其他错误
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
+      }
+    })
+  ];
+}
+
 
 final feedbackDio = FeedbackDio();
 final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
 final feedbackLostAndFoundDio = FeedbackLostAndFoundDio();
+final feedbackLostAndFoundPicPostDio=FeedbackLostAndFoundPicPostDio();
 
 class FeedbackService with AsyncTimer {
   static getToken(
@@ -1333,4 +1356,41 @@ class FeedbackService with AsyncTimer {
       }
     });
   }
+
+  static Future<void> postLostAndFoundPic(
+      {required List<File> images,
+        required OnResult<List<String>> onResult,
+        required OnFailure onFailure}) async {
+    AsyncTimer.runRepeatChecked('postLostAndFoundPic', () async {
+      try {
+        var formData = FormData();
+        if (images.isNotEmpty) {
+          for (int i = 0; i < images.length; i++)
+            formData.files.addAll([
+              MapEntry(
+                  'images',
+                  MultipartFile.fromFileSync(
+                    images[i].path,
+                    filename: '${DateTime.now().millisecondsSinceEpoch}qwq.jpg',
+                    contentType: MediaType("image", "jpeg"),
+                  ))
+            ]);
+        }
+        var response = await feedbackPicPostDio.post(
+          'upload/image',
+          formData: formData,
+          options: Options(sendTimeout: Duration(seconds: 10)),
+        );
+        List<String> list = [];
+        for (String json in response.data['data']['urls']) {
+          list.add(json);
+        }
+        onResult(list);
+      } on DioException catch (e) {
+        onFailure(e);
+      }
+    });
+  }
+
 }
+
