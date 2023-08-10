@@ -214,71 +214,62 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (!CommonPreferences.isBindTju.value) {
-          ToastProvider.error('请绑定办公网');
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-            backgroundColor: Color.fromRGBO(250, 250, 250, 1),
-            elevation: 0,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: GestureDetector(
-                  child: Icon(Icons.arrow_back,
-                      color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-                  onTap: () => Navigator.pop(context)),
-            ),
-            systemOverlayStyle: SystemUiOverlayStyle.dark),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
-                    child: Text(S.current.tju_bind,
-                        style: TextUtil.base.bold
-                            .sp(28)
-                            .customColor(Color.fromRGBO(48, 60, 102, 1))),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
-                    child: Text(
-                        CommonPreferences.isBindTju.value
-                            ? S.current.is_bind
-                            : S.current.not_bind,
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-
-              /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-              SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/images/tju_work.png',
-                      height: 50, width: 50),
-                  SizedBox(width: 20),
-                  Image.asset('assets/images/bind.png', height: 25, width: 25),
-                  SizedBox(width: 20),
-                  Image.asset('assets/images/twt_round.png',
-                      height: 50, width: 50),
-                ],
-              ),
-              _detail(context)
-            ],
+    return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: GestureDetector(
+                child: Icon(Icons.arrow_back,
+                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+                onTap: () => Navigator.pop(context)),
           ),
+          systemOverlayStyle: SystemUiOverlayStyle.dark),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
+                  child: Text(S.current.tju_bind,
+                      style: TextUtil.base.bold
+                          .sp(28)
+                          .customColor(Color.fromRGBO(48, 60, 102, 1))),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
+                  child: Text(
+                      CommonPreferences.isBindTju.value
+                          ? S.current.is_bind
+                          : S.current.not_bind,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+
+            /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
+            SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/tju_work.png',
+                    height: 50, width: 50),
+                SizedBox(width: 20),
+                Image.asset('assets/images/bind.png', height: 25, width: 25),
+                SizedBox(width: 20),
+                Image.asset('assets/images/twt_round.png',
+                    height: 50, width: 50),
+              ],
+            ),
+            _detail(context)
+          ],
         ),
       ),
     );

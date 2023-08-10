@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -32,6 +33,11 @@ class _GPAPageState extends State<GPAPage> {
             barrierDismissible: true,
             builder: (context) => ClassesNeedVPNDialog());
       }
+
+      // 绑定办公网判断
+      if (!CommonPreferences.isBindTju.value) {
+        Navigator.pushNamed(context, AuthRouter.tjuBind);
+      }
     });
   }
 
@@ -41,7 +47,7 @@ class _GPAPageState extends State<GPAPage> {
       value: SystemUiOverlayStyle.dark
           .copyWith(systemNavigationBarColor: widget._gpaColors[0]),
       child: Scaffold(
-        appBar: GPAppBar(widget._gpaColors),
+        appBar: GPAAppBar(widget._gpaColors),
         backgroundColor: widget._gpaColors[0],
         body: Container(
           decoration: BoxDecoration(
@@ -85,10 +91,10 @@ class _GPAPageState extends State<GPAPage> {
   }
 }
 
-class GPAppBar extends StatelessWidget implements PreferredSizeWidget {
+class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Color> gpaColors;
 
-  GPAppBar(this.gpaColors);
+  GPAAppBar(this.gpaColors);
 
   @override
   Widget build(BuildContext context) {

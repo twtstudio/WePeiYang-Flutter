@@ -50,6 +50,11 @@ class _CoursePageState extends State<CoursePage> {
       if (widget.pairs.isNotEmpty && widget.pairs.isNotEmpty) {
         showCourseDialog(context, widget.pairs);
       }
+
+      // 绑定
+      if (!CommonPreferences.isBindTju.value) {
+        Navigator.pushNamed(context, AuthRouter.tjuBind);
+      }
     });
   }
 
