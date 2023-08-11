@@ -109,13 +109,14 @@ class ClassesService {
 
   /// 退出登录
   static Future<void> logout() async {
-    await spiderDio.get("http://classes.tju.edu.cn/eams/logoutExt.action");
+    await spiderDio.get("https://sso.tju.edu.cn/cas/logout");
+    await spiderDio.get('https://sso.tju.edu.cn/cas/login');
   }
 
   /// 进行sso登录
   static Future<dynamic> _ssoLogin(String name, String pw, String code,
       String execution, String lt, String rsa) async {
-    await spiderDio.post(
+    var res = await spiderDio.post(
       "https://sso.tju.edu.cn/cas/login",
       data: {
         'code': code,
@@ -128,7 +129,14 @@ class ClassesService {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
-    return;
+  
+    if ((res.statusCode == 302)||
+        res.data.toString().contains(
+            '<div class="layui-layer-title" style="cursor: move;">密码强度提醒</div>'))
+      return;
+
+    ToastProvider.error('检查账号密码和验证码正确');
+    throw WpyDioException(error: '检查账号密码正确');
   }
 
   static Future<void> _getIdentity() async {

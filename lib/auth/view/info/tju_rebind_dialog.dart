@@ -53,6 +53,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   }
 
   void _bind() async {
+    FocusScope.of(context).requestFocus(FocusNode());
     if (captcha == '') {
       ToastProvider.error('验证码不能为空');
       return;
@@ -66,9 +67,9 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
       var str = e.error.toString();
       if (str == '网络连接超时') str = '请连接校园网后再次尝试';
       ToastProvider.error(str);
-      captchaKey.currentState?.refresh();
     } finally {
       codeController.clear();
+      captchaKey.currentState?.refresh();
     }
   }
 

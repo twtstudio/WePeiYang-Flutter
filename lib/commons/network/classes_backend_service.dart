@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -24,6 +25,10 @@ class ClassesBackendService {
           'passwd': CommonPreferences.tjupasswd.value,
         }),
       );
+      if (res.data['code'] != 200) {
+        ToastProvider.error(res.data['data']);
+        return null;
+      }
       var courses = _parseCourses(res.data['data']['courses']);
       var exams = _parseExams(res.data['data']['exams']);
       var gpaBean = _parseGPABean(res.data['data']['gpa']);

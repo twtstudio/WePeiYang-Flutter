@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
@@ -27,6 +30,7 @@ class _SettingPageState extends State<SettingPage> {
   static const arrow =
       Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
   String md = '';
+  String iosLocalVersion = '';
 
   @override
   void initState() {
@@ -37,6 +41,8 @@ class _SettingPageState extends State<SettingPage> {
           md = str;
         });
       });
+
+      iosLocalVersion = await LocalSetting.getBundleVersion();
     });
   }
 
@@ -164,7 +170,7 @@ class _SettingPageState extends State<SettingPage> {
                   Expanded(
                     child: Text(S.current.check_new, style: mainTextStyle),
                   ),
-                  Text("${S.current.current_version}: ${EnvConfig.VERSION}",
+                  Text("${S.current.current_version}: " + (Platform.isIOS ? iosLocalVersion : EnvConfig.VERSION),
                       style: hintTextStyle),
                   SizedBox(width: 15.w),
                 ],
