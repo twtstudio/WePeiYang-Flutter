@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -73,6 +74,7 @@ class LostAndFoundDetailPage extends StatefulWidget {
 }
 
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
+  bool isMine = false;
   bool brightened = false;
   @override
   Widget build(BuildContext context) {
@@ -144,8 +146,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
     // 寻物或寻主，待对接
     String phoneNum = '';
+    bool isLimited = false;
 
     void _showConfirmationDialog() {
+      var now = DateTime.now();
+      var formatter = DateFormat('yyyyMMdd');
+      String formattedDate = formatter.format(now);
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -154,35 +161,38 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
               borderRadius: BorderRadius.circular(20.0),
             ),
             backgroundColor: Colors.white,
-            content: Container(
-                width: 280.w,
-                height: 150.h,
+            content: Flexible(
+              child: Container(
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Image.asset(
-                    'assets/images/tip.png',
-                    width: 28.w,
-                    height: 28.h,
+                  Container(
+                    child: Image.asset(
+                      'assets/images/tip.png',
+                      width: 30,
+                      height: 30,
+                    ),
                   ),
-                  SizedBox(height: 15.h),
-                  Text(
-                    phoneNum != ''
-                        ? phoneNum + '\n'
-                        : (findOwner
-                            ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
-                            : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
-                    style: TextStyle(fontSize: 14),
-                    textAlign: TextAlign.center,
+                  SizedBox(height: 15),
+                  Flexible(
+                    child: Text(
+                      isLimited
+                          ? '今日已达上限了哦，明天再来吧'
+                          : (phoneNum != '' && !isLimited
+                              ? phoneNum + '\n'
+                              : (findOwner
+                                  ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
+                                  : '确定找到了吗？\n每天最多只能获取三次联系方式哦')),
+                      style: TextStyle(fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 20),
                   Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          TextButton(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -204,17 +214,41 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 20.w,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                phoneNum = post.phone;
-                              });
-                              Navigator.of(context).pop();
-                              _showConfirmationDialog();
-                            },
+                        ),
+                        SizedBox(width: 20),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: phoneNum != '' || isLimited
+                                ? null
+                                : () {
+                                    FeedbackService.getRecordNum(
+                                      yyyymmdd: formattedDate,
+                                      user: "作者19",
+                                      onResult: (num) {
+                                        if (num > 3) {
+                                          setState(() {
+                                            isLimited = true;
+                                          });
+                                          Navigator.of(context).pop();
+                                          _showConfirmationDialog();
+                                        } else {
+                                          setState(() {
+                                            phoneNum = post.phone;
+                                          });
+
+                                          FeedbackService.locationAddRecord(
+                                            yyyymmdd: formattedDate,
+                                            user: "作者19",
+                                            onSuccess: () {},
+                                            onFailure: (e) {},
+                                          );
+                                          Navigator.of(context).pop();
+                                          _showConfirmationDialog();
+                                        }
+                                      },
+                                      onFailure: (e) {},
+                                    );
+                                  },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110, 40)),
@@ -231,32 +265,128 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               '确定',
                               style: TextStyle(
                                 color: Colors.white,
-                                //fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        ],
-                      ))
-                ])),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    // 删除弹窗
+    void _showDeleteDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            backgroundColor: Colors.white,
+            content: Flexible(
+              child: Container(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    child: Image.asset(
+                      'assets/images/tip.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Flexible(
+                    child: Text(
+                      '确定要删除吗？',
+                      style: TextStyle(fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Flexible(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '取消',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                FeedbackService.deleteLostAndFoundPost(
+                                    id: post.id,
+                                    onSuccess: () {
+                                      ToastProvider.success('删除成功');
+                                      Navigator.pop(context);
+                                    },
+                                    onFailure: (e) {
+                                      ToastProvider.error('删除失败');
+                                    }),
+                            style: ButtonStyle(
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(110, 40)),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Color.fromRGBO(44, 126, 223, 1)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              '确定',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+            ),
           );
         },
       );
     }
 
     String _formatDate(String originalString) {
-      DateTime parsedDate = DateTime.parse(originalString.substring(0, 4) +
-          '-' +
-          originalString.substring(4, 6) +
-          '-' +
-          originalString.substring(6, 8) +
-          ' ' +
-          originalString.substring(8, 10) +
-          ':' +
-          originalString.substring(10, 12) +
-          ':' +
-          originalString.substring(12, 14));
-      String isoDate = parsedDate.toIso8601String();
-      return isoDate.substring(0, isoDate.length - 4).replaceAll('T', ' ');
+      if (originalString.length != 14) {
+        throw FormatException('Invalid input length');
+      }
+      return '${originalString.substring(0, 4)}-${originalString.substring(4, 6)}-${originalString.substring(6, 8)} ${originalString.substring(8, 10)}:${originalString.substring(10, 12)}:${originalString.substring(12, 14)}';
     }
 
     void _showMenu() {
@@ -274,73 +404,68 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10.0),
-                          topRight: Radius.circular(10.0),
-                        ),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: InkWell(
-                        onTap: () {
-                          {
-                            String weCo =
-                                '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-                            ClipboardData data = ClipboardData(text: weCo);
-                            Clipboard.setData(data);
-                            CommonPreferences.feedbackLastWeCo.value =
-                                post.id.toString();
-                            ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                            FeedbackService.postShare(
-                                id: post.id.toString(),
-                                type: 0,
-                                onSuccess: () {},
-                                onFailure: () {});
-                          }
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
-                          child: Text(
-                            '分享',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      child: Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              String weCo =
+                                  '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                              ClipboardData data = ClipboardData(text: weCo);
+                              Clipboard.setData(data);
+                              CommonPreferences.feedbackLastWeCo.value =
+                                  post.id.toString();
+                              ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                              FeedbackService.postShare(
+                                  id: post.id.toString(),
+                                  type: 0,
+                                  onSuccess: () {},
+                                  onFailure: () {});
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 42.0,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '分享',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Card(
-                      color: Colors.white.withOpacity(0.9),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10.0),
-                          bottomRight: Radius.circular(10.0),
-                        ),
-                      ),
-                      child: InkWell(
-                        onTap: () => {
-                          Navigator.pushNamed(context, FeedbackRouter.report,
-                              arguments: ReportPageArgs(post.id, true))
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
-                          child: Text(
-                            '举报',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                          Divider(), // 添加分隔线
+                          InkWell(
+                            onTap: () {
+                              if (isMine) {
+                                _showDeleteDialog();
+                              } else {
+                                Navigator.pushNamed(
+                                    context, FeedbackRouter.report,
+                                    arguments: ReportPageArgs(post.id, true));
+                              }
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 42.0,
+                              alignment: Alignment.center,
+                              child: Text(
+                                isMine ? '删除' : '举报',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 10.h),
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
@@ -353,7 +478,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           height: 42.0,
-                          alignment: Alignment.center, // 居中对齐
+                          alignment: Alignment.center,
                           child: Text(
                             '取消',
                             style: TextStyle(
@@ -638,54 +763,64 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           width: 30.w,
                         ),
                         Container(
-                          width: 110.w,
-                          height: 40.h,
-                          margin: EdgeInsets.only(left: 30.w),
-                          decoration: BoxDecoration(
-                            color: brightened ? Colors.grey[200] : Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: brightened
-                                ? null
-                                : Border.all(
-                                    color: Color(0xFF2C7EDF),
-                                    width: 1.w,
-                                  ),
-                          ),
-                          child: WButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  brightened
-                                      ? 'assets/images/octicon_light-bulb-24-dark.png'
-                                      : 'assets/images/octicon_light-bulb-24.png',
-                                  width: 24.w,
-                                  height: 20.h,
-                                ),
-                                SizedBox(
-                                  width: 8.w,
-                                ),
-                                Text(
-                                  brightened ? '已擦亮' : '擦亮',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: brightened
-                                        ? Colors.grey
-                                        : Color(0xFF2C7EDF),
-                                  ),
-                                ),
-                              ],
+                            width: 110.w,
+                            height: 40.h,
+                            margin: EdgeInsets.only(left: 30.w),
+                            decoration: BoxDecoration(
+                              color:
+                                  brightened ? Colors.grey[200] : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: brightened
+                                  ? null
+                                  : Border.all(
+                                      color: Color(0xFF2C7EDF),
+                                      width: 1.w,
+                                    ),
                             ),
-                            onPressed: brightened
-                                ? null // 如果brightened为true，则禁用按钮
-                                : () {
-                                    setState(() {
-                                      brightened = true;
-                                    });
-                                    ToastProvider.success('成功擦亮');
-                                  },
-                          ),
-                        ),
+                            child: WButton(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    brightened
+                                        ? 'assets/images/octicon_light-bulb-24-dark.png'
+                                        : 'assets/images/octicon_light-bulb-24.png',
+                                    width: 24.w,
+                                    height: 20.h,
+                                  ),
+                                  SizedBox(
+                                    width: 8.w,
+                                  ),
+                                  Text(
+                                    brightened ? '已擦亮' : '擦亮',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: brightened
+                                          ? Colors.grey
+                                          : Color(0xFF2C7EDF),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: brightened
+                                  ? null // 如果brightened为true，则禁用按钮
+                                  : () async {
+                                      setState(() {
+                                        brightened = true;
+                                      });
+
+                                      await FeedbackService.polish(
+                                        id: post.id,
+                                        user: post.author,
+                                        onSuccess: () {
+                                          ToastProvider.success('成功擦亮');
+                                        },
+                                        onFailure: (e) {
+                                          // 在此处理请求失败的情况
+                                        },
+                                      );
+                                    },
+                            )),
                       ],
                     ),
                   ],

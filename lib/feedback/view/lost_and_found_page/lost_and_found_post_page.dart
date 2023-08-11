@@ -1,13 +1,20 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../commons/util/text_util.dart';
 import '../../../commons/widgets/loading.dart';
+import '../../../generated/l10n.dart';
 import '../../../main.dart';
+import '../../feedback_router.dart';
 import '../../util/color_util.dart';
+import '../image_view/local_image_view_page.dart';
 
 class NewLostAndFoundPostProvider {
   String title = "";
@@ -16,6 +23,8 @@ class NewLostAndFoundPostProvider {
   String date = "";
   String location = "";
   String phone = "";
+
+  List<File> images = [];
 
   bool get check =>
       title.isNotEmpty &&
@@ -35,9 +44,6 @@ class NewLostAndFoundPostProvider {
 }
 
 class LostAndFoundPostPage extends StatefulWidget {
-  //final NewLostAndFoundPostArgs args;
-
-  //const LostAndFoundPostPage(this.args);
 
   @override
   State<LostAndFoundPostPage> createState() => _LostAndFoundPostPageState();
@@ -78,8 +84,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     showDialog(context: context, builder: (_) => Loading());
   }
 
-  _LAFsubmit() async {
-    //final args = widget.args;
+  _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
     if (!dataModel.check) {
       ToastProvider.error("内容与标题不能为空！");
@@ -87,6 +92,61 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     }
     ToastProvider.running("创建中...");
     _showLoading();
+    if (dataModel.images.isNotEmpty) {
+      FeedbackService.postLostAndFoundPic(
+          images: dataModel.images,
+          onResult: (images) {
+            dataModel.images.clear();
+            if (dataModel.check) {
+              FeedbackService.sendLostAndFoundPost(
+                  type: 1,
+                  category: dataModel.category,
+                  title: dataModel.title,
+                  text: dataModel.content,
+                  yyyymmdd: dataModel.date,
+                  location: dataModel.location,
+                  phone: dataModel.phone,
+                  images: images,
+                  onSuccess: () {
+                    ToastProvider.success(S.current.feedback_post_success);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                  onFailure: (e) {
+                    dataModel.clear();
+                    ToastProvider.error(e.error.toString());
+                    Navigator.pop(context);
+                  });
+              dataModel.clear();
+            }
+          },
+          onFailure: (e) {
+            Navigator.pop(context);
+            ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
+          });
+    } else {
+      FeedbackService.sendLostAndFoundPost(
+        type: 1,
+        category: dataModel.category,
+        title: dataModel.title,
+        text: dataModel.content,
+        yyyymmdd: dataModel.date,
+        location: dataModel.location,
+        phone: dataModel.phone,
+        images: [],
+        onSuccess: () {
+          ToastProvider.success(S.current.feedback_post_success);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onFailure: (e) {
+          dataModel.clear();
+          ToastProvider.error(e.error.toString());
+          Navigator.pop(context);
+        },
+      );
+      dataModel.clear();
+    }
   }
 
   @override
@@ -303,7 +363,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           onPressed: () async {
             if (tapAble) {
               tapAble = false;
-              await _LAFsubmit();
+              await _submit();
               await Future.delayed(Duration(milliseconds: 3000));
               tapAble = true;
             }
@@ -320,30 +380,31 @@ class InputCategoryField extends StatefulWidget {
 
 class _InputCategoryFieldState extends State<InputCategoryField> {
   late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _contentController;
+  late final TextEditingController _categoryController;
 
   @override
   void initState() {
     super.initState();
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    _contentController = TextEditingController(text: dataModel.content);
+    var dataModel =
+        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
+    _categoryController = TextEditingController(text: dataModel.category);
     contentCounter =
-        ValueNotifier('${dataModel.content.characters.length}/1000')
+        ValueNotifier('${dataModel.category.characters.length}/1000')
           ..addListener(() {
-            dataModel.content = _contentController.text;
+            dataModel.category = _categoryController.text;
           });
   }
 
   @override
   void dispose() {
-    _contentController.dispose();
+    _categoryController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _contentController,
+      controller: _categoryController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
       maxLines: 1,
@@ -388,30 +449,30 @@ class InputPhoneField extends StatefulWidget {
 
 class _InputPhoneFieldState extends State<InputPhoneField> {
   late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _contentController;
+  late final TextEditingController _phoneController;
 
   @override
   void initState() {
     super.initState();
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    _contentController = TextEditingController(text: dataModel.content);
-    contentCounter =
-        ValueNotifier('${dataModel.content.characters.length}/1000')
-          ..addListener(() {
-            dataModel.content = _contentController.text;
-          });
+    var dataModel =
+        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
+    _phoneController = TextEditingController(text: dataModel.phone);
+    contentCounter = ValueNotifier('${dataModel.phone.characters.length}/1000')
+      ..addListener(() {
+        dataModel.phone = _phoneController.text;
+      });
   }
 
   @override
   void dispose() {
-    _contentController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _contentController,
+      controller: _phoneController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
       maxLines: 1,
@@ -449,6 +510,84 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
   }
 }
 
+class LostAndFoundTitleInputField extends StatefulWidget {
+  @override
+  _TitleInputFieldState createState() => _TitleInputFieldState();
+}
+
+class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
+  late final ValueNotifier<String> titleCounter;
+  late final TextEditingController _titleController;
+
+  @override
+  void initState() {
+    super.initState();
+    var dataModel = context.read<NewLostAndFoundPostProvider>();
+    _titleController = TextEditingController(text: dataModel.title);
+    titleCounter = ValueNotifier('${dataModel.title.characters.length}/30')
+      ..addListener(() {
+        dataModel.title = _titleController.text;
+      });
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget inputField = Expanded(
+      child: TextField(
+        buildCounter: null,
+        controller: _titleController,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.done,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
+        minLines: 1,
+        maxLines: 10,
+        decoration: InputDecoration.collapsed(
+          hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).grey6C,
+          hintText: S.current.feedback_enter_title,
+        ),
+        onChanged: (text) {
+          titleCounter.value = '${text.characters.length} / 30';
+        },
+        inputFormatters: [
+          CustomizedLengthTextInputFormatter(30),
+        ],
+        cursorColor: ColorUtil.boldTextColor,
+        cursorHeight: 20,
+      ),
+    );
+
+    Widget textCounter = ValueListenableBuilder(
+      valueListenable: titleCounter,
+      builder: (_, String value, __) {
+        return Text(value, style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C);
+      },
+    );
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+      padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [inputField, SizedBox(width: 3), textCounter],
+          ),
+          Container(
+              margin: EdgeInsets.only(top: 16.h),
+              color: ColorUtil.greyEAColor,
+              height: 1.h)
+        ],
+      ),
+    );
+  }
+}
+
 class LostAndFoundContentInputField extends StatefulWidget {
   @override
   _LostAndFoundContentInputFieldState createState() =>
@@ -463,7 +602,8 @@ class _LostAndFoundContentInputFieldState
   @override
   void initState() {
     super.initState();
-    var dataModel = Provider.of<NewPostProvider>(context, listen: false);
+    var dataModel =
+        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
     _contentController = TextEditingController(text: dataModel.content);
     contentCounter = ValueNotifier('${dataModel.content.characters.length}/300')
       ..addListener(() {
@@ -517,6 +657,168 @@ class _LostAndFoundContentInputFieldState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [inputField, SizedBox(height: 20), bottomTextCounter],
         ));
+  }
+}
+
+class LostAndFoundImagesGridView extends StatefulWidget {
+  @override
+  _LostAndFoundImagesGridViewState createState() =>
+      _LostAndFoundImagesGridViewState();
+}
+
+class _LostAndFoundImagesGridViewState
+    extends State<LostAndFoundImagesGridView> {
+  static const maxImage = 3;
+
+  loadAssets() async {
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: AssetPickerConfig(
+          maxAssets: maxImage -
+              context.read<NewLostAndFoundPostProvider>().images.length,
+          requestType: RequestType.image,
+          themeColor: ColorUtil.selectionButtonColor),
+    );
+    if (assets == null) return; // 取消选择图片的情况
+    for (int i = 0; i < assets.length; i++) {
+      File? file = await assets[i].file;
+      if (file == null) {
+        ToastProvider.error('选取图片异常，请重新尝试');
+        return;
+      }
+      for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
+        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+        if (j == 10) {
+          ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
+          return;
+        }
+      }
+      Provider.of<NewLostAndFoundPostProvider>(context, listen: false)
+          .images
+          .add(file);
+    }
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  Future<String?> _showDialog() {
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
+        title: Text(S.current.feedback_delete_image_content),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop('cancel');
+              },
+              child: Text(S.current.feedback_cancel)),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop('ok');
+              },
+              child: Text(S.current.feedback_ok)),
+        ],
+      ),
+    );
+  }
+
+  Widget imgBuilder(index, List<File> data, length, {onTap}) {
+    return Stack(fit: StackFit.expand, children: [
+      InkWell(
+        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+            arguments: LocalImageViewPageArgs(data, [], length, index)),
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(width: 1, color: Colors.black26),
+              borderRadius: BorderRadius.all(Radius.circular(8))),
+          child: ClipRRect(
+            child: Image.file(
+              data[index],
+              fit: BoxFit.cover,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+        ),
+      ),
+      Positioned(
+        right: 0,
+        bottom: 0,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+            ),
+            child: Icon(
+              Icons.close,
+              size: MediaQuery.of(context).size.width / 32,
+              color: ColorUtil.searchBarBackgroundColor,
+            ),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 4, //方便右边宽度留白哈哈
+      childAspectRatio: 1,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
+    );
+
+    return Consumer<NewLostAndFoundPostProvider>(
+      builder: (_, data, __) => GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: gridDelegate,
+        itemCount: maxImage == data.images.length
+            ? data.images.length
+            : data.images.length + 1,
+        itemBuilder: (_, index) {
+          if (index <= 2 && index == data.images.length) {
+            return _ImagePickerWidget(onTap: loadAssets);
+          } else {
+            return imgBuilder(
+              index,
+              data.images,
+              data.images.length,
+              onTap: () async {
+                var result = await _showDialog();
+                if (result == 'ok') {
+                  data.images.removeAt(index);
+                  setState(() {});
+                }
+              },
+            );
+          }
+        },
+        physics: NeverScrollableScrollPhysics(),
+      ),
+    );
+  }
+}
+
+class _ImagePickerWidget extends StatelessWidget {
+  const _ImagePickerWidget({
+    Key? key,
+    required this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: onTap,
+        child: Image.asset("assets/images/crop_original.png"));
   }
 }
 
