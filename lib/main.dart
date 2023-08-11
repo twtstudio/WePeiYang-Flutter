@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -52,6 +53,14 @@ void main() async {
     /// 初始化环境变量
     EnvConfig.init();
     StorageUtil.init();
+
+    /// 高刷
+    try {
+      if (Platform.isAndroid) await FlutterDisplayMode.setHighRefreshRate();
+    } catch (e) {
+      print('不支持高刷');
+    }
+
 
     /// 初始化友盟
     await UmengCommonSdk.initCommon();

@@ -36,6 +36,7 @@ dependencies:
   extended_tabs: ^4.1.0
   extended_image: ^8.0.1
 
+  flutter_displaymode: ^0.6.0
   flutter_html: ^2.0.0
   flutter_markdown: ^0.6.9+1
   flutter_rating_bar: ^4.0.0
