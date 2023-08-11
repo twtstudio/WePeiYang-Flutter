@@ -93,7 +93,10 @@ class _LostAndFoundSearchResultPageState
 
   @override
   Widget build(BuildContext context) {
-    _onRefresh();
+    if (context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] ==
+        LostAndFoundSubPageStatus2.ready) {
+      _onRefresh();
+    }
 
     var appBar = LostAndFoundAppBar(
       height: 100,

@@ -4,9 +4,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import '../../lost_and_found_page/lost_and_found_search_notifier.dart';
-import '../../lost_and_found_page/lost_and_found_search_result_page.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -51,7 +48,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
         maxHeight: 30,
       ),
       child: Padding(
-          padding: const EdgeInsets.only(left: 38, right: 12),
+          padding: const EdgeInsets.only(left: 45, right: 12),
           child: Row(
             children: [
               Expanded(

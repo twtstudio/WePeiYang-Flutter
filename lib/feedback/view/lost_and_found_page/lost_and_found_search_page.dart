@@ -89,7 +89,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
             ]
             ),
             Padding(
-              padding: EdgeInsetsDirectional.only(bottom: 8.h),
+              padding: EdgeInsetsDirectional.only(bottom: 10.h, start: 20.h, end: 20.h),
               child: Selector<LostAndFoundModel2,String>(
                 selector: (context, model){
                   return model.currentCategory[type]!;
@@ -168,6 +168,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
+                _foundSearchHistoryList.unequalAdd(list[list.length - index - 1]);
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.lostAndFoundSearchResult,
@@ -178,7 +179,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               },
               child: Chip(
                 elevation: 1,
-                backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                backgroundColor: Color.fromARGB(248, 248, 248, 248),
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
@@ -196,7 +197,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         ));
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
           child: Wrap(spacing: 6, children: searchHistory),
         );
       },
@@ -220,7 +221,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: ColorUtil.backgroundColor, child: searchHistory)),
+                    color: Colors.white, child: searchHistory)),
           ],
         ));
   }
