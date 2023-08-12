@@ -194,7 +194,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
               child: searchBar,
             ),
             Padding(
-              padding: EdgeInsetsDirectional.only(bottom: widgetPadding - 6),
+              padding: EdgeInsetsDirectional.only(bottom: 5.h),
               child: Selector<LostAndFoundModel, String>(
                 selector: (context, model) {
                   return model.currentCategory[widget.type]!;
@@ -256,7 +256,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             ),
             Expanded(
               child: Container(
-                padding: EdgeInsetsDirectional.only(start: 20.w, end: 20.w),
+                padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
                 child: Selector<
                     LostAndFoundModel,
                     Tuple2<List<LostAndFoundPost>,
@@ -303,8 +303,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               child: WaterfallFlow.builder(
                                 gridDelegate:
                                     SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                                  mainAxisSpacing: 13.w,
-                                  crossAxisSpacing: 25.w,
+                                  mainAxisSpacing: 10.w,
+                                  crossAxisSpacing: 10.w,
                                   crossAxisCount: 2,
                                 ),
                                 controller: _scrollController,
@@ -342,32 +342,30 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                               tuple.item1[index]
                                                           .coverPhotoPath ==
                                                       null
-                                                  ? SizedBox(
-                                                      width: double.infinity,
-                                                      child: Card(
-                                                        child: Padding(
-                                                          // 添加Padding组件
-                                                          padding: EdgeInsets.all(
-                                                              10), // 设置所有方向的内边距为15个像素
-                                                          child: Text(
-                                                            tuple.item1[index]
-                                                                .text,
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: Color(
-                                                                  0xff898989),
+                                                  ? Padding(
+                                                    padding: EdgeInsetsDirectional.only(bottom: 10, start: 3, end: 3, top: 7),
+                                                    child: SizedBox(
+                                                        width: double.infinity,
+                                                        child: Card(
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(
+                                                                14), // 设置所有方向的内边距为15个像素
+                                                            child: Text(
+                                                              tuple.item1[index]
+                                                                  .text.length > 32
+                                                                  ? tuple.item1[index].text.substring(0,31) + '……'
+                                                                  : tuple.item1[index].text,
+                                                              style: TextUtil.base.w400.grey89.sp(14).h(1.1)
                                                             ),
                                                           ),
-                                                        ),
-                                                        elevation: 0,
-                                                        color:
-                                                            Color(0xfff8f8f8),
-                                                      ))
+                                                          elevation: 0,
+                                                          color:
+                                                              Color(0xfff8f8f8),
+                                                        )),
+                                                  )
                                                   : Container(
                                                       padding:
-                                                          EdgeInsets.all(10),
+                                                        EdgeInsetsDirectional.only(start: 11, end: 11, bottom: 7, top: 7),
                                                       child: LayoutBuilder(
                                                         builder: (context,
                                                             constrains) {
@@ -419,18 +417,15 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       )),
                                               Padding(
                                                 padding:
-                                                    const EdgeInsets.all(8.0),
+                                                    EdgeInsetsDirectional.only(start: 12, end: 12),
                                                 child: Text(
                                                   tuple.item1[index].title,
-                                                  style: const TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                  style: TextUtil.base.w600.black2A.sp(15)
                                                 ),
                                               ),
                                               Padding(
                                                 padding:
-                                                    const EdgeInsets.all(8.0),
+                                                    EdgeInsetsDirectional.only(start: 12, end: 25, bottom: 18, top: 10),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -440,10 +435,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       _timeAgo(tuple
                                                           .item1[index]
                                                           .detailedUploadTime),
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff898989),
-                                                      ),
+                                                      style: TextUtil.base.w400.grey89.sp(10)
                                                     ),
                                                     Row(
                                                       children: <Widget>[
@@ -477,7 +469,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
 }
 
 double get searchBarHeight => 30.h;
-double get widgetPadding => 10.h;
+double get widgetPadding => 12.h;
 
 class LostAndFoundTag extends StatefulWidget {
   final String type;
@@ -553,8 +545,8 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                         context
                             .read<LostAndFoundModel>()
                             .currentCategory[widget.type]
-                    ? TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).blue2C
-                    : TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).black2A),
+                    ? TextUtil.base.normal.PingFangSC.w400.sp(8.5.sp).blue2C
+                    : TextUtil.base.normal.PingFangSC.w400.sp(8.5.sp).black2A),
           ),
         ),
       ),
