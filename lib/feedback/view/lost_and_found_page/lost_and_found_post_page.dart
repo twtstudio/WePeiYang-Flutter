@@ -19,7 +19,6 @@ import '../image_view/local_image_view_page.dart';
 class NewLostAndFoundPostProvider {
   String title = "";
   String content = "";
-  String category = "";
   String date = "";
   String location = "";
   String phone = "";
@@ -36,7 +35,6 @@ class NewLostAndFoundPostProvider {
   void clear() {
     title = "";
     content = "";
-    category = "";
     date = "";
     location = "";
     phone = "";
@@ -44,23 +42,19 @@ class NewLostAndFoundPostProvider {
 }
 
 class LostAndFoundPostPage extends StatefulWidget {
-
   @override
   State<LostAndFoundPostPage> createState() => _LostAndFoundPostPageState();
 }
 
-class NewLostAndFoundPostArgs {
-  final int type;
-
-  //0->失物 1->招领
-  NewLostAndFoundPostArgs(this.type);
-}
-
 class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
-  bool postType = false;
+  //0->失物 1->招领
+  final typeNotifier = ValueNotifier(0);
+  final categoryNotifier = ValueNotifier('');
+  static const titleText = ['发布失物', '发布招领'];
+  static const texts = ['招领', '失物'];
+  static const yymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
   String _selectCategory = "选择分类";
 
-  //0->失物 1->招领
   bool tapAble = true;
   bool _showSelectDialog = false;
   DateTime? selectedDate;
@@ -70,13 +64,21 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(),
     );
 
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
       });
+    }
+  }
+
+  void changeType() {
+    if (typeNotifier.value == 1) {
+      typeNotifier.value = 0;
+    } else {
+      typeNotifier.value = 1;
     }
   }
 
@@ -99,8 +101,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             dataModel.images.clear();
             if (dataModel.check) {
               FeedbackService.sendLostAndFoundPost(
-                  type: 1,
-                  category: dataModel.category,
+                  type: typeNotifier.value,
+                  category: categoryNotifier.value,
                   title: dataModel.title,
                   text: dataModel.content,
                   yyyymmdd: dataModel.date,
@@ -121,13 +123,12 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             }
           },
           onFailure: (e) {
-            Navigator.pop(context);
             ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
           });
     } else {
       FeedbackService.sendLostAndFoundPost(
-        type: 1,
-        category: dataModel.category,
+        type: typeNotifier.value,
+        category: categoryNotifier.value,
         title: dataModel.title,
         text: dataModel.content,
         yyyymmdd: dataModel.date,
@@ -166,7 +167,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          postType ? "发布失物" : "发布招领",
+          titleText[typeNotifier.value],
           style: TextStyle(
               color: Color.fromARGB(255, 42, 42, 42),
               fontSize: 18,
@@ -175,14 +176,9 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         actions: [
           InkWell(
             onTap: () async {
-              if (tapAble) {
-                tapAble = false;
-                setState(() {
-                  postType = !postType;
-                });
-                await Future.delayed(Duration(milliseconds: 500));
-                tapAble = true;
-              }
+              setState(() {
+                changeType();
+              });
             },
             child: Container(
               width: 36,
@@ -191,7 +187,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 children: [
                   Image.asset("assets/images/post_swap.png"),
                   Text(
-                    postType ? "招领" : "失物",
+                    texts[typeNotifier.value],
                     style: TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 10,
@@ -214,16 +210,19 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TitleInputField(),
+            LostAndFoundTitleInputField(),
             LostAndFoundContentInputField(),
-            ImagesGridView(),
+            LostAndFoundImagesGridView(),
+            SizedBox(
+              height: 8,
+            ),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
                 children: [
                   SelectDateButton(context),
                   const SizedBox(height: 8),
-                  InputCategoryField(),
+                  InputLocationField(typeNotifier: typeNotifier),
                   const SizedBox(height: 8),
                   InputPhoneField(),
                   const SizedBox(height: 8),
@@ -322,7 +321,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                         color: Color.fromARGB(255, 44, 126, 223)),
                   )
                 : Text(
-                    "请填写丢失日期",
+                    yymmddtexts[typeNotifier.value],
                     style: const TextStyle(
                         color: Color.fromARGB(255, 144, 144, 144)),
                   ),
@@ -335,6 +334,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   Widget buildSelectCategoryOption(String option, BuildContext context) {
     return InkWell(
       onTap: () {
+        categoryNotifier.value = option;
         setState(() {
           _selectCategory = option;
           _showSelectDialog = false;
@@ -373,38 +373,42 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   }
 }
 
-class InputCategoryField extends StatefulWidget {
+class InputLocationField extends StatefulWidget {
+  final ValueNotifier<int> typeNotifier; // Add this line
+
+  InputLocationField({required this.typeNotifier});
+
   @override
-  _InputCategoryFieldState createState() => _InputCategoryFieldState();
+  _InputLocationFieldState createState() => _InputLocationFieldState();
 }
 
-class _InputCategoryFieldState extends State<InputCategoryField> {
+class _InputLocationFieldState extends State<InputLocationField> {
   late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _categoryController;
+  late final TextEditingController _locationController;
+  static const locationtexts = ['请填写丢失地点', '请填写拾取地点'];
 
   @override
   void initState() {
     super.initState();
-    var dataModel =
-        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
-    _categoryController = TextEditingController(text: dataModel.category);
+    var dataModel = context.read<NewLostAndFoundPostProvider>();
+    _locationController = TextEditingController(text: dataModel.location);
     contentCounter =
-        ValueNotifier('${dataModel.category.characters.length}/1000')
+        ValueNotifier('${dataModel.location.characters.length}/1000')
           ..addListener(() {
-            dataModel.category = _categoryController.text;
+            dataModel.location = _locationController.text;
           });
   }
 
   @override
   void dispose() {
-    _categoryController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _categoryController,
+      controller: _locationController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
       maxLines: 1,
@@ -412,7 +416,7 @@ class _InputCategoryFieldState extends State<InputCategoryField> {
       decoration: InputDecoration.collapsed(
         hintStyle: const TextStyle(
             fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
-        hintText: '请填写丢失地点',
+        hintText: locationtexts[widget.typeNotifier.value],
       ),
       scrollPhysics: NeverScrollableScrollPhysics(),
       inputFormatters: [
@@ -454,8 +458,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
   @override
   void initState() {
     super.initState();
-    var dataModel =
-        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
+    var dataModel = context.read<NewLostAndFoundPostProvider>();
     _phoneController = TextEditingController(text: dataModel.phone);
     contentCounter = ValueNotifier('${dataModel.phone.characters.length}/1000')
       ..addListener(() {
@@ -570,7 +573,6 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
     );
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 5, 20, 0),
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
       child: Column(
         children: [
@@ -648,7 +650,6 @@ class _LostAndFoundContentInputFieldState
     );
 
     return Container(
-        padding: EdgeInsets.all(20),
         constraints: BoxConstraints(
             minHeight: WePeiYangApp.screenHeight > 800
                 ? WePeiYangApp.screenHeight - 700
@@ -816,9 +817,10 @@ class _ImagePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: onTap,
-        child: Image.asset("assets/images/crop_original.png"));
+    return InkWell(
+      onTap: onTap,
+      child: Image.asset("assets/images/crop_original.png", fit: BoxFit.fill),
+    );
   }
 }
 
