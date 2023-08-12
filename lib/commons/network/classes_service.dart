@@ -132,7 +132,7 @@ class ClassesService {
   
     if ((res.statusCode == 302)||
         res.data.toString().contains(
-            '<div class="layui-layer-title" style="cursor: move;">密码强度提醒</div>'))
+            "var remind_strong_pwd = 'true'"))
       return;
 
     ToastProvider.error('检查账号密码和验证码正确');
