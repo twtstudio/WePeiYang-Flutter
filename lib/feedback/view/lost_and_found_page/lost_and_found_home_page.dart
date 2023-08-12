@@ -26,12 +26,12 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
               appBar: LostAndFoundAppBar(
                 height: 100,
                 leading: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
+                  padding: EdgeInsetsDirectional.only(start: 25, bottom: 13),
                   child: WButton(
                     child: WpyPic(
                       'assets/svg_pics/laf_butt_icons/back.svg',
-                      width: 28.w,
-                      height: 28.w,
+                      width: 30.w,
+                      height: 30.w,
                     ),
                     onPressed: () {},
 
@@ -39,12 +39,12 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   ),
                 ),
                 action: Padding(
-                  padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),
+                  padding: EdgeInsetsDirectional.only(end: 25, bottom: 14),
                   child: WButton(
                     child: WpyPic(
                       'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
-                      width: 20.w,
-                      height: 20.w,
+                      width: 23.w,
+                      height: 23.w,
                     ),
                     onPressed: () {},
 
@@ -52,7 +52,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   ),
                 ),
                 title: Padding(
-                  padding: EdgeInsets.only(bottom: 2.h),
+                  padding: EdgeInsets.only(bottom: 3.5.h),
                   child: TabBar(
                     labelStyle: TextUtil.base.bold.sp(20).whiteO60,
                     unselectedLabelStyle: TextUtil.base.normal.sp(20).whiteO60,
@@ -61,7 +61,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                     isScrollable: true,
                     indicatorSize: TabBarIndicatorSize.label,
                     indicatorColor: Colors.white,
-                    indicatorWeight: 2.5.h,
+                    indicatorWeight: 1.9.h,
                     tabs: [
                       Text('寻物'),
                       Text('寻主'),
@@ -149,7 +149,10 @@ class LostAndFoundAppBar extends StatelessWidget
             ),
             Align(
               alignment: AlignmentDirectional.bottomCenter,
-              child: title,
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(bottom: 3.5.h),
+                child: title,
+              ),
             ),
             Positioned(right: 0.w, bottom: 0.h, child: action)
           ],
