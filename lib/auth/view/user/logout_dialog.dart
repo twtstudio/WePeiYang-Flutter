@@ -13,8 +13,7 @@ class LogoutDialog extends Dialog {
   void _logout(BuildContext context) {
     ToastProvider.success("退出登录成功");
     UmengCommonSdk.onProfileSignOff();
-    CommonPreferences.clearUserPrefs();
-    CommonPreferences.clearTjuPrefs();
+    CommonPreferences.clearAllPrefs();
     if (CommonPreferences.lakeToken.value != '')
       context.read<LakeModel>().clearAll();
     Navigator.pushNamedAndRemoveUntil(

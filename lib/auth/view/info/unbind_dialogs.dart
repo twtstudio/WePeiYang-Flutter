@@ -189,8 +189,7 @@ class LogoffDialog extends Dialog {
     AuthService.logoff(onSuccess: () {
       ToastProvider.success("注销账号成功");
       UmengCommonSdk.onProfileSignOff();
-      CommonPreferences.clearUserPrefs();
-      CommonPreferences.clearTjuPrefs();
+      CommonPreferences.clearAllPrefs();
       Navigator.pushNamedAndRemoveUntil(
           WePeiYangApp.navigatorState.currentContext!,
           AuthRouter.login,

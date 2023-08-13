@@ -61,7 +61,6 @@ void main() async {
       print('不支持高刷');
     }
 
-
     /// 初始化友盟
     await UmengCommonSdk.initCommon();
 
@@ -374,10 +373,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     LocalSetting.changeSecurity(false);
 
     /// 这里是为了在修改课程表和gpa的逻辑之后，旧的缓存不会影响新版本逻辑
-    if (CommonPreferences.updateTime.value != "20221019") {
+    if (CommonPreferences.updateTime.value == "") {
       CommonPreferences.updateTime.value = "20221019";
+    } else if (CommonPreferences.updateTime.value != "20221019") {
       CommonPreferences.clearTjuPrefs();
-      CommonPreferences.clearUserPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
