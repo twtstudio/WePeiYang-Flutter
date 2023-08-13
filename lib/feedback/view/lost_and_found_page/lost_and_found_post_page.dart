@@ -39,6 +39,11 @@ class NewLostAndFoundPostProvider {
     location = "";
     phone = "";
   }
+
+  void callcheck() {
+    print(
+        "title:${title},content:${content},date:${date}\nlocation:${location}\nphone:${phone}");
+  }
 }
 
 class LostAndFoundPostPage extends StatefulWidget {
@@ -49,30 +54,13 @@ class LostAndFoundPostPage extends StatefulWidget {
 class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   //0->失物 1->招领
   final typeNotifier = ValueNotifier(0);
-  final categoryNotifier = ValueNotifier('');
-  static const titleText = ['发布失物', '发布招领'];
+  final categoryNotifier = ValueNotifier('选择分类');
+  static const selectTypeText = ['失物', '招领'];
   static const texts = ['招领', '失物'];
-  static const yymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
-  String _selectCategory = "选择分类";
 
   bool tapAble = true;
   bool _showSelectDialog = false;
   DateTime? selectedDate;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
 
   void changeType() {
     if (typeNotifier.value == 1) {
@@ -88,8 +76,13 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 
   _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
+    dataModel.callcheck();
     if (!dataModel.check) {
       ToastProvider.error("内容与标题不能为空！");
+      return;
+    }
+    if (categoryNotifier.value=="选择分类"){
+      ToastProvider.error("请选择分类！");
       return;
     }
     ToastProvider.running("创建中...");
@@ -101,7 +94,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             dataModel.images.clear();
             if (dataModel.check) {
               FeedbackService.sendLostAndFoundPost(
-                  type: typeNotifier.value,
+                  type: selectTypeText[typeNotifier.value],
                   category: categoryNotifier.value,
                   title: dataModel.title,
                   text: dataModel.content,
@@ -127,7 +120,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           });
     } else {
       FeedbackService.sendLostAndFoundPost(
-        type: typeNotifier.value,
+        type: selectTypeText[typeNotifier.value],
         category: categoryNotifier.value,
         title: dataModel.title,
         text: dataModel.content,
@@ -155,77 +148,76 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
-          padding: EdgeInsets.zero,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          icon: Icon(
-            Icons.keyboard_arrow_left,
-            color: Color(0XFF62677B),
-            size: 36,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          titleText[typeNotifier.value],
-          style: TextStyle(
-              color: Color.fromARGB(255, 42, 42, 42),
-              fontSize: 18,
-              fontWeight: FontWeight.w400),
-        ),
-        actions: [
-          InkWell(
-            onTap: () async {
-              setState(() {
-                changeType();
-              });
+          leading: IconButton(
+            padding: EdgeInsets.zero,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            icon: Icon(
+              Icons.keyboard_arrow_left,
+              color: Color(0XFF62677B),
+              size: 36,
+            ),
+            onPressed: () {
+              var dataModel = context.read<NewLostAndFoundPostProvider>();
+              dataModel.clear();
+              Navigator.of(context).pop();
             },
-            child: Container(
-              width: 36,
-              height: 36,
-              child: Column(
-                children: [
-                  Image.asset("assets/images/post_swap.png"),
-                  Text(
-                    texts[typeNotifier.value],
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 10,
-                        color: Color.fromARGB(255, 81, 137, 220)),
-                  )
-                ],
+          ),
+          title: Text(
+            "发布${selectTypeText[typeNotifier.value]}",
+            style: TextStyle(
+                color: Color.fromARGB(255, 42, 42, 42),
+                fontSize: 18,
+                fontWeight: FontWeight.w400),
+          ),
+          actions: [
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  changeType();
+                });
+              },
+              child: Container(
+                width: 36,
+                height: 36,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    Image.asset("assets/images/post_swap.png"),
+                    Text(
+                      texts[typeNotifier.value],
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 10,
+                          color: Color.fromARGB(255, 81, 137, 220)),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-        ],
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+            const SizedBox(width: 10),
+          ],
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0),
       body: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             LostAndFoundTitleInputField(),
             LostAndFoundContentInputField(),
             LostAndFoundImagesGridView(),
-            SizedBox(
-              height: 8,
-            ),
             Container(
               alignment: Alignment.centerLeft,
               child: Column(
                 children: [
-                  SelectDateButton(context),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 27),
+                  SelectDateField(typeNotifier: typeNotifier),
+                  const SizedBox(height: 14),
                   InputLocationField(typeNotifier: typeNotifier),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 14),
                   InputPhoneField(),
-                  const SizedBox(height: 8),
                 ],
               ),
             ),
@@ -255,261 +247,74 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             _showSelectDialog = true;
           });
         },
-        child: Text(
-          "# ${_selectCategory}",
-          style: const TextStyle(color: Color.fromARGB(255, 44, 126, 223)),
-        ));
+        child: Text("# ${categoryNotifier.value}",
+            style: const TextStyle(color: Color.fromARGB(255, 44, 126, 223))));
   }
 
   Visibility selectCategoryDialog(BuildContext context) {
     return Visibility(
         visible: _showSelectDialog,
         child: Container(
-          margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-          height: 120,
-          width: 86,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                    offset: Offset(0, 3),
-                    blurRadius: 6,
-                    color: Color.fromARGB(64, 0, 0, 0))
-              ]),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildSelectCategoryOption("生活日用", context),
-              buildSelectCategoryOption("数码产品", context),
-              buildSelectCategoryOption("钱包卡证", context),
-              buildSelectCategoryOption("其他", context),
-            ],
-          ),
-        ));
-  }
-
-  Container SelectDateButton(BuildContext context) {
-    return Container(
-      width: 195,
-      height: 36,
-      padding: EdgeInsets.zero,
-      child: ElevatedButton(
-        onPressed: () => _selectDate(context),
-        style: ButtonStyle(
-            elevation: MaterialStateProperty.all(0),
-            backgroundColor: MaterialStateProperty.all(
-                const Color.fromARGB(255, 248, 248, 248)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16)))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 17,
-              height: 17,
-              child: selectedDate != null
-                  ? Image.asset("assets/images/icon_clock_filled.png")
-                  : Image.asset("assets/images/icon_clock.png"),
-            ),
-            const SizedBox(width: 8),
-            selectedDate != null
-                ? Text(
-                    "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 44, 126, 223)),
-                  )
-                : Text(
-                    yymmddtexts[typeNotifier.value],
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 144, 144, 144)),
-                  ),
-          ],
-        ),
-      ),
-    );
+            margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            height: 120,
+            width: 86,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                      offset: Offset(0, 3),
+                      blurRadius: 6,
+                      color: Color.fromARGB(64, 0, 0, 0))
+                ]),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                buildSelectCategoryOption("生活日用", context),
+                buildSelectCategoryOption("数码产品", context),
+                buildSelectCategoryOption("钱包卡证", context),
+                buildSelectCategoryOption("其他", context)
+              ],
+            )));
   }
 
   Widget buildSelectCategoryOption(String option, BuildContext context) {
     return InkWell(
       onTap: () {
-        categoryNotifier.value = option;
+
         setState(() {
-          _selectCategory = option;
+          categoryNotifier.value = option;
           _showSelectDialog = false;
         });
       },
       child: Container(
-        child: Text(
-          option,
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-        ),
+        child: Text(option,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
       ),
     );
   }
 
   SizedBox LostAndFoundPostButton() {
     return SizedBox(
-      width: 63,
-      height: 32,
-      child: ElevatedButton(
-          style: ButtonStyle(
-              elevation: MaterialStateProperty.all(0),
-              backgroundColor: MaterialStateProperty.all(
-                  const Color.fromARGB(255, 44, 126, 223)),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)))),
-          onPressed: () async {
-            if (tapAble) {
-              tapAble = false;
-              await _submit();
-              await Future.delayed(Duration(milliseconds: 3000));
-              tapAble = true;
-            }
-          },
-          child: const Text('发送')),
-    );
-  }
-}
-
-class InputLocationField extends StatefulWidget {
-  final ValueNotifier<int> typeNotifier; // Add this line
-
-  InputLocationField({required this.typeNotifier});
-
-  @override
-  _InputLocationFieldState createState() => _InputLocationFieldState();
-}
-
-class _InputLocationFieldState extends State<InputLocationField> {
-  late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _locationController;
-  static const locationtexts = ['请填写丢失地点', '请填写拾取地点'];
-
-  @override
-  void initState() {
-    super.initState();
-    var dataModel = context.read<NewLostAndFoundPostProvider>();
-    _locationController = TextEditingController(text: dataModel.location);
-    contentCounter =
-        ValueNotifier('${dataModel.location.characters.length}/1000')
-          ..addListener(() {
-            dataModel.location = _locationController.text;
-          });
-  }
-
-  @override
-  void dispose() {
-    _locationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget inputField = TextField(
-      controller: _locationController,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      maxLines: 1,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
-      decoration: InputDecoration.collapsed(
-        hintStyle: const TextStyle(
-            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
-        hintText: locationtexts[widget.typeNotifier.value],
-      ),
-      scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(15),
-      ],
-      cursorColor: ColorUtil.profileBackgroundColor,
-    );
-
-    return Container(
-        width: 195,
-        height: 36,
-        decoration: BoxDecoration(
-            color: Color.fromARGB(255, 248, 248, 248),
-            borderRadius: BorderRadius.circular(16)),
-        child: Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(30, 3, 0, 0),
-              child: Image.asset("assets/images/icon_location.png"),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(55, 0, 0, 0),
-              child: inputField,
-            )
-          ],
-        ));
-  }
-}
-
-class InputPhoneField extends StatefulWidget {
-  @override
-  _InputPhoneFieldState createState() => _InputPhoneFieldState();
-}
-
-class _InputPhoneFieldState extends State<InputPhoneField> {
-  late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _phoneController;
-
-  @override
-  void initState() {
-    super.initState();
-    var dataModel = context.read<NewLostAndFoundPostProvider>();
-    _phoneController = TextEditingController(text: dataModel.phone);
-    contentCounter = ValueNotifier('${dataModel.phone.characters.length}/1000')
-      ..addListener(() {
-        dataModel.phone = _phoneController.text;
-      });
-  }
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget inputField = TextField(
-      controller: _phoneController,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      maxLines: 1,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
-      decoration: InputDecoration.collapsed(
-        hintStyle: const TextStyle(
-            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
-        hintText: '请填写联系方式',
-      ),
-      scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(15),
-      ],
-      cursorColor: ColorUtil.profileBackgroundColor,
-    );
-
-    return Container(
-        width: 195,
-        height: 36,
-        decoration: BoxDecoration(
-            color: Color.fromARGB(255, 248, 248, 248),
-            borderRadius: BorderRadius.circular(16)),
-        child: Stack(
-          children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(30, 3, 0, 0),
-              child: Image.asset("assets/images/icon_smile_chat.png"),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(55, 0, 0, 0),
-              child: inputField,
-            )
-          ],
-        ));
+        width: 63,
+        height: 32,
+        child: ElevatedButton(
+            style: ButtonStyle(
+                elevation: MaterialStateProperty.all(0),
+                backgroundColor: MaterialStateProperty.all(
+                    const Color.fromARGB(255, 44, 126, 223)),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)))),
+            onPressed: () async {
+              if (tapAble) {
+                tapAble = false;
+                await _submit();
+                await Future.delayed(Duration(milliseconds: 3000));
+                tapAble = true;
+              }
+            },
+            child: const Text('发送')));
   }
 }
 
@@ -542,40 +347,38 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
   @override
   Widget build(BuildContext context) {
     Widget inputField = Expanded(
-      child: TextField(
-        buildCounter: null,
-        controller: _titleController,
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.done,
-        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
-        minLines: 1,
-        maxLines: 10,
-        decoration: InputDecoration.collapsed(
-          hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).grey6C,
-          hintText: S.current.feedback_enter_title,
-        ),
-        onChanged: (text) {
-          titleCounter.value = '${text.characters.length} / 30';
-        },
-        inputFormatters: [
-          CustomizedLengthTextInputFormatter(30),
-        ],
-        cursorColor: ColorUtil.boldTextColor,
-        cursorHeight: 20,
+        child: TextField(
+      buildCounter: null,
+      controller: _titleController,
+      keyboardType: TextInputType.text,
+      textInputAction: TextInputAction.done,
+      style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
+      minLines: 1,
+      maxLines: 10,
+      decoration: InputDecoration.collapsed(
+        hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).grey6C,
+        hintText: S.current.feedback_enter_title,
       ),
-    );
+      onChanged: (text) {
+        titleCounter.value = '${text.characters.length} / 30';
+      },
+      inputFormatters: [
+        CustomizedLengthTextInputFormatter(30),
+      ],
+      cursorColor: ColorUtil.boldTextColor,
+      cursorHeight: 20,
+    ));
 
     Widget textCounter = ValueListenableBuilder(
-      valueListenable: titleCounter,
-      builder: (_, String value, __) {
-        return Text(value, style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C);
-      },
-    );
+        valueListenable: titleCounter,
+        builder: (_, String value, __) {
+          return Text(value,
+              style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C);
+        });
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
-      child: Column(
-        children: [
+        padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
+        child: Column(children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [inputField, SizedBox(width: 3), textCounter],
@@ -584,9 +387,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
               margin: EdgeInsets.only(top: 16.h),
               color: ColorUtil.greyEAColor,
               height: 1.h)
-        ],
-      ),
-    );
+        ]));
   }
 }
 
@@ -636,28 +437,30 @@ class _LostAndFoundContentInputFieldState
         contentCounter.value = '${text.characters.length}/300';
       },
       scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(300),
-      ],
+      inputFormatters: [CustomizedLengthTextInputFormatter(300)],
       cursorColor: ColorUtil.profileBackgroundColor,
     );
 
     Widget bottomTextCounter = ValueListenableBuilder(
-      valueListenable: contentCounter,
-      builder: (_, String value, __) {
-        return Text(value, style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
-      },
-    );
+        valueListenable: contentCounter,
+        builder: (_, String value, __) {
+          return Text(value,
+              style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
+        });
 
     return Container(
         constraints: BoxConstraints(
-            minHeight: WePeiYangApp.screenHeight > 800
-                ? WePeiYangApp.screenHeight - 700
+            minHeight: WePeiYangApp.screenHeight > 900
+                ? WePeiYangApp.screenHeight - 800
                 : 100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [inputField, SizedBox(height: 20), bottomTextCounter],
-        ));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          inputField,
+          SizedBox(height: 30),
+          bottomTextCounter,
+          SizedBox(
+            height: 27,
+          )
+        ]));
   }
 }
 
@@ -704,24 +507,22 @@ class _LostAndFoundImagesGridViewState
 
   Future<String?> _showDialog() {
     return showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
-        title: Text(S.current.feedback_delete_image_content),
-        actions: [
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop('cancel');
-              },
-              child: Text(S.current.feedback_cancel)),
-          TextButton(
-              onPressed: () {
-                Navigator.of(context).pop('ok');
-              },
-              child: Text(S.current.feedback_ok)),
-        ],
-      ),
-    );
+        context: context,
+        builder: (context) => AlertDialog(
+                titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
+                title: Text(S.current.feedback_delete_image_content),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop('cancel');
+                      },
+                      child: Text(S.current.feedback_cancel)),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop('ok');
+                      },
+                      child: Text(S.current.feedback_ok)),
+                ]));
   }
 
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
@@ -744,26 +545,24 @@ class _LostAndFoundImagesGridViewState
         ),
       ),
       Positioned(
-        right: 0,
-        bottom: 0,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-            ),
-            child: Icon(
-              Icons.close,
-              size: MediaQuery.of(context).size.width / 32,
-              color: ColorUtil.searchBarBackgroundColor,
-            ),
-          ),
-        ),
-      ),
+          right: 0,
+          bottom: 0,
+          child: InkWell(
+              onTap: onTap,
+              child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8)),
+                  ),
+                  child: Icon(
+                    Icons.close,
+                    size: MediaQuery.of(context).size.width / 32,
+                    color: ColorUtil.searchBarBackgroundColor,
+                  ))))
     ]);
   }
 
@@ -777,33 +576,28 @@ class _LostAndFoundImagesGridViewState
     );
 
     return Consumer<NewLostAndFoundPostProvider>(
-      builder: (_, data, __) => GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: gridDelegate,
-        itemCount: maxImage == data.images.length
-            ? data.images.length
-            : data.images.length + 1,
-        itemBuilder: (_, index) {
-          if (index <= 2 && index == data.images.length) {
-            return _ImagePickerWidget(onTap: loadAssets);
-          } else {
-            return imgBuilder(
-              index,
-              data.images,
-              data.images.length,
-              onTap: () async {
-                var result = await _showDialog();
-                if (result == 'ok') {
-                  data.images.removeAt(index);
-                  setState(() {});
+        builder: (_, data, __) => GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: gridDelegate,
+              itemCount: maxImage == data.images.length
+                  ? data.images.length
+                  : data.images.length + 1,
+              itemBuilder: (_, index) {
+                if (index <= 2 && index == data.images.length) {
+                  return _ImagePickerWidget(onTap: loadAssets);
+                } else {
+                  return imgBuilder(index, data.images, data.images.length,
+                      onTap: () async {
+                    var result = await _showDialog();
+                    if (result == 'ok') {
+                      data.images.removeAt(index);
+                      setState(() {});
+                    }
+                  });
                 }
               },
-            );
-          }
-        },
-        physics: NeverScrollableScrollPhysics(),
-      ),
-    );
+              physics: NeverScrollableScrollPhysics(),
+            ));
   }
 }
 
@@ -824,32 +618,226 @@ class _ImagePickerWidget extends StatelessWidget {
   }
 }
 
-class LAFInputButton extends StatelessWidget {
-  final String imagePath;
-  final String hintText;
+class SelectDateField extends StatefulWidget {
+  final ValueNotifier<int> typeNotifier;
 
-  LAFInputButton({
-    required this.imagePath,
-    required this.hintText,
-  });
+  SelectDateField({required this.typeNotifier});
+
+  @override
+  _SelectDateFieldState createState() => _SelectDateFieldState();
+}
+
+class _SelectDateFieldState extends State<SelectDateField> {
+  static const yymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
+  DateTime? selectedDate;
+  late String yymmdd = "";
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _selectDate(BuildContext context) async {
+      var dataModel = context.read<NewLostAndFoundPostProvider>();
+      final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime.now());
+
+      if (picked != null && picked != selectedDate) {
+        setState(() {
+          selectedDate = picked;
+          yymmdd =
+              "${picked.year % 100}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
+          dataModel.date = yymmdd;
+        });
+      }
+    }
+
     return Container(
       width: 195,
       height: 36,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        color: Color.fromARGB(255, 248, 248, 248),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(imagePath, width: 17, height: 17),
-          SizedBox(width: 8),
-        ],
-      ),
+          color: Color.fromARGB(255, 240, 240, 240),
+          borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+          onTap: () => _selectDate(context),
+          child: Container(
+              width: 195,
+              height: 36,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(250, 240, 240, 240),
+                  borderRadius: BorderRadius.circular(16)),
+              child: Stack(
+                children: [
+                  Container(
+                    width: 17,
+                    height: 17,
+                    margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
+                    child: selectedDate != null
+                        ? Image.asset(
+                            "assets/images/icon_clock_filled.png",
+                            fit: BoxFit.fill,
+                          )
+                        : Image.asset("assets/images/icon_clock.png",
+                            fit: BoxFit.fill),
+                  ),
+                  Container(
+                      margin: EdgeInsets.fromLTRB(55, 6, 0, 0),
+                      child: selectedDate != null
+                          ? Text(
+                              "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 44, 126, 223)))
+                          : Text(yymmddtexts[widget.typeNotifier.value],
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromARGB(255, 144, 144, 144))))
+                ],
+              ))),
     );
+  }
+}
+
+class InputLocationField extends StatefulWidget {
+  final ValueNotifier<int> typeNotifier;
+
+  InputLocationField({required this.typeNotifier});
+
+  @override
+  _InputLocationFieldState createState() => _InputLocationFieldState();
+}
+
+class _InputLocationFieldState extends State<InputLocationField> {
+  late final ValueNotifier<String> contentCounter;
+  late final TextEditingController _locationController;
+  static const locationtexts = ['请填写丢失地点', '请填写拾取地点'];
+
+  @override
+  void initState() {
+    super.initState();
+    var dataModel = context.read<NewLostAndFoundPostProvider>();
+    _locationController = TextEditingController(text: dataModel.location);
+    contentCounter =
+        ValueNotifier('${dataModel.location.characters.length}/1000')
+          ..addListener(() {
+            dataModel.location = _locationController.text;
+          });
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget inputField = TextField(
+      controller: _locationController,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.newline,
+      maxLines: 1,
+      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+      decoration: InputDecoration.collapsed(
+        hintStyle: const TextStyle(
+            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
+        hintText: locationtexts[widget.typeNotifier.value],
+      ),
+      onChanged: (text) {
+        contentCounter.value = '${text.characters.length}/16';
+      },
+      scrollPhysics: NeverScrollableScrollPhysics(),
+      inputFormatters: [
+        CustomizedLengthTextInputFormatter(16),
+      ],
+      cursorColor: ColorUtil.profileBackgroundColor,
+    );
+
+    return Container(
+        width: 195,
+        height: 36,
+        decoration: BoxDecoration(
+            color: Color.fromARGB(250, 240, 240, 240),
+            borderRadius: BorderRadius.circular(16)),
+        child: Stack(children: [
+          Container(
+            width: 17,
+            height: 17,
+            margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
+            child: Image.asset("assets/images/icon_location.png"),
+          ),
+          Container(
+            margin: EdgeInsets.fromLTRB(55, 6, 0, 0),
+            child: inputField,
+          )
+        ]));
+  }
+}
+
+class InputPhoneField extends StatefulWidget {
+  @override
+  _InputPhoneFieldState createState() => _InputPhoneFieldState();
+}
+
+class _InputPhoneFieldState extends State<InputPhoneField> {
+  late final ValueNotifier<String> contentCounter;
+  late final TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    var dataModel =
+        Provider.of<NewLostAndFoundPostProvider>(context, listen: false);
+    1234;
+    _phoneController = TextEditingController(text: dataModel.phone);
+    contentCounter = ValueNotifier('${dataModel.phone.characters.length}/11')
+      ..addListener(() {
+        dataModel.phone = _phoneController.text;
+      });
+  }
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget inputField = TextField(
+      controller: _phoneController,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.newline,
+      maxLines: 1,
+      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+      decoration: InputDecoration.collapsed(
+        hintStyle: const TextStyle(
+            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
+        hintText: '请填写联系方式',
+      ),
+      onChanged: (text) {
+        contentCounter.value = '${text.characters.length}/11';
+      },
+      scrollPhysics: NeverScrollableScrollPhysics(),
+      inputFormatters: [
+        CustomizedLengthTextInputFormatter(11),
+      ],
+      cursorColor: ColorUtil.profileBackgroundColor,
+    );
+
+    return Container(
+        width: 195,
+        height: 36,
+        decoration: BoxDecoration(
+            color: Color.fromARGB(255, 240, 240, 240),
+            borderRadius: BorderRadius.circular(16)),
+        child: Stack(children: [
+          Container(
+              width: 17,
+              height: 17,
+              margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
+              child: Image.asset("assets/images/icon_smile_chat.png")),
+          Container(margin: EdgeInsets.fromLTRB(55, 6, 0, 0), child: inputField)
+        ]));
   }
 }
