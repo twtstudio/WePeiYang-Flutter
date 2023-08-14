@@ -333,7 +333,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                           .coverPhotoPath ==
                                                       null
                                                   ? Padding(
-                                                    padding: EdgeInsetsDirectional.only(bottom: 10, start: 3, end: 3, top: 7),
+                                                    padding: EdgeInsetsDirectional.only(bottom: 8, start: 3, end: 3, top: 7),
                                                     child: SizedBox(
                                                         width: double.infinity,
                                                         child: Card(
@@ -345,7 +345,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                                   .text.length > 32
                                                                   ? tuple.item1[index].text.substring(0,31) + '……'
                                                                   : tuple.item1[index].text,
-                                                              style: TextUtil.base.w400.grey89.sp(14).h(1.1)
+                                                              style: TextUtil.base.w400.grey89.sp(14).h(1.1).NotoSansSC
                                                             ),
                                                           ),
                                                           elevation: 0,
@@ -410,7 +410,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                     EdgeInsetsDirectional.only(start: 12, end: 12),
                                                 child: Text(
                                                   tuple.item1[index].title,
-                                                  style: TextUtil.base.w600.black2A.sp(15)
+                                                  style: TextUtil.base.w600.black2A.sp(15).NotoSansSC
                                                 ),
                                               ),
                                               Padding(
@@ -425,7 +425,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       _timeAgo(tuple
                                                           .item1[index]
                                                           .detailedUploadTime),
-                                                      style: TextUtil.base.w400.grey89.sp(10)
+                                                      style: TextUtil.base.w400.grey89.sp(10).NotoSansSC
                                                     ),
                                                     Row(
                                                       children: <Widget>[
