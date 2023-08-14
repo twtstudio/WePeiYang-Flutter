@@ -376,7 +376,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     if (CommonPreferences.updateTime.value == "") {
       CommonPreferences.updateTime.value = "20221019";
     } else if (CommonPreferences.updateTime.value != "20221019") {
-      CommonPreferences.clearTjuPrefs();
+      CommonPreferences.clearAllPrefs();
       Navigator.pushReplacementNamed(context, AuthRouter.login);
       return;
     }
