@@ -313,16 +313,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                         int index) =>
                                     InkWell(
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      LostAndFoundDetailPage(
-                                                        postId: tuple
-                                                            .item1[index].id,
-                                                        findOwner:
-                                                            widget.findOwner,
-                                                      )));
+                                          Tuple2 detailTuple = Tuple2(tuple.item1[index].id, widget.findOwner);
+                                          Navigator.pushNamed(context, FeedbackRouter.lostAndFoundDetailPage, arguments: detailTuple);
                                         },
                                         child: Card(
                                           elevation: 3,

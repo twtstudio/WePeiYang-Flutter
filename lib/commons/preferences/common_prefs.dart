@@ -42,6 +42,7 @@ class CommonPreferences {
   static final feedbackFloorSortType =
       PrefsBean<int>('feedbackFloorSortType', 0);
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
+  static final feedbackLastLostAndFoundWeCo = PrefsBean<String>('feedbackLastWeKo');
   static final avatarBoxMyUrl = PrefsBean<String>('avatarBoxMyUrl');
 
   /// 求实论坛--等级系统
