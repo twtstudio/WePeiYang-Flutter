@@ -6,14 +6,14 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
-
-import '../../../commons/environment/config.dart';
-import '../../../commons/preferences/common_prefs.dart';
-import '../../../commons/util/text_util.dart';
-import '../../feedback_router.dart';
-import '../../util/color_util.dart';
 
 class LostAndFoundModel with ChangeNotifier{
   Map<String, List<LostAndFoundPost>> postList = {
@@ -109,11 +109,8 @@ class LostAndFoundModel with ChangeNotifier{
         clipboardData.text != null &&
         clipboardData.text!.trim() != '') {
       String text = clipboardData.text!.trim();
-
       final id = text.find(r"wpy://school_project/(\d*)");
       if (id.isNotEmpty) {
-        if (CommonPreferences.feedbackLastWeCo.value != id &&
-            CommonPreferences.lakeToken.value != "")
           FeedbackService.getLostAndFoundPostDetail(
               id: int.parse(id),
               onResult: (post) {
@@ -127,17 +124,18 @@ class LostAndFoundModel with ChangeNotifier{
                     );
                   },
                 ).then((confirm) {
+                  Tuple2 tuple = Tuple2(int.parse(id), post.type == '失物招领' ? true : false);
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.detail,
-                        arguments: post);
-                    CommonPreferences.feedbackLastWeCo.value = id;
+                    Navigator.pushNamed(context, FeedbackRouter.lostAndFoundDetailPage,
+                        arguments: tuple);
+                    CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
                   } else {
-                    CommonPreferences.feedbackLastWeCo.value = id;
+                    CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
                   }
                 });
               },
               onFailure: (e) {
-                // ToastProvider.error(e.error.toString());
+                ToastProvider.error(e.error.toString());
               });
       }
     }
@@ -162,7 +160,6 @@ class LAFWeKoDialog extends StatelessWidget {
   final LostAndFoundPost post;
   final void Function() onConfirm;
   final void Function() onCancel;
-  final String baseUrl = '${EnvConfig.LAF}';
 
   LAFWeKoDialog(
       {Key? key,
@@ -197,7 +194,7 @@ class LAFWeKoDialog extends StatelessWidget {
                     style: TextUtil.base.black2A.bold.sp(17).NotoSansSC),
               ),
               if (post.coverPhotoPath != null)
-                Image.network(
+                WpyPic(
                   post.coverPhotoPath!,
                   height: 150,
                   width: 150,

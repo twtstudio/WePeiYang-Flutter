@@ -19,8 +19,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'dart:ui' as ui;
 
-import 'lost_and_found_report_page.dart';
-
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
     Key? key,
