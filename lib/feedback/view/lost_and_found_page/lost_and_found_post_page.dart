@@ -40,11 +40,6 @@ class NewLostAndFoundPostProvider {
     location = "";
     phone = "";
   }
-
-  void callcheck() {
-    print(
-        "title:${title},content:${content},date:${date}\nlocation:${location}\nphone:${phone}");
-  }
 }
 
 class LostAndFoundPostPage extends StatefulWidget {
@@ -76,7 +71,6 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 
   _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
-    dataModel.callcheck();
     if (!dataModel.check) {
       ToastProvider.error("请检查内容是否填写完整！");
       return;
@@ -674,6 +668,9 @@ class InputLocationField extends StatefulWidget {
 class _InputLocationFieldState extends State<InputLocationField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _locationController;
+  bool isFilled = false;
+  bool isFocused = false;
+  FocusNode focusNode = FocusNode();
   static const locationtexts = ['请填写丢失地点', '请填写拾取地点'];
 
   @override
@@ -686,17 +683,24 @@ class _InputLocationFieldState extends State<InputLocationField> {
           ..addListener(() {
             dataModel.location = _locationController.text;
           });
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
   }
 
   @override
   void dispose() {
     _locationController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
+        focusNode: focusNode,
         controller: _locationController,
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
@@ -704,12 +708,28 @@ class _InputLocationFieldState extends State<InputLocationField> {
         style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
-            hintText: locationtexts[widget.typeNotifier.value]),
+            hintText:
+                isFocused ? "" : locationtexts[widget.typeNotifier.value]),
         onChanged: (text) {
-          contentCounter.value = '${text.characters.length}/16';
+          contentCounter.value = '${text.characters.length}/26';
+          if (contentCounter.value != '0/26') {
+            isFilled = true;
+          } else {
+            isFilled = false;
+          }
+        },
+        onTap: () {
+          setState(() {
+            isFocused = true;
+          });
+        },
+        onEditingComplete: () {
+          setState(() {
+            isFocused = false;
+          });
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
-        inputFormatters: [CustomizedLengthTextInputFormatter(16)],
+        inputFormatters: [CustomizedLengthTextInputFormatter(26)],
         cursorColor: ColorUtil.profileBackgroundColor);
 
     return Container(
@@ -723,7 +743,9 @@ class _InputLocationFieldState extends State<InputLocationField> {
               width: 17,
               height: 17,
               margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
-              child: Image.asset("assets/images/icon_location.png")),
+              child: !(isFilled || isFocused)
+                  ? Image.asset("assets/images/icon_location.png")
+                  : Image.asset("assets/images/icon_location_fill.png")),
           Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
         ]));
   }
@@ -737,6 +759,9 @@ class InputPhoneField extends StatefulWidget {
 class _InputPhoneFieldState extends State<InputPhoneField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _phoneController;
+  bool isFilled = false;
+  bool isFocused = false;
+  FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
@@ -749,27 +774,49 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
       ..addListener(() {
         dataModel.phone = _phoneController.text;
       });
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
+        focusNode: focusNode,
         controller: _phoneController,
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
         maxLines: 1,
-        style: TextUtil.base.NotoSansSC.w400.sp(16).blue2C,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
-            hintText: '请填写联系方式'),
+            hintText: isFocused ? "" : '请填写联系方式'),
         onChanged: (text) {
           contentCounter.value = '${text.characters.length}/11';
+          if (contentCounter.value != '0/11') {
+            isFilled = true;
+          } else {
+            isFilled = false;
+          }
+        },
+        onTap: () {
+          setState(() {
+            isFocused = true;
+          });
+        },
+        onEditingComplete: () {
+          setState(() {
+            isFocused = false;
+          });
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(11)],
@@ -786,7 +833,9 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
               width: 17,
               height: 17,
               margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
-              child: Image.asset("assets/images/icon_smile_chat.png")),
+              child: !(isFilled || isFocused)
+                  ? Image.asset("assets/images/icon_smile_chat.png")
+                  : Image.asset("assets/images/icon_smile_chat_fill.png")),
           Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
         ]));
   }
