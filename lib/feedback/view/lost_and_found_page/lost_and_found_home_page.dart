@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_sub_page.dart';
 
@@ -15,6 +17,9 @@ class LostAndFoundHomePage extends StatefulWidget {
 }
 
 class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -113,6 +118,12 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                 ],
               )),
         ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<LostAndFoundModel>().getClipboardWeKoContents(context);
   }
 }
 

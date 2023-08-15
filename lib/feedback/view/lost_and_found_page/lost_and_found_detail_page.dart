@@ -76,6 +76,8 @@ class LostAndFoundDetailPage extends StatefulWidget {
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   bool isMine = false;
   bool brightened = false;
+  String phoneNum = '';
+  bool isLimited = false;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -83,13 +85,44 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return buildDetailUI(context, snapshot.data!, widget.findOwner);
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text("获取失败: ${snapshot.error}"),
-          );
         } else {
-          return Center(
-            child: CircularProgressIndicator(),
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: LostAndFoundDetailAppBar(
+              height: 65,
+              leading: Padding(
+                padding: EdgeInsets.only(top: 46.h, left: 16.w),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: WButton(
+                    child: WpyPic(
+                      'assets/images/back.png',
+                      width: 30.w,
+                      height: 30.w,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    // Other onPressed logic goes here
+                  ),
+                ),
+              ),
+              action: Padding(
+                padding: EdgeInsets.only(top: 46.h, right: 16.w),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: WButton(
+                    child: WpyPic(
+                      'assets/images/more-horizontal.png',
+                      width: 30.w,
+                      height: 30.w,
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+              ),
+              title: Text('   '),
+            ),
           );
         }
       },
@@ -144,9 +177,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
 
   // 构建UI
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
-    // 寻物或寻主，待对接
-    String phoneNum = '';
-    bool isLimited = false;
+    //判断是否是自己的帖子，暂时只能用这个来判断了
+    if (CommonPreferences.lakeNickname.value.toString() == post.author) {
+      isMine = true;
+    }
 
     void _showConfirmationDialog() {
       var now = DateTime.now();
@@ -223,9 +257,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 : () {
                                     FeedbackService.getRecordNum(
                                       yyyymmdd: formattedDate,
-                                      user: "作者19",
+                                      user: CommonPreferences.lakeNickname.value
+                                          .toString(),
                                       onResult: (num) {
-                                        if (num > 3) {
+                                        if (num >= 3) {
                                           setState(() {
                                             isLimited = true;
                                           });
@@ -238,7 +273,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
 
                                           FeedbackService.locationAddRecord(
                                             yyyymmdd: formattedDate,
-                                            user: "作者19",
+                                            user: CommonPreferences
+                                                .lakeNickname.value
+                                                .toString(),
                                             onSuccess: () {},
                                             onFailure: (e) {},
                                           );
@@ -503,7 +540,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
-    var innerImages = post.coverPhotoPathInDetail.length == 1
+    var Images = post.coverPhotoPathInDetail.length == 1
         ? SingleImageWidget(post.coverPhotoPathInDetail[0])
         : MultipleImage(post);
 
@@ -600,12 +637,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF909090),
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 14),
+                    SizedBox(height: 10),
                     Text(
                       post.title,
                       style: TextStyle(
@@ -613,12 +650,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         fontWeight: FontWeight.w900,
                       ),
                     ),
+                    SizedBox(height: 10),
                     SizedBox(height: 5.h),
                     (post.coverPhotoPathInDetail.isNotEmpty)
                         ? Padding(
-                            padding: EdgeInsets.only(
-                                top: 4.h, left: 12.w, bottom: 14.h),
-                            child: innerImages,
+                            padding: EdgeInsets.only(left: 4.w),
+                            child: Images,
                           )
                         : Container(),
                     SizedBox(height: 14.h),
@@ -650,7 +687,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               ),
                               SizedBox(width: 2.w),
                               Text(
-                                '其他' + '  ',
+                                post.category + '  ',
                                 style: TextStyle(
                                   fontSize: 10,
                                   color: Color(0xFF909090),
@@ -660,7 +697,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           ),
                         ),
                         Text(
-                          '11445次浏览' + '       ',
+                          '11445次浏览' + '  ',
                           style: TextStyle(
                             fontSize: 9,
                             color: Color(0xFF909090),
@@ -687,8 +724,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('丢失日期',
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.black)),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600)),
                           SizedBox(width: 15),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,6 +755,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.black,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           SizedBox(width: 15.w),
