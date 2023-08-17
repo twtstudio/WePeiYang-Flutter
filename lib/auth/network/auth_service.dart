@@ -549,7 +549,6 @@ class AuthService with AsyncTimer {
         var rsp = await authDio.put("upgrade",queryParameters: {"typeId": res['id']});
         if(rsp.data['error_code'] == 0){
           CommonPreferences.token.value = rsp.data['result'];
-          ToastProvider.success('账号升级成功!');
           return true;
         }
         else return false;

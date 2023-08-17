@@ -99,6 +99,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/calender/
     - assets/images/account/
     - assets/images/account/1.5x/
     - assets/images/account/2.0x/
