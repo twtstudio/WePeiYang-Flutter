@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
 class MapCalenderPage extends StatefulWidget {
@@ -177,11 +175,11 @@ class MapAndCalenderState extends State<MapAndCalender> {
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  FeedbackRouter.imageView,
-                  arguments: ImageViewPageArgs([
-                    'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
-                    '211c5620dfd2299398428879336e8044.jpg'
-                  ], 2, 0, false),
+                  FeedbackRouter.localImageView,
+                  arguments: LocalImageViewPageArgs([], [
+                    'assets/images/calender/first.jpg',
+                    'assets/images/calender/second.jpg'
+                  ], 2, 0),
                 );
               },
               child: Stack(
@@ -196,15 +194,15 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
                                   Color(0xFFBED1FF), BlendMode.screen),
-                              image: NetworkImage(
-                                  '${EnvConfig.QNHDPIC}download/origin/ede9d34998ec6e0f9b39d062bcb036c9.jpg')))),
+                              image: AssetImage('assets/images/calender/first.jpg')
+                          ))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '22-23第一学期',
+                        '23-24第一学期',
                         style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
                       ),
                     ),
@@ -216,11 +214,11 @@ class MapAndCalenderState extends State<MapAndCalender> {
               onTap: () {
                 Navigator.pushNamed(
                   context,
-                  FeedbackRouter.imageView,
-                  arguments: ImageViewPageArgs([
-                    'ede9d34998ec6e0f9b39d062bcb036c9.jpg',
-                    '211c5620dfd2299398428879336e8044.jpg'
-                  ], 2, 1, false),
+                  FeedbackRouter.localImageView,
+                  arguments: LocalImageViewPageArgs([], [
+                    'assets/images/calender/first.jpg',
+                    'assets/images/calender/second.jpg'
+                  ], 2, 0),
                 );
               },
               child: Stack(
@@ -235,15 +233,15 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
                                   Color(0xFFBED1FF), BlendMode.screen),
-                              image: NetworkImage(
-                                  '${EnvConfig.QNHDPIC}download/origin/211c5620dfd2299398428879336e8044.jpg')))),
+                              image: AssetImage('assets/images/calender/second.jpg'),
+                          ))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '22-23第二学期',
+                        '23-24第二学期',
                         style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
                       ),
                     ),
