@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/util/text_util.dart';
 import '../../../commons/widgets/loading.dart';
 import '../../../generated/l10n.dart';
@@ -39,11 +40,6 @@ class NewLostAndFoundPostProvider {
     location = "";
     phone = "";
   }
-
-  void callcheck() {
-    print(
-        "title:${title},content:${content},date:${date}\nlocation:${location}\nphone:${phone}");
-  }
 }
 
 class LostAndFoundPostPage extends StatefulWidget {
@@ -60,7 +56,6 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 
   bool tapAble = true;
   bool _showSelectDialog = false;
-  DateTime? selectedDate;
 
   void changeType() {
     if (typeNotifier.value == 1) {
@@ -76,12 +71,11 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 
   _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
-    dataModel.callcheck();
     if (!dataModel.check) {
-      ToastProvider.error("内容与标题不能为空！");
+      ToastProvider.error("请检查内容是否填写完整！");
       return;
     }
-    if (categoryNotifier.value=="选择分类"){
+    if (categoryNotifier.value == "选择分类") {
       ToastProvider.error("请选择分类！");
       return;
     }
@@ -94,11 +88,14 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             dataModel.images.clear();
             if (dataModel.check) {
               FeedbackService.sendLostAndFoundPost(
+                  author: CommonPreferences.lakeNickname.value,
                   type: selectTypeText[typeNotifier.value],
                   category: categoryNotifier.value,
                   title: dataModel.title,
                   text: dataModel.content,
                   yyyymmdd: dataModel.date,
+                  yyyymmddhhmmss:
+                      "${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}${DateTime.now().day.toString().padLeft(2, '0')}${DateTime.now().hour.toString().padLeft(2, '0')}${DateTime.now().minute.toString().padLeft(2, '0')}${DateTime.now().second.toString().padLeft(2, '0')}",
                   location: dataModel.location,
                   phone: dataModel.phone,
                   images: images,
@@ -120,11 +117,14 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           });
     } else {
       FeedbackService.sendLostAndFoundPost(
+        author: CommonPreferences.lakeNickname.value,
         type: selectTypeText[typeNotifier.value],
         category: categoryNotifier.value,
         title: dataModel.title,
         text: dataModel.content,
         yyyymmdd: dataModel.date,
+        yyyymmddhhmmss:
+            "${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}${DateTime.now().day.toString().padLeft(2, '0')}${DateTime.now().hour.toString().padLeft(2, '0')}${DateTime.now().minute.toString().padLeft(2, '0')}${DateTime.now().second.toString().padLeft(2, '0')}",
         location: dataModel.location,
         phone: dataModel.phone,
         images: [],
@@ -146,98 +146,73 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-          leading: IconButton(
-            padding: EdgeInsets.zero,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            icon: Icon(
-              Icons.keyboard_arrow_left,
-              color: Color(0XFF62677B),
-              size: 36,
-            ),
-            onPressed: () {
-              var dataModel = context.read<NewLostAndFoundPostProvider>();
-              dataModel.clear();
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text(
-            "发布${selectTypeText[typeNotifier.value]}",
-            style: TextStyle(
-                color: Color.fromARGB(255, 42, 42, 42),
-                fontSize: 18,
-                fontWeight: FontWeight.w400),
-          ),
-          actions: [
-            InkWell(
-              onTap: () async {
-                setState(() {
-                  changeType();
-                });
-              },
-              child: Container(
-                width: 36,
-                height: 36,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    Image.asset("assets/images/post_swap.png"),
-                    Text(
-                      texts[typeNotifier.value],
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 10,
-                          color: Color.fromARGB(255, 81, 137, 220)),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-          ],
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LostAndFoundTitleInputField(),
-            LostAndFoundContentInputField(),
-            LostAndFoundImagesGridView(),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                children: [
-                  const SizedBox(height: 27),
-                  SelectDateField(typeNotifier: typeNotifier),
-                  const SizedBox(height: 14),
-                  InputLocationField(typeNotifier: typeNotifier),
-                  const SizedBox(height: 14),
-                  InputPhoneField(),
-                ],
-              ),
-            ),
-            Container(
-              height: 150,
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  selectCategoryDialog(context),
-                  SelectCategoryButton(),
-                  const SizedBox(width: 8),
-                  LostAndFoundPostButton()
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+            leading: IconButton(
+                padding: EdgeInsets.zero,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                icon: Icon(Icons.keyboard_arrow_left,
+                    color: Color(0XFF62677B), size: 36),
+                onPressed: () {
+                  var dataModel = context.read<NewLostAndFoundPostProvider>();
+                  dataModel.clear();
+                  Navigator.of(context).pop();
+                }),
+            title: Text("发布${selectTypeText[typeNotifier.value]}",
+                style: TextUtil.base.NotoSansSC.w400.sp(18).black2A),
+            actions: [
+              InkWell(
+                  onTap: () async {
+                    setState(() {
+                      changeType();
+                    });
+                  },
+                  child: Container(
+                      width: 36,
+                      height: 36,
+                      child: Column(children: [
+                        const SizedBox(height: 11),
+                        Image.asset("assets/images/post_swap.png"),
+                        Text(
+                          texts[typeNotifier.value],
+                          style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
+                        )
+                      ]))),
+              const SizedBox(width: 10)
+            ],
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0),
+        body: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              LostAndFoundTitleInputField(),
+              LostAndFoundContentInputField(),
+              LostAndFoundImagesGridView(),
+              Container(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 27),
+                      SelectDateField(typeNotifier: typeNotifier),
+                      const SizedBox(height: 14),
+                      InputLocationField(typeNotifier: typeNotifier),
+                      const SizedBox(height: 14),
+                      InputPhoneField()
+                    ],
+                  )),
+              Container(
+                  height: 150,
+                  alignment: Alignment.center,
+                  child:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    selectCategoryDialog(context),
+                    SelectCategoryButton(),
+                    const SizedBox(width: 8),
+                    LostAndFoundPostButton()
+                  ]))
+            ])));
   }
 
   TextButton SelectCategoryButton() {
@@ -247,8 +222,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             _showSelectDialog = true;
           });
         },
-        child: Text("# ${categoryNotifier.value}",
-            style: const TextStyle(color: Color.fromARGB(255, 44, 126, 223))));
+        child: Text("#  ${categoryNotifier.value}",
+            style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C));
   }
 
   Visibility selectCategoryDialog(BuildContext context) {
@@ -281,18 +256,15 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 
   Widget buildSelectCategoryOption(String option, BuildContext context) {
     return InkWell(
-      onTap: () {
-
-        setState(() {
-          categoryNotifier.value = option;
-          _showSelectDialog = false;
-        });
-      },
-      child: Container(
-        child: Text(option,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400)),
-      ),
-    );
+        onTap: () {
+          setState(() {
+            categoryNotifier.value = option;
+            _showSelectDialog = false;
+          });
+        },
+        child: Container(
+            child: Text(option,
+                style: TextUtil.base.NotoSansSC.w400.sp(12).black00)));
   }
 
   SizedBox LostAndFoundPostButton() {
@@ -314,7 +286,10 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 tapAble = true;
               }
             },
-            child: const Text('发送')));
+            child: Text(
+              '发送',
+              style: TextUtil.base.NotoSansSC.w400.sp(14).white,
+            )));
   }
 }
 
@@ -348,26 +323,22 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
   Widget build(BuildContext context) {
     Widget inputField = Expanded(
         child: TextField(
-      buildCounter: null,
-      controller: _titleController,
-      keyboardType: TextInputType.text,
-      textInputAction: TextInputAction.done,
-      style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
-      minLines: 1,
-      maxLines: 10,
-      decoration: InputDecoration.collapsed(
-        hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).grey6C,
-        hintText: S.current.feedback_enter_title,
-      ),
-      onChanged: (text) {
-        titleCounter.value = '${text.characters.length} / 30';
-      },
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(30),
-      ],
-      cursorColor: ColorUtil.boldTextColor,
-      cursorHeight: 20,
-    ));
+            buildCounter: null,
+            controller: _titleController,
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.done,
+            style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
+            minLines: 1,
+            maxLines: 10,
+            decoration: InputDecoration.collapsed(
+                hintStyle: TextUtil.base.NotoSansSC.w700.sp(18).grey6C,
+                hintText: S.current.feedback_enter_title),
+            onChanged: (text) {
+              titleCounter.value = '${text.characters.length} / 30';
+            },
+            inputFormatters: [CustomizedLengthTextInputFormatter(30)],
+            cursorColor: ColorUtil.boldTextColor,
+            cursorHeight: 20));
 
     Widget textCounter = ValueListenableBuilder(
         valueListenable: titleCounter,
@@ -380,9 +351,8 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
         padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
         child: Column(children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [inputField, SizedBox(width: 3), textCounter],
-          ),
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [inputField, SizedBox(width: 3), textCounter]),
           Container(
               margin: EdgeInsets.only(top: 16.h),
               color: ColorUtil.greyEAColor,
@@ -423,23 +393,21 @@ class _LostAndFoundContentInputFieldState
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _contentController,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      minLines: 1,
-      maxLines: 100,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
-      decoration: InputDecoration.collapsed(
-        hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
-        hintText: '请添加正文',
-      ),
-      onChanged: (text) {
-        contentCounter.value = '${text.characters.length}/300';
-      },
-      scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [CustomizedLengthTextInputFormatter(300)],
-      cursorColor: ColorUtil.profileBackgroundColor,
-    );
+        controller: _contentController,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        minLines: 1,
+        maxLines: 100,
+        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+        decoration: InputDecoration.collapsed(
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(16).grey6C,
+            hintText: '请添加正文'),
+        onChanged: (text) {
+          contentCounter.value = '${text.characters.length}/300';
+        },
+        scrollPhysics: NeverScrollableScrollPhysics(),
+        inputFormatters: [CustomizedLengthTextInputFormatter(300)],
+        cursorColor: ColorUtil.profileBackgroundColor);
 
     Widget bottomTextCounter = ValueListenableBuilder(
         valueListenable: contentCounter,
@@ -457,9 +425,7 @@ class _LostAndFoundContentInputFieldState
           inputField,
           SizedBox(height: 30),
           bottomTextCounter,
-          SizedBox(
-            height: 27,
-          )
+          SizedBox(height: 27)
         ]));
   }
 }
@@ -628,9 +594,9 @@ class SelectDateField extends StatefulWidget {
 }
 
 class _SelectDateFieldState extends State<SelectDateField> {
-  static const yymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
+  static const yyyymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
   DateTime? selectedDate;
-  late String yymmdd = "";
+  late String yyyymmdd = "";
 
   @override
   Widget build(BuildContext context) {
@@ -639,62 +605,54 @@ class _SelectDateFieldState extends State<SelectDateField> {
       final DateTime? picked = await showDatePicker(
           context: context,
           initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
+          firstDate: DateTime(2015),
           lastDate: DateTime.now());
 
       if (picked != null && picked != selectedDate) {
         setState(() {
           selectedDate = picked;
-          yymmdd =
-              "${picked.year % 100}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
-          dataModel.date = yymmdd;
+          yyyymmdd =
+              "${picked.year}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
+          dataModel.date = yyyymmdd;
         });
       }
     }
 
     return Container(
-      width: 195,
-      height: 36,
-      decoration: BoxDecoration(
-          color: Color.fromARGB(255, 240, 240, 240),
-          borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-          onTap: () => _selectDate(context),
-          child: Container(
-              width: 195,
-              height: 36,
-              decoration: BoxDecoration(
-                  color: Color.fromARGB(250, 240, 240, 240),
-                  borderRadius: BorderRadius.circular(16)),
-              child: Stack(
-                children: [
+        width: 195,
+        height: 36,
+        decoration: BoxDecoration(
+            color: Color.fromARGB(255, 240, 240, 240),
+            borderRadius: BorderRadius.circular(16)),
+        child: InkWell(
+            onTap: () => _selectDate(context),
+            child: Container(
+                width: 195,
+                height: 36,
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(250, 240, 240, 240),
+                    borderRadius: BorderRadius.circular(16)),
+                child: Stack(children: [
                   Container(
-                    width: 17,
-                    height: 17,
-                    margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
-                    child: selectedDate != null
-                        ? Image.asset(
-                            "assets/images/icon_clock_filled.png",
-                            fit: BoxFit.fill,
-                          )
-                        : Image.asset("assets/images/icon_clock.png",
-                            fit: BoxFit.fill),
-                  ),
+                      width: 17,
+                      height: 17,
+                      margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+                      child: selectedDate != null
+                          ? Image.asset("assets/images/icon_clock_filled.png",
+                              fit: BoxFit.fill)
+                          : Image.asset("assets/images/icon_clock.png",
+                              fit: BoxFit.fill)),
                   Container(
-                      margin: EdgeInsets.fromLTRB(55, 6, 0, 0),
+                      margin: EdgeInsets.fromLTRB(45, 6, 0, 0),
                       child: selectedDate != null
                           ? Text(
                               "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromARGB(255, 44, 126, 223)))
-                          : Text(yymmddtexts[widget.typeNotifier.value],
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromARGB(255, 144, 144, 144))))
-                ],
-              ))),
-    );
+                              style:
+                                  TextUtil.base.NotoSansSC.w400.sp(14).blue2C)
+                          : Text(yyyymmddtexts[widget.typeNotifier.value],
+                              style:
+                                  TextUtil.base.NotoSansSC.w400.sp(14).grey89))
+                ]))));
   }
 }
 
@@ -710,6 +668,9 @@ class InputLocationField extends StatefulWidget {
 class _InputLocationFieldState extends State<InputLocationField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _locationController;
+  bool isFilled = false;
+  bool isFocused = false;
+  FocusNode focusNode = FocusNode();
   static const locationtexts = ['请填写丢失地点', '请填写拾取地点'];
 
   @override
@@ -722,36 +683,54 @@ class _InputLocationFieldState extends State<InputLocationField> {
           ..addListener(() {
             dataModel.location = _locationController.text;
           });
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
   }
 
   @override
   void dispose() {
     _locationController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _locationController,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      maxLines: 1,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
-      decoration: InputDecoration.collapsed(
-        hintStyle: const TextStyle(
-            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
-        hintText: locationtexts[widget.typeNotifier.value],
-      ),
-      onChanged: (text) {
-        contentCounter.value = '${text.characters.length}/16';
-      },
-      scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(16),
-      ],
-      cursorColor: ColorUtil.profileBackgroundColor,
-    );
+        focusNode: focusNode,
+        controller: _locationController,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        maxLines: 1,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+        decoration: InputDecoration.collapsed(
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
+            hintText:
+                isFocused ? "" : locationtexts[widget.typeNotifier.value]),
+        onChanged: (text) {
+          contentCounter.value = '${text.characters.length}/26';
+          if (contentCounter.value != '0/26') {
+            isFilled = true;
+          } else {
+            isFilled = false;
+          }
+        },
+        onTap: () {
+          setState(() {
+            isFocused = true;
+          });
+        },
+        onEditingComplete: () {
+          setState(() {
+            isFocused = false;
+          });
+        },
+        scrollPhysics: NeverScrollableScrollPhysics(),
+        inputFormatters: [CustomizedLengthTextInputFormatter(26)],
+        cursorColor: ColorUtil.profileBackgroundColor);
 
     return Container(
         width: 195,
@@ -761,15 +740,13 @@ class _InputLocationFieldState extends State<InputLocationField> {
             borderRadius: BorderRadius.circular(16)),
         child: Stack(children: [
           Container(
-            width: 17,
-            height: 17,
-            margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
-            child: Image.asset("assets/images/icon_location.png"),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(55, 6, 0, 0),
-            child: inputField,
-          )
+              width: 17,
+              height: 17,
+              margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+              child: !(isFilled || isFocused)
+                  ? Image.asset("assets/images/icon_location.png")
+                  : Image.asset("assets/images/icon_location_fill.png")),
+          Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
         ]));
   }
 }
@@ -782,6 +759,9 @@ class InputPhoneField extends StatefulWidget {
 class _InputPhoneFieldState extends State<InputPhoneField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _phoneController;
+  bool isFilled = false;
+  bool isFocused = false;
+  FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
@@ -794,36 +774,53 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
       ..addListener(() {
         dataModel.phone = _phoneController.text;
       });
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
   }
 
   @override
   void dispose() {
     _phoneController.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Widget inputField = TextField(
-      controller: _phoneController,
-      keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
-      maxLines: 1,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
-      decoration: InputDecoration.collapsed(
-        hintStyle: const TextStyle(
-            fontSize: 16, color: Color.fromARGB(255, 144, 144, 144)),
-        hintText: '请填写联系方式',
-      ),
-      onChanged: (text) {
-        contentCounter.value = '${text.characters.length}/11';
-      },
-      scrollPhysics: NeverScrollableScrollPhysics(),
-      inputFormatters: [
-        CustomizedLengthTextInputFormatter(11),
-      ],
-      cursorColor: ColorUtil.profileBackgroundColor,
-    );
+        focusNode: focusNode,
+        controller: _phoneController,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        maxLines: 1,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+        decoration: InputDecoration.collapsed(
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
+            hintText: isFocused ? "" : '请填写联系方式'),
+        onChanged: (text) {
+          contentCounter.value = '${text.characters.length}/11';
+          if (contentCounter.value != '0/11') {
+            isFilled = true;
+          } else {
+            isFilled = false;
+          }
+        },
+        onTap: () {
+          setState(() {
+            isFocused = true;
+          });
+        },
+        onEditingComplete: () {
+          setState(() {
+            isFocused = false;
+          });
+        },
+        scrollPhysics: NeverScrollableScrollPhysics(),
+        inputFormatters: [CustomizedLengthTextInputFormatter(11)],
+        cursorColor: ColorUtil.profileBackgroundColor);
 
     return Container(
         width: 195,
@@ -835,9 +832,11 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
           Container(
               width: 17,
               height: 17,
-              margin: EdgeInsets.fromLTRB(30, 9.5, 0, 0),
-              child: Image.asset("assets/images/icon_smile_chat.png")),
-          Container(margin: EdgeInsets.fromLTRB(55, 6, 0, 0), child: inputField)
+              margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+              child: !(isFilled || isFocused)
+                  ? Image.asset("assets/images/icon_smile_chat.png")
+                  : Image.asset("assets/images/icon_smile_chat_fill.png")),
+          Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
         ]));
   }
 }
