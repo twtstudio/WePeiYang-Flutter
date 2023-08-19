@@ -194,8 +194,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
                                   Color(0xFFBED1FF), BlendMode.screen),
-                              image: AssetImage('assets/images/calender/first.jpg')
-                          ))),
+                              image: AssetImage(
+                                  'assets/images/calender/first.jpg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -229,12 +229,12 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       margin: EdgeInsets.fromLTRB(0, 10.h, 18.h, 16.h),
                       decoration: cardDecoration.copyWith(
                           image: DecorationImage(
-                              alignment: Alignment.topCenter,
-                              fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
-                                  Color(0xFFBED1FF), BlendMode.screen),
-                              image: AssetImage('assets/images/calender/second.jpg'),
-                          ))),
+                        alignment: Alignment.topCenter,
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                            Color(0xFFBED1FF), BlendMode.screen),
+                        image: AssetImage('assets/images/calender/second.jpg'),
+                      ))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
