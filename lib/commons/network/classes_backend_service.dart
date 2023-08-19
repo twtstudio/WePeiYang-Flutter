@@ -1,5 +1,6 @@
 import 'dart:convert' show json;
 import 'package:http_parser/http_parser.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -42,6 +43,8 @@ class ClassesBackendService {
           json.encode(CourseTable(courses, customCourses));
       CommonPreferences.examData.value = json.encode(ExamTable(exams));
       CommonPreferences.gpaData.value = json.encode(gpaBean);
+      // 刷新学期数据
+      await AuthService.getSemesterInfo();
       return Tuple3(courses, exams, gpaBean);
     } on DioException catch (e, s) {
       Logger.reportError(e, s);
