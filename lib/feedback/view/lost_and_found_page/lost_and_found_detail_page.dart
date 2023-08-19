@@ -75,7 +75,7 @@ class LostAndFoundDetailPage extends StatefulWidget {
 
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   bool isMine = false;
-  bool brightened = false;
+  bool polished = false;
   String phoneNum = '';
   bool isLimited = false;
   @override
@@ -211,7 +211,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       isLimited
                           ? '今日已达上限了哦，明天再来吧'
                           : (phoneNum != '' && !isLimited
-                              ? phoneNum + '\n'
+                              ? "联系方式为：" + phoneNum + '\n'
                               : (findOwner
                                   ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
                                   : '确定找到了吗？\n每天最多只能获取三次联系方式哦')),
@@ -445,61 +445,69 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       ),
                       child: Column(
                         children: [
-                          InkWell(
-                            onTap: () {
-                              String weCo =
-                                  '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
-                              ClipboardData data = ClipboardData(text: weCo);
-                              Clipboard.setData(data);
-                              CommonPreferences.feedbackLastWeCo.value =
-                                  post.id.toString();
-                              ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                              FeedbackService.postShare(
-                                  id: post.id.toString(),
-                                  type: 0,
-                                  onSuccess: () {},
-                                  onFailure: () {});
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 42.0,
-                              alignment: Alignment.center,
-                              child: Text(
-                                '分享',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                          Padding(
+                              padding: EdgeInsets.only(top: 5),
+                              child: InkWell(
+                                onTap: () {
+                                  String weCo =
+                                      '我在微北洋发现了个有趣的问题【${post.title}】\n#MP${post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${post.id}';
+                                  ClipboardData data =
+                                      ClipboardData(text: weCo);
+                                  Clipboard.setData(data);
+                                  CommonPreferences.feedbackLastWeCo.value =
+                                      post.id.toString();
+                                  ToastProvider.success('微口令复制成功，快去分享加快寻找吧！');
+                                  FeedbackService.postShare(
+                                      id: post.id.toString(),
+                                      type: 0,
+                                      onSuccess: () {},
+                                      onFailure: () {});
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 30,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '分享',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          Divider(
+                            color: Colors.white,
+                          ), // 添加分隔线
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 5),
+                            child: InkWell(
+                              onTap: () {
+                                if (isMine) {
+                                  _showDeleteDialog();
+                                } else {
+                                  Navigator.pushNamed(
+                                      context, FeedbackRouter.report,
+                                      arguments: ReportPageArgs(post.id, true));
+                                }
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 30,
+                                alignment: Alignment.center,
+                                child: Text(
+                                  isMine ? '删除' : '举报',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Divider(), // 添加分隔线
-                          InkWell(
-                            onTap: () {
-                              if (isMine) {
-                                _showDeleteDialog();
-                              } else {
-                                Navigator.pushNamed(
-                                    context, FeedbackRouter.report,
-                                    arguments: ReportPageArgs(post.id, true));
-                              }
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 42.0,
-                              alignment: Alignment.center,
-                              child: Text(
-                                isMine ? '删除' : '举报',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -514,7 +522,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 42.0,
+                          height: 35,
                           alignment: Alignment.center,
                           child: Text(
                             '取消',
@@ -807,10 +815,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color:
-                                  brightened ? Colors.grey[200] : Colors.white,
+                              color: polished ? Colors.grey[200] : Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              border: brightened
+                              border: polished
                                   ? null
                                   : Border.all(
                                       color: Color(0xFF2C7EDF),
@@ -822,7 +829,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
-                                    brightened
+                                    polished
                                         ? 'assets/images/octicon_light-bulb-24-dark.png'
                                         : 'assets/images/octicon_light-bulb-24.png',
                                     width: 24.w,
@@ -832,21 +839,21 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                     width: 8.w,
                                   ),
                                   Text(
-                                    brightened ? '已擦亮' : '擦亮',
+                                    polished ? '已擦亮' : '擦亮',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: brightened
+                                      color: polished
                                           ? Colors.grey
                                           : Color(0xFF2C7EDF),
                                     ),
                                   ),
                                 ],
                               ),
-                              onPressed: brightened
-                                  ? null // 如果brightened为true，则禁用按钮
+                              onPressed: polished
+                                  ? null
                                   : () async {
                                       setState(() {
-                                        brightened = true;
+                                        polished = true;
                                       });
 
                                       await FeedbackService.polish(
@@ -888,9 +895,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    /// 计算长图
     Completer<ui.Image> completer = Completer<ui.Image>();
-    // 这个不能替换成 WpyPic
     Image image = Image.network(
       widget.imageUrl,
       width: double.infinity,
@@ -955,6 +960,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                               GestureDetector(
                                   onTap: () => Navigator.pushNamed(
                                         context,
+                                        //暂时用的湖底的
                                         FeedbackRouter.imageView,
                                         arguments: ImageViewPageArgs(
                                             [widget.imageUrl], 1, 0, true),
