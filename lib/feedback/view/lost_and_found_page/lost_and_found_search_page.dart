@@ -158,11 +158,6 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         searchHistory.addAll(List.generate(
           list.length,
               (index) {
-            var lostAndFoundSearchResultArgument = LostAndFoundSearchResultPageArgs(
-                context.read<LostAndFoundModel2>().currentType,
-                context.read<LostAndFoundModel2>()
-                    .currentCategory[context.read<LostAndFoundModel2>().currentType]!,
-                list[list.length - index - 1]);
             return InkResponse(
               radius: 30,
               highlightColor: Colors.transparent,
@@ -172,7 +167,10 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.lostAndFoundSearchResult,
-                  arguments: lostAndFoundSearchResultArgument,
+                  arguments: LostAndFoundSearchResultPageArgs(
+                      context.read<LostAndFoundModel2>().currentType,
+                      context.read<LostAndFoundModel2>().currentCategory[context.read<LostAndFoundModel2>().currentType]!,
+                      list[list.length - index - 1]),
                 ).then((_) {
                   Navigator.pop(context);
                 });
