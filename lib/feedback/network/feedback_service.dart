@@ -1323,11 +1323,13 @@ class FeedbackService with AsyncTimer {
   }
 
   static sendLostAndFoundPost(
-      {required type,
+      {required author,
+      required type,
       required category,
       required title,
       required text,
       required yyyymmdd,
+      required yyyymmddhhmmss,
       required location,
       required phone,
       required List<String> images,
