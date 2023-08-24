@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import Flutter
 import WidgetKit
+import ActivityKit
 
 fileprivate struct KGTInfo {
     static let kGtAppId = "43HGFmIKsnAmjrjDLr60X4"
@@ -34,6 +35,21 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
 
         GeneratedPluginRegistrant.register(with: self)
+        
+        let liveActivityAtrributes = LiveActivityAttributes(courseName: "测试课程-实时活动")
+        let intialContentSate = LiveActivityAttributes.ContentState()
+        do{
+            if #available(iOS 16.1, *) {
+                let activity = try Activity<LiveActivityAttributes>.request(attributes: liveActivityAtrributes, contentState: intialContentSate, pushType: nil)
+                print("Activity Add Successfully, id: \(activity.id)")
+            } else {
+                // Fallback on earlier versions
+                print("system below 16.1")
+            }
+        }catch {
+            print(error.localizedDescription)
+        }
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 

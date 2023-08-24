@@ -12,5 +12,7 @@
 		<string>sf-pro-text-regular.ttf</string>
 		<string>Product Sans Bold.ttf</string>
 	</array>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

@@ -18,11 +18,12 @@ struct PeiYang_LiteBundle: WidgetBundle {
     }
     
     private func widgets() -> some Widget {
-        if #available(iOS 16.0, *) {
+        if #available(iOS 16.1, *) {
             return WidgetBundleBuilder.buildBlock(
                 WhiteColorWidget(),
                 BlueColorWidget(),
-                LockScreenWidget()
+                LockScreenWidget(),
+                LiveActivityWidget()
             )
         } else {
             return WidgetBundleBuilder.buildBlock(
@@ -57,8 +58,7 @@ struct BlueColorWidget: Widget {
     }
 }
 
-
-@available(iOSApplicationExtension 16.0, *)
+@available(iOSApplicationExtension 16.1, *)
 struct LockScreenWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "lockScreen", provider: CourseTimelineProvider()) { entry in
@@ -70,6 +70,34 @@ struct LockScreenWidget: Widget {
     }
 }
 
+@available(iOSApplicationExtension 16.1, *)
+struct LiveActivityWidget: Widget {
+    var body: some WidgetConfiguration {
+        ActivityConfiguration(for: LiveActivityAttributes.self){ context in
+            LiveActivityView()
+                .activityBackgroundTint(Color.green)
+        } dynamicIsland: { context in
+            DynamicIsland{
+                // Expend when long pressed
+                DynamicIslandExpandedRegion(.leading){
+                    
+                }
+                DynamicIslandExpandedRegion(.trailing){
+                    
+                }
+                DynamicIslandExpandedRegion(.center){
+                    
+                }
+                DynamicIslandExpandedRegion(.bottom){
+                    
+                }
+            } compactLeading: {
+            } compactTrailing: {
+            } minimal: {
+            }
+        }
+    }
+}
 
 
 struct CourseTableWidgetEntryView: View {
@@ -79,7 +107,7 @@ struct CourseTableWidgetEntryView: View {
     @Environment(\.widgetFamily) var family
     
     var body: some View {
-        if #available(iOSApplicationExtension 16.0, *) {
+        if #available(iOSApplicationExtension 16.1, *) {
             switch family {
             case .systemMedium:
                 MediumView(entry: entry, theme: color)
@@ -101,7 +129,7 @@ struct CourseTableWidgetEntryView: View {
     }
 }
 
-@available(iOSApplicationExtension 16.0, *)
+@available(iOSApplicationExtension 16.1, *)
 struct LockScreenWidgetEntryView: View {
     var entry: CourseTimelineProvider.Entry
     

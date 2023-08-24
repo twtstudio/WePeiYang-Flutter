@@ -22,6 +22,7 @@
 		568EF21428D6579600074B70 /* LargeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21328D6579600074B70 /* LargeView.swift */; };
 		568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */; };
 		568EF21E28D8B21800074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
+		56A755992A9505B700C1CF98 /* LiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A755982A9505B700C1CF98 /* LiveActivityView.swift */; };
 		56ECC29028D8C3C700181B96 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
 		56ECC29228D8CF3A00181B96 /* LockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECC29128D8CF3A00181B96 /* LockView.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -94,6 +95,7 @@
 		568EF21128D656E400074B70 /* MediumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumView.swift; sourceTree = "<group>"; };
 		568EF21328D6579600074B70 /* LargeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeView.swift; sourceTree = "<group>"; };
 		568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTimelineProvider.swift; sourceTree = "<group>"; };
+		56A755982A9505B700C1CF98 /* LiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityView.swift; sourceTree = "<group>"; };
 		56B1FDAA288EA36500569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		56B1FDAB288EA36600569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		56B1FDAC288EA36B00569DB3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				568EF21128D656E400074B70 /* MediumView.swift */,
 				568EF21328D6579600074B70 /* LargeView.swift */,
 				56ECC29128D8CF3A00181B96 /* LockView.swift */,
+				56A755982A9505B700C1CF98 /* LiveActivityView.swift */,
 			);
 			path = WidgetView;
 			sourceTree = "<group>";
@@ -359,14 +362,14 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				F85A3AEE681075E3021B97DA /* [CP] Check Pods Manifest.lock */,
+				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				9740EEB61CF901F6004384FC /* Run Script */,
+				0BE3F7EF43EABDDFCA812DE5 /* [CP] Embed Pods Frameworks */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				0BE3F7EF43EABDDFCA812DE5 /* [CP] Embed Pods Frameworks */,
 				56B1FDC42890231A00569DB3 /* Embed Foundation Extensions */,
+				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				613A3759415EBB8C0FDC0083 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -474,7 +477,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin\n";
 		};
 		613A3759415EBB8C0FDC0083 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -538,6 +541,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				568EF21E28D8B21800074B70 /* Storage.swift in Sources */,
+				56A755992A9505B700C1CF98 /* LiveActivityView.swift in Sources */,
 				568EF20828D64D8600074B70 /* Model.swift in Sources */,
 				568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */,
 				568EF20E28D6534F00074B70 /* WidgetCourseManager.swift in Sources */,
@@ -608,6 +612,7 @@
 /* Begin XCBuildConfiguration section */
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -659,7 +664,7 @@
 		};
 		249021D4217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
+			baseConfigurationReference = 7A922869B3699FAB36BCCE61 /* Pods-Runner.profile.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -668,13 +673,13 @@
 				CURRENT_PROJECT_VERSION = 202308111200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.3.8;
+				MARKETING_VERSION = 4.3.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -799,6 +804,7 @@
 		};
 		97C147031CF9000F007C117D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -855,6 +861,7 @@
 		};
 		97C147041CF9000F007C117D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -908,7 +915,7 @@
 		};
 		97C147061CF9000F007C117D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
+			baseConfigurationReference = 8B73E31D5848A1B173C6F38E /* Pods-Runner.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -917,13 +924,13 @@
 				CURRENT_PROJECT_VERSION = 202308111200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 x86_64 arm64";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.3.8;
+				MARKETING_VERSION = 4.3.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -935,7 +942,7 @@
 		};
 		97C147071CF9000F007C117D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
+			baseConfigurationReference = 4EC6C351A3468DCC55593FFC /* Pods-Runner.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -944,13 +951,13 @@
 				CURRENT_PROJECT_VERSION = 202308111200;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.3.8;
+				MARKETING_VERSION = 4.3.9;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

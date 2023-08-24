@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 
 struct FlutterData: Decodable, Hashable {
@@ -31,8 +32,6 @@ struct CollectionClass: Hashable, Encodable, Identifiable {
     var classMessage: Classroom
     var buildingName: String
 }
-
-
 
 struct Arrange: Codable, Storable, Comparable, Hashable {
     var teacherArray: [String]
@@ -255,6 +254,21 @@ struct CourseTable: Codable, Storable {
         self.customCourseArray = []
     }
     
+}
+
+// MARK: - LiveActivity
+struct LiveActivityAttributes: ActivityAttributes {
+    struct ContentState: Codable, Hashable {
+        var state: Status = .perpare
+    }
+    
+    var courseName: String
+}
+
+enum Status: String, CaseIterable, Codable, Equatable {
+    case perpare = "figure.walk.motion"
+    case ongoing = "rectangle.inset.filled.and.person.filled"
+    case over = "checkmark.seal"
 }
 
 extension Date {
