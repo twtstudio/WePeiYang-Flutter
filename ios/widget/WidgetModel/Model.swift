@@ -259,7 +259,7 @@ struct CourseTable: Codable, Storable {
 // MARK: - LiveActivity
 struct LiveActivityAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable {
-        var state: Status = .perpare
+        var status: Status = .perpare
     }
     
     var courseName: String

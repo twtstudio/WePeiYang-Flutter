@@ -22,7 +22,6 @@
 		568EF21428D6579600074B70 /* LargeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21328D6579600074B70 /* LargeView.swift */; };
 		568EF21D28D6C17500074B70 /* CourseTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */; };
 		568EF21E28D8B21800074B70 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D302FA2728C75F2400B47A90 /* Storage.swift */; };
-		56A755992A9505B700C1CF98 /* LiveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A755982A9505B700C1CF98 /* LiveActivityView.swift */; };
 		56ECC29028D8C3C700181B96 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568EF20728D64D8600074B70 /* Model.swift */; };
 		56ECC29228D8CF3A00181B96 /* LockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECC29128D8CF3A00181B96 /* LockView.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -95,7 +94,6 @@
 		568EF21128D656E400074B70 /* MediumView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediumView.swift; sourceTree = "<group>"; };
 		568EF21328D6579600074B70 /* LargeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeView.swift; sourceTree = "<group>"; };
 		568EF21C28D6C17500074B70 /* CourseTimelineProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTimelineProvider.swift; sourceTree = "<group>"; };
-		56A755982A9505B700C1CF98 /* LiveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityView.swift; sourceTree = "<group>"; };
 		56B1FDAA288EA36500569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		56B1FDAB288EA36600569DB3 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		56B1FDAC288EA36B00569DB3 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
@@ -177,7 +175,6 @@
 				568EF21128D656E400074B70 /* MediumView.swift */,
 				568EF21328D6579600074B70 /* LargeView.swift */,
 				56ECC29128D8CF3A00181B96 /* LockView.swift */,
-				56A755982A9505B700C1CF98 /* LiveActivityView.swift */,
 			);
 			path = WidgetView;
 			sourceTree = "<group>";
@@ -541,7 +538,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				568EF21E28D8B21800074B70 /* Storage.swift in Sources */,
-				56A755992A9505B700C1CF98 /* LiveActivityView.swift in Sources */,
 				568EF20828D64D8600074B70 /* Model.swift in Sources */,
 				568EF20C28D652AC00074B70 /* DataEntry.swift in Sources */,
 				568EF20E28D6534F00074B70 /* WidgetCourseManager.swift in Sources */,
