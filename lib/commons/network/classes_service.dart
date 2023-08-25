@@ -4,7 +4,9 @@ import 'package:mutex/mutex.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
+import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -32,9 +34,11 @@ class ClassesService {
   static final spiderDio = _SpiderDio();
 
   /// 获取办公网GPA、课表、考表信息
-  static Future<void> getClasses(
-      BuildContext context, String name, String pw, String code) async {
-    await login(name, pw, code);
+  /// [code] 为空说明用户没有手动填图形验证码
+  static Future<void> getClasses(BuildContext context, {String? code}) async {
+    var name = CommonPreferences.tjuuname.value;
+    var pw = CommonPreferences.tjupasswd.value;
+    await login(name, pw, code: code);
     var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
     var courseProvider = Provider.of<CourseProvider>(context, listen: false);
     var examProvider = Provider.of<ExamProvider>(context, listen: false);
@@ -87,22 +91,31 @@ class ClassesService {
   }
 
   /// 登录总流程：填写图形验证码code -> 获取session和lt -> 在后端加密得到rsa -> 进行sso登录 -> 判断本科/研究生
-  static Future<void> login(String name, String pw, String code) async {
-    // 获取session和lt
-    var response = await spiderDio.get("https://sso.tju.edu.cn/cas/login");
-    var execution =
-        response.data.toString().find(r'name="execution" value="(\w+)"');
-    var lt = response.data.toString().find(r'name="lt" value="([\w\-]+)"');
-
-    // 获取rsa
-    response = await spiderDio.post("https://learning.twt.edu.cn/enc",
-        data: FormData.fromMap({'val': name + pw + lt}));
-    var rsa = response.data['data'].toString();
-
-    // 登录sso
-    await _ssoLogin(name, pw, code, execution, lt, rsa);
+  /// [code] 为空说明用户没有手动填图形验证码
+  static Future<void> login(String name, String pw, {String? code}) async {
+    var response = await spiderDio.get(
+      "https://sso.tju.edu.cn/cas/login",
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        validateStatus: (status) => status! < 400,
+        followRedirects: false,
+      ),
+    );
+    // `status == 302` 代表已经登录过
+    if (response.statusCode != 302) {
+      // 获取session和lt
+      var execution =
+          response.data.toString().find(r'name="execution" value="(\w+)"');
+      var lt = response.data.toString().find(r'name="lt" value="([\w\-]+)"');
+      // 获取rsa
+      response = await spiderDio.post("https://learning.twt.edu.cn/enc",
+          data: FormData.fromMap({'val': name + pw + lt}));
+      var rsa = response.data['data'].toString();
+      code ??= await ClassesBackendService.ocr();
+      // 登录sso
+      await _ssoLogin(name, pw, code, execution, lt, rsa);
+    }
     await _getIdentity();
-
     // 刷新学期数据
     await AuthService.getSemesterInfo();
   }
@@ -129,11 +142,9 @@ class ClassesService {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
-  
-    if ((res.statusCode == 302)||
-        res.data.toString().contains(
-            "var remind_strong_pwd = 'true'"))
-      return;
+
+    if ((res.statusCode == 302) ||
+        res.data.toString().contains("var remind_strong_pwd = 'true'")) return;
 
     ToastProvider.error('检查账号密码和验证码正确');
     throw WpyDioException(error: '检查账号密码正确');

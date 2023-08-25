@@ -29,6 +29,7 @@ abstract class DioAbstract {
     _dio = Dio(options);
     _dio.interceptors.addAll([
       NetCheckInterceptor(),
+      LogInterceptor(requestBody: true),
       ...interceptors,
       errorInterceptor ?? ErrorInterceptor()
     ]);

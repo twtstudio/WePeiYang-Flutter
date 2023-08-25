@@ -8,8 +8,6 @@ import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 class DownloadTask {
   final String url;
   final String fileName;
-  final String? title;
-  final String? description;
   final bool showNotification;
   final String path;
   final String id;
@@ -21,8 +19,6 @@ class DownloadTask {
     required this.showNotification,
     required this.id,
     required this.path,
-    this.title,
-    this.description,
   });
 
   factory DownloadTask.updateApk(AndroidVersion _version) {
@@ -74,8 +70,6 @@ class DownloadTask {
     return {
       'url': url,
       'fileName': fileName,
-      'title': title,
-      'description': description,
       'showNotification': showNotification,
       'path': path,
       'id': id,

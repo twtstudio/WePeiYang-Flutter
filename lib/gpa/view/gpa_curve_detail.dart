@@ -47,29 +47,6 @@ class GPAPreview extends StatelessWidget {
   }
 }
 
-/// 曲线上面的文字，说明当前曲线的内容
-/// 设计图上没有，先注释，确认没用再删
-// class _CurveText extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-//       child: Container(
-//         padding: const EdgeInsets.fromLTRB(25, 25, 0, 20),
-//         alignment: Alignment.centerLeft,
-//         child: Builder(builder: (context) {
-//           var typeName = context.select<GPANotifier, String>((p) => p.typeName);
-//           return Text("$typeName${S.current.curve}",
-//               style: FontManager.YaQiHei.copyWith(
-//                   fontSize: 16,
-//                   color: Colors.black,
-//                   fontWeight: FontWeight.bold));
-//         }),
-//       ),
-//     );
-//   }
-// }
-
 /// wpy_page中显示数值信息
 class _GPAIntro extends StatelessWidget {
   static final _textStyle =

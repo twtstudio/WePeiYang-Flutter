@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -58,10 +57,8 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
       ToastProvider.error('验证码不能为空');
       return;
     }
-    var tjuuname = CommonPreferences.tjuuname.value;
-    var tjupasswd = CommonPreferences.tjupasswd.value;
     try {
-      await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
+      await ClassesService.getClasses(context, code: captcha);
       Navigator.pop(context);
     } on DioException catch (e) {
       var str = e.error.toString();

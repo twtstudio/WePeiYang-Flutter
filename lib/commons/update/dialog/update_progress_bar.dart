@@ -48,7 +48,6 @@ class _GradientLinearProgressPainter extends CustomPainter {
   final double value;
   final Color backgroundColor;
   final List<Color> colors;
-  final List<double>? stops;
   final p = Paint();
 
   _GradientLinearProgressPainter(
@@ -56,8 +55,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       required this.colors,
       this.value = 0.0,
       this.backgroundColor = const Color(0xFFEEEEEE),
-      this.strokeCapRound = false,
-      this.stops});
+      this.strokeCapRound = false});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -82,7 +80,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       var valueEnd = Offset(value * size.width + _offset, _offset); //计算进度的长度
       Rect rect = Rect.fromPoints(start, valueEnd);
       p.shader =
-          LinearGradient(colors: colors, stops: stops).createShader(rect);
+          LinearGradient(colors: colors).createShader(rect);
       p.color = Colors.amber;
       canvas.drawLine(start, valueEnd, p);
     }

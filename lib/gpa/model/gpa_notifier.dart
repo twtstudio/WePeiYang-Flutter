@@ -125,32 +125,22 @@ class GPANotifier with ChangeNotifier {
   /// 若失败则弹出TjuRebindDialog，用户手动填写图形验证码
   void refreshGPABackend(BuildContext context) async {
     ToastProvider.running("刷新数据中……");
-    if (CommonPreferences.useClassesBackend.value) {
-      var data = await ClassesBackendService.getClasses();
-      if (data != null) {
+    try {
+      if (CommonPreferences.useClassesBackend.value) {
+        var data = await ClassesBackendService.getClasses();
+        if (data == null) throw WpyDioException(error: '云端获取课表失败');
         _gpaStats = data.item3.stats;
         total = data.item3.total;
         notifyListeners();
       } else {
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) => TjuRebindDialog(),
-        );
+        await ClassesService.getClasses(context);
       }
-    } else {
-      var tjuuname = CommonPreferences.tjuuname.value;
-      var tjupasswd = CommonPreferences.tjupasswd.value;
-      try {
-        var captcha = await ClassesBackendService.ocr();
-        await ClassesService.getClasses(context, tjuuname, tjupasswd, captcha);
-      } on DioException catch (_) {
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) => TjuRebindDialog(),
-        );
-      }
+    } on DioException catch (_) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) => TjuRebindDialog(),
+      );
     }
   }
 
