@@ -74,8 +74,8 @@ struct LockScreenWidget: Widget {
 struct LiveActivityWidget: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivityAttributes.self){ context in
-            LiveActivityView()
-                .activityBackgroundTint(Color.green)
+            LiveActivityView(contentState: context.state)
+                .activityBackgroundTint(Color.blue)
         } dynamicIsland: { context in
             DynamicIsland{
                 // Expend when long pressed
