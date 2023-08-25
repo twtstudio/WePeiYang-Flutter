@@ -140,7 +140,11 @@ class ClassesService {
         "execution": execution,
         "_eventId": "submit",
       },
-      options: Options(contentType: Headers.formUrlEncodedContentType),
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        validateStatus: (status) => status! < 400,
+        followRedirects: false,
+      ),
     );
 
     if ((res.statusCode == 302) ||
