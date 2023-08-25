@@ -89,7 +89,18 @@ class ClassesService {
   /// 登录总流程：填写图形验证码code -> 获取session和lt -> 在后端加密得到rsa -> 进行sso登录 -> 判断本科/研究生
   static Future<void> login(String name, String pw, String code) async {
     // 获取session和lt
-    var response = await spiderDio.get("https://sso.tju.edu.cn/cas/login");
+    var response = await spiderDio.get("https://sso.tju.edu.cn/cas/login", options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            validateStatus: (status) => status! < 400,
+            followRedirects: false,
+          ));
+    if (response.statusCode == 302) {
+      // 已经登录
+      await _getIdentity();
+      // 刷新学期数据
+      await AuthService.getSemesterInfo();
+      return;
+    }
     var execution =
         response.data.toString().find(r'name="execution" value="(\w+)"');
     var lt = response.data.toString().find(r'name="lt" value="([\w\-]+)"');
@@ -127,7 +138,11 @@ class ClassesService {
         "execution": execution,
         "_eventId": "submit",
       },
-      options: Options(contentType: Headers.formUrlEncodedContentType),
+      options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+            validateStatus: (status) => status! < 400,
+            followRedirects: false,
+          ),
     );
   
     if ((res.statusCode == 302)||
