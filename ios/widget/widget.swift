@@ -72,6 +72,7 @@ struct LockScreenWidget: Widget {
 
 @available(iOSApplicationExtension 16.1, *)
 struct LiveActivityWidget: Widget {
+    
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivityAttributes.self){ context in
             ZStack {
@@ -166,19 +167,25 @@ struct LiveActivityWidget: Widget {
                 }
                 DynamicIslandExpandedRegion(.trailing){
                     HStack {
-                        Image(systemName: "figure.walk.motion")
+//                        Image(systemName: "figure.walk.motion")
+//                            .foregroundColor(.white)
+//                            .background{
+//                                Circle()
+//                                    .fill(.blue)
+//                                    .padding(-2)
+//                            }
+//                            .background{
+//                                Circle()
+//                                    .stroke(.white, lineWidth:1.5)
+//                                    .padding(-2)
+//                            }
+//                            .padding(.trailing, 5)
+                        
+                        DynamicIslandProgressView(process: 0.3)
+                        
+                        Text("30min")
+                            .font(.system(size: 14))
                             .foregroundColor(.white)
-                            .background{
-                                Circle()
-                                    .fill(.blue)
-                                    .padding(-2)
-                            }
-                            .background{
-                                Circle()
-                                    .stroke(.white, lineWidth:1.5)
-                                    .padding(-2)
-                            }
-                            .padding(.trailing, 5)
                         Spacer()
                     }
                 }
@@ -194,14 +201,37 @@ struct LiveActivityWidget: Widget {
                     .font(.title3)
                     .foregroundColor(.white)
             } compactTrailing: {
-                Image(systemName: context.state.status.rawValue)
-                    .font(.title3)
-                    .foregroundColor(.white)
+                DynamicIslandProgressView(process: 0.3)
             } minimal: {
                 Image(systemName: context.state.status.rawValue)
                     .font(.title3)
                     .foregroundColor(.white)
             }
+        }
+    }
+    
+    @ViewBuilder
+    func DynamicIslandProgressView(process: Double) -> some View {
+//        let rotation = process > 1 ? 1 : (process < 0 ? 0 : process)
+        ZStack {
+            Image(systemName: "arrow.up")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .fontWeight(.semibold)
+                .frame(width: 12, height: 12)
+                .foregroundColor(.blue)
+                .rotationEffect(.init(degrees: Double(process * 360)))
+            //MARK: Progress Ring
+            ZStack {
+                Circle()
+                    .stroke(.white.opacity(0.25), lineWidth: 4)
+                
+                Circle()
+                    .trim(from: 0, to: process)
+                    .stroke(.blue, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                    .rotationEffect(.init(degrees: -90))
+            }
+            .frame(width: 23, height: 23)
         }
     }
     
