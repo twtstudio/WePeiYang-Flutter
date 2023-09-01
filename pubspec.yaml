@@ -61,6 +61,8 @@ dependencies:
 
   mutex: ^3.0.0
 
+  optimized_cached_image: ^3.0.1
+
   path_provider: ^2.0.4
   permission_handler: ^9.2.0
   photo_view: ^0.14.0
