@@ -33,6 +33,13 @@ class ImageViewPage extends StatefulWidget {
 
 class _ImageViewPageState extends State<ImageViewPage> {
   final String baseUrl = '${EnvConfig.QNHDPIC}download/origin/';
+  late int indexNow;
+
+  @override
+  void initState() {
+    indexNow = widget.args.indexNow;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +79,11 @@ class _ImageViewPageState extends State<ImageViewPage> {
           itemCount: widget.args.urlListLength,
           backgroundDecoration: BoxDecoration(color: Colors.black),
           pageController: PageController(
-            initialPage: widget.args.indexNow,
+            initialPage: indexNow,
           ),
+          onPageChanged: (c) {
+            indexNow = c;
+          },
         ),
         SafeArea(
           child: Align(
@@ -140,7 +150,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   void saveImage() async {
     ToastProvider.running('保存中');
     await GallerySaver.saveImage(
-        baseUrl + widget.args.urlList[widget.args.indexNow],
+        baseUrl + widget.args.urlList[indexNow],
         albumName: "微北洋");
     ToastProvider.success('保存成功');
   }
@@ -148,8 +158,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
   void showSaveImageBottomSheet() async {
     ToastProvider.running('请稍后');
     final path = await StorageUtil.saveTempFileFromNetwork(
-        baseUrl + widget.args.urlList[widget.args.indexNow],
-        filename: widget.args.urlList[widget.args.indexNow]);
+        baseUrl + widget.args.urlList[indexNow],
+        filename: widget.args.urlList[indexNow]);
     Share.shareXFiles([XFile(path)]);
   }
 }
