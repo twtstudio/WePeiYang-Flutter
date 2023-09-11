@@ -28,7 +28,6 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 Properties pro = new Properties()
 pro.load(project.rootProject.file('local.properties').newDataInputStream())
-print(pro.getProperty('keyAlias'))
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -133,7 +132,7 @@ android {
             switch (environment) {
                 case "ONLINE_TEST":
                     // 个推 product
-                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
                     // 输出调试信息
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     // 设置应用名称
@@ -145,7 +144,7 @@ android {
                     break
                 case "DEVELOP":
                     // 个推 develop+
-                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
+                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
                     // 不覆盖正式版安装
                     applicationIdSuffix ".develop"
                     // 输出调试信息
@@ -160,7 +159,7 @@ android {
                 default:  // RELEASE
                     environment = "RELEASE"
                     // 个推 product
-                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
                     // 不输出调试信息
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     // 设置应用名称
@@ -209,7 +208,7 @@ android {
                     // 设置应用名称
                     resValue("string", "label", "微北洋DEBUG_RELEASE")
                     // 个推 product
-                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.product')
+                    manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
                     break
                 default:
                     // 不覆盖正式版安装
@@ -217,7 +216,7 @@ android {
                     // 设置应用名称
                     resValue("string", "label", "微北洋DEBUG_DEVELOP")
                     // 个推 develop
-                    manifestPlaceholders["GETUI_APPID"] = pro.getProperty('getui.develop')
+                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
                     break
             }
         }
@@ -289,6 +288,5 @@ def getDartDefines() {
                 def pair = entry.split('=')
                 [(pair.first()): pair.last()]
             }
-    println(arguments)
     return arguments
 }
