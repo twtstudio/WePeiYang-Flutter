@@ -24,7 +24,7 @@ class ClipCopy extends StatelessWidget {
       onTap: () {
         if (Provider.of<NewFloorProvider>(context, listen: false)
             .inputFieldEnabled) {
-          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          context.read<NewFloorProvider>().clearAndClose();
         } else {
           Provider.of<NewFloorProvider>(context, listen: false)
               .inputFieldOpenAndReplyTo(id);

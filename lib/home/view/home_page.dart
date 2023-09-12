@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _tabController.animateTo(widget.page!);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(CommonPreferences.accountUpgrade.value.isNotEmpty){
+      if (CommonPreferences.accountUpgrade.value.isNotEmpty) {
         showDialog(
           context: context,
           barrierDismissible: true,
@@ -215,6 +215,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ToastProvider.running('再按一次退出程序');
                 return false;
               }
+            } else if (context.read<LakeModel>().currentTab != 0) {
+              context.read<LakeModel>().tabController.animateTo(0);
+              return false;
             } else {
               _tabController.animateTo(0);
               return false;

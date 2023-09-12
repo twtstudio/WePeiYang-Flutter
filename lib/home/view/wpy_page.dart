@@ -254,13 +254,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Study Room')),
+                    child: Tab(text: 'GPA Curves')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'GPA Curves')),
+                    child: Tab(text: 'Coming Soon')),
               ]),
         ),
         SizedBox(
@@ -269,10 +269,15 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               physics: BouncingScrollPhysics(),
               children: [
+                // Container(
+                //   width: 1.sw - 60.w,
+                //   height: 300.h,
+                //   child: MainPageStudyRoomWidget(),
+                // ),
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
-                  child: MainPageStudyRoomWidget(),
+                  child: GPAPreview(),
                 ),
                 Container(
                   width: 1.sw - 60.w,
@@ -282,7 +287,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
-                  child: GPAPreview(),
+                  child: Image.asset("assets/images/schedule_empty.png"),
                 ),
               ]),
         ),

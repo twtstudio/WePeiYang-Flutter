@@ -83,7 +83,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         scrollInfo.metrics.pixels - _previousOffset >= 20) {
-      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+      context.read<NewFloorProvider>().clearAndClose();
       _previousOffset = scrollInfo.metrics.pixels;
     }
     return true;

@@ -51,7 +51,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   List<Floor> _commentList = [];
   List<Floor> _officialCommentList = [];
   bool _showPostCard = true;
-  bool _bottomIsOpen = false;
   int currentPage = 1;
   int rating = 0;
   final onlyOwner = ValueNotifier<int>(0);
@@ -151,12 +150,11 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
-    if (_bottomIsOpen) if (context.read<NewFloorProvider>().inputFieldEnabled ==
-            true &&
-        (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
-      _bottomIsOpen = false;
-      Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
-      _previousOffset = scrollInfo.metrics.pixels;
+      if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+          (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
+        context.read<NewFloorProvider>().inputFieldEnabled = false;
+        context.read<NewFloorProvider>().clearAndClose();
+        _previousOffset = scrollInfo.metrics.pixels;
     }
     return true;
   }
@@ -537,7 +535,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 offstage: value.inputFieldEnabled,
                                 child: InkWell(
                                   onTap: () {
-                                    _bottomIsOpen = true;
+                                    context.read<NewFloorProvider>().inputFieldEnabled = true;
                                     value.inputFieldOpenAndReplyTo(0);
                                     FocusScope.of(context)
                                         .requestFocus(value.focusNode);
@@ -922,7 +920,7 @@ class CommentInputFieldState extends State<CommentInputField> {
       onSuccess: () {
         setState(() => commentLengthIndicator = '0/200');
         FocusManager.instance.primaryFocus?.unfocus();
-        Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+        context.read<NewFloorProvider>().clearAndClose();
         textEditingController.text = '';
         ToastProvider.success("评论成功 (❁´◡`❁)");
       },
@@ -942,7 +940,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         onSuccess: () {
           setState(() => commentLengthIndicator = '0/200');
           FocusManager.instance.primaryFocus?.unfocus();
-          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          context.read<NewFloorProvider>().clearAndClose();
           textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
         },
@@ -958,7 +956,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         onSuccess: () {
           setState(() => commentLengthIndicator = '0/200');
           FocusManager.instance.primaryFocus?.unfocus();
-          Provider.of<NewFloorProvider>(context, listen: false).clearAndClose();
+          context.read<NewFloorProvider>().clearAndClose();
           textEditingController.text = '';
           ToastProvider.success("回复成功 (❁´3`❁)");
         },

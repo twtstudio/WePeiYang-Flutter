@@ -14,7 +14,7 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
-    if (hideGPA) return Container();
+    if (hideGPA) return Image.asset("assets/images/schedule_empty.png");
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
     if (stats.isEmpty)
       return
