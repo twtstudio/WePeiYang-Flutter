@@ -30,6 +30,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error('密码不能为空');
       return;
     }
+    checkNetWork(false);
     var res = '';
     while (res.length != 4) {
       res = await ClassesBackendService.ocr();
