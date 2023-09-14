@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -7,6 +8,10 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/network/classes_backend_service.dart';
+import '../../../commons/network/classes_service.dart';
+import '../../../schedule/model/course_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
   @override
@@ -17,7 +22,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   String tjuuname = '';
   String tjupasswd = '';
 
-  void _bind() {
+  void _bind() async {
     if (tjuuname == '') {
       ToastProvider.error('用户名不能为空');
       return;
@@ -25,9 +30,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error('密码不能为空');
       return;
     }
+    var res = '';
+    while (res.length != 4) {
+      res = await ClassesBackendService.ocr();
+    }
+    await ClassesService.login(tjuuname, tjupasswd, code: res);
+    ToastProvider.success('办公网绑定成功!');
     CommonPreferences.tjuuname.value = tjuuname;
     CommonPreferences.tjupasswd.value = tjupasswd;
     CommonPreferences.isBindTju.value = true;
+    context.read<CourseProvider>().refreshCourseByBackend(context);
     setState(() {});
   }
 
@@ -35,6 +47,20 @@ class _TjuBindPageState extends State<TjuBindPage> {
   final FocusNode _passwordFocus = FocusNode();
 
   final visNotifier = ValueNotifier<bool>(true); // 是否隐藏密码
+
+  void checkNetWork(bool jump) async {
+    var rsp = await ClassesService.check();
+    if(!rsp){
+      ToastProvider.error('请连接校园网或连接VPN!');
+    }else{
+      if (jump) {
+        String url = 'http://classes.tju.edu.cn/';
+        await launchUrl(Uri.parse(url));
+      } else {
+        ToastProvider.success('网络检查通过!');
+      }
+    }
+  }
 
   Widget _detail(BuildContext context) {
     var hintStyle = TextUtil.base.regular
@@ -194,12 +220,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               ),
               GestureDetector(
                 onTap: () async {
-                  String url = 'http://classes.tju.edu.cn/';
-                  if (await canLaunchUrl(Uri.parse(url))) {
-                    await launchUrl(Uri.parse(url));
-                  } else {
-                    ToastProvider.error('请检查网络状态');
-                  }
+                  checkNetWork(true);
                 },
                 child: Text('classes.tju.edu.cn',
                     style: TextUtil.base.regular.blue363C.underLine.sp(10)),
@@ -210,6 +231,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
         ]),
       );
     }
+  }
+
+  @override
+  void initState() {
+    checkNetWork(false);
+    super.initState();
   }
 
   @override

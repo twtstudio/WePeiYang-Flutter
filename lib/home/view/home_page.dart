@@ -57,12 +57,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      /// 若没有绑定办公网，前往绑定页
-      if (!CommonPreferences.isBindTju.value) {
-        if(CommonPreferences.account.value.length != 6 && !CommonPreferences.account.value.startsWith('F')){
-          Navigator.pushNamed(context, AuthRouter.tjuBind);
-        }
-      }
 
       context.read<PushManager>().initGeTuiSdk();
 

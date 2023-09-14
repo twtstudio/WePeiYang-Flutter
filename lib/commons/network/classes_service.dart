@@ -150,7 +150,7 @@ class ClassesService {
     if ((res.statusCode == 302) ||
         res.data.toString().contains("var remind_strong_pwd = 'true'")) return;
 
-    ToastProvider.error('检查账号密码和验证码正确');
+    ToastProvider.error('检查办公网账号密码是否正确');
     throw WpyDioException(error: '检查账号密码正确');
   }
 

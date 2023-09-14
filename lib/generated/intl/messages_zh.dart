@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "teachingBuilding": MessageLookupByLibrary.simpleMessage("教学楼"),
         "text_captcha": MessageLookupByLibrary.simpleMessage("短信验证码"),
         "time": MessageLookupByLibrary.simpleMessage("时间"),
-        "tju_account": MessageLookupByLibrary.simpleMessage("办公网账号"),
+        "tju_account": MessageLookupByLibrary.simpleMessage("办公网账号(学号)"),
         "tju_bind": MessageLookupByLibrary.simpleMessage("办公网账号绑定"),
         "tju_bind_hint": MessageLookupByLibrary.simpleMessage(
             "只有绑定了办公网后才能正常使用课表、GPA、考表功能。若忘记密码请前往办公网找回。"),
