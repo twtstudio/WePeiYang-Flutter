@@ -179,7 +179,8 @@ class _GPACurveState extends State<GPACurve>
                           isPreview: widget.isPreview,
                           points: points,
                           taped: _newTaped),
-                      size: Size(double.maxFinite, _canvasHeight),
+                      size: Size(double.maxFinite, _canvasHeight+20),
+                      ///+20为了给下面留空
                     ),
 
                     /// Stack顶层
@@ -250,9 +251,9 @@ class _GPACurveState extends State<GPACurve>
   _initPoints(List<Point<double>> points, List<double> list, double maxWidth) {
     var width = maxWidth;
     var step = width / (list.length + 1);
-    var h1 = _canvasHeight - 20; // canvas除去上面的空白
+    var h1 = _canvasHeight ; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
-
+    
     /// 求gpa最小值（算上起止）与最值差，使曲线高度符合比例
     var minStat = list.reduce(min);
     var maxStat = list.reduce(max);
