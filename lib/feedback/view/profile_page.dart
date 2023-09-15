@@ -88,9 +88,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
+    print('经验值');
+    print(CommonPreferences.curLevelPoint.value.toDouble());
     var postLists = (List.generate(
       _postList.length,
       (index) {
@@ -238,12 +239,26 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             SizedBox(height: 6.h),
                             LevelProgress(
-                              value: CommonPreferences.curLevelPoint.value
+                              value: (CommonPreferences.levelPoint.value - CommonPreferences.curLevelPoint.value)
                                       .toDouble() /
-                                  (CommonPreferences.curLevelPoint.value +
-                                          CommonPreferences
-                                              .nextLevelPoint.value)
+                                  (CommonPreferences.nextLevelPoint.value - CommonPreferences.curLevelPoint.value)
                                       .toDouble(),
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "还需 ${CommonPreferences.nextLevelPoint.value - CommonPreferences.levelPoint.value} 点经验升至下一级",
+                                    style: TextUtil.base.ProductSans.greyA6
+                                        .sp(9),
+                                  ),
+                                  Text(
+                                    " (${CommonPreferences.levelPoint.value.toString()}/${CommonPreferences.nextLevelPoint.value.toString()})",
+                                    style: TextUtil.base.ProductSans.greyA6.bold
+                                        .sp(9),
+                                  ),
+                                ],
                             )
                           ],
                         )
