@@ -9,6 +9,7 @@ class NewPostProvider {
   int type = 1;
   Department? department;
   Tag? tag;
+  ValueNotifier<int> postTypeNotifier = ValueNotifier(0);
 
   List<File> images = [];
 

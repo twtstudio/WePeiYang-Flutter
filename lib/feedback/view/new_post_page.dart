@@ -45,7 +45,6 @@ class NewPostArgs {
 class _NewPostPageState extends State<NewPostPage> {
   // 0 -> 不区分; 1 -> 卫津路; 2 -> 北洋园
   final campusNotifier = ValueNotifier(0);
-  final postTypeNotifier = ValueNotifier(0);
   bool tapAble = true;
 
   _showLoading() {
@@ -55,7 +54,7 @@ class _NewPostPageState extends State<NewPostPage> {
   _submit() async {
     final args = widget.args;
     var dataModel = context.read<NewPostProvider>();
-    dataModel.type = postTypeNotifier.value;
+    dataModel.type = dataModel.postTypeNotifier.value;
 
     if (!dataModel.check) {
       dataModel.type == 1
@@ -217,7 +216,7 @@ class _NewPostPageState extends State<NewPostPage> {
                           ? Text('${widget.args.tagName}'.substring(3),
                               style:
                                   TextUtil.base.NotoSansSC.w500.sp(14).black2A)
-                          : departmentTagView(postTypeNotifier),
+                          : departmentTagView(context.read<NewPostProvider>().postTypeNotifier),
                     ],
                   ),
                 ),
@@ -239,11 +238,9 @@ class _LakeSelectorState extends State<LakeSelector> {
   @override
   Widget build(BuildContext context) {
     final notifier =
-        context.findAncestorStateOfType<_NewPostPageState>()!.postTypeNotifier;
+        context.read<NewPostProvider>().postTypeNotifier;
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
-    notifier.value = tabList[1].id;
-
     return status == LakePageStatus.unload
         ? SizedBox()
         : status == LakePageStatus.loading
@@ -384,7 +381,7 @@ class _departmentTagViewState extends State<departmentTagView> {
   @override
   Widget build(BuildContext context) {
     final notifier =
-        context.findAncestorStateOfType<_NewPostPageState>()!.postTypeNotifier;
+        context.read<NewPostProvider>().postTypeNotifier;
     return ValueListenableBuilder<int>(
         valueListenable: notifier,
         builder: (context, type, _) {

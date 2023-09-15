@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
@@ -373,6 +374,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   onTap: () {
                     if (tabList.isNotEmpty) {
                       initializeRefresh = true;
+                      context.read<NewPostProvider>().postTypeNotifier.value = tabList[1].id;
                       Navigator.pushNamed(context, FeedbackRouter.newPost,
                           arguments: NewPostArgs(false, '', 0, ''));
                     }
