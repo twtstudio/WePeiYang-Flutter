@@ -2,6 +2,7 @@ import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
+import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
@@ -97,6 +98,18 @@ class CourseProvider with ChangeNotifier {
   /// 若失败则弹出TjuRebindDialog，用户手动填写图形验证码
   void refreshCourseByBackend(BuildContext context) async {
     ToastProvider.running("刷新数据中……");
+    // test
+    // 检查是否用户名和密码为空
+    if (CommonPreferences.tjuuname.value.isEmpty || CommonPreferences.tjupasswd.value.isEmpty) {
+      // 如果用户名或密码为空，显示TjuBindDialog对话框
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) => TjuBindPage(),
+      );
+      return; // 停止执行后续代码
+    }
+    // test
     if (CommonPreferences.useClassesBackend.value) {
       var data = await ClassesBackendService.getClasses();
       if (data != null) {
