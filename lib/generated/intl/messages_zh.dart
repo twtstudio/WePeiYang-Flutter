@@ -143,7 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "has_not_bind_hint1": MessageLookupByLibrary.simpleMessage(
             "您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群："),
         "has_not_bind_hint2": MessageLookupByLibrary.simpleMessage(
-            "2群群号：738064793\n3群群号：337647539\n4群群号：758808130"),
+            "2群群号：738064793\n3群群号：337647539"),
         "has_not_bind_phone": MessageLookupByLibrary.simpleMessage("账号未绑定手机号"),
         "have_read": MessageLookupByLibrary.simpleMessage("已读"),
         "have_replied": MessageLookupByLibrary.simpleMessage("已回复"),
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "teachingBuilding": MessageLookupByLibrary.simpleMessage("教学楼"),
         "text_captcha": MessageLookupByLibrary.simpleMessage("短信验证码"),
         "time": MessageLookupByLibrary.simpleMessage("时间"),
-        "tju_account": MessageLookupByLibrary.simpleMessage("办公网账号(学号)"),
+        "tju_account": MessageLookupByLibrary.simpleMessage("办公网账号"),
         "tju_bind": MessageLookupByLibrary.simpleMessage("办公网账号绑定"),
         "tju_bind_hint": MessageLookupByLibrary.simpleMessage(
             "只有绑定了办公网后才能正常使用课表、GPA、考表功能。若忘记密码请前往办公网找回。"),
