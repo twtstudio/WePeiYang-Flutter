@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart'
     as wpySearchBar;
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
@@ -48,15 +49,37 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     var searchBar = wpySearchBar.SearchBar(
       onSubmitted: (text) {
-        _searchHistoryList.unequalAdd(text);
-        Navigator.pushNamed(
-          context,
-          FeedbackRouter.searchResult,
-          arguments: SearchResultPageArgs(
-              text, '', '', S.current.feedback_search_result, 0, 0),
-        ).then((_) {
-          Navigator.pop(context);
-        });
+        if (text.startsWith('#MP') &&
+            RegExp(r'^-?[0-9]+').hasMatch(
+                text.substring(3))) {
+          FeedbackService.getPostById(
+            id: int.parse(text.substring(3)),
+            onResult: (post) {
+              _searchHistoryList.unequalAdd(text);
+              Navigator.popAndPushNamed(
+                context,
+                FeedbackRouter.detail,
+                arguments: post,
+              );
+            },
+            onFailure: (e) {
+              ToastProvider.error(
+                  '无法找到对应帖子，报错信息：${e.error}');
+            },
+          );
+          return;
+        }
+        else{
+          _searchHistoryList.unequalAdd(text);
+          Navigator.pushNamed(
+            context,
+            FeedbackRouter.searchResult,
+            arguments: SearchResultPageArgs(
+                text, '', '', S.current.feedback_search_result, 0, 0),
+          ).then((_) {
+            Navigator.pop(context);
+          });
+        }
       },
     );
 
@@ -130,6 +153,25 @@ class _SearchPageState extends State<SearchPage> {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
+                if (searchArgument.keyword.startsWith('#MP') &&
+                    RegExp(r'^-?[0-9]+').hasMatch(
+                        searchArgument.keyword.substring(3))) {
+                  FeedbackService.getPostById(
+                    id: int.parse(searchArgument.keyword.substring(3)),
+                    onResult: (post) {
+                      Navigator.popAndPushNamed(
+                        context,
+                        FeedbackRouter.detail,
+                        arguments: post,
+                      );
+                    },
+                    onFailure: (e) {
+                      ToastProvider.error(
+                          '无法找到对应帖子，报错信息：${e.error}');
+                    },
+                  );
+                  return;
+                }
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.searchResult,
