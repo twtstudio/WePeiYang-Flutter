@@ -61,10 +61,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Wiki',
         'https://wiki.tjubot.cn/'),
     CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
-    CardBean(Icon(Icons.domain, size: 25), '楼宇牌', 'Building\nCard',
-        ReportRouter.pass),
-    CardBean(Icon(Icons.report, size: 25), S.current.report, 'Health',
-        ReportRouter.main),
+    CardBean(
+        Image.asset(
+          'assets/svg_pics/lake_butt_icons/lost_and_found.png',
+          width: 24.w,
+        ),
+        '失物招领',
+        'Lost-\nFound',
+        HomeRouter.laf),
   ];
   String md = '';
 
@@ -327,7 +331,12 @@ class SliverCardsWidget extends StatelessWidget {
         } else {
           return GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, cards[i].route);
+              ///为预热失物招领添加了if条件，上线后去掉即可
+              if(cards[i].route==""){
+                ToastProvider.error('开发中 敬请期待！');
+              }else{
+                Navigator.pushNamed(context, cards[i].route);
+              }
             },
             child: generateCard(context, cards[i]),
           );
