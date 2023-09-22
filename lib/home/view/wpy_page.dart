@@ -47,7 +47,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
     CardBean(
         Image.asset(
           'assets/svg_pics/lake_butt_icons/lost_and_found.png',
-          width: 24.w,
+          width: 21.w,
         ),
         '失物招领',
         'Lost-\nFound',
