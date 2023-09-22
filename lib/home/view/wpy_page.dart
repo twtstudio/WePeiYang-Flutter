@@ -46,6 +46,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         ScheduleRouter.course),
     CardBean(
         Image.asset(
+          'assets/svg_pics/lake_butt_icons/lost_and_found.png',
+          width: 24.w,
+        ),
+        '失物招领',
+        'Lost-\nFound',
+        HomeRouter.laf),
+    CardBean(
+        Image.asset(
           'assets/images/schedule/add.png',
           width: 24.w,
         ),
@@ -61,14 +69,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Wiki',
         'https://wiki.tjubot.cn/'),
     CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
-    CardBean(
-        Image.asset(
-          'assets/svg_pics/lake_butt_icons/lost_and_found.png',
-          width: 24.w,
-        ),
-        '失物招领',
-        'Lost-\nFound',
-        HomeRouter.laf),
+
   ];
   String md = '';
 
