@@ -10,14 +10,14 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 class WbyFontLoader {
   static void initFonts({bool hint = false}) {
     List<DownloadTask> tasks = [
-      DownloadTask(
-        url: 'https://upgrade.twt.edu.cn/font/noto',
-        type: DownloadType.font,
-      ),
-      DownloadTask(
-        url: 'https://upgrade.twt.edu.cn/font/ping',
-        type: DownloadType.font,
-      ),
+      // DownloadTask(
+      //   url: 'https://upgrade.twt.edu.cn/font/noto',
+      //   type: DownloadType.font,
+      // ),
+      // DownloadTask(
+      //   url: 'https://upgrade.twt.edu.cn/font/ping',
+      //   type: DownloadType.font,
+      // ),
     ];
 
     if (hint) ToastProvider.running('下载字体文件中...');
