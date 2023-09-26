@@ -111,7 +111,11 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     var actions = [
       GestureDetector(
         onTap: () {
-          context.read<CourseProvider>().refreshCourseByBackend(context);
+          if (CommonPreferences.tjuuname.value == '') {
+            Navigator.pushNamed(context, AuthRouter.tjuBind);
+          } else {
+            context.read<CourseProvider>().refreshCourseByBackend(context);
+          }
         },
         child: Container(
           decoration: BoxDecoration(),

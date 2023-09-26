@@ -87,7 +87,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         var verNum = 8; // 显示每天第1-verNum节课，verNum取值范围为[8, 12]
         if (provider.totalCourses.length == 0) {
           return SizedBox(
-            height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+            height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
             child: Stack(children: [child!]),
           );
         }
@@ -111,7 +111,9 @@ class _CourseDisplayWidget extends StatelessWidget {
               (end - start + 1) * _singleCourseHeight + (end - start) * verStep;
           // 绕开"午休"栏
           if (start > 4) top += _middleStep;
+          if (start > 8) top += _middleStep;
           if (start <= 4 && end > 4) height += _middleStep;
+          if (start <=8 && end >8) height += _middleStep;
           // 是否需要“漂浮”显示
           if (activeList[i][0].arrange.showMode == 1) top += 6;
           // 是否不显示内容
@@ -151,7 +153,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         positionedList.addAll(tempList.reversed);
 
         return SizedBox(
-          height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
           child: Stack(
             children: [
               child!,
@@ -160,20 +162,39 @@ class _CourseDisplayWidget extends StatelessWidget {
           ),
         );
       },
-      child: Positioned(
-        left: 0,
-        top: 4 * (_singleCourseHeight + verStep),
-        height: _middleStep,
-        width: 1.sw - 30.w,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10.r),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 4 * (_singleCourseHeight + verStep),
+            height: _middleStep,
+            width: 1.sw - 30.w,
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5.h),
+              child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+            ),
           ),
-          margin: EdgeInsets.symmetric(vertical: 5.h),
-          child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
-        ),
+          Positioned(
+            left: 0,
+            top: 8 * (_singleCourseHeight + verStep)+ _middleStep ,
+            height: _middleStep,
+            width: 1.sw - 30.w,
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5.h),
+              child: Text("DINNER BREAK", style: TextUtil.base.w900.white.sp(10)),
+            ),
+          ),
+        ],
       ),
     );
   }
