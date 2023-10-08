@@ -27,7 +27,7 @@ class GPAService {
   /// 用请求到的html数据生成gpaBean对象
   static GPABean _data2GPABean(String data, bool isMaster) {
     if (!data.contains("在校汇总") || data.contains("本次会话已经被过期")) {
-      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
+      throw WpyDioException(error: "网络波动，请稍后尝试");
     }
     if (data.contains("就差一个评教的距离啦")) {
       throw WpyDioException(error: "存在未评教的课程，请先前往评教");

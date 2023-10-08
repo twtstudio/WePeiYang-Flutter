@@ -15,7 +15,7 @@ class GPANotifier with ChangeNotifier {
   List<GPAStat> _gpaStats = [];
 
   List<GPAStat> get gpaStats => _gpaStats;
-
+  
   /// 外部更新gpa总数据时调用
   set gpaStats(List<GPAStat> newList) {
     _gpaStats = newList;
@@ -133,7 +133,9 @@ class GPANotifier with ChangeNotifier {
         total = data.item3.total;
         notifyListeners();
       } else {
-        await ClassesService.getClasses(context);
+        bool _canConnectToClasses = await ClassesService.check();
+        if(!_canConnectToClasses) ToastProvider.error('请连接校园网或连接VPN!');
+        else await ClassesService.getClasses(context);
       }
     } on DioException catch (_) {
       showDialog(
