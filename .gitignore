@@ -50,3 +50,4 @@ app.*.map.json
 .fvm/
 
 ios/Podfile.lock
+ios/build/

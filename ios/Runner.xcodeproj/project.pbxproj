@@ -359,14 +359,14 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				F85A3AEE681075E3021B97DA /* [CP] Check Pods Manifest.lock */,
+				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				9740EEB61CF901F6004384FC /* Run Script */,
+				0BE3F7EF43EABDDFCA812DE5 /* [CP] Embed Pods Frameworks */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
-				9705A1C41CF9048500538489 /* Embed Frameworks */,
-				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				0BE3F7EF43EABDDFCA812DE5 /* [CP] Embed Pods Frameworks */,
 				56B1FDC42890231A00569DB3 /* Embed Foundation Extensions */,
+				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				613A3759415EBB8C0FDC0083 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -668,7 +668,6 @@
 				CURRENT_PROJECT_VERSION = 202308300000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -917,13 +916,13 @@
 				CURRENT_PROJECT_VERSION = 202308300000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 x86_64 arm64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.3.10;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.twt.WePeiYang-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -944,7 +943,6 @@
 				CURRENT_PROJECT_VERSION = 202308300000;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64 x86_64";
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
