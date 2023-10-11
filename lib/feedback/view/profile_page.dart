@@ -90,7 +90,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   @override
   Widget build(BuildContext context) {
-    print('经验值');
     print(CommonPreferences.curLevelPoint.value.toDouble());
     var postLists = (List.generate(
       _postList.length,
