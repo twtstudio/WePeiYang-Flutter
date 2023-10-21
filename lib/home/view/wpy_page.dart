@@ -58,7 +58,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           width: 24.w,
         ),
         '地图·校历',
-        'Map-\nCalender',
+        'Map-\nCalendar',
         HomeRouter.mapCalenderPage),
     CardBean(
         Image.asset(
