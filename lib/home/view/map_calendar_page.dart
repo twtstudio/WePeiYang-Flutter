@@ -5,14 +5,14 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
-class MapCalenderPage extends StatefulWidget {
-  MapCalenderPage();
+class MapCalendarPage extends StatefulWidget {
+  MapCalendarPage();
 
   @override
   MapCalenderState createState() => MapCalenderState();
 }
 
-class MapCalenderState extends State<MapCalenderPage> {
+class MapCalenderState extends State<MapCalendarPage> {
   MapCalenderState();
 
   @override

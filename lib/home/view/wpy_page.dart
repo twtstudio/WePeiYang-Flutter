@@ -17,7 +17,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/view/dialogs/acid_check_dialog.dart';
 import 'package:we_pei_yang_flutter/home/view/dialogs/activity_dialog.dart';
-import 'package:we_pei_yang_flutter/home/view/map_calender_page.dart';
+import 'package:we_pei_yang_flutter/home/view/map_calendar_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
