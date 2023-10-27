@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ColorUtil {
   ColorUtil._();
+
   static const mainColor = Color.fromARGB(255, 54, 60, 84);
   static const backgroundColor = Color.fromARGB(255, 248, 248, 248);
   static const searchBarIconColor = Color.fromARGB(255, 132, 135, 145);
@@ -9,7 +10,8 @@ class ColorUtil {
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const boldLakeTextColor = Color.fromARGB(200, 0, 0, 0);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
-  static const profileNameColor = Color.fromARGB(255, 255, 255, 255);
+  static const whiteFFColor = Color.fromARGB(255, 255, 255, 255);
+  static const black00Color = Color.fromARGB(255, 0, 0, 0);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
   static const grey108 = Color.fromARGB(255, 108, 108, 108);
   static const bold42TextColor = Color.fromARGB(255, 42, 42, 42);
@@ -27,6 +29,8 @@ class ColorUtil {
   static const greyB2B6Color = Color(0xFFB2B6BB);
   static const blue363CColor = Color(0xFF363C54);
   static const blue2CColor = Color(0xFF2C7EDF);
+  static const blue28Color = Color(0xFF2887FF);
+  static const blue80Color = Color(0xFF80B7F9);
   static const blueA6Color = Color(0xFFA6CFFF);
   static const biliPink = Color(0xFFF97198);
   static const begoniaPink = Color(0xFFFFCCD1);
@@ -45,7 +49,8 @@ class ColorUtil {
     // 在0.7停止同理
     stops: [0, 0.53, 0.7],
   );
-
+  static const gradientWhite =
+      LinearGradient(colors: [Colors.white, Colors.white]);
   static const List<Color> aprilFoolColor = [
     Color(0xFFF1B53B),
     Color(0xF033BB8F),

@@ -143,7 +143,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor: Colors.white,
+      systemNavigationBarColor: ColorUtil.whiteFFColor,
     ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
@@ -165,18 +165,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             curve: Curves.easeIn,
             decoration: BoxDecoration(
                 gradient: showSchedule
-                    ? LinearGradient(
-                        colors: [
-                          Color(0xFF2C7EDF),
-                          Color(0xFFA6CFFF),
-                          // 用来挡下面圆角左右的空
-                          Colors.white
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        // 在0.7停止同理
-                        stops: [0, 0.53, 0.7])
-                    : LinearGradient(colors: [Colors.white, Colors.white]))),
+                    ? ColorUtil.gradientBlue
+                    : ColorUtil.gradientWhite)),
         SafeArea(
           child: Stack(
             children: [
@@ -200,7 +190,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: ColorUtil.whiteFFColor,
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
@@ -251,7 +241,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: Colors.black,
+              labelColor: ColorUtil.black00Color,
               unselectedLabelColor: ColorUtil.lightTextColor,
               indicator: CustomIndicator(
                   left: true,
@@ -373,8 +363,8 @@ class SliverCardsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: bean.label == '地图·校历'
-                        ? Color(0xFF2887FF)
-                        : Color(0xFF80B7F9),
+                        ? ColorUtil.blue28Color
+                        : ColorUtil.blue80Color,
                   ),
                 ),
               ),
