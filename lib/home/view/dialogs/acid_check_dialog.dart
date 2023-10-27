@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 /// 核酸检测提醒弹窗
 class AcidCheckDialog extends Dialog {
@@ -33,7 +34,7 @@ class AcidCheckDialog extends Dialog {
                 width: 0.7.sw,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

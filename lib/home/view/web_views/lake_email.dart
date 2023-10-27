@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 
+import '../../../feedback/util/color_util.dart';
+
 class LakeEmailPage extends WbyWebView {
   LakeEmailPage({Key? key})
       : super(
             page: '湖底通知',
-            backgroundColor: Colors.white,
+            backgroundColor: ColorUtil.whiteFFColor,
             fullPage: true,
             key: key);
 

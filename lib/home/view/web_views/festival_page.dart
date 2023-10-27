@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 
 class FestivalArgs {
   final String url;
@@ -15,7 +16,7 @@ class FestivalPage extends WbyWebView {
   FestivalPage(this.args, {Key? key})
       : super(
             page: args.name,
-            backgroundColor: Colors.white,
+            backgroundColor: ColorUtil.whiteFFColor,
             fullPage: false,
             key: key);
 

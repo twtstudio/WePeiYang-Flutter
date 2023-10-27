@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 
 /// 活动弹窗
@@ -121,7 +122,7 @@ class ActivityDialog extends Dialog {
                         'assets/images/lake_butt_icons/x.png',
                         width: 50.w,
                         height: 100.w,
-                        color: Colors.white70,
+                        color: ColorUtil.white70,
                       ),
                     ),
                   ))

@@ -23,6 +23,7 @@ class ColorUtil {
   static const green5CColor = Color(0xFF5CB85C);
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const black2AColor = Color(0xFF2A2A2A);
+  static const black25Color = Color(0XFF252525);
   static const greyF7F8Color = Color(0xFFF7F7F8);
   static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
@@ -32,11 +33,18 @@ class ColorUtil {
   static const blue28Color = Color(0xFF2887FF);
   static const blue80Color = Color(0xFF80B7F9);
   static const blueA6Color = Color(0xFFA6CFFF);
+  static const blueBEColor = Color(0xFFBED1FF);
   static const biliPink = Color(0xFFF97198);
   static const begoniaPink = Color(0xFFFFCCD1);
+  static const mapRed = Color(0xFFFFF2F2);
   static const warning = Color(0xFFFFBC6B);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
   static const grey229 = Color.fromARGB(255, 229, 229, 229);
+  static const white70 = Color(0xB3FFFFFF);
+  static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
+  static const black26 = Colors.black26;
+  static const blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
+
   static const gradientBlue = LinearGradient(
     colors: [
       Color(0xFF2C7EDF),
