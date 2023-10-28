@@ -37,6 +37,7 @@ class ReplyDetailPageArgs {
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
+
   int currentPage = 1;
   List<Floor>? floors;
 
