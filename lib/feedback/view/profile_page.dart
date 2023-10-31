@@ -17,7 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_head
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import '../feedback_router.dart';
-import '../util/color_util.dart';
+import '../../commons/util/color_util.dart';
 import 'components/change_nickname_dialog.dart';
 import 'components/post_card.dart';
 

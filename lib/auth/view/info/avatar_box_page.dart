@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class AvatarBoxPage extends StatefulWidget {
   @override
@@ -35,7 +35,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         title: Text(
           '更换头像框',
           style: TextUtil.base.black2A.sp(16),
@@ -45,7 +45,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
               child: Icon(Icons.arrow_back,
-                  color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                  color: ColorUtil.boldTag54, size: 32),
               onTap: () => Navigator.pop(context)),
         ),
       ),
@@ -65,7 +65,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                             tag: 'avatar',
                             child: UserAvatarImage(
                               size: 0.3.sw,
-                              iconColor: Colors.white,
+                              iconColor: ColorUtil.whiteFFColor,
                               tempUrl: _valueNotifier.value,
                             ),
                           ),
@@ -241,19 +241,19 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
       foregroundDecoration: canChange
           ? null
           : BoxDecoration(
-              color: Colors.grey,
+              color: ColorUtil.grey,
               backgroundBlendMode: BlendMode.saturation,
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         borderRadius: BorderRadius.all(Radius.circular(10.r)),
         boxShadow: [
           choose == true
               ? BoxShadow(
                   color: ColorUtil.begoniaPink, blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                 ),
         ],
         image: DecorationImage(

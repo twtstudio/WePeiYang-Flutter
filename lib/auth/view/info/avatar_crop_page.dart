@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
@@ -47,12 +47,12 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: Color.fromRGBO(98, 103, 123, 1),
-          toolbarWidgetColor: Colors.white,
-          activeControlsWidgetColor: Color.fromRGBO(177, 175, 227, 1.0),
-          dimmedLayerColor: Colors.black26,
+          toolbarColor: ColorUtil.blue98,
+          toolbarWidgetColor: ColorUtil.whiteFFColor,
+          activeControlsWidgetColor: ColorUtil.blue177,
+          dimmedLayerColor: ColorUtil.black26,
           statusBarColor: ColorUtil.mainColor,
-          backgroundColor: Color.fromRGBO(58, 59, 69, 1.0),
+          backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
@@ -89,12 +89,12 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: Color.fromRGBO(98, 103, 123, 1),
-          toolbarWidgetColor: Colors.white,
-          activeControlsWidgetColor: Color.fromRGBO(177, 175, 227, 1.0),
-          dimmedLayerColor: Colors.black26,
+          toolbarColor: ColorUtil.blue98,
+          toolbarWidgetColor: ColorUtil.whiteFFColor,
+          activeControlsWidgetColor: ColorUtil.blue177,
+          dimmedLayerColor: ColorUtil.black26,
           statusBarColor: ColorUtil.mainColor,
-          backgroundColor: Color.fromRGBO(58, 59, 69, 1.0),
+          backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
@@ -150,7 +150,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     if (file != null) {
       return CircleAvatar(
         radius: width / 2,
-        backgroundColor: Color.fromRGBO(98, 103, 124, 1),
+        backgroundColor: ColorUtil.blue98,
         backgroundImage: FileImage(file!),
         child: SizedBox(width: width, height: width),
       );
@@ -163,21 +163,21 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
+          backgroundColor: ColorUtil.transparent,
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Icon(CupertinoIcons.back, color: Colors.white),
+            child: Icon(CupertinoIcons.back, color: ColorUtil.whiteFFColor),
           ),
           elevation: 0,
         ),
         body: Container(
-          color: Colors.black,
+          color: ColorUtil.black00Color,
           child: Column(
             children: [
               Spacer(),
               Hero(tag: 'avatar', child: getAvatar()),
               Spacer(),
-              Divider(height: 1.0, color: Colors.white),
+              Divider(height: 1.0, color: ColorUtil.whiteFFColor),
               SizedBox(height: 10),
               TextButton(
                 onPressed: () {
@@ -186,17 +186,17 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 },
                 child: Text(
                   '更换头像框',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(color: ColorUtil.whiteFFColor, fontSize: 16),
                 ),
               ),
               SizedBox(height: 10),
-              Divider(height: 1.0, color: Colors.white),
+              Divider(height: 1.0, color: ColorUtil.whiteFFColor),
               SizedBox(height: 10),
               TextButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(color: ColorUtil.whiteFFColor, fontSize: 16),
                 ),
               ),
               SizedBox(height: 10),

@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
-import '../../../feedback/util/color_util.dart';
+import '../../../commons/util/color_util.dart';
 
 // ignore: must_be_immutable
 class WikiPage extends StatelessWidget {
