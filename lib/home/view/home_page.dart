@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +48,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ..add(FeedbackHomePage(key: feedbackKey))
       ..add(ProfilePage());
     _tabController = TabController(
+      animationDuration: Platform.isWindows ? Duration.zero : Duration(milliseconds: 600),
       length: pages.length,
       vsync: this,
       initialIndex: 0,
@@ -57,7 +60,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
       context.read<PushManager>().initGeTuiSdk();
 
       final manager = context.read<PushManager>();
@@ -113,66 +115,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    double width = WePeiYangApp.screenWidth / 3;
-
-    var homePage = SizedBox(
-      height: 70.h,
-      width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 0
-            ? SvgPicture.asset(
-                'assets/svg_pics/home.svg',
-              )
-            : SvgPicture.asset(
-                'assets/svg_pics/home.svg',
-                color: ColorUtil.grey144,
-              ),
-        color: Colors.white,
-        onPressed: () => _tabController.animateTo(0),
-      ),
+    var homePage = IconButton(
+      splashRadius: 1,
+      icon: _currentIndex == 0
+          ? SvgPicture.asset(
+              'assets/svg_pics/home.svg',
+            )
+          : SvgPicture.asset(
+              'assets/svg_pics/home.svg',
+              color: ColorUtil.grey144,
+            ),
+      color: Colors.white,
+      onPressed: () => _tabController.animateTo(0),
     );
 
-    var feedbackPage = SizedBox(
-      height: 70.h,
-      width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 1
-            ? SvgPicture.asset(
-                'assets/svg_pics/lake.svg',
-              )
-            : SvgPicture.asset(
-                'assets/svg_pics/lake_grey.svg',
-              ),
-        color: Colors.white,
-        onPressed: () {
-          if (_currentIndex == 1) {
-            feedbackKey.currentState?.listToTop();
-            // 获取剪切板微口令
-            context.read<LakeModel>().getClipboardWeKoContents(context);
-          } else
-            _tabController.animateTo(1);
-        },
-      ),
+    var feedbackPage = IconButton(
+      splashRadius: 1,
+      icon: _currentIndex == 1
+          ? SvgPicture.asset(
+              'assets/svg_pics/lake.svg',
+            )
+          : SvgPicture.asset(
+              'assets/svg_pics/lake_grey.svg',
+            ),
+      color: Colors.white,
+      onPressed: () {
+        if (_currentIndex == 1) {
+          feedbackKey.currentState?.listToTop();
+          // 获取剪切板微口令
+          context.read<LakeModel>().getClipboardWeKoContents(context);
+        } else
+          _tabController.animateTo(1);
+      },
     );
 
-    var selfPage = SizedBox(
-      height: 70.h,
-      width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 2
-            ? SvgPicture.asset(
-                'assets/svg_pics/my.svg',
-              )
-            : SvgPicture.asset(
-                'assets/svg_pics/my.svg',
-                color: ColorUtil.grey144,
-              ),
-        color: Colors.white,
-        onPressed: () => _tabController.animateTo(2),
-      ),
+    var selfPage = IconButton(
+      splashRadius: 1,
+      icon: _currentIndex == 2
+          ? SvgPicture.asset(
+              'assets/svg_pics/my.svg',
+            )
+          : SvgPicture.asset(
+              'assets/svg_pics/my.svg',
+              color: ColorUtil.grey144,
+            ),
+      color: Colors.white,
+      onPressed: () => _tabController.animateTo(2),
     );
 
     var bottomNavigationBar = Container(
@@ -187,7 +175,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       /// 适配iOS底部安全区
       child: SafeArea(
-        child: Row(children: <Widget>[homePage, feedbackPage, selfPage]),
+        child: SizedBox(
+            height: 70.h,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[homePage, feedbackPage, selfPage])),
+      ),
+    );
+
+    var sideNavigationBar = Container(
+      padding: EdgeInsets.fromLTRB(3.w, 10.h, 3.w, 0.7.sh - 10.h),
+      width: 20.w,
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 255, 1),
+          boxShadow: [
+            BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
+          ]),
+
+      /// 适配iOS底部安全区
+      child: SafeArea(
+        child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[homePage, feedbackPage, selfPage]),
       ),
     );
 
@@ -199,7 +207,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               .copyWith(systemNavigationBarColor: Colors.white),
       child: Scaffold(
         extendBody: true,
-        bottomNavigationBar: bottomNavigationBar,
+        bottomNavigationBar: Platform.isWindows ? null : bottomNavigationBar,
         body: WillPopScope(
           onWillPop: () async {
             if (_tabController.index == 0) {
@@ -220,10 +228,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             }
             return true;
           },
-          child: TabBarView(
-            controller: _tabController,
-            physics: NeverScrollableScrollPhysics(),
-            children: pages,
+          child: Row(
+            children: [
+              if (Platform.isWindows) sideNavigationBar,
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: pages,
+                ),
+              )
+            ],
           ),
         ),
       ),

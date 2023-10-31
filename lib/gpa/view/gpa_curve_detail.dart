@@ -22,10 +22,10 @@ class GPAPreview extends StatelessWidget {
           ///去掉周围padding的懒方法
           GestureDetector(
         onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-        child: Column(
-          children: [
-            Image.asset("assets/images/schedule_empty.png"),
-          ],
+        child: Container(
+          width: 1.sw - 60.w,
+          height: 300.h,
+          child: Image.asset("assets/images/schedule_empty.png"),
         ),
       );
     return GestureDetector(

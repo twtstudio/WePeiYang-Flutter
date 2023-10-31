@@ -262,8 +262,8 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
-            width: 24,
-            height: 24,
+            width: 24.h,
+            height: 24.h,
             child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
           );
 
@@ -290,20 +290,20 @@ class _ProfileImageWithDetailedPopupState
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
-          width: 60.w,
-          height: 60.w,
+          width: 60.h,
+          height: 60.h,
           child: Stack(
             alignment: Alignment.center,
             children: [
               SizedBox(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.w)),
+                  borderRadius: BorderRadius.all(Radius.circular(20.h)),
                   child: WpyPic(
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: 32.w,
-                    height: 32.w,
+                    width: 32.h,
+                    height: 32.h,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -311,8 +311,8 @@ class _ProfileImageWithDetailedPopupState
               if (widget.avatarBox != '')
                 WpyPic(
                   widget.avatarBox,
-                  width: 60.w,
-                  height: 60.w,
+                  width: 60.h,
+                  height: 60.h,
                   fit: BoxFit.contain,
                 ),
             ],

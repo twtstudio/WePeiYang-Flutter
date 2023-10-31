@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +34,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool initializeRefresh = false;
 
   bool canSee = false;
+
+  bool landscape = 1.sw > 0.7.sh;
 
   /// 42.h
   double get searchBarHeight => 42.h;
@@ -77,12 +81,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 .id]!
             .controller
             .offset >
-        1500) {
+        1500.h) {
       context
           .read<LakeModel>()
           .lakeAreas[context.read<LakeModel>().tabController.index]!
           .controller
-          .jumpTo(1500);
+          .jumpTo(1500.h);
     }
     context
         .read<LakeModel>()
@@ -91,7 +95,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             .tabList[context.read<LakeModel>().tabController.index]
             .id]!
         .controller
-        .animateTo(-85,
+        .animateTo(-85.h,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
@@ -125,7 +129,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           .read<LakeModel>()
           .lakeAreas[context.read<LakeModel>().tabController.index]!
           .controller
-          .animateTo(-85,
+          .animateTo(-85.h,
               duration: Duration(milliseconds: 1000),
               curve: Curves.easeOutCirc);
       initializeRefresh = false;
@@ -134,25 +138,25 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var searchBar = InkWell(
       onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: searchBarHeight - 8,
-        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
+        height: searchBarHeight - 8.h,
+        margin: EdgeInsets.fromLTRB(15.h, 8.h, 15.h, 0),
         decoration: BoxDecoration(
             color: ColorUtil.backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+            borderRadius: BorderRadius.all(Radius.circular(15.h))),
         child: Row(children: [
-          SizedBox(width: 14),
+          SizedBox(width: 14.h),
           Icon(
             Icons.search,
-            size: 19,
+            size: 19.h,
             color: ColorUtil.grey108,
           ),
-          SizedBox(width: 12),
+          SizedBox(width: 12.h),
           Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(
                     children: [
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
+                            maxWidth: landscape ? 0.5.sw - 260 : 1.sw - 260),
                         child: Text(
                           data.recTag == null
                               ? '搜索发现'
@@ -200,8 +204,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 : status == LakePageStatus.idle
                     ? Builder(builder: (context) {
                         return TabBar(
-                          indicatorPadding: EdgeInsets.only(bottom: 2),
-                          labelPadding: EdgeInsets.only(bottom: 3),
+                          indicatorPadding: EdgeInsets.only(bottom: 2.h),
+                          labelPadding: EdgeInsets.only(bottom: 3.h),
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
@@ -212,7 +216,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
-                                  color: ColorUtil.blue2CColor, width: 2)),
+                                  color: ColorUtil.blue2CColor, width: 2.h)),
                           tabs: List<Widget>.generate(
                               tabList.length,
                               (index) => DaTab(
@@ -243,144 +247,151 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
+      body: Row(
         children: [
-          Padding(
-            padding: EdgeInsets.only(
-                // 因为上面的空要藏住搜索框
-                top: MediaQuery.of(context).padding.top < searchBarHeight
-                    ? searchBarHeight + tabBarHeight
-                    : MediaQuery.of(context).padding.top + searchBarHeight,
-                bottom: 70.h - 18),
-            child: Selector<LakeModel, List<WPYTab>>(
-                selector: (BuildContext context, LakeModel lakeModel) {
-              return lakeModel.tabList;
-            }, builder: (_, tabs, __) {
-              if (!context.read<LakeModel>().tabControllerLoaded) {
-                context.read<LakeModel>().tabController =
-                    TabController(length: tabs.length, vsync: this)
-                      ..addListener(() {
-                        if (context
-                                .read<LakeModel>()
-                                .tabController
-                                .index
-                                .toDouble() ==
-                            context
-                                .read<LakeModel>()
-                                .tabController
-                                .animation!
-                                .value) {
-                          WPYTab tab =
-                              context.read<LakeModel>().lakeAreas[1]!.tab;
-                          if (context.read<LakeModel>().tabController.index !=
-                                  tabList.indexOf(tab) &&
-                              canSee) _onFeedbackTapped();
-                          context.read<LakeModel>().currentTab =
-                              context.read<LakeModel>().tabController.index;
-                          context.read<LakeModel>().onFeedbackOpen();
-                        }
-                      });
-              }
-              int cacheNum = 0;
-              return tabs.length == 1
-                  ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
-                  : ExtendedTabBarView(
-                      cacheExtent: cacheNum,
-                      controller: context.read<LakeModel>().tabController,
-                      children: List<Widget>.generate(
-                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
-                          tabs.length,
-                          (i) => NSubPage(
-                                index: tabList[i].id,
-                              )));
-            }),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-                // 因为上面的空要藏住搜索框
-                top: (MediaQuery.of(context).padding.top < searchBarHeight
-                        ? searchBarHeight + tabBarHeight
-                        : MediaQuery.of(context).padding.top +
-                            searchBarHeight) +
-                    tabBarHeight -
-                    4),
-            child: Visibility(
-              child: InkWell(
-                  onTap: () {
-                    if (canSee) _onFeedbackTapped();
-                  },
-                  child: FbTagsWrap(key: fbKey)),
-              maintainState: true,
-              visible: canSee,
-            ),
-          ),
-          Selector<LakeModel, bool>(
-              selector: (BuildContext context, LakeModel lakeModel) {
-            return lakeModel.barExtended;
-          }, builder: (_, barExtended, __) {
-            return AnimatedContainer(
-                height: searchBarHeight + tabBarHeight,
-                margin: EdgeInsets.only(
-                    top: barExtended
-                        ? MediaQuery.of(context).padding.top < searchBarHeight
-                            ? searchBarHeight
-                            : MediaQuery.of(context).padding.top
-                        : MediaQuery.of(context).padding.top < searchBarHeight
-                            ? 0
-                            : MediaQuery.of(context).padding.top -
-                                searchBarHeight),
-                color: Colors.white,
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeOutCirc,
-                child: Column(children: [
-                  searchBar,
-                  SizedBox(
-                    height: tabBarHeight,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        SizedBox(width: 4),
-                        expanded,
-                        SizedBox(width: 4)
-                      ],
-                    ),
-                  )
-                ]));
-          }),
-          // 挡上面
-          Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).padding.top < searchBarHeight
-                  ? searchBarHeight
-                  : MediaQuery.of(context).padding.top),
-          Positioned(
-            bottom: ScreenUtil().bottomBarHeight + 90.h,
-            right: 20.w,
-            child: Hero(
-              tag: "addNewPost",
-              child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  child: Container(
-                    height: 72.r,
-                    width: 72.r,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/add_post.png"),
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    if (tabList.isNotEmpty) {
-                      initializeRefresh = true;
-                      context.read<NewPostProvider>().postTypeNotifier.value = tabList[1].id;
-                      Navigator.pushNamed(context, FeedbackRouter.newPost,
-                          arguments: NewPostArgs(false, '', 0, ''));
+          Expanded(
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                      // 因为上面的空要藏住搜索框
+                      top: MediaQuery.of(context).padding.top < searchBarHeight
+                          ? searchBarHeight + tabBarHeight
+                          : MediaQuery.of(context).padding.top + searchBarHeight,
+                      bottom: 52.h),
+                  child: Selector<LakeModel, List<WPYTab>>(
+                      selector: (BuildContext context, LakeModel lakeModel) {
+                    return lakeModel.tabList;
+                  }, builder: (_, tabs, __) {
+                    if (!context.read<LakeModel>().tabControllerLoaded) {
+                      context.read<LakeModel>().tabController =
+                          TabController(length: tabs.length, vsync: this)
+                            ..addListener(() {
+                              if (context
+                                      .read<LakeModel>()
+                                      .tabController
+                                      .index
+                                      .toDouble() ==
+                                  context
+                                      .read<LakeModel>()
+                                      .tabController
+                                      .animation!
+                                      .value) {
+                                WPYTab tab =
+                                    context.read<LakeModel>().lakeAreas[1]!.tab;
+                                if (context.read<LakeModel>().tabController.index !=
+                                        tabList.indexOf(tab) &&
+                                    canSee) _onFeedbackTapped();
+                                context.read<LakeModel>().currentTab =
+                                    context.read<LakeModel>().tabController.index;
+                                context.read<LakeModel>().onFeedbackOpen();
+                              }
+                            });
                     }
+                    int cacheNum = 0;
+                    return tabs.length == 1
+                        ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
+                        : ExtendedTabBarView(
+                            cacheExtent: cacheNum,
+                            controller: context.read<LakeModel>().tabController,
+                            children: List<Widget>.generate(
+                                // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                                tabs.length,
+                                (i) => NSubPage(
+                                      index: tabList[i].id,
+                                    )));
                   }),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      // 因为上面的空要藏住搜索框
+                      top: (MediaQuery.of(context).padding.top < searchBarHeight
+                              ? searchBarHeight + tabBarHeight
+                              : MediaQuery.of(context).padding.top +
+                                  searchBarHeight) +
+                          tabBarHeight -
+                          4),
+                  child: Visibility(
+                    child: InkWell(
+                        onTap: () {
+                          if (canSee) _onFeedbackTapped();
+                        },
+                        child: FbTagsWrap(key: fbKey)),
+                    maintainState: true,
+                    visible: canSee,
+                  ),
+                ),
+                Selector<LakeModel, bool>(
+                    selector: (BuildContext context, LakeModel lakeModel) {
+                  return lakeModel.barExtended;
+                }, builder: (_, barExtended, __) {
+                  return AnimatedContainer(
+                      height: searchBarHeight + tabBarHeight,
+                      margin: EdgeInsets.only(
+                          top: barExtended
+                              ? MediaQuery.of(context).padding.top < searchBarHeight
+                                  ? searchBarHeight
+                                  : MediaQuery.of(context).padding.top
+                              : MediaQuery.of(context).padding.top < searchBarHeight
+                                  ? 0
+                                  : MediaQuery.of(context).padding.top -
+                                      searchBarHeight),
+                      color: Colors.white,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeOutCirc,
+                      child: Column(children: [
+                        searchBar,
+                        SizedBox(
+                          height: tabBarHeight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              SizedBox(width: 4.h),
+                              expanded,
+                              SizedBox(width: 4.h)
+                            ],
+                          ),
+                        )
+                      ]));
+                }),
+                // 挡上面
+                Container(
+                    color: Colors.white,
+                    height: MediaQuery.of(context).padding.top < searchBarHeight
+                        ? searchBarHeight
+                        : MediaQuery.of(context).padding.top),
+                Positioned(
+                  bottom: ScreenUtil().bottomBarHeight + 90.h,
+                  right: 20.w,
+                  child: Hero(
+                    tag: "addNewPost",
+                    child: InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                          height: 72.r,
+                          width: 72.r,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/add_post.png"),
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          if (tabList.isNotEmpty) {
+                            initializeRefresh = true;
+                            context.read<NewPostProvider>().postTypeNotifier.value = tabList[1].id;
+                            Navigator.pushNamed(context, FeedbackRouter.newPost,
+                                arguments: NewPostArgs(false, '', 0, ''));
+                          }
+                        }),
+                  ),
+                ),
+              ],
             ),
           ),
+          if (landscape) Expanded(child: SizedBox())
         ],
       ),
     );
@@ -413,7 +424,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
     var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          padding: EdgeInsets.fromLTRB(12.h, 0, 12.h, 8.h),
           child: Wrap(
             spacing: 6,
             children: List.generate(provider.departmentList.length, (index) {
@@ -449,8 +460,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
       decoration: BoxDecoration(
           color: ColorUtil.whiteFDFE,
           borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(22),
-              bottomRight: Radius.circular(22))),
+              bottomLeft: Radius.circular(22.h),
+              bottomRight: Radius.circular(22.h))),
       child: AnimatedSize(
         curve: Curves.easeOutCirc,
         duration: Duration(milliseconds: 400),

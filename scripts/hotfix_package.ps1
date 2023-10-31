@@ -45,7 +45,7 @@ function Get-FixZip {
         Write-Host ("{0} {1:N2}Mb" -f $zipFile.FullName , ($zipFile.Length / 1mb))
         Write-Host "-------------------- fix --------------------"
     }
-    Set-Location ..\..\WePeiYang-Flutter\scripts\
+    Set-Location ..\..\wpy\scripts\
 }
 
 $environment = "ONLINE_TEST_${version}"

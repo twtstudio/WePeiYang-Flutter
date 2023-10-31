@@ -59,7 +59,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: 60.w,
+        height: 60.h,
         child: Row(children: [
           ProfileImageWithDetailedPopup(
               post.id,
@@ -72,7 +72,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.id.toString(),
               post.avatarBox.toString()),
           Container(
-              width: (WePeiYangApp.screenWidth - 24.w) / 2,
+              width: (WePeiYangApp.screenWidth - 24.h) / 2,
               color: Colors.transparent, // 没他就没有点击域
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

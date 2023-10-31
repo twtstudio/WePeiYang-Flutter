@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,14 +45,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         '课程表',
         'Schedule',
         ScheduleRouter.course),
-    CardBean(
-        Image.asset(
-          'assets/svg_pics/lake_butt_icons/lost_and_found.png',
-          width: 21.w,
-        ),
-        '失物招领',
-        'Lost-\nFound',
-        HomeRouter.laf),
     CardBean(
         Image.asset(
           'assets/images/schedule/add.png',
@@ -164,7 +157,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
             decoration: BoxDecoration(
-                gradient: showSchedule
+                gradient: showSchedule && !Platform.isWindows
                     ? LinearGradient(
                         colors: [
                           Color(0xFF2C7EDF),
@@ -215,7 +208,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 margin: EdgeInsets.only(left: 30.w, top: 10.h),
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
-                  style: showSchedule
+                  style: showSchedule && !Platform.isWindows
                       ? TextUtil.base.white.w400.sp(22)
                       : TextUtil.base.black00.w400.sp(22),
                   duration: const Duration(milliseconds: 300),
