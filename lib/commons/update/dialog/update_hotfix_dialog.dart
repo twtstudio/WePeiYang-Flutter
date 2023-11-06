@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 import '../../channel/install/hotfix.dart';
+import '../../util/text_util.dart';
 
 // 下载安装apk时的dialog
 class UpdateHotfixFinishDialog extends StatelessWidget {
@@ -19,19 +21,16 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
     final size = DialogSize.getSize(context);
     final messageRow = Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
+      children: [
         Icon(
           Icons.error,
           size: 12,
-          color: Color(0xfff0ad4e),
+          color: ColorUtil.yellowF0,
         ),
         SizedBox(width: 4),
         Text(
           '本次更新需要重启后生效',
-          style: TextStyle(
-            fontSize: 8,
-            color: Color(0xfff0ad4e),
-          ),
+          style: TextUtil.base.yellowF0.sp(8),
         ),
       ],
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../util/color_util.dart';
+
 // https://blog.csdn.net/shving/article/details/111146673
 class GradientLinearProgressBar extends StatelessWidget {
   ///画笔的宽度，其实是进度条的高度
@@ -21,7 +23,7 @@ class GradientLinearProgressBar extends StatelessWidget {
       {this.strokeWidth = 2.0,
       required this.colors,
       required this.value,
-      this.backgroundColor = const Color(0xFFEEEEEE),
+      this.backgroundColor = ColorUtil.whiteEEColor,
       this.strokeCapRound = false});
 
   @override
@@ -54,7 +56,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       {this.strokeWidth = 2.0,
       required this.colors,
       this.value = 0.0,
-      this.backgroundColor = const Color(0xFFEEEEEE),
+      this.backgroundColor = ColorUtil.whiteEEColor,
       this.strokeCapRound = false});
 
   @override
@@ -71,7 +73,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
     //画笔终点坐标
     var end = Offset(size.width, _offset);
 
-    if (backgroundColor != Colors.transparent) {
+    if (backgroundColor != ColorUtil.transparent) {
       p.color = backgroundColor;
       canvas.drawLine(start, end, p);
     }
@@ -81,7 +83,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       Rect rect = Rect.fromPoints(start, valueEnd);
       p.shader =
           LinearGradient(colors: colors).createShader(rect);
-      p.color = Colors.amber;
+      p.color =ColorUtil.amber ;
       canvas.drawLine(start, valueEnd, p);
     }
   }

@@ -5,6 +5,8 @@ import 'package:we_pei_yang_flutter/commons/update/dialog/update_progress_bar.da
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -30,11 +32,7 @@ class UpdateProgressDialog extends StatelessWidget {
             child: GradientLinearProgressBar(
               value: progress,
               strokeWidth: progressHeight,
-              colors: [
-                Color(0x2262677b),
-                Color(0x8862677b),
-                Color(0xff62677b),
-              ],
+              colors: ColorUtil.gradientGrey,
             ),
           );
         }
@@ -51,10 +49,7 @@ class UpdateProgressDialog extends StatelessWidget {
         },
         child: Text(
           "稍等片刻...",
-          style: TextStyle(
-            color: Color(0xff62677b),
-            fontSize: 12,
-          ),
+          style: TextUtil.base.grey6267.sp(12),
         ),
       );
     } else {
@@ -64,10 +59,7 @@ class UpdateProgressDialog extends StatelessWidget {
         },
         child: Text(
           "点击隐藏窗口",
-          style: TextStyle(
-            color: Color(0xff62677b),
-            fontSize: 12,
-          ),
+          style: TextUtil.base.grey6267.sp(12),
         ),
       );
     }

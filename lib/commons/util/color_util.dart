@@ -11,11 +11,14 @@ class ColorUtil {
   static const whiteFFColor = Color.fromARGB(255, 255, 255, 255);
   static const white210 = Color.fromRGBO(210, 210, 210, 1);
   static const white212 = Color.fromRGBO(212, 214, 226, 1);
+  static const white222 = Color(0xffdedede);
   static const white235 = Color.fromRGBO(235, 238, 243, 1);
   static const white237 = Color.fromRGBO(237, 240, 244, 1);
   static const white240 = Color.fromRGBO(240, 241, 242, 1);
   static const white250 = Color.fromRGBO(250, 250, 250, 1);
   static const white251 = Color.fromRGBO(251, 251, 251, 1);
+  static const whiteEEColor = Color(0xFFEEEEEE);
+  static const whiteF2Color = Color(0xfff2f2f2);
   static const black00Color = Color.fromARGB(255, 0, 0, 0);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
   static const grey108 = Color.fromARGB(255, 108, 108, 108);
@@ -32,6 +35,9 @@ class ColorUtil {
   static const selectionButtonColor = Color(0xFF2D4E9A);
   static const blue2CColor = Color(0xFF2C7EDF);//44,126,223
   static const blue28Color = Color(0xFF2887FF);
+  static const blue38Color = Color(0xFF3884DE);
+  static const blue15Color = Color(0xFF156ACE);
+  static const blue8DColor = Color(0xFF8DBBF1);
   static const blue80Color = Color(0xFF80B7F9);
   static const blueA6Color = Color(0xFFA6CFFF);
   static const blueBEColor = Color(0xFFBED1FF);
@@ -40,11 +46,15 @@ class ColorUtil {
   static const begoniaPink = Color(0xFFFFCCD1);
   static const mapRed = Color(0xFFFFF2F2);
   static const warning = Color(0xFFFFBC6B);
+  static const yellowF0 = Color(0xfff0ad4e);
   static const grey144 = Color.fromARGB(255, 144, 144, 144);
   static const white70 = Color(0xB3FFFFFF);
   static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
+  static const red = Colors.red;
+  static const red85 = Color.fromRGBO(85, 0, 9, 1.0);
   static const black26 = Colors.black26;
   static const black12 = Colors.black12;
+  static const black19 = Color(0x19000000);
   static const whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
   static const whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
   static const blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
@@ -67,7 +77,7 @@ class ColorUtil {
   static final grey4146Color = Color(0xff414650);
   static final grey6267Color = Color(0xff62677b);
   static final greyShadow64 = Color.fromARGB(64, 236, 237, 239);
-
+  static final amber = Colors.amber;
 
   static const gradientBlue = LinearGradient(
     colors: [
@@ -99,5 +109,25 @@ class ColorUtil {
     Color(0xF0E1403A),
     Color(0xFF5B96F2),
     Color(0xFF6A63E1)
+  ];
+
+  static const List<Color> gradientGrey=[
+    Color(0x2262677b),
+    Color(0x8862677b),
+    Color(0xff62677b),
+  ];
+
+
+  static const List<Color> rainbowColors = [
+    Color.fromRGBO(94, 192, 91, 1),
+    Color.fromRGBO(91, 150, 222, 1),
+    Color.fromRGBO(159, 105, 237, 1),
+    Color.fromRGBO(255, 135, 178, 1),
+    Color.fromRGBO(248, 190, 25, 1),
+    Color.fromRGBO(32, 91, 78, 1),
+    Color.fromRGBO(76, 77, 113, 1),
+    Color.fromRGBO(54, 27, 107, 1),
+    Color.fromRGBO(130, 20, 57, 1),
+    Color.fromRGBO(247, 117, 17, 1),
   ];
 }

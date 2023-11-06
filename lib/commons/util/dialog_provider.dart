@@ -45,7 +45,7 @@ class LakeDialogWidget extends Dialog {
             Container(
               padding: EdgeInsets.all(28.w),
               decoration: BoxDecoration(
-                color: Color(0xfff2f2f2),
+                color: ColorUtil.whiteF2Color,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -105,7 +105,7 @@ class LakeDialogWidget extends Dialog {
           elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
-              return Color.fromRGBO(79, 88, 107, 1);
+              return ColorUtil.blue79;
             return ColorUtil.backgroundColor;
           }),
           backgroundColor: MaterialStateProperty.all(
@@ -128,7 +128,7 @@ class LakeDialogWidget extends Dialog {
               boxShadow: [
                 BoxShadow(
                     blurRadius: 1.6,
-                    color: Colors.black12,
+                    color: ColorUtil.black12,
                     offset: Offset(-1, 3),
                     spreadRadius: 1),
               ],
@@ -159,7 +159,7 @@ class LakeDialogWidget extends Dialog {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(79, 88, 107, 1);
+                    return ColorUtil.blue79;
                   return ColorUtil.backgroundColor;
                 }),
                 backgroundColor: MaterialStateProperty.all(

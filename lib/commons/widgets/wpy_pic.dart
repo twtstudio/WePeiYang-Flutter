@@ -6,6 +6,8 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
+import '../util/color_util.dart';
+
 /// 统一Button样式
 class WpyPic extends StatefulWidget {
   WpyPic(this.imageUrl,
@@ -74,7 +76,7 @@ class _WpyPicState extends State<WpyPic> {
           return  Container(
                   width: widget.width ?? widget.holderHeight,
                   height: widget.height ?? widget.holderHeight,
-                  color: Colors.black26,
+                  color: ColorUtil.black26,
                   child: Center(
                     child: SizedBox(
                         width: widget.width == null ? 20 : widget.width! * 0.25,
