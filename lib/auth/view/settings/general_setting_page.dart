@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -17,32 +18,24 @@ class GeneralSettingPage extends StatefulWidget {
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
-  static final titleTextStyle =
-      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(177, 180, 186, 1));
-  static final mainTextStyle =
-      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
-  static final hintTextStyle = TextUtil.base.regular
-      .sp(12)
-      .customColor(Color.fromRGBO(205, 206, 212, 1));
+  static final titleTextStyle = TextUtil.base.bold.sp(14).grey177;
+  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98122;
+  static final hintTextStyle = TextUtil.base.regular.sp(12).whiteHint205;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('应用设置',
-            style: TextUtil.base.bold
-                .sp(16)
-                .customColor(Color.fromRGBO(36, 43, 69, 1))),
+        title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: GestureDetector(
-            child: Icon(Icons.arrow_back,
-                color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+            child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
             onTap: () => Navigator.pop(context),
           ),
         ),
@@ -60,7 +53,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -79,7 +72,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -100,10 +93,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   onChanged: (value) {
                     setState(() => CommonPreferences.showMap.value = value);
                   },
-                  activeColor: Color.fromRGBO(105, 109, 127, 1),
-                  inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                  activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  activeColor: ColorUtil.blue105,
+                  inactiveThumbColor: ColorUtil.hintWhite205,
+                  activeTrackColor: ColorUtil.white240,
+                  inactiveTrackColor: ColorUtil.white240,
                 ),
               ],
             ),
@@ -111,7 +104,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -132,10 +125,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   onChanged: (value) {
                     setState(() => CommonPreferences.hideGPA.value = !value);
                   },
-                  activeColor: Color.fromRGBO(105, 109, 127, 1),
-                  inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                  activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  activeColor: ColorUtil.blue105,
+                  inactiveThumbColor: ColorUtil.hintWhite205,
+                  activeTrackColor: ColorUtil.white240,
+                  inactiveTrackColor: ColorUtil.white240,
                 ),
               ],
             ),
@@ -233,7 +226,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -245,20 +238,20 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     children: [
                       Text('智能云端服务（BETA）', style: mainTextStyle),
                       SizedBox(height: 3.h),
-                      Text('获取课表、GPA、考表无需输入图形验证码',
-                          style: hintTextStyle)
+                      Text('获取课表、GPA、考表无需输入图形验证码', style: hintTextStyle)
                     ],
                   ),
                 ),
                 Switch(
                   value: CommonPreferences.useClassesBackend.value,
                   onChanged: (value) {
-                    setState(() => CommonPreferences.useClassesBackend.value = value);
+                    setState(() =>
+                        CommonPreferences.useClassesBackend.value = value);
                   },
-                  activeColor: Color.fromRGBO(105, 109, 127, 1),
-                  inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                  activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  activeColor: ColorUtil.blue105,
+                  inactiveThumbColor: ColorUtil.hintWhite205,
+                  activeTrackColor: ColorUtil.white240,
+                  inactiveTrackColor: ColorUtil.white240,
                 ),
               ],
             ),
@@ -267,7 +260,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -291,10 +284,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     Provider.of<CourseDisplayProvider>(context, listen: false)
                         .nightMode = value;
                   },
-                  activeColor: Color.fromRGBO(105, 109, 127, 1),
-                  inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                  activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                  inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                  activeColor: ColorUtil.blue105,
+                  inactiveThumbColor: ColorUtil.hintWhite205,
+                  activeTrackColor: ColorUtil.white240,
+                  inactiveTrackColor: ColorUtil.white240,
                 ),
               ],
             ),
@@ -303,7 +296,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -340,7 +333,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -377,10 +370,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         });
                       }
                     },
-                    activeColor: Color.fromRGBO(105, 109, 127, 1),
-                    inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-                    activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-                    inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
+                    activeColor: ColorUtil.blue105,
+                    inactiveThumbColor: ColorUtil.hintWhite205,
+                    activeTrackColor: ColorUtil.white240,
+                    inactiveTrackColor: ColorUtil.white240,
                   );
                 }),
               ],

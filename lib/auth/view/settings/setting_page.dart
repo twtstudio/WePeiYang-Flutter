@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -23,12 +24,10 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static final mainTextStyle =
-      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
-  static final hintTextStyle =
-      TextUtil.base.bold.sp(12).customColor(Color.fromRGBO(177, 180, 186, 1));
+  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98122;
+  static final hintTextStyle = TextUtil.base.bold.sp(12).grey177;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
   String md = '';
   String iosLocalVersion = '';
 
@@ -50,18 +49,15 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.setting,
-            style: TextUtil.base.bold
-                .sp(16)
-                .customColor(Color.fromRGBO(36, 43, 69, 1))),
+        title:
+            Text(S.current.setting, style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: GestureDetector(
-            child: Icon(Icons.arrow_back,
-                color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+            child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
             onTap: () => Navigator.pop(context),
           ),
         ),
@@ -73,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -98,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -115,7 +111,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.widgets_outlined,
-                      color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                      color: ColorUtil.blue98122, size: 20),
                   SizedBox(width: 12.w),
                   Expanded(child: Text('应用设置', style: mainTextStyle)),
                   arrow,
@@ -128,7 +124,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -155,7 +151,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -164,13 +160,16 @@ class _SettingPageState extends State<SettingPage> {
               },
               child: Row(
                 children: [
-                  Icon(Icons.update,
-                      color: Color.fromRGBO(98, 103, 122, 1), size: 20),
+                  Icon(Icons.update, color: ColorUtil.blue98122, size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(S.current.check_new, style: mainTextStyle),
                   ),
-                  Text("${S.current.current_version}: " + (Platform.isIOS ? iosLocalVersion : EnvConfig.VERSION),
+                  Text(
+                      "${S.current.current_version}: " +
+                          (Platform.isIOS
+                              ? iosLocalVersion
+                              : EnvConfig.VERSION),
                       style: hintTextStyle),
                   SizedBox(width: 15.w),
                 ],
@@ -181,7 +180,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(

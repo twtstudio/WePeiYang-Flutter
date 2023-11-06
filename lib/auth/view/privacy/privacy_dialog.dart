@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -11,7 +12,7 @@ class PrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = Color.fromRGBO(98, 103, 124, 1);
+    var textColor = ColorUtil.blue98;
     return WillPopScope(
       onWillPop: () async => false,
       child: Container(
@@ -21,7 +22,7 @@ class PrivacyDialog extends Dialog {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(251, 251, 251, 1)),
+            color: ColorUtil.white251),
         child: Column(
           children: [
             Expanded(
@@ -36,7 +37,7 @@ class PrivacyDialog extends Dialog {
               ),
             ),
             SizedBox(height: 13),
-            Divider(height: 1, color: Color.fromRGBO(172, 174, 186, 1)),
+            Divider(height: 1, color: ColorUtil.grey172),
             _detail(context),
           ],
         ),
@@ -54,7 +55,7 @@ class PrivacyDialog extends Dialog {
           child: Text('确定',
               style: TextUtil.base.bold.noLine
                   .sp(16)
-                  .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                  .blue98),
         ),
       );
     } else {
@@ -83,7 +84,7 @@ class PrivacyDialog extends Dialog {
               child: Text('同意',
                   style: TextUtil.base.bold.noLine
                       .sp(16)
-                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                      .blue98),
             ),
           ),
         ],

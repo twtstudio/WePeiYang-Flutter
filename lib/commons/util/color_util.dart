@@ -13,7 +13,9 @@ class ColorUtil {
   static const white212 = Color.fromRGBO(212, 214, 226, 1);
   static const white235 = Color.fromRGBO(235, 238, 243, 1);
   static const white237 = Color.fromRGBO(237, 240, 244, 1);
+  static const white240 = Color.fromRGBO(240, 241, 242, 1);
   static const white250 = Color.fromRGBO(250, 250, 250, 1);
+  static const white251 = Color.fromRGBO(251, 251, 251, 1);
   static const black00Color = Color.fromARGB(255, 0, 0, 0);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
   static const grey108 = Color.fromARGB(255, 108, 108, 108);
@@ -46,8 +48,12 @@ class ColorUtil {
   static const whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
   static const whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
   static const blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
+  static const grey177 = Color.fromRGBO(177, 180, 186, 1);
+  static const grey172 = Color.fromRGBO(172, 174, 186, 1);
   static const grey = Colors.grey;
-  static const blue98 = Color.fromRGBO(98, 103, 123, 1);
+  static const blue98122 = Color.fromRGBO(98, 103, 122, 1.0);
+  static const blue98 = Color.fromRGBO(98, 103, 124, 1.0);
+  static const blue105 = Color.fromRGBO(105, 109, 127, 1);
   static const blue177 = Color.fromRGBO(177, 175, 227, 1.0);
   static const blue103 = Color.fromRGBO(103, 110, 150, 1.0);
   static const blue79 = Color.fromRGBO(79, 88, 107, 1);

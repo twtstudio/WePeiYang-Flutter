@@ -114,6 +114,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get blue98 => this.copyWith(color: ColorUtil.blue98);
 
+  TextStyle get blue98122 => this.copyWith(color: ColorUtil.blue98122);
+
   TextStyle get blue52hz => this.copyWith(color: ColorUtil.blue52hz);
 
   TextStyle get grey => this.copyWith(color: ColorUtil.grey);
@@ -121,6 +123,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.whiteb1b2Color);
 
   TextStyle get grey6267 => this.copyWith(color: ColorUtil.grey6267Color);
+
+  TextStyle get grey177 => this.copyWith(color: ColorUtil.grey177);
 
   TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 
