@@ -554,7 +554,7 @@ class WeekPicker extends Dialog {
                             elevation: 0,
                             backgroundColor: index == _weekTypes.indexOf(type)
                                 ? Color.fromRGBO(44, 126, 223, 1)
-                                : ColorUtil.greyF7F8Color,
+                                : ColorUtil.whiteF8Color,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),
                             ),

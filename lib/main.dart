@@ -16,7 +16,7 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
-import 'auth/view/message/message_service.dart';
+import 'auth/network/message_service.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';

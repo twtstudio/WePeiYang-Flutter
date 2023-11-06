@@ -329,7 +329,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     );
 
     var appBar = AppBar(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),

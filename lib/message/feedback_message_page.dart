@@ -546,7 +546,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
         color: widget.data.type == 0
-            ? ColorUtil.greyF7F8Color
+            ? ColorUtil.whiteF8Color
             : ColorUtil.whiteFDFE,
       ),
       child: Padding(
@@ -588,7 +588,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.greyF7F8Color,
+            color: ColorUtil.whiteF8Color,
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -908,7 +908,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(5),
           color: widget.data.type == 0
-              ? ColorUtil.greyF7F8Color
+              ? ColorUtil.whiteF8Color
               : ColorUtil.whiteFDFE,
         ),
         child: Row(
@@ -948,7 +948,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.greyF7F8Color,
+            color: ColorUtil.whiteF8Color,
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -1290,7 +1290,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.greyF7F8Color,
+        color: ColorUtil.whiteF8Color,
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),

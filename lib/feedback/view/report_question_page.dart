@@ -43,7 +43,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),

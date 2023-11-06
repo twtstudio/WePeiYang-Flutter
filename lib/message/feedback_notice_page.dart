@@ -114,7 +114,7 @@ class FeedbackNoticePage extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                     blurRadius: 5,
-                    color: ColorUtil.greyF7F8Color,
+                    color: ColorUtil.whiteF8Color,
                     offset: Offset(0, 0),
                     spreadRadius: 3),
               ],
@@ -126,7 +126,7 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       appBar: appBar,
       body: noticeCard,
     );

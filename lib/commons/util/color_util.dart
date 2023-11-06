@@ -23,10 +23,9 @@ class ColorUtil {
   static const grey97Color = Color(0xFF979797);
   static const greyEAColor = Color(0xFFEAEAEA);
   static const green5CColor = Color(0xFF5CB85C);
-  static const whiteF8Color = Color(0xFFF7F7F8);
   static const black2AColor = Color(0xFF2A2A2A);
   static const black25Color = Color(0XFF252525);
-  static const greyF7F8Color = Color(0xFFF7F7F8);
+  static const whiteF8Color = Color(0xFFF7F7F8);
   static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
   static const blue2CColor = Color(0xFF2C7EDF);//44,126,223
@@ -43,6 +42,7 @@ class ColorUtil {
   static const white70 = Color(0xB3FFFFFF);
   static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
   static const black26 = Colors.black26;
+  static const black12 = Colors.black12;
   static const whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
   static const whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
   static const blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
@@ -57,6 +57,11 @@ class ColorUtil {
   static const hintWhite201 = Color.fromRGBO(201, 204, 209, 1);
   static const hintWhite205 = Color.fromRGBO(205, 206, 212, 1);
   static final greyShade300 = Colors.grey[300];
+  static final whiteb1b2Color = Color(0xffb1b2be);
+  static final grey4146Color = Color(0xff414650);
+  static final grey6267Color = Color(0xff62677b);
+  static final greyShadow64 = Color.fromARGB(64, 236, 237, 239);
+
 
   static const gradientBlue = LinearGradient(
     colors: [

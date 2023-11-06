@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/auth/view/message/message_service.dart';
+import 'package:we_pei_yang_flutter/auth/network/message_service.dart';
 import 'user_mails_page.dart';
 
 class MessageRouter {

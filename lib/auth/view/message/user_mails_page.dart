@@ -12,7 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
-import 'message_service.dart';
+import '../../network/message_service.dart';
 
 class UserMailboxPage extends StatefulWidget {
   @override
@@ -23,20 +23,20 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff7f7f8),
+      backgroundColor: ColorUtil.whiteF8Color,
       appBar: AppBar(
           title: Text(S.current.message,
               style: TextUtil.base.bold
                   .sp(16)
-                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
+                  .blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+                    color: ColorUtil.blue53, size: 32),
                 onTap: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -104,30 +104,27 @@ class _MailItemState extends State<MailItem> {
             boxShadow: [
               BoxShadow(
                   blurRadius: 5,
-                  color: Color.fromARGB(64, 236, 237, 239),
+                  color:ColorUtil.greyShadow64 ,
                   offset: Offset.zero,
                   spreadRadius: 3),
             ],
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 widget.data.title,
-                style: TextStyle(
-                    color: Color(0xff363c54),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15),
+                style: TextUtil.base.bold.blue53.sp(15),
               ),
               SizedBox(height: 10),
               Text(
                 widget.data.content,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Color(0xff363c54), fontSize: 13),
+                style: TextUtil.base.blue53.sp(13),
               ),
               SizedBox(height: 10),
               Row(
@@ -135,18 +132,18 @@ class _MailItemState extends State<MailItem> {
                   Image.asset(
                     'assets/images/account/cloud.png',
                     width: 17,
-                    color: Colors.black,
+                    color: ColorUtil.black00Color,
                     fit: BoxFit.cover,
                   ),
                   SizedBox(width: 10),
                   Text(
                     "twt",
-                    style: TextStyle(color: Color(0xff414650), fontSize: 11),
+                    style: TextUtil.base.grey4146.sp(11),
                   ),
                   Spacer(),
                   Text(
                     widget.data.time.replaceRange(10, 11, ' ').substring(0, 19),
-                    style: TextStyle(color: Color(0xffb1b2be), fontSize: 11),
+                    style: TextUtil.base.whiteb1b2.sp(11),
                   )
                 ],
               )
@@ -166,20 +163,20 @@ class MailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff7f7f8),
+      backgroundColor: ColorUtil.whiteF8Color,
       appBar: AppBar(
         title: Text('通知',
             style: TextUtil.base.regular
                 .sp(16)
-                .customColor(Color.fromRGBO(36, 43, 69, 1))),
+                .blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: GestureDetector(
               child: Icon(Icons.arrow_back,
-                  color: Color.fromRGBO(53, 59, 84, 1), size: 32),
+                  color: ColorUtil.blue53, size: 32),
               onTap: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -264,7 +261,7 @@ class _TextMailContent extends StatelessWidget {
         Text(
           DateFormat('yyyy-MM-dd HH:mm:ss')
               .format(DateTime.parse(data.time).toLocal()),
-          style: TextStyle(fontSize: 12, color: Color(0xff62677b)),
+          style:TextUtil.base.grey6267.sp(12),
         )
       ],
     );
@@ -294,13 +291,13 @@ class _TextMailContent extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                       blurRadius: 5,
-                      color: Color.fromARGB(64, 236, 237, 239),
+                      color: ColorUtil.greyShadow64,
                       offset: Offset.zero,
                       spreadRadius: 3),
                 ],
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+                color: ColorUtil.whiteFFColor,
               ),
               child: Column(
                 children: [
@@ -308,8 +305,7 @@ class _TextMailContent extends StatelessWidget {
                     children: [
                       Text(
                         data.title,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextUtil.base.bold.sp(16),
                       ),
                     ],
                   ),
@@ -371,9 +367,9 @@ class _TextMailContent extends StatelessWidget {
                                         ),
                                         SimpleUrlPreview(
                                           url: url,
-                                          bgColor: Colors.white,
+                                          bgColor: ColorUtil.whiteFFColor,
                                           titleLines: 2,
-                                          imageLoaderColor: Colors.black12,
+                                          imageLoaderColor: ColorUtil.black12,
                                           previewHeight: 130,
                                           previewContainerPadding:
                                               EdgeInsets.symmetric(
@@ -392,11 +388,7 @@ class _TextMailContent extends StatelessWidget {
                                               : TextUtil.base.black2A.w600
                                                   .h(1.6)
                                                   .sp(24),
-                                          siteNameStyle: TextStyle(
-                                            fontSize: 12,
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
+                                          siteNameStyle: TextUtil.base.sp(12).customColor(Theme.of(context).primaryColor),
                                         ),
                                       ],
                                     ),
