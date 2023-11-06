@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'color_util.dart';
+
 class TextUtil {
   TextUtil._();
 
@@ -99,6 +101,14 @@ extension TextStyleAttr on TextStyle {
   TextStyle get redD9 => this.copyWith(color: const Color(0xFFD9534F));
 
   TextStyle get orange6B => this.copyWith(color: const Color(0xFFFFBC6B));
+
+  TextStyle get whiteHint => this.copyWith(color:  ColorUtil.hintWhite);
+
+  TextStyle get blue79 => this.copyWith(color:  ColorUtil.blue79);
+
+  TextStyle get blue48 => this.copyWith(color:  ColorUtil.blue48);
+
+  TextStyle get blue98 => this.copyWith(color:  ColorUtil.blue98);
 
   TextStyle get mainColor =>
       this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));

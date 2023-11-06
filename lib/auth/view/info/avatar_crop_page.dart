@@ -14,6 +14,8 @@ import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../commons/util/text_util.dart';
+
 class AvatarCropPage extends StatefulWidget {
   @override
   _AvatarCropPageState createState() => _AvatarCropPageState();
@@ -186,7 +188,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 },
                 child: Text(
                   '更换头像框',
-                  style: TextStyle(color: ColorUtil.whiteFFColor, fontSize: 16),
+                  style: TextUtil.base.white.sp(16),
+
                 ),
               ),
               SizedBox(height: 10),
@@ -196,7 +199,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',
-                  style: TextStyle(color: ColorUtil.whiteFFColor, fontSize: 16),
+                  style: TextUtil.base.white.sp(16),
                 ),
               ),
               SizedBox(height: 10),
