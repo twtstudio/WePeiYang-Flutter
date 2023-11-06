@@ -9,6 +9,7 @@ class ColorUtil {
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const whiteFFColor = Color.fromARGB(255, 255, 255, 255);
+  static const white210 = Color.fromRGBO(210, 210, 210, 1);
   static const white212 = Color.fromRGBO(212, 214, 226, 1);
   static const white235 = Color.fromRGBO(235, 238, 243, 1);
   static const white237 = Color.fromRGBO(237, 240, 244, 1);
@@ -28,7 +29,7 @@ class ColorUtil {
   static const greyF7F8Color = Color(0xFFF7F7F8);
   static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
-  static const blue2CColor = Color(0xFF2C7EDF);
+  static const blue2CColor = Color(0xFF2C7EDF);//44,126,223
   static const blue28Color = Color(0xFF2887FF);
   static const blue80Color = Color(0xFF80B7F9);
   static const blueA6Color = Color(0xFFA6CFFF);
@@ -42,6 +43,8 @@ class ColorUtil {
   static const white70 = Color(0xB3FFFFFF);
   static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
   static const black26 = Colors.black26;
+  static const whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
+  static const whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
   static const blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
   static const grey = Colors.grey;
   static const blue98 = Color.fromRGBO(98, 103, 123, 1);
@@ -67,6 +70,16 @@ class ColorUtil {
     // 在0.7停止同理
     stops: [0, 0.53, 0.7],
   );
+
+  static const gradientBlueAllScreen = LinearGradient(
+    colors: [
+      Color(0xFF2C7EDF),
+      Color(0xFFA6CFFF),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   static const gradientWhite =
       LinearGradient(colors: [Colors.white, Colors.white]);
   static const List<Color> aprilFoolColor = [
