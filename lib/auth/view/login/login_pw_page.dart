@@ -120,15 +120,19 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                           ValueListenableBuilder(
                             valueListenable: checkNotifier,
                             builder: (context, bool value, _) {
-                              return Checkbox(
-                                value: value,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                visualDensity: VisualDensity.compact,
-                                activeColor: Color.fromARGB(255, 44, 126, 223),
-                                onChanged: (_) {
-                                  checkNotifier.value = !checkNotifier.value;
-                                },
+                              return Transform.scale(
+                                scaleX: 1.3,
+                                scaleY: 1.3,
+                                child: Checkbox(
+                                  value: value,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
+                                  activeColor: Color.fromARGB(255, 44, 126, 223),
+                                  onChanged: (_) {
+                                    checkNotifier.value = !checkNotifier.value;
+                                  },
+                                ),
                               );
                             },
                           ),
