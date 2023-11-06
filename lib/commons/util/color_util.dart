@@ -9,9 +9,10 @@ class ColorUtil {
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const whiteFFColor = Color.fromARGB(255, 255, 255, 255);
+  static const white212 = Color.fromRGBO(212, 214, 226, 1);
   static const white235 = Color.fromRGBO(235, 238, 243, 1);
+  static const white237 = Color.fromRGBO(237, 240, 244, 1);
   static const white250 = Color.fromRGBO(250, 250, 250, 1);
-
   static const black00Color = Color.fromARGB(255, 0, 0, 0);
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
   static const grey108 = Color.fromARGB(255, 108, 108, 108);
@@ -50,7 +51,8 @@ class ColorUtil {
   static const blue53 = Color.fromRGBO(53, 59, 84, 1);
   static const blue48 = Color.fromRGBO(48, 60, 102, 1);
   static const transparent = Colors.transparent;
-  static const hintWhite = Color.fromRGBO(201, 204, 209, 1);
+  static const hintWhite201 = Color.fromRGBO(201, 204, 209, 1);
+  static const hintWhite205 = Color.fromRGBO(205, 206, 212, 1);
   static final greyShade300 = Colors.grey[300];
 
   static const gradientBlue = LinearGradient(

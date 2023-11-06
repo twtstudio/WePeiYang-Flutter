@@ -50,7 +50,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
   Widget _detail(BuildContext context) {
     var hintStyle = TextUtil.base.regular
         .sp(13)
-        .whiteHint;
+        .whiteHint201;
     double width = WePeiYangApp.screenWidth - 80;
     if (CommonPreferences.phone.value != "")
       return Column(children: [

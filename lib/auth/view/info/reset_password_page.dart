@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -48,26 +49,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleStyle = TextUtil.base.bold
-        .sp(14.5)
-        .customColor(Color.fromRGBO(98, 103, 122, 1));
-    var hintStyle =
-        TextUtil.base.w400.sp(13).customColor(Color.fromRGBO(205, 206, 212, 1));
+    var titleStyle = TextUtil.base.bold.sp(14.5).blue98;
+    var hintStyle = TextUtil.base.w400.sp(13).whiteHint205;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           title: Text(S.current.reset_password,
-              style: TextUtil.base.bold
-                  .sp(16)
-                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
+              style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1.0), size: 32),
+                child:
+                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
                 onTap: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
@@ -93,7 +89,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password3,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
+                      fillColor: ColorUtil.white235,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -127,7 +123,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password1,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
+                      fillColor: ColorUtil.white235,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -161,7 +157,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password4,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
+                      fillColor: ColorUtil.white235,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -194,11 +190,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
-                        return Color.fromRGBO(103, 110, 150, 1);
-                      return Color.fromRGBO(53, 59, 84, 1);
+                        return ColorUtil.blue103;
+                      return ColorUtil.blue53;
                     }),
-                    backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(53, 59, 84, 1)),
+                    backgroundColor:
+                        MaterialStateProperty.all(ColorUtil.blue53),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30))),
                   ),
