@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
@@ -61,14 +62,14 @@ class _WeekDisplayWidget extends StatelessWidget {
         width: _cardWidth,
         decoration: BoxDecoration(
             color: deep
-                ? Color.fromRGBO(255, 255, 255, 1)
-                : Color.fromRGBO(246, 246, 246, 0.2),
+                ? ColorUtil.whiteFFColor
+                : ColorUtil.grey246,
             borderRadius: BorderRadius.circular(5.r)),
         child: Center(
           child: Text(date,
               style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                  ? Color.fromRGBO(44, 126, 223, 1)
-                  : Color.fromRGBO(202, 202, 202, 1))),
+                  ? ColorUtil.blue2CColor
+                  : ColorUtil.white202)),
         ),
       );
 }
@@ -172,7 +173,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: ColorUtil.whiteOpacity02,
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
@@ -187,7 +188,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: ColorUtil.whiteOpacity02,
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),

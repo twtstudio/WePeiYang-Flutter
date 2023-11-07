@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -88,7 +89,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor = Color.fromRGBO(44, 126, 223, 1);
+    var mainColor = ColorUtil.blue2CColor;
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -171,7 +172,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
-                      color: Color.fromRGBO(44, 126, 223, 1),
+                      color: ColorUtil.blue2CColor,
                     ),
                   ),
                 )
@@ -241,7 +242,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: Colors.white),
+                    .copyWith(secondaryHeaderColor:ColorUtil.whiteFFColor),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

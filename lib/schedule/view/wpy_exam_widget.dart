@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
@@ -48,23 +49,23 @@ class WpyExamWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 7.5.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(15.r),
               boxShadow: [
                 BoxShadow(
                   offset: Offset(0, 4),
                   blurRadius: 20,
-                  color: Colors.black.withOpacity(0.05),
+                  color: ColorUtil.blackOpacity005,
                 )
               ],
             ),
             child: Material(
-              color: Colors.transparent,
+              color: ColorUtil.transparent,
               child: InkWell(
                 onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
                 borderRadius: BorderRadius.circular(15.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: Color.fromRGBO(228, 232, 234, 1.0),
+                splashColor: ColorUtil.white228,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: Row(
@@ -98,16 +99,14 @@ class WpyExamWidget extends StatelessWidget {
                         children: [
                           Text(
                             exam.arrange,
-                            style: TextUtil.base.PingFangSC.normal
-                                .sp(12)
-                                .customColor(Color(0xFF2C7EDF)),
+                            style:
+                                TextUtil.base.PingFangSC.normal.sp(12).blue2C,
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             exam.date,
-                            style: TextUtil.base.PingFangSC.normal
-                                .sp(12)
-                                .customColor(Color(0xFF2C7EDF)),
+                            style:
+                                TextUtil.base.PingFangSC.normal.sp(12).blue2C,
                           ),
                         ],
                       ),
