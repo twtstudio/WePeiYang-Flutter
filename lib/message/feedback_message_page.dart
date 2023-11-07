@@ -99,7 +99,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 50,
-            backgroundColor: Colors.transparent,
+            backgroundColor: ColorUtil.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text('消息中心',
@@ -159,8 +159,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               preferredSize: Size.infinite,
               child: Theme(
                 data: ThemeData(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
+                  splashColor: ColorUtil.transparent,
+                  highlightColor: ColorUtil.transparent,
                 ),
                 child: TabBar(
                   indicatorWeight: 0,
@@ -231,7 +231,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: Text('湖底通知'),
                   badgeContent: Text(
                     count.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    style: TextUtil.base.white.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -258,7 +258,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: tab,
                   badgeContent: Text(
                     count.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    style: TextUtil.base.white.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -1380,7 +1380,7 @@ extension StringExtension on String {
 class CustomIndicator extends Decoration {
   const CustomIndicator({
     this.left = false,
-    this.borderSide = const BorderSide(width: 2, color: Colors.white),
+    this.borderSide = const BorderSide(width: 2, color: ColorUtil.whiteFFColor),
     this.insets = EdgeInsets.zero,
   });
 

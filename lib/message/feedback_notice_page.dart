@@ -22,7 +22,7 @@ class FeedbackNoticePage extends StatelessWidget {
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorUtil.transparent,
         elevation: 0,
         centerTitle: true,
         title:
@@ -30,7 +30,7 @@ class FeedbackNoticePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: Color(0XFF252525),
+            color: ColorUtil.black25Color,
           ),
           onPressed: () {
             Navigator.pop(context);
