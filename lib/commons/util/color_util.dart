@@ -18,6 +18,7 @@ class ColorUtil {
   static const white240 = Color.fromRGBO(240, 241, 242, 1);
   static const white250 = Color.fromRGBO(250, 250, 250, 1);
   static const white251 = Color.fromRGBO(251, 251, 251, 1);
+  static const whiteCDColor = Color(0xffcdcdd3);
   static const whiteEEColor = Color(0xFFEEEEEE);
   static const whiteEBColor = Color(0xffebebeb);
   static const whiteEAColor = Color(0xffeaeaea);
@@ -80,6 +81,8 @@ class ColorUtil {
   static const blackOpacity022 = Color.fromRGBO(0, 0, 25, 0.22);
   static const grey177 = Color.fromRGBO(177, 180, 186, 1);
   static const grey172 = Color.fromRGBO(172, 174, 186, 1);
+  static const grey178 = Color.fromRGBO(178, 178, 158, 0.2);
+  static const grey230 = Color.fromRGBO(230, 230, 230, 0.25);
   static const grey = Colors.grey;
   static const blue98122 = Color.fromRGBO(98, 103, 122, 1.0);
   static const blue98 = Color.fromRGBO(98, 103, 124, 1.0);
@@ -98,6 +101,7 @@ class ColorUtil {
   static const pink208 = Color.fromRGBO(208, 104, 160, 1.0);
   static const red134 = Color.fromRGBO(134, 103, 111, 1.0);
   static const red243 = Color.fromRGBO(243, 16, 73, 1.0);
+  static const yellow158 = Color.fromRGBO(158, 158, 138, 0.45);
   static const yellow190 = Color.fromRGBO(190, 163, 91, 1.0);
   static const orange157 = Color.fromRGBO(157, 129, 113, 1.0);
   static const blue124 = Color.fromRGBO(124, 179, 216, 1.0);

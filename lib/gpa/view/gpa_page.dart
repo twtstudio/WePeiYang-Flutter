@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -66,7 +67,7 @@ class _GPAPageState extends State<GPAPage> {
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data:
-                Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
+                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
             child: ListView(
               children: [
                 RadarChartWidget(widget._gpaColors),
@@ -109,7 +110,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
           ),
         ),
       ),
@@ -240,7 +241,7 @@ class _RadarChartPainter extends CustomPainter {
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
   final Paint _creditPaint = Paint()
-    ..color = Color.fromRGBO(178, 178, 158, 0.2)
+    ..color = ColorUtil.grey178
     ..style = PaintingStyle.fill;
 
   _drawCredit(Canvas canvas, Size size) {
@@ -269,7 +270,7 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _fillPaint = Paint()
-    ..color = Color.fromRGBO(230, 230, 230, 0.25)
+    ..color = ColorUtil.grey230
     ..style = PaintingStyle.fill;
 
   _drawScoreFill(Canvas canvas) {
@@ -288,7 +289,7 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _linePaint = Paint()
-    ..color = Color.fromRGBO(158, 158, 138, 0.45)
+    ..color = ColorUtil.yellow158
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.5;
 
@@ -504,7 +505,7 @@ class CourseListWidget extends StatelessWidget {
                                 ),
                               ),
                               Card(
-                                color: Colors.transparent,
+                                color: ColorUtil.transparent,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)),
