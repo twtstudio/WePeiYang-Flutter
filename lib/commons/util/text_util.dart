@@ -41,68 +41,52 @@ extension TextStyleAttr on TextStyle {
   /// 颜色
   TextStyle customColor(Color c) => this.copyWith(color: c);
 
-  TextStyle get white => this.copyWith(color: Colors.white);
+  TextStyle get white => this.copyWith(color: ColorUtil.whiteFFColor);
 
-  TextStyle get white38 => this.copyWith(color: Colors.white38);
+  TextStyle get white38 => this.copyWith(color: ColorUtil.white38);
 
-  TextStyle get whiteFD => this.copyWith(color: const Color(0xFFFDFDFE));
+  TextStyle get whiteFD => this.copyWith(color: ColorUtil.whiteFDFE);
 
-  TextStyle get mainOrange => this.copyWith(color: const Color(0xFFFF6F48));
+  TextStyle get dangerousRed => this.copyWith(color: ColorUtil.dangerousRed);
 
-  TextStyle get dangerousRed => this.copyWith(color: const Color(0xFFFF0000));
+  TextStyle get textButtonBlue =>
+      this.copyWith(color: ColorUtil.selectionButtonColor);
 
-  TextStyle get textButtonBlue => this.copyWith(color: const Color(0xFF2D4E9A));
+  TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
-  TextStyle get begoniaPink => this.copyWith(color: const Color(0xFFF3C9D9));
+  TextStyle get linkBlue => this.copyWith(color: ColorUtil.linkBlue);
 
-  TextStyle get biliPink => this.copyWith(color: const Color(0xFFAE3B5E));
+  TextStyle get greyEB => this.copyWith(color: ColorUtil.whiteEBColor);
 
-  TextStyle get linkBlue => this.copyWith(color: const Color(0xFF222F80));
+  TextStyle get greyAA => this.copyWith(color: ColorUtil.greyAA);
 
-  TextStyle get mainYellow => this.copyWith(color: const Color(0xFFFABC35));
+  TextStyle get greyA8 => this.copyWith(color: ColorUtil.greyA8);
 
-  TextStyle get mainGrey => this.copyWith(color: const Color(0xFFB6B2AF));
+  TextStyle get greyA6 => this.copyWith(color: ColorUtil.greyA6);
 
-  TextStyle get mainPurple => this.copyWith(color: const Color(0xFF6A63E1));
+  TextStyle get grey97 => this.copyWith(color: ColorUtil.grey97);
 
-  TextStyle get greyEB => this.copyWith(color: const Color(0xFFEBEBEB));
+  TextStyle get grey6C => this.copyWith(color: ColorUtil.grey6C);
 
-  TextStyle get greyAA => this.copyWith(color: const Color(0xFFAAAAAA));
+  TextStyle get greyC8 => this.copyWith(color: ColorUtil.greyC8);
 
-  TextStyle get greyA8 => this.copyWith(color: const Color(0xFFA8A8A8));
+  TextStyle get blue303C => this.copyWith(color: ColorUtil.blue303C);
 
-  TextStyle get greyA6 => this.copyWith(color: const Color(0xFFA6A6A6));
+  TextStyle get blue363C => this.copyWith(color: ColorUtil.blue363C);
 
-  TextStyle get greyB2 => this.copyWith(color: const Color(0xFFB2B6BB));
+  TextStyle get black00 => this.copyWith(color: ColorUtil.black00Color);
 
-  TextStyle get grey97 => this.copyWith(color: const Color(0xFF979797));
+  TextStyle get black4E => this.copyWith(color: ColorUtil.black4E);
 
-  TextStyle get grey6C => this.copyWith(color: const Color(0xFF6C6C6C));
+  TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
 
-  TextStyle get greyC8 => this.copyWith(color: const Color(0xFFC8C8C8));
+  TextStyle get black2A => this.copyWith(color: ColorUtil.black2A);
 
-  TextStyle get blue303C => this.copyWith(color: const Color(0xFF303C66));
+  TextStyle get green5C => this.copyWith(color: ColorUtil.green5CColor);
 
-  TextStyle get blue363C => this.copyWith(color: const Color(0xFF363C54));
+  TextStyle get redD9 => this.copyWith(color: ColorUtil.redD9);
 
-  TextStyle get black00 => this.copyWith(color: const Color(0xFF000000));
-
-  TextStyle get black4E => this.copyWith(color: const Color(0xFF4E4E4E));
-
-  TextStyle get grey126 =>
-      this.copyWith(color: const Color.fromARGB(255, 126, 126, 126));
-
-  TextStyle get black2A => this.copyWith(color: const Color(0xFF2A2A2A));
-
-  TextStyle get green1B => this.copyWith(color: const Color(0xFF1B7457));
-
-  TextStyle get green5C => this.copyWith(color: const Color(0xFF5CB85C));
-
-  TextStyle get yellowD9 => this.copyWith(color: const Color(0xFFD9621F));
-
-  TextStyle get redD9 => this.copyWith(color: const Color(0xFFD9534F));
-
-  TextStyle get orange6B => this.copyWith(color: const Color(0xFFFFBC6B));
+  TextStyle get orange6B => this.copyWith(color: ColorUtil.orange6B);
 
   TextStyle get yellowF0 => this.copyWith(color: ColorUtil.yellowF0);
 
@@ -142,12 +126,11 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 
-  TextStyle get mainColor =>
-      this.copyWith(color: const Color.fromARGB(255, 54, 60, 84));
+  TextStyle get mainColor => this.copyWith(color: ColorUtil.mainColor);
 
-  TextStyle get blue2C => this.copyWith(color: const Color(0xFF2C7EDF));
+  TextStyle get blue2C => this.copyWith(color: ColorUtil.blue2CColor);
 
-  TextStyle get transParent => this.copyWith(color: const Color(0x00000000));
+  TextStyle get transParent => this.copyWith(color: ColorUtil.transparent);
 
   /// 字体
   TextStyle get Swis => this.copyWith(fontFamily: 'Swis');

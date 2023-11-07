@@ -9,6 +9,7 @@ class ColorUtil {
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const whiteFFColor = Colors.white;
+  static const white38 = Colors.white38;
   static const whiteOpacity05 = Color.fromRGBO(255, 255, 255, 0.5);
   static const whiteOpacity03 = Color.fromRGBO(255, 255, 255, 0.3);
   static const white210 = Color.fromRGBO(210, 210, 210, 1);
@@ -33,7 +34,6 @@ class ColorUtil {
   static const profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
   static const grey108 = Color.fromARGB(255, 108, 108, 108);
   static const bold42TextColor = Color.fromARGB(255, 42, 42, 42);
-  static const boldTag54 = Color.fromARGB(255, 54, 60, 84);
   static const whiteFDFE = Color.fromARGB(255, 253, 253, 254);
   static const grey97Color = Color(0xFF979797);
   static const greyEAColor = Color(0xFFEAEAEA);
@@ -51,6 +51,7 @@ class ColorUtil {
   static const blue2CColor = Color(0xFF2C7EDF);//44,126,223
   static const blue28Color = Color(0xFF2887FF);
   static const blue38Color = Color(0xFF3884DE);
+  static const linkBlue = Color(0xFF222F80);
   static const blue15Color = Color(0xFF156ACE);
   static const blue8DColor = Color(0xFF8DBBF1);
   static const blue80Color = Color(0xFF80B7F9);
@@ -59,6 +60,7 @@ class ColorUtil {
   static const blueBEColor = Color(0xFFBED1FF);
   static const blue3A3BColor = Color.fromRGBO(58, 59, 69, 1.0);
   static const biliPink = Color(0xFFF97198);
+  static const biliTextPink = Color(0xFFAE3B5E);
   static const begoniaPink = Color(0xFFFFCCD1);
   static const mapRed = Color(0xFFFFF2F2);
   static const warning = Color(0xFFFFBC6B);
@@ -68,6 +70,7 @@ class ColorUtil {
   static const white70 = Color(0xB3FFFFFF);
   static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
   static const red = Colors.red;
+  static const dangerousRed = Color(0xFFFF0000);
   static const yellow = Colors.yellow;
   static const redAccent = Colors.redAccent;
   static const pinkAccent = Colors.pinkAccent;
@@ -137,6 +140,19 @@ class ColorUtil {
   static const greyShadow64 = Color.fromARGB(64, 236, 237, 239);
   static const amber = Colors.amber;
   static const amberAccent = Colors.amberAccent;
+  static const greyAA = Color(0xFFAAAAAA);
+  static const greyA8 = Color(0xFFA8A8A8);
+  static const greyA6 = Color(0xFFA6A6A6);
+  static const grey97 = Color(0xFF979797);
+  static const grey126 = Color.fromARGB(255, 126, 126, 126);
+  static const grey6C = Color(0xFF6C6C6C);
+  static const greyC8 = Color(0xFFC8C8C8);
+  static const blue303C = Color(0xFF303C66);
+  static const blue363C = Color(0xFF363C54);
+  static const black4E = Color(0xFF4E4E4E);
+  static const black2A = Color(0xFF2A2A2A);
+  static const redD9 = Color(0xFFD9534F);
+  static const orange6B = Color(0xFFFFBC6B);
 
   static const gradientBlue = LinearGradient(
     colors: [

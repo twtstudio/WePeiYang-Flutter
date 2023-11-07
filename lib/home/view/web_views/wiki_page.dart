@@ -32,7 +32,7 @@ class WikiPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 15),
               child: GestureDetector(
                   child: Icon(Icons.arrow_back,
-                      color: ColorUtil.boldTag54, size: 32),
+                      color: ColorUtil.mainColor, size: 32),
                   onTap: () => Navigator.pop(context)),
             )),
         body: WebView(
