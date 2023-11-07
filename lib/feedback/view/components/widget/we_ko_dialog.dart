@@ -65,7 +65,7 @@ class WeKoDialog extends StatelessWidget {
                   overlayColor:
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return Color.fromRGBO(79, 88, 107, 1);
+                      return ColorUtil.blue79;
                     return ColorUtil.backgroundColor;
                   }),
                   backgroundColor:

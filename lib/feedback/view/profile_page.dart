@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
       postListShow = Container(
           height: 430,
           alignment: Alignment.center,
-          child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无冒泡", style: TextUtil.base.grey6267));
     } else {
       postListShow = Column(
         children: postLists,
@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Icon(
                       Icons.email_outlined,
                       size: 28,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                     ),
                   ),
                   SizedBox(width: 15),
@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'assets/images/setting.png',
                       width: 24,
                       height: 24,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                     ),
                   ),
                   SizedBox(width: 10),
@@ -203,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r)),
-                color: Colors.white,
+                color: ColorUtil.whiteFFColor,
               ),
               child: Column(
                 children: [
@@ -315,7 +315,7 @@ class _ProfilePageState extends State<ProfilePage> {
               tag: 'avatar',
               child: UserAvatarImage(
                 size: 0.3.sw,
-                iconColor: Colors.white,
+                iconColor: ColorUtil.whiteFFColor,
               ),
             ),
           ),
@@ -327,7 +327,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         appBar,
         Container(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           child: postListShow,
         )
       ],
@@ -336,17 +336,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       //改背景色用
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [
-                Color(0xFF2C7EDF),
-                Color(0xFFA6CFFF),
-                // 用来挡下面圆角左右的空
-                Colors.white
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              // 在0.7停止同理
-              stops: [0, 0.23, 0.4])),
+          gradient: ColorUtil.gradientBlue04),
       child: SafeArea(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
@@ -389,13 +379,13 @@ class CustomCard extends StatelessWidget {
         width: 113.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 8,
-              color: Colors.black.withOpacity(0.1),
+              color: ColorUtil.blackOpacity01,
             ),
           ],
         ),

@@ -40,6 +40,7 @@ class OfficialReplyCard extends StatefulWidget {
 
   ///评分数
   final int ratings;
+
   OfficialReplyCard.reply({
     this.tag = '',
     required this.comment,
@@ -272,7 +273,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           RatingBar.builder(
             itemBuilder: (context, index) => Icon(
               Icons.star,
-              color: Colors.yellow,
+              color: ColorUtil.yellow,
             ),
             allowHalfRating: true,
             glow: false,
@@ -294,7 +295,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: Colors.yellow,
+            color: ColorUtil.yellow,
           ),
           allowHalfRating: true,
           glow: false,
@@ -335,7 +336,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   padding: const EdgeInsets.all(0),
                   labelPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  backgroundColor: Color(0xffebebeb),
+                  backgroundColor: ColorUtil.whiteEBColor,
                   label: Text('查看回复详情 >',
                       style: TextUtil.base.ProductSans.w400.sp(14).grey6C),
                 ),
@@ -409,11 +410,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: list,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
-                color: Color.fromARGB(64, 236, 237, 239),
+                color: ColorUtil.greyShadow64,
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],
@@ -455,13 +456,13 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
-      unratedColor: Colors.grey,
+      unratedColor: ColorUtil.grey,
       itemCount: 5,
       itemSize: 47.w,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Colors.amber,
+        color: ColorUtil.amber,
       ),
       onRatingUpdate: (rating) {
         setState(() {

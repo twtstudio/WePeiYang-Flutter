@@ -134,7 +134,7 @@ class _NCommentCardState extends State<NCommentCard>
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.w,
-            color: Colors.black,
+            color: ColorUtil.black00Color,
           ),
         ),
         onTap: () {
@@ -533,7 +533,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: 68.h, color: Colors.transparent)))
+                                    height: 68.h, color: ColorUtil.transparent)))
                       ],
                     ),
         ));
@@ -695,7 +695,7 @@ class _NCommentCardState extends State<NCommentCard>
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(6.w, 0, 14.w, 6.h),
-                    color: Colors.transparent,
+                    color: ColorUtil.transparent,
                     child: mainBody,
                   ),
                   if (!widget.isSubFloor &&
@@ -796,7 +796,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   hintText: "评论置顶值，0-3000，0为取消置顶",
                   hintStyle: TextUtil.base.black2A.bold.w500.sp(14),
                   filled: true,
-                  fillColor: Color.fromRGBO(235, 238, 243, 1),
+                  fillColor: ColorUtil.white235,
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(

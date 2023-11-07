@@ -20,7 +20,6 @@ class LinkText extends StatefulWidget {
 }
 
 class _LinkTextState extends State<LinkText> {
-
   bool checkBili(String url) {
     return url.startsWith('https://b23.tv/') ||
         url.startsWith('https://www.bilibili.com/');
@@ -33,21 +32,20 @@ class _LinkTextState extends State<LinkText> {
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
         textStyle: widget.style.NotoSansSC.w400.sp(16),
-        linkStyle: widget.style.linkBlue.w500.sp(16),
-        onTap: (link) async {
-          // 粗暴地解决了，但是肯定不是个长久之计
-          if (link.value!.startsWith('#MP') &&
-              RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
-            checkPostId(link.value!.substring(3));
-          } else if (link.type == LinkType.url) {
-            var url = link.value!.startsWith('http')
-                ? link.value!
-                : 'https://${link.value}';
-            checkUrl(url);
-          } else {
-            ToastProvider.error('无效的帖子编号！');
-          }
-        });
+        linkStyle: widget.style.linkBlue.w500.sp(16), onTap: (link) async {
+      // 粗暴地解决了，但是肯定不是个长久之计
+      if (link.value!.startsWith('#MP') &&
+          RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
+        checkPostId(link.value!.substring(3));
+      } else if (link.type == LinkType.url) {
+        var url = link.value!.startsWith('http')
+            ? link.value!
+            : 'https://${link.value}';
+        checkUrl(url);
+      } else {
+        ToastProvider.error('无效的帖子编号！');
+      }
+    });
   }
 
   checkPostId(String id) {
@@ -75,9 +73,7 @@ class _LinkTextState extends State<LinkText> {
             return LakeDialogWidget(
                 title: '天外天工作室提示您',
                 titleTextStyle:
-                TextUtil.base.normal.black4E.NotoSansSC
-                    .sp(22)
-                    .w600,
+                    TextUtil.base.normal.black4E.NotoSansSC.sp(22).w600,
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -95,26 +91,21 @@ class _LinkTextState extends State<LinkText> {
                 ),
                 cancelText: "取消",
                 confirmTextStyle:
-                TextUtil.base.normal.white.NotoSansSC
-                    .sp(16)
-                    .w600,
-                confirmButtonColor
-                : checkBili(url)
-                ? ColorUtil.biliPink
-                : ColorUtil.selectionButtonColor,
+                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                confirmButtonColor: checkBili(url)
+                    ? ColorUtil.biliPink
+                    : ColorUtil.selectionButtonColor,
                 cancelTextStyle:
-                TextUtil.base.normal.black2A.NotoSansSC
-                    .sp(16)
-                    .w400,
+                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                 confirmText: "继续",
                 cancelFun: () {
                   Navigator.pop(context);
                 },
                 confirmFun: () async {
-                  await launchUrl(
-                      Uri.parse(url), mode: checkBili(url)
-                      ? LaunchMode.externalNonBrowserApplication : LaunchMode
-                      .externalApplication);
+                  await launchUrl(Uri.parse(url),
+                      mode: checkBili(url)
+                          ? LaunchMode.externalNonBrowserApplication
+                          : LaunchMode.externalApplication);
                   Navigator.pop(context);
                 });
           });

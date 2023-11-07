@@ -137,9 +137,9 @@ class _SearchBarState extends State<SearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextStyle().black2A.NotoSansSC.w400.sp(15),
+                    style: TextUtil.base.black2A.NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      hintStyle: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
                           ? '搜索发现'
                           : '#${data.recTag?.name}#，输入“#”号搜索更多Tag',
@@ -195,7 +195,7 @@ class _SearchBarState extends State<SearchBar>
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor: MaterialStateProperty.all(ColorUtil.whiteFFColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -215,7 +215,7 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
@@ -228,14 +228,14 @@ class _SearchBarState extends State<SearchBar>
                     padding: EdgeInsets.only(bottom: 10),
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
                         ),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black12,
+                              color: ColorUtil.black12,
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度

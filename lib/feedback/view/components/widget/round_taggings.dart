@@ -49,12 +49,12 @@ class _ETagWidgetState extends State<ETagWidget> {
   bool colorState = false;
   var timeDuration = Duration(milliseconds: 1900);
   Map<String, ETagUtil> tagUtils = {
-    'recommend': ETagUtil(Color.fromRGBO(232, 178, 27, 1.0),
-        Color.fromRGBO(236, 120, 57, 1.0), '精', '精华帖'),
-    'theme': ETagUtil(Color.fromRGBO(66, 161, 225, 1.0),
-        Color.fromRGBO(57, 90, 236, 1.0), '活动', '活动帖'),
-    'top': ETagUtil(Color.fromRGBO(223, 108, 171, 1.0),
-        Color.fromRGBO(243, 16, 73, 1.0), '置顶', '置顶帖')
+    'recommend': ETagUtil(ColorUtil.yellow232,
+        ColorUtil.orange236, '精', '精华帖'),
+    'theme': ETagUtil(ColorUtil.blue66,
+        ColorUtil.blue57, '活动', '活动帖'),
+    'top': ETagUtil(ColorUtil.pink223,
+        ColorUtil.red243, '置顶', '置顶帖')
   };
 
   @override
@@ -185,10 +185,10 @@ class TagShowWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: type == 0
-                          ? Color(0xffeaeaea)
+                          ? ColorUtil.greyEAColor
                           : type == 1
                               ? ColorUtil.mainColor
-                              : Colors.white,
+                              : ColorUtil.whiteFFColor,
                     ),
                     child: SvgPicture.asset(
                       type == 0
@@ -229,9 +229,9 @@ class TextPod extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white54,
+          color: ColorUtil.white54,
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.black38)),
+          border: Border.all(color: ColorUtil.black38)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C),
     );

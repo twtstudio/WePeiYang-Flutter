@@ -132,7 +132,7 @@ class _CollectionPageState extends State<CollectionPage> {
       favListShow = Container(
           height: 200,
           alignment: Alignment.center,
-          child: Text("暂无收藏", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无收藏", style: TextUtil.base.grey6267));
     } else {
       favListShow = Column(
         children: [favLists, SizedBox(height: 20.w)],

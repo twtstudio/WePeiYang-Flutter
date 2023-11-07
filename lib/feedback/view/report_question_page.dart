@@ -31,10 +31,10 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
     elevation: MaterialStateProperty.all(1),
     overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
       if (states.contains(MaterialState.pressed))
-        return Color.fromRGBO(103, 110, 150, 1);
-      return Color.fromRGBO(53, 59, 84, 1);
+        return ColorUtil.blue103;
+      return ColorUtil.blue53;
     }),
-    backgroundColor: MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+    backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
     shape: MaterialStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
     minimumSize: MaterialStateProperty.all(Size(80, 40)),
@@ -93,7 +93,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 60,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: Colors.white),
+                  color: ColorUtil.whiteFFColor),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Align(
@@ -121,7 +121,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 300,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: Colors.white),
+                  color: ColorUtil.whiteFFColor),
               child: TextField(
                 minLines: 7,
                 maxLines: 15,

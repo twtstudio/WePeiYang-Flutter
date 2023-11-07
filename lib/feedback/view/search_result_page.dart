@@ -148,7 +148,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         titleSpacing: 0,
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
@@ -175,8 +175,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
         actions: [
           if (lakeType != 0)
             InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                splashColor: ColorUtil.transparent,
+                highlightColor: ColorUtil.transparent,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -226,7 +226,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   (context, index) {
                     if (index == 0) {
                       return Container(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         child: Column(
                           children: [
                             const SizedBox(height: 10),
@@ -281,7 +281,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           body = Center(
             child: Text(S.current.feedback_no_post,
                 style: TextUtil.base.regular
-                    .customColor(Color.fromARGB(255, 145, 145, 145))),
+                    .grey145),
           );
         }
         break;

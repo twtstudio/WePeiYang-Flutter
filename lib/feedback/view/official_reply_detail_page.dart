@@ -194,7 +194,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
               Container(
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
-                  color: Colors.black12)
+                  color: ColorUtil.black12)
             ],
           );
         },
@@ -238,7 +238,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: ColorUtil.black12,
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
@@ -287,7 +287,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor,
                           )),
                     ),
                   ),

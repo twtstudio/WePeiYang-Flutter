@@ -133,16 +133,16 @@ class _NewPostPageState extends State<NewPostPage> {
       elevation: 0,
       leading: IconButton(
         padding: EdgeInsets.zero,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
+        splashColor: ColorUtil.transparent,
+        highlightColor: ColorUtil.transparent,
         icon: Icon(
           Icons.keyboard_arrow_left,
-          color: Color(0XFF62677B),
+          color: ColorUtil.grey6267Color,
           size: 36,
         ),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorUtil.transparent,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
@@ -173,7 +173,7 @@ class _NewPostPageState extends State<NewPostPage> {
     );
 
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         appBar: appBar,
         body: Column(
           children: [
@@ -302,7 +302,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                             tabList[index + 1]
                                                                 .id
                                                         ? ColorUtil.blue2CColor
-                                                        : Colors.white,
+                                                        : ColorUtil.whiteFFColor,
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -322,8 +322,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
+                            highlightColor: ColorUtil.transparent,
+                            splashColor: ColorUtil.transparent,
                             onTap: () {
                               controller.offset <= 100 * (tabList.length - 2)
                                   ? controller.animateTo(
@@ -347,7 +347,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                 : Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         borderRadius: BorderRadius.circular(16)),
                     child: Center(
                       child: Text('点击刷新'),
@@ -387,7 +387,7 @@ class _departmentTagViewState extends State<departmentTagView> {
         builder: (context, type, _) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),
@@ -688,7 +688,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: Colors.black26),
+              border: Border.all(width: 1, color: ColorUtil.black26),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -708,7 +708,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: Colors.black26,
+              color: ColorUtil.black26,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),

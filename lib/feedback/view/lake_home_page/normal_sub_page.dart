@@ -439,7 +439,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.black26,
+                            color: ColorUtil.black26,
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -453,7 +453,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.black26,
+                            color: ColorUtil.black26,
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -463,7 +463,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Colors.black26,
+                          color: ColorUtil.black26,
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);
@@ -479,8 +479,8 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        isOpa ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
-                        !isOpa ? Color(0x32FFFFFF) : Color(0x90FFFFFF),
+                        isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
+                        !isOpa ? ColorUtil.black32Color : ColorUtil.black90Color,
                       ],
                     ),
                   ),
@@ -542,7 +542,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       ),
       elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.whiteFFColor,
       foregroundColor: ColorUtil.mainColor,
       onPressed: () {
         FeedbackService.getToken(

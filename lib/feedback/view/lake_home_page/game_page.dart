@@ -29,7 +29,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = Colors.black12;
+    final Color _color = ColorUtil.black12;
     return SizedBox(
       height: 130,
       child: InkWell(

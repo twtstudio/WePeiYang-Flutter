@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -147,7 +148,7 @@ class _PersonPageState extends State<PersonPage> {
       postListShow = Container(
           height: 430,
           alignment: Alignment.center,
-          child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无冒泡", style: TextUtil.base.grey6267));
     } else {
       postListShow = Column(
         children: postLists,
@@ -296,7 +297,7 @@ class _PersonPageState extends State<PersonPage> {
     );
 
     return Container(
-      color: Colors.white,
+      color: ColorUtil.whiteFFColor,
       child: SafeArea(
         child: (CommonPreferences.isSuper.value ||
                 CommonPreferences.isStuAdmin.value)
@@ -333,10 +334,10 @@ class _PersonPageState extends State<PersonPage> {
                           height: 1.sw,
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
-                            Colors.white,
-                            Colors.white70,
-                            Colors.white54,
-                            Colors.white10
+                            ColorUtil.whiteFFColor,
+                            ColorUtil.white70,
+                            ColorUtil.white54,
+                            ColorUtil.white10
                           ], stops: [
                             0,
                             0.4,

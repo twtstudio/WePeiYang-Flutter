@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -77,7 +78,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
           },
           scrollDirection: Axis.horizontal,
           itemCount: widget.args.urlListLength,
-          backgroundDecoration: BoxDecoration(color: Colors.black),
+          backgroundDecoration: BoxDecoration(color: ColorUtil.black00Color),
           pageController: PageController(
             initialPage: indexNow,
           ),
@@ -93,13 +94,13 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 child: WButton(
                   child: Container(
                       decoration: BoxDecoration(
-                          color: Color(0x88444444),
+                          color: ColorUtil.black88Color,
                           borderRadius:
                               BorderRadius.all(Radius.circular(14.r))),
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                       child: Icon(
                         CupertinoIcons.back,
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         size: 30.h,
                       )),
                   onPressed: () {
@@ -113,7 +114,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
             right: 10.w,
             child: Container(
               decoration: BoxDecoration(
-                  color: Color(0x88444444),
+                  color: ColorUtil.black88Color,
                   borderRadius: BorderRadius.all(Radius.circular(14.r))),
               padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
               child: Row(
@@ -122,7 +123,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.square_arrow_down,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -133,7 +134,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.share,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                       size: 30.h,
                     ),
                     onPressed: () {

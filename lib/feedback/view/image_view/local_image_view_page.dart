@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class LocalImageViewPageArgs {
   final List<File> uriList;
@@ -63,7 +64,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
           },
           scrollDirection: Axis.horizontal,
           itemCount: widget.args.uriListLength,
-          backgroundDecoration: BoxDecoration(color: Colors.black),
+          backgroundDecoration: BoxDecoration(color: ColorUtil.black00Color),
           pageController: PageController(
             initialPage: widget.args.indexNow,
           ),

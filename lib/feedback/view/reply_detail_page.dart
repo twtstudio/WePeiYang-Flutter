@@ -167,7 +167,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               Container(
                 width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
-                color: Colors.black12,
+                color: ColorUtil.black12,
               ),
               SizedBox(height: 6.h)
             ],
@@ -229,7 +229,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: ColorUtil.black12,
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
@@ -328,7 +328,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor,
                           )),
                     ),
                   ),

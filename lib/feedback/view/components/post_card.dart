@@ -73,7 +73,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.avatarBox.toString()),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
-              color: Colors.transparent, // 没他就没有点击域
+              color: ColorUtil.transparent, // 没他就没有点击域
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -255,7 +255,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Color(0xffeaeaea)),
+                  color: ColorUtil.whiteEAColor),
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
@@ -309,7 +309,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -363,7 +363,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
           width: 350.w,
           height: 197.w,
-          color: Colors.black12,
+          color: ColorUtil.black12,
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
@@ -479,7 +479,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     padding: MaterialStateProperty.all(
                                         EdgeInsets.zero),
                                     overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
+                                        ColorUtil.transparent)),
                                 onPressed: () {
                                   setState(() {
                                     _picFullView = false;
@@ -522,8 +522,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                               begin: Alignment(0, -0.7),
                                               end: Alignment(0, 1),
                                               colors: [
-                                                Colors.transparent,
-                                                Colors.black54,
+                                                ColorUtil.transparent,
+                                                ColorUtil.black54,
                                               ],
                                             ),
                                           ),
@@ -542,7 +542,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                 Spacer(),
                                                 Container(
                                                     decoration: BoxDecoration(
-                                                        color: Colors.black38,
+                                                        color: ColorUtil.black38,
                                                         borderRadius:
                                                             BorderRadius.only(
                                                                 topLeft: Radius
@@ -573,9 +573,9 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                     )
               : Icon(
                   Icons.refresh,
-                  color: Colors.black54,
+                  color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? Colors.transparent : Colors.black12,
+          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.black12,
         );
       },
     );
