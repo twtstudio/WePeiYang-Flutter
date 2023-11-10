@@ -3,6 +3,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class UserAgreementDialog extends Dialog {
   final ValueNotifier? check;
 
@@ -139,8 +141,8 @@ class UserAgreementDialog extends Dialog {
 
   Widget _detail(BuildContext context) {
     if (check == null) {
-      return GestureDetector(
-        onTap: () => Navigator.pop(context),
+      return WButton(
+        onPressed: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
@@ -154,8 +156,8 @@ class UserAgreementDialog extends Dialog {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          GestureDetector(
-            onTap: () {
+          WButton(
+            onPressed: () {
               check!.value = false;
               Navigator.pop(context);
             },
@@ -165,8 +167,8 @@ class UserAgreementDialog extends Dialog {
               child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
             ),
           ),
-          GestureDetector(
-            onTap: () {
+          WButton(
+            onPressed: () {
               check!.value = true;
               Navigator.pop(context);
             },

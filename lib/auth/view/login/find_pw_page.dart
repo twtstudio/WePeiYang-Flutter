@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/util/color_util.dart';
+import '../../../commons/widgets/w_button.dart';
 
 class FindPwWidget extends StatelessWidget {
   @override
@@ -20,10 +21,10 @@ class FindPwWidget extends StatelessWidget {
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child:
                     Icon(Icons.arrow_back, color: ColorUtil.blue98, size: 35),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
@@ -135,10 +136,10 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child:
                     Icon(Icons.arrow_back, color: ColorUtil.blue98, size: 35),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -245,8 +246,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             Container(
               height: 50,
               alignment: Alignment.bottomRight,
-              child: GestureDetector(
-                onTap: _verifyCaptcha,
+              child: WButton(
+                onPressed: _verifyCaptcha,
                 child:
                     Image(image: AssetImage('assets/images/arrow_round.png')),
               ),

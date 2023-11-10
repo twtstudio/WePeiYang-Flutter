@@ -30,6 +30,8 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
 
@@ -128,7 +130,7 @@ class _NCommentCardState extends State<NCommentCard>
 
   @override
   Widget build(BuildContext context) {
-    var commentMenuButton = GestureDetector(
+    var commentMenuButton = WButton(
         child: Padding(
           padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
           child: SvgPicture.asset(
@@ -137,7 +139,7 @@ class _NCommentCardState extends State<NCommentCard>
             color: ColorUtil.black00Color,
           ),
         ),
-        onTap: () {
+        onPressed: () {
           showCupertinoModalPopup(
             context: context,
             builder: (context) {
@@ -432,15 +434,15 @@ class _NCommentCardState extends State<NCommentCard>
           duration: Duration(milliseconds: 150),
           curve: Curves.decelerate,
           child: widget.comment.content != ''
-              ? InkWell(
-                  onTap: () {
+              ? WButton(
+                  onPressed: () {
                     setState(() {
                       _picFullView = true;
                     });
                   },
                   child: _picFullView
-                      ? InkWell(
-                          onTap: () {
+                      ? WButton(
+                          onPressed: () {
                             Navigator.pushNamed(
                               context,
                               FeedbackRouter.imageView,
@@ -474,8 +476,8 @@ class _NCommentCardState extends State<NCommentCard>
                           ],
                         ))
               : _picFullView
-                  ? InkWell(
-                      onTap: () {
+                  ? WButton(
+                      onPressed: () {
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.imageView,
@@ -495,8 +497,8 @@ class _NCommentCardState extends State<NCommentCard>
                     )
                   : Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               _picFullView = true;
                             });
@@ -513,8 +515,8 @@ class _NCommentCardState extends State<NCommentCard>
                               )),
                         ),
                         Expanded(
-                            child: GestureDetector(
-                                onTap: () {
+                            child: WButton(
+                                onPressed: () {
                                   if (Provider.of<NewFloorProvider>(context,
                                           listen: false)
                                       .inputFieldEnabled) {
@@ -708,8 +710,8 @@ class _NCommentCardState extends State<NCommentCard>
                           children: [
                             subFloor,
                             if (widget.comment.subFloorCnt > 0)
-                              InkWell(
-                                onTap: () {
+                              WButton(
+                                onPressed: () {
                                   Navigator.pushNamed(
                                     context,
                                     FeedbackRouter.commentDetail,

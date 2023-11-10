@@ -131,8 +131,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
                                   .black2A)),
-                          GestureDetector(
-                            onTap: () => showDialog(
+                          WButton(
+                            onPressed: () => showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) =>
@@ -148,8 +148,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
                                   .black2A)),
-                          GestureDetector(
-                            onTap: () => showDialog(
+                          WButton(
+                            onPressed: () => showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) =>
@@ -257,8 +257,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       hintStyle: TextUtil.base.normal.sp(14).w400.white,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
+                      suffixIcon: WButton(
+                        onPressed: () {
                           visNotifier.value = !visNotifier.value;
                         },
                         child: Icon(
@@ -295,11 +295,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           children: [
             Spacer(),
             SizedBox(width: 16),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "短信登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () {
+              onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
@@ -313,11 +313,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               },
             ),
             SizedBox(width: 16),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "忘记密码?",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
+              onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             SizedBox(width: 10),
           ],
@@ -451,7 +451,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               valueListenable: countDownNotifier,
               builder: (context, value, _) {
                 if (value == 0) {
-                  return TextButton(
+                  return WButton(
                     onPressed: (_fetchCaptcha),
                     child: Text(
                       '获取验证码',
@@ -459,7 +459,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     ),
                   );
                 } else {
-                  return TextButton(
+                  return WButton(
                     onPressed: () {},
                     child: Text(
                       '重新获取验证码($value)',
@@ -470,11 +470,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               },
             ),
             Spacer(),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "密码登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () {
+              onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();

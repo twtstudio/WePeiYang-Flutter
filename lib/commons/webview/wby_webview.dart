@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
@@ -9,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../widgets/w_button.dart';
 
 class WbyWebView extends StatefulWidget {
   final String page;
@@ -58,10 +58,10 @@ class WbyWebViewState extends State<WbyWebView> {
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back,
                 color: ColorUtil.blue53, size: 32),
-            onTap: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
       );
@@ -103,7 +103,7 @@ class WbyWebViewState extends State<WbyWebView> {
     Widget top;
 
     if (state == _PageState.initError) {
-      top = TextButton(onPressed: initUrl, child: Text("遇到错误请重试"));
+      top = WButton(onPressed: initUrl, child: Text("遇到错误请重试"));
     } else {
       top = Loading();
     }

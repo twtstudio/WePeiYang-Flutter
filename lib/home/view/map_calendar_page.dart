@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 class MapCalendarPage extends StatefulWidget {
   MapCalendarPage();
@@ -84,8 +85,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
@@ -120,8 +121,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
@@ -173,8 +174,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
@@ -212,8 +213,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed:() {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,

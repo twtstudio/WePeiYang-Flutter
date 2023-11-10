@@ -20,6 +20,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_sha
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import '../../../commons/widgets/w_button.dart';
 
 enum Official { subFloor, reply }
 
@@ -79,14 +80,14 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             title: Text('提示'),
             content: Text('您确定要删除这条评论吗?'),
             actions: <Widget>[
-              TextButton(
+              WButton(
                 child: Text('确定'),
                 onPressed: () {
                   //关闭对话框并返回true
                   Navigator.of(context).pop(true);
                 },
               ),
-              TextButton(
+              WButton(
                 child: Text('取消'),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -261,8 +262,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     Widget starWidget;
     if (CommonPreferences.lakeUid.value.toString() ==
         widget.ancestorId.toString()) {
-      starWidget = GestureDetector(
-        onTap: () async {
+      starWidget = WButton(
+        onPressed: () async {
           ratingCard();
         },
         child: Row(children: [
@@ -318,8 +319,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkWell(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 widget.onContentPressed?.call((comment) {
                   setState(() {
                     Navigator.pushNamed(
@@ -421,8 +422,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         ),
       ),
     );
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         widget.onContentPressed?.call((comment) {
           setState(() {
             Navigator.pushNamed(

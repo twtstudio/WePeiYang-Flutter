@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../commons/widgets/w_button.dart';
 import 'components/widget/pop_menu_shape.dart';
 
 class OfficialReplyDetailPage extends StatefulWidget {
@@ -150,8 +151,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
   @override
   Widget build(BuildContext context) {
     Widget body;
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
         if (CommonPreferences.lakeUid.value.toString() != post?.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
@@ -266,8 +267,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       )),
                   Offstage(
                     offstage: value.inputFieldEnabled,
-                    child: InkWell(
-                      onTap: () {
+                    child: WButton(
+                      onPressed: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
                             .inputFieldOpenAndReplyTo(widget.floor[0].postId);
                         FocusScope.of(context).requestFocus(
@@ -335,8 +336,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,

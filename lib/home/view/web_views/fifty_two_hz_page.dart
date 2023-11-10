@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../commons/util/color_util.dart';
+import '../../../commons/widgets/w_button.dart';
 
 // ignore: must_be_immutable
 class FiftyTwoHzPage extends StatelessWidget {
@@ -31,10 +32,10 @@ class FiftyTwoHzPage extends StatelessWidget {
             backgroundColor: ColorUtil.whiteFFColor,
             leading: Padding(
               padding: const EdgeInsets.only(left: 15),
-              child: GestureDetector(
+              child: WButton(
                   child: Icon(Icons.arrow_back,
                       color: ColorUtil.mainColor, size: 32),
-                  onTap: () => Navigator.pop(context)),
+                  onPressed: () => Navigator.pop(context)),
             )),
         body: WebView(
             initialUrl: url,

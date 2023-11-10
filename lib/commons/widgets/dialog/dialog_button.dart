@@ -3,6 +3,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
+import '../w_button.dart';
+
 enum ButtonType { light, dark, blue }
 
 class WbyDialogButton extends StatelessWidget {
@@ -42,8 +44,8 @@ class WbyDialogButton extends StatelessWidget {
     final buttonHeight = buttonWidth * 0.368;
     final buttonRadius = buttonWidth * 0.08;
 
-    return InkWell(
-      onTap: onTap,
+    return WButton(
+      onPressed: onTap,
       child: Container(
         width: expand ? null : buttonWidth,
         height: buttonHeight,

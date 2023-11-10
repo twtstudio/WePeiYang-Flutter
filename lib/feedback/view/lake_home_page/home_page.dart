@@ -18,6 +18,8 @@ import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
 
@@ -131,8 +133,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       initializeRefresh = false;
     }
 
-    var searchBar = InkWell(
-      onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
+    var searchBar = WButton(
+      onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
@@ -183,8 +185,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   builder: (loadingContext, loadingProvider, __) {
                     loadingProvider.calculateTime();
                     return loadingProvider.timeEnded
-                        ? GestureDetector(
-                            onTap: () {
+                        ? WButton(
+                            onPressed: () {
                               var model = context.read<LakeModel>();
                               model.mainStatus = LakePageStatus.loading;
                               loadingProvider.resetTimer();
@@ -226,8 +228,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           },
                         );
                       })
-                    : InkWell(
-                        onTap: () => context
+                    : WButton(
+                        onPressed: () => context
                             .read<LakeModel>()
                             .checkTokenAndGetTabList(_departmentsProvider),
                         child: Align(
@@ -305,8 +307,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     tabBarHeight -
                     4),
             child: Visibility(
-              child: InkWell(
-                  onTap: () {
+              child: WButton(
+                  onPressed: () {
                     if (canSee) _onFeedbackTapped();
                   },
                   child: FbTagsWrap(key: fbKey)),

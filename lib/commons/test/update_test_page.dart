@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import '../widgets/w_button.dart';
 
 class UpdateTestPage extends StatefulWidget {
   const UpdateTestPage({Key? key}) : super(key: key);
@@ -21,9 +21,9 @@ class _UpdateTestPageState extends State<UpdateTestPage> {
       ),
       body: ListView(
         children: [
-          TextButton(onPressed: _deleteAllApk, child: Text('删除所有安装包')),
-          TextButton(onPressed: _deleteAllSo, child: Text('删除所有so')),
-          TextButton(
+          WButton(onPressed: _deleteAllApk, child: Text('删除所有安装包')),
+          WButton(onPressed: _deleteAllSo, child: Text('删除所有so')),
+          WButton(
             onPressed: () {
               context.read<UpdateManager>().checkUpdate(auto: false);
             },

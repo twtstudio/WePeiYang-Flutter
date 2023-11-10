@@ -25,6 +25,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../commons/widgets/w_button.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'lake_home_page/lake_notifier.dart';
@@ -256,8 +257,8 @@ class _PostDetailPageState extends State<PostDetailPage>
     Widget body;
     Widget bottomInput;
 
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
         launchKey.currentState?.send(false);
         setState(() {});
       },
@@ -286,8 +287,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                 Row(
                   children: [
                     const SizedBox(width: 15),
-                    GestureDetector(
-                      onTap: () {
+                    WButton(
+                      onPressed: () {
                         order.value = 1;
                       },
                       child: Text('时间正序',
@@ -296,8 +297,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                               : TextUtil.base.black2A.w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
-                    GestureDetector(
-                      onTap: () {
+                    WButton(
+                      onPressed: () {
                         order.value = 0;
                       },
                       child: Text('时间倒序',
@@ -309,8 +310,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                     ValueListenableBuilder(
                       valueListenable: onlyOwner,
                       builder: (context, value, _) {
-                        return GestureDetector(
-                          onTap: () {
+                        return WButton(
+                          onPressed: () {
                             onlyOwner.value = 1 - onlyOwner.value;
                             _refreshController.requestRefresh();
                           },
@@ -533,8 +534,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   )),
                               Offstage(
                                 offstage: value.inputFieldEnabled,
-                                child: InkWell(
-                                  onTap: () {
+                                child: WButton(
+                                  onPressed: () {
                                     context.read<NewFloorProvider>().inputFieldEnabled = true;
                                     value.inputFieldOpenAndReplyTo(0);
                                     FocusScope.of(context)
@@ -726,8 +727,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         onPressed: () => Navigator.pop(context, widget.post),
       ),
       actions: [if (hasAdmin) manageButton, menuButton, SizedBox(width: 10)],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
@@ -1026,12 +1027,12 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       builder: (context) => AlertDialog(
         title: Text(S.current.feedback_delete_image_content),
         actions: [
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
               child: Text(S.current.feedback_cancel)),
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
@@ -1055,8 +1056,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () => Navigator.pushNamed(
+                      child: WButton(
+                        onPressed: () => Navigator.pushNamed(
                           context,
                           FeedbackRouter.localImageView,
                           arguments:
@@ -1083,8 +1084,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () async {
+                      child: WButton(
+                        onPressed: () async {
                           var result = await _showDialog();
                           if (result == 'ok') {
                             data.images.removeAt(0);
@@ -1241,8 +1242,8 @@ class _AnimatedOptionState extends State<AnimatedOption>
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         setState(() {
           isSelected = !isSelected;
         });
@@ -1302,8 +1303,8 @@ class _AnimatedOptionState extends State<AnimatedOption>
                   ],
                 ),
               if (isSelected)
-                InkWell(
-                  onTap: _inkWellOnTap,
+                WButton(
+                  onPressed: _inkWellOnTap,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Row(

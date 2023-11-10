@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 class EditBottomSheet extends StatefulWidget {
   final String name;
   final String credit;
@@ -154,8 +156,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                   ),
                 ),
                 SizedBox(width: 12.w),
-                GestureDetector(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     CustomCourseService.getClassBySerial(serial).then((course) {
                       if (course == null) return;
                       context.read<EditProvider>().load(course);

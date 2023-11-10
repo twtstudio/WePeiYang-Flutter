@@ -18,6 +18,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 class ReplyDetailPage extends StatefulWidget {
   final ReplyDetailPageArgs args;
 
@@ -136,8 +138,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   @override
   Widget build(BuildContext context) {
     Widget body;
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
         launchKey.currentState?.send(false);
         setState(() {
           _onRefresh();
@@ -307,8 +309,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       )),
                   Offstage(
                     offstage: value.inputFieldEnabled,
-                    child: InkWell(
-                      onTap: () {
+                    child: WButton(
+                      onPressed: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
                             .inputFieldOpenAndReplyTo(widget.args.floor.id);
                         FocusScope.of(context).requestFocus(
@@ -340,13 +342,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ],
     );
 
-    var postButton = GestureDetector(
+    var postButton = WButton(
       child: Center(
           child: Text(
         '查看原帖',
         style: TextUtil.base.black2A.bold,
       )),
-      onTap: () async {
+      onPressed: () async {
         await FeedbackService.getPostById(
             id: widget.args.floor.postId,
             onResult: (post) {
@@ -398,8 +400,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,

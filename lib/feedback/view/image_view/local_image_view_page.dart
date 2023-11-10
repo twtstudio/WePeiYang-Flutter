@@ -6,6 +6,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class LocalImageViewPageArgs {
   final List<File> uriList;
   final List<String> assetList;
@@ -30,8 +32,8 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
   Widget build(BuildContext context) {
     timeDilation = 0.5;
 
-    return GestureDetector(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         Navigator.pop(context);
       },
       child: Container(

@@ -4,6 +4,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class GamePage extends StatelessWidget {
   final List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
   final List<String> _uri = [HomeRouter.restartGame, HomeRouter.wiki, ''];
@@ -32,8 +34,8 @@ class GameCard extends StatelessWidget {
     final Color _color = ColorUtil.black12;
     return SizedBox(
       height: 130,
-      child: InkWell(
-        onTap: () => used ? Navigator.pushNamed(context, this.uri) : {},
+      child: WButton(
+        onPressed: () => used ? Navigator.pushNamed(context, this.uri) : {},
         child: Container(
             margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             padding: EdgeInsets.fromLTRB(16.0, 20.0, 10.0, 8.0),

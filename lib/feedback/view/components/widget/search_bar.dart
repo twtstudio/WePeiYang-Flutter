@@ -13,6 +13,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/widgets/w_button.dart';
+
 List<SearchTag> tagUtil = [];
 
 typedef SubmitCallback = void Function(String);
@@ -58,8 +60,8 @@ class _SearchBarState extends State<SearchBar>
     tagList.add(SizedBox(height: 4));
     tagUtil = list;
     for (int total = 0; total < min(tagUtil.length, 5); total++) {
-      tagList.add(GestureDetector(
-        onTap: () {
+      tagList.add(WButton(
+        onPressed: () {
           _controller.text = tagUtil[total].name;
           Navigator.pushNamed(
             context,
@@ -245,8 +247,8 @@ class _SearchBarState extends State<SearchBar>
                       children: [
                         if (_controller.text.startsWith('#MP') ||
                             _controller.text.startsWith('#'))
-                          GestureDetector(
-                            onTap: () {
+                          WButton(
+                            onPressed: () {
                               if (_controller.text.startsWith('#MP') &&
                                   RegExp(r'^-?[0-9]+').hasMatch(
                                       _controller.text.substring(3))) {

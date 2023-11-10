@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import '../../commons/util/color_util.dart';
 import 'components/change_nickname_dialog.dart';
@@ -123,8 +124,8 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Row(
                 children: [
                   Spacer(),
-                  GestureDetector(
-                    onTap: () =>
+                  WButton(
+                    onPressed: () =>
                         Navigator.pushNamed(context, AuthRouter.mailbox),
                     child: Icon(
                       Icons.email_outlined,
@@ -133,8 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   SizedBox(width: 15),
-                  GestureDetector(
-                    onTap: () =>
+                  WButton(
+                    onPressed: () =>
                         Navigator.pushNamed(context, AuthRouter.setting)
                             ..then((_) => _refreshController.requestRefresh()),
                     child: Image.asset(
@@ -175,8 +176,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         level: CommonPreferences.level.value.toString(),
                       ),
                       SizedBox(width: 5.w),
-                      InkWell(
-                        onTap: () {
+                      WButton(
+                        onPressed: () {
                           showDialog(
                               context: context,
                               barrierDismissible: true,
@@ -305,8 +306,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Positioned(
           top: 148.h - 0.15.sw,
           left: 12.w,
-          child: GestureDetector(
-            onTap: () {
+          child: WButton(
+            onPressed: () {
               // 进之前request出来之后就可以刷新
               Navigator.pushNamed(context, AuthRouter.avatarCrop)
                   .then((_) => _refreshController.requestRefresh());
@@ -371,8 +372,8 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         onPressed.call();
       },
       child: Container(

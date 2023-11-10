@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import '../../widgets/w_button.dart';
 
 class UpdateProgressDialog extends StatelessWidget {
   const UpdateProgressDialog({Key? key}) : super(key: key);
@@ -43,7 +44,7 @@ class UpdateProgressDialog extends StatelessWidget {
     Widget dismiss;
 
     if (manager.version.isForced) {
-      dismiss = TextButton(
+      dismiss = WButton(
         onPressed: () {
           ToastProvider.running("正在下载，请稍等");
         },
@@ -53,7 +54,7 @@ class UpdateProgressDialog extends StatelessWidget {
         ),
       );
     } else {
-      dismiss = TextButton(
+      dismiss = WButton(
         onPressed: () {
           UpdateDialog.progress.cancel();
         },

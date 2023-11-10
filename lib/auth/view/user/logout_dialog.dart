@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class LogoutDialog extends Dialog {
   void _logout(BuildContext context) {
     ToastProvider.success("退出登录成功");
@@ -43,16 +45,16 @@ class LogoutDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _logout(context),
+                WButton(
+                  onPressed: () => _logout(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),

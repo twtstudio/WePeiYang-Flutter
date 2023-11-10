@@ -4,6 +4,8 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class DebugDialog extends Dialog {
   static final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
 
@@ -25,16 +27,16 @@ class DebugDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () =>
+                WButton(
+                  onPressed: () =>
                       Navigator.pushReplacementNamed(context, AuthRouter.debug),
                   child: Container(
                     margin: const EdgeInsets.all(10),

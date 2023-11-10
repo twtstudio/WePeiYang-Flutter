@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
 import '../../network/message_service.dart';
 
 class UserMailboxPage extends StatefulWidget {
@@ -34,10 +35,10 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
           backgroundColor: ColorUtil.whiteFFColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child: Icon(Icons.arrow_back,
                     color: ColorUtil.blue53, size: 32),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
       body: UserMailList(),
@@ -174,10 +175,10 @@ class MailPage extends StatelessWidget {
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
-          child: GestureDetector(
+          child: WButton(
               child: Icon(Icons.arrow_back,
                   color: ColorUtil.blue53, size: 32),
-              onTap: () => Navigator.pop(context)),
+              onPressed: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
@@ -327,13 +328,13 @@ class _TextMailContent extends StatelessWidget {
                       '更多信息请点击链接查看喵~',
                       style: TextUtil.base.black2A.w500.NotoSansSC.sp(14),
                     ),
-                    InkWell(
+                    WButton(
                       child: Text(
                         '阅读原文',
                         style:
                             TextUtil.base.textButtonBlue.w400.NotoSansSC.sp(14),
                       ),
-                      onTap: () async {
+                      onPressed: () async {
                         var url = data.url.startsWith('http')
                             ? data.url
                             : 'https://${data.url}';

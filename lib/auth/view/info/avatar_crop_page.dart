@@ -181,7 +181,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               Spacer(),
               Divider(height: 1.0, color: ColorUtil.whiteFFColor),
               SizedBox(height: 10),
-              TextButton(
+              WButton(
                 onPressed: () {
                   Navigator.pushNamed(context, AuthRouter.avatarBox)
                       .then((_) => this.setState(() {}));
@@ -195,7 +195,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               SizedBox(height: 10),
               Divider(height: 1.0, color: ColorUtil.whiteFFColor),
               SizedBox(height: 10),
-              TextButton(
+              WButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',

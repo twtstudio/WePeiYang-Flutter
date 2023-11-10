@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
 import 'components/widget/refresh_header.dart';
@@ -159,8 +160,8 @@ class _PersonPageState extends State<PersonPage> {
     Widget appBar = Padding(
         padding: EdgeInsets.only(top: 10.h, left: 20.w, bottom: 10.h),
         child: Row(children: [
-          GestureDetector(
-            onTap: () {
+          WButton(
+            onPressed: () {
               if (avatar != null && avatar != '')
                 Navigator.pushNamed(
                   context,
@@ -214,8 +215,8 @@ class _PersonPageState extends State<PersonPage> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           if (CommonPreferences.isSuper.value ||
               CommonPreferences.isStuAdmin.value)
-            InkWell(
-              onTap: () => _showResetConfirmDialog(context, '昵称').then((value) {
+            WButton(
+              onPressed: () => _showResetConfirmDialog(context, '昵称').then((value) {
                 if (value ?? false)
                   FeedbackService.adminResetName(
                       id: uid,
@@ -243,8 +244,8 @@ class _PersonPageState extends State<PersonPage> {
           SizedBox(height: 6),
           if (CommonPreferences.isSuper.value ||
               CommonPreferences.isStuAdmin.value)
-            InkWell(
-              onTap: () => _showResetConfirmDialog(context, '头像').then((value) {
+            WButton(
+              onPressed: () => _showResetConfirmDialog(context, '头像').then((value) {
                 if (value ?? false)
                   FeedbackService.adminResetAva(
                       id: uid,
@@ -270,8 +271,8 @@ class _PersonPageState extends State<PersonPage> {
               ),
             ),
           if (CommonPreferences.isSuper.value)
-            InkWell(
-              onTap: () => Navigator.pushNamed(context, FeedbackRouter.openBox,
+            WButton(
+              onPressed: () => Navigator.pushNamed(context, FeedbackRouter.openBox,
                   arguments: uid),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

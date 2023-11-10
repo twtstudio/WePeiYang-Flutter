@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -106,8 +107,8 @@ class TodayCoursesWidget extends StatelessWidget {
                         ],
                       ),
                       Spacer(),
-                      GestureDetector(
-                        onTap: () =>
+                      WButton(
+                        onPressed: () =>
                             Navigator.pushNamed(context, ScheduleRouter.course),
                         child: Image.asset('assets/images/schedule/circle.png',
                             width: 50.r, height: 50.r),

@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 class CustomCoursesPage extends StatelessWidget {
   @override
@@ -28,8 +29,8 @@ class CustomCoursesPage extends StatelessWidget {
             elevation: 0,
             backgroundColor: ColorUtil.transparent,
             leading: Center(
-              child: GestureDetector(
-                onTap: () {
+              child: WButton(
+                onPressed: () {
                   Navigator.pop(context);
                 },
                 child: Container(

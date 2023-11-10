@@ -13,6 +13,8 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 class EditDetailPageArgs {
   final int index;
   final String name;
@@ -176,8 +178,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
           elevation: 0,
           backgroundColor: ColorUtil.whiteFFColor,
           leading: Center(
-            child: GestureDetector(
-              onTap: () {
+            child: WButton(
+              onPressed: () {
                 Navigator.pop(context);
               },
               child: Container(

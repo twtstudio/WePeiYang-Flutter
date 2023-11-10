@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -17,7 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_vie
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/widget/pop_menu_shape.dart';
 import 'components/widget/tag_search_card.dart';
@@ -269,8 +268,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                                     scrollDirection: Axis.horizontal,
                                     physics: BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
+                                      return WButton(
+                                        onPressed: () {
                                           notifier.value =
                                               tabList[index + 1].id;
 
@@ -665,12 +664,12 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
         title: Text(S.current.feedback_delete_image_content),
         actions: [
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
               child: Text(S.current.feedback_cancel)),
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
@@ -682,8 +681,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
 
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
     return Stack(fit: StackFit.expand, children: [
-      InkWell(
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+      WButton(
+        onPressed: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
             arguments: LocalImageViewPageArgs(data, [], length, index)),
         child: Container(
           decoration: BoxDecoration(
@@ -702,8 +701,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       Positioned(
         right: 0,
         bottom: 0,
-        child: InkWell(
-          onTap: onTap,
+        child: WButton(
+          onPressed: onTap,
           child: Container(
             width: 20,
             height: 20,

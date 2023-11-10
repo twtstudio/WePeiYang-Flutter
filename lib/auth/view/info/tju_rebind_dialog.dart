@@ -9,6 +9,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class TjuRebindDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
@@ -185,8 +187,8 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: refresh,
+    return WButton(
+        onPressed: refresh,
         child:
             data == null ? CupertinoActivityIndicator() : Image.memory(data!));
   }

@@ -8,6 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class ResetPasswordPage extends StatefulWidget {
   @override
   _ResetPasswordPageState createState() => _ResetPasswordPageState();
@@ -61,10 +63,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           backgroundColor: ColorUtil.whiteFFColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child:
                     Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
         child: Column(
@@ -171,10 +173,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: GestureDetector(
+              child: WButton(
                 child: Text(S.current.forget_password,
                     style: TextUtil.base.regular.underLine.sp(12)),
-                onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
+                onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
               ),
             ),
             Container(

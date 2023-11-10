@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
@@ -40,8 +41,8 @@ class ActivityDialog extends Dialog {
                       height: 1.08.sw,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
-                        child: GestureDetector(
-                          onTap: () async {
+                        child: WButton(
+                          onPressed: () async {
                             if (data[0].url.startsWith('browser:')) {
                               if (await canLaunchUrlString(
                                   data[0].url.replaceAll('browser:', ''))) {
@@ -82,8 +83,8 @@ class ActivityDialog extends Dialog {
                         if (data.length == 0) return SizedBox();
                         return ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(20)),
-                          child: GestureDetector(
-                            onTap: () async {
+                          child: WButton(
+                            onPressed: () async {
                               if (data[index].url.startsWith('browser:')) {
                                 if (await canLaunchUrlString(data[index]
                                     .url
@@ -109,8 +110,8 @@ class ActivityDialog extends Dialog {
                         );
                       },
                     ),
-              GestureDetector(
-                  onTap: () {
+              WButton(
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                   child: SizedBox(

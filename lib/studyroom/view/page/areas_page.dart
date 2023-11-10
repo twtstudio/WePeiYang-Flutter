@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class AreasPage extends StatelessWidget {
   late final Building building;
   final String buildingId;
@@ -89,8 +91,8 @@ class _AreaItem extends StatelessWidget {
       ],
     );
 
-    return InkWell(
-      onTap: () => pushToClassroomsPage(context),
+    return WButton(
+      onPressed: () => pushToClassroomsPage(context),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.w),

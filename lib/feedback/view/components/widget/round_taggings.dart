@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/widgets/w_button.dart';
+
 class CommentIdentificationContainer extends StatelessWidget {
   final String text;
   final bool active;
@@ -142,8 +144,8 @@ class TagShowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         if (id == -1) {
           Navigator.pushNamed(
             context,
@@ -276,8 +278,8 @@ class _ProfileImageWithDetailedPopupState
     extends State<ProfileImageWithDetailedPopup> {
   @override
   Widget build(BuildContext ctx) {
-    return InkWell(
-      onTap: () => Navigator.pushNamed(context, FeedbackRouter.person,
+    return WButton(
+      onPressed: () => Navigator.pushNamed(context, FeedbackRouter.person,
           arguments: PersonPageArgs(
               widget.postOrCommentId,
               widget.fromPostCard,

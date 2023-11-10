@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
   @override
@@ -21,14 +23,14 @@ class GPAPreview extends StatelessWidget {
       return
 
           ///去掉周围padding的懒方法
-          GestureDetector(
-        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-        child: Column(
-          children: [
-            Image.asset("assets/images/schedule_empty.png"),
-          ],
-        ),
-      );
+        WButton(
+          onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
+          child: Column(
+            children: [
+              Image.asset("assets/images/schedule_empty.png"),
+            ],
+          ),
+        );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import '../widgets/w_button.dart';
 
 class PushTestPage extends StatefulWidget {
   const PushTestPage({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class _PushTestPageState extends State<PushTestPage> {
   List<Widget> get pushToken {
     return [
       SelectableText(cid),
-      TextButton(
+      WButton(
         onPressed: () async {
           final id = await manager.getCid();
           setState(() {
@@ -63,7 +64,7 @@ class _PushTestPageState extends State<PushTestPage> {
         controller: qId,
         decoration: const InputDecoration(hintText: "输入 question_id"),
       ),
-      TextButton(
+      WButton(
         onPressed: () async {
           final id = int.tryParse(qId.text);
           if (id == null) {
@@ -94,7 +95,7 @@ class _PushTestPageState extends State<PushTestPage> {
         controller: content,
         decoration: const InputDecoration(hintText: "输入 content"),
       ),
-      TextButton(
+      WButton(
         onPressed: () async {
           final intent = await manager.getIntentUri(MailboxIntent(
             url.text,
@@ -114,7 +115,7 @@ class _PushTestPageState extends State<PushTestPage> {
   List<Widget> get summaryPage {
     return [
       SelectableText(summaryIntent),
-      TextButton(
+      WButton(
         onPressed: () async {
           final intent = await manager.getIntentUri(FeedbackSummaryIntent());
           setState(() {

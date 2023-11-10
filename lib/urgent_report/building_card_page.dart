@@ -9,6 +9,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 
+import '../commons/widgets/w_button.dart';
+
 class NucPassportPage extends StatefulWidget {
   @override
   _NucPassportPageState createState() => _NucPassportPageState();
@@ -127,8 +129,8 @@ class _NucPassportPageState extends State<NucPassportPage> {
                     fit: BoxFit.fitWidth)),
             Align(
                 alignment: Alignment.bottomRight,
-                child: InkWell(
-                  onTap: () {
+                child: WButton(
+                  onPressed: () {
                     try {
                       LocalSetting.changeBrightness(-1);
                     } catch (e) {
@@ -147,8 +149,8 @@ class _NucPassportPageState extends State<NucPassportPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    InkWell(
-                      onTap: () {
+                    WButton(
+                      onPressed: () {
                         try {
                           LocalSetting.changeBrightness(-1);
                           LocalSetting.changeSecurity(false);

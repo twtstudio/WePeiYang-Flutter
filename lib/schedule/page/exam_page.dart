@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 class ExamPage extends StatefulWidget {
   @override
@@ -43,9 +44,9 @@ class _ExamPageState extends State<ExamPage> {
     var appBar = AppBar(
       backgroundColor: ColorUtil.whiteFFColor,
       elevation: 0,
-      leading: GestureDetector(
+      leading: WButton(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
-          onTap: () => Navigator.pop(context)),
+          onPressed: () => Navigator.pop(context)),
       actions: [
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),

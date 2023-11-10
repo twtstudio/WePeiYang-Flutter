@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../../commons/widgets/w_button.dart';
+
 class ActivityCard extends StatefulWidget {
   @override
   _ActivityCardState createState() => _ActivityCardState();
@@ -35,8 +37,8 @@ class _ActivityCardState extends State<ActivityCard> {
   @override
   Widget build(BuildContext context) {
     Widget card(BuildContext context, int index) {
-      return InkWell(
-        onTap: () async {
+      return WButton(
+        onPressed: () async {
           final url = context.read<FestivalProvider>().festivalList[index].url;
           if (url.isEmpty) {
             sp.stopAutoplay();

@@ -21,6 +21,7 @@ import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
+import '../commons/widgets/w_button.dart';
 import 'model/message_model.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -612,8 +613,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       child: questionItem,
     );
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
 
         ///点内部的帖子区域块跳转到帖子
@@ -891,8 +892,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       ],
     );
 
-    Widget questionItem = GestureDetector(
-      onTap: () async {
+    Widget questionItem = WButton(
+      onPressed: () async {
         await Navigator.pushNamed(
           context,
           FeedbackRouter.detail,
@@ -977,8 +978,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       );
     }
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
         if (widget.data.type == 0) {
           await Navigator.pushNamed(
@@ -1335,8 +1336,8 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       );
     }
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
         await Navigator.pushNamed(
           context,

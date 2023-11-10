@@ -622,7 +622,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       Row(
                         children: [
                           Spacer(),
-                          GestureDetector(
+                          WButton(
                             child: isPress
                                 ? StreamBuilder<int>(
                                     stream: Stream.periodic(
@@ -635,8 +635,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                             .addPostFrameCallback((_) =>
                                                 setState(
                                                     () => isPress = false));
-                                      return GestureDetector(
-                                          onTap: () {},
+                                      return WButton(
+                                          onPressed: () {},
                                           child: Text.rich(TextSpan(
                                             text: '$time秒后重试',
                                             style: TextUtil
@@ -645,8 +645,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                                 .white,
                                           )));
                                     })
-                                : GestureDetector(
-                                    onTap: _fetchCaptcha,
+                                : WButton(
+                                    onPressed: _fetchCaptcha,
                                     child: Text(
                                       "获取验证码",
                                       style: TextUtil
@@ -655,7 +655,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                           .white,
                                     ),
                                   ),
-                            onTap: () {},
+                            onPressed: () {},
                           ),
                         ],
                       ),
@@ -923,8 +923,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
                                 .black2A)),
-                        GestureDetector(
-                          onTap: () => showDialog(
+                        WButton(
+                          onPressed: () => showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
@@ -940,8 +940,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
                                 .black2A)),
-                        GestureDetector(
-                          onTap: () => showDialog(
+                        WButton(
+                          onPressed: () => showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
@@ -961,8 +961,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     //       height: 50,
                     //       alignment: Alignment.bottomLeft,
                     //       margin: const EdgeInsets.all(30),
-                    //       child: GestureDetector(
-                    //         onTap: () => Navigator.pop(context),
+                    //       child: WButton(
+                    //         onPressed: () => Navigator.pop(context),
                     //         child: Image(
                     //             image: AssetImage(
                     //                 'assets/images/arrow_round_back.png')),
@@ -973,8 +973,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     //       height: 50,
                     //       alignment: Alignment.bottomRight,
                     //       margin: const EdgeInsets.all(30),
-                    //       child: GestureDetector(
-                    //         onTap: _submit,
+                    //       child: WButton(
+                    //         onPressed: _submit,
                     //         child: Image(
                     //             image: AssetImage(
                     //                 'assets/images/arrow_round.png')),

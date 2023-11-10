@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class ResetPwWidget extends StatefulWidget {
   @override
   _ResetPwWidgetState createState() => _ResetPwWidgetState();
@@ -49,10 +51,10 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child: Icon(Icons.arrow_back,
                     color: ColorUtil.blue98, size: 35),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
@@ -122,8 +124,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             height: 50,
             alignment: Alignment.bottomRight,
             margin: const EdgeInsets.all(30),
-            child: GestureDetector(
-              onTap: _reset,
+            child: WButton(
+              onPressed: _reset,
               child: Image(image: AssetImage('assets/images/arrow_round.png')),
             ),
           ),

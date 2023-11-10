@@ -23,6 +23,8 @@ import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dar
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class PostCardNormal extends StatefulWidget {
   /// 标准 PostCard
   ///
@@ -298,8 +300,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     return widget.outer
         // outer 框架
-        ? GestureDetector(
-            onTap: () {
+        ? WButton(
+            onPressed: () {
               FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
               Navigator.pushNamed(
                 context,
@@ -378,8 +380,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
           post.imageUrls.length,
-          (index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(
+          (index) => WButton(
+            onPressed: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
               arguments: ImageViewPageArgs(
@@ -464,8 +466,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12.r)),
-                              child: GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
+                              child: WButton(
+                                  onPressed: () => Navigator.pushNamed(
                                         context,
                                         FeedbackRouter.imageView,
                                         arguments: ImageViewPageArgs(
@@ -497,8 +499,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12.r)),
                             child: Stack(children: [
-                              GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
+                              WButton(
+                                  onPressed: () => Navigator.pushNamed(
                                         context,
                                         FeedbackRouter.imageView,
                                         arguments: ImageViewPageArgs(
@@ -508,8 +510,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                               Positioned(top: 8, left: 8, child: TextPod('长图')),
                               Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: InkWell(
-                                      onTap: () {
+                                  child: WButton(
+                                      onPressed: () {
                                         setState(() {
                                           _picFullView = true;
                                         });
@@ -562,8 +564,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                           ))
                   : ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                      child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(
+                      child: WButton(
+                          onPressed: () => Navigator.pushNamed(
                                 context,
                                 FeedbackRouter.imageView,
                                 arguments: ImageViewPageArgs(

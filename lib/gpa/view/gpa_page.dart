@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 class GPAPage extends StatefulWidget {
   final List<Color> _gpaColors = GPAColor.blue;
 
@@ -101,8 +103,8 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     var leading = Align(
       alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+      child: WButton(
+        onPressed: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.fromLTRB(0, 8.h, 8.w, 8.h),
@@ -126,14 +128,14 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
           style: TextUtil.base.white.w900.sp(18)),
       titleSpacing: 0,
       actions: [
-        GestureDetector(
+        WButton(
           child: SvgPicture.asset(
             "assets/svg_pics/lake_butt_icons/refreash.svg",
             color: gpaColors[1],
             width: 28.w,
             height: 28.h,
           ),
-          onTap: () {
+          onPressed: () {
             context.read<GPANotifier>().refreshGPABackend(context);
           },
         ),
@@ -565,8 +567,8 @@ class CourseListWidget extends StatelessWidget {
           ),
         );
       },
-      child: GestureDetector(
-        onTap: () => context.read<GPANotifier>().reSort(),
+      child: WButton(
+        onPressed: () => context.read<GPANotifier>().reSort(),
         child: Padding(
             padding: const EdgeInsets.all(10),
             child: Builder(

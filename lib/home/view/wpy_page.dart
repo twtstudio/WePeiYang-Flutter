@@ -23,6 +23,8 @@ import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 class WPYPage extends StatefulWidget {
   @override
   WPYPageState createState() => WPYPageState();
@@ -308,8 +310,8 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (cards[i].label == '北洋维基') {
-          return GestureDetector(
-            onTap: () async {
+          return WButton(
+            onPressed: () async {
               if (await canLaunchUrl(Uri.parse(cards[i].route))) {
                 await launchUrl(Uri.parse(cards[i].route),
                     mode: LaunchMode.externalApplication);
@@ -320,8 +322,8 @@ class SliverCardsWidget extends StatelessWidget {
             child: generateCard(context, cards[i]),
           );
         } else {
-          return GestureDetector(
-            onTap: () {
+          return WButton(
+            onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
               if(cards[i].route==""){
                 ToastProvider.error('开发中 敬请期待！');

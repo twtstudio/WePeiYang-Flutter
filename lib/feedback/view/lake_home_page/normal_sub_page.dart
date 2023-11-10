@@ -23,6 +23,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class NSubPage extends StatefulWidget {
   final int index;
 
@@ -232,7 +234,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         children: [
                           SizedBox(width: 12),
                           context.read<NoticeProvider>().noticeList.length > 0
-                              ? InkWell(
+                              ? WButton(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -278,10 +280,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                       .sp(15))),
                                     ],
                                   ),
-                                  onTap: () => Navigator.pushNamed(
+                                  onPressed: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 )
-                              : InkWell(
+                              : WButton(
                                   child: SizedBox(
                                     width: WePeiYangApp.screenWidth - 83,
                                     child: Text(
@@ -292,7 +294,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  onTap: () => Navigator.pushNamed(
+                                  onPressed: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
                           Spacer()
@@ -313,8 +315,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        InkWell(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               context.read<LakeModel>().sortSeq = 1;
                               listToTop();
@@ -328,8 +330,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     : TextUtil.base.black2A.w400.sp(14)),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               context.read<LakeModel>().sortSeq = 0;
                               listToTop();

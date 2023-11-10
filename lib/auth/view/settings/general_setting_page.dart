@@ -12,6 +12,8 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class GeneralSettingPage extends StatefulWidget {
   @override
   _GeneralSettingPageState createState() => _GeneralSettingPageState();
@@ -34,9 +36,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
-            onTap: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -56,8 +58,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () {
+            child: WButton(
+              onPressed: () {
                 WbyFontLoader.initFonts(hint: true);
               },
               child: Row(
@@ -140,8 +142,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           //     color: Colors.white,
           //     borderRadius: BorderRadius.circular(12.r),
           //   ),
-          //   child: InkWell(
-          //     onTap: () => Navigator.pushNamed(context, AuthRouter.themeSetting)
+          //   child: WButton(
+          //     onPressed: () => Navigator.pushNamed(context, AuthRouter.themeSetting)
           //         .then((_) {
           //       /// 使用pop返回此页面时进行rebuild
           //       this.setState(() {});
@@ -299,8 +301,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () =>
+            child: WButton(
+              onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.scheduleSetting)
                       .then((_) => this.setState(() {})),
               child: Row(

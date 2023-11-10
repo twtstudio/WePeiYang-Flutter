@@ -9,6 +9,8 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/studyroom_images.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class BuildingGridViewWidget extends StatelessWidget {
   const BuildingGridViewWidget({Key? key}) : super(key: key);
 
@@ -75,8 +77,8 @@ class _BuildingItem extends StatelessWidget {
     final buildingImage =
         Container(height: 54.h, child: Image.asset(StudyroomImages.building));
 
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         final len = building.areas?.length ?? 0;
         if (len == 0) {
           ToastProvider.error('此楼暂无信息');

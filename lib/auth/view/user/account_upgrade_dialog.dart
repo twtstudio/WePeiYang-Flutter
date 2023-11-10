@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import '../../../commons/channel/statistics/umeng_statistics.dart';
+import '../../../commons/widgets/w_button.dart';
 import '../../../feedback/view/lake_home_page/lake_notifier.dart';
 import '../../../main.dart';
 import '../../auth_router.dart';
@@ -36,8 +37,8 @@ class AccountUpgradeDialog extends Dialog {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
+                  WButton(
+                    onPressed: () {
                       UmengCommonSdk.onProfileSignOff();
                       CommonPreferences.clearAllPrefs();
                       if (CommonPreferences.lakeToken.value != '')
@@ -55,8 +56,8 @@ class AccountUpgradeDialog extends Dialog {
                   SizedBox(
                     width: 50.w,
                   ),
-                  GestureDetector(
-                    onTap: () async {
+                  WButton(
+                    onPressed: () async {
                       var rsp = await AuthService.accountUpgrade();
                       if (rsp) {
                         // Navigator.pop(context);

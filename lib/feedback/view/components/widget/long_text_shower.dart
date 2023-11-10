@@ -3,6 +3,8 @@ import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 
+import '../../../../commons/widgets/w_button.dart';
+
 class ExpandableText extends StatefulWidget {
   final String text;
   final int maxLines;
@@ -74,8 +76,8 @@ class _ExpandableTextState extends State<ExpandableText> {
                       )
                     : LinkText(style: style, text: text, maxLine: maxLines),
             if (buttonIsShown)
-              InkWell(
-                onTap: () {
+              WButton(
+                onPressed: () {
                   setState(() {
                     expand = !expand;
                   });

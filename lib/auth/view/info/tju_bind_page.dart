@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/network/classes_backend_service.dart';
 import '../../../commons/network/classes_service.dart';
+import '../../../commons/widgets/w_button.dart';
 import '../../../schedule/model/course_provider.dart';
 
 class TjuBindPage extends StatefulWidget {
@@ -160,12 +161,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none),
-                      suffixIcon: GestureDetector(
+                      suffixIcon: WButton(
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
                           color: ColorUtil.mainColor,
                         ),
-                        onTap: () {
+                        onPressed: () {
                           visNotifier.value = !visNotifier.value;
                         },
                       ),
@@ -219,8 +220,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     .sp(10)
                     .blue98,
               ),
-              GestureDetector(
-                onTap: () async {
+              WButton(
+                onPressed: () async {
                   checkNetWork(true);
                 },
                 child: Text('classes.tju.edu.cn',
@@ -248,10 +249,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:ColorUtil.blue53, size: 32),
-                onTap: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
       body: SingleChildScrollView(

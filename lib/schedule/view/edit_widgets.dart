@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 
+import '../../commons/widgets/w_button.dart';
+
 final _ITEM_HEIGHT = 48.h;
 
 class TimeFrameWidget extends StatelessWidget {
@@ -59,8 +61,8 @@ class TimeFrameWidget extends StatelessWidget {
                   style: TextUtil.base.Swis.medium.black2A.sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
-              GestureDetector(
-                onTap: () async {
+              WButton(
+                onPressed: () async {
                   if (canDelete) {
                     if (delCb != null) {
                       await delCb!();
@@ -84,8 +86,8 @@ class TimeFrameWidget extends StatelessWidget {
               Text('周数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
+                  return WButton(
+                    onPressed: () {
                       // 先找到点击位置的y坐标（记为top）
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
@@ -132,8 +134,8 @@ class TimeFrameWidget extends StatelessWidget {
               Text('节数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
+                  return WButton(
+                    onPressed: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
                       if (top + 150 > 1.sh) {

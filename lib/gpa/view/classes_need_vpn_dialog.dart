@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import '../../commons/widgets/w_button.dart';
 
 class ClassesNeedVPNDialog extends Dialog {
   @override
@@ -35,8 +36,8 @@ class ClassesNeedVPNDialog extends Dialog {
                 style: TextUtil.base.regular.noLine.sp(14).blue98),
             SizedBox(height: 15),
             Divider(height: 1, color: ColorUtil.grey172),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            WButton(
+              onPressed: () => Navigator.pop(context),
               child: Container(
                 decoration: BoxDecoration(),
                 padding: const EdgeInsets.all(12),

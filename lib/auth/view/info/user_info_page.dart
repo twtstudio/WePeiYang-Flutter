@@ -9,6 +9,8 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class UserInfoPage extends StatefulWidget {
   @override
   _UserInfoPageState createState() => _UserInfoPageState();
@@ -35,10 +37,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back,
                 color: ColorUtil.blue52hz, size: 32),
-            onTap: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
       ),
@@ -54,8 +56,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.avatarCrop)
                         .then((_) => this.setState(() {}));
                   },
@@ -73,8 +75,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 8.h),
                 Container(height: 1, color:ColorUtil.white212 ),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.resetName)
                         .then((_) => this.setState(() {}));
                   },
@@ -98,8 +100,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 20.h),
                 Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.tjuBind)
                         .then((_) => this.setState(() {}));
                   },
@@ -121,8 +123,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 20.h),
                 Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.resetPassword)
                         .then((_) => this.setState(() {}));
                   },
@@ -140,8 +142,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 20.h),
                 Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.avatarBox)
                         .then((_) => this.setState(() {}));
                   },
@@ -167,8 +169,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
             ),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () =>
+                WButton(
+                  onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.phoneBind)
                           .then((_) => this.setState(() {})),
                   child: Row(
@@ -191,8 +193,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 20.h),
                 Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () =>
+                WButton(
+                  onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.emailBind)
                           .then((_) => this.setState(() {})),
                   child: Row(
@@ -222,8 +224,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () => showDialog(
+            child: WButton(
+              onPressed: () => showDialog(
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) => LogoffDialog()),

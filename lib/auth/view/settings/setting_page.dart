@@ -18,6 +18,8 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 class SettingPage extends StatefulWidget {
   @override
   _SettingPageState createState() => _SettingPageState();
@@ -56,9 +58,9 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
-            onTap: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
       ),
@@ -72,8 +74,8 @@ class _SettingPageState extends State<SettingPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () => Navigator.pushNamed(context, AuthRouter.userInfo)
+            child: WButton(
+              onPressed: () => Navigator.pushNamed(context, AuthRouter.userInfo)
                   .then((_) => this.setState(() {})),
               child: Row(
                 children: [
@@ -154,8 +156,8 @@ class _SettingPageState extends State<SettingPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () {
+            child: WButton(
+              onPressed: () {
                 context.read<UpdateManager>().checkUpdate(auto: false);
               },
               child: Row(
@@ -183,8 +185,8 @@ class _SettingPageState extends State<SettingPage> {
               color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () => showDialog(
+            child: WButton(
+              onPressed: () => showDialog(
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) => LogoutDialog()),
@@ -203,8 +205,8 @@ class _SettingPageState extends State<SettingPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () => showDialog(
+              WButton(
+                onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: true,
                     builder: (context) => UserAgreementDialog()),
@@ -214,8 +216,8 @@ class _SettingPageState extends State<SettingPage> {
                   child: Text('《用户协议》', style: hintTextStyle),
                 ),
               ),
-              GestureDetector(
-                onTap: () => showDialog(
+              WButton(
+                onPressed: () => showDialog(
                     context: context,
                     barrierDismissible: true,
                     builder: (BuildContext context) {

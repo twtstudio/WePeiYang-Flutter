@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
@@ -80,8 +81,8 @@ class CourseDialog extends Dialog {
               color: ColorUtil.white10,
             ),
           ]),
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+      child: WButton(
+        onPressed: () => Navigator.pop(context),
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 35.h, 20.w, 35.h),
           child: Stack(
@@ -103,8 +104,8 @@ class CourseDialog extends Dialog {
               if (pair.first.type == 1)
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: GestureDetector(
-                    onTap: () {
+                  child: WButton(
+                    onPressed: () {
                       context.read<EditProvider>().load(pair.first);
                       Navigator.pop(context);
                       Navigator.pushNamed(context, ScheduleRouter.editDetail,

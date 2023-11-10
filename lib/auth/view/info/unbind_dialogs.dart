@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
 
 class TjuUnbindDialog extends Dialog {
@@ -48,16 +50,16 @@ class TjuUnbindDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -99,16 +101,16 @@ class PhoneUnbindDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -150,16 +152,16 @@ class EmailUnbindDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -214,8 +216,8 @@ class LogoffDialog extends Dialog {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel,
@@ -223,8 +225,8 @@ class LogoffDialog extends Dialog {
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: _logoff,
+                WButton(
+                  onPressed: _logoff,
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok,

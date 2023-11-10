@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
@@ -30,10 +31,10 @@ class WikiPage extends StatelessWidget {
             backgroundColor: ColorUtil.whiteFFColor,
             leading: Padding(
               padding: const EdgeInsets.only(left: 15),
-              child: GestureDetector(
+              child: WButton(
                   child: Icon(Icons.arrow_back,
                       color: ColorUtil.mainColor, size: 32),
-                  onTap: () => Navigator.pop(context)),
+                  onPressed: () => Navigator.pop(context)),
             )),
         body: WebView(
             initialUrl: URL,

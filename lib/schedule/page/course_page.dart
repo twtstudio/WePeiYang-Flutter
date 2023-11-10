@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
 import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
 
 /// 课表总页面
 class CoursePage extends StatefulWidget {
@@ -95,8 +96,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     var leading = Align(
       alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+      child: WButton(
+        onPressed: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.fromLTRB(0, 8.h, 8.w, 8.h),
@@ -111,8 +112,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     var actions = [
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           if (CommonPreferences.tjuuname.value == '') {
             Navigator.pushNamed(context, AuthRouter.tjuBind);
           } else {
@@ -129,8 +130,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           Navigator.pushNamed(context, ScheduleRouter.customCourse);
         },
         child: Container(
@@ -143,8 +144,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           var pvd = context.read<EditProvider>();
           pvd.init();
           showModalBottomSheet(
@@ -209,8 +210,8 @@ class _TitleWidget extends StatelessWidget {
           ),
           Builder(builder: (context) {
             var provider = context.watch<CourseDisplayProvider>();
-            return GestureDetector(
-                onTap: () {
+            return WButton(
+                onPressed: () {
                   provider.shrink = !provider.shrink;
                 },
                 child: Container(
