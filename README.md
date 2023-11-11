@@ -1,6 +1,9 @@
-# <img src="C:\Users\17687\AppData\Roaming\Typora\typora-user-images\image-20231028095259024.png" alt="image-20231028095259024" style="zoom: 40%;" /> 微北洋APP
+# 微北洋APP
 
-[TOC]
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/twtstudio/WePeiYang-Flutter?color=green)
+![GitHub contributors](https://img.shields.io/github/contributors-anon/twtstudio/WePeiYang-Flutter?color=blue)
+![GitHub Repo stars](https://img.shields.io/github/stars/twtstudio/WePeiYang-Flutter?logo=star&color=yellow)
+
 
 ## 项目背景
 
@@ -107,4 +110,16 @@
 
 
 ## 版权声明
+
+
+
+## Star History
+
+<a href="https://star-history.com/#twtstudio/WePeiYang-Flutter&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=twtstudio/WePeiYang-Flutter&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=twtstudio/WePeiYang-Flutter&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=twtstudio/WePeiYang-Flutter&type=Date" />
+  </picture>
+</a>
 
