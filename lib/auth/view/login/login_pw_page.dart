@@ -121,7 +121,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   visualDensity: VisualDensity.compact,
-                                  activeColor: Color.fromARGB(255, 44, 126, 223),
+                                  activeColor: ColorUtil.blue2CColor,
                                   onChanged: (_) {
                                     checkNotifier.value = !checkNotifier.value;
                                   },
