@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class LakePrivacyDialog extends Dialog {
   final ValueNotifier? check;
@@ -13,7 +16,7 @@ class LakePrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = Color.fromRGBO(98, 103, 124, 1);
+    var textColor = ColorUtil.blue98;
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(
@@ -21,7 +24,7 @@ class LakePrivacyDialog extends Dialog {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color.fromRGBO(251, 251, 251, 1)),
+          color: ColorUtil.white251),
       child: Column(
         children: [
           Expanded(
@@ -258,7 +261,7 @@ class LakePrivacyDialog extends Dialog {
             ),
           ),
           SizedBox(height: 13),
-          Divider(height: 1, color: Color.fromRGBO(172, 174, 186, 1)),
+          Divider(height: 1, color:ColorUtil.grey172 ),
           _detail(context),
         ],
       ),
@@ -267,23 +270,23 @@ class LakePrivacyDialog extends Dialog {
 
   Widget _detail(BuildContext context) {
     if (check == null) {
-      return GestureDetector(
-        onTap: () => Navigator.pop(context),
+      return WButton(
+        onPressed: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text(S.current.ok,
               style: TextUtil.base.bold.noLine
                   .sp(16)
-                  .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                  .blue98),
         ),
       );
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          GestureDetector(
-            onTap: () {
+          WButton(
+            onPressed: () {
               check!.value = false;
               Navigator.pop(context);
             },
@@ -293,8 +296,8 @@ class LakePrivacyDialog extends Dialog {
               child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
             ),
           ),
-          GestureDetector(
-            onTap: () {
+          WButton(
+            onPressed: () {
               check!.value = true;
               Navigator.pop(context);
             },
@@ -304,7 +307,7 @@ class LakePrivacyDialog extends Dialog {
               child: Text('同意',
                   style: TextUtil.base.bold.noLine
                       .sp(16)
-                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                      .blue98),
             ),
           ),
         ],

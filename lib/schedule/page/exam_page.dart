@@ -9,13 +9,16 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 class ExamPage extends StatefulWidget {
   @override
   _ExamPageState createState() => _ExamPageState();
 }
 
 class _ExamPageState extends State<ExamPage> {
-  get _color => Color.fromRGBO(98, 103, 123, 1);
+  get _color => ColorUtil.blue98;
 
   @override
   void initState() {
@@ -39,11 +42,11 @@ class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.whiteFFColor,
       elevation: 0,
-      leading: GestureDetector(
+      leading: WButton(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
-          onTap: () => Navigator.pop(context)),
+          onPressed: () => Navigator.pop(context)),
       actions: [
         IconButton(
           icon: Icon(Icons.autorenew, color: _color, size: 28.r),
@@ -102,11 +105,11 @@ class _ExamPageState extends State<ExamPage> {
   }
 
   List<Color> get _scheduleColor => [
-        Color.fromRGBO(114, 117, 136, 1), // #727588
-        Color.fromRGBO(143, 146, 165, 1), // #8F92A5
-        Color.fromRGBO(122, 119, 138, 1), // #7A778A
-        Color.fromRGBO(142, 122, 150, 1), // #8E7A96
-        Color.fromRGBO(130, 134, 161, 1), // #8286A1
+        ColorUtil.grey114, // #727588
+        ColorUtil.grey143, // #8F92A5
+        ColorUtil.grey122, // #7A778A
+        ColorUtil.grey142, // #8E7A96
+        ColorUtil.grey130, // #8286A1
       ];
 
   Widget examCard(BuildContext context, Exam exam, bool finished) {
@@ -135,8 +138,7 @@ class _ExamPageState extends State<ExamPage> {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            color:
-                finished ? Color.fromRGBO(236, 238, 237, 1) : unfinishedColor,
+            color: finished ? ColorUtil.white236 : unfinishedColor,
           ),
           child: InkWell(
             onTap: () {},
@@ -146,9 +148,7 @@ class _ExamPageState extends State<ExamPage> {
               children: [
                 DefaultTextStyle(
                   style: TextStyle(
-                      color: finished
-                          ? Color.fromRGBO(205, 206, 210, 1)
-                          : Colors.white),
+                      color: finished ? ColorUtil.hintWhite205 : ColorUtil.whiteFFColor),
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -161,8 +161,7 @@ class _ExamPageState extends State<ExamPage> {
                           children: [
                             Spacer(),
                             Text(exam.arrange,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500)),
+                                style: TextUtil.base.w500.sp(18)),
                           ],
                         ),
                         Row(
@@ -171,16 +170,15 @@ class _ExamPageState extends State<ExamPage> {
                             Icon(Icons.location_on_outlined,
                                 size: 17.r,
                                 color: finished
-                                    ? Color.fromRGBO(205, 206, 210, 1)
-                                    : Colors.white),
+                                    ? ColorUtil.hintWhite205
+                                    : ColorUtil.whiteFFColor),
                             SizedBox(width: 3.w),
                             Text('${exam.location}-$seat',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextUtil.base.w300.sp(14)),
                             Spacer(),
                             Text(exam.date,
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w500)),
+                                style: TextUtil.base.w500.sp(14)),
                           ],
                         ),
                       ],
@@ -190,11 +188,11 @@ class _ExamPageState extends State<ExamPage> {
                 Positioned(
                   right: 0,
                   bottom: 1.h,
-                  child: Text(remain,
-                      style: TextUtil.base.Fourche.bold.italic
-                          .h(0)
-                          .sp(55)
-                          .customColor(Colors.white38)),
+                  child: Text(
+                    remain,
+                    style:
+                        TextUtil.base.Fourche.bold.italic.white38.h(0).sp(55),
+                  ),
                 ),
               ],
             ),

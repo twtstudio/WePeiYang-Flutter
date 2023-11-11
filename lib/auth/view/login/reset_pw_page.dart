@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override
@@ -37,21 +40,21 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
 
   static final TextStyle _hintStyle = TextUtil.base.regular
       .sp(13)
-      .customColor(Color.fromRGBO(201, 204, 209, 1));
+      .whiteHint201;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          backgroundColor: ColorUtil.white250,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
-                onTap: () => Navigator.pop(context)),
+                    color: ColorUtil.blue98, size: 35),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
@@ -59,7 +62,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             child: Text(S.current.find_password_title,
                 style: TextUtil.base.bold
                     .sp(16)
-                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                    .blue98),
           ),
           SizedBox(height: 30),
           Padding(
@@ -76,7 +79,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     hintText: S.current.input_password1,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    fillColor: ColorUtil.white235,
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -105,7 +108,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     hintText: S.current.input_password2,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    fillColor: ColorUtil.white235,
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -121,8 +124,8 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             height: 50,
             alignment: Alignment.bottomRight,
             margin: const EdgeInsets.all(30),
-            child: GestureDetector(
-              onTap: _reset,
+            child: WButton(
+              onPressed: _reset,
               child: Image(image: AssetImage('assets/images/arrow_round.png')),
             ),
           ),

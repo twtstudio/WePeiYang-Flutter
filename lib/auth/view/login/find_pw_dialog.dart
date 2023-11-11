@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 class FindPwDialog extends Dialog {
-  static final _hintStyle = TextUtil.base.w600.noLine
-      .sp(13)
-      .customColor(Color.fromRGBO(79, 88, 107, 1));
+  static final _hintStyle = TextUtil.base.w600.noLine.sp(13).blue79;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +16,7 @@ class FindPwDialog extends Dialog {
         width: WePeiYangApp.screenWidth - 40,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -36,13 +35,12 @@ class FindPwDialog extends Dialog {
               ),
             ),
             SizedBox(width: 5),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
+            WButton(
+              onPressed: () => Navigator.pop(context),
               child: Container(
                 alignment: Alignment.topRight,
                 padding: const EdgeInsets.fromLTRB(0, 15, 10, 0),
-                child: Icon(Icons.close,
-                    color: Color.fromRGBO(210, 210, 210, 1), size: 25),
+                child: Icon(Icons.close, color: ColorUtil.white210, size: 25),
               ),
             )
           ],

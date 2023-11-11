@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class UserInfoPage extends StatefulWidget {
   @override
@@ -15,11 +18,11 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   static final mainTextStyle =
-      TextUtil.base.bold.sp(14).customColor(Color.fromRGBO(98, 103, 122, 1));
+      TextUtil.base.bold.sp(14).blue98;
   static final hintTextStyle =
-      TextUtil.base.w600.sp(12).customColor(Color.fromRGBO(205, 206, 212, 1));
+      TextUtil.base.w600.sp(12).whiteHint205;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 22);
+      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +31,16 @@ class _UserInfoPageState extends State<UserInfoPage> {
         title: Text('个人信息更改',
             style: TextUtil.base.bold
                 .sp(16)
-                .customColor(Color.fromRGBO(36, 43, 69, 1))),
+                .blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back,
-                color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-            onTap: () => Navigator.pop(context),
+                color: ColorUtil.blue52hz, size: 32),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
       ),
@@ -48,13 +51,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.avatarCrop)
                         .then((_) => this.setState(() {}));
                   },
@@ -70,10 +73,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                Container(height: 1, color:ColorUtil.white212 ),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.resetName)
                         .then((_) => this.setState(() {}));
                   },
@@ -95,10 +98,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.tjuBind)
                         .then((_) => this.setState(() {}));
                   },
@@ -118,10 +121,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.resetPassword)
                         .then((_) => this.setState(() {}));
                   },
@@ -137,10 +140,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () {
+                WButton(
+                  onPressed: () {
                     Navigator.pushNamed(context, AuthRouter.avatarBox)
                         .then((_) => this.setState(() {}));
                   },
@@ -161,13 +164,13 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
               children: [
-                InkWell(
-                  onTap: () =>
+                WButton(
+                  onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.phoneBind)
                           .then((_) => this.setState(() {})),
                   child: Row(
@@ -188,10 +191,10 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: Color.fromRGBO(212, 214, 226, 1)),
+                Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
-                InkWell(
-                  onTap: () =>
+                WButton(
+                  onPressed: () =>
                       Navigator.pushNamed(context, AuthRouter.emailBind)
                           .then((_) => this.setState(() {})),
                   child: Row(
@@ -218,11 +221,11 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: InkWell(
-              onTap: () => showDialog(
+            child: WButton(
+              onPressed: () => showDialog(
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) => LogoffDialog()),

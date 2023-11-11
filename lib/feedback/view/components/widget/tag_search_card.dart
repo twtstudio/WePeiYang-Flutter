@@ -8,7 +8,9 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+
+import '../../../../commons/widgets/w_button.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -44,8 +46,8 @@ class _SearchTagCardState extends State<SearchTagCard>
       for (int total = 0; total < tagUtil.length; total++) {
         if (tagUtil[total].name == _controller.text.toString())
           _showAdd = false;
-        tagList.add(GestureDetector(
-          onTap: () {
+        tagList.add(WButton(
+          onPressed: () {
             _controller.text = tagUtil[total].name;
             FocusScope.of(context).unfocus();
             context.read<NewPostProvider>().tag =
@@ -79,8 +81,8 @@ class _SearchTagCardState extends State<SearchTagCard>
       }
       if (tagList.length > 5) tagList = tagList.sublist(0, 5);
       _showAdd
-          ? tagList.add(GestureDetector(
-              onTap: () async {
+          ? tagList.add(WButton(
+              onPressed: () async {
                 await FeedbackService.postTags(
                   name: _controller.text,
                   onSuccess: (tags) {
@@ -175,9 +177,9 @@ class _SearchTagCardState extends State<SearchTagCard>
               ? ColorUtil.grey97Color
               : ColorUtil.mainColor,
         ),
-        labelStyle: TextStyle().black2A.NotoSansSC.w400.sp(16),
+        labelStyle: TextUtil.base.black2A.NotoSansSC.w400.sp(16),
         fillColor: ColorUtil.whiteFDFE,
-        hintStyle: TextStyle().grey97.NotoSansSC.w400.sp(16),
+        hintStyle: TextUtil.base.grey97.NotoSansSC.w400.sp(16),
         hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(
@@ -188,8 +190,8 @@ class _SearchTagCardState extends State<SearchTagCard>
       textInputAction: TextInputAction.search,
     );
 
-    return InkWell(
-      onTap: initSearchTag,
+    return WButton(
+      onPressed: initSearchTag,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

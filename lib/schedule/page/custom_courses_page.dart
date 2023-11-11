@@ -8,6 +8,9 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 class CustomCoursesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -21,13 +24,13 @@ class CustomCoursesPage extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor: ColorUtil.transparent,
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: Colors.transparent,
+            backgroundColor: ColorUtil.transparent,
             leading: Center(
-              child: GestureDetector(
-                onTap: () {
+              child: WButton(
+                onPressed: () {
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -48,7 +51,7 @@ class CustomCoursesPage extends StatelessWidget {
           ),
           body: Theme(
             data:
-                Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
+                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
             child: ListView.builder(
               itemCount: customCourses.length,
               itemBuilder: (context, index) {
@@ -66,18 +69,18 @@ class CustomCoursesPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
-              color: Colors.black.withOpacity(0.05),
+              color: ColorUtil.blackOpacity005,
             ),
           ],
         ),
         child: Material(
-          color: Colors.transparent,
+          color: ColorUtil.transparent,
           child: InkWell(
             onTap: () {
               context.read<EditProvider>().load(course);

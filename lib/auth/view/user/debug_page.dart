@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class DebugPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class DebugPage extends StatelessWidget {
       appBar: AppBar(
           title: Text("日志页面"),
           centerTitle: true,
-          backgroundColor: Color.fromRGBO(98, 103, 122, 1)),
+          backgroundColor: ColorUtil.blue98122),
       body: ListView.builder(
           padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
           itemCount: list.length,

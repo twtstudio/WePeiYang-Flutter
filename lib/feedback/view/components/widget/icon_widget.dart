@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,28 +27,28 @@ extension IconTypeExt on IconType {
   double get size => [15.w, 22.w, 15.w, 22.w][index];
 
   CircleColor get circleColor => [
-        CircleColor(start: Colors.black12, end: Colors.redAccent),
-        CircleColor(start: Colors.black12, end: Colors.redAccent),
-        CircleColor(start: Colors.black12, end: Colors.yellow),
-        CircleColor(start: Colors.black12, end: Colors.yellow),
+        CircleColor(start: ColorUtil.black12, end: ColorUtil.redAccent),
+        CircleColor(start: ColorUtil.black12, end: ColorUtil.redAccent),
+        CircleColor(start: ColorUtil.black12, end: ColorUtil.yellow),
+        CircleColor(start: ColorUtil.black12, end: ColorUtil.yellow),
       ][index];
 
   BubblesColor get bubblesColor => [
         BubblesColor(
-          dotPrimaryColor: Colors.redAccent,
-          dotSecondaryColor: Colors.pinkAccent,
+          dotPrimaryColor: ColorUtil.redAccent,
+          dotSecondaryColor: ColorUtil.pinkAccent,
         ),
         BubblesColor(
-          dotPrimaryColor: Colors.redAccent,
-          dotSecondaryColor: Colors.pinkAccent,
+          dotPrimaryColor: ColorUtil.redAccent,
+          dotSecondaryColor: ColorUtil.pinkAccent,
         ),
         BubblesColor(
-          dotPrimaryColor: Colors.amber,
-          dotSecondaryColor: Colors.amberAccent,
+          dotPrimaryColor: ColorUtil.amber,
+          dotSecondaryColor: ColorUtil.amberAccent,
         ),
         BubblesColor(
-          dotPrimaryColor: Colors.amber,
-          dotSecondaryColor: Colors.amberAccent,
+          dotPrimaryColor: ColorUtil.amber,
+          dotSecondaryColor: ColorUtil.amberAccent,
         ),
       ][index];
 
@@ -175,10 +176,10 @@ class DislikeWidget extends StatelessWidget {
           isLiked: value,
           // end的值是Colors.blue[200]
           circleColor:
-              CircleColor(start: Colors.black12, end: Color(0xFF90CAF9)),
+              CircleColor(start: ColorUtil.black12, end:ColorUtil.blue90Color ),
           bubblesColor: BubblesColor(
-            dotPrimaryColor: Colors.blueGrey,
-            dotSecondaryColor: Colors.black26,
+            dotPrimaryColor: ColorUtil.blueGrey,
+            dotSecondaryColor: ColorUtil.black26,
           ),
           animationDuration: Duration(milliseconds: 600),
         );

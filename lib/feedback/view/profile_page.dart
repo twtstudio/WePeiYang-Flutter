@@ -16,8 +16,9 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
-import '../util/color_util.dart';
+import '../../commons/util/color_util.dart';
 import 'components/change_nickname_dialog.dart';
 import 'components/post_card.dart';
 
@@ -105,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
       postListShow = Container(
           height: 430,
           alignment: Alignment.center,
-          child: Text("暂无冒泡", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无冒泡", style: TextUtil.base.grey6267));
     } else {
       postListShow = Column(
         children: postLists,
@@ -123,25 +124,25 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Row(
                 children: [
                   Spacer(),
-                  GestureDetector(
-                    onTap: () =>
+                  WButton(
+                    onPressed: () =>
                         Navigator.pushNamed(context, AuthRouter.mailbox),
                     child: Icon(
                       Icons.email_outlined,
                       size: 28,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                     ),
                   ),
                   SizedBox(width: 15),
-                  GestureDetector(
-                    onTap: () =>
+                  WButton(
+                    onPressed: () =>
                         Navigator.pushNamed(context, AuthRouter.setting)
                             ..then((_) => _refreshController.requestRefresh()),
                     child: Image.asset(
                       'assets/images/setting.png',
                       width: 24,
                       height: 24,
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                     ),
                   ),
                   SizedBox(width: 10),
@@ -175,8 +176,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         level: CommonPreferences.level.value.toString(),
                       ),
                       SizedBox(width: 5.w),
-                      InkWell(
-                        onTap: () {
+                      WButton(
+                        onPressed: () {
                           showDialog(
                               context: context,
                               barrierDismissible: true,
@@ -203,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r)),
-                color: Colors.white,
+                color: ColorUtil.whiteFFColor,
               ),
               child: Column(
                 children: [
@@ -305,8 +306,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Positioned(
           top: 148.h - 0.15.sw,
           left: 12.w,
-          child: GestureDetector(
-            onTap: () {
+          child: WButton(
+            onPressed: () {
               // 进之前request出来之后就可以刷新
               Navigator.pushNamed(context, AuthRouter.avatarCrop)
                   .then((_) => _refreshController.requestRefresh());
@@ -315,7 +316,7 @@ class _ProfilePageState extends State<ProfilePage> {
               tag: 'avatar',
               child: UserAvatarImage(
                 size: 0.3.sw,
-                iconColor: Colors.white,
+                iconColor: ColorUtil.whiteFFColor,
               ),
             ),
           ),
@@ -327,7 +328,7 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         appBar,
         Container(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           child: postListShow,
         )
       ],
@@ -336,17 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       //改背景色用
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-              colors: [
-                Color(0xFF2C7EDF),
-                Color(0xFFA6CFFF),
-                // 用来挡下面圆角左右的空
-                Colors.white
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              // 在0.7停止同理
-              stops: [0, 0.23, 0.4])),
+          gradient: ColorUtil.gradientBlue04),
       child: SafeArea(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
@@ -381,21 +372,21 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         onPressed.call();
       },
       child: Container(
         width: 113.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 8,
-              color: Colors.black.withOpacity(0.1),
+              color: ColorUtil.blackOpacity01,
             ),
           ],
         ),

@@ -6,6 +6,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
+import '../../commons/util/color_util.dart';
+
 /// 用这两个变量绘制点阵图
 const double _cubeSideLength = 6;
 const double _spacingLength = 2;
@@ -49,12 +51,12 @@ class WeekSelectWidget extends StatelessWidget {
                       height: _canvasHeight + 20.w,
                       width: _canvasWidth + 25.w,
                       child: Material(
-                        color: Colors.transparent,
+                        color: ColorUtil.transparent,
                         child: InkWell(
                           radius: 5000,
                           borderRadius: BorderRadius.circular(5.r),
-                          splashColor: Color.fromRGBO(246, 246, 246, 0.5),
-                          highlightColor: Colors.transparent,
+                          splashColor: ColorUtil.grey246Opacity05,
+                          highlightColor: ColorUtil.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
                         ),
                       ),
@@ -67,7 +69,7 @@ class WeekSelectWidget extends StatelessWidget {
     );
 
     return Theme(
-      data: Theme.of(context).copyWith(secondaryHeaderColor: Colors.white),
+      data: Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
       child: Builder(
         builder: (context) {
           var shrink =
@@ -101,8 +103,8 @@ class WeekSelectWidget extends StatelessWidget {
         Text('WEEK ${i + 1}',
             style: TextUtil.base.Swis.w900.sp(10).customColor(
                 (provider.selectedWeek == i + 1)
-                    ? Color.fromRGBO(255, 255, 255, 1)
-                    : Color.fromRGBO(255, 255, 255, 0.4)))
+                    ? ColorUtil.whiteFFColor
+                    : ColorUtil.whiteOpacity04))
       ],
     );
   }
@@ -121,12 +123,12 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 深色cube，代表该点有课
   final Paint _cubePaint = Paint()
-    ..color = Color.fromRGBO(255, 188, 107, 1)
+    ..color = ColorUtil.yellow255
     ..style = PaintingStyle.fill;
 
   /// 白色cube，代表该点没课
   final Paint _spacePaint = Paint()
-    ..color = Color.fromRGBO(255, 255, 255, 1)
+    ..color = ColorUtil.whiteFFColor
     ..style = PaintingStyle.fill;
 
   @override

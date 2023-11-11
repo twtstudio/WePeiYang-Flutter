@@ -8,29 +8,30 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/util/color_util.dart';
+import '../../../commons/widgets/w_button.dart';
+
 class FindPwWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          backgroundColor: ColorUtil.white250,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
-                onTap: () => Navigator.pop(context)),
+            child: WButton(
+                child:
+                    Icon(Icons.arrow_back, color: ColorUtil.blue98, size: 35),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
           Spacer(flex: 1),
           Center(
             child: Text(S.current.find_password_title,
-                style: TextUtil.base.bold
-                    .sp(16)
-                    .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                style: TextUtil.base.bold.sp(16).blue98),
           ),
           SizedBox(height: 40),
           SizedBox(
@@ -46,11 +47,10 @@ class FindPwWidget extends StatelessWidget {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(103, 110, 150, 1);
-                  return Color.fromRGBO(53, 59, 84, 1);
+                    return ColorUtil.blue103;
+                  return ColorUtil.blue53;
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -72,11 +72,10 @@ class FindPwWidget extends StatelessWidget {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(103, 110, 150, 1);
-                  return Color.fromRGBO(53, 59, 84, 1);
+                    return ColorUtil.blue103;
+                  return ColorUtil.blue53;
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -125,9 +124,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  static final TextStyle _hintStyle = TextUtil.base.regular
-      .sp(13)
-      .customColor(Color.fromRGBO(201, 204, 209, 1));
+  static final TextStyle _hintStyle = TextUtil.base.regular.sp(13).whiteHint201;
 
   @override
   Widget build(BuildContext context) {
@@ -135,14 +132,14 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          backgroundColor: ColorUtil.white250,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(98, 103, 123, 1), size: 35),
-                onTap: () => Navigator.pop(context)),
+            child: WButton(
+                child:
+                    Icon(Icons.arrow_back, color: ColorUtil.blue98, size: 35),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -150,9 +147,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           children: [
             Center(
               child: Text(S.current.find_password_title,
-                  style: TextUtil.base.bold
-                      .sp(16)
-                      .customColor(Color.fromRGBO(98, 103, 123, 1))),
+                  style: TextUtil.base.bold.sp(16).blue98),
             ),
             SizedBox(height: 40),
             ConstrainedBox(
@@ -162,7 +157,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                     hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: Color.fromRGBO(235, 238, 243, 1),
+                    fillColor: ColorUtil.white235,
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -184,7 +179,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
-                        fillColor: Color.fromRGBO(235, 238, 243, 1),
+                        fillColor: ColorUtil.white235,
                         isCollapsed: true,
                         contentPadding:
                             const EdgeInsets.fromLTRB(15, 18, 0, 18),
@@ -211,16 +206,13 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                               return ElevatedButton(
                                 onPressed: () {},
                                 child: Text('$time秒后重试',
-                                    style: TextUtil.base.bold
-                                        .sp(13)
-                                        .customColor(
-                                            Color.fromRGBO(98, 103, 123, 1))),
+                                    style: TextUtil.base.bold.sp(13).blue98),
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
-                                      Colors.grey[300]),
+                                      ColorUtil.greyShade300),
                                   backgroundColor: MaterialStateProperty.all(
-                                      Colors.grey[300]),
+                                      ColorUtil.greyShade300),
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -238,11 +230,11 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                   MaterialStateProperty.resolveWith<Color>(
                                       (states) {
                                 if (states.contains(MaterialState.pressed))
-                                  return Color.fromRGBO(103, 110, 150, 1);
-                                return Color.fromRGBO(53, 59, 84, 1);
+                                  return ColorUtil.blue103;
+                                return ColorUtil.blue53;
                               }),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Color.fromRGBO(53, 59, 84, 1)),
+                              backgroundColor:
+                                  MaterialStateProperty.all(ColorUtil.blue53),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
@@ -254,8 +246,8 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
             Container(
               height: 50,
               alignment: Alignment.bottomRight,
-              child: GestureDetector(
-                onTap: _verifyCaptcha,
+              child: WButton(
+                onPressed: _verifyCaptcha,
                 child:
                     Image(image: AssetImage('assets/images/arrow_round.png')),
               ),

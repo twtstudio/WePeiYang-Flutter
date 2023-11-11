@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -12,12 +11,12 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/widget/pop_menu_shape.dart';
 import 'components/widget/tag_search_card.dart';
@@ -133,16 +132,16 @@ class _NewPostPageState extends State<NewPostPage> {
       elevation: 0,
       leading: IconButton(
         padding: EdgeInsets.zero,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
+        splashColor: ColorUtil.transparent,
+        highlightColor: ColorUtil.transparent,
         icon: Icon(
           Icons.keyboard_arrow_left,
-          color: Color(0XFF62677B),
+          color: ColorUtil.grey6267Color,
           size: 36,
         ),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorUtil.transparent,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
@@ -173,7 +172,7 @@ class _NewPostPageState extends State<NewPostPage> {
     );
 
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         appBar: appBar,
         body: Column(
           children: [
@@ -269,8 +268,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                                     scrollDirection: Axis.horizontal,
                                     physics: BouncingScrollPhysics(),
                                     itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
+                                      return WButton(
+                                        onPressed: () {
                                           notifier.value =
                                               tabList[index + 1].id;
 
@@ -302,7 +301,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                             tabList[index + 1]
                                                                 .id
                                                         ? ColorUtil.blue2CColor
-                                                        : Colors.white,
+                                                        : ColorUtil.whiteFFColor,
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -322,8 +321,8 @@ class _LakeSelectorState extends State<LakeSelector> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            highlightColor: Colors.transparent,
-                            splashColor: Colors.transparent,
+                            highlightColor: ColorUtil.transparent,
+                            splashColor: ColorUtil.transparent,
                             onTap: () {
                               controller.offset <= 100 * (tabList.length - 2)
                                   ? controller.animateTo(
@@ -347,7 +346,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                 : Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         borderRadius: BorderRadius.circular(16)),
                     child: Center(
                       child: Text('点击刷新'),
@@ -387,7 +386,7 @@ class _departmentTagViewState extends State<departmentTagView> {
         builder: (context, type, _) {
           return Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),
@@ -665,12 +664,12 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
         title: Text(S.current.feedback_delete_image_content),
         actions: [
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
               child: Text(S.current.feedback_cancel)),
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
@@ -682,13 +681,13 @@ class _ImagesGridViewState extends State<ImagesGridView> {
 
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
     return Stack(fit: StackFit.expand, children: [
-      InkWell(
-        onTap: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+      WButton(
+        onPressed: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
             arguments: LocalImageViewPageArgs(data, [], length, index)),
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: Colors.black26),
+              border: Border.all(width: 1, color: ColorUtil.black26),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -702,13 +701,13 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       Positioned(
         right: 0,
         bottom: 0,
-        child: InkWell(
-          onTap: onTap,
+        child: WButton(
+          onPressed: onTap,
           child: Container(
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: Colors.black26,
+              color: ColorUtil.black26,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),

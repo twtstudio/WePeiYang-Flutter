@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class ChangeNicknameDialog extends StatefulWidget {
   const ChangeNicknameDialog({Key? key}) : super(key: key);
@@ -28,7 +28,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
     return LakeDialogWidget(
       title: '修改你的昵称',
       titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).black00,
-      confirmButtonColor: Color.fromRGBO(44, 126, 223, 1),
+      confirmButtonColor: ColorUtil.blue2CColor,
       confirmFun: () {
         FeedbackService.changeNickname(
             onSuccess: () {

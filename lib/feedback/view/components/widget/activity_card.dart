@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -13,6 +14,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../../commons/widgets/w_button.dart';
 
 class ActivityCard extends StatefulWidget {
   @override
@@ -34,8 +37,8 @@ class _ActivityCardState extends State<ActivityCard> {
   @override
   Widget build(BuildContext context) {
     Widget card(BuildContext context, int index) {
-      return InkWell(
-        onTap: () async {
+      return WButton(
+        onPressed: () async {
           final url = context.read<FestivalProvider>().festivalList[index].url;
           if (url.isEmpty) {
             sp.stopAutoplay();
@@ -153,9 +156,8 @@ class _ActivityCardState extends State<ActivityCard> {
                                             decoration: BoxDecoration(
                                                 color:
                                                     index == config.activeIndex
-                                                        ? Colors.white
-                                                        : Color.fromRGBO(
-                                                            0, 0, 25, 0.22),
+                                                        ? ColorUtil.whiteFFColor
+                                                        : ColorUtil.blackOpacity022,
                                                 borderRadius:
                                                     BorderRadius.circular(100)),
                                           ));
@@ -169,7 +171,7 @@ class _ActivityCardState extends State<ActivityCard> {
                   offstage: offstage,
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 400),
-                    color: dark ? Colors.black38 : Colors.transparent,
+                    color: dark ? ColorUtil.black38 : ColorUtil.transparent,
                     child: Center(
                         child: Text('是未知领域！\n没有可跳转的网页喵(っ °Д °;)っ',
                             style: TextUtil.base.white.w700.sp(17))),

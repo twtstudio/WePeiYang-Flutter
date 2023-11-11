@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -84,15 +85,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       body: Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color.fromARGB(255, 44, 126, 223),
-            Color.fromARGB(255, 166, 207, 255),
-          ],
-        )),
+        decoration: BoxDecoration(gradient: ColorUtil.gradientBlueAllScreen),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -142,8 +135,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
                                   .black2A)),
-                          GestureDetector(
-                            onTap: () => showDialog(
+                          WButton(
+                            onPressed: () => showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) =>
@@ -159,8 +152,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
                                   .black2A)),
-                          GestureDetector(
-                            onTap: () => showDialog(
+                          WButton(
+                            onPressed: () => showDialog(
                                 context: context,
                                 barrierDismissible: true,
                                 builder: (context) =>
@@ -206,19 +199,19 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
             style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-            cursorColor: Colors.white,
+            cursorColor: ColorUtil.whiteFFColor,
             textInputAction: TextInputAction.next,
             focusNode: _accountFocus,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                   width: 1.0,
                 ),
               ),
@@ -244,23 +237,23 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             valueListenable: visNotifier,
             builder: (context, bool value, _) {
               return Theme(
-                data: Theme.of(context)
-                    .copyWith(primaryColor: Color.fromRGBO(53, 59, 84, 1)),
+                data:
+                    Theme.of(context).copyWith(primaryColor: ColorUtil.blue53),
                 child: TextField(
                   style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                  cursorColor: Colors.white,
+                  cursorColor: ColorUtil.whiteFFColor,
                   keyboardType: TextInputType.visiblePassword,
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: ColorUtil.whiteFFColor,
                           width: 1.0,
                         ),
                       ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.white,
+                          color: ColorUtil.whiteFFColor,
                           width: 1.0,
                         ),
                       ),
@@ -268,13 +261,13 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       hintStyle: TextUtil.base.normal.sp(14).w400.white,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
+                      suffixIcon: WButton(
+                        onPressed: () {
                           visNotifier.value = !visNotifier.value;
                         },
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.white,
+                          color: ColorUtil.whiteFFColor,
                         ),
                       )),
                   obscureText: value,
@@ -291,7 +284,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -306,11 +299,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           children: [
             Spacer(),
             SizedBox(width: 16),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "短信登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () {
+              onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();
@@ -324,11 +317,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               },
             ),
             SizedBox(width: 16),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "忘记密码?",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () => Navigator.pushNamed(context, AuthRouter.findHome),
+              onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             SizedBox(width: 10),
           ],
@@ -363,7 +356,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 0.4),
+          color: ColorUtil.whiteOpacity04,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -388,17 +381,17 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               FilteringTextInputFormatter.digitsOnly,
             ],
             style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-            cursorColor: Colors.white,
+            cursorColor: ColorUtil.whiteFFColor,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                   width: 1.0,
                 ),
               ),
@@ -445,7 +438,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -462,7 +455,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               valueListenable: countDownNotifier,
               builder: (context, value, _) {
                 if (value == 0) {
-                  return TextButton(
+                  return WButton(
                     onPressed: (_fetchCaptcha),
                     child: Text(
                       '获取验证码',
@@ -470,7 +463,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     ),
                   );
                 } else {
-                  return TextButton(
+                  return WButton(
                     onPressed: () {},
                     child: Text(
                       '重新获取验证码($value)',
@@ -481,11 +474,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               },
             ),
             Spacer(),
-            GestureDetector(
+            WButton(
               child: Text.rich(TextSpan(
                   text: "密码登录",
                   style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
-              onTap: () {
+              onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
                   _passwordFocus.unfocus();

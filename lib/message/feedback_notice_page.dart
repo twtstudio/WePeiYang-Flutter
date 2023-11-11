@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
@@ -22,7 +22,7 @@ class FeedbackNoticePage extends StatelessWidget {
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,
-        backgroundColor: Colors.transparent,
+        backgroundColor: ColorUtil.transparent,
         elevation: 0,
         centerTitle: true,
         title:
@@ -30,7 +30,7 @@ class FeedbackNoticePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: Color(0XFF252525),
+            color: ColorUtil.black25Color,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -114,7 +114,7 @@ class FeedbackNoticePage extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                     blurRadius: 5,
-                    color: ColorUtil.greyF7F8Color,
+                    color: ColorUtil.whiteF8Color,
                     offset: Offset(0, 0),
                     spreadRadius: 3),
               ],
@@ -126,7 +126,7 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       appBar: appBar,
       body: noticeCard,
     );

@@ -7,9 +7,11 @@ import 'package:flutter/services.dart'
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 final _ITEM_HEIGHT = 48.h;
 
@@ -59,8 +61,8 @@ class TimeFrameWidget extends StatelessWidget {
                   style: TextUtil.base.Swis.medium.black2A.sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
-              GestureDetector(
-                onTap: () async {
+              WButton(
+                onPressed: () async {
                   if (canDelete) {
                     if (delCb != null) {
                       await delCb!();
@@ -73,8 +75,8 @@ class TimeFrameWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
-                          ? Color.fromRGBO(44, 126, 223, 1)
-                          : Colors.white),
+                          ? ColorUtil.blue2CColor
+                          : ColorUtil.whiteFFColor),
                 ),
               ),
             ],
@@ -84,8 +86,8 @@ class TimeFrameWidget extends StatelessWidget {
               Text('周数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
+                  return WButton(
+                    onPressed: () {
                       // 先找到点击位置的y坐标（记为top）
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
@@ -106,7 +108,7 @@ class TimeFrameWidget extends StatelessWidget {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        barrierColor: Colors.white.withOpacity(0.1),
+                        barrierColor: ColorUtil.whiteOpacity01,
                         builder: (_) => WeekPicker(
                             index,
                             top,
@@ -132,8 +134,8 @@ class TimeFrameWidget extends StatelessWidget {
               Text('节数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
+                  return WButton(
+                    onPressed: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
                       if (top + 150 > 1.sh) {
@@ -148,7 +150,7 @@ class TimeFrameWidget extends StatelessWidget {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        barrierColor: Colors.white.withOpacity(0.1),
+                        barrierColor: ColorUtil.whiteOpacity01,
                         builder: (_) => UnitPicker(
                             index, top, pvd.arrangeList[index].unitList),
                       ).then((_) => pvd.notify());
@@ -241,7 +243,7 @@ class InputWidget extends StatelessWidget {
               inputFormatters: inputFormatter,
               textAlign: TextAlign.end,
               style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-              cursorColor: Color.fromRGBO(44, 126, 223, 1),
+              cursorColor: ColorUtil.blue2CColor,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -267,19 +269,19 @@ class CardWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 2),
               blurRadius: 10,
-              color: Colors.black.withOpacity(0.06),
+              color: ColorUtil.blackOpacity006,
             ),
           ],
         ),
         // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
         child: Material(
-          color: Colors.transparent,
+          color: ColorUtil.transparent,
           child: InkWell(
             onTap: onTap,
             splashFactory: InkRipple.splashFactory,
@@ -296,13 +298,13 @@ class CardWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5.h),
       padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 2),
             blurRadius: 10,
-            color: Colors.black.withOpacity(0.08),
+            color: ColorUtil.blackOpacity008,
           ),
         ],
       ),
@@ -337,7 +339,7 @@ class UnitPicker extends Dialog {
             scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
-            selectionOverlay: Container(color: Colors.transparent),
+            selectionOverlay: Container(color: ColorUtil.transparent),
             itemExtent: 40,
             childCount: 12,
             onSelectedItemChanged: (row) {
@@ -375,7 +377,7 @@ class UnitPicker extends Dialog {
         height: 150.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
@@ -470,7 +472,7 @@ class WeekPicker extends Dialog {
           scrollController: _weekdayController,
           diameterRatio: 1.5,
           squeeze: 1.45,
-          selectionOverlay: Container(color: Colors.transparent),
+          selectionOverlay: Container(color: ColorUtil.transparent),
           itemExtent: 40,
           childCount: 7,
           onSelectedItemChanged: (row) {
@@ -490,7 +492,7 @@ class WeekPicker extends Dialog {
             scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
-            selectionOverlay: Container(color: Colors.transparent),
+            selectionOverlay: Container(color: ColorUtil.transparent),
             itemExtent: 40,
             childCount: weekCount,
             onSelectedItemChanged: (row) {
@@ -525,7 +527,7 @@ class WeekPicker extends Dialog {
         height: 220.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
@@ -553,8 +555,8 @@ class WeekPicker extends Dialog {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: index == _weekTypes.indexOf(type)
-                                ? Color.fromRGBO(44, 126, 223, 1)
-                                : ColorUtil.greyF7F8Color,
+                                ? ColorUtil.blue2CColor
+                                : ColorUtil.whiteF8Color,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),
                             ),
@@ -563,7 +565,7 @@ class WeekPicker extends Dialog {
                               style: TextUtil.base.PingFangSC.regular
                                   .sp(12)
                                   .customColor(index == _weekTypes.indexOf(type)
-                                      ? Colors.white
+                                      ? ColorUtil.whiteFFColor
                                       : ColorUtil.greyCAColor)),
                         );
                       },

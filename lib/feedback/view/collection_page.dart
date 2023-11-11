@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 
@@ -132,7 +132,7 @@ class _CollectionPageState extends State<CollectionPage> {
       favListShow = Container(
           height: 200,
           alignment: Alignment.center,
-          child: Text("暂无收藏", style: TextStyle(color: Color(0xff62677b))));
+          child: Text("暂无收藏", style: TextUtil.base.grey6267));
     } else {
       favListShow = Column(
         children: [favLists, SizedBox(height: 20.w)],

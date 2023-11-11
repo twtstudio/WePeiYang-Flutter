@@ -14,7 +14,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
@@ -22,6 +22,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart'
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class NSubPage extends StatefulWidget {
   final int index;
@@ -232,7 +234,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         children: [
                           SizedBox(width: 12),
                           context.read<NoticeProvider>().noticeList.length > 0
-                              ? InkWell(
+                              ? WButton(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -278,10 +280,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                       .sp(15))),
                                     ],
                                   ),
-                                  onTap: () => Navigator.pushNamed(
+                                  onPressed: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 )
-                              : InkWell(
+                              : WButton(
                                   child: SizedBox(
                                     width: WePeiYangApp.screenWidth - 83,
                                     child: Text(
@@ -292,7 +294,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  onTap: () => Navigator.pushNamed(
+                                  onPressed: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
                           Spacer()
@@ -313,8 +315,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        InkWell(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               context.read<LakeModel>().sortSeq = 1;
                               listToTop();
@@ -328,8 +330,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     : TextUtil.base.black2A.w400.sp(14)),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               context.read<LakeModel>().sortSeq = 0;
                               listToTop();
@@ -439,7 +441,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.black26,
+                            color: ColorUtil.black26,
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -453,7 +455,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: Colors.black26,
+                            color: ColorUtil.black26,
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -463,7 +465,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Colors.black26,
+                          color: ColorUtil.black26,
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);
@@ -479,8 +481,8 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        isOpa ? Color(0x12FFFFFF) : Color(0x76FFFFFF),
-                        !isOpa ? Color(0x32FFFFFF) : Color(0x90FFFFFF),
+                        isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
+                        !isOpa ? ColorUtil.black32Color : ColorUtil.black90Color,
                       ],
                     ),
                   ),
@@ -542,7 +544,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       ),
       elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.whiteFFColor,
       foregroundColor: ColorUtil.mainColor,
       onPressed: () {
         FeedbackService.getToken(

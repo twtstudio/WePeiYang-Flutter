@@ -5,6 +5,9 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 class MapCalendarPage extends StatefulWidget {
   MapCalendarPage();
 
@@ -21,11 +24,11 @@ class MapCalenderState extends State<MapCalendarPage> {
         appBar: AppBar(
           toolbarHeight: 40,
           titleSpacing: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           leading: IconButton(
             icon: Icon(
               CupertinoIcons.back,
-              color: Color(0XFF252525),
+              color: ColorUtil.black25Color,
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -54,13 +57,13 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   BoxDecoration get cardDecoration => BoxDecoration(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
             blurRadius: 8,
-            color: Colors.black.withOpacity(0.05),
+            color: ColorUtil.blackOpacity005,
           ),
         ],
       );
@@ -82,8 +85,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
@@ -101,7 +104,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.topCenter,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  Color(0xFFBED1FF), BlendMode.screen),
+                                  ColorUtil.blueBEColor, BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/account/map_wei_jin.jpg')))),
                   Positioned(
@@ -118,8 +121,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
@@ -137,7 +140,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.center,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  Color(0xFFFFF2F2), BlendMode.hardLight),
+                                  ColorUtil.mapRed, BlendMode.hardLight),
                               image: AssetImage(
                                   'assets/images/account/map_pei_yang.jpg')))),
                   Positioned(
@@ -171,8 +174,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
@@ -193,7 +196,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.topCenter,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  Color(0xFFBED1FF), BlendMode.screen),
+                                  ColorUtil.blueBEColor, BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/calender/first.jpg')))),
                   Positioned(
@@ -210,8 +213,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            WButton(
+              onPressed:() {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
@@ -232,7 +235,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                         alignment: Alignment.topCenter,
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
-                            Color(0xFFBED1FF), BlendMode.screen),
+                            ColorUtil.blueBEColor, BlendMode.screen),
                         image: AssetImage('assets/images/calender/second.jpg'),
                       ))),
                   Positioned(

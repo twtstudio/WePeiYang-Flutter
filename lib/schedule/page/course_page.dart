@@ -16,6 +16,9 @@ import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 /// 课表总页面
 class CoursePage extends StatefulWidget {
   final List<Pair<Course, int>> pairs;
@@ -70,7 +73,7 @@ class _CoursePageState extends State<CoursePage> {
         ),
         Scaffold(
           appBar: _CourseAppBar(),
-          backgroundColor: Colors.transparent,
+          backgroundColor: ColorUtil.transparent,
           body: ListView(
             physics: const BouncingScrollPhysics(),
             children: [
@@ -93,8 +96,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     var leading = Align(
       alignment: Alignment.centerRight,
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+      child: WButton(
+        onPressed: () => Navigator.pop(context),
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.fromLTRB(0, 8.h, 8.w, 8.h),
@@ -102,15 +105,15 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
             'assets/images/schedule/back.png',
             height: 18.r,
             width: 18.r,
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
           ),
         ),
       ),
     );
 
     var actions = [
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           if (CommonPreferences.tjuuname.value == '') {
             Navigator.pushNamed(context, AuthRouter.tjuBind);
           } else {
@@ -127,8 +130,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           Navigator.pushNamed(context, ScheduleRouter.customCourse);
         },
         child: Container(
@@ -141,8 +144,8 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      GestureDetector(
-        onTap: () {
+      WButton(
+        onPressed: () {
           var pvd = context.read<EditProvider>();
           pvd.init();
           showModalBottomSheet(
@@ -170,7 +173,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     ];
 
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: ColorUtil.transparent,
       elevation: 0,
       leading: leading,
       leadingWidth: 40.w,
@@ -202,15 +205,13 @@ class _TitleWidget extends StatelessWidget {
               var currentWeek =
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
-                  style: TextUtil.base.Swis.bold
-                      .sp(12)
-                      .customColor(Color.fromRGBO(202, 202, 202, 1)));
+                  style: TextUtil.base.Swis.bold.sp(12).white202);
             }),
           ),
           Builder(builder: (context) {
             var provider = context.watch<CourseDisplayProvider>();
-            return GestureDetector(
-                onTap: () {
+            return WButton(
+                onPressed: () {
                   provider.shrink = !provider.shrink;
                 },
                 child: Container(
@@ -220,7 +221,7 @@ class _TitleWidget extends StatelessWidget {
                       provider.shrink
                           ? 'assets/images/schedule/up.png'
                           : 'assets/images/schedule/down.png',
-                      color: Colors.white,
+                      color: ColorUtil.whiteFFColor,
                       height: 18.r,
                       width: 18.r),
                 ));
@@ -264,7 +265,7 @@ class _HoursCounterWidget extends StatelessWidget {
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: Colors.black12),
+                    color: ColorUtil.black12),
               ),
               Container(
                 height: 8.h,
@@ -273,7 +274,7 @@ class _HoursCounterWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.r),
                   gradient: LinearGradient(
-                    colors: [Colors.white, Colors.white54],
+                    colors: [ColorUtil.whiteFFColor, ColorUtil.white54],
                   ),
                 ),
               )

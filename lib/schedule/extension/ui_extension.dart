@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -38,27 +39,27 @@ class AnimatedActiveCourse extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color.fromRGBO(255, 255, 255, 0.5),
-            Color.fromRGBO(255, 255, 255, 0.3),
+            ColorUtil.whiteOpacity05,
+            ColorUtil.whiteOpacity03,
           ],
         ),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 2),
             blurRadius: 15,
-            color: Colors.black.withOpacity(0.08),
+            color: ColorUtil.blackOpacity008,
           ),
         ],
         borderRadius: BorderRadius.circular(5),
       ),
       child: Material(
-        color: Colors.transparent,
+        color: ColorUtil.transparent,
         // color: generateColor(_pairs[0].first.name),
         child: InkWell(
           onTap: () => showCourseDialog(context, _pairs),
           borderRadius: BorderRadius.circular(5),
           splashFactory: InkRipple.splashFactory,
-          splashColor: Color.fromRGBO(199, 216, 235, 1),
+          splashColor: ColorUtil.white199,
           child: _hide
               ? Container()
               : Padding(

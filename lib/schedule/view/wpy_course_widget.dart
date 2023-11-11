@@ -7,6 +7,9 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 class TodayCoursesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class TodayCoursesWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
-              color: Colors.black12,
+              color: ColorUtil.black12,
               borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
@@ -76,7 +79,7 @@ class TodayCoursesWidget extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: Colors.black26,
+                splashColor: ColorUtil.black26,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(
@@ -89,7 +92,7 @@ class TodayCoursesWidget extends StatelessWidget {
                             '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
                             style: TextUtil.base.bold
                                 .sp(14)
-                                .customColor(Colors.white54),
+                                .customColor(ColorUtil.white54),
                           ),
                           SizedBox(height: 4.h),
                           SizedBox(
@@ -104,8 +107,8 @@ class TodayCoursesWidget extends StatelessWidget {
                         ],
                       ),
                       Spacer(),
-                      GestureDetector(
-                        onTap: () =>
+                      WButton(
+                        onPressed: () =>
                             Navigator.pushNamed(context, ScheduleRouter.course),
                         child: Image.asset('assets/images/schedule/circle.png',
                             width: 50.r, height: 50.r),

@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
@@ -17,6 +17,8 @@ import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
@@ -131,8 +133,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       initializeRefresh = false;
     }
 
-    var searchBar = InkWell(
-      onTap: () => Navigator.pushNamed(context, FeedbackRouter.search),
+    var searchBar = WButton(
+      onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
@@ -158,13 +160,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               ? '搜索发现'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                          style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                         ),
                       ),
                       Text(
                         data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                        style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                       ),
                     ],
                   )),
@@ -183,8 +185,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   builder: (loadingContext, loadingProvider, __) {
                     loadingProvider.calculateTime();
                     return loadingProvider.timeEnded
-                        ? GestureDetector(
-                            onTap: () {
+                        ? WButton(
+                            onPressed: () {
                               var model = context.read<LakeModel>();
                               model.mainStatus = LakePageStatus.loading;
                               loadingProvider.resetTimer();
@@ -226,8 +228,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           },
                         );
                       })
-                    : InkWell(
-                        onTap: () => context
+                    : WButton(
+                        onPressed: () => context
                             .read<LakeModel>()
                             .checkTokenAndGetTabList(_departmentsProvider),
                         child: Align(
@@ -242,7 +244,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.whiteFFColor,
       body: Stack(
         children: [
           Padding(
@@ -305,8 +307,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     tabBarHeight -
                     4),
             child: Visibility(
-              child: InkWell(
-                  onTap: () {
+              child: WButton(
+                  onPressed: () {
                     if (canSee) _onFeedbackTapped();
                   },
                   child: FbTagsWrap(key: fbKey)),
@@ -329,7 +331,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ? 0
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
-                color: Colors.white,
+                color: ColorUtil.whiteFFColor,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -350,7 +352,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           }),
           // 挡上面
           Container(
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
@@ -360,8 +362,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             child: Hero(
               tag: "addNewPost",
               child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
+                  splashColor: ColorUtil.transparent,
+                  highlightColor: ColorUtil.transparent,
                   child: Container(
                     height: 72.r,
                     width: 72.r,
@@ -419,9 +421,9 @@ class FbTagsWrapState extends State<FbTagsWrap>
             children: List.generate(provider.departmentList.length, (index) {
               return InkResponse(
                 radius: 30,
-                highlightColor: Colors.transparent,
+                highlightColor: ColorUtil.transparent,
                 child: Chip(
-                  backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                  backgroundColor: ColorUtil.white234,
                   label: Text(provider.departmentList[index].name,
                       style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
                 ),
@@ -466,7 +468,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
               duration: Duration(milliseconds: 500),
               onEnd: _offstageTheBackground,
               child: Container(
-                color: Colors.black45,
+                color: ColorUtil.black45,
               ),
             )),
         Offstage(

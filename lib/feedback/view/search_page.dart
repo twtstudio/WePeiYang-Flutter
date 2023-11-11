@@ -6,12 +6,14 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart'
     as wpySearchBar;
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -88,15 +90,15 @@ class _SearchPageState extends State<SearchPage> {
       alignment: Alignment.topLeft,
       children: [
         searchBar,
-        InkWell(
+        WButton(
           child: Padding(
             padding: const EdgeInsets.only(top: 12, left: 12),
             child: Icon(
               CupertinoIcons.back,
-              color: Color(0XFF252525),
+              color: ColorUtil.black25Color,
             ),
           ),
-          onTap: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context),
         ),
       ],
     ));
@@ -111,9 +113,9 @@ class _SearchPageState extends State<SearchPage> {
             S.current.feedback_search_history,
             style: TextUtil.base.blue2C.w600.sp(17),
           ),
-          InkWell(
+          WButton(
             child: Icon(Icons.delete, size: 16),
-            onTap: showClearDialog,
+            onPressed: showClearDialog,
           ),
         ],
       ),
@@ -128,10 +130,7 @@ class _SearchPageState extends State<SearchPage> {
             child: Center(
               child: Text(
                 "暂无历史记录",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Color.fromRGBO(98, 103, 124, 0.61),
-                    fontWeight: FontWeight.normal),
+                style: TextUtil.base.blue98Opacity061.normal.sp(16),
               ),
             ),
           );
@@ -150,8 +149,8 @@ class _SearchPageState extends State<SearchPage> {
                 0);
             return InkResponse(
               radius: 30,
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
+              highlightColor: ColorUtil.transparent,
+              splashColor: ColorUtil.transparent,
               onTap: () {
                 if (searchArgument.keyword.startsWith('#MP') &&
                     RegExp(r'^-?[0-9]+').hasMatch(
@@ -182,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
               },
               child: Chip(
                 elevation: 1,
-                backgroundColor: Color.fromRGBO(234, 234, 234, 1),
+                backgroundColor: ColorUtil.white234,
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
@@ -214,7 +213,7 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return ColoredBox(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
@@ -11,6 +12,8 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 class EditDetailPageArgs {
   final int index;
@@ -140,7 +143,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor = Color.fromRGBO(44, 126, 223, 1);
+    var mainColor =ColorUtil.blue2CColor;
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -170,13 +173,13 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           leading: Center(
-            child: GestureDetector(
-              onTap: () {
+            child: WButton(
+              onPressed: () {
                 Navigator.pop(context);
               },
               child: Container(
@@ -221,7 +224,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: Colors.white),
+                    .copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,
@@ -283,7 +286,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
               ),
             ),
             Material(
-              color: Color.fromRGBO(217, 83, 79, 1),
+              color: ColorUtil.red213,
               child: InkWell(
                 onTap: () {
                   _showDialog(context, '是否删除此课程?', ok: () {

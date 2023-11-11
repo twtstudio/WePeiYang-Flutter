@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 class OpenBox extends StatefulWidget {
   final int uid;
@@ -48,16 +51,16 @@ class _OpenBoxState extends State<OpenBox> {
           title: Text("开盒",
               style: TextUtil.base.bold
                   .sp(17)
-                  .customColor(Color.fromRGBO(36, 43, 69, 1))),
+                  .blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
+            child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-                onTap: () => Navigator.pop(context)),
+                    color: ColorUtil.blue53, size: 32),
+                onPressed: () => Navigator.pop(context)),
           ),
           actions: [
             IconButton(
@@ -84,7 +87,7 @@ class _OpenBoxState extends State<OpenBox> {
                 },
                 icon: Icon(
                   Icons.refresh,
-                  color: Colors.black,
+                  color: ColorUtil.black00Color,
                 )),
           ],
         ),
@@ -99,13 +102,13 @@ class _OpenBoxState extends State<OpenBox> {
   }
 
   Widget boxItem(String src, String content) {
-    return GestureDetector(
+    return WButton(
       child: SizedBox(
         width: double.infinity,
         child: Text(src + ': ' + content,
             style: TextUtil.base.black00.w400.sp(20).h(2).ProductSans),
       ),
-      onTap: () async {
+      onPressed: () async {
         if (src == '归属地') {
           String url =
               'https://qq.ip138.com/idsearch/index.asp?userid=${detail['身份证号']}&action=idcard';

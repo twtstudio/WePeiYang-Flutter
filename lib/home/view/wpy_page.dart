@@ -12,7 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/home/view/dialogs/acid_check_dialog.dart';
@@ -22,6 +22,8 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 class WPYPage extends StatefulWidget {
   @override
@@ -143,7 +145,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor: Colors.white,
+      systemNavigationBarColor: ColorUtil.whiteFFColor,
     ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
@@ -165,18 +167,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             curve: Curves.easeIn,
             decoration: BoxDecoration(
                 gradient: showSchedule
-                    ? LinearGradient(
-                        colors: [
-                          Color(0xFF2C7EDF),
-                          Color(0xFFA6CFFF),
-                          // 用来挡下面圆角左右的空
-                          Colors.white
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        // 在0.7停止同理
-                        stops: [0, 0.53, 0.7])
-                    : LinearGradient(colors: [Colors.white, Colors.white]))),
+                    ? ColorUtil.gradientBlue
+                    : ColorUtil.gradientWhite)),
         SafeArea(
           child: Stack(
             children: [
@@ -200,7 +192,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: ColorUtil.whiteFFColor,
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
@@ -251,7 +243,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: Colors.black,
+              labelColor: ColorUtil.black00Color,
               unselectedLabelColor: ColorUtil.lightTextColor,
               indicator: CustomIndicator(
                   left: true,
@@ -318,8 +310,8 @@ class SliverCardsWidget extends StatelessWidget {
       itemCount: cards.length,
       itemBuilder: (context, i) {
         if (cards[i].label == '北洋维基') {
-          return GestureDetector(
-            onTap: () async {
+          return WButton(
+            onPressed: () async {
               if (await canLaunchUrl(Uri.parse(cards[i].route))) {
                 await launchUrl(Uri.parse(cards[i].route),
                     mode: LaunchMode.externalApplication);
@@ -330,8 +322,8 @@ class SliverCardsWidget extends StatelessWidget {
             child: generateCard(context, cards[i]),
           );
         } else {
-          return GestureDetector(
-            onTap: () {
+          return WButton(
+            onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
               if(cards[i].route==""){
                 ToastProvider.error('开发中 敬请期待！');
@@ -373,8 +365,8 @@ class SliverCardsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: bean.label == '地图·校历'
-                        ? Color(0xFF2887FF)
-                        : Color(0xFF80B7F9),
+                        ? ColorUtil.blue28Color
+                        : ColorUtil.blue80Color,
                   ),
                 ),
               ),

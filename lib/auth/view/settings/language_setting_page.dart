@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 
 import 'package:we_pei_yang_flutter/commons/local/local_model.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class LanguageSettingPage extends StatelessWidget {
   Widget _judgeLanguage(String value) => Padding(
@@ -14,22 +17,18 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hintTextStyle = TextUtil.base.regular
-        .sp(12)
-        .customColor(Color.fromRGBO(205, 206, 212, 1));
-    var mainTextStyle = TextUtil.base.regular
-        .sp(18)
-        .customColor(Color.fromRGBO(98, 103, 122, 1));
+    var hintTextStyle = TextUtil.base.regular.sp(12).whiteHint205;
+    var mainTextStyle = TextUtil.base.regular.sp(18).blue98122;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(250, 250, 250, 1),
+          backgroundColor: ColorUtil.white250,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-                child: Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-                onTap: () => Navigator.pop(context)),
+            child: WButton(
+                child:
+                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
@@ -37,17 +36,13 @@ class LanguageSettingPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language,
-                style: TextUtil.base.bold
-                    .sp(30)
-                    .customColor(Color.fromRGBO(48, 60, 102, 1))),
+                style: TextUtil.base.bold.sp(30).blue48),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(35, 15, 35, 15),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language_hint,
-                style: TextUtil.base.regular
-                    .sp(9)
-                    .customColor(Color.fromRGBO(98, 103, 124, 1))),
+                style: TextUtil.base.regular.sp(9).blue98),
           ),
           Consumer<LocaleModel>(
             builder: (_, model, __) => ListView.builder(

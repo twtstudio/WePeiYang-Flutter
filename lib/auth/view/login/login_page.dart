@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
@@ -13,13 +14,7 @@ class LoginHomeWidget extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 44, 126, 223),
-                Color.fromARGB(255, 166, 207, 255),
-              ]),
+          gradient: ColorUtil.gradientBlueAllScreen,
         ),
         child: Column(
           children: [
@@ -57,11 +52,12 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return Color.fromRGBO(103, 110, 150, 1.0);
-                        return Color.fromRGBO(98, 103, 124, 1.0);
+                          return ColorUtil.blue103;
+                        return ColorUtil.blue98;
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all(ColorUtil.whiteFFColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24))),
                     ),
@@ -83,10 +79,11 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return Color.fromRGBO(103, 110, 150, 1.0);
-                        return Color.fromRGBO(98, 103, 124, 1.0);
+                          return ColorUtil.blue103;
+                        return ColorUtil.blue98;
                       }),
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor:
+                          MaterialStateProperty.all(ColorUtil.whiteFFColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                     ),

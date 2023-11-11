@@ -13,13 +13,14 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import '../../../commons/widgets/w_button.dart';
 
 enum Official { subFloor, reply }
 
@@ -40,6 +41,7 @@ class OfficialReplyCard extends StatefulWidget {
 
   ///评分数
   final int ratings;
+
   OfficialReplyCard.reply({
     this.tag = '',
     required this.comment,
@@ -78,14 +80,14 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             title: Text('提示'),
             content: Text('您确定要删除这条评论吗?'),
             actions: <Widget>[
-              TextButton(
+              WButton(
                 child: Text('确定'),
                 onPressed: () {
                   //关闭对话框并返回true
                   Navigator.of(context).pop(true);
                 },
               ),
-              TextButton(
+              WButton(
                 child: Text('取消'),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -260,8 +262,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     Widget starWidget;
     if (CommonPreferences.lakeUid.value.toString() ==
         widget.ancestorId.toString()) {
-      starWidget = GestureDetector(
-        onTap: () async {
+      starWidget = WButton(
+        onPressed: () async {
           ratingCard();
         },
         child: Row(children: [
@@ -272,7 +274,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           RatingBar.builder(
             itemBuilder: (context, index) => Icon(
               Icons.star,
-              color: Colors.yellow,
+              color: ColorUtil.yellow,
             ),
             allowHalfRating: true,
             glow: false,
@@ -294,7 +296,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: Colors.yellow,
+            color: ColorUtil.yellow,
           ),
           allowHalfRating: true,
           glow: false,
@@ -317,8 +319,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InkWell(
-              onTap: () {
+            WButton(
+              onPressed: () {
                 widget.onContentPressed?.call((comment) {
                   setState(() {
                     Navigator.pushNamed(
@@ -335,7 +337,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   padding: const EdgeInsets.all(0),
                   labelPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  backgroundColor: Color(0xffebebeb),
+                  backgroundColor: ColorUtil.whiteEBColor,
                   label: Text('查看回复详情 >',
                       style: TextUtil.base.ProductSans.w400.sp(14).grey6C),
                 ),
@@ -409,19 +411,19 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: list,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: ColorUtil.whiteFFColor,
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
-                color: Color.fromARGB(64, 236, 237, 239),
+                color: ColorUtil.greyShadow64,
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],
         ),
       ),
     );
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         widget.onContentPressed?.call((comment) {
           setState(() {
             Navigator.pushNamed(
@@ -455,13 +457,13 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
-      unratedColor: Colors.grey,
+      unratedColor: ColorUtil.grey,
       itemCount: 5,
       itemSize: 47.w,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Colors.amber,
+        color: ColorUtil.amber,
       ),
       onRatingUpdate: (rating) {
         setState(() {

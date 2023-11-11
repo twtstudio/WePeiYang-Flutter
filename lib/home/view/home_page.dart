@@ -10,7 +10,7 @@ import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/home.svg',
                 color: ColorUtil.grey144,
               ),
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         onPressed: () => _tabController.animateTo(0),
       ),
     );
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             : SvgPicture.asset(
                 'assets/svg_pics/lake_grey.svg',
               ),
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState?.listToTop();
@@ -170,16 +170,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/my.svg',
                 color: ColorUtil.grey144,
               ),
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         onPressed: () => _tabController.animateTo(2),
       ),
     );
 
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
-        color: Color.fromRGBO(255, 255, 255, 1),
+        color: ColorUtil.whiteFFColor,
         boxShadow: [
-          BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
+          BoxShadow(color: ColorUtil.black26, spreadRadius: -1, blurRadius: 2)
         ],
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
@@ -194,9 +194,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
           ? SystemUiOverlayStyle.light
-              .copyWith(systemNavigationBarColor: Colors.white)
+              .copyWith(systemNavigationBarColor: ColorUtil.whiteFFColor)
           : SystemUiOverlayStyle.dark
-              .copyWith(systemNavigationBarColor: Colors.white),
+              .copyWith(systemNavigationBarColor: ColorUtil.whiteFFColor),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,

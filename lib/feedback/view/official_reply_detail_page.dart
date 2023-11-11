@@ -9,13 +9,14 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../commons/widgets/w_button.dart';
 import 'components/widget/pop_menu_shape.dart';
 
 class OfficialReplyDetailPage extends StatefulWidget {
@@ -150,8 +151,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
   @override
   Widget build(BuildContext context) {
     Widget body;
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
         if (CommonPreferences.lakeUid.value.toString() != post?.uid.toString())
           ToastProvider.error("只有帖主能回复哦！");
         else
@@ -194,7 +195,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
               Container(
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
-                  color: Colors.black12)
+                  color: ColorUtil.black12)
             ],
           );
         },
@@ -238,7 +239,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: ColorUtil.black12,
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
@@ -266,8 +267,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       )),
                   Offstage(
                     offstage: value.inputFieldEnabled,
-                    child: InkWell(
-                      onTap: () {
+                    child: WButton(
+                      onPressed: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
                             .inputFieldOpenAndReplyTo(widget.floor[0].postId);
                         FocusScope.of(context).requestFocus(
@@ -287,7 +288,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor,
                           )),
                     ),
                   ),
@@ -329,14 +330,14 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     );
 
     var appBar = AppBar(
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
