@@ -119,7 +119,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   List<Pair<Course, int>> notAppendList = [];
   // 二维矩阵，记录每个位置的课程量，显示在外的不能超过两节
   List<List<int>> unitCountMatrix = [];
-  for (int i = 0; i < dayNumber; i++) {
+  for (int i = 0; i < 7; i++) {   //由于后续访问unitCountMatrix要求是一个[7]*[12]的二维列表，所有此处循环固定为‘7’
     unitCountMatrix.add(List.filled(12, 0));
   }
 
