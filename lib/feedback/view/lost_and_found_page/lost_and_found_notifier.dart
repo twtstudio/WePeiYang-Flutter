@@ -5,20 +5,18 @@ import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 
-class LostAndFoundModel with ChangeNotifier{
-  Map<String, List<LostAndFoundPost>> postList = {
-    '失物招领' : [],
-    '寻物启事' : []
+class LostAndFoundModel with ChangeNotifier {
+  Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事' : []
   };
 
   Map<String, LostAndFoundSubPageStatus> lostAndFoundSubPageStatus = {

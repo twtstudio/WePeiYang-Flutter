@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+
+import '../../../../commons/util/color_util.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -13,7 +14,8 @@ typedef ChangeCallback = void Function(String);
 class LostAndFoundSearchBar extends StatefulWidget {
   final SubmitCallback onSubmitted;
 
-  const LostAndFoundSearchBar({Key? key, required this.onSubmitted}) : super(key: key);
+  const LostAndFoundSearchBar({Key? key, required this.onSubmitted})
+      : super(key: key);
 
   @override
   _LostAndFoundSearchBarState createState() => _LostAndFoundSearchBarState();

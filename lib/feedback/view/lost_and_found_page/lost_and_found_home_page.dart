@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_sub_page.dart';
@@ -59,8 +59,10 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                 title: Padding(
                   padding: EdgeInsets.only(bottom: 3.5.h),
                   child: TabBar(
-                    labelStyle: TextUtil.base.bold.sp(20).whiteO60,
-                    unselectedLabelStyle: TextUtil.base.normal.sp(20).whiteO60,
+                    ///TODO
+                    ///没找到white060的颜色
+                    labelStyle: TextUtil.base.bold.sp(20).white,
+                    unselectedLabelStyle: TextUtil.base.normal.sp(20).white,
                     labelPadding:
                         EdgeInsetsDirectional.only(start: 55.w, end: 55.w),
                     isScrollable: true,

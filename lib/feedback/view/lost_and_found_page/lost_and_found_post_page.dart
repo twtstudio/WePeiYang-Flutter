@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
@@ -14,7 +16,6 @@ import '../../../commons/widgets/loading.dart';
 import '../../../generated/l10n.dart';
 import '../../../main.dart';
 import '../../feedback_router.dart';
-import '../../util/color_util.dart';
 import '../image_view/local_image_view_page.dart';
 
 class NewLostAndFoundPostProvider {
