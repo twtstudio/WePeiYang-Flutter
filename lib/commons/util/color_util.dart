@@ -48,7 +48,7 @@ class ColorUtil {
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const greyCAColor = Color(0xFFCACACA);
   static const selectionButtonColor = Color(0xFF2D4E9A);
-  static const blue2CColor = Color(0xFF2C7EDF);//44,126,223
+  static const blue2CColor = Color(0xFF2C7EDF); //44,126,223
   static const blue28Color = Color(0xFF2887FF);
   static const blue38Color = Color(0xFF3884DE);
   static const linkBlue = Color(0xFF222F80);
@@ -56,8 +56,9 @@ class ColorUtil {
   static const blue8DColor = Color(0xFF8DBBF1);
   static const blue80Color = Color(0xFF80B7F9);
   static const blue90Color = Color(0xFF90CAF9);
-  static const blueA6Color = Color(0xFFA6CFFF);//166, 207, 255
+  static const blueA6Color = Color(0xFFA6CFFF); //166, 207, 255
   static const blueBEColor = Color(0xFFBED1FF);
+  static const blue64Color = Color(0xFF64A3EE);
   static const blue3A3BColor = Color.fromRGBO(58, 59, 69, 1.0);
   static const biliPink = Color(0xFFF97198);
   static const biliTextPink = Color(0xFFAE3B5E);
@@ -153,6 +154,8 @@ class ColorUtil {
   static const black2A = Color(0xFF2A2A2A);
   static const redD9 = Color(0xFFD9534F);
   static const orange6B = Color(0xFFFFBC6B);
+  static const greyB4AFColor = Color(0xFFB4AFAF);
+  static const greyF7F8Color = Color(0xFFF7F7F8);
 
   static const gradientBlue = LinearGradient(
     colors: [

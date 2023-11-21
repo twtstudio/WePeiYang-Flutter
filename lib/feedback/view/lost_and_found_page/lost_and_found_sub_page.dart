@@ -1,7 +1,4 @@
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../lake_home_page/lake_notifier.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -44,7 +43,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             context
                     .read<LostAndFoundModel>()
                     .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.idle;
+                LostAndFoundSubPageStatus.ready;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
@@ -73,7 +72,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             context
                     .read<LostAndFoundModel>()
                     .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.idle;
+                LostAndFoundSubPageStatus.ready;
             context
                 .read<LostAndFoundModel>()
                 .refreshController[widget.type]
