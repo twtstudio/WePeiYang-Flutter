@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../../commons/widgets/w_button.dart';
+import '../../../gpa/model/gpa_notifier.dart';
 
 class GeneralSettingPage extends StatefulWidget {
   @override
@@ -126,6 +127,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   value: !CommonPreferences.hideGPA.value,
                   onChanged: (value) {
                     setState(() => CommonPreferences.hideGPA.value = !value);
+                    context.read<GPANotifier>().hideGPA = !value;
                   },
                   activeColor: ColorUtil.blue105,
                   inactiveThumbColor: ColorUtil.hintWhite205,

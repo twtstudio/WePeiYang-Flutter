@@ -136,7 +136,11 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             height: 28.h,
           ),
           onPressed: () {
-            context.read<GPANotifier>().refreshGPABackend(context);
+            if (CommonPreferences.tjuuname.value == '') {
+              Navigator.pushNamed(context, AuthRouter.tjuBind);
+            } else {
+              context.read<GPANotifier>().refreshGPABackend(context);
+            }
           },
         ),
         SizedBox(width: 18.w),

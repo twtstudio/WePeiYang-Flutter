@@ -66,6 +66,9 @@ class GPAService {
           case '课程代码':
             indexMap['code'] = i;
             break;
+          case '课程名称':
+            indexMap['name'] = i;
+            break;
           case '课程序号':
             indexMap['no'] = i;
             break;
@@ -75,15 +78,14 @@ class GPAService {
           case '课程性质':
             indexMap['classProperty'] = i;
             break;
-          case '课程名称':
-            indexMap['name'] = i;
-            break;
           case '学分':
             indexMap['credit'] = i;
             break;
           case '考试情况':
             indexMap['condition'] = i;
             break;
+          // 总评成绩是办公网的新名字。最终/成绩，是之前的名字，这里只做拓展不做修改。
+          case '总评成绩':
           case '最终':
           case '成绩':
             indexMap['score'] = i;
