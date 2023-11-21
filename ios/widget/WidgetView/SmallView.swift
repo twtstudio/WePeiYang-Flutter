@@ -129,8 +129,7 @@ struct SmallView: View {
             }
         }
     }
-    
-    
+    @State private var majorVersion = 0
     var body: some View {
         Group {
             if isPlaceHolder {
@@ -168,12 +167,15 @@ struct SmallView: View {
                     
                 }
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)  //使VStack占据父视图所有高度
-                .padding()
                 .background(bgView(theme: theme, colorScheme: colorScheme))
                 .onAppear {
+                    if let version = Int(String(UIDevice.current.systemVersion.prefix(2))) {
+                        self.majorVersion = version
+                    }
                     store.reloadData()
                     courses = WidgetCourseManager.getCourses(courseTable: courseTable)
                 }
+                .padding(majorVersion >= 17 ? 0 : 15)
             }
         }
     }
