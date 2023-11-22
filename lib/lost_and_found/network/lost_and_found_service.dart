@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.d
 
 import '../../feedback/network/feedback_service.dart';
 
-class FeedbackLostAndFoundDio extends DioAbstract {
+class LostAndFoundDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.LAF}v1/';
 
@@ -29,7 +29,7 @@ class FeedbackLostAndFoundDio extends DioAbstract {
   ];
 }
 
-class FeedbackLostAndFoundPicPostDio extends DioAbstract {
+class LostAndFoundPicPostDio extends DioAbstract {
   @override
   String baseUrl = 'http://121.36.230.111:80';
 
@@ -51,8 +51,8 @@ class FeedbackLostAndFoundPicPostDio extends DioAbstract {
   ];
 }
 
-final feedbackLostAndFoundDio = FeedbackLostAndFoundDio();
-final feedbackLostAndFoundPicPostDio = FeedbackLostAndFoundPicPostDio();
+final lostAndFoundDio = LostAndFoundDio();
+final lostAndFoundPicPostDio = LostAndFoundPicPostDio();
 
 class LostAndFoundService with AsyncTimer {
   static getLostAndFoundPosts({
@@ -66,7 +66,7 @@ class LostAndFoundService with AsyncTimer {
   }) async {
     try {
       Options requestOptions = new Options(headers: {"history": history});
-      var res = await feedbackLostAndFoundDio.get(
+      var res = await lostAndFoundDio.get(
           keyword != null
               ? 'sort/search'
               : (category != '全部'
@@ -96,7 +96,7 @@ class LostAndFoundService with AsyncTimer {
     required OnFailure onFailure,
   }) async {
     try {
-      var response = await feedbackLostAndFoundDio.get(
+      var response = await lostAndFoundDio.get(
         'laf/get?id=${id}',
       );
       var post = LostAndFoundPost.fromJson(response.data['result']);
@@ -114,7 +114,7 @@ class LostAndFoundService with AsyncTimer {
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('polish', () async {
       try {
-        await feedbackLostAndFoundDio.post('record/polish',
+        await lostAndFoundDio.post('record/polish',
             formData: FormData.fromMap({'id': id, 'user': user}));
         onSuccess.call();
       } on DioException catch (e) {
@@ -130,7 +130,7 @@ class LostAndFoundService with AsyncTimer {
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('deleteLostAndFoundPost', () async {
       try {
-        await feedbackLostAndFoundDio.post('laf/deletelaf',
+        await lostAndFoundDio.post('laf/deletelaf',
             formData: FormData.fromMap({'id': id}));
         onSuccess.call();
       } on DioException catch (e) {
@@ -147,7 +147,7 @@ class LostAndFoundService with AsyncTimer {
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('locationAddRecord', () async {
       try {
-        await feedbackLostAndFoundDio.post('record/addrecord',
+        await lostAndFoundDio.post('record/addrecord',
             formData: FormData.fromMap({'yyyymmdd': yyyymmdd, 'user': user}));
         onSuccess.call();
       } on DioException catch (e) {
@@ -164,7 +164,7 @@ class LostAndFoundService with AsyncTimer {
     required OnFailure onFailure,
   }) async {
     try {
-      var res = await feedbackLostAndFoundDio.get(
+      var res = await lostAndFoundDio.get(
         'record/recordnum',
         queryParameters: {
           'yyyymmdd': yyyymmdd,
@@ -207,7 +207,7 @@ class LostAndFoundService with AsyncTimer {
             formData.fields.addAll([MapEntry('images', images[i])]);
           }
         }
-        await feedbackLostAndFoundDio.post('post', formData: formData);
+        await lostAndFoundDio.post('post', formData: formData);
         onSuccess.call();
       } on DioException catch (e) {
         onFailure(e);
