@@ -4,14 +4,11 @@ import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 
-class LostAndFoundModel2 with ChangeNotifier{
-  Map<String, List<LostAndFoundPost>> postList = {
-    '失物招领' : [],
-    '寻物启事' : []
-  };
+class LostAndFoundModel2 with ChangeNotifier {
+  Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事': []};
 
   String currentType = '失物招领';
 
@@ -50,17 +47,17 @@ class LostAndFoundModel2 with ChangeNotifier{
     required String category,
     String? keyword,
     int? num }) async{
-    await FeedbackService.getLostAndFoundPosts(
+    await LostAndFoundService.getLostAndFoundPosts(
       type: type,
       keyword: keyword,
       category: category,
       num: num ?? 10,
-      onSuccess: (list) async{
-        if(list.isEmpty){
+      onSuccess: (list) async {
+        if (list.isEmpty) {
           ToastProvider.cancelAll();
           ToastProvider.running('没有更多内容了');
-        }else{
-          for(LostAndFoundPost item in list){
+        } else {
+          for (LostAndFoundPost item in list) {
             if(item.coverPhotoPath != null){
               if(_imageSizeCache[item.coverPhotoPath] != null)
                 item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];

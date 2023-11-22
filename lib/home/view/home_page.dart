@@ -42,7 +42,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     pages
       ..add(WPYPage())
-      //..add(LostAndFoundHomePage())
       ..add(FeedbackHomePage(key: feedbackKey))
       ..add(ProfilePage());
     _tabController = TabController(

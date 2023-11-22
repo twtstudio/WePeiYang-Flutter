@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
-import '../../../commons/preferences/common_prefs.dart';
-import '../../../commons/util/text_util.dart';
-import '../../../commons/widgets/loading.dart';
-import '../../../generated/l10n.dart';
-import '../../../main.dart';
-import '../../feedback_router.dart';
-import '../image_view/local_image_view_page.dart';
 
 class NewLostAndFoundPostProvider {
   String title = "";
@@ -83,12 +82,12 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     ToastProvider.running("创建中...");
     _showLoading();
     if (dataModel.images.isNotEmpty) {
-      FeedbackService.postLostAndFoundPic(
+      LostAndFoundService.postLostAndFoundPic(
           images: dataModel.images,
           onResult: (images) {
             dataModel.images.clear();
             if (dataModel.check) {
-              FeedbackService.sendLostAndFoundPost(
+              LostAndFoundService.sendLostAndFoundPost(
                   author: CommonPreferences.lakeNickname.value,
                   type: selectTypeText[typeNotifier.value],
                   category: categoryNotifier.value,
@@ -117,7 +116,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             ToastProvider.error('发送图片失败或图片不合规\n${e.error.toString()}');
           });
     } else {
-      FeedbackService.sendLostAndFoundPost(
+      LostAndFoundService.sendLostAndFoundPost(
         author: CommonPreferences.lakeNickname.value,
         type: selectTypeText[typeNotifier.value],
         category: categoryNotifier.value,

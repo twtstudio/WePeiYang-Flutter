@@ -15,8 +15,8 @@ import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
-import 'auth/view/message/message_router.dart';
 import 'auth/network/message_service.dart';
+import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
@@ -37,6 +37,7 @@ import 'feedback/network/feedback_service.dart';
 import 'feedback/network/post.dart';
 import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
+import 'lost_and_found/module/lost_and_found_providers.dart';
 import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
@@ -244,6 +245,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ...scheduleProviders,
         ...studyroomProviders,
         ...feedbackProviders,
+        ...lostAndFoundProviders,
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();

@@ -11,13 +11,12 @@ import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_notifier.dart';
-import 'package:we_pei_yang_flutter/feedback/view/lost_and_found_page/lost_and_found_search_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_notifier.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-
-import '../lake_home_page/lake_notifier.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -139,7 +138,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     var searchBar = InkWell(
       onTap: () {
         context.read<LostAndFoundModel2>().currentType = widget.type;
-        Navigator.pushNamed(context, FeedbackRouter.lostAndFoundSearch);
+        Navigator.pushNamed(context, LostAndFoundRouter.lostAndFoundSearch);
       },
       child: Container(
         height: searchBarHeight,
@@ -310,8 +309,14 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                         int index) =>
                                     InkWell(
                                         onTap: () {
-                                          Tuple2 detailTuple = Tuple2(tuple.item1[index].id, widget.findOwner);
-                                          Navigator.pushNamed(context, FeedbackRouter.lostAndFoundDetailPage, arguments: detailTuple);
+                                          Tuple2 detailTuple = Tuple2(
+                                              tuple.item1[index].id,
+                                              widget.findOwner);
+                                          Navigator.pushNamed(
+                                              context,
+                                              LostAndFoundRouter
+                                                  .lostAndFoundDetailPage,
+                                              arguments: detailTuple);
                                         },
                                         child: Card(
                                           elevation: 3,

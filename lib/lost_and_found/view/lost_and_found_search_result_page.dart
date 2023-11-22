@@ -6,17 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-
-import '../../../commons/util/toast_provider.dart';
-import '../../network/lost_and_found_post.dart';
-import 'lost_and_found_detail_page.dart';
-import 'lost_and_found_home_page.dart';
-import 'lost_and_found_search_notifier.dart';
+import 'package:we_pei_yang_flutter/home/view/lost_and_found_home_page.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_detail_page.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
 
 class LostAndFoundSearchResultPage extends StatefulWidget {
   final LostAndFoundSearchResultPageArgs args;
+
   LostAndFoundSearchResultPage(this.args);
 
   @override

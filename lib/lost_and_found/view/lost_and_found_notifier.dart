@@ -11,17 +11,16 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/feedback/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 
 class LostAndFoundModel with ChangeNotifier {
-  Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事' : []
-  };
+  Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事': []};
 
   Map<String, LostAndFoundSubPageStatus> lostAndFoundSubPageStatus = {
-    '失物招领' : LostAndFoundSubPageStatus.unload,
-    '寻物启事' : LostAndFoundSubPageStatus.unload
+    '失物招领': LostAndFoundSubPageStatus.unload,
+    '寻物启事': LostAndFoundSubPageStatus.unload
   };
 
   Map<String, RefreshController> refreshController = {
@@ -54,18 +53,18 @@ class LostAndFoundModel with ChangeNotifier {
     required String category,
     String? keyword,
     int? num }) async{
-    await FeedbackService.getLostAndFoundPosts(
-        type: type,
-        keyword: keyword,
-        category: category,
-        num: num ?? 10,
-        onSuccess: (list) async{
-          if(list.isEmpty){
-            ToastProvider.cancelAll();
-            ToastProvider.running('没有更多内容了');
-          }else{
-            for(LostAndFoundPost item in list){
-              if(item.coverPhotoPath != null){
+    await LostAndFoundService.getLostAndFoundPosts(
+      type: type,
+      keyword: keyword,
+      category: category,
+      num: num ?? 10,
+      onSuccess: (list) async {
+        if (list.isEmpty) {
+          ToastProvider.cancelAll();
+          ToastProvider.running('没有更多内容了');
+        } else {
+          for (LostAndFoundPost item in list) {
+            if(item.coverPhotoPath != null){
                 if(_imageSizeCache[item.coverPhotoPath] != null)
                   item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
                 else{
@@ -109,23 +108,24 @@ class LostAndFoundModel with ChangeNotifier {
       String text = clipboardData.text!.trim();
       final id = text.find(r"wpy://school_project/(\d*)");
       if (id.isNotEmpty) {
-          FeedbackService.getLostAndFoundPostDetail(
-              id: int.parse(id),
-              onResult: (post) {
-                showDialog<bool>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return LAFWeKoDialog(
-                      post: post,
-                      onConfirm: () => Navigator.pop(context, true),
-                      onCancel: () => Navigator.pop(context, true),
-                    );
-                  },
+        LostAndFoundService.getLostAndFoundPostDetail(
+            id: int.parse(id),
+            onResult: (post) {
+              showDialog<bool>(
+                context: context,
+                builder: (BuildContext context) {
+                  return LAFWeKoDialog(
+                    post: post,
+                    onConfirm: () => Navigator.pop(context, true),
+                    onCancel: () => Navigator.pop(context, true),
+                  );
+                },
                 ).then((confirm) {
                   Tuple2 tuple = Tuple2(int.parse(id), post.type == '失物招领' ? true : false);
                   if (confirm != null && confirm) {
-                    Navigator.pushNamed(context, FeedbackRouter.lostAndFoundDetailPage,
-                        arguments: tuple);
+                    Navigator.pushNamed(
+                      context, LostAndFoundRouter.lostAndFoundDetailPage,
+                      arguments: tuple);
                     CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
                   } else {
                     CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
