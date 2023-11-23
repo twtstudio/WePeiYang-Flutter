@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -54,12 +54,12 @@ class TodayCoursesWidget extends StatelessWidget {
     todayPairs.sort(
         (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
     var height = todayPairs.length * 90.h;
-    //if (todayPairs.length > 3) height = 270.h;
+    //if (todayPairs.length > 3) height = 270.h; 此注释为了在多于三节课的时候显示全部课程。
     return SizedBox(
       height: height,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 30.w),
         itemCount: todayPairs.length,
         itemBuilder: (context, i) {
