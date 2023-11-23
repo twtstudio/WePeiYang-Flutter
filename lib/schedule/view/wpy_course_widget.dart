@@ -54,7 +54,7 @@ class TodayCoursesWidget extends StatelessWidget {
     todayPairs.sort(
         (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
     var height = todayPairs.length * 90.h;
-    if (todayPairs.length > 3) height = 270.h;
+    //if (todayPairs.length > 3) height = 270.h;
     return SizedBox(
       height: height,
       child: ListView.builder(
