@@ -26,27 +26,29 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
           bottom: false,
           child: Scaffold(
               appBar: LostAndFoundAppBar(
-                height: 100,
+                height: 97.h,
                 leading: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 25, bottom: 13),
+                  padding: EdgeInsetsDirectional.only(start: 19.w,bottom: 9.h),
                   child: WButton(
                     child: WpyPic(
                       'assets/svg_pics/laf_butt_icons/back.svg',
                       width: 30.w,
                       height: 30.w,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
 
                     ///to do
                   ),
                 ),
                 action: Padding(
-                  padding: EdgeInsetsDirectional.only(end: 25, bottom: 14),
+                  padding: EdgeInsetsDirectional.only(end: 22.w, bottom: 10.h),
                   child: WButton(
                     child: WpyPic(
                       'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
-                      width: 23.w,
-                      height: 23.w,
+                      width: 24.w,
+                      height: 24.w,
                     ),
                     onPressed: () {},
 
@@ -54,18 +56,16 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   ),
                 ),
                 title: Padding(
-                  padding: EdgeInsets.only(bottom: 3.5.h),
+                  padding: EdgeInsets.only(bottom: 5.h),
                   child: TabBar(
-                    ///TODO
-                    ///没找到white060的颜色
-                    labelStyle: TextUtil.base.bold.sp(20).white,
+                    labelStyle: TextUtil.base.sp(20).white.w600,
                     unselectedLabelStyle: TextUtil.base.normal.sp(20).white,
                     labelPadding:
-                        EdgeInsetsDirectional.only(start: 55.w, end: 55.w),
+                        EdgeInsetsDirectional.only(start: 52.w, end: 50.w),
                     isScrollable: true,
                     indicatorSize: TabBarIndicatorSize.label,
                     indicatorColor: Colors.white,
-                    indicatorWeight: 1.9.h,
+                    indicatorWeight: 2.h,
                     tabs: [
                       Text('寻物'),
                       Text('寻主'),
@@ -92,25 +92,22 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   Positioned(
                     bottom: ScreenUtil().bottomBarHeight + 90.h,
                     right: 20.w,
-                    child: Hero(
-                      tag: "addNewPost",
-                      child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          child: Container(
-                            height: 72.r,
-                            width: 72.r,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/add_post.png"),
-                              ),
+                    child: InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: Container(
+                          height: 52.r,
+                          width: 52.r,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/add_post.png"),
                             ),
                           ),
-                          onTap: () {
-                            Navigator.pushNamed(context,
-                                LostAndFoundRouter.lostAndFoundPostPage);
-                          }),
-                    ),
+                        ),
+                        onTap: () {
+                          Navigator.pushNamed(context,
+                              LostAndFoundRouter.lostAndFoundPostPage);
+                        }),
                   )
                 ],
               )),

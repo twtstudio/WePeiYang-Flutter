@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -172,33 +173,33 @@ class LAFWeKoDialog extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 30),
+          margin:  EdgeInsets.symmetric(horizontal: 30.w),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
               color: ColorUtil.backgroundColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: 20.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
+                padding: EdgeInsets.symmetric(horizontal: 50.w),
                 child: Text('有人给你分享了微口令!',
                     style: TextUtil.base.black2A.regular.sp(16).NotoSansSC),
               ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 child: Text(post.title,
                     style: TextUtil.base.black2A.bold.sp(17).NotoSansSC),
               ),
               if (post.coverPhotoPath != null)
                 WpyPic(
                   post.coverPhotoPath!,
-                  height: 150,
-                  width: 150,
+                  height: 150.h,
+                  width: 150.w,
                   fit: BoxFit.cover,
                 ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 10.h),
                 child: Text(
                   post.text,
                   style: TextUtil.base.grey6C.regular.sp(14).NotoSansSC,
@@ -213,23 +214,23 @@ class LAFWeKoDialog extends StatelessWidget {
                   overlayColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return Color.fromRGBO(79, 88, 107, 1);
+                      return ColorUtil.blue79;
                     return ColorUtil.backgroundColor;
                   }),
                   backgroundColor:
                   MaterialStateProperty.all(ColorUtil.backgroundColor),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
+                      borderRadius: BorderRadius.circular(10.r))),
                 ),
                 child: Container(
-                  margin: const EdgeInsets.all(7),
+                  margin: EdgeInsets.all(7.r),
                   child: Text(
                     '查看详情',
                     style: TextUtil.base.black2A.regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 15.h),
             ],
           ),
         ),

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -89,7 +90,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: LostAndFoundDetailAppBar(
-              height: 65,
+              height: 65.h,
               leading: Padding(
                 padding: EdgeInsets.only(top: 46.h, left: 16.w),
                 child: Align(
@@ -201,11 +202,11 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                   Container(
                     child: Image.asset(
                       'assets/images/tip.png',
-                      width: 30,
-                      height: 30,
+                      width: 30.w,
+                      height: 30.h,
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 15.h),
                   Flexible(
                     child: Text(
                       isLimited
@@ -219,7 +220,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
@@ -232,24 +233,21 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(110, 40)),
+                                  Size(110.w, 40.h)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
                             ),
                             child: Text(
                               '取消',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextUtil.base.bold.black00,
                             ),
                           ),
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 20.h),
                         Flexible(
                           child: ElevatedButton(
                             onPressed: phoneNum != '' || isLimited
@@ -288,21 +286,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(110, 40)),
+                                  Size(110.w, 40.h)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromRGBO(44, 126, 223, 1)),
+                                  ColorUtil.blue2CColor),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
                             ),
                             child: Text(
                               '确定',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: TextUtil.base.normal.white,
                             ),
                           ),
                         ),
@@ -333,19 +329,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                   Container(
                     child: Image.asset(
                       'assets/images/tip.png',
-                      width: 30,
-                      height: 30,
+                      width: 30.w,
+                      height: 30.h,
                     ),
                   ),
-                  SizedBox(height: 15),
+                  SizedBox(height: 15.h),
                   Flexible(
                     child: Text(
                       '确定要删除吗？',
-                      style: TextStyle(fontSize: 14),
+                      style: TextUtil.base.normal.sp(14),
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 20.h),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
@@ -358,20 +354,17 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(110, 40)),
+                                  Size(110.w, 40.h)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
                             ),
                             child: Text(
                               '取消',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextUtil.base.bold.black00,
                             ),
                           ),
                         ),
@@ -392,19 +385,17 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110, 40)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color.fromRGBO(44, 126, 223, 1)),
+                                  ColorUtil.blue2CColor),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
                             ),
                             child: Text(
                               '确定',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: TextUtil.base.normal.white,
                             ),
                           ),
                         ),
@@ -434,19 +425,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
           return Container(
             color: Colors.transparent,
             child: Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+              padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 0),
               child: Container(
                 child: Wrap(
                   children: <Widget>[
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Column(
                         children: [
                           Padding(
-                              padding: EdgeInsets.only(top: 5),
+                              padding: EdgeInsets.only(top: 5.h),
                               child: InkWell(
                                 onTap: () {
                                   String weCo =
@@ -466,23 +457,19 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width,
-                                  height: 30,
+                                  height: 30.h,
                                   alignment: Alignment.center,
                                   child: Text(
                                     '分享',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
+                                    style: TextUtil.base.bold.black00.sp(15),
                                   ),
                                 ),
                               )),
                           Divider(
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor
                           ), // 添加分隔线
                           Padding(
-                            padding: EdgeInsets.only(bottom: 5),
+                            padding: EdgeInsets.only(bottom: 5.h),
                             child: InkWell(
                               onTap: () {
                                 if (isMine) {
@@ -495,12 +482,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 30,
+                                height: 30.h,
                                 alignment: Alignment.center,
                                 child: Text(
                                   isMine ? '删除' : '举报',
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 15.h,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
@@ -514,7 +501,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Card(
                       color: Colors.white.withOpacity(0.9),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: InkWell(
                         onTap: () {
@@ -522,15 +509,11 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 35,
+                          height: 35.h,
                           alignment: Alignment.center,
                           child: Text(
                             '取消',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            style: TextUtil.base.bold.black00.sp(15),
                           ),
                         ),
                       ),
@@ -556,7 +539,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: LostAndFoundDetailAppBar(
-        height: 65,
+        height: 65.h,
         leading: Padding(
           padding: EdgeInsets.only(top: 46.h, left: 16.w),
           child: Align(
@@ -599,7 +582,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
             // body
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 91),
+                padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 91.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -619,20 +602,14 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               children: [
                                 Text(
                                   post.author,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
+                                  style: TextUtil.base.normal.black00.sp(14),
                                 ),
                                 SizedBox(height: 6.h),
                                 Row(
                                   children: [
                                     Text(
                                       _formatDate(post.detailedUploadTime),
-                                      style: TextStyle(
-                                        fontSize: 8,
-                                        color: Color(0xFF909090),
-                                      ),
+                                      style: TextUtil.base.normal.grey90.sp(8),
                                     ),
                                   ],
                                 ),
@@ -642,23 +619,16 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         ),
                         Text(
                           '#MP${post.id.toString().padLeft(6, '0')}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF909090),
-                            fontWeight: FontWeight.w400,
-                          ),
+                          style: TextUtil.base.normal.grey90.sp(12),
                         ),
                       ],
                     ),
                     SizedBox(height: 10),
                     Text(
                       post.title,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: TextUtil.base.w900.sp(17),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 10.h),
                     SizedBox(height: 5.h),
                     (post.coverPhotoPathInDetail.isNotEmpty)
                         ? Padding(
@@ -671,58 +641,45 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(4),
+                          padding: EdgeInsets.all(4.r),
                           decoration: BoxDecoration(
-                            color: Color(0xFFF8F8F8),
-                            borderRadius: BorderRadius.circular(10),
+                            color: ColorUtil.whiteF8Color,
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.all(2),
+                                padding: EdgeInsets.all(2.r),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color:ColorUtil.whiteFFColor,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
                                   '#',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black,
-                                  ),
+                                  style: TextUtil.base.normal.black00.sp(10),
                                 ),
                               ),
                               SizedBox(width: 2.w),
                               Text(
                                 post.category + '  ',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Color(0xFF909090),
-                                ),
+                                style: TextUtil.base.normal.grey90.sp(10),
                               ),
                             ],
                           ),
                         ),
                         Text(
                           '11445次浏览' + '  ',
-                          style: TextStyle(
-                            fontSize: 9,
-                            color: Color(0xFF909090),
-                          ),
+                          style: TextUtil.base.normal.grey90.sp(9),
                         )
                       ],
                     ),
                     SizedBox(height: 28.h),
                     Padding(
-                      padding: EdgeInsets.all(7),
+                      padding: EdgeInsets.all(7.r),
                       child: Text(
                         post.text,
-                        style: TextStyle(
-                          fontSize: 15,
-                          height: 1.5.h,
-                          color: Color.fromRGBO(42, 42, 42, 1),
-                        ),
+                        style: TextUtil.base.normal.black42.sp(15).h(1.5),
                       ),
                     ),
                     SizedBox(height: 45.h),
@@ -732,21 +689,15 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('丢失日期',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600)),
-                          SizedBox(width: 15),
+                              style: TextUtil.base.w600.black00.sp(14)),
+                          SizedBox(width: 15.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(height: 3.h),
                               Text(
                                   "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF2C7EDF),
-                                      fontWeight: FontWeight.w600)),
+                                  style: TextUtil.base.w600.blue2C.sp(14)),
                             ],
                           ),
                         ],
@@ -760,11 +711,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         children: [
                           Text(
                             '丢失地点',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: TextUtil.base.w600.black00.sp(14),
                           ),
                           SizedBox(width: 15.w),
                           Column(
@@ -773,11 +720,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 SizedBox(height: 3.h),
                                 Text(
                                   post.location,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF2C7EDF),
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                  style: TextUtil.base.w600.blue2C.sp(14),
                                 ),
                               ])
                         ],
@@ -794,16 +737,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: Color(0xFF2C7EDF),
-                              borderRadius: BorderRadius.circular(20),
+                              color: ColorUtil.blue2CColor,
+                              borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: WButton(
                               child: Text(
                                 findOwner ? '我遗失的' : '我找到了',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                                style: TextUtil.base.white.sp(16),
                               ),
                               onPressed: _showConfirmationDialog,
                             )),
@@ -815,12 +755,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: polished ? Colors.grey[200] : Colors.white,
-                              borderRadius: BorderRadius.circular(20),
+                              color: polished ? Colors.grey[200] : ColorUtil.whiteFFColor,
+                              borderRadius: BorderRadius.circular(20.r),
                               border: polished
                                   ? null
                                   : Border.all(
-                                      color: Color(0xFF2C7EDF),
+                                      color: ColorUtil.blue2CColor,
                                       width: 1.w,
                                     ),
                             ),
@@ -840,12 +780,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   ),
                                   Text(
                                     polished ? '已擦亮' : '擦亮',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: polished
-                                          ? Colors.grey
-                                          : Color(0xFF2C7EDF),
-                                    ),
+                                    style: polished?
+                                    TextUtil.base.grey.sp(16):
+                                    TextUtil.base.blue2C.sp(16)
+                                    ,
                                   ),
                                 ],
                               ),
@@ -966,7 +904,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                             [widget.imageUrl], 1, 0, true),
                                       ),
                                   child: image),
-                              Positioned(top: 8, left: 8, child: TextPod('长图')),
+                              Positioned(top: 8.h, left: 8.w, child: TextPod('长图')),
                               Align(
                                   alignment: Alignment.bottomCenter,
                                   child: InkWell(
@@ -976,7 +914,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                         });
                                       },
                                       child: Container(
-                                          height: 60,
+                                          height: 60.h,
                                           width: double.infinity,
                                           decoration: BoxDecoration(
                                             gradient: LinearGradient(
@@ -992,7 +930,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
                                               children: [
-                                                SizedBox(width: 10),
+                                                SizedBox(width: 10.w),
                                                 Text(
                                                   '点击展开\n',
                                                   style: TextUtil
@@ -1008,10 +946,10 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                                             BorderRadius.only(
                                                                 topLeft: Radius
                                                                     .circular(
-                                                                        16))),
+                                                                        16.r))),
                                                     padding:
                                                         EdgeInsets.fromLTRB(
-                                                            12, 4, 10, 6),
+                                                            12.w, 4.h, 10.w, 6.h),
                                                     child: Text(
                                                       '长图模式',
                                                       style: TextUtil
@@ -1034,9 +972,9 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                     )
               : Icon(
                   Icons.refresh,
-                  color: Colors.black54,
+                  color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? Colors.transparent : Colors.black12,
+          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.black12,
         );
       },
     );

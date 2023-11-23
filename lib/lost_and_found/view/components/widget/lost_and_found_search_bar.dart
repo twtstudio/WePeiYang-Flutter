@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -49,7 +50,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
         maxHeight: 30,
       ),
       child: Padding(
-          padding: const EdgeInsets.only(left: 45, right: 12),
+          padding:  EdgeInsets.only(left: 45.w, right: 12.w),
           child: Row(
             children: [
               Expanded(
@@ -63,16 +64,16 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                       hintText: data.recTag == null
                           ? '天大不能没有微北洋'
                           : '暂无相关内容',
-                      contentPadding: const EdgeInsets.only(right: 6),
+                      contentPadding: EdgeInsets.only(right: 6.w),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(1080),
+                        borderRadius: BorderRadius.circular(1080.w),
                       ),
                       fillColor: ColorUtil.backgroundColor,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
-                        size: 19,
+                        size: 19.w,
                         color: ColorUtil.grey108,
                       ),
                     ),
@@ -88,7 +89,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                   ),
                 ),
               ),
-              SizedBox(width: 6),
+              SizedBox(width: 6.w),
             ],
           )),
     );
@@ -96,10 +97,10 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
     return Column(
       children: [
         Container(
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
             child: searchInputField,
-            padding: EdgeInsets.symmetric(vertical: 6)),
-        SizedBox(height: 8),
+            padding: EdgeInsets.symmetric(vertical: 6.h)),
+        SizedBox(height: 8.w),
       ],
     );
   }

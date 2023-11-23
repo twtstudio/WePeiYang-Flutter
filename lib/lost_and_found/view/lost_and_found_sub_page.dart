@@ -144,17 +144,17 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
         height: searchBarHeight,
         decoration: BoxDecoration(
             color: ColorUtil.greyF7F8Color,
-            borderRadius: BorderRadius.all(Radius.circular(45))),
+            borderRadius: BorderRadius.all(Radius.circular(45.r))),
         child: Row(children: [
-          SizedBox(width: 14.w),
+          SizedBox(width: 10.w),
           Container(
             child: WpyPic(
               'assets/svg_pics/laf_butt_icons/search.svg',
-              height: 21.sp,
-              width: 21.sp,
+              height: 18.h,
+              width: 18.w,
             ),
           ),
-          SizedBox(width: 12),
+          SizedBox(width: 5.w),
           Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(
                     children: [
@@ -324,7 +324,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                               .withOpacity(0.1),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(8.0),
+                                                BorderRadius.circular(8.r),
                                             side: const BorderSide(
                                                 color: Colors.transparent,
                                                 width: 0.0),
@@ -337,29 +337,53 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                           .coverPhotoPath ==
                                                       null
                                                   ? Padding(
-                                                    padding: EdgeInsetsDirectional.only(bottom: 8, start: 3, end: 3, top: 7),
-                                                    child: SizedBox(
-                                                        width: double.infinity,
-                                                        child: Card(
-                                                          child: Padding(
-                                                            padding: EdgeInsets.all(
-                                                                14), // 设置所有方向的内边距为15个像素
-                                                            child: Text(
-                                                              tuple.item1[index]
-                                                                  .text.length > 32
-                                                                  ? tuple.item1[index].text.substring(0,31) + '……'
-                                                                  : tuple.item1[index].text,
-                                                              style: TextUtil.base.w400.grey89.sp(14).h(1.1).NotoSansSC
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(
+                                                                  bottom: 8.h,
+                                                                  start: 3.w,
+                                                                  end: 3.w,
+                                                                  top: 7.h),
+                                                      child: SizedBox(
+                                                          width:
+                                                              double.infinity,
+                                                          child: Card(
+                                                            child: Padding(
+                                                              padding: EdgeInsets
+                                                                  .all(14
+                                                                      .w), // 设置所有方向的内边距为15个像素
+                                                              child: Text(
+                                                                  tuple.item1[index].text.length >
+                                                                          32
+                                                                      ? tuple.item1[index].text.substring(
+                                                                              0,
+                                                                              31) +
+                                                                          '……'
+                                                                      : tuple
+                                                                          .item1[
+                                                                              index]
+                                                                          .text,
+                                                                  style: TextUtil
+                                                                      .base
+                                                                      .w400
+                                                                      .grey89
+                                                                      .sp(14)
+                                                                      .h(1.1)
+                                                                      .NotoSansSC),
                                                             ),
-                                                          ),
-                                                          elevation: 0,
-                                                          color:
-                                                              Color(0xfff8f8f8),
-                                                        )),
-                                                  )
+                                                            elevation: 0,
+                                                            color: ColorUtil
+                                                                .whiteF8Color,
+                                                          )),
+                                                    )
                                                   : Container(
                                                       padding:
-                                                        EdgeInsetsDirectional.only(start: 11, end: 11, bottom: 7, top: 7),
+                                                          EdgeInsetsDirectional
+                                                              .only(
+                                                                  start: 11.w,
+                                                                  end: 11.w,
+                                                                  bottom: 7.h,
+                                                                  top: 7.h),
                                                       child: LayoutBuilder(
                                                         builder: (context,
                                                             constrains) {
@@ -371,7 +395,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                                   .coverPhotoSize
                                                                   ?.width
                                                                   .toDouble() ??
-                                                              1;
+                                                              1.r;
                                                           final height = tuple
                                                                   .item1[index]
                                                                   .coverPhotoSize
@@ -381,8 +405,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                           return ClipRRect(
                                                             borderRadius:
                                                                 BorderRadius
-                                                                    .circular(
-                                                                        10.0), // 设置圆角半径为10.0
+                                                                    .circular(10
+                                                                        .r), // 设置圆角半径为10.0
                                                             child: Container(
                                                               width: maxWidth,
                                                               child: WpyPic(
@@ -411,38 +435,47 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       )),
                                               Padding(
                                                 padding:
-                                                    EdgeInsetsDirectional.only(start: 12, end: 12),
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 12.w, end: 12.w),
                                                 child: Text(
-                                                  tuple.item1[index].title,
-                                                  style: TextUtil.base.w600.black2A.sp(15).NotoSansSC
-                                                ),
+                                                    tuple.item1[index].title,
+                                                    style: TextUtil
+                                                        .base.w600.black2A
+                                                        .sp(15)
+                                                        .NotoSansSC),
                                               ),
                                               Padding(
                                                 padding:
-                                                    EdgeInsetsDirectional.only(start: 12, end: 25, bottom: 18, top: 10),
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 12.w,
+                                                        end: 25.w,
+                                                        bottom: 18.h,
+                                                        top: 10.h),
                                                 child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: <Widget>[
                                                     Text(
-                                                      _timeAgo(tuple
-                                                          .item1[index]
-                                                          .detailedUploadTime),
-                                                      style: TextUtil.base.w400.grey89.sp(10).NotoSansSC
-                                                    ),
+                                                        _timeAgo(tuple
+                                                            .item1[index]
+                                                            .detailedUploadTime),
+                                                        style: TextUtil
+                                                            .base.w400.grey89
+                                                            .sp(10)
+                                                            .NotoSansSC),
                                                     Row(
                                                       children: <Widget>[
                                                         SvgPicture.asset(
                                                             'assets/svg_pics/icon_flame.svg',
-                                                            width: 16.0,
-                                                            height: 16.0),
+                                                            width: 14.w,
+                                                            height: 14.h),
                                                         Text(
                                                           '${tuple.item1[index].hot.toString()}',
-                                                          style: TextStyle(
-                                                            color: Color(
-                                                                0xff898989),
-                                                          ),
+                                                          style: TextUtil
+                                                              .base.w400.greyHot
+                                                              .sp(10)
+                                                              .NotoSansSC,
                                                         ),
                                                       ],
                                                     ),
@@ -463,12 +496,14 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
 }
 
 double get searchBarHeight => 30.h;
+
 double get widgetPadding => 12.h;
 
 class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
   final String? tag;
+
   const LostAndFoundTag({
     Key? key,
     required this.type,
@@ -523,9 +558,9 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
               );
         },
         child: Container(
-          height: 28.w,
+          height: 28.h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16.r),
             color: widget.category ==
                     context
                         .read<LostAndFoundModel>()
@@ -539,8 +574,8 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                         context
                             .read<LostAndFoundModel>()
                             .currentCategory[widget.type]
-                    ? TextUtil.base.normal.PingFangSC.w400.sp(8.5.sp).blue2C
-                    : TextUtil.base.normal.PingFangSC.w400.sp(8.5.sp).black2A),
+                    ? TextUtil.base.normal.PingFangSC.w400.sp(10.sp).blue2C
+                    : TextUtil.base.normal.PingFangSC.w400.sp(10.sp).black2A),
           ),
         ),
       ),

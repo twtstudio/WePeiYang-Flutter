@@ -153,7 +153,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 icon: Icon(Icons.keyboard_arrow_left,
-                    color: Color(0XFF62677B), size: 36),
+                    color: ColorUtil.grey6267Color, size: 36.r),
                 onPressed: () {
                   var dataModel = context.read<NewLostAndFoundPostProvider>();
                   dataModel.clear();
@@ -169,23 +169,23 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                     });
                   },
                   child: Container(
-                      width: 36,
-                      height: 36,
+                      width: 36.w,
+                      height: 36.h,
                       child: Column(children: [
-                        const SizedBox(height: 11),
+                         SizedBox(height: 11.h),
                         Image.asset("assets/images/post_swap.png"),
                         Text(
                           texts[typeNotifier.value],
                           style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
                         )
                       ]))),
-              const SizedBox(width: 10)
+               SizedBox(width: 10.w)
             ],
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0),
         body: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               LostAndFoundTitleInputField(),
               LostAndFoundContentInputField(),
@@ -194,22 +194,22 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                   alignment: Alignment.centerLeft,
                   child: Column(
                     children: [
-                      const SizedBox(height: 27),
+                      SizedBox(height: 27.h),
                       SelectDateField(typeNotifier: typeNotifier),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       InputLocationField(typeNotifier: typeNotifier),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                       InputPhoneField()
                     ],
                   )),
               Container(
-                  height: 150,
+                  height: 150.h,
                   alignment: Alignment.center,
                   child:
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     selectCategoryDialog(context),
                     SelectCategoryButton(),
-                    const SizedBox(width: 8),
+                     SizedBox(width: 8.w),
                     LostAndFoundPostButton()
                   ]))
             ])));
@@ -230,18 +230,18 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     return Visibility(
         visible: _showSelectDialog,
         child: Container(
-            margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            height: 120,
-            width: 86,
+            margin: EdgeInsets.fromLTRB(0, 30.h, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 5.h, 0, 5.h),
+            height: 120.h,
+            width: 86.w,
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                color: ColorUtil.whiteFFColor,
+                borderRadius: BorderRadius.circular(10.r),
                 boxShadow: [
                   BoxShadow(
-                      offset: Offset(0, 3),
-                      blurRadius: 6,
-                      color: Color.fromARGB(64, 0, 0, 0))
+                      offset: Offset(0, 3.r),
+                      blurRadius: 6.r,
+                      color: ColorUtil.blackOpacityA64)
                 ]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -275,9 +275,9 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all(
-                    const Color.fromARGB(255, 44, 126, 223)),
+                    ColorUtil.blue2CColor),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)))),
+                    borderRadius: BorderRadius.circular(16.r)))),
             onPressed: () async {
               if (tapAble) {
                 tapAble = false;
@@ -348,11 +348,11 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
         });
 
     return Container(
-        padding: const EdgeInsets.fromLTRB(0, 15, 0, 14),
+        padding:  EdgeInsets.fromLTRB(0, 15.h, 0, 14.h),
         child: Column(children: [
           Row(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: [inputField, SizedBox(width: 3), textCounter]),
+              children: [inputField, SizedBox(width: 3.w), textCounter]),
           Container(
               margin: EdgeInsets.only(top: 16.h),
               color: ColorUtil.greyEAColor,
@@ -423,9 +423,9 @@ class _LostAndFoundContentInputFieldState
                 : 100),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           inputField,
-          SizedBox(height: 30),
+          SizedBox(height: 30.h),
           bottomTextCounter,
-          SizedBox(height: 27)
+          SizedBox(height: 27.h)
         ]));
   }
 }
@@ -499,14 +499,14 @@ class _LostAndFoundImagesGridViewState
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: Colors.black26),
-              borderRadius: BorderRadius.all(Radius.circular(8))),
+              border: Border.all(width: 1.w, color: Colors.black26),
+              borderRadius: BorderRadius.all(Radius.circular(8.r))),
           child: ClipRRect(
             child: Image.file(
               data[index],
               fit: BoxFit.cover,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(8.r)),
           ),
         ),
       ),
@@ -516,13 +516,13 @@ class _LostAndFoundImagesGridViewState
           child: InkWell(
               onTap: onTap,
               child: Container(
-                  width: 20,
-                  height: 20,
+                  width: 20.w,
+                  height: 20.h,
                   decoration: BoxDecoration(
                     color: Colors.black26,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomRight: Radius.circular(8)),
+                        topLeft: Radius.circular(8.r),
+                        bottomRight: Radius.circular(8.r)),
                   ),
                   child: Icon(
                     Icons.close,
@@ -619,31 +619,31 @@ class _SelectDateFieldState extends State<SelectDateField> {
     }
 
     return Container(
-        width: 195,
-        height: 36,
+        width: 195.w,
+        height: 36.h,
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 240, 240, 240),
-            borderRadius: BorderRadius.circular(16)),
+            color: ColorUtil.white240,
+            borderRadius: BorderRadius.circular(16.r)),
         child: InkWell(
             onTap: () => _selectDate(context),
             child: Container(
-                width: 195,
-                height: 36,
+                width: 195.w,
+                height: 36.h,
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(250, 240, 240, 240),
-                    borderRadius: BorderRadius.circular(16)),
+                    color: ColorUtil.white240,
+                    borderRadius: BorderRadius.circular(16.r)),
                 child: Stack(children: [
                   Container(
-                      width: 17,
-                      height: 17,
-                      margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+                      width: 17.w,
+                      height: 17.h,
+                      margin: EdgeInsets.fromLTRB(20.w, 9.5.r, 0, 0),
                       child: selectedDate != null
                           ? Image.asset("assets/images/icon_clock_filled.png",
                               fit: BoxFit.fill)
                           : Image.asset("assets/images/icon_clock.png",
                               fit: BoxFit.fill)),
                   Container(
-                      margin: EdgeInsets.fromLTRB(45, 6, 0, 0),
+                      margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0),
                       child: selectedDate != null
                           ? Text(
                               "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
@@ -733,20 +733,20 @@ class _InputLocationFieldState extends State<InputLocationField> {
         cursorColor: ColorUtil.profileBackgroundColor);
 
     return Container(
-        width: 195,
-        height: 36,
+        width: 195.w,
+        height: 36.h,
         decoration: BoxDecoration(
-            color: Color.fromARGB(250, 240, 240, 240),
+            color: ColorUtil.white240,
             borderRadius: BorderRadius.circular(16)),
         child: Stack(children: [
           Container(
-              width: 17,
-              height: 17,
-              margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+              width: 17.w,
+              height: 17.h,
+              margin: EdgeInsets.fromLTRB(20.w, 9.5.h, 0, 0),
               child: !(isFilled || isFocused)
                   ? Image.asset("assets/images/icon_location.png")
                   : Image.asset("assets/images/icon_location_fill.png")),
-          Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
+          Container(margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
         ]));
   }
 }
@@ -823,20 +823,20 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         cursorColor: ColorUtil.profileBackgroundColor);
 
     return Container(
-        width: 195,
-        height: 36,
+        width: 195.w,
+        height: 36.h,
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 240, 240, 240),
-            borderRadius: BorderRadius.circular(16)),
+            color: ColorUtil.white240,
+            borderRadius: BorderRadius.circular(16.r)),
         child: Stack(children: [
           Container(
-              width: 17,
-              height: 17,
-              margin: EdgeInsets.fromLTRB(20, 9.5, 0, 0),
+              width: 17.w,
+              height: 17.h,
+              margin: EdgeInsets.fromLTRB(20.w, 9.5.h, 0, 0),
               child: !(isFilled || isFocused)
                   ? Image.asset("assets/images/icon_smile_chat.png")
                   : Image.asset("assets/images/icon_smile_chat_fill.png")),
-          Container(margin: EdgeInsets.fromLTRB(45, 6, 0, 0), child: inputField)
+          Container(margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
         ]));
   }
 }
