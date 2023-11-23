@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
@@ -35,7 +36,7 @@ class UpdateFailureDialog extends StatelessWidget {
     }
 
     void goToWeb() {
-      launchUrl(Uri.parse("https://mobile.twt.edu.cn/wpy/index.html"));
+      launchUrlString("https://mobile.twt.edu.cn/wpy/index.html", mode: LaunchMode.externalNonBrowserApplication);
     }
 
     Widget buttons;
@@ -44,66 +45,66 @@ class UpdateFailureDialog extends StatelessWidget {
       buttons = Column(
         children: InstallManager.canGoToMarket
             ? [
-                WbyDialogStandardTwoButton(
-                  first: goToWeb,
-                  second: goToMarket,
-                  firstText: '前往网页下载',
-                  secondText: '前往应用市场',
-                  secondType: ButtonType.light,
-                ),
-                SizedBox(height: size.verticalPadding),
-                WbyDialogButton(
-                  onTap: retry,
-                  text: '重试',
-                  type: ButtonType.dark,
-                  expand: true,
-                ),
-              ]
+          WbyDialogStandardTwoButton(
+            first: goToWeb,
+            second: goToMarket,
+            firstText: '前往网页下载',
+            secondText: '前往应用市场',
+            secondType: ButtonType.light,
+          ),
+          SizedBox(height: size.verticalPadding),
+          WbyDialogButton(
+            onTap: retry,
+            text: '重试',
+            type: ButtonType.dark,
+            expand: true,
+          ),
+        ]
             : [
-                WbyDialogStandardTwoButton(
-                  first: goToWeb,
-                  second: retry,
-                  firstText: '前往网页下载',
-                  secondText: '重试',
-                ),
-              ],
+          WbyDialogStandardTwoButton(
+            first: goToWeb,
+            second: retry,
+            firstText: '前往网页下载',
+            secondText: '重试',
+          ),
+        ],
       );
     } else {
       // 如果不是强制更新，那么就可以现在不更新
       buttons = Column(
         children: InstallManager.canGoToMarket
             ? [
-                WbyDialogStandardTwoButton(
-                  first: goToWeb,
-                  second: goToMarket,
-                  firstText: '前往网页下载',
-                  secondText: '前往应用市场',
-                  secondType: ButtonType.light,
-                ),
-                SizedBox(height: size.verticalPadding),
-                WbyDialogStandardTwoButton(
-                  first: cancel,
-                  second: retry,
-                  firstText: '稍后更新',
-                  secondText: '重试',
-                ),
-              ]
+          WbyDialogStandardTwoButton(
+            first: goToWeb,
+            second: goToMarket,
+            firstText: '前往网页下载',
+            secondText: '前往应用市场',
+            secondType: ButtonType.light,
+          ),
+          SizedBox(height: size.verticalPadding),
+          WbyDialogStandardTwoButton(
+            first: cancel,
+            second: retry,
+            firstText: '稍后更新',
+            secondText: '重试',
+          ),
+        ]
             : [
-                WbyDialogStandardTwoButton(
-                  first: goToWeb,
-                  second: cancel,
-                  firstText: '前往网页下载',
-                  secondText: '稍后更新',
-                  secondType: ButtonType.light,
-                ),
-                SizedBox(height: size.verticalPadding),
-                WbyDialogButton(
-                  onTap: retry,
-                  text: '重试',
-                  type: ButtonType.dark,
-                  expand: true,
-                ),
-              ],
+          WbyDialogStandardTwoButton(
+            first: goToWeb,
+            second: cancel,
+            firstText: '前往网页下载',
+            secondText: '稍后更新',
+            secondType: ButtonType.light,
+          ),
+          SizedBox(height: size.verticalPadding),
+          WbyDialogButton(
+            onTap: retry,
+            text: '重试',
+            type: ButtonType.dark,
+            expand: true,
+          ),
+        ],
       );
     }
 

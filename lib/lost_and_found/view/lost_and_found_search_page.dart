@@ -8,14 +8,13 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
-
-import '../../../commons/widgets/w_button.dart';
-import '../../../commons/widgets/wpy_pic.dart';
-import '../../feedback_router.dart';
-import '../components/widget/lost_and_found_search_bar.dart';
-import 'lost_and_found_search_notifier.dart';
-import 'lost_and_found_search_result_page.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/components/widget/lost_and_found_search_bar.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_result_page.dart';
 
 class LostAndFoundSearchPage extends StatefulWidget {
   @override
@@ -59,10 +58,11 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         _foundSearchHistoryList.unequalAdd(text);
         Navigator.pushNamed(
           context,
-          FeedbackRouter.lostAndFoundSearchResult,
+          LostAndFoundRouter.lostAndFoundSearchResult,
           arguments: LostAndFoundSearchResultPageArgs(
               context.read<LostAndFoundModel2>().currentType,
-              context.read<LostAndFoundModel2>().currentCategory[context.read<LostAndFoundModel2>().currentType]!,
+              context.read<LostAndFoundModel2>().currentCategory[
+                  context.read<LostAndFoundModel2>().currentType]!,
               text),
         ).then((_) {
           Navigator.pop(context);
@@ -167,10 +167,11 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 _foundSearchHistoryList.unequalAdd(list[list.length - index - 1]);
                 Navigator.pushNamed(
                   context,
-                  FeedbackRouter.lostAndFoundSearchResult,
+                  LostAndFoundRouter.lostAndFoundSearchResult,
                   arguments: LostAndFoundSearchResultPageArgs(
                       context.read<LostAndFoundModel2>().currentType,
-                      context.read<LostAndFoundModel2>().currentCategory[context.read<LostAndFoundModel2>().currentType]!,
+                      context.read<LostAndFoundModel2>().currentCategory[
+                          context.read<LostAndFoundModel2>().currentType]!,
                       list[list.length - index - 1]),
                 ).then((_) {
                   Navigator.pop(context);
