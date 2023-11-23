@@ -5,8 +5,8 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_notifier.dart';
-import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_post_page.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_sub_page.dart';
 
 class LostAndFoundHomePage extends StatefulWidget {
@@ -107,10 +107,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                             ),
                           ),
                           onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return LostAndFoundPostPage();
-                            }));
+                            Navigator.pushNamed(context,
+                                LostAndFoundRouter.lostAndFoundPostPage);
                           }),
                     ),
                   )
@@ -132,6 +130,7 @@ class LostAndFoundAppBar extends StatelessWidget
   final Widget action;
   final Widget title;
   final double height;
+
   LostAndFoundAppBar(
       {Key? key,
       required this.leading,
