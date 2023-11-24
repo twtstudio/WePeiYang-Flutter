@@ -69,10 +69,12 @@ class LostAndFoundModel with ChangeNotifier {
                 if(_imageSizeCache[item.coverPhotoPath] != null)
                   item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
                 else{
-                  final httpInput = await HttpInput.createHttpInput(item.coverPhotoPath!);
-                  item.coverPhotoSize = await ImageSizeGetter.getSizeAsync(httpInput);
-                  _cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
-                }
+                  final httpInput =
+                    await HttpInput.createHttpInput(item.coverPhotoPath!);
+                item.coverPhotoSize =
+                    await ImageSizeGetter.getSizeAsync(httpInput);
+                cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
+              }
               }
             }
           }
@@ -140,9 +142,9 @@ class LostAndFoundModel with ChangeNotifier {
     }
   }
 
-  void _cacheImageSize(String photoPath, Size? size){
-    if(size == null) return;
-    if(_imageSizeCache.length >= 50) _imageSizeCache.clear();
+  void cacheImageSize(String photoPath, Size? size) {
+    if (size == null) return;
+    if (_imageSizeCache.length >= 50) _imageSizeCache.clear();
     _imageSizeCache[photoPath] = size;
   }
 }

@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
 
+import 'lost_and_found_notifier.dart';
+
 class LostAndFoundSearchResultPage extends StatefulWidget {
   final LostAndFoundSearchResultPageArgs args;
 
@@ -51,7 +53,7 @@ class _LostAndFoundSearchResultPageState
           keyword: keyword,
           success: () {
             context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus2.ready;
+                LostAndFoundSubPageStatus.ready;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -59,7 +61,7 @@ class _LostAndFoundSearchResultPageState
           },
           failure: (e) {
             context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus2.error;
+                LostAndFoundSubPageStatus.error;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -76,7 +78,7 @@ class _LostAndFoundSearchResultPageState
           keyword: keyword,
           success: () {
             context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus2.ready;
+                LostAndFoundSubPageStatus.ready;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -84,7 +86,7 @@ class _LostAndFoundSearchResultPageState
           },
           failure: (e) {
             context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus2.error;
+                LostAndFoundSubPageStatus.error;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -97,11 +99,11 @@ class _LostAndFoundSearchResultPageState
   @override
   Widget build(BuildContext context) {
     if (context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] ==
-            LostAndFoundSubPageStatus2.ready &&
+            LostAndFoundSubPageStatus.ready &&
         context
                 .read<LostAndFoundModel2>()
                 .lostAndFoundSubPageStatus[category] !=
-            LostAndFoundSubPageStatus2.ready) {
+            LostAndFoundSubPageStatus.ready) {
       _onRefresh();
     }
 
