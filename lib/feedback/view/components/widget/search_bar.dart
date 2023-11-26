@@ -177,7 +177,7 @@ class _SearchBarState extends State<SearchBar>
                               return;
                             },
                           );
-                        } else if (!(_controller.text.startsWith('#MP') &&
+                        } else if ((_controller.text.startsWith('#MP') &&
                             RegExp(r'^-?[0-9]+')
                                 .hasMatch(_controller.text.substring(3)))) {
                           _controller.text = '#MP';
