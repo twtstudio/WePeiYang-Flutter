@@ -23,7 +23,7 @@ class UpdateTitle extends StatelessWidget {
         const SizedBox(height: 3),
         Text(
           Platform.isAndroid
-              ? '${EnvConfig.VERSION} -> ${version.version}'
+              ? 'v${EnvConfig.VERSION} -> ${version.version}'
               : '最新版本: ${version.version}',
           style: TextUtil.base.w600.sp(10),
         ),
