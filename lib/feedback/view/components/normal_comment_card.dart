@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -19,7 +20,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -413,7 +413,8 @@ class _NCommentCardState extends State<NCommentCard>
 
     var commentContent = widget.comment.content == ''
         ? SizedBox()
-        : ClipCopy(
+        : CommentCardGestureDetector(
+            isOfficial: false,
             id: widget.comment.id,
             copy: widget.comment.content,
             toast: '复制评论成功',

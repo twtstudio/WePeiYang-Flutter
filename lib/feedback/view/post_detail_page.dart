@@ -259,8 +259,8 @@ class _PostDetailPageState extends State<PostDetailPage>
 
     Widget checkButton = WButton(
       onPressed: () {
-        bool isOfficial = (widget.post.type == 1);
-        launchKey.currentState?.send(isOfficial);
+        // 点击校务的官方回复时，应当进入official_reply_detail_page而不是在底部弹出输入框，所以这里一定是普通楼层的回复
+        launchKey.currentState?.send(false);
         setState(() {});
       },
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
