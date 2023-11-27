@@ -110,7 +110,7 @@ class _LostAndFoundSearchResultPageState
     var appBar = LostAndFoundAppBar(
       height: 100,
       leading: Padding(
-        padding: EdgeInsetsDirectional.only(start: 8, bottom: 8),
+        padding: EdgeInsetsDirectional.only(start: 8.w, bottom: 8.h),
         child: WButton(
           child: WpyPic(
             'assets/svg_pics/laf_butt_icons/back.svg',
@@ -123,13 +123,13 @@ class _LostAndFoundSearchResultPageState
         ),
       ),
       action: Padding(
-        padding: EdgeInsetsDirectional.only(end: 20, bottom: 12),
+        padding: EdgeInsetsDirectional.only(end: 20.w, bottom: 12.h),
       ),
       title: Padding(
         padding: EdgeInsets.only(bottom: 8.h),
         child: Text(
           '搜索结果',
-          style: TextStyle().white.NotoSansSC.w400.sp(20),
+          style: TextUtil.base.white.NotoSansSC.w400.sp(20),
         ),
       ),
     );
@@ -167,7 +167,7 @@ class _LostAndFoundSearchResultPageState
       children: <Widget>[
         appBar,
         SizedBox(
-          height: 7,
+          height: 7.h,
         ),
         Expanded(
           child: Container(
@@ -228,7 +228,7 @@ class _LostAndFoundSearchResultPageState
                                       child: Padding(
                                         // 添加Padding组件
                                         padding: EdgeInsets.all(
-                                            10), // 设置所有方向的内边距为15个像素
+                                            10.r), // 设置所有方向的内边距为15个像素
                                         child: Text(
                                             postList[index].text.length > 32
                                                 ? postList[index]
@@ -246,7 +246,7 @@ class _LostAndFoundSearchResultPageState
                                     ))
                                 : Container(
                                     padding: EdgeInsetsDirectional.only(
-                                        start: 11, end: 11, bottom: 7, top: 7),
+                                        start: 11.w, end: 11.w, bottom: 7.h, top: 7.h),
                                     child: LayoutBuilder(
                                       builder: (context, constrains) {
                                         final maxWidth =
@@ -263,7 +263,7 @@ class _LostAndFoundSearchResultPageState
                                             0;
                                         return ClipRRect(
                                           borderRadius: BorderRadius.circular(
-                                              10.0), // 设置圆角半径为10.0
+                                              10.0.r), // 设置圆角半径为10.0
                                           child: Container(
                                             width: maxWidth,
                                             child: WpyPic(
@@ -282,7 +282,7 @@ class _LostAndFoundSearchResultPageState
                                     )),
                             Padding(
                               padding: EdgeInsetsDirectional.only(
-                                  start: 12, end: 12),
+                                  start: 12.w, end: 12.w),
                               child: Text(
                                 postList[index].title,
                                 style: TextUtil.base.w600.black2A
@@ -292,7 +292,7 @@ class _LostAndFoundSearchResultPageState
                             ),
                             Padding(
                               padding: EdgeInsetsDirectional.only(
-                                  start: 12, end: 25, bottom: 18, top: 10),
+                                  start: 12.w, end: 25.w, bottom: 18.h, top: 10.h),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -308,13 +308,11 @@ class _LostAndFoundSearchResultPageState
                                     children: <Widget>[
                                       SvgPicture.asset(
                                           'assets/svg_pics/icon_flame.svg',
-                                          width: 16.0,
-                                          height: 16.0),
+                                          width: 16.0.w,
+                                          height: 16.0.h),
                                       Text(
                                         '${postList[index].hot.toString()}',
-                                        style: TextStyle(
-                                          color: Color(0xff898989),
-                                        ),
+                                        style: TextUtil.base.grey89,
                                       ),
                                     ],
                                   ),

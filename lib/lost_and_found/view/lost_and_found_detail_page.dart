@@ -216,7 +216,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               : (findOwner
                                   ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
                                   : '确定找到了吗？\n每天最多只能获取三次联系方式哦')),
-                      style: TextStyle(fontSize: 14),
+                      style: TextUtil.base.sp(14),
                       textAlign: TextAlign.center,
                     ),
                   ),

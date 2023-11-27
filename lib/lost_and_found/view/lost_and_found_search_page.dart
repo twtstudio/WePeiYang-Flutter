@@ -78,11 +78,11 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               searchBar,
               InkWell(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 12, left: 12),
+                  padding:  EdgeInsets.only(top: 12.h, left: 12.h),
                   child: Icon(
                     CupertinoIcons.back,
-                    color: Color(0XFF252525),
-                    size: 27,
+                    color: ColorUtil.black25Color,
+                    size: 27.r,
                   ),
                 ),
                 onTap: () => Navigator.pop(context),
@@ -116,7 +116,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
 
     var searchHistoryContainer = Container(
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,14 +142,11 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       builder: (_, List<String> list, __) {
         if (list.isEmpty) {
           return Padding(
-            padding: const EdgeInsets.only(top: 12.0),
+            padding:  EdgeInsets.only(top: 12.0.r),
             child: Center(
               child: Text(
                 "暂无历史记录",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Color.fromRGBO(98, 103, 124, 0.61),
-                    fontWeight: FontWeight.normal),
+                style: TextUtil.base.normal.blue98Opacity061.sp(16),
               ),
             ),
           );
@@ -160,7 +157,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
           list.length,
               (index) {
             return InkResponse(
-              radius: 30,
+              radius: 30.r,
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
@@ -171,34 +168,27 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                   arguments: LostAndFoundSearchResultPageArgs(
                       context.read<LostAndFoundModel2>().currentType,
                       context.read<LostAndFoundModel2>().currentCategory[
-                          context.read<LostAndFoundModel2>().currentType]!,
+                      context.read<LostAndFoundModel2>().currentType]!,
                       list[list.length - index - 1]),
                 ).then((_) {
                   Navigator.pop(context);
                 });
               },
               child: Chip(
+                shadowColor: ColorUtil.transparent,
                 elevation: 1,
-                backgroundColor: Color.fromARGB(248, 248, 248, 248),
+                backgroundColor: ColorUtil.white248,
                 label: Text(list[list.length - index - 1],
-                    style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
-                deleteIcon: Icon(Icons.close,
-                    color: ColorUtil.lightTextColor, size: 16),
-                onDeleted: () {
-                  setState(() {
-                    list.removeAt(list.length - index - 1);
-                  });
-                  _prefs.setStringList('feedback_found_search_history', list);
-                  ToastProvider.success("删除成功");
-                },
+                    style: TextUtil.base.normal.grey90.PingFangSC.sp(14)),
               ),
+
             );
           },
         ));
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2.0),
-          child: Wrap(spacing: 6, children: searchHistory),
+          padding: EdgeInsets.symmetric(horizontal: 2.0.w),
+          child: Wrap(spacing: 6.w, children: searchHistory),
         );
       },
     );
@@ -210,18 +200,18 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
           searchHistoryList
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
     );
 
     return ColoredBox(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: Colors.white, child: searchHistory)),
+                    color: ColorUtil.whiteFFColor, child: searchHistory)),
           ],
         ));
   }
@@ -279,17 +269,17 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
         child: Container(
           height: 30.w,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24.r),
               color: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
-                  ? Color.fromARGB(255, 234, 243, 254)
-                  : Color.fromARGB(248, 248, 248, 248)
+                  ? ColorUtil.white234
+                  : ColorUtil.white248
           ),
           child: Center(
             child: Text(
                 widget.category,
                 style: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
-                    ? TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).blue2C
-                    : TextUtil.base.normal.NotoSansSC.w400.sp(8.5.sp).black2A
+                    ? TextUtil.base.normal.NotoSansSC.w400.sp(10).blue2C
+                    : TextUtil.base.normal.NotoSansSC.w400.sp(10).black2A
             ),
           ),
         ),

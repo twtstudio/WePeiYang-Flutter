@@ -166,7 +166,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               ? '天大不能没有微北洋'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                          style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                         ),
                       ),
                     ],
