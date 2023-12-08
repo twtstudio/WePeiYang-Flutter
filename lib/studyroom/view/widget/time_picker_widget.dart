@@ -5,7 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';

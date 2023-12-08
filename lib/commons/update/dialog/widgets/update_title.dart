@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 class UpdateTitle extends StatelessWidget {
   const UpdateTitle({Key? key}) : super(key: key);
@@ -15,16 +16,16 @@ class UpdateTitle extends StatelessWidget {
     final title = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
+         Text(
           "版本更新",
-          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          style: TextUtil.base.w600.sp(17),
         ),
         const SizedBox(height: 3),
         Text(
           Platform.isAndroid
-              ? '${EnvConfig.VERSION} -> ${version.version}'
+              ? 'v${EnvConfig.VERSION} -> ${version.version}'
               : '最新版本: ${version.version}',
-          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+          style: TextUtil.base.w600.sp(10),
         ),
       ],
     );

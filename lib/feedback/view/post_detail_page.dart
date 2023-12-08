@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -17,7 +18,6 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -25,6 +25,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../commons/widgets/w_button.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'lake_home_page/lake_notifier.dart';
@@ -256,8 +257,9 @@ class _PostDetailPageState extends State<PostDetailPage>
     Widget body;
     Widget bottomInput;
 
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
+        // 点击校务的官方回复时，应当进入official_reply_detail_page而不是在底部弹出输入框，所以这里一定是普通楼层的回复
         launchKey.currentState?.send(false);
         setState(() {});
       },
@@ -286,8 +288,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                 Row(
                   children: [
                     const SizedBox(width: 15),
-                    GestureDetector(
-                      onTap: () {
+                    WButton(
+                      onPressed: () {
                         order.value = 1;
                       },
                       child: Text('时间正序',
@@ -296,8 +298,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                               : TextUtil.base.black2A.w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
-                    GestureDetector(
-                      onTap: () {
+                    WButton(
+                      onPressed: () {
                         order.value = 0;
                       },
                       child: Text('时间倒序',
@@ -309,8 +311,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                     ValueListenableBuilder(
                       valueListenable: onlyOwner,
                       builder: (context, value, _) {
-                        return GestureDetector(
-                          onTap: () {
+                        return WButton(
+                          onPressed: () {
                             onlyOwner.value = 1 - onlyOwner.value;
                             _refreshController.requestRefresh();
                           },
@@ -437,12 +439,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: ColorUtil.black12,
                         offset: Offset(0, 1),
                         blurRadius: 6,
                         spreadRadius: 0),
                   ],
-                  color: Colors.white,
+                  color: ColorUtil.whiteFFColor,
                 ),
                 child: Column(
                   children: [
@@ -533,8 +535,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   )),
                               Offstage(
                                 offstage: value.inputFieldEnabled,
-                                child: InkWell(
-                                  onTap: () {
+                                child: WButton(
+                                  onPressed: () {
                                     context.read<NewFloorProvider>().inputFieldEnabled = true;
                                     value.inputFieldOpenAndReplyTo(0);
                                     FocusScope.of(context)
@@ -597,7 +599,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
           width: 25,
-          color: Colors.black,
+          color: ColorUtil.black00Color,
         ),
         onPressed: () {
           showCupertinoModalPopup(
@@ -717,17 +719,17 @@ class _PostDetailPageState extends State<PostDetailPage>
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: ColorUtil.whiteFFColor,
       leading: IconButton(
         icon: Icon(
           CupertinoIcons.back,
-          color: Color(0XFF252525),
+          color: ColorUtil.black25Color,
         ),
         onPressed: () => Navigator.pop(context, widget.post),
       ),
       actions: [if (hasAdmin) manageButton, menuButton, SizedBox(width: 10)],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,
@@ -751,7 +753,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: GestureDetector(
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: ColorUtil.whiteFFColor,
           appBar: appBar,
           body: body,
         ),
@@ -791,8 +793,8 @@ class _PostDetailPageState extends State<PostDetailPage>
               confirmText: "确认",
               gradient: LinearGradient(
                   colors: [
-                    Color(0xFF2C7EDF),
-                    Color(0xFFA6CFFF),
+                    ColorUtil.blue2CColor,
+                    ColorUtil.blueA6Color,
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -1026,12 +1028,12 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       builder: (context) => AlertDialog(
         title: Text(S.current.feedback_delete_image_content),
         actions: [
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
               child: Text(S.current.feedback_cancel)),
-          TextButton(
+          WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
@@ -1055,8 +1057,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () => Navigator.pushNamed(
+                      child: WButton(
+                        onPressed: () => Navigator.pushNamed(
                           context,
                           FeedbackRouter.localImageView,
                           arguments:
@@ -1068,7 +1070,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           margin: EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            border: Border.all(width: 1, color: Colors.black26),
+                            border: Border.all(width: 1, color: ColorUtil.black26),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1083,8 +1085,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () async {
+                      child: WButton(
+                        onPressed: () async {
                           var result = await _showDialog();
                           if (result == 'ok') {
                             data.images.removeAt(0);
@@ -1095,7 +1097,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: Colors.black26,
+                            color: ColorUtil.black26,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomRight: Radius.circular(8)),
@@ -1175,35 +1177,35 @@ class _ManagerPopUpState extends State<ManagerPopUp>
               AnimatedOption(
                 origin: originTag == 0,
                 id: widget.post.id,
-                color1: Color.fromRGBO(208, 104, 160, 1.0),
-                color2: Color.fromRGBO(134, 103, 111, 1.0),
+                color1: ColorUtil.pink208,
+                color2: ColorUtil.red134,
                 title: originTag == 0 ? '× 已置顶' : '将此帖置顶',
                 action: 0,
               ),
               AnimatedOption(
                   origin: originTag == 1,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(190, 163, 91, 1.0),
-                  color2: Color.fromRGBO(157, 129, 113, 1.0),
+                  color1: ColorUtil.yellow190,
+                  color2: ColorUtil.orange157,
                   title: originTag == 1 ? '× 已加精' : '加入精华帖',
                   action: 1),
               AnimatedOption(
                   origin: originTag == 2,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(124, 179, 216, 1.0),
-                  color2: Color.fromRGBO(72, 80, 117, 1.0),
+                  color1: ColorUtil.blue124,
+                  color2: ColorUtil.blue72,
                   title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
                   action: 2),
               AnimatedOption(
                   origin: false,
                   id: widget.post.id,
-                  color1: Color.fromRGBO(43, 16, 16, 1.0),
-                  color2: Color.fromRGBO(42, 28, 49, 1.0),
+                  color1: ColorUtil.red43,
+                  color2: ColorUtil.red42,
                   title: '⚠ 删帖',
                   action: 100),
             ]),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14), color: Colors.white),
+            borderRadius: BorderRadius.circular(14), color: ColorUtil.whiteFFColor),
       ),
     );
   }
@@ -1241,8 +1243,8 @@ class _AnimatedOptionState extends State<AnimatedOption>
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         setState(() {
           isSelected = !isSelected;
         });
@@ -1285,8 +1287,8 @@ class _AnimatedOptionState extends State<AnimatedOption>
                       controller: tc,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelStyle: TextStyle().white.NotoSansSC.w400.sp(16),
-                        hintStyle: TextStyle().white.NotoSansSC.w800.sp(16),
+                        labelStyle: TextUtil.base.white.NotoSansSC.w400.sp(16),
+                        hintStyle: TextUtil.base.white.NotoSansSC.w800.sp(16),
                         hintText: '置顶数值',
                         contentPadding: const EdgeInsets.all(0),
                         border: OutlineInputBorder(
@@ -1298,12 +1300,12 @@ class _AnimatedOptionState extends State<AnimatedOption>
                     Container(
                         height: 1.5,
                         width: double.infinity,
-                        color: Colors.white),
+                        color: ColorUtil.whiteFFColor),
                   ],
                 ),
               if (isSelected)
-                InkWell(
-                  onTap: _inkWellOnTap,
+                WButton(
+                  onPressed: _inkWellOnTap,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Row(

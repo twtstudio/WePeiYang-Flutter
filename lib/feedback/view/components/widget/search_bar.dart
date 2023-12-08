@@ -5,13 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-
-import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
+
+import '../../../../commons/widgets/w_button.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -58,8 +59,8 @@ class _SearchBarState extends State<SearchBar>
     tagList.add(SizedBox(height: 4));
     tagUtil = list;
     for (int total = 0; total < min(tagUtil.length, 5); total++) {
-      tagList.add(GestureDetector(
-        onTap: () {
+      tagList.add(WButton(
+        onPressed: () {
           _controller.text = tagUtil[total].name;
           Navigator.pushNamed(
             context,
@@ -137,9 +138,9 @@ class _SearchBarState extends State<SearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextStyle().black2A.NotoSansSC.w400.sp(15),
+                    style: TextUtil.base.black2A.NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      hintStyle: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
                           ? '搜索发现'
                           : '#${data.recTag?.name}#，输入“#”号搜索更多Tag',
@@ -159,7 +160,31 @@ class _SearchBarState extends State<SearchBar>
                     enabled: true,
                     onSubmitted: (content) {
                       if (content.isNotEmpty) {
-                        widget.onSubmitted.call(content);
+                        if (_controller.text.startsWith('#MP') &&
+                            RegExp(r'^-?[0-9]+')
+                                .hasMatch(_controller.text.substring(3))) {
+                          FeedbackService.getPostById(
+                            id: int.parse(_controller.text.substring(3)),
+                            onResult: (post) {
+                              Navigator.popAndPushNamed(
+                                context,
+                                FeedbackRouter.detail,
+                                arguments: post,
+                              );
+                            },
+                            onFailure: (e) {
+                              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
+                              return;
+                            },
+                          );
+                        } else if ((_controller.text.startsWith('#MP') &&
+                            RegExp(r'^-?[0-9]+')
+                                .hasMatch(_controller.text.substring(3)))) {
+                          _controller.text = '#MP';
+                          ToastProvider.error('后面跟数字啦！！！');
+                        } else {
+                          widget.onSubmitted?.call(content);
+                        }
                       } else {
                         Navigator.pushNamed(
                           context,
@@ -195,7 +220,7 @@ class _SearchBarState extends State<SearchBar>
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(Colors.white),
+                      backgroundColor: MaterialStateProperty.all(ColorUtil.whiteFFColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -215,7 +240,7 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: Colors.white,
+            color: ColorUtil.whiteFFColor,
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
@@ -228,14 +253,14 @@ class _SearchBarState extends State<SearchBar>
                     padding: EdgeInsets.only(bottom: 10),
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
                         ),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black12,
+                              color: ColorUtil.black12,
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度
@@ -245,8 +270,8 @@ class _SearchBarState extends State<SearchBar>
                       children: [
                         if (_controller.text.startsWith('#MP') ||
                             _controller.text.startsWith('#'))
-                          GestureDetector(
-                            onTap: () {
+                          WButton(
+                            onPressed: () {
                               if (_controller.text.startsWith('#MP') &&
                                   RegExp(r'^-?[0-9]+').hasMatch(
                                       _controller.text.substring(3))) {
@@ -267,6 +292,7 @@ class _SearchBarState extends State<SearchBar>
                                 );
                               } else {
                                 _controller.text = '#MP';
+                                ToastProvider.error('后面跟数字啦！！！');
                               }
                             },
                             child: Padding(

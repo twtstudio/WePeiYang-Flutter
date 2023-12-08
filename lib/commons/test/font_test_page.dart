@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import '../widgets/w_button.dart';
 
 class FontTestPage extends StatelessWidget {
   const FontTestPage({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class FontTestPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextButton(
+            WButton(
                 onPressed: () {
                   WbyFontLoader.initFonts();
                 },

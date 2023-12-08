@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class GamePage extends StatelessWidget {
   final List<String> _title = ['大学重开模拟器', '北洋维基', '敬请期待'];
@@ -29,11 +31,11 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = Colors.black12;
+    final Color _color = ColorUtil.black12;
     return SizedBox(
       height: 130,
-      child: InkWell(
-        onTap: () => used ? Navigator.pushNamed(context, this.uri) : {},
+      child: WButton(
+        onPressed: () => used ? Navigator.pushNamed(context, this.uri) : {},
         child: Container(
             margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             padding: EdgeInsets.fromLTRB(16.0, 20.0, 10.0, 8.0),

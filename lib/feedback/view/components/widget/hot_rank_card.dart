@@ -8,6 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/widgets/w_button.dart';
+
 /// 北洋热搜
 class HotCard extends StatefulWidget {
   @override
@@ -71,8 +73,8 @@ class _HotCardState extends State<HotCard> {
                                     data.hotTagsList.length <= 5
                                         ? data.hotTagsList.length
                                         : 5,
-                                    (index) => InkWell(
-                                          onTap: () => Navigator.pushNamed(
+                                    (index) => WButton(
+                                          onPressed: () => Navigator.pushNamed(
                                             context,
                                             FeedbackRouter.searchResult,
                                             arguments: SearchResultPageArgs(

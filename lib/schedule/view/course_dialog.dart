@@ -9,11 +9,14 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
+import '../../commons/util/color_util.dart';
+import '../../commons/widgets/w_button.dart';
+
 void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: ColorUtil.black26,
         builder: (BuildContext context) => CourseDialog(pairs));
 
 class CourseDialog extends Dialog {
@@ -38,7 +41,7 @@ class CourseDialog extends Dialog {
             ? _getSingleCard(context, _pairs[0])
             : Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: Colors.white),
+                    .copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 40.w),
@@ -66,27 +69,20 @@ class CourseDialog extends Dialog {
             alignment: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(15.r),
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromRGBO(44, 126, 223, 1),
-              Color.fromRGBO(166, 207, 255, 1),
-            ],
-          ),
+          gradient: ColorUtil.gradientBlueAllScreen,
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
-              color: Colors.black.withOpacity(0.05),
+              color: ColorUtil.blackOpacity005,
             ),
             BoxShadow(
               blurRadius: 10,
-              color: Colors.white10,
+              color: ColorUtil.white10,
             ),
           ]),
-      child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+      child: WButton(
+        onPressed: () => Navigator.pop(context),
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 35.h, 20.w, 35.h),
           child: Stack(
@@ -108,8 +104,8 @@ class CourseDialog extends Dialog {
               if (pair.first.type == 1)
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: GestureDetector(
-                    onTap: () {
+                  child: WButton(
+                    onPressed: () {
                       context.read<EditProvider>().load(pair.first);
                       Navigator.pop(context);
                       Navigator.pushNamed(context, ScheduleRouter.editDetail,

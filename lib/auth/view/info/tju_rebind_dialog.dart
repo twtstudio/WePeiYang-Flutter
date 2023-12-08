@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class TjuRebindDialog extends Dialog {
   @override
@@ -18,7 +21,8 @@ class TjuRebindDialog extends Dialog {
             25, 0, 25, 25 + MediaQuery.of(context).viewInsets.bottom / 2),
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Colors.white),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.whiteFFColor),
         child: _TjuRebindWidget(),
       ),
     );
@@ -85,25 +89,17 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle = TextUtil.base.regular
-        .sp(13)
-        .customColor(Color.fromRGBO(201, 204, 209, 1));
+    var hintStyle = TextUtil.base.regular.sp(13).whiteHint201;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text(S.current.wrong + "！",
-              style: TextUtil.base.bold
-                  .sp(17)
-                  .customColor(Color.fromRGBO(79, 88, 107, 1)))
+          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).blue79)
         ]),
         SizedBox(height: 8),
-        Text('请求异常，请手动输入验证码',
-            style: TextUtil.base.regular
-                .sp(12)
-                .customColor(Color.fromRGBO(79, 88, 107, 1))),
+        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).blue79),
         if (!_canConnectToClasses)
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -123,7 +119,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                       hintText: S.current.captcha,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: Color.fromRGBO(235, 238, 243, 1),
+                      fillColor: ColorUtil.white235,
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -150,11 +146,10 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(103, 110, 150, 1);
-                  return Color.fromRGBO(53, 59, 84, 1);
+                    return ColorUtil.blue103;
+                  return ColorUtil.blue53;
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(Color.fromRGBO(53, 59, 84, 1)),
+                backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -192,8 +187,8 @@ class CaptchaWidgetState extends State<CaptchaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: refresh,
+    return WButton(
+        onPressed: refresh,
         child:
             data == null ? CupertinoActivityIndicator() : Image.memory(data!));
   }

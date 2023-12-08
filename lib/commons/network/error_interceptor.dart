@@ -43,7 +43,7 @@ class ClassesErrorInterceptor extends InterceptorsWrapper {
             errStr = "密码输入错误";
           break;
         case 302:
-          errStr = "办公网绑定失效，请重新绑定";
+          errStr = "网络情况不佳，请稍后再试";
           break;
       }
     }

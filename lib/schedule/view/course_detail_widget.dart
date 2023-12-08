@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
@@ -61,14 +62,14 @@ class _WeekDisplayWidget extends StatelessWidget {
         width: _cardWidth,
         decoration: BoxDecoration(
             color: deep
-                ? Color.fromRGBO(255, 255, 255, 1)
-                : Color.fromRGBO(246, 246, 246, 0.2),
+                ? ColorUtil.whiteFFColor
+                : ColorUtil.grey246,
             borderRadius: BorderRadius.circular(5.r)),
         child: Center(
           child: Text(date,
               style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                  ? Color.fromRGBO(44, 126, 223, 1)
-                  : Color.fromRGBO(202, 202, 202, 1))),
+                  ? ColorUtil.blue2CColor
+                  : ColorUtil.white202)),
         ),
       );
 }
@@ -87,7 +88,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         var verNum = 8; // 显示每天第1-verNum节课，verNum取值范围为[8, 12]
         if (provider.totalCourses.length == 0) {
           return SizedBox(
-            height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+            height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
             child: Stack(children: [child!]),
           );
         }
@@ -111,7 +112,9 @@ class _CourseDisplayWidget extends StatelessWidget {
               (end - start + 1) * _singleCourseHeight + (end - start) * verStep;
           // 绕开"午休"栏
           if (start > 4) top += _middleStep;
+          if (start > 8) top += _middleStep;
           if (start <= 4 && end > 4) height += _middleStep;
+          if (start <=8 && end >8) height += _middleStep;
           // 是否需要“漂浮”显示
           if (activeList[i][0].arrange.showMode == 1) top += 6;
           // 是否不显示内容
@@ -151,7 +154,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         positionedList.addAll(tempList.reversed);
 
         return SizedBox(
-          height: (_singleCourseHeight + verStep) * verNum + _middleStep,
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
           child: Stack(
             children: [
               child!,
@@ -160,20 +163,39 @@ class _CourseDisplayWidget extends StatelessWidget {
           ),
         );
       },
-      child: Positioned(
-        left: 0,
-        top: 4 * (_singleCourseHeight + verStep),
-        height: _middleStep,
-        width: 1.sw - 30.w,
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(10.r),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 4 * (_singleCourseHeight + verStep),
+            height: _middleStep,
+            width: 1.sw - 30.w,
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ColorUtil.whiteOpacity02,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5.h),
+              child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+            ),
           ),
-          margin: EdgeInsets.symmetric(vertical: 5.h),
-          child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
-        ),
+          Positioned(
+            left: 0,
+            top: 8 * (_singleCourseHeight + verStep)+ _middleStep ,
+            height: _middleStep,
+            width: 1.sw - 30.w,
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: ColorUtil.whiteOpacity02,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              margin: EdgeInsets.symmetric(vertical: 5.h),
+              child: Text("DINNER BREAK", style: TextUtil.base.w900.white.sp(10)),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/network/gpa_service.dart';
@@ -15,7 +16,7 @@ class GPANotifier with ChangeNotifier {
   List<GPAStat> _gpaStats = [];
 
   List<GPAStat> get gpaStats => _gpaStats;
-
+  
   /// 外部更新gpa总数据时调用
   set gpaStats(List<GPAStat> newList) {
     _gpaStats = newList;
@@ -128,12 +129,16 @@ class GPANotifier with ChangeNotifier {
     try {
       if (CommonPreferences.useClassesBackend.value) {
         var data = await ClassesBackendService.getClasses();
-        if (data == null) throw WpyDioException(error: '云端获取课表失败');
+        if (data == null) throw WpyDioException(error: '云端获取GPA数据失败');
         _gpaStats = data.item3.stats;
         total = data.item3.total;
         notifyListeners();
       } else {
-        await ClassesService.getClasses(context);
+        bool _canConnectToClasses = await ClassesService.check();
+        if(!_canConnectToClasses) ToastProvider.error('请连接校园网或连接VPN!');
+        else {
+          await ClassesService.getClasses(context);
+        }
       }
     } on DioException catch (_) {
       showDialog(

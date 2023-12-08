@@ -1,12 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../widgets/w_button.dart';
 
 class WbyWebView extends StatefulWidget {
   final String page;
@@ -48,18 +50,18 @@ class WbyWebViewState extends State<WbyWebView> {
   PreferredSizeWidget get appBar => AppBar(
         title: Text(
           widget.page,
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextUtil.base.black00.sp(16),
         ),
         elevation: 0,
         toolbarHeight: 40,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
-          child: GestureDetector(
+          child: WButton(
             child: Icon(Icons.arrow_back,
-                color: Color.fromRGBO(53, 59, 84, 1), size: 32),
-            onTap: () => Navigator.pop(context),
+                color: ColorUtil.blue53, size: 32),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
       );
@@ -101,7 +103,7 @@ class WbyWebViewState extends State<WbyWebView> {
     Widget top;
 
     if (state == _PageState.initError) {
-      top = TextButton(onPressed: initUrl, child: Text("遇到错误请重试"));
+      top = WButton(onPressed: initUrl, child: Text("遇到错误请重试"));
     } else {
       top = Loading();
     }

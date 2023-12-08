@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -39,11 +41,37 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   List<Pair<Course, int>> pairList = [];
   // 先添加普通课程
   provider.schoolCourses.forEach((course) {
+    
     for (int j = 0; j < course.arrangeList.length; j++) {
       course.arrangeList[j].showMode = 0; // 这里很坑，需要重置状态
       if (judgeActiveInWeek(
           provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
         pairList.add(Pair<Course, int>(course, j));
+        //对于特殊课程做了合并
+        for(int j=0;j<course.arrangeList.length;j++){
+          if(course.arrangeList[j].weekList.length==1){
+            int k;
+            var next=false;
+            int m=0;
+            for(k=0;k<course.arrangeList.length;k++){
+              next=false;
+              for(m=0;m<course.arrangeList[k].weekList.length;m++){
+                if(course.arrangeList[j].weekList[0]==course.arrangeList[k].weekList[m]){
+                  if(course.arrangeList[k].unitList.last+1==course.arrangeList[j].unitList.first){next=true;
+                  break;}
+                }
+              }//找到需要接上的一周
+
+              if(next==true)break;
+            }
+            if(next==true){
+              course.arrangeList[j].unitList.first=min(course.arrangeList[k].unitList.first,course.arrangeList[j].unitList.first);
+              course.arrangeList[j].unitList.last=max(course.arrangeList[k].unitList.last,course.arrangeList[j].unitList.last);
+              course.arrangeList[k].weekList.removeRange(m, m+1);
+              break;
+            }
+          }
+        }
       }
     }
   });
@@ -91,7 +119,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   List<Pair<Course, int>> notAppendList = [];
   // 二维矩阵，记录每个位置的课程量，显示在外的不能超过两节
   List<List<int>> unitCountMatrix = [];
-  for (int i = 0; i < dayNumber; i++) {
+  for (int i = 0; i < 7; i++) {   //由于后续访问unitCountMatrix要求是一个[7]*[12]的二维列表，所有此处循环固定为‘7’
     unitCountMatrix.add(List.filled(12, 0));
   }
 

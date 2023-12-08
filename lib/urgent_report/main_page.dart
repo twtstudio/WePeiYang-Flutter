@@ -10,11 +10,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
+import '../commons/widgets/w_button.dart';
 import 'report_loading_dialog.dart';
 
 enum _Page { report, list }
@@ -201,8 +201,8 @@ class _ReportMainPageState extends State<ReportMainPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10),
-            GestureDetector(
-              onTap: () async {
+            WButton(
+              onPressed: () async {
                 var url =
                     'https://i.twt.edu.cn/#/report?token=${CommonPreferences.token.value}';
                 if (await canLaunchUrl(Uri.parse(url))) {
@@ -314,7 +314,7 @@ class _ReportResultDialog extends StatelessWidget {
     );
   }
 
-  Widget _button(String name, int popType, BuildContext c) => TextButton(
+  Widget _button(String name, int popType, BuildContext c) => WButton(
         onPressed: () {
           Navigator.pop(c, popType);
         },
@@ -780,8 +780,8 @@ class _PickImageState extends State<PickImage> {
                 fontWeight: FontWeight.w700),
           ),
         ),
-        GestureDetector(
-          onTap: () {
+        WButton(
+          onPressed: () {
             loadAssets();
           },
           child: _image != null

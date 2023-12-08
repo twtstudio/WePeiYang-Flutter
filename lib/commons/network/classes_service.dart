@@ -83,7 +83,8 @@ class ClassesService {
   /// 检查办公网连通
   static Future<bool> check() async {
     try {
-      await spiderDio.get('http://classes.tju.edu.cn');
+      var response = await spiderDio.get('http://classes.tju.edu.cn');
+      if(response.data.toString().contains('只允许校内访问')) return false;
       return true;
     } catch (_) {
       return false;
@@ -147,8 +148,10 @@ class ClassesService {
       ),
     );
 
-    if ((res.statusCode == 302) ||
-        res.data.toString().contains("var remind_strong_pwd = 'true'")) return;
+    if ((res.statusCode == 302)||
+        res.data.toString().contains(
+            "var remind_strong_pwd = 'true'"))
+      return;
 
     ToastProvider.error('检查办公网账号密码是否正确');
     throw WpyDioException(error: '检查账号密码正确');

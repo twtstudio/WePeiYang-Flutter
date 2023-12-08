@@ -1,6 +1,7 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -43,7 +44,7 @@ class _TabGridViewState extends State<TabGridView>
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColorUtil.whiteFFColor,
         borderRadius: BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -53,8 +54,8 @@ class _TabGridViewState extends State<TabGridView>
           begin: Alignment(0, 0.75),
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white10,
-            Colors.white,
+            ColorUtil.white10,
+            ColorUtil.whiteFFColor,
           ],
         ),
       ),
@@ -80,7 +81,7 @@ class _TabGridViewState extends State<TabGridView>
   }
 
   ActionChip _tagChip(bool chose, Department tag) => ActionChip(
-        backgroundColor: chose ? Color(0xff62677c) : Color(0xffeeeeee),
+        backgroundColor: chose ? ColorUtil.grey6267Color : ColorUtil.whiteEEColor,
         label: Text(
           tag.name,
           style: chose

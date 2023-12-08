@@ -5,11 +5,13 @@ import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../commons/util/color_util.dart';
+
 class FeedbackSummaryPage extends WbyWebView {
   const FeedbackSummaryPage({Key? key})
       : super(
             page: "年度总结",
-            backgroundColor: Colors.white,
+            backgroundColor: ColorUtil.whiteFFColor,
             fullPage: false,
             key: key);
 

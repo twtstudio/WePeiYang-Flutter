@@ -15,13 +15,15 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 class PostCardNormal extends StatefulWidget {
   /// 标准 PostCard
@@ -73,7 +75,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.avatarBox.toString()),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
-              color: Colors.transparent, // 没他就没有点击域
+              color: ColorUtil.transparent, // 没他就没有点击域
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -255,7 +257,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: Color(0xffeaeaea)),
+                  color: ColorUtil.whiteEAColor),
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
@@ -298,8 +300,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     return widget.outer
         // outer 框架
-        ? GestureDetector(
-            onTap: () {
+        ? WButton(
+            onPressed: () {
               FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
               Navigator.pushNamed(
                 context,
@@ -309,7 +311,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -363,7 +365,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
           width: 350.w,
           height: 197.w,
-          color: Colors.black12,
+          color: ColorUtil.black12,
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
@@ -378,8 +380,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
           post.imageUrls.length,
-          (index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(
+          (index) => WButton(
+            onPressed: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
               arguments: ImageViewPageArgs(
@@ -464,8 +466,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             ClipRRect(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12.r)),
-                              child: GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
+                              child: WButton(
+                                  onPressed: () => Navigator.pushNamed(
                                         context,
                                         FeedbackRouter.imageView,
                                         arguments: ImageViewPageArgs(
@@ -479,7 +481,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     padding: MaterialStateProperty.all(
                                         EdgeInsets.zero),
                                     overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
+                                        ColorUtil.transparent)),
                                 onPressed: () {
                                   setState(() {
                                     _picFullView = false;
@@ -497,8 +499,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12.r)),
                             child: Stack(children: [
-                              GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
+                              WButton(
+                                  onPressed: () => Navigator.pushNamed(
                                         context,
                                         FeedbackRouter.imageView,
                                         arguments: ImageViewPageArgs(
@@ -508,8 +510,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                               Positioned(top: 8, left: 8, child: TextPod('长图')),
                               Align(
                                   alignment: Alignment.bottomCenter,
-                                  child: InkWell(
-                                      onTap: () {
+                                  child: WButton(
+                                      onPressed: () {
                                         setState(() {
                                           _picFullView = true;
                                         });
@@ -522,8 +524,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                               begin: Alignment(0, -0.7),
                                               end: Alignment(0, 1),
                                               colors: [
-                                                Colors.transparent,
-                                                Colors.black54,
+                                                ColorUtil.transparent,
+                                                ColorUtil.black54,
                                               ],
                                             ),
                                           ),
@@ -542,7 +544,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                 Spacer(),
                                                 Container(
                                                     decoration: BoxDecoration(
-                                                        color: Colors.black38,
+                                                        color: ColorUtil.black38,
                                                         borderRadius:
                                                             BorderRadius.only(
                                                                 topLeft: Radius
@@ -562,8 +564,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                           ))
                   : ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                      child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(
+                      child: WButton(
+                          onPressed: () => Navigator.pushNamed(
                                 context,
                                 FeedbackRouter.imageView,
                                 arguments: ImageViewPageArgs(
@@ -573,9 +575,9 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                     )
               : Icon(
                   Icons.refresh,
-                  color: Colors.black54,
+                  color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? Colors.transparent : Colors.black12,
+          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.black12,
         );
       },
     );

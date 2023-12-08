@@ -27,7 +27,7 @@ class GPAService {
   /// 用请求到的html数据生成gpaBean对象
   static GPABean _data2GPABean(String data, bool isMaster) {
     if (!data.contains("在校汇总") || data.contains("本次会话已经被过期")) {
-      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
+      throw WpyDioException(error: "网络状况不佳，请稍后再试");
     }
     if (data.contains("就差一个评教的距离啦")) {
       throw WpyDioException(error: "存在未评教的课程，请先前往评教");
@@ -66,6 +66,9 @@ class GPAService {
           case '课程代码':
             indexMap['code'] = i;
             break;
+          case '课程名称':
+            indexMap['name'] = i;
+            break;
           case '课程序号':
             indexMap['no'] = i;
             break;
@@ -75,15 +78,14 @@ class GPAService {
           case '课程性质':
             indexMap['classProperty'] = i;
             break;
-          case '课程名称':
-            indexMap['name'] = i;
-            break;
           case '学分':
             indexMap['credit'] = i;
             break;
           case '考试情况':
             indexMap['condition'] = i;
             break;
+          // 总评成绩是办公网的新名字。最终/成绩，是之前的名字，这里只做拓展不做修改。
+          case '总评成绩':
           case '最终':
           case '成绩':
             indexMap['score'] = i;

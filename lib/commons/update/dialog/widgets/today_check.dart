@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
 class TodayShowAgainCheck extends StatelessWidget {
@@ -23,10 +24,7 @@ class TodayShowAgainCheck extends StatelessWidget {
     } else {
       final checkboxTextWidget = Text(
         '今日不再弹出',
-        style: TextStyle(
-          fontSize: 10,
-          color: Color(0xffdedede),
-        ),
+        style: TextUtil.base.sp(10).white222,
       );
 
       dismiss = GestureDetector(

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -68,13 +69,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
       body: Container(
         height: 1.sh,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 44, 126, 223),
-                Color.fromARGB(255, 166, 207, 255),
-              ]),
+          gradient: ColorUtil.gradientBlueAllScreen,
         ),
         child: Stack(
           children: [
@@ -116,19 +111,19 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .sp(14)
                                       .NotoSansSC
                                       .white,
-                                  cursorColor: Colors.white,
+                                  cursorColor: ColorUtil.whiteFFColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _userNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
@@ -172,19 +167,19 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .sp(14)
                                       .NotoSansSC
                                       .white,
-                                  cursorColor: Colors.white,
+                                  cursorColor: ColorUtil.whiteFFColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _nicknameFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
@@ -228,19 +223,19 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .sp(14)
                                       .NotoSansSC
                                       .white,
-                                  cursorColor: Colors.white,
+                                  cursorColor: ColorUtil.whiteFFColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _idNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
@@ -284,19 +279,19 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .sp(14)
                                       .NotoSansSC
                                       .white,
-                                  cursorColor: Colors.white,
+                                  cursorColor: ColorUtil.whiteFFColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _emailFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Colors.white,
+                                        color: ColorUtil.whiteFFColor,
                                         width: 1.0,
                                       ),
                                     ),
@@ -323,7 +318,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               width: width - 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
-                                color: Colors.white,
+                                color: ColorUtil.whiteFFColor,
                               ),
                               child: Center(
                                 child: Text("下一步",
@@ -416,13 +411,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 44, 126, 223),
-                Color.fromARGB(255, 166, 207, 255),
-              ]),
+          gradient: ColorUtil.gradientBlueAllScreen,
         ),
         child: Column(
           children: [
@@ -456,19 +445,19 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         child: TextField(
                           style:
                               TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: Colors.white,
+                          cursorColor: ColorUtil.whiteFFColor,
                           textInputAction: TextInputAction.next,
                           focusNode: _phoneFocus,
                           decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.white,
+                                color: ColorUtil.whiteFFColor,
                                 width: 1.0,
                               ),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.white,
+                                color: ColorUtil.whiteFFColor,
                                 width: 1.0,
                               ),
                             ),
@@ -503,7 +492,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -518,7 +507,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -533,7 +522,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -548,7 +537,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -563,7 +552,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -578,7 +567,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: Color.fromRGBO(255, 255, 255, 0.4),
+                                    color: ColorUtil.whiteOpacity04,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -619,7 +608,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                           width: width - 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor,
                           ),
                           child: Center(
                             child: Text("下一步",
@@ -633,7 +622,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       Row(
                         children: [
                           Spacer(),
-                          GestureDetector(
+                          WButton(
                             child: isPress
                                 ? StreamBuilder<int>(
                                     stream: Stream.periodic(
@@ -646,8 +635,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                             .addPostFrameCallback((_) =>
                                                 setState(
                                                     () => isPress = false));
-                                      return GestureDetector(
-                                          onTap: () {},
+                                      return WButton(
+                                          onPressed: () {},
                                           child: Text.rich(TextSpan(
                                             text: '$time秒后重试',
                                             style: TextUtil
@@ -656,8 +645,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                                 .white,
                                           )));
                                     })
-                                : GestureDetector(
-                                    onTap: _fetchCaptcha,
+                                : WButton(
+                                    onPressed: _fetchCaptcha,
                                     child: Text(
                                       "获取验证码",
                                       style: TextUtil
@@ -666,7 +655,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                           .white,
                                     ),
                                   ),
-                            onTap: () {},
+                            onPressed: () {},
                           ),
                         ],
                       ),
@@ -758,13 +747,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(255, 44, 126, 223),
-                Color.fromARGB(255, 166, 207, 255),
-              ]),
+          gradient: ColorUtil.gradientBlueAllScreen,
         ),
         child: Column(
           children: [
@@ -800,7 +783,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             maxHeight: 55,
                           ),
                           child: TextField(
-                            cursorColor: Colors.white,
+                            cursorColor: ColorUtil.whiteFFColor,
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
@@ -812,13 +795,13 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.white,
+                                  color: ColorUtil.whiteFFColor,
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.white,
+                                  color: ColorUtil.whiteFFColor,
                                   width: 1.0,
                                 ),
                               ),
@@ -859,20 +842,20 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                 .sp(14)
                                 .NotoSansSC
                                 .white,
-                            cursorColor: Colors.white,
+                            cursorColor: ColorUtil.whiteFFColor,
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: _pw2Focus,
                             obscureText: true,
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.white,
+                                  color: ColorUtil.whiteFFColor,
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.white,
+                                  color: ColorUtil.whiteFFColor,
                                   width: 1.0,
                                 ),
                               ),
@@ -905,11 +888,11 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               MaterialStateProperty.resolveWith<Color>(
                                   (states) {
                             if (states.contains(MaterialState.pressed))
-                              return Color.fromRGBO(255, 255, 255, 0.1);
-                            return Color.fromRGBO(255, 255, 255, 1);
+                              return ColorUtil.whiteOpacity01;
+                            return ColorUtil.whiteFFColor;
                           }),
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
+                              MaterialStateProperty.all(ColorUtil.whiteFFColor),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),
@@ -928,7 +911,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
-                              activeColor: Color.fromARGB(255, 44, 126, 223),
+                              activeColor: ColorUtil.blue2CColor,
                               onChanged: (_) {
                                 checkNotifier.value = !checkNotifier.value;
                               },
@@ -940,8 +923,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
                                 .black2A)),
-                        GestureDetector(
-                          onTap: () => showDialog(
+                        WButton(
+                          onPressed: () => showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
@@ -957,8 +940,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
                                 .black2A)),
-                        GestureDetector(
-                          onTap: () => showDialog(
+                        WButton(
+                          onPressed: () => showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
@@ -978,8 +961,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     //       height: 50,
                     //       alignment: Alignment.bottomLeft,
                     //       margin: const EdgeInsets.all(30),
-                    //       child: GestureDetector(
-                    //         onTap: () => Navigator.pop(context),
+                    //       child: WButton(
+                    //         onPressed: () => Navigator.pop(context),
                     //         child: Image(
                     //             image: AssetImage(
                     //                 'assets/images/arrow_round_back.png')),
@@ -990,8 +973,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     //       height: 50,
                     //       alignment: Alignment.bottomRight,
                     //       margin: const EdgeInsets.all(30),
-                    //       child: GestureDetector(
-                    //         onTap: _submit,
+                    //       child: WButton(
+                    //         onPressed: _submit,
                     //         child: Image(
                     //             image: AssetImage(
                     //                 'assets/images/arrow_round.png')),

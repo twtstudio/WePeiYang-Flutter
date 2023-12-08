@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -14,9 +15,9 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-final _hintStyle = TextUtil.base.bold.noLine
-    .sp(15)
-    .customColor(Color.fromRGBO(98, 103, 123, 1));
+import '../../../commons/widgets/w_button.dart';
+
+final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
@@ -36,8 +37,7 @@ class TjuUnbindDialog extends Dialog {
         height: 120,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -45,23 +45,21 @@ class TjuUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.tju_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine
-                      .sp(11)
-                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
+                  style: TextUtil.base.normal.noLine.sp(11).blue79),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -90,8 +88,7 @@ class PhoneUnbindDialog extends Dialog {
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -99,23 +96,21 @@ class PhoneUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.phone_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine
-                      .sp(11)
-                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
+                  style: TextUtil.base.normal.noLine.sp(11).blue79),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -144,8 +139,7 @@ class EmailUnbindDialog extends Dialog {
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -153,23 +147,21 @@ class EmailUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.email_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine
-                      .sp(11)
-                      .customColor(Color.fromRGBO(79, 88, 107, 1))),
+                  style: TextUtil.base.normal.noLine.sp(11).blue79),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel, style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: () => _unbind(context),
+                WButton(
+                  onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok, style: _hintStyle),
@@ -206,31 +198,26 @@ class LogoffDialog extends Dialog {
         height: 160,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(237, 240, 244, 1)),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Text('警告',
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.bold.noLine
-                      .sp(18)
-                      .customColor(Color.fromRGBO(255, 0, 0, 1))),
+                  style: TextUtil.base.bold.noLine.sp(18).dangerousRed),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.noLine
-                      .sp(16)
-                      .customColor(Color.fromRGBO(255, 0, 0, 1))),
+                  style: TextUtil.base.noLine.sp(16).dangerousRed),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                WButton(
+                  onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel,
@@ -238,8 +225,8 @@ class LogoffDialog extends Dialog {
                   ),
                 ),
                 SizedBox(width: 30),
-                GestureDetector(
-                  onTap: _logoff,
+                WButton(
+                  onPressed: _logoff,
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok,

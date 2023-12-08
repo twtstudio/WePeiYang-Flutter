@@ -33,7 +33,6 @@ struct LockRectView: View {
 
                     }
                     .padding(.bottom, -6)
-                    
                     Text(courses[0].course.name)
                         .lineLimit(1)
                         .font(.system(size: 15, weight: .medium))
@@ -47,7 +46,7 @@ struct LockRectView: View {
                     .font(.system(size: 15))
             }
         }
-        .padding(.leading, -12)
+        //.padding(.leading, 1)
         .onAppear {
             store.reloadData()
             courses = WidgetCourseManager.getCourses(courseTable: courseTable)
@@ -169,3 +168,13 @@ struct LockRingView: View {
 }
 
 
+//struct LockRectView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        if #available(iOSApplicationExtension 16.0, *) {
+//            LockRectView(entry: DataEntry(date: Date()))
+//        } else {
+//            // Fallback on earlier versions
+//        }
+////        LargeView(entry: DataEntry(date: Date(), courses: [Course()], weathers: [Weather()], studyRoom: []))
+//    }
+//}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/time_picker_widget.dart';
+import '../../../commons/widgets/w_button.dart';
 
 class StudyroomBasePage extends StatefulWidget {
   final Widget body;
@@ -26,7 +27,7 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
       padding: EdgeInsets.only(right: 8.w),
       child: SizedBox(
           width: 43.w,
-          child: TextButton(
+          child: WButton(
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -53,7 +54,7 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
       toolbarHeight: 60.w,
       leading: Padding(
         padding: EdgeInsets.only(left: 8.w),
-        child: TextButton(
+        child: WButton(
           onPressed: () {
             if (Navigator.canPop(context)) {
               Navigator.pop(context);

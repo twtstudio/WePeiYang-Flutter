@@ -122,6 +122,10 @@ class CourseProvider with ChangeNotifier {
     void Function(DioException)? onFailure,
   }) {
     ScheduleService.fetchCourses(onResult: (courses) {
+      if(courses.isEmpty) {
+        // 防止刷出来一个空课表
+        return;
+      }
       _schoolCourses = courses;
       notifyListeners();
       // 通知小组件更新

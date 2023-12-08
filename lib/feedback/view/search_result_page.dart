@@ -6,9 +6,10 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
 import 'new_post_page.dart';
@@ -148,7 +149,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         titleSpacing: 0,
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: ColorUtil.whiteFFColor,
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
@@ -158,8 +159,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
             Navigator.pop(context, true);
           },
         ),
-        title: GestureDetector(
-          onTap: () {
+        title: WButton(
+          onPressed: () {
             if (_sc.offset > 1000) {
               _sc.jumpTo(800);
               _refreshController.requestRefresh();
@@ -175,8 +176,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
         actions: [
           if (lakeType != 0)
             InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+                splashColor: ColorUtil.transparent,
+                highlightColor: ColorUtil.transparent,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -226,15 +227,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   (context, index) {
                     if (index == 0) {
                       return Container(
-                        color: Colors.white,
+                        color: ColorUtil.whiteFFColor,
                         child: Column(
                           children: [
                             const SizedBox(height: 10),
                             Row(
                               children: [
                                 const SizedBox(width: 15),
-                                GestureDetector(
-                                  onTap: () async {
+                                WButton(
+                                  onPressed: () async {
                                     searchMode = 0;
                                     await _refreshController.requestRefresh();
                                   },
@@ -246,8 +247,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                           : TextUtil.base.black2A.w500.sp(14)),
                                 ),
                                 const SizedBox(width: 15),
-                                GestureDetector(
-                                  onTap: () {
+                                WButton(
+                                  onPressed: () {
                                     searchMode = 1;
                                     _refreshController.requestRefresh();
                                   },
@@ -281,7 +282,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           body = Center(
             child: Text(S.current.feedback_no_post,
                 style: TextUtil.base.regular
-                    .customColor(Color.fromARGB(255, 145, 145, 145))),
+                    .grey145),
           );
         }
         break;

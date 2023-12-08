@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class MessageDialog extends Dialog {
   final data;
@@ -16,7 +17,7 @@ class MessageDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             shape: BoxShape.rectangle,
-            color: Colors.white),
+            color: ColorUtil.whiteFFColor),
         child: Center(child: Text(data)),
       ),
     );

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class Loading extends StatefulWidget {
   final Color? dotOneColor;
@@ -25,9 +26,9 @@ class Loading extends StatefulWidget {
 }
 
 extension LoadingDotsColors on ThemeData {
-  Color get dotOneColor => const Color(0xFF3884DE);
-  Color get dotTwoColor => const Color(0xFF8DBBF1);
-  Color get dotThreeColor => const Color(0xFF156ACE);
+  Color get dotOneColor => ColorUtil.blue38Color;
+  Color get dotTwoColor => ColorUtil.blue8DColor;
+  Color get dotThreeColor => ColorUtil.blue15Color;
 }
 
 class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {

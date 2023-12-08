@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -19,7 +20,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -29,6 +29,8 @@ import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../commons/widgets/w_button.dart';
 
 typedef LikeCallback = void Function(bool, int);
 typedef DislikeCallback = void Function(bool);
@@ -128,16 +130,16 @@ class _NCommentCardState extends State<NCommentCard>
 
   @override
   Widget build(BuildContext context) {
-    var commentMenuButton = GestureDetector(
+    var commentMenuButton = WButton(
         child: Padding(
           padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.w,
-            color: Colors.black,
+            color: ColorUtil.black00Color,
           ),
         ),
-        onTap: () {
+        onPressed: () {
           showCupertinoModalPopup(
             context: context,
             builder: (context) {
@@ -411,7 +413,8 @@ class _NCommentCardState extends State<NCommentCard>
 
     var commentContent = widget.comment.content == ''
         ? SizedBox()
-        : ClipCopy(
+        : CommentCardGestureDetector(
+            isOfficial: false,
             id: widget.comment.id,
             copy: widget.comment.content,
             toast: '复制评论成功',
@@ -432,15 +435,15 @@ class _NCommentCardState extends State<NCommentCard>
           duration: Duration(milliseconds: 150),
           curve: Curves.decelerate,
           child: widget.comment.content != ''
-              ? InkWell(
-                  onTap: () {
+              ? WButton(
+                  onPressed: () {
                     setState(() {
                       _picFullView = true;
                     });
                   },
                   child: _picFullView
-                      ? InkWell(
-                          onTap: () {
+                      ? WButton(
+                          onPressed: () {
                             Navigator.pushNamed(
                               context,
                               FeedbackRouter.imageView,
@@ -474,8 +477,8 @@ class _NCommentCardState extends State<NCommentCard>
                           ],
                         ))
               : _picFullView
-                  ? InkWell(
-                      onTap: () {
+                  ? WButton(
+                      onPressed: () {
                         Navigator.pushNamed(
                           context,
                           FeedbackRouter.imageView,
@@ -495,8 +498,8 @@ class _NCommentCardState extends State<NCommentCard>
                     )
                   : Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
+                        WButton(
+                          onPressed: () {
                             setState(() {
                               _picFullView = true;
                             });
@@ -513,8 +516,8 @@ class _NCommentCardState extends State<NCommentCard>
                               )),
                         ),
                         Expanded(
-                            child: GestureDetector(
-                                onTap: () {
+                            child: WButton(
+                                onPressed: () {
                                   if (Provider.of<NewFloorProvider>(context,
                                           listen: false)
                                       .inputFieldEnabled) {
@@ -533,7 +536,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: 68.h, color: Colors.transparent)))
+                                    height: 68.h, color: ColorUtil.transparent)))
                       ],
                     ),
         ));
@@ -695,7 +698,7 @@ class _NCommentCardState extends State<NCommentCard>
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(6.w, 0, 14.w, 6.h),
-                    color: Colors.transparent,
+                    color: ColorUtil.transparent,
                     child: mainBody,
                   ),
                   if (!widget.isSubFloor &&
@@ -708,8 +711,8 @@ class _NCommentCardState extends State<NCommentCard>
                           children: [
                             subFloor,
                             if (widget.comment.subFloorCnt > 0)
-                              InkWell(
-                                onTap: () {
+                              WButton(
+                                onPressed: () {
                                   Navigator.pushNamed(
                                     context,
                                     FeedbackRouter.commentDetail,
@@ -796,7 +799,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   hintText: "评论置顶值，0-3000，0为取消置顶",
                   hintStyle: TextUtil.base.black2A.bold.w500.sp(14),
                   filled: true,
-                  fillColor: Color.fromRGBO(235, 238, 243, 1),
+                  fillColor: ColorUtil.white235,
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(

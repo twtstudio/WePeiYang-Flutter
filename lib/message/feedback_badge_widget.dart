@@ -3,6 +3,8 @@ import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
 
+import '../commons/util/text_util.dart';
+
 class FeedbackBadgeWidget extends StatefulWidget {
   final Widget child;
 
@@ -24,7 +26,7 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
               padding: EdgeInsets.all(4),
               child: Text(
                 count.toString(),
-                style: TextStyle(color: Colors.white, fontSize: 7),
+                style: TextUtil.base.white.sp(7),
               ),
             ),
             child: widget.child,

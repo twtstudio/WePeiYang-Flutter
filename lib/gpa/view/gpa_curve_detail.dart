@@ -2,12 +2,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 /// 构建wpy_page中的gpa部分
 class GPAPreview extends StatelessWidget {
@@ -20,14 +23,14 @@ class GPAPreview extends StatelessWidget {
       return
 
           ///去掉周围padding的懒方法
-          GestureDetector(
-        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
-        child: Column(
-          children: [
-            Image.asset("assets/images/schedule_empty.png"),
-          ],
-        ),
-      );
+        WButton(
+          onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
+          child: Column(
+            children: [
+              Image.asset("assets/images/schedule_empty.png"),
+            ],
+          ),
+        );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
@@ -50,7 +53,7 @@ class GPAPreview extends StatelessWidget {
 /// wpy_page中显示数值信息
 class _GPAIntro extends StatelessWidget {
   static final _textStyle =
-      TextUtil.base.w300.sp(14).customColor(Color(0xffcdcdd3));
+      TextUtil.base.w300.sp(14).whiteCD;
   static final _numStyle = TextUtil.base.Swis.bold.black2A.sp(22);
 
   @override
@@ -126,8 +129,8 @@ class GPACurve extends StatefulWidget {
 
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
-  static const Color _popupCardPreview = Colors.white;
-  static const Color _popupTextPreview = Color.fromRGBO(53, 59, 84, 1.0);
+  static const Color _popupCardPreview = ColorUtil.whiteFFColor;
+  static const Color _popupTextPreview = ColorUtil.blue53;
   static late Color _popupCardColor;
   static late Color _popupTextColor;
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
@@ -298,8 +301,8 @@ class _GPAPopupPainter extends CustomPainter {
   final bool isPre;
 
   /// 在wpy_page显示的颜色
-  static const Color _outerPreview = Colors.white10;
-  static const Color _innerPreview = Color(0xFF2C7EDF);
+  static const Color _outerPreview = ColorUtil.white10;
+  static const Color _innerPreview = ColorUtil.blue2CColor;
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
@@ -339,8 +342,8 @@ class _GPACurvePainter extends CustomPainter {
   final int taped;
 
   /// 在wpy_page显示的颜色
-  static const Color _linePreview = Color(0xFF2C7EDF);
-  static const Color _pointPreview = Colors.white;
+  static const Color _linePreview = ColorUtil.blue2CColor;
+  static const Color _pointPreview = ColorUtil.whiteFFColor;
 
   final Paint _linePaint;
   final Paint _pointPaint;

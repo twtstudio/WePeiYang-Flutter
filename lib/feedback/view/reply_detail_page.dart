@@ -4,19 +4,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
+
+import '../../commons/widgets/w_button.dart';
 
 class ReplyDetailPage extends StatefulWidget {
   final ReplyDetailPageArgs args;
@@ -37,6 +39,7 @@ class ReplyDetailPageArgs {
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
+
   int currentPage = 1;
   List<Floor>? floors;
 
@@ -136,8 +139,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   @override
   Widget build(BuildContext context) {
     Widget body;
-    Widget checkButton = InkWell(
-      onTap: () {
+    Widget checkButton = WButton(
+      onPressed: () {
+        // 这里是普通楼层详情页，所以这里一定是普通楼层的回复
         launchKey.currentState?.send(false);
         setState(() {
           _onRefresh();
@@ -167,7 +171,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               Container(
                 width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
-                color: Colors.black12,
+                color: ColorUtil.black12,
               ),
               SizedBox(height: 6.h)
             ],
@@ -229,7 +233,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
+                        color: ColorUtil.black12,
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
@@ -307,8 +311,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       )),
                   Offstage(
                     offstage: value.inputFieldEnabled,
-                    child: InkWell(
-                      onTap: () {
+                    child: WButton(
+                      onPressed: () {
                         Provider.of<NewFloorProvider>(context, listen: false)
                             .inputFieldOpenAndReplyTo(widget.args.floor.id);
                         FocusScope.of(context).requestFocus(
@@ -328,7 +332,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: Colors.white,
+                            color: ColorUtil.whiteFFColor,
                           )),
                     ),
                   ),
@@ -340,13 +344,13 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ],
     );
 
-    var postButton = GestureDetector(
+    var postButton = WButton(
       child: Center(
           child: Text(
         '查看原帖',
         style: TextUtil.base.black2A.bold,
       )),
-      onTap: () async {
+      onPressed: () async {
         await FeedbackService.getPostById(
             id: widget.args.floor.postId,
             onResult: (post) {
@@ -392,14 +396,14 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: ColorUtil.greyF7F8Color,
+      backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
         icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],
-      title: InkWell(
-        onTap: () => _refreshController.requestRefresh(),
+      title: WButton(
+        onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(
           width: double.infinity,
           height: kToolbarHeight,

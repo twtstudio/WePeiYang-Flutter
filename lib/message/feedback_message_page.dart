@@ -14,13 +14,14 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
+import '../commons/widgets/w_button.dart';
 import 'model/message_model.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -99,7 +100,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 50,
-            backgroundColor: Colors.transparent,
+            backgroundColor: ColorUtil.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text('消息中心',
@@ -159,8 +160,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               preferredSize: Size.infinite,
               child: Theme(
                 data: ThemeData(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
+                  splashColor: ColorUtil.transparent,
+                  highlightColor: ColorUtil.transparent,
                 ),
                 child: TabBar(
                   indicatorWeight: 0,
@@ -231,7 +232,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: Text('湖底通知'),
                   badgeContent: Text(
                     count.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    style: TextUtil.base.white.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -258,7 +259,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: tab,
                   badgeContent: Text(
                     count.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    style: TextUtil.base.white.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -546,7 +547,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
         color: widget.data.type == 0
-            ? ColorUtil.greyF7F8Color
+            ? ColorUtil.whiteF8Color
             : ColorUtil.whiteFDFE,
       ),
       child: Padding(
@@ -588,7 +589,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.greyF7F8Color,
+            color: ColorUtil.whiteF8Color,
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -612,8 +613,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       child: questionItem,
     );
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
 
         ///点内部的帖子区域块跳转到帖子
@@ -891,8 +892,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       ],
     );
 
-    Widget questionItem = GestureDetector(
-      onTap: () async {
+    Widget questionItem = WButton(
+      onPressed: () async {
         await Navigator.pushNamed(
           context,
           FeedbackRouter.detail,
@@ -908,7 +909,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.circular(5),
           color: widget.data.type == 0
-              ? ColorUtil.greyF7F8Color
+              ? ColorUtil.whiteF8Color
               : ColorUtil.whiteFDFE,
         ),
         child: Row(
@@ -948,7 +949,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.greyF7F8Color,
+            color: ColorUtil.whiteF8Color,
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -977,8 +978,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       );
     }
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
         if (widget.data.type == 0) {
           await Navigator.pushNamed(
@@ -1290,7 +1291,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.greyF7F8Color,
+        color: ColorUtil.whiteF8Color,
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -1335,8 +1336,8 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       );
     }
 
-    return GestureDetector(
-      onTap: () async {
+    return WButton(
+      onPressed: () async {
         await widget.onTapDown.call();
         await Navigator.pushNamed(
           context,
@@ -1380,7 +1381,7 @@ extension StringExtension on String {
 class CustomIndicator extends Decoration {
   const CustomIndicator({
     this.left = false,
-    this.borderSide = const BorderSide(width: 2, color: Colors.white),
+    this.borderSide = const BorderSide(width: 2, color: ColorUtil.whiteFFColor),
     this.insets = EdgeInsets.zero,
   });
 

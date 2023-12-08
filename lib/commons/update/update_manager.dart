@@ -149,6 +149,7 @@ class UpdateManager extends UpdateStatusListener {
       _androidVersion.canHotFix = false;
     }
     // 也可能使用apk，检查apk是否存在
+    // 如果需要测试更新失败等弹窗，在这里修改即可
     if (await File(version.apkPath).exists()) {
       setLoad();
       UpdateDialog.install.show();

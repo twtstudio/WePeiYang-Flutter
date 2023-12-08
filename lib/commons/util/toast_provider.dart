@@ -6,6 +6,8 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show AsyncTimer;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import 'color_util.dart';
+
 class ToastProvider with AsyncTimer {
   ToastProvider._();
 
@@ -77,7 +79,7 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: ColorUtil.red,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -85,7 +87,7 @@ class ToastProvider with AsyncTimer {
           children: [
             SvgPicture.asset(
               'assets/svg_pics/lake_butt_icons/error_background.svg',
-              color: Colors.white,
+              color: ColorUtil.whiteFFColor,
               width: 15,
             ),
             SizedBox(width: 10),
@@ -117,7 +119,7 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color(0xFFF0AD4E),
+          color: ColorUtil.yellowF0,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -156,7 +158,7 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: Color(0xFF5CB85C),
+          color: ColorUtil.green5CColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

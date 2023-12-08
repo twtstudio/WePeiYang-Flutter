@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 
 class LakeDialogWidget extends Dialog {
   final String title; //标题
@@ -45,7 +45,7 @@ class LakeDialogWidget extends Dialog {
             Container(
               padding: EdgeInsets.all(28.w),
               decoration: BoxDecoration(
-                color: Color(0xfff2f2f2),
+                color: ColorUtil.whiteF2Color,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -101,11 +101,12 @@ class LakeDialogWidget extends Dialog {
         child: Text(cancelText,
             style: cancelTextStyle ??
                 TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600),
+
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
-              return Color.fromRGBO(79, 88, 107, 1);
+              return ColorUtil.blue79;
             return ColorUtil.backgroundColor;
           }),
           backgroundColor: MaterialStateProperty.all(
@@ -128,7 +129,7 @@ class LakeDialogWidget extends Dialog {
               boxShadow: [
                 BoxShadow(
                     blurRadius: 1.6,
-                    color: Colors.black12,
+                    color: ColorUtil.black12,
                     offset: Offset(-1, 3),
                     spreadRadius: 1),
               ],
@@ -159,7 +160,7 @@ class LakeDialogWidget extends Dialog {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return Color.fromRGBO(79, 88, 107, 1);
+                    return ColorUtil.blue79;
                   return ColorUtil.backgroundColor;
                 }),
                 backgroundColor: MaterialStateProperty.all(

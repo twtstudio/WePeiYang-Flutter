@@ -6,6 +6,8 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/studyroom_images.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/room_card.dart';
 
+import '../../../commons/widgets/w_button.dart';
+
 /// 收藏列表的每一个item
 class FavourRoomCard extends StatelessWidget {
   final Classroom room;
@@ -19,8 +21,8 @@ class FavourRoomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final roomState = RoomStateText(room, onlyCurrent: true);
 
-    return InkWell(
-      onTap: () {
+    return WButton(
+      onPressed: () {
         Navigator.of(context).pushNamed(
           StudyRoomRouter.detail,
           arguments: room,
