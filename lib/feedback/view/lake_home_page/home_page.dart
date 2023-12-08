@@ -258,7 +258,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             }, builder: (_, tabs, __) {
               if (!context.read<LakeModel>().tabControllerLoaded) {
                 context.read<LakeModel>().tabController =
-                    TabController(length: tabs.length, vsync: this)
+                    TabController(length: tabs.length, vsync: this,initialIndex: 1)
                       ..addListener(() {
                         if (context
                                 .read<LakeModel>()
