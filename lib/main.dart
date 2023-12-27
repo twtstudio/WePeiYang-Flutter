@@ -12,6 +12,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 
 import 'auth/network/auth_service.dart';
@@ -22,7 +25,6 @@ import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
-import 'commons/font/font_loader.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/local/local_model.dart';
 import 'commons/network/wpy_dio.dart';
@@ -80,6 +82,23 @@ void main() async {
     await AmapLocation.instance.updatePrivacyShow(true);
     await AmapLocation.instance
         .init(iosKey: '02b9aee6190b4afe20b0ddd7ec0eb374');
+
+    /// 设置桌面端窗口适配, 依赖为 window_manager
+    if (Platform.isWindows) {
+      await windowManager.ensureInitialized();
+
+      WindowOptions windowOptions = WindowOptions(
+        minimumSize: Size(640, 400),
+        center: true,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: false,
+        titleBarStyle: TitleBarStyle.normal,
+      );
+      windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
+    }
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
