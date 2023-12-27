@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -34,6 +35,8 @@ class PostCardNormal extends StatefulWidget {
 
   /// 以下默认 outer
   final bool outer;
+
+  bool get needHorizontalView => 1.sw > 1.sh;
 
   @override
   State<StatefulWidget> createState() => _PostCardNormalState(this.post);
@@ -72,7 +75,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.id.toString(),
               post.avatarBox.toString()),
           Container(
-              width: (WePeiYangApp.screenWidth - 24.h) / 2,
+              // width: (1.sh - 24.h - (Platform.isWindows ? 50 : 0)) / 2,
               color: Colors.transparent, // 没他就没有点击域
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,14 +175,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
-              width: 11.67.w),
-          SizedBox(width: 3.w),
+              width: 11.67.r),
+          SizedBox(width: 3.r),
           Text(
             post.commentCount.toString() + '   ',
             style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
           ),
           IconWidget(
             IconType.like,
+            size: 15.r,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -203,7 +207,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             isLike: post.isLike,
           ),
           DislikeWidget(
-            size: 15.w,
+            size: 15.r,
             isDislike: widget.post.isDis,
             onDislikePressed: (dislikeNotifier) async {
               await FeedbackService.postHitDislike(
@@ -301,7 +305,10 @@ class _PostCardNormalState extends State<PostCardNormal> {
         ? GestureDetector(
             onTap: () {
               FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
-              Navigator.pushNamed(
+              if (widget.needHorizontalView)
+                context.read<LakeModel>().resetSplitPost(post);
+              else
+                Navigator.pushNamed(
                 context,
                 FeedbackRouter.detail,
                 arguments: post,
@@ -407,9 +414,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
             borderRadius: BorderRadius.all(Radius.circular(8.r)),
             child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                 fit: BoxFit.cover,
-                width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                width: Platform.isWindows ? (1.sw - 40.w - 50 - (post.imageUrls.length - 1) * 10.w) /
+                    post.imageUrls.length : (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
                     post.imageUrls.length,
-                height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                height: Platform.isWindows ? (1.sw - 40.w - 50 - (post.imageUrls.length - 1) * 10.w) /
+                    post.imageUrls.length : (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
                     post.imageUrls.length,
                 withHolder: true),
           ),
@@ -600,6 +609,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
         IconWidget(
           IconType.bottomLike,
           count: widget.post.likeCount,
+          size: 22.r,
           onLikePressed: (isLike, likeCount, success, failure) async {
             await FeedbackService.postHitLike(
               id: widget.post.id,
@@ -624,6 +634,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
         IconWidget(
           IconType.bottomFav,
           count: widget.post.favCount,
+          size: 22.r,
           onLikePressed: (isFav, favCount, success, failure) async {
             await FeedbackService.postHitFavorite(
               id: widget.post.id,
@@ -642,7 +653,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
           isLike: widget.post.isFav,
         ),
         DislikeWidget(
-          size: 22.w,
+          size: 22.r,
           isDislike: widget.post.isDis,
           onDislikePressed: (dislikeNotifier) async {
             await FeedbackService.postHitDislike(

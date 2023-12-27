@@ -1,4 +1,4 @@
-﻿name: we_pei_yang_flutter
+name: we_pei_yang_flutter
 description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -85,6 +85,7 @@ dependencies:
 
   webview_flutter: ^2.0.13
   wechat_assets_picker: ^8.5.0
+  window_manager: ^0.3.7
 
 dev_dependencies:
   flutter_test:

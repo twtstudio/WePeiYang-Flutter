@@ -130,10 +130,10 @@ class _NCommentCardState extends State<NCommentCard>
   Widget build(BuildContext context) {
     var commentMenuButton = GestureDetector(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
+          padding: EdgeInsets.fromLTRB(12.w, 4.h, 8.h, 12.w),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-            width: 18.w,
+            width: 18.r,
             color: Colors.black,
           ),
         ),
@@ -570,7 +570,7 @@ class _NCommentCardState extends State<NCommentCard>
       );
     }
 
-    var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount,
+    var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount, size: 15.r,
         onLikePressed: (isLiked, count, success, failure) async {
       await FeedbackService.commentHitLike(
         id: widget.comment.id,
@@ -592,7 +592,7 @@ class _NCommentCardState extends State<NCommentCard>
     }, isLike: widget.comment.isLike);
 
     var dislikeWidget = DislikeWidget(
-      size: 15.w,
+      size: 15.r,
       isDislike: widget.comment.isDis,
       onDislikePressed: (dislikeNotifier) async {
         await FeedbackService.commentHitDislike(

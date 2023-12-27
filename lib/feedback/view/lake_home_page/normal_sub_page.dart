@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -224,13 +225,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         right: 14.w),
                     padding: EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        borderRadius: BorderRadius.all(Radius.circular(100.r)),
                         color: ColorUtil.blue2CColor.withAlpha(12)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(width: 12),
+                          SizedBox(width: 12.w),
                           context.read<NoticeProvider>().noticeList.length > 0
                               ? InkWell(
                                   child: Row(
@@ -240,12 +241,12 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     children: [
                                       SvgPicture.asset(
                                         "assets/svg_pics/lake_butt_icons/la_ba.svg",
-                                        width: 20,
+                                        width: 20.r,
                                       ),
-                                      SizedBox(width: 6),
+                                      SizedBox(width: 6.w),
                                       SizedBox(
-                                          height: 20,
-                                          width: WePeiYangApp.screenWidth - 83,
+                                          height: 20.h,
+                                          width: 1.sw - 83.w - (Platform.isWindows ? 50 : 0),
                                           child: context
                                                       .read<NoticeProvider>()
                                                       .noticeList

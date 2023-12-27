@@ -308,7 +308,7 @@ class _ProfileImageWithDetailedPopupState
                   ),
                 ),
               ),
-              if (widget.avatarBox != '')
+              if (widget.avatarBox != '' && widget.avatarBox.length > 5)
                 WpyPic(
                   widget.avatarBox,
                   width: 60.h,

@@ -30,6 +30,9 @@ class Post {
 
   bool operator ==(Object other) => other is Post && other.id == id;
 
+  /// 依赖有没有 id 来判空
+  bool get isNull => this.id == 0;
+
   Post.fromJson(Map<String, dynamic> json)
       : id = json["id"] ?? 0,
         createAt = (json["created_at"] == '')
@@ -65,6 +68,34 @@ class Post {
         level = json["user_info"]["level"] ?? 0,
         avatar = json["user_info"]["avatar"] ?? '',
         avatarBox = json["user_info"]["avatar_frame"] ?? '';
+
+  Post.empty()
+      : id = 0,
+        createAt = null,
+        uid = 0,
+        type = 0,
+        campus = 0,
+        solved = 0,
+        title = '',
+        content = '',
+        favCount = 0,
+        likeCount = 0,
+        rating = 0,
+        tag = null,
+        floors = <Floor>[],
+        commentCount = 0,
+        isLike = false,
+        isDis = false,
+        isFav = false,
+        isOwner = false,
+        imageUrls = <String>[],
+        department = null,
+        visitCount = 0,
+        eTag = '',
+        nickname = '',
+        level = 0,
+        avatar = '',
+        avatarBox = '';
 
   Map<String, dynamic> toJson() => {
         "id": id,

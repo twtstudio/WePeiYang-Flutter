@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -38,8 +39,10 @@ enum DetailPageStatus {
 // ignore: must_be_immutable
 class PostDetailPage extends StatefulWidget {
   Post post;
+  double get searchBarHeight => 42.h;
+  bool? split = false;
 
-  PostDetailPage(this.post);
+  PostDetailPage(this.post, {this.split});
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
@@ -723,7 +726,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           CupertinoIcons.back,
           color: Color(0XFF252525),
         ),
-        onPressed: () => Navigator.pop(context, widget.post),
+        onPressed: () => (widget.split ?? false) ? context.read<LakeModel>().resetSplitPost(Post.empty()) : Navigator.pop(context, widget.post),
       ),
       actions: [if (hasAdmin) manageButton, menuButton, SizedBox(width: 10)],
       title: InkWell(
@@ -750,10 +753,15 @@ class _PostDetailPageState extends State<PostDetailPage>
         return true;
       },
       child: GestureDetector(
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: appBar,
-          body: body,
+        child: Padding(
+          padding: widget.split ?? false ? EdgeInsets.only(top: MediaQuery.of(context).padding.top < widget.searchBarHeight
+              ? widget.searchBarHeight
+              : MediaQuery.of(context).padding.top) : EdgeInsets.zero,
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: appBar,
+            body: body,
+          ),
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           if (details.delta.dx > 20) {

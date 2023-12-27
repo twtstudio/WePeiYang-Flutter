@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActivityCard extends StatefulWidget {
   @override
@@ -79,11 +80,12 @@ class _ActivityCardState extends State<ActivityCard> {
             Image.network(
                 context.read<FestivalProvider>().festivalList[index].image,
                 fit: BoxFit.cover,
-                width: WePeiYangApp.screenWidth - 28,
-                height: 0.32 * WePeiYangApp.screenWidth),
+                width: 1.sw - 28.w,
+                height: (1.sw - 28.w) * 0.32,
+            ),
             Positioned(
-                bottom: 4,
-                right: 4,
+                bottom: 4.w,
+                right: 4.w,
                 child: TextPod(context
                     .read<FestivalProvider>()
                     .festivalList[index]
@@ -94,11 +96,12 @@ class _ActivityCardState extends State<ActivityCard> {
     }
 
     return Container(
-      height: 0.32 * WePeiYangApp.screenWidth,
+      width: 1.sw - 28.w,
+      height: (1.sw - 28.w) * 0.32,
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget? child) {
         return ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: BorderRadius.all(Radius.circular(8.r)),
             clipBehavior: Clip.hardEdge,
             child: Stack(
               children: [
@@ -139,17 +142,17 @@ class _ActivityCardState extends State<ActivityCard> {
                             return Align(
                               alignment: Alignment.bottomCenter,
                               child: Padding(
-                                padding: EdgeInsets.only(bottom: 10),
+                                padding: EdgeInsets.only(bottom: 10.h),
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: List.generate(config.itemCount,
                                         (index) {
                                       return Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 5),
+                                              horizontal: 5.w),
                                           child: Container(
-                                            width: 6,
-                                            height: 6,
+                                            width: 6.r,
+                                            height: 6.r,
                                             decoration: BoxDecoration(
                                                 color:
                                                     index == config.activeIndex
@@ -157,7 +160,7 @@ class _ActivityCardState extends State<ActivityCard> {
                                                         : Color.fromRGBO(
                                                             0, 0, 25, 0.22),
                                                 borderRadius:
-                                                    BorderRadius.circular(100)),
+                                                    BorderRadius.circular(100.r)),
                                           ));
                                     })),
                               ),

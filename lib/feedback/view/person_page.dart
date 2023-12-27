@@ -318,17 +318,19 @@ class _PersonPageState extends State<PersonPage> {
                 children: [
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: WpyPic(
-                      avatar == ""
-                          ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
-                          : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                      width: 1.sw,
-                      height: 1.sw,
-                      fit: BoxFit.contain,
+                      child: WpyPic(
+                        avatar == ""
+                            ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
+                            : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                        width: 1.sw,
+                        height: 1.sw,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
                   Align(
                       alignment: Alignment.bottomCenter,
+                    child: InkWell(
+                        onTap: () => Navigator.pop(context),
                       child: Container(
                           height: 1.sw,
                           decoration: BoxDecoration(
@@ -342,7 +344,7 @@ class _PersonPageState extends State<PersonPage> {
                             0.4,
                             0.7,
                             1
-                          ], begin: Alignment(0, -1), end: Alignment(0, 1))))),
+                          ], begin: Alignment(0, -1), end: Alignment(0, 1)))))),
                   SingleChildScrollView(child: appBar),
                 ],
               ),

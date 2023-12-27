@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -186,14 +185,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     var sideNavigationBar = Container(
       padding: EdgeInsets.fromLTRB(3.w, 10.h, 3.w, 0.7.sh - 10.h),
-      width: 20.w,
+      width: 50,
       decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 1),
           boxShadow: [
             BoxShadow(color: Colors.black26, spreadRadius: -1, blurRadius: 2)
           ]),
 
-      /// 适配iOS底部安全区
       child: SafeArea(
         child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[homePage, feedbackPage, selfPage]),
       ),

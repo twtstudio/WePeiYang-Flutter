@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -16,8 +17,8 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
@@ -35,13 +36,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool canSee = false;
 
-  bool landscape = 1.sw > 0.7.sh;
-
   /// 42.h
   double get searchBarHeight => 42.h;
 
-  /// 50.h
+  /// 46.h
   double get tabBarHeight => 46.h;
+
+  bool get needHorizontalView => 1.sw > 1.sh;
 
   late final FbDepartmentsProvider _departmentsProvider;
 
@@ -77,23 +78,20 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             .read<LakeModel>()
             .lakeAreas[context
                 .read<LakeModel>()
-                .tabList[context.read<LakeModel>().tabController.index]
+                .tabList[context.read<LakeModel>().currentTab]
                 .id]!
             .controller
             .offset >
         1500.h) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]!
+          .lakeAreas[context.read<LakeModel>().currentTabId]!
           .controller
           .jumpTo(1500.h);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context
-            .read<LakeModel>()
-            .tabList[context.read<LakeModel>().tabController.index]
-            .id]!
+        .lakeAreas[context.read<LakeModel>().currentTabId]!
         .controller
         .animateTo(-85.h,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
@@ -155,8 +153,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               builder: (_, data, __) => Row(
                     children: [
                       ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: landscape ? 0.5.sw - 260 : 1.sw - 260),
+                        constraints: BoxConstraints(maxWidth: 1.sw - 260),
                         child: Text(
                           data.recTag == null
                               ? '搜索发现'
@@ -257,40 +254,42 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       // 因为上面的空要藏住搜索框
                       top: MediaQuery.of(context).padding.top < searchBarHeight
                           ? searchBarHeight + tabBarHeight
-                          : MediaQuery.of(context).padding.top + searchBarHeight,
-                      bottom: 52.h),
+                          : MediaQuery.of(context).padding.top +
+                              searchBarHeight,
+                      bottom: Platform.isWindows ? 0 : 52.h),
                   child: Selector<LakeModel, List<WPYTab>>(
                       selector: (BuildContext context, LakeModel lakeModel) {
                     return lakeModel.tabList;
                   }, builder: (_, tabs, __) {
                     if (!context.read<LakeModel>().tabControllerLoaded) {
-                      context.read<LakeModel>().tabController =
-                          TabController(length: tabs.length, vsync: this)
-                            ..addListener(() {
-                              if (context
-                                      .read<LakeModel>()
-                                      .tabController
-                                      .index
-                                      .toDouble() ==
-                                  context
-                                      .read<LakeModel>()
-                                      .tabController
-                                      .animation!
-                                      .value) {
-                                WPYTab tab =
-                                    context.read<LakeModel>().lakeAreas[1]!.tab;
-                                if (context.read<LakeModel>().tabController.index !=
-                                        tabList.indexOf(tab) &&
-                                    canSee) _onFeedbackTapped();
-                                context.read<LakeModel>().currentTab =
-                                    context.read<LakeModel>().tabController.index;
-                                context.read<LakeModel>().onFeedbackOpen();
-                              }
-                            });
+                      context.read<LakeModel>().tabController = TabController(
+                          length: tabs.length, vsync: this)
+                        ..addListener(() {
+                          if (context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .index
+                                  .toDouble() ==
+                              context
+                                  .read<LakeModel>()
+                                  .tabController
+                                  .animation!
+                                  .value) {
+                            WPYTab tab =
+                                context.read<LakeModel>().lakeAreas[1]!.tab;
+                            if (context.read<LakeModel>().tabController.index !=
+                                    tabList.indexOf(tab) &&
+                                canSee) _onFeedbackTapped();
+                            context.read<LakeModel>().currentTab =
+                                context.read<LakeModel>().tabController.index;
+                            context.read<LakeModel>().onFeedbackOpen();
+                          }
+                        });
                     }
                     int cacheNum = 0;
                     return tabs.length == 1
-                        ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
+                        ? ListView(
+                            children: [SizedBox(height: 0.35.sh), Loading()])
                         : ExtendedTabBarView(
                             cacheExtent: cacheNum,
                             controller: context.read<LakeModel>().tabController,
@@ -329,10 +328,12 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       height: searchBarHeight + tabBarHeight,
                       margin: EdgeInsets.only(
                           top: barExtended
-                              ? MediaQuery.of(context).padding.top < searchBarHeight
+                              ? MediaQuery.of(context).padding.top <
+                                      searchBarHeight
                                   ? searchBarHeight
                                   : MediaQuery.of(context).padding.top
-                              : MediaQuery.of(context).padding.top < searchBarHeight
+                              : MediaQuery.of(context).padding.top <
+                                      searchBarHeight
                                   ? 0
                                   : MediaQuery.of(context).padding.top -
                                       searchBarHeight),
@@ -381,17 +382,64 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         onTap: () {
                           if (tabList.isNotEmpty) {
                             initializeRefresh = true;
-                            context.read<NewPostProvider>().postTypeNotifier.value = tabList[1].id;
+                            context
+                                .read<NewPostProvider>()
+                                .postTypeNotifier
+                                .value = tabList[1].id;
                             Navigator.pushNamed(context, FeedbackRouter.newPost,
                                 arguments: NewPostArgs(false, '', 0, ''));
                           }
                         }),
                   ),
                 ),
+                // Positioned(
+                //   bottom: ScreenUtil().bottomBarHeight + 20.h,
+                //   right: 20.w,
+                //   child: InkWell(
+                //       splashColor: Colors.transparent,
+                //       highlightColor: Colors.transparent,
+                //       child: Container(
+                //         height: 72.r,
+                //         width: 72.r,
+                //         decoration: BoxDecoration(
+                //           image: DecorationImage(
+                //             image: AssetImage("assets/images/add_post.png"),
+                //           ),
+                //         ),
+                //       ),
+                //       onTap: () {
+                //         context
+                //             .read<LakeModel>()
+                //             .lakeAreas[context.read<LakeModel>().tabList[context.read<LakeModel>().currentTab]
+                //             .id]!
+                //             .controller
+                //             .animateTo(context
+                //             .read<LakeModel>()
+                //             .lakeAreas[context.read<LakeModel>().tabList[context.read<LakeModel>().currentTab]
+                //             .id]!
+                //             .controller.offset + 0.7.sh,
+                //             duration: Duration(milliseconds: 200),
+                //             curve: Curves.easeOutCirc);                }),
+                // ),
               ],
             ),
           ),
-          if (landscape) Expanded(child: SizedBox())
+          if (needHorizontalView)
+            Expanded(
+                child: Selector<LakeModel, Post>(
+                    selector: (BuildContext context, LakeModel lakeModel) {
+              return lakeModel
+                  .lakeAreas[lakeModel.currentTabId]!.horizontalViewingPost;
+            }, shouldRebuild: (Post pre, Post aft) {
+              return pre.id != aft.id;
+            }, builder: (_, post, __) {
+              // double opa = 1;
+              // Future.delayed(Duration(milliseconds: 50))
+              //     .then((_) => opa = 0);
+              return post.isNull
+                  ? WpyPic("assets/images/schedule_empty.png")
+                  : PostDetailPage(post, split: true);
+            }))
         ],
       ),
     );

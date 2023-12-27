@@ -97,6 +97,7 @@ class LakeArea {
   ScrollController controller;
   LakePageStatus status;
   int currentPage = 1;
+  Post horizontalViewingPost = Post.empty();
 
   LakeArea.empty()
       : this.tab = WPYTab(),
@@ -110,6 +111,7 @@ class LakeArea {
     this.refreshController = RefreshController();
     this.controller = ScrollController();
     this.status = LakePageStatus.unload;
+    this.horizontalViewingPost = Post.empty();
   }
 }
 
@@ -139,6 +141,8 @@ class LakeModel extends ChangeNotifier {
     tabController.dispose();
     sortSeq = 1;
   }
+
+  int get currentTabId => tabList[currentTab].id;
 
   Future<void> initTabList() async {
     if (mainStatus == LakePageStatus.error ||
@@ -327,6 +331,15 @@ class LakeModel extends ChangeNotifier {
               });
       }
     }
+  }
+
+  void resetSplitPost(Post post) {
+    lakeAreas[currentTabId]?.horizontalViewingPost = Post.empty();
+    notifyListeners();
+    Future.delayed(Duration(milliseconds: 100)).then((_) {
+      lakeAreas[currentTabId]?.horizontalViewingPost = post;
+      notifyListeners();
+    });
   }
 }
 

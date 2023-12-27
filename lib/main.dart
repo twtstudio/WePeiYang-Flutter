@@ -13,6 +13,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/view/message/message_router.dart';
@@ -60,6 +61,22 @@ void main() async {
     } catch (e) {
       print('不支持高刷');
     }
+
+    /// 设置桌面端窗口适配, 依赖为 window_manager
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(640, 1000),
+      minimumSize: Size(640, 400),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
 
     /// 初始化友盟
     await UmengCommonSdk.initCommon();
