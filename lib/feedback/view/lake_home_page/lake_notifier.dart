@@ -345,12 +345,20 @@ class LakeModel extends ChangeNotifier {
 
 class FestivalProvider extends ChangeNotifier {
   List<Festival> festivalList = [];
+  List<Festival> nonePopupList = [];
 
   Future<void> initFestivalList() async {
     await FeedbackService.getFestCards(
       onSuccess: (list) {
         festivalList.clear();
         festivalList.addAll(list);
+
+        nonePopupList.clear();
+        for (Festival f in list) {
+          if (f.name != 'popup') {
+            nonePopupList.add(f);
+          }
+        }
         notifyListeners();
       },
       onFailure: (e) {

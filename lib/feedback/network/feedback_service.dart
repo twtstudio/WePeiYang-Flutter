@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 class FeedbackDio extends DioAbstract {
   @override
   String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+
   //String baseUrl = 'http://8.141.166.181:7013/api/v1/f/';
 
   @override
@@ -55,7 +56,8 @@ class FeedbackPicPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];
@@ -76,7 +78,8 @@ class FeedbackAdminPostDio extends DioAbstract {
         case 200: // 成功
           return handler.next(response);
         default: // 其他错误
-          return handler.reject(WpyDioException(error: response.data['msg']), true);
+          return handler.reject(
+              WpyDioException(error: response.data['msg']), true);
       }
     })
   ];

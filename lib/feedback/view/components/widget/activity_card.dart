@@ -41,7 +41,7 @@ class _ActivityCardState extends State<ActivityCard> {
     Widget card(BuildContext context, int index) {
       return InkWell(
         onTap: () async {
-          final url = context.read<FestivalProvider>().festivalList[index].url;
+          final url = context.read<FestivalProvider>().nonePopupList[index].url;
           if (url.isEmpty) {
             sp.stopAutoplay();
             setState(() {
@@ -76,13 +76,13 @@ class _ActivityCardState extends State<ActivityCard> {
                     url,
                     context
                         .read<FestivalProvider>()
-                        .festivalList[index]
+                        .nonePopupList[index]
                         .title));
         },
         child: Stack(
           children: [
             Image.network(
-                context.read<FestivalProvider>().festivalList[index].image,
+                context.read<FestivalProvider>().nonePopupList[index].image,
                 fit: BoxFit.cover,
                 width: widget.width,
                 height: widget.width * 0.32,
@@ -92,7 +92,7 @@ class _ActivityCardState extends State<ActivityCard> {
                 right: 4.w,
                 child: TextPod(context
                     .read<FestivalProvider>()
-                    .festivalList[index]
+                    .nonePopupList[index]
                     .title)),
           ],
         ),
@@ -109,30 +109,30 @@ class _ActivityCardState extends State<ActivityCard> {
             clipBehavior: Clip.hardEdge,
             child: Stack(
               children: [
-                context.read<FestivalProvider>().festivalList.length == 1
+                context.read<FestivalProvider>().nonePopupList.length == 1
                     ? card(context, 0)
                     : Swiper(
                         controller: sp,
                         autoplay: context
                                 .read<FestivalProvider>()
-                                .festivalList
+                                .nonePopupList
                                 .length !=
                             1,
                         autoplayDelay: 5000,
                         itemCount: context
                                     .read<FestivalProvider>()
-                                    .festivalList
+                                    .nonePopupList
                                     .length ==
                                 0
                             ? 1
                             : context
                                 .read<FestivalProvider>()
-                                .festivalList
+                                .nonePopupList
                                 .length,
                         itemBuilder: (BuildContext context, int index) {
                           return context
                                       .read<FestivalProvider>()
-                                      .festivalList
+                                      .nonePopupList
                                       .length ==
                                   0
                               ? SizedBox()
