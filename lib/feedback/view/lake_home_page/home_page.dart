@@ -2,6 +2,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -18,7 +19,9 @@ import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
+import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../home/view/web_views/festival_page.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
@@ -259,29 +262,28 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               return lakeModel.tabList;
             }, builder: (_, tabs, __) {
               if (!context.read<LakeModel>().tabControllerLoaded) {
-                context.read<LakeModel>().tabController =
-                    TabController(length: tabs.length, vsync: this,initialIndex: 1)
-                      ..addListener(() {
-                        if (context
-                                .read<LakeModel>()
-                                .tabController
-                                .index
-                                .toDouble() ==
-                            context
-                                .read<LakeModel>()
-                                .tabController
-                                .animation!
-                                .value) {
-                          WPYTab tab =
-                              context.read<LakeModel>().lakeAreas[1]!.tab;
-                          if (context.read<LakeModel>().tabController.index !=
-                                  tabList.indexOf(tab) &&
-                              canSee) _onFeedbackTapped();
-                          context.read<LakeModel>().currentTab =
-                              context.read<LakeModel>().tabController.index;
-                          context.read<LakeModel>().onFeedbackOpen();
-                        }
-                      });
+                context.read<LakeModel>().tabController = TabController(
+                    length: tabs.length, vsync: this, initialIndex: 1)
+                  ..addListener(() {
+                    if (context
+                            .read<LakeModel>()
+                            .tabController
+                            .index
+                            .toDouble() ==
+                        context
+                            .read<LakeModel>()
+                            .tabController
+                            .animation!
+                            .value) {
+                      WPYTab tab = context.read<LakeModel>().lakeAreas[1]!.tab;
+                      if (context.read<LakeModel>().tabController.index !=
+                              tabList.indexOf(tab) &&
+                          canSee) _onFeedbackTapped();
+                      context.read<LakeModel>().currentTab =
+                          context.read<LakeModel>().tabController.index;
+                      context.read<LakeModel>().onFeedbackOpen();
+                    }
+                  });
               }
               int cacheNum = 0;
               return tabs.length == 1
@@ -376,13 +378,63 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   onTap: () {
                     if (tabList.isNotEmpty) {
                       initializeRefresh = true;
-                      context.read<NewPostProvider>().postTypeNotifier.value = tabList[1].id;
+                      context.read<NewPostProvider>().postTypeNotifier.value =
+                          tabList[1].id;
                       Navigator.pushNamed(context, FeedbackRouter.newPost,
                           arguments: NewPostArgs(false, '', 0, ''));
                     }
                   }),
             ),
           ),
+          Consumer<FestivalProvider>(
+              builder: (BuildContext context, fp, Widget? child) {
+            if (fp.popUpIndex() != -1) {
+              int index = fp.popUpIndex();
+              final url = fp.festivalList[index].url;
+              final picUrl = fp.festivalList[index].image;
+              return Positioned(
+                bottom: ScreenUtil().bottomBarHeight + 150.h,
+                right: 20.w,
+                child: InkWell(
+                    splashColor: ColorUtil.transparent,
+                    highlightColor: ColorUtil.transparent,
+                    child: Container(
+                      height: 72.r,
+                      width: 72.r,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage(picUrl), fit: BoxFit.cover),
+                      ),
+                    ),
+                    onTap: () async {
+                      if (!url.isEmpty) {
+                        if (url.startsWith('browser:')) {
+                          final launchUrl = url
+                              .replaceAll('browser:', '')
+                              .replaceAll(
+                                  '<token>', '${CommonPreferences.token.value}')
+                              .replaceAll('<laketoken>',
+                                  '${CommonPreferences.lakeToken.value}');
+                          if (await canLaunchUrlString(launchUrl)) {
+                            launchUrlString(launchUrl,
+                                mode: LaunchMode.externalApplication);
+                          } else {
+                            ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                          }
+                        } else
+                          Navigator.pushNamed(context, FeedbackRouter.haitang,
+                              arguments: FestivalArgs(
+                                  url,
+                                  context
+                                      .read<FestivalProvider>()
+                                      .festivalList[index]
+                                      .title));
+                      }
+                    }),
+              );
+            } else
+              return SizedBox();
+          })
         ],
       ),
     );

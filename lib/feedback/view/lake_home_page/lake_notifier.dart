@@ -345,6 +345,13 @@ class FestivalProvider extends ChangeNotifier {
       },
     );
   }
+
+  int popUpIndex () {
+    for (int i = 0; i < festivalList.length; i++) {
+      if (festivalList[i].name == 'popup') return i;
+    }
+    return -1;
+  }
 }
 
 class NoticeProvider extends ChangeNotifier {
