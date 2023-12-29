@@ -393,15 +393,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               final url = fp.festivalList[index].url;
               final picUrl = fp.festivalList[index].image;
               return Positioned(
-                bottom: ScreenUtil().bottomBarHeight + 150.h,
-                right: 20.w,
+                bottom: ScreenUtil().bottomBarHeight + 180.h,
+                right: 20.w + 6.r,
                 child: InkWell(
-                    splashColor: ColorUtil.transparent,
-                    highlightColor: ColorUtil.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     child: Container(
-                      height: 72.r,
-                      width: 72.r,
+                      height: 60.r,
+                      width: 60.r,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(100.r)),
                         image: DecorationImage(
                             image: NetworkImage(picUrl), fit: BoxFit.cover),
                       ),
@@ -434,7 +435,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               );
             } else
               return SizedBox();
-          })
+          }),
         ],
       ),
     );
