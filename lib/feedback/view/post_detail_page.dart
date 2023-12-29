@@ -343,7 +343,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     screenshotController: screenshotController,
                     expandAll: screenshotting.value,
                   ),
-                const SizedBox(height: SplitUtil.h * 10),
+                SizedBox(height: SplitUtil.h * 10),
                 Row(
                   children: [
                     SizedBox(width: SplitUtil.w * 15),
@@ -1008,7 +1008,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       : MediaQuery.of(context).padding.top)
               : EdgeInsets.zero,
           child: Scaffold(
-            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             appBar: appBar,
             body: body,
           ),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:extended_tabs/extended_tabs.dart';
@@ -25,7 +26,6 @@ import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
-import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';

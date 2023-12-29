@@ -155,8 +155,6 @@ class LakeModel extends ChangeNotifier {
 
   int get currentTabId => tabList[currentTab].id;
 
-  int get currentTabId => tabList[currentTab].id;
-
   Future<void> initTabList() async {
     if (mainStatus == LakePageStatus.error ||
         mainStatus == LakePageStatus.unload)

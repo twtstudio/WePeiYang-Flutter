@@ -5,7 +5,7 @@ import android.os.Environment
 import java.io.File
 
 object FileUtil {
-    fun downloadDirectory(context: Context): File? {
+    fun downloadDirectory(context: Context): File {
         return context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
     }
 
