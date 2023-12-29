@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     var sideNavigationBar = Container(
-      padding: EdgeInsets.fromLTRB(3.w, 10.h, 3.w, 0.7.sh - 10.h),
+      padding: EdgeInsets.fromLTRB(3, 10, 3, 0.7.sh - 10),
       width: 50,
       decoration: BoxDecoration(
           color: Color.fromRGBO(255, 255, 255, 1),

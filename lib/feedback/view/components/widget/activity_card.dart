@@ -12,10 +12,14 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActivityCard extends StatefulWidget {
+  
+  final double width;
+  
+  ActivityCard(this.width);
+  
   @override
   _ActivityCardState createState() => _ActivityCardState();
 }
@@ -80,8 +84,8 @@ class _ActivityCardState extends State<ActivityCard> {
             Image.network(
                 context.read<FestivalProvider>().festivalList[index].image,
                 fit: BoxFit.cover,
-                width: 1.sw - 28.w,
-                height: (1.sw - 28.w) * 0.32,
+                width: widget.width,
+                height: widget.width * 0.32,
             ),
             Positioned(
                 bottom: 4.w,
@@ -96,8 +100,8 @@ class _ActivityCardState extends State<ActivityCard> {
     }
 
     return Container(
-      width: 1.sw - 28.w,
-      height: (1.sw - 28.w) * 0.32,
+      width: widget.width,
+      height: widget.width * 0.32,
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget? child) {
         return ClipRRect(

@@ -36,8 +36,6 @@ class PostCardNormal extends StatefulWidget {
   /// 以下默认 outer
   final bool outer;
 
-  bool get needHorizontalView => 1.sw > 1.sh;
-
   @override
   State<StatefulWidget> createState() => _PostCardNormalState(this.post);
 }
@@ -46,6 +44,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Post post;
 
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
+
+  bool get needHorizontalView => 1.sw > 1.sh;
 
   _PostCardNormalState(this.post);
 
@@ -305,14 +305,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
         ? GestureDetector(
             onTap: () {
               FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
-              if (widget.needHorizontalView)
+              if (needHorizontalView)
                 context.read<LakeModel>().resetSplitPost(post);
               else
                 Navigator.pushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              );
+                  context,
+                  FeedbackRouter.detail,
+                  arguments: post,
+                );
             },
             child: Container(
               padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
@@ -406,6 +406,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
         ),
       );
 
+  double get getMultWidth => Platform.isWindows
+      ? (1.sw - 40.w - 50) /
+          post.imageUrls.length
+      : (1.sw - 40.w) /
+          post.imageUrls.length;
+
   Widget get outerMultipleImage => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
@@ -414,12 +420,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
             borderRadius: BorderRadius.all(Radius.circular(8.r)),
             child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                 fit: BoxFit.cover,
-                width: Platform.isWindows ? (1.sw - 40.w - 50 - (post.imageUrls.length - 1) * 10.w) /
-                    post.imageUrls.length : (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
-                    post.imageUrls.length,
-                height: Platform.isWindows ? (1.sw - 40.w - 50 - (post.imageUrls.length - 1) * 10.w) /
-                    post.imageUrls.length : (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
-                    post.imageUrls.length,
+                width: needHorizontalView ? getMultWidth / 2 : getMultWidth,
+                height: needHorizontalView ? getMultWidth / 2 : getMultWidth,
                 withHolder: true),
           ),
         ),

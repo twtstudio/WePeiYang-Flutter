@@ -37,6 +37,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   int index;
   double _previousOffset = 0;
 
+  bool get needHorizontalView => 1.sw > 1.sh;
+
   NSubPageState(this.index);
 
   List<String> topText = [
@@ -219,21 +221,18 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (ind == 0)
                   return Container(
                     height: 35.h,
+                    width: Platform.isWindows ? needHorizontalView ? 1.sw - 50 : 0.5.sw - 25 : needHorizontalView ? 1.sw : 0.5.sw,
                     margin: EdgeInsets.only(
                         top: 12.h + FeedbackHomePageState().searchBarHeight,
                         left: 14.w,
                         right: 14.w),
-                    padding: EdgeInsets.symmetric(vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 12.h),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(100.r)),
                         color: ColorUtil.blue2CColor.withAlpha(12)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(width: 12.w),
+                          child:
                           context.read<NoticeProvider>().noticeList.length > 0
-                              ? InkWell(
+                              ? GestureDetector(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -241,12 +240,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     children: [
                                       SvgPicture.asset(
                                         "assets/svg_pics/lake_butt_icons/la_ba.svg",
-                                        width: 20.r,
+                                        width: 20.h,
                                       ),
-                                      SizedBox(width: 6.w),
-                                      SizedBox(
-                                          height: 20.h,
-                                          width: 1.sw - 83.w - (Platform.isWindows ? 50 : 0),
+                                      SizedBox(width: 6.h),
+                                      Expanded(
                                           child: context
                                                       .read<NoticeProvider>()
                                                       .noticeList
@@ -282,7 +279,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   onTap: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 )
-                              : InkWell(
+                              : GestureDetector(
                                   child: SizedBox(
                                     width: WePeiYangApp.screenWidth - 83,
                                     child: Text(
@@ -296,8 +293,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                   onTap: () => Navigator.pushNamed(
                                       context, HomeRouter.notice),
                                 ),
-                          Spacer()
-                        ]),
                   );
                 ind--;
                 if (index == 0 && ind == 0) return HotCard();
@@ -307,7 +302,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     context.read<FestivalProvider>().festivalList.length > 0)
                   return Padding(
                     padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
-                    child: ActivityCard(),
+                    child: ActivityCard(needHorizontalView
+                        ? 0.5.sw - 10.w - (Platform.isWindows ? 50 : 0)
+                        : 1.sw - 28.w),
                   );
                 ind--;
                 if (ind == 0)
