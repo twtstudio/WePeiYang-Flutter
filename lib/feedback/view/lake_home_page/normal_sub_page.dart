@@ -164,9 +164,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     if (index == 0) {
       context.read<FbHotTagsProvider>().initHotTags();
+      context.read<FestivalProvider>().initFestivalList();
+      context.read<NoticeProvider>().initNotices();
     }
-    context.read<FestivalProvider>().initFestivalList();
-    context.read<NoticeProvider>().initNotices();
     context.read<LakeModel>().fillLakeAreaAndInitPostList(
         index, RefreshController(), ScrollController());
     super.initState();
@@ -305,7 +305,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (index != 0 && ind == 0) return SizedBox(height: 10.h);
                 ind--;
                 if (ind == 0 &&
-                    context.read<FestivalProvider>().festivalList.length > 0)
+                    context.read<FestivalProvider>().nonePopupList.length > 0)
                   return Padding(
                     padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                     child: ActivityCard(),
@@ -450,7 +450,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return SizedBox(height: 10.h);
                     ind--;
                     if (ind == 0 &&
-                        context.read<FestivalProvider>().festivalList.length >
+                        context.read<FestivalProvider>().nonePopupList.length >
                             0)
                       return Container(
                           decoration: BoxDecoration(
