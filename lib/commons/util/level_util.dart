@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 
 class LevelUtil extends StatelessWidget {
   final String level;
   final TextStyle style;
-  final double width;
-  final double height;
+  final bool? big;
 
-  LevelUtil(
-      {Key? key,
-      required this.level,
-      required this.width,
-      required this.height,
-      required this.style})
+  LevelUtil({Key? key, required this.level, required this.style, this.big})
       : super(key: key);
 
   static const List<Color> colors = [
@@ -32,8 +27,8 @@ class LevelUtil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width.w,
-      height: height.h,
+      width: SplitUtil.w * ((this.big ?? false) ? 30 : 18),
+      height: SplitUtil.h * ((this.big ?? false) ? 24 : 14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topLeft,

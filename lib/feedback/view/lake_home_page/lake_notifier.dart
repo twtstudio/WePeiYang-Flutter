@@ -97,7 +97,6 @@ class LakeArea {
   ScrollController controller;
   LakePageStatus status;
   int currentPage = 1;
-  Post horizontalViewingPost = Post.empty();
 
   LakeArea.empty()
       : this.tab = WPYTab(),
@@ -111,8 +110,16 @@ class LakeArea {
     this.refreshController = RefreshController();
     this.controller = ScrollController();
     this.status = LakePageStatus.unload;
-    this.horizontalViewingPost = Post.empty();
   }
+}
+
+class ChangeablePost {
+  Post post = Post.empty();
+  int changeId = 0;
+
+  ChangeablePost(Post p, int cId)
+      : post = p,
+        changeId = cId;
 }
 
 class LakeModel extends ChangeNotifier {
@@ -126,6 +133,7 @@ class LakeModel extends ChangeNotifier {
   double opacity = 0;
   late TabController tabController;
   int sortSeq = 1;
+  ChangeablePost horizontalViewingPost = ChangeablePost(Post.empty(), 0);
 
   clearAll() {
     mainStatus = LakePageStatus.unload;
@@ -140,6 +148,7 @@ class LakeModel extends ChangeNotifier {
     opacity = 0;
     tabController.dispose();
     sortSeq = 1;
+    horizontalViewingPost = ChangeablePost(Post.empty(), 0);
   }
 
   int get currentTabId => tabList[currentTab].id;
@@ -333,13 +342,14 @@ class LakeModel extends ChangeNotifier {
     }
   }
 
-  void resetSplitPost(Post post) {
-    lakeAreas[currentTabId]?.horizontalViewingPost = Post.empty();
+  void clearAndSetSplitPost(Post post) {
+    int changeId = horizontalViewingPost.changeId;
+    if (horizontalViewingPost.post.id != post.id) {
+      changeId = changeId + 1;
+      FeedbackService.visitPost(id: post.id, onFailure: (_) {});
+    }
+    horizontalViewingPost = ChangeablePost(post, changeId);
     notifyListeners();
-    Future.delayed(Duration(milliseconds: 100)).then((_) {
-      lakeAreas[currentTabId]?.horizontalViewingPost = post;
-      notifyListeners();
-    });
   }
 }
 
@@ -367,7 +377,7 @@ class FestivalProvider extends ChangeNotifier {
     );
   }
 
-  int popUpIndex () {
+  int popUpIndex() {
     for (int i = 0; i < festivalList.length; i++) {
       if (festivalList[i].name == 'popup') return i;
     }

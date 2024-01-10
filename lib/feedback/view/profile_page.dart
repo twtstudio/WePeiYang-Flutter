@@ -170,8 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   TextUtil.base.ProductSans.white.w700.sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
-                        width: 44,
-                        height: 20,
+                        big: true,
                         style: TextUtil.base.white.w100.sp(12),
                         level: CommonPreferences.level.value.toString(),
                       ),

@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
@@ -290,20 +291,20 @@ class _ProfileImageWithDetailedPopupState
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
-          width: 60.h,
-          height: 60.h,
+          width: SplitUtil.w * 32,
+          height: SplitUtil.w * 32,
           child: Stack(
             alignment: Alignment.center,
             children: [
               SizedBox(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.h)),
+                  borderRadius: BorderRadius.all(Radius.circular(SplitUtil.w * 18)),
                   child: WpyPic(
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: 32.h,
-                    height: 32.h,
+                    width: SplitUtil.w * 17,
+                    height: SplitUtil.w * 17,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -311,8 +312,8 @@ class _ProfileImageWithDetailedPopupState
               if (widget.avatarBox != '' && widget.avatarBox.length > 5)
                 WpyPic(
                   widget.avatarBox,
-                  width: 60.h,
-                  height: 60.h,
+                  width: SplitUtil.w * 32,
+                  height: SplitUtil.w * 32,
                   fit: BoxFit.contain,
                 ),
             ],

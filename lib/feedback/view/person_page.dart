@@ -200,8 +200,6 @@ class _PersonPageState extends State<PersonPage> {
                   style: TextUtil.base.ProductSans.black4E.w400.sp(14)),
               LevelUtil(
                 level: level ?? '',
-                width: 34,
-                height: 17,
                 style: TextUtil.base.white.bold.sp(9),
               ),
             ],
@@ -324,7 +322,8 @@ class _PersonPageState extends State<PersonPage> {
                             : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
                         width: 1.sw,
                         height: 1.sw,
-                        fit: BoxFit.contain,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
                       ),
                     ),
                   Align(

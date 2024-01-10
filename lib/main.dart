@@ -63,20 +63,21 @@ void main() async {
     }
 
     /// 设置桌面端窗口适配, 依赖为 window_manager
-    await windowManager.ensureInitialized();
+    if (Platform.isWindows) {
+      await windowManager.ensureInitialized();
 
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(640, 1000),
-      minimumSize: Size(640, 400),
-      center: true,
-      backgroundColor: Colors.transparent,
-      skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
-    );
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+      WindowOptions windowOptions = WindowOptions(
+        minimumSize: Size(640, 400),
+        center: true,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: false,
+        titleBarStyle: TitleBarStyle.normal,
+      );
+      windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
+    }
 
     /// 初始化友盟
     await UmengCommonSdk.initCommon();
