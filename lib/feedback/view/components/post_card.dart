@@ -60,7 +60,9 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: SplitUtil.w * 32,
+        height: SplitUtil.w * 32 > SplitUtil.h * 56
+            ? SplitUtil.w * 32
+            : SplitUtil.h * 56,
         child: Row(children: [
           SizedBox(width: SplitUtil.w * 2),
           ProfileImageWithDetailedPopup(
@@ -87,14 +89,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
                           ConstrainedBox(
                             constraints: BoxConstraints(
                               maxWidth: (SplitUtil.sw - SplitUtil.w * 24) / 2 -
-                                  SplitUtil.w * 40,
+                                  SplitUtil.w * 16,
                             ),
                             child: Text(
                                 post.nickname == '' ? '没名字的微友' : post.nickname,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style:
-                                    TextUtil.base.w400.NotoSansSC.sp(16).black2A),
+                                style: TextUtil.base.w400.NotoSansSC
+                                    .sp(16)
+                                    .black2A),
                           ),
                           SizedBox(width: SplitUtil.w * 4),
                           LevelUtil(
@@ -112,7 +115,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       )
                     ])),
           ),
-          Spacer(),
+          // Spacer(),
           if (post.type == 1) SolveOrNotWidget(post.solved),
           if (post.type != 1)
             GestureDetector(
@@ -127,6 +130,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
               ),
             ),
+          SizedBox(width: SplitUtil.w * 16)
         ]));
 
     /// 标题eTag
@@ -286,12 +290,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
     List<Widget> head = [
       avatarAndSolve,
       Padding(
-        padding: EdgeInsets.only(left: SplitUtil.w * 10),
+        padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 16),
         child: eTagAndTitle,
       ),
       if (post.content.isNotEmpty)
         Padding(
-            padding: EdgeInsets.only(left: SplitUtil.w * 10), child: content),
+            padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 16), child: content),
       // 行数的区别在内部判断
       SizedBox(height: SplitUtil.h * 10)
     ];
@@ -317,8 +321,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
               }
             },
             child: Container(
-              padding: EdgeInsets.fromLTRB(
-                  0, 0, SplitUtil.w * 10, SplitUtil.h * 8),
+              padding:
+                  EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
               color: Colors.white,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,7 +331,9 @@ class _PostCardNormalState extends State<PostCardNormal> {
                   if (post.imageUrls.isNotEmpty)
                     Padding(
                         padding: EdgeInsets.only(
-                            left: SplitUtil.w * 10, bottom: SplitUtil.h * 8),
+                            left: SplitUtil.w * 16,
+                            right: SplitUtil.w * 16,
+                            bottom: SplitUtil.h * 8),
                         child: outerImages),
                   Padding(
                     padding: EdgeInsets.only(left: SplitUtil.w * 10),
@@ -340,8 +346,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
         // inner 框架
         : Container(
-            padding: EdgeInsets.fromLTRB(
-                0, 0, SplitUtil.w * 10, SplitUtil.h * 8),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
@@ -353,8 +358,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 if (post.imageUrls.isNotEmpty)
                   Padding(
                     padding: EdgeInsets.only(
-                        top: SplitUtil.h * 1,
-                        left: SplitUtil.w * 10,
+                        left: SplitUtil.w * 16,
+                        right: SplitUtil.w * 16,
                         bottom: SplitUtil.h * 10),
                     child: innerImages,
                   ),
@@ -403,11 +408,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
               child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                   fit: BoxFit.cover,
-                  width: ((SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth) -
-                      (post.imageUrls.length - 1) * SplitUtil.w * 6) /
+                  width: ((SplitUtil.sw -
+                              SplitUtil.w * 20 -
+                              SplitUtil.toolbarWidth) -
+                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                       post.imageUrls.length,
-                  height: ((SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth) -
-                      (post.imageUrls.length - 1) * SplitUtil.w * 6) /
+                  height: ((SplitUtil.sw -
+                              SplitUtil.w * 20 -
+                              SplitUtil.toolbarWidth) -
+                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                       post.imageUrls.length,
                   withHolder: true),
             ),
@@ -423,11 +432,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
             borderRadius: BorderRadius.all(Radius.circular(8.r)),
             child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                 fit: BoxFit.cover,
-                width: ((SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth) -
-                    (post.imageUrls.length - 1) * SplitUtil.w * 6) /
+                width: ((SplitUtil.sw -
+                            SplitUtil.w * 20 -
+                            SplitUtil.toolbarWidth) -
+                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                     post.imageUrls.length,
-                height: ((SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth) -
-                    (post.imageUrls.length - 1) * SplitUtil.w * 6) /
+                height: ((SplitUtil.sw -
+                            SplitUtil.w * 20 -
+                            SplitUtil.toolbarWidth) -
+                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                     post.imageUrls.length,
                 withHolder: true),
           ),
@@ -472,7 +485,6 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
       future: completer.future,
       builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
         return Container(
-          width: SplitUtil.w * 350,
           child: snapshot.hasData
               ? snapshot.data!.height / snapshot.data!.width > 2.0
                   ? _picFullView

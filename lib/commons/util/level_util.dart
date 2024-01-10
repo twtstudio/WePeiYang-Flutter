@@ -27,8 +27,8 @@ class LevelUtil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: SplitUtil.w * ((this.big ?? false) ? 30 : 18),
-      height: SplitUtil.h * ((this.big ?? false) ? 24 : 14),
+      width: SplitUtil.w * ((this.big ?? false) ? SplitUtil.w * 40 : SplitUtil.w * 26),
+      height: SplitUtil.h * ((this.big ?? false) ? SplitUtil.w * 18 : SplitUtil.w * 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topLeft,

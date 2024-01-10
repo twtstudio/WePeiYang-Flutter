@@ -131,7 +131,7 @@ class _NCommentCardState extends State<NCommentCard>
   Widget build(BuildContext context) {
     var commentMenuButton = GestureDetector(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 4.h, 0, 12.w),
+          padding: EdgeInsets.fromLTRB(SplitUtil.w * 12, 0, 0, 0),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.r,
@@ -311,7 +311,8 @@ class _NCommentCardState extends State<NCommentCard>
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
+                constraints: BoxConstraints(
+                    maxWidth: (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
                 child: Text(
                   widget.comment.nickname,
                   maxLines: 1,
@@ -356,7 +357,9 @@ class _NCommentCardState extends State<NCommentCard>
                     Icon(Icons.play_arrow, size: SplitUtil.w * 6),
                     SizedBox(width: SplitUtil.w * 2),
                     ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
+                      constraints: BoxConstraints(
+                          maxWidth:
+                              (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
                       child: Text(
                         widget.comment.replyToName.isEmpty
                             ? ""
@@ -404,7 +407,7 @@ class _NCommentCardState extends State<NCommentCard>
             ],
           ),
         ),
-        SizedBox(width: SplitUtil.w * 22),
+        commentMenuButton
       ],
     );
 
@@ -483,8 +486,8 @@ class _NCommentCardState extends State<NCommentCard>
                         );
                       },
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxHeight: SplitUtil.sh * 2),
+                        constraints:
+                            BoxConstraints(maxHeight: SplitUtil.sh * 2),
                         child: WpyPic(
                           '${picBaseUrl}origin/${widget.comment.imageUrl}',
                           withHolder: true,
@@ -532,7 +535,8 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: SplitUtil.w * 68, color: Colors.transparent)))
+                                    height: SplitUtil.w * 68,
+                                    color: Colors.transparent)))
                       ],
                     ),
         ));
@@ -569,8 +573,9 @@ class _NCommentCardState extends State<NCommentCard>
       );
     }
 
-    var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount, size: 15.r,
-        onLikePressed: (isLiked, count, success, failure) async {
+    var likeWidget = IconWidget(IconType.like,
+        count: widget.comment.likeCount,
+        size: 15.r, onLikePressed: (isLiked, count, success, failure) async {
       await FeedbackService.commentHitLike(
         id: widget.comment.id,
         isLike: widget.comment.isLike,
@@ -619,23 +624,20 @@ class _NCommentCardState extends State<NCommentCard>
       children: [
         ...likeAndDislikeWidget,
         Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
-          child: Text(
-            DateTime.now().difference(widget.comment.createAt!).inHours >= 11
-                ? widget.comment.createAt!
-                    .toLocal()
-                    .toIso8601String()
-                    .replaceRange(10, 11, ' ')
-                    .replaceAllMapped('-', (_) => '/')
-                    .substring(2, 19)
-                : DateTime.now()
-                    .difference(widget.comment.createAt!)
-                    .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans.grey97.regular
-                .sp(12)
-                .space(letterSpacing: 0.6),
-          ),
+        Text(
+          DateTime.now().difference(widget.comment.createAt!).inHours >= 11
+              ? widget.comment.createAt!
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .replaceAllMapped('-', (_) => '/')
+                  .substring(2, 19)
+              : DateTime.now()
+                  .difference(widget.comment.createAt!)
+                  .dayHourMinuteSecondFormatted(),
+          style: TextUtil.base.ProductSans.grey97.regular
+              .sp(12)
+              .space(letterSpacing: 0.6),
         ),
       ],
     );
@@ -683,65 +685,61 @@ class _NCommentCardState extends State<NCommentCard>
             SizedBox(height: SplitUtil.h * 4)
           ],
         ),
-      )
+      ),
+      SizedBox(width: SplitUtil.w * 16)
     ]);
 
     return _isDeleted
         ? SizedBox(height: 1)
-        : Stack(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(0, 0, SplitUtil.w * 6, SplitUtil.h * 6),
-                    color: Colors.transparent,
-                    child: mainBody,
-                  ),
-                  if (!widget.isSubFloor &&
-                      !widget.isFullView &&
-                      subFloor != null)
-                    Padding(
-                        padding: EdgeInsets.only(left: SplitUtil.w * 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            subFloor,
-                            if (widget.comment.subFloorCnt > 0)
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    FeedbackRouter.commentDetail,
-                                    arguments: ReplyDetailPageArgs(
-                                        widget.comment, widget.uid),
-                                  );
-                                },
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: SplitUtil.w * 38),
-                                    // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
-                                    Text(
-                                        widget.comment.subFloorCnt > 2
-                                            ? '查看全部 ' +
-                                                widget.comment.subFloorCnt
-                                                    .toString() +
-                                                ' 条回复 >'
-                                            : '查看回复详情 >',
-                                        style: TextUtil.base.NotoSansSC.w400
-                                            .sp(12)
-                                            .blue2C),
-                                    Spacer()
-                                  ],
-                                ),
-                              ),
-                            SizedBox(height: SplitUtil.h * 12)
-                          ],
-                        )),
-                ],
-              ),
-              Positioned(right: SplitUtil.w * 8, child: commentMenuButton)
-            ],
-          );
+        : Column(
+          children: [
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 6),
+              color: Colors.transparent,
+              child: mainBody,
+            ),
+            if (!widget.isSubFloor &&
+                !widget.isFullView &&
+                subFloor != null)
+              Padding(
+                  padding: EdgeInsets.only(left: SplitUtil.w * 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      subFloor,
+                      if (widget.comment.subFloorCnt > 0)
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              FeedbackRouter.commentDetail,
+                              arguments: ReplyDetailPageArgs(
+                                  widget.comment, widget.uid),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(width: SplitUtil.w * 38),
+                              // 这里的 padding 是用于让查看全部几条回复的部分与点赞图标对齐
+                              Text(
+                                  widget.comment.subFloorCnt > 2
+                                      ? '查看全部 ' +
+                                          widget.comment.subFloorCnt
+                                              .toString() +
+                                          ' 条回复 >'
+                                      : '查看回复详情 >',
+                                  style: TextUtil.base.NotoSansSC.w400
+                                      .sp(12)
+                                      .blue2C),
+                              Spacer()
+                            ],
+                          ),
+                        ),
+                      SizedBox(height: SplitUtil.h * 12)
+                    ],
+                  )),
+          ],
+        );
   }
 }
 
@@ -774,7 +772,8 @@ class AdminPopUpState extends State<AdminPopUp> {
   Widget build(BuildContext context) {
     return Dialog(
         child: Container(
-      padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 8, vertical: SplitUtil.h * 8),
+      padding: EdgeInsets.symmetric(
+          horizontal: SplitUtil.w * 8, vertical: SplitUtil.h * 8),
       margin: EdgeInsets.all(SplitUtil.sw * 0.1),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

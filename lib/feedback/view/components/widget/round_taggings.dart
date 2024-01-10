@@ -291,8 +291,8 @@ class _ProfileImageWithDetailedPopupState
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
-          width: SplitUtil.w * 32,
-          height: SplitUtil.w * 32,
+          width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+          height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -303,8 +303,8 @@ class _ProfileImageWithDetailedPopupState
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: SplitUtil.w * 17,
-                    height: SplitUtil.w * 17,
+                    width: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
+                    height: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -312,8 +312,8 @@ class _ProfileImageWithDetailedPopupState
               if (widget.avatarBox != '' && widget.avatarBox.length > 5)
                 WpyPic(
                   widget.avatarBox,
-                  width: SplitUtil.w * 32,
-                  height: SplitUtil.w * 32,
+                  width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+                  height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
                   fit: BoxFit.contain,
                 ),
             ],
