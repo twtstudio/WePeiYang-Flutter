@@ -7,13 +7,12 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
-import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';
 
 class _StudyroomDio extends DioAbstract {
   _StudyroomDio() : super();
 
   @override
-  String get baseUrl => 'https://selfstudy.twt.edu.cn/';
+  String get baseUrl => 'http://studyroom.subit.org.cn/';
 
   @override
   Map<String, String>? get headers => {
@@ -34,24 +33,17 @@ class _StudyroomDio extends DioAbstract {
 }
 
 class _StyApiInterceptor extends InterceptorsWrapper {
-  Map<dynamic, dynamic> parseData(String data) {
-    return jsonDecode(data);
-  }
-
   @override
   onResponse(response, handler) async {
-    final String data = response.data.toString();
-    final bool isCompute = data.length > 10 * 1024;
-    final Map<dynamic, dynamic> _map =
-        isCompute ? await compute(parseData, data) : parseData(data);
-    var respData = _BuildingResponse.fromJson(_map as Map<String, dynamic>);
+    final data = response.data;
+    var respData = _BuildingResponse.fromJson(data);
     if (respData.success) {
       response.data = respData.data;
       return handler.resolve(response);
     } else {
       return handler.reject(
         DioException(
-          error: respData.message ?? "未知错误",
+          error: respData.data as String? ?? "未知错误",
           requestOptions: response.requestOptions,
         ),
         true,
@@ -61,16 +53,14 @@ class _StyApiInterceptor extends InterceptorsWrapper {
 }
 
 class _BuildingResponse {
-  bool get success => 0 == code || 9 == code;
+  bool get success => 10000 == code;
 
   _BuildingResponse.fromJson(Map<String, dynamic> json) {
-    code = json['error_code'];
-    message = json['message'];
+    code = json['code'];
     data = json['data'];
   }
 
   int? code;
-  String? message;
   dynamic data;
 }
 
@@ -78,19 +68,19 @@ final _studyroomDio = _StudyroomDio();
 
 class StudyroomService {
   /// 获取收藏的教室id
-  static Future<List<String>> getFavouriteIds() async {
+  static Future<List<int>> getFavouriteIds() async {
     final response = await _studyroomDio.get('getCollections');
     // var response =
     var pre = Map<String, List<dynamic>>.from(response.data).values;
     if (pre.isEmpty) {
-      return <String>[];
+      return <int>[];
     } else {
-      return pre.first.map((e) => e.toString()).toList();
+      return pre.first.map((e) => int.parse(e)).toList();
     }
   }
 
   /// 收藏教室
-  static Future<bool> collectRoom(String id) async {
+  static Future<bool> collectRoom(int id) async {
     try {
       await _studyroomDio.post(
         'addCollection',
@@ -104,7 +94,7 @@ class StudyroomService {
   }
 
   /// 取消收藏教室，失败的话就在本地添加记录，下次再做同步
-  static Future<bool> deleteRoom(String id) async {
+  static Future<bool> deleteRoom(int id) async {
     try {
       await _studyroomDio.post(
         'deleteCollection',
@@ -117,25 +107,40 @@ class StudyroomService {
     }
   }
 
-  /// 获取指定日期的教室数据（本学期的第几周+周几）
-  ///
-  /// 如：https://selfstudy.twt.edu.cn/getDayData/21222/1/1
-  static Future<List<Building>> getClassroomPlanOfDay(
-    StudyRoomDate date,
-  ) async {
-    final term = CommonPreferences.termName.value;
-    // 非有效范围内返回空
-    if (date.week < 1 || date.week > 24) return [];
-
-    final requestDate = '$term/${date.week}/${date.day}';
-    print('${requestDate}');
+  static Future<List<Campus>> getCampusList() async {
     try {
-      final response = await _studyroomDio.get('getDayData/$requestDate');
-      List<Building> buildings =
-          response.data.map<Building>((b) => Building.fromJson(b)).toList();
-      return buildings.where((b) => b.hasRoom).toList();
-    } catch (e) {
-      throw ('获取${date.week}+${date.day}自习室数据失败');
+      final response = await _studyroomDio.get('/campus');
+      return List<Campus>.from(
+        response.data.map((e) => Campus.fromJson(e)),
+      );
+    } catch (e, s) {
+      Logger.reportError(e, s);
+      return [];
+    }
+  }
+
+  static Future<List<Building>> getBuildingList(int campusId) async {
+    try {
+      final response = await _studyroomDio.get('/campus/${campusId}/building');
+      print("==> result: " + response.toString());
+      return List<Building>.from(
+        response.data.map((e) => Building.fromJson(e)),
+      );
+    } catch (e, s) {
+      Logger.reportError(e, s);
+      return [];
+    }
+  }
+
+  static Future<List<Room>> getRoomList(int buildingId) async {
+    try {
+      final response = await _studyroomDio.get('/building/${buildingId}/room');
+      return List<Room>.from(
+        response.data.map((e) => Room.fromJson(e)),
+      );
+    } catch (e, s) {
+      Logger.reportError(e, s);
+      return [];
     }
   }
 }

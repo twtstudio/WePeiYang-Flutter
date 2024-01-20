@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       });
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
       context.read<PushManager>().initGeTuiSdk();
 
       final manager = context.read<PushManager>();
@@ -94,7 +93,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
-      context.read<StudyroomProvider>().init();
+      context.read<CampusProvider>().init();
     });
     if (widget.page != null) {
       _tabController.animateTo(widget.page!);

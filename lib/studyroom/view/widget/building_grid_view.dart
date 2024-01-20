@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
@@ -16,25 +15,26 @@ class BuildingGridViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StudyroomProvider>(builder: (_, data, __) {
-      if (!data.buildingsLoaded) return Loading();
+    return Consumer<CampusProvider>(builder: (_, data, __) {
+      if (!data.buildingLoaded) return Loading();
+
       if (data.buildings.isEmpty) {
         return Center(
           child: Text('暂无数据', style: TextUtil.base.PingFangSC.black2A.sp(14)),
         );
       }
 
-      final wjlBuildings = BuildingGrid(data.wjl);
-      final byyBuildings = BuildingGrid(data.byy);
+      final buildingGrid = BuildingGrid(data.buildings);
 
-      return Builder(
-        builder: (context) => AnimatedCrossFade(
-          firstChild: wjlBuildings,
-          secondChild: byyBuildings,
-          crossFadeState: data.state,
-          duration: const Duration(milliseconds: 500),
-          reverseDuration: const Duration(milliseconds: 200),
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: ListView(
+          children: [buildingGrid],
+          key: ValueKey(data.buildings.hashCode),
         ),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(opacity: animation, child: child);
+        },
       );
     });
   }
@@ -56,7 +56,10 @@ class BuildingGrid extends StatelessWidget {
       ),
       itemCount: list.length,
       itemBuilder: (context, index) {
-        return _BuildingItem(list[index]);
+        return Align(
+          alignment: Alignment.topCenter,
+          child: _BuildingItem(list[index]),
+        );
       },
     );
   }
@@ -70,8 +73,9 @@ class _BuildingItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget buildingName = Text(
-      building.name + "教",
+      building.name,
       style: TextUtil.base.Swis.blue2C.w400.sp(10),
+      textAlign: TextAlign.center,
     );
 
     final buildingImage =
@@ -79,23 +83,11 @@ class _BuildingItem extends StatelessWidget {
 
     return WButton(
       onPressed: () {
-        final len = building.areas?.length ?? 0;
-        if (len == 0) {
-          ToastProvider.error('此楼暂无信息');
-          return;
-        }
-        if (len == 1)
-          Navigator.pushNamed(
-            context,
-            StudyRoomRouter.classrooms,
-            arguments: [building.id, building.areas!.first.id],
-          );
-        else
-          Navigator.pushNamed(
-            context,
-            StudyRoomRouter.areas,
-            arguments: building.id,
-          );
+        Navigator.pushNamed(
+          context,
+          StudyRoomRouter.building,
+          arguments: building.id,
+        );
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 
 /// 自习室 某个教室详情页
 class StyClassRoomDetailPage extends StatelessWidget {
-  final Classroom room;
+  final Room room;
 
   const StyClassRoomDetailPage({Key? key, required this.room})
       : super(key: key);
@@ -38,24 +38,24 @@ class StyClassRoomDetailPage extends StatelessWidget {
   }
 }
 
-Widget _PageTitleWidget(Classroom room) {
+Widget _PageTitleWidget(Room room) {
   final title = Text(
-    room.title,
+    room.name,
     style: TextUtil.base.white.sp(20).Swis.w400,
   );
 
-  final convertedWeek = Builder(builder: (context) {
-    final dateTime = context.select(
-      (StudyroomProvider config) => config.dateTime,
-    );
-    return Text(
-      'WEEK ${dateTime.convertedWeek}',
-      style: TextStyle(
-        color: Theme.of(context).roomConvertWeek,
-        fontSize: 14.sp,
-      ),
-    );
-  });
+  // final convertedWeek = Builder(builder: (context) {
+  //   final dateTime = context.select(
+  //     (StudyroomProvider config) => config.dateTime,
+  //   );
+  //   return Text(
+  //     'WEEK ${dateTime.convertedWeek}',
+  //     style: TextStyle(
+  //       color: Theme.of(context).roomConvertWeek,
+  //       fontSize: 14.sp,
+  //     ),
+  //   );
+  // });
 
   return Row(
     crossAxisAlignment: CrossAxisAlignment.end,
@@ -63,48 +63,16 @@ Widget _PageTitleWidget(Classroom room) {
       title,
       Padding(
         padding: EdgeInsets.only(bottom: 3.w, left: 20.w),
-        child: convertedWeek,
+        child: Placeholder(),
       ),
       const Spacer(),
-      Padding(
-        padding: EdgeInsets.only(right: 3.w),
-        child: _FavorButton(room),
-      ),
+      // TODO: 依然 收藏暂时被砍掉了
+      // Padding(
+      //   padding: EdgeInsets.only(right: 3.w),
+      //   child: _FavorButton(room),
+      // ),
     ],
   );
-}
-
-class _FavorButton extends StatelessWidget {
-  final Classroom room;
-
-  _FavorButton(this.room, {Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.transparent,
-        backgroundColor: Colors.white,
-        disabledForegroundColor: Colors.transparent.withOpacity(0.38),
-        disabledBackgroundColor: Colors.transparent.withOpacity(0.12),
-        shadowColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.r),
-        ),
-        minimumSize: Size(1, 1),
-        padding: EdgeInsets.fromLTRB(12.w, 3.w, 12.w, 3.w),
-      ),
-      onPressed: () => context.read<StudyroomProvider>().changeRoomFavor(room),
-      child: Builder(builder: (context) {
-        final isFavor = context.select(
-          (StudyroomProvider data) => data.favorRooms.containsKey(room.id),
-        );
-
-        return Text(isFavor ? '已收藏' : '+ 收藏',
-            style: TextUtil.base.blue2C.w400.sp(14));
-      }),
-    );
-  }
 }
 
 double get _cardStep => 6.w;
@@ -115,7 +83,7 @@ double get _dateTabHeight => 28.27.w;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class _ClassTableWidget extends StatelessWidget {
-  final Classroom room;
+  final Room room;
 
   const _ClassTableWidget(this.room, {Key? key}) : super(key: key);
 
@@ -165,8 +133,7 @@ class _WeekDisplayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateTime =
-        context.select((StudyroomProvider config) => config.dateTime);
+    final dateTime = DateTime.now();
 
     return Row(
       children: dateTime.thisWeek.sublist(0, dayCount).map((date) {
@@ -204,7 +171,7 @@ class _WeekDisplayWidget extends StatelessWidget {
 class _CourseDisplayWidget extends StatelessWidget {
   final double cardWidth;
   final int dayCount;
-  final Classroom room;
+  final Room room;
 
   const _CourseDisplayWidget(
     this.cardWidth,
@@ -217,23 +184,11 @@ class _CourseDisplayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var singleCourseHeight = cardWidth * 136 / 96;
 
-    final statuses = room.statuses.map(
-      (key, value) =>
-          MapEntry(Time.week[key - 1], StudyRoomDataUtil.splitPlan(value)),
-    );
-
-    List<Widget> courses = _generatePositioned(
-      context,
-      singleCourseHeight,
-      statuses,
-      dayCount,
-    );
-
     return SizedBox(
       height: singleCourseHeight * 12 + _cardStep * 11,
       width:
           MediaQuery.of(context).size.width - _schedulePadding * 2 - _cardStep,
-      child: Stack(children: courses),
+      child: Stack(children: [Placeholder()]),
     );
   }
 

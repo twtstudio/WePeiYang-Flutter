@@ -73,7 +73,7 @@ class _TableCalenderState extends State<_TableCalender>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        _selectedDay = context.read<StudyroomProvider>().dateTime;
+        _selectedDay = DateTime.now();
       });
     });
   }
@@ -93,7 +93,7 @@ class _TableCalenderState extends State<_TableCalender>
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
       });
-      context.read<StudyroomProvider>().setDateTime(selectedDay);
+      // context.read<StudyroomProvider>().setDateTime(selectedDay);
     }
   }
 
@@ -185,7 +185,7 @@ class _TableClassTimesState extends State<_TableClassTimes> {
   void initState() {
     super.initState();
 
-    updateTimeRange(context.read<StudyroomProvider>().timeRange);
+    // updateTimeRange(context.read<StudyroomProvider>().timeRange);
   }
 
   updateTimeRange(ClassTimerange range) {
@@ -209,7 +209,7 @@ class _TableClassTimesState extends State<_TableClassTimes> {
             setState(() {
               updateTimeRange(range);
             });
-            context.read<StudyroomProvider>().setTimeRange(timeRange);
+            // context.read<StudyroomProvider>().setTimeRange(timeRange);
           },
         );
       }).toList(),

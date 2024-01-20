@@ -257,7 +257,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                     child: Tab(text: 'Exam Detail')),
                 Align(
                     alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Coming Soon')),
+                    child: Tab(text: 'Study Room')),
               ]),
         ),
         SizedBox(
@@ -284,7 +284,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
-                  child: Image.asset("assets/images/schedule_empty.png"),
+                  child: MainPageStudyRoomWidget(),
                 ),
               ]),
         ),

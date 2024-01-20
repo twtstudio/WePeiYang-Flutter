@@ -10,7 +10,7 @@ import '../../../commons/widgets/w_button.dart';
 
 /// 收藏列表的每一个item
 class FavourRoomCard extends StatelessWidget {
-  final Classroom room;
+  final Room room;
 
   const FavourRoomCard(
     this.room, {
@@ -40,7 +40,7 @@ class FavourRoomCard extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             Text(
-              room.title,
+              room.name,
               style: TextUtil.base.Swis.w400.orange6B.sp(10),
             ),
             SizedBox(height: 8.h),

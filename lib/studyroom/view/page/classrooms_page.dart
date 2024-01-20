@@ -12,52 +12,50 @@ import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/room_card.dart';
 
 class ClassroomsPage extends StatelessWidget {
-  final String buildingId;
-  final String areaId;
+  final int buildingId;
+  final int areaId;
 
   ClassroomsPage(this.buildingId, this.areaId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<StudyroomProvider, List<Building>>(
-      selector: (_, sp) => sp.buildings,
-      builder: (_, buildings, __) {
-        try {
-          final building = buildings.firstWhere((b) => b.id == buildingId);
-          final area = building.areas!.firstWhere((a) => a.id == areaId);
-          area.splitFloors();
-          return StudyroomBasePage(
-            isOutside: true,
-            body: _FloorsView(building.name, area),
-          );
-        } on StateError catch (e, s) {
-          Logger.reportError(e, s);
-          return Text('暂无数据');
-        }
-      },
-    );
+    return Placeholder();
+    // return Selector<StudyroomProvider, List<Building>>(
+    //   selector: (_, sp) => sp.buildings,
+    //   builder: (_, buildings, __) {
+    //     try {
+    //       final building = buildings.firstWhere((b) => b.id == buildingId);
+    //       final area = building.building!.firstWhere((a) => a.id == areaId);
+    //       area.splitFloors();
+    //       return StudyroomBasePage(
+    //         isOutside: true,
+    //         body: _FloorsView(building.name, area),
+    //       );
+    //     } on StateError catch (e, s) {
+    //       Logger.reportError(e, s);
+    //       return Text('暂无数据');
+    //     }
+    //   },
+    // );
   }
 }
 
 class _FloorsView extends StatelessWidget {
   final String buildingName;
-  final Area area;
 
   const _FloorsView(
-    this.buildingName,
-    this.area, {
+    this.buildingName,{
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final floors = area.floors;
 
     return ListView(
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(0, 20.h, 0, 50.h),
-          child: _PathTitle(buildingName, area.id),
+          child: _PathTitle(buildingName, "-1"),
         ),
         ClipRRect(
           borderRadius: BorderRadius.only(
@@ -72,12 +70,13 @@ class _FloorsView extends StatelessWidget {
                     fit: BoxFit.fill)),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
-              child: Column(
-                children: List.generate(
-                    floors.length,
-                    (index) =>
-                        FloorWidget(floors.entries.toList()[index], area.id)),
-              ),
+              child: Placeholder(),
+              // child: Column(
+              //   children: List.generate(
+              //       floors.length,
+              //       (index) =>
+              //           FloorWidget(floors.entries.toList()[index], area.id)),
+              // ),
             ),
           ),
         ),
@@ -109,7 +108,7 @@ class _PathTitle extends StatelessWidget {
 }
 
 class FloorWidget extends StatelessWidget {
-  final MapEntry<String, List<Classroom>> entry;
+  final MapEntry<String, List<Room>> entry;
   final String areaId;
 
   const FloorWidget(
@@ -176,7 +175,7 @@ class _RoomItem extends StatelessWidget {
   }) : super(key: key);
 
   final String areaId;
-  final Classroom classroom;
+  final Room classroom;
 
   @override
   Widget build(BuildContext context) {

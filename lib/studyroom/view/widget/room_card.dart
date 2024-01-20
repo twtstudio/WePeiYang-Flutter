@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';
 
 class RoomStateText extends StatelessWidget {
-  final Classroom room;
+  final Room room;
   final bool onlyCurrent;
 
   RoomStateText(this.room, {Key? key, this.onlyCurrent = false})
@@ -17,23 +17,22 @@ class RoomStateText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 这里用Consumer的原因是，只要更改时间，就要检查教室是否使用
-    return Consumer<StudyroomProvider>(
+    return Consumer<CampusProvider>(
       builder: (_, provider, __) {
         int currentDay;
         ClassTimerange timeRange;
 
+        currentDay = DateTime.now().weekday;
+        timeRange = ClassTimerangeExtension.current();
         // 首页只展示当前时段
-        if (onlyCurrent) {
-          currentDay = DateTime.now().weekday;
-          timeRange = ClassTimerangeExtension.current();
-        }
-        // 否则跟随时间变化
-        else {
-          currentDay = provider.dateTime.weekday;
-          timeRange = provider.timeRange;
-        }
-        final currentPlan = room.statuses[currentDay]!;
-        final available = Time.availableNow(currentPlan, timeRange);
+        // if (onlyCurrent) {
+        // }
+        // // 否则跟随时间变化
+        // else {
+        //   currentDay = provider.dateTime.weekday;
+        //   timeRange = provider.timeRange;
+        // }
+        final available = room.isFree;
         Widget stateDot;
 
         Widget stateText;
