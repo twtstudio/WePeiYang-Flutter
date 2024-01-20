@@ -31,13 +31,16 @@ class Building {
       Building.fromJson(json.decode(str));
 
   factory Building.fromJson(Map<String, dynamic> json) {
-    return Building(json['id'], json['name'], json['campus_id']);
+    return Building(
+        json['id'],
+        (json['name'] as String).replaceAll(RegExp(r'^0+'), ''),
+        json['campus_id']);
   }
 }
 
 class Room {
   final int id;
-  final String name;
+  String name;
   final String buildingId;
   final bool isFree;
 
@@ -46,6 +49,10 @@ class Room {
   factory Room.fromRawJson(String str) => Room.fromJson(json.decode(str));
 
   factory Room.fromJson(Map<String, dynamic> json) {
-    return Room(json['id'], json['name'], json['building_id'], json['free']);
+    return Room(
+        json['id'],
+        (json['name'] as String).replaceAll(RegExp(r'^0+'), ''),
+        json['building_id'],
+        json['free']);
   }
 }

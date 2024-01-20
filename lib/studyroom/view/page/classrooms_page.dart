@@ -3,59 +3,60 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/room_card.dart';
 
+import '../../util/data_util.dart';
+
 class ClassroomsPage extends StatelessWidget {
   final int buildingId;
-  final int areaId;
 
-  ClassroomsPage(this.buildingId, this.areaId, {Key? key}) : super(key: key);
+  ClassroomsPage(this.buildingId, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Placeholder();
-    // return Selector<StudyroomProvider, List<Building>>(
-    //   selector: (_, sp) => sp.buildings,
-    //   builder: (_, buildings, __) {
-    //     try {
-    //       final building = buildings.firstWhere((b) => b.id == buildingId);
-    //       final area = building.building!.firstWhere((a) => a.id == areaId);
-    //       area.splitFloors();
-    //       return StudyroomBasePage(
-    //         isOutside: true,
-    //         body: _FloorsView(building.name, area),
-    //       );
-    //     } on StateError catch (e, s) {
-    //       Logger.reportError(e, s);
-    //       return Text('暂无数据');
-    //     }
-    //   },
-    // );
+    return StudyroomBasePage(
+      isOutside: true,
+      body: _FloorsView(
+        buildingId,
+      ),
+    );
   }
 }
 
 class _FloorsView extends StatelessWidget {
-  final String buildingName;
+  final int buildingId;
 
-  const _FloorsView(
-    this.buildingName,{
+  _FloorsView(
+    this.buildingId, {
     Key? key,
   }) : super(key: key);
 
+  final splitRooms = ValueNotifier<Map<String, List<Room>>>({});
+
+  void initRooms() async {
+    final _rooms = await StudyroomService.getRoomList(buildingId);
+    splitRooms.value = StudyRoomDataUtil.prefixBasedSplit(_rooms);
+  }
+
   @override
   Widget build(BuildContext context) {
-
+    initRooms();
     return ListView(
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(0, 20.h, 0, 50.h),
-          child: _PathTitle(buildingName, "-1"),
+          child: _PathTitle(
+            context.read<CampusProvider>().building(buildingId).name,
+            "-1",
+          ),
         ),
         ClipRRect(
           borderRadius: BorderRadius.only(
@@ -70,13 +71,25 @@ class _FloorsView extends StatelessWidget {
                     fit: BoxFit.fill)),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
-              child: Placeholder(),
-              // child: Column(
-              //   children: List.generate(
-              //       floors.length,
-              //       (index) =>
-              //           FloorWidget(floors.entries.toList()[index], area.id)),
-              // ),
+              child: ListenableBuilder(
+                listenable: splitRooms,
+                builder: (_, __) {
+                  if (splitRooms.value.isEmpty)
+                    return ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: 600.h,
+                      ),
+                      child: Loading(),
+                    );
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var entry in splitRooms.value.entries)
+                        FloorWidget(entry.key, entry.value),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -97,9 +110,7 @@ class _PathTitle extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          areaName != '-1'
-              ? buildingName + '教学楼' + areaName + '区'
-              : buildingName + '教学楼',
+          buildingName,
           style: TextUtil.base.white.sp(20).Swis.w400.space(letterSpacing: 5),
         )
       ],
@@ -108,38 +119,34 @@ class _PathTitle extends StatelessWidget {
 }
 
 class FloorWidget extends StatelessWidget {
-  final MapEntry<String, List<Room>> entry;
-  final String areaId;
+  final String name;
+  final List<Room> rooms;
 
   const FloorWidget(
-    this.entry,
-    this.areaId, {
+    this.name,
+    this.rooms, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final floor = entry.key;
-    final classrooms = entry.value;
-
     final roomsGridView = Column(
-      children: List.generate(
-        classrooms.length ~/ 4 + 1,
-        (index) {
-          final row = List.generate(
-            4,
-            (index2) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 9.w),
-              child: index * 4 + index2 < classrooms.length
-                  ? _RoomItem(classrooms[index * 4 + index2], areaId)
-                  : null,
-            ),
-          );
-          return Row(
-            children: row,
-          );
-        },
-      ),
+      children: [
+        for (int i = 0; i < rooms.length; i += 4)
+          Row(
+            children: [
+              for (int j = 0; j < 4; j++)
+                if (i + j < rooms.length)
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 9.w),
+                    child: _RoomItem(rooms[i + j], "-1"),
+                  )
+                else
+                  Container(), // or any other placeholder if needed
+            ],
+          ),
+      ],
     );
 
     return Column(
@@ -153,7 +160,7 @@ class FloorWidget extends StatelessWidget {
                   width: 6.w),
               SizedBox(width: 6.w),
               Text(
-                floor + "F",
+                RegExp(r'\d$').hasMatch(name) ? '$name层' : name,
                 style: TextUtil.base.PingFangSC.w400.black2A.sp(16),
               ),
             ],

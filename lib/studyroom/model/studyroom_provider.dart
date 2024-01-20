@@ -31,6 +31,10 @@ class CampusProvider with ChangeNotifier {
     });
   }
 
+  Building building(int id) {
+    return buildings.firstWhere((element) => element.id == id);
+  }
+
   List<Building> get buildings => _buildingMaps[_campusList[_current]] ?? [];
 
   int _current = CommonPreferences.lastChoseCampus.value;
