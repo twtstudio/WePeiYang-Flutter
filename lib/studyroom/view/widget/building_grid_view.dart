@@ -92,7 +92,12 @@ class _BuildingItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          buildingImage,
+          if (building.name != '南开大学')
+            buildingImage
+          else
+            Container(
+                height: 54.h,
+                child: Image.asset(StudyroomImages.collectedBuilding)),
           SizedBox(height: 8.h),
           buildingName,
         ],

@@ -71,7 +71,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Wiki',
         'https://wiki.tjubot.cn/'),
     CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
-
   ];
   String md = '';
 
@@ -251,13 +250,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
+                    child: Tab(text: 'Study Room')),
+                Align(
+                    alignment: Alignment.centerLeft,
                     child: Tab(text: 'GPA Curves')),
                 Align(
                     alignment: Alignment.centerLeft,
                     child: Tab(text: 'Exam Detail')),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Study Room')),
               ]),
         ),
         SizedBox(
@@ -274,17 +273,17 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
+                  child: MainPageStudyRoomWidget(),
+                ),
+                Container(
+                  width: 1.sw - 60.w,
+                  height: 300.h,
                   child: GPAPreview(),
                 ),
                 Container(
                   width: 1.sw - 60.w,
                   height: 300.h,
                   child: WpyExamWidget(),
-                ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: MainPageStudyRoomWidget(),
                 ),
               ]),
         ),
@@ -325,9 +324,9 @@ class SliverCardsWidget extends StatelessWidget {
           return WButton(
             onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
-              if(cards[i].route==""){
+              if (cards[i].route == "") {
                 ToastProvider.error('开发中 敬请期待！');
-              }else{
+              } else {
                 Navigator.pushNamed(context, cards[i].route);
               }
             },

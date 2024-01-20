@@ -3,10 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:we_pei_yang_flutter/studyroom/util/session_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';
 
@@ -38,12 +39,18 @@ class TimePickerWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 15.w,
-            vertical: 20.h,
+          padding: EdgeInsets.fromLTRB(
+            15.w,
+            20.h,
+            15.w,
+            10.h,
           ),
           child: Column(
-            children: [tableCalendar, tableClassTimes, SizedBox(height: 10.w)],
+            children: [
+              tableCalendar,
+              tableClassTimes,
+              // SizedBox(height: 10.w),
+            ],
           ),
         ),
         okButton,
@@ -73,7 +80,7 @@ class _TableCalenderState extends State<_TableCalender>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        _selectedDay = DateTime.now();
+        _selectedDay = context.read<TimeProvider>().date;
       });
     });
   }
@@ -93,7 +100,7 @@ class _TableCalenderState extends State<_TableCalender>
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
       });
-      // context.read<StudyroomProvider>().setDateTime(selectedDay);
+      context.read<TimeProvider>().date = selectedDay;
     }
   }
 
@@ -102,16 +109,8 @@ class _TableCalenderState extends State<_TableCalender>
     final headerStyle = HeaderStyle(
       titleCentered: true,
       formatButtonVisible: false,
-      leftChevronIcon: Icon(
-        Icons.chevron_left,
-        color: ColorUtil.black2AColor,
-        size: 30.w,
-      ),
-      rightChevronIcon: Icon(
-        Icons.chevron_right,
-        color: ColorUtil.black2AColor,
-        size: 30.w,
-      ),
+      leftChevronIcon: SizedBox(height: 30.h),
+      rightChevronIcon: SizedBox(height: 30.h),
       titleTextFormatter: (dateTime, _) {
         return '${dateTime.year}年${dateTime.month}月';
       },
@@ -146,14 +145,12 @@ class _TableCalenderState extends State<_TableCalender>
     final termEnd = termStart.add(Duration(days: 180));
 
     final tableCalendar = TableCalendar(
-      firstDay: termStart,
-      lastDay: termEnd,
+      firstDay: DateTime.now(),
+      lastDay: DateTime.now().add(Duration(days: 6)),
       focusedDay: _focusedDay,
-      // locale: Intl.getCurrentLocale(),
       daysOfWeekHeight: 40,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarFormat: CalendarFormat.month,
-      // formatAnimation: FormatAnimation.slide,
       availableGestures: AvailableGestures.horizontalSwipe,
       headerStyle: headerStyle,
       calendarStyle: calenderStyle,
@@ -164,7 +161,6 @@ class _TableCalenderState extends State<_TableCalender>
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
       },
-      // initialSelectedDay: model.dateTime,
     );
 
     return tableCalendar;
@@ -196,23 +192,30 @@ class _TableClassTimesState extends State<_TableClassTimes> {
 
   @override
   Widget build(BuildContext context) {
-    Widget tableClassTimes = GridView.count(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      childAspectRatio: 2.6,
-      children: Time.rangeList.map((range) {
-        return _TimeItem(
-          title: range.timeRange,
-          isChecked: timeRange == range,
-          onclick: () {
-            setState(() {
-              updateTimeRange(range);
-            });
-            // context.read<StudyroomProvider>().setTimeRange(timeRange);
-          },
-        );
-      }).toList(),
+    final _session = context.watch<TimeProvider>().session;
+
+    Widget tableClassTimes = SizedBox(
+      height: 220.h,
+      child: GridView.count(
+        physics: BouncingScrollPhysics(),
+        scrollDirection: Axis.vertical,
+        crossAxisCount: 2,
+        childAspectRatio: 2.6,
+        children: List.generate(SessionIndexUtil.periods.length, (i) {
+          var period = SessionIndexUtil.periods[i];
+          return _TimeItem(
+            title: period.toString(),
+            isChecked: i + 1 == _session,
+            onclick: () {
+              if (i + 1 == _session) {
+                context.read<TimeProvider>().session = -1;
+              } else {
+                context.read<TimeProvider>().session = i + 1;
+              }
+            },
+          );
+        }),
+      ),
     );
 
     return Padding(
@@ -246,6 +249,9 @@ class _TimeItem extends StatelessWidget {
     final button = TextButton(
       onPressed: onclick,
       style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          isChecked ? ColorUtil.blueDDColor : ColorUtil.white10,
+        ),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.w),

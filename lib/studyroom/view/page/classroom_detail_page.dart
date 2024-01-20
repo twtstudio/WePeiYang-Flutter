@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
-import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
-import 'package:we_pei_yang_flutter/studyroom/util/data_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
@@ -31,10 +28,12 @@ class StyClassRoomDetailPage extends StatelessWidget {
     );
 
     return StudyroomBasePage(
-        body: ListView(
-      physics: const BouncingScrollPhysics(),
-      children: [pageTitle, table],
-    ));
+      showTimeButton: false,
+      body: ListView(
+        physics: const BouncingScrollPhysics(),
+        children: [pageTitle, table],
+      ),
+    );
   }
 }
 

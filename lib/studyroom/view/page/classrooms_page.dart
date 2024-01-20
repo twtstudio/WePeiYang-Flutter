@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -41,14 +40,17 @@ class _FloorsView extends StatelessWidget {
 
   final splitRooms = ValueNotifier<Map<String, List<Room>>>({});
 
-  void initRooms() async {
-    final _rooms = await StudyroomService.getRoomList(buildingId);
+  void initRooms(int session, DateTime date) async {
+    final _rooms =
+        await StudyroomService.getRoomList(buildingId, session, date);
     splitRooms.value = StudyRoomDataUtil.prefixBasedSplit(_rooms);
   }
 
   @override
   Widget build(BuildContext context) {
-    initRooms();
+    final _session = context.watch<TimeProvider>().session;
+    final _date = context.watch<TimeProvider>().date;
+    initRooms(_session, _date);
     return ListView(
       children: [
         Padding(
@@ -71,24 +73,23 @@ class _FloorsView extends StatelessWidget {
                     fit: BoxFit.fill)),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
-              child: ListenableBuilder(
-                listenable: splitRooms,
-                builder: (_, __) {
-                  if (splitRooms.value.isEmpty)
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: 600.h,
-                      ),
-                      child: Loading(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 600.h,
+                ),
+                child: ListenableBuilder(
+                  listenable: splitRooms,
+                  builder: (_, __) {
+                    if (splitRooms.value.isEmpty) return Loading();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var entry in splitRooms.value.entries)
+                          FloorWidget(entry.key, entry.value),
+                      ],
                     );
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var entry in splitRooms.value.entries)
-                        FloorWidget(entry.key, entry.value),
-                    ],
-                  );
-                },
+                  },
+                ),
               ),
             ),
           ),

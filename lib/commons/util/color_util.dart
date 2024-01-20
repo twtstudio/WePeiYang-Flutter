@@ -60,6 +60,7 @@ class ColorUtil {
   static const blueA6Color = Color(0xFFA6CFFF); //166, 207, 255
   static const blueBEColor = Color(0xFFBED1FF);
   static const blue64Color = Color(0xFF64A3EE);
+  static const blueDDColor = Color(0xFFDDF1FF);
   static const blue3A3BColor = Color.fromRGBO(58, 59, 69, 1.0);
   static const biliPink = Color(0xFFF97198);
   static const biliTextPink = Color(0xFFAE3B5E);

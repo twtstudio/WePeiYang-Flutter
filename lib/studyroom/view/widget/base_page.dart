@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/time_picker_widget.dart';
+
 import '../../../commons/widgets/w_button.dart';
 
 class StudyroomBasePage extends StatefulWidget {
   final Widget body;
   final EdgeInsets padding;
   final bool isOutside;
+  final bool showTimeButton;
 
   const StudyroomBasePage({
     Key? key,
     required this.body,
+    this.showTimeButton = true,
     this.padding = EdgeInsets.zero,
     this.isOutside = false,
   }) : super(key: key);
@@ -67,7 +70,7 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
         ),
       ),
       backgroundColor: Colors.transparent,
-      actions: [timeButton],
+      actions: [if (widget.showTimeButton) timeButton],
     );
 
     final heroAppbar = Hero(

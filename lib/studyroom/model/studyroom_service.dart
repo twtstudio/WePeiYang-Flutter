@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
+import 'package:we_pei_yang_flutter/studyroom/util/session_util.dart';
 
 class _StudyroomDio extends DioAbstract {
   _StudyroomDio() : super();
@@ -132,9 +134,19 @@ class StudyroomService {
     }
   }
 
-  static Future<List<Room>> getRoomList(int buildingId) async {
+  static Future<List<Room>> getRoomList(
+      int buildingId, int session, DateTime date) async {
     try {
-      final response = await _studyroomDio.get('/building/${buildingId}/room');
+      final response;
+      if (session == -1) session = SessionIndexUtil.getCurrentSessionIndex();
+      if (session == -1) {
+        response = await _studyroomDio.get('/building/${buildingId}/room');
+      } else {
+        print("==> request:" +
+            '/building/${buildingId}/room/session/${session}/date/${DateFormat('yyyy-MM-dd').format(date)}');
+        response = await _studyroomDio.get(
+            '/building/${buildingId}/room/session/${session}/date/${DateFormat('yyyy-MM-dd').format(date)}');
+      }
       return List<Room>.from(
         response.data.map((e) => Room.fromJson(e)),
       );

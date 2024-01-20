@@ -4,12 +4,37 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
+import 'package:we_pei_yang_flutter/studyroom/util/session_util.dart';
 
 import '../../commons/preferences/common_prefs.dart';
 
 List<SingleChildWidget> studyroomProviders = [
-  ChangeNotifierProvider(create: (_) => CampusProvider())
+  ChangeNotifierProvider(create: (_) => CampusProvider()),
+  ChangeNotifierProvider(create: (_) => TimeProvider())
 ];
+
+class TimeProvider with ChangeNotifier {
+  DateTime _date = DateTime.now();
+
+  DateTime get date => _date;
+
+  int _sessionIndex = -1;
+
+  int get session => _sessionIndex;
+
+  ClassPeriod? get period =>
+      session == -1 ? null : SessionIndexUtil.periods[session - 1];
+
+  set session(int value) {
+    _sessionIndex = value;
+    notifyListeners();
+  }
+
+  set date(DateTime value) {
+    _date = value;
+    notifyListeners();
+  }
+}
 
 class CampusProvider with ChangeNotifier {
   List<Campus> _campusList = [];
