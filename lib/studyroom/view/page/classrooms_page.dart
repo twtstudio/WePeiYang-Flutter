@@ -131,6 +131,7 @@ class FloorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final areaName = RegExp(r'\d$').hasMatch(name) ? '$name层' : name;
     final roomsGridView = Column(
       children: [
         for (int i = 0; i < rooms.length; i += 4)
@@ -141,7 +142,7 @@ class FloorWidget extends StatelessWidget {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 9.w),
-                    child: _RoomItem(rooms[i + j], "-1"),
+                    child: _RoomItem(rooms[i + j], areaName),
                   )
                 else
                   Container(), // or any other placeholder if needed
@@ -161,7 +162,7 @@ class FloorWidget extends StatelessWidget {
                   width: 6.w),
               SizedBox(width: 6.w),
               Text(
-                RegExp(r'\d$').hasMatch(name) ? '$name层' : name,
+                areaName,
                 style: TextUtil.base.PingFangSC.w400.black2A.sp(16),
               ),
             ],
@@ -178,11 +179,11 @@ class FloorWidget extends StatelessWidget {
 class _RoomItem extends StatelessWidget {
   const _RoomItem(
     this.classroom,
-    this.areaId, {
+    this.areaName, {
     Key? key,
   }) : super(key: key);
 
-  final String areaId;
+  final String areaName;
   final Room classroom;
 
   @override
@@ -193,7 +194,7 @@ class _RoomItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          areaId == '-1' ? classroom.name : areaId + classroom.name,
+          classroom.name,
           style: TextUtil.base.black2A.w400.PingFangSC.sp(14),
         ),
         SizedBox(height: 5.w),
@@ -217,7 +218,10 @@ class _RoomItem extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).pushNamed(
           StudyRoomRouter.detail,
-          arguments: classroom,
+          arguments: {
+            'room': classroom,
+            'areaName': areaName,
+          },
         );
       },
       // style: Theme.of(context).roomButtonStyle,

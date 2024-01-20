@@ -5,8 +5,6 @@
 
 import 'dart:convert';
 
-import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
-
 class Campus {
   final int id;
   final String name;
@@ -54,5 +52,21 @@ class Room {
         (json['name'] as String).replaceAll(RegExp(r'^0+'), ''),
         json['building_id'],
         json['free']);
+  }
+}
+
+class Occupy {
+  final DateTime date;
+  final int sessionIndex;
+
+  Occupy(this.date, this.sessionIndex);
+
+  factory Occupy.fromRawJson(String str) => Occupy.fromJson(json.decode(str));
+
+  factory Occupy.fromJson(Map<String, dynamic> json) {
+    return Occupy(
+      DateTime.parse(json['date']),
+      json['session_index'],
+    );
   }
 }

@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
+import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/time_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 
+import '../../../commons/util/color_util.dart';
+
 /// 自习室 某个教室详情页
 class StyClassRoomDetailPage extends StatelessWidget {
   final Room room;
+  final String areaName;
 
-  const StyClassRoomDetailPage({Key? key, required this.room})
+  const StyClassRoomDetailPage(
+      {Key? key, required this.room, required this.areaName})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final pageTitle = Padding(
       padding: EdgeInsets.only(left: 21.w, right: 11.w),
-      child: _PageTitleWidget(room),
+      child: _PageTitleWidget(room, areaName),
     );
 
     final table = Padding(
@@ -37,24 +41,11 @@ class StyClassRoomDetailPage extends StatelessWidget {
   }
 }
 
-Widget _PageTitleWidget(Room room) {
+Widget _PageTitleWidget(Room room, String areaName) {
   final title = Text(
     room.name,
     style: TextUtil.base.white.sp(20).Swis.w400,
   );
-
-  // final convertedWeek = Builder(builder: (context) {
-  //   final dateTime = context.select(
-  //     (StudyroomProvider config) => config.dateTime,
-  //   );
-  //   return Text(
-  //     'WEEK ${dateTime.convertedWeek}',
-  //     style: TextStyle(
-  //       color: Theme.of(context).roomConvertWeek,
-  //       fontSize: 14.sp,
-  //     ),
-  //   );
-  // });
 
   return Row(
     crossAxisAlignment: CrossAxisAlignment.end,
@@ -62,7 +53,13 @@ Widget _PageTitleWidget(Room room) {
       title,
       Padding(
         padding: EdgeInsets.only(bottom: 3.w, left: 20.w),
-        child: Placeholder(),
+        child: Text(
+          areaName,
+          style: TextStyle(
+            color: ColorUtil.greyCAColor,
+            fontSize: 14.sp,
+          ),
+        ),
       ),
       const Spacer(),
       // TODO: 依然 收藏暂时被砍掉了
@@ -89,25 +86,24 @@ class _ClassTableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final wholeWidth = MediaQuery.of(context).size.width - _schedulePadding * 2;
-    final dayCount = CommonPreferences.dayNumber.value;
-    final cardWidth = (wholeWidth - dayCount * _cardStep) / dayCount;
+    final cardWidth = (wholeWidth - 7 * _cardStep) / 7;
     final tabHeight = cardWidth * 136 / 96;
-    final wholeHeight = tabHeight * 12 + _cardStep * 12 + _dateTabHeight;
+    final wholeHeight = tabHeight * 14 + _cardStep * 12 + _dateTabHeight;
 
     final weekBar = Positioned(
       top: 0,
       left: _cardStep / 2,
       child: SizedBox(
         height: _dateTabHeight,
-        width: cardWidth * dayCount + _cardStep * (dayCount - 1),
-        child: _WeekDisplayWidget(cardWidth, dayCount),
+        width: cardWidth * 7 + _cardStep * 6,
+        child: _WeekDisplayWidget(cardWidth),
       ),
     );
 
     final planGrid = Positioned(
       top: _cardStep + _dateTabHeight,
       left: _cardStep / 2,
-      child: _CourseDisplayWidget(cardWidth, dayCount, room),
+      child: _CourseDisplayWidget(cardWidth, room),
     );
 
     return SizedBox(
@@ -122,25 +118,26 @@ class _ClassTableWidget extends StatelessWidget {
 
 class _WeekDisplayWidget extends StatelessWidget {
   final double cardWidth;
-  final int dayCount;
 
   const _WeekDisplayWidget(
-    this.cardWidth,
-    this.dayCount, {
+    this.cardWidth, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final dateTime = DateTime.now();
+    final now = DateTime.now();
+    final nextSevenDays = List.generate(7, (index) {
+      return DateTime.now().add(Duration(days: index));
+    });
 
     return Row(
-      children: dateTime.thisWeek.sublist(0, dayCount).map((date) {
-        final backgroundColor = dateTime.isSameDay(date)
+      children: nextSevenDays.map((date) {
+        final backgroundColor = now.isSameDay(date)
             ? Theme.of(context).coordinateChosenBackground
             : Theme.of(context).coordinateBackground;
 
-        final textColor = dateTime.isSameDay(date)
+        final textColor = now.isSameDay(date)
             ? Theme.of(context).coordinateChosenText
             : Theme.of(context).coordinateText;
 
@@ -167,59 +164,106 @@ class _WeekDisplayWidget extends StatelessWidget {
   }
 }
 
+class ScheduleLoader extends ChangeNotifier {
+  final Map<DateTime, List<int>> schedule = {};
+
+  void initSchedule(int roomId) async {
+    final List<Occupy> _raw_schedule =
+        await StudyroomService.getSchedule(roomId);
+    for (var e in _raw_schedule) {
+      if (schedule.containsKey(e.date)) {
+        schedule[e.date]!.add(e.sessionIndex);
+      } else {
+        schedule[e.date] = [e.sessionIndex];
+      }
+    }
+    notifyListeners();
+  }
+}
+
 class _CourseDisplayWidget extends StatelessWidget {
   final double cardWidth;
-  final int dayCount;
   final Room room;
 
-  const _CourseDisplayWidget(
+  _CourseDisplayWidget(
     this.cardWidth,
-    this.dayCount,
     this.room, {
     Key? key,
   }) : super(key: key);
 
+  final loader = ScheduleLoader();
+
   @override
   Widget build(BuildContext context) {
+    loader.initSchedule(room.id);
     var singleCourseHeight = cardWidth * 136 / 96;
 
+    // final statuses = room.statuses.map(
+    //   (key, value) =>
+    //       MapEntry(Time.week[key - 1], StudyRoomDataUtil.splitPlan(value)),
+    // );
+
     return SizedBox(
-      height: singleCourseHeight * 12 + _cardStep * 11,
+      height: singleCourseHeight * 14 + _cardStep * 14,
       width:
           MediaQuery.of(context).size.width - _schedulePadding * 2 - _cardStep,
-      child: Stack(children: [Placeholder()]),
+      child: ListenableBuilder(
+        listenable: loader,
+        builder: (context, __) {
+          print("==> rebuild");
+          return Stack(
+            children: _generatePositioned(
+              context,
+              singleCourseHeight,
+              loader.schedule,
+              7,
+            ),
+          );
+        },
+      ),
     );
   }
 
   List<Widget> _generatePositioned(
     BuildContext context,
     double courseHeight,
-    Map<String, List<String>> plan,
+    Map<DateTime, List<int>> plan,
     int dayCount,
   ) {
+    print("==> plan: " + plan.toString());
     List<Widget> list = [];
     var d = 1;
     var middleStep = 40.h;
-    for (var wd in Time.week.getRange(0, dayCount)) {
+    var now = DateTime.now();
+    bool showNightBreak = false;
+    for (var date = DateTime(now.year, now.month, now.day), i = 1;
+        i <= 7;
+        i++, date = date.add(Duration(days: 1))) {
       var index = 1;
-      final dayPlan = plan[wd];
-      if (dayPlan == null) {
-        continue;
-      }
-      for (var c in dayPlan) {
+
+      final dayPlan = plan[date];
+      print(date.toString());
+      if (dayPlan == null) continue;
+      // dayPlan.removeAt(4);
+      // dayPlan.removeAt(6);
+
+      for (int i = 1; i <= 12; i++) {
         int day = d;
         int start = index;
-        index = index + c.length;
+        index = index + 1;
         int end = index - 1;
         double top =
             (start == 1) ? 0 : (start - 1) * (courseHeight + _cardStep);
-        if (start > 3) top += middleStep + _cardStep;
+        if (start > 4) top += middleStep + _cardStep;
+        if (start > 8) {
+          top += middleStep + _cardStep;
+        }
         double left = (day == 1) ? 0 : (day - 1) * (cardWidth + _cardStep);
         double height =
             (end - start + 1) * courseHeight + (end - start) * _cardStep;
 
-        /// 判断周日的课是否需要显示在课表上
-        if (day <= 7 && c.contains('1')) {
+        if (dayPlan.contains(i)) {
+          if (i > 8) showNightBreak = true;
           Widget planItem = Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.w),
@@ -229,7 +273,7 @@ class _CourseDisplayWidget extends StatelessWidget {
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 9.w),
             child: Text(
-              '课程占用',
+              '占用',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,
@@ -238,7 +282,6 @@ class _CourseDisplayWidget extends StatelessWidget {
               ),
             ),
           );
-
           planItem = Positioned(
             top: top,
             left: left,
@@ -251,6 +294,27 @@ class _CourseDisplayWidget extends StatelessWidget {
         }
       }
       d++;
+    }
+
+    if (showNightBreak) {
+      // 还需要讨论使用那种方式
+    }
+
+    if (list.isNotEmpty) {
+      list.add(Positioned(
+          left: 0,
+          top: 8 * (courseHeight + _cardStep) + _cardStep + middleStep,
+          height: middleStep,
+          width: 1.sw - 30.w,
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            margin: EdgeInsets.symmetric(vertical: 5.h),
+            child: Text("NIGHT BREAK", style: TextUtil.base.w900.white.sp(10)),
+          )));
     }
 
     list.add(Positioned(
@@ -269,7 +333,6 @@ class _CourseDisplayWidget extends StatelessWidget {
               ? Text("全部空闲", style: TextUtil.base.w900.white.sp(16))
               : Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
         )));
-
     return list;
   }
 }

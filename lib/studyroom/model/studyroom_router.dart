@@ -13,8 +13,11 @@ class StudyRoomRouter {
       return ClassroomsPage(bid);
     },
     detail: (arguments) {
-      var classroom = arguments as Room;
-      return StyClassRoomDetailPage(room: classroom);
+      var args = arguments as Map<String, dynamic>;
+      return StyClassRoomDetailPage(
+        room: args['room'],
+        areaName: args['areaName'],
+      );
     },
   };
 }

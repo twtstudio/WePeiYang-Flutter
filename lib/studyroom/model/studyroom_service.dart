@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -149,6 +147,18 @@ class StudyroomService {
       }
       return List<Room>.from(
         response.data.map((e) => Room.fromJson(e)),
+      );
+    } catch (e, s) {
+      Logger.reportError(e, s);
+      return [];
+    }
+  }
+
+  static Future<List<Occupy>> getSchedule(int id) async {
+    try {
+      final response = await _studyroomDio.get('/room/${id}/schedule');
+      return List<Occupy>.from(
+        response.data.map((e) => Occupy.fromJson(e)),
       );
     } catch (e, s) {
       Logger.reportError(e, s);
