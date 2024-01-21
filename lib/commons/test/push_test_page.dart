@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+
 import '../widgets/w_button.dart';
 
 class PushTestPage extends StatefulWidget {

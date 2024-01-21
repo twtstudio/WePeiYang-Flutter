@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/page/classroom_detail_page.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/page/classrooms_page.dart';
 

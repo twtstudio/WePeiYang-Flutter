@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 
 class FindPwDialog extends Dialog {
   static final _hintStyle = TextUtil.base.w600.noLine.sp(13).blue79;

@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+
 import '../../widgets/w_button.dart';
 
 class UpdateProgressDialog extends StatelessWidget {

@@ -4,8 +4,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
-import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
+import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 
 class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);

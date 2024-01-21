@@ -3,7 +3,7 @@ import '../model/studyroom_models.dart';
 class StudyRoomDataUtil {
   String extractPrefix(String input) {
     // 正则表达式：匹配从字符串开始到 "楼"、"区"、"教" 或大写字母，后跟数字（忽略前导0）的整个部分
-    var regex = RegExp(r'^.*?(楼|区|教|[A-Z])+0*(\d)');
+    var regex = RegExp(r'^.*?(\D)+0*(\d)');
     var match = regex.firstMatch(input);
     if (match != null) {
       return match.group(0)!.replaceAll("0", "");
@@ -20,7 +20,7 @@ class StudyRoomDataUtil {
             onMatch: (m) => '${m.group(0)}区',
             onNonMatch: (n) => n,
           );
-      room.name = room.name.replaceAll(RegExp(r"^.*?(楼|区|教|[A-Z])+0*"), '');
+      room.name = room.name.replaceAll(RegExp(r"^.*?(\D)+0*"), '');
 
       if (result[prefix] == null) {
         result[prefix] = [];

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart' show Widget;
 import 'package:we_pei_yang_flutter/auth/view/info/avatar_box_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/avatar_crop_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/email_bind_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/phone_bind_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/info/reset_nickname_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/reset_password_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_bind_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/reset_nickname_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/user_info_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/info/avatar_crop_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/add_info_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/login_page.dart';
@@ -18,8 +18,9 @@ import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart
 import 'package:we_pei_yang_flutter/auth/view/settings/language_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
+
 import 'view/message/user_mails_page.dart';
 
 class AuthRouter {

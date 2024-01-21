@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import '../commons/util/text_util.dart';
 

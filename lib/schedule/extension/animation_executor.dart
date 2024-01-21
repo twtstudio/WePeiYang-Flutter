@@ -1,4 +1,5 @@
 import 'dart:async' show Timer;
+
 import 'package:flutter/widgets.dart';
 
 typedef Builder = Widget Function(
