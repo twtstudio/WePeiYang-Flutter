@@ -11,7 +11,9 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:flutter/scheduler.dart' show timeDilation;
 
+import '../../../commons/local/animation_provider.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../gpa/model/gpa_notifier.dart';
 
@@ -395,6 +397,53 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     inactiveTrackColor: ColorUtil.white240,
                   );
                 }),
+              ],
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text('动画设置', style: titleTextStyle),
+          ),
+          SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+            decoration: BoxDecoration(
+              color: ColorUtil.whiteFFColor,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('动画速度', style: mainTextStyle),
+                      SizedBox(height: 3.h),
+                      Text(
+                          '动画时间倍数${context.watch<AnimationProvider>().speed.toStringAsFixed(1)}',
+                          style: hintTextStyle)
+                    ],
+                  ),
+                ),
+                Slider(
+                  activeColor: ColorUtil.blue105,
+                  inactiveColor: ColorUtil.hintWhite205,
+                  thumbColor: ColorUtil.white240,
+                  value:
+                      context.watch<AnimationProvider>().speedIndex.toDouble(),
+                  onChanged: (e) {
+                    final v = e.toInt();
+                    const speed = <double>[0.1, 0.5, 0.7, 1, 3, 5, 7, 9];
+                    context.read<AnimationProvider>().speed = speed[v];
+                    context.read<AnimationProvider>().speedIndex = v;
+                    timeDilation = speed[v];
+                  },
+                  min: 0,
+                  max: 7,
+                  divisions: 7,
+                ),
               ],
             ),
           ),
