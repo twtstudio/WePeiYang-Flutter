@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/local/animation_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
@@ -44,10 +45,13 @@ import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
 import 'urgent_report/report_server.dart';
 
+import 'package:flutter/scheduler.dart' show timeDilation;
+
 /// 应用入口
 final _entry = WePeiYangApp();
 
 void main() async {
+  timeDilation = 10.0;
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -242,6 +246,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ChangeNotifierProvider(create: (_) => GPANotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ChangeNotifierProvider(create: (_) => AnimationProvider()),
         ...scheduleProviders,
         ...studyroomProviders,
         ...feedbackProviders,
