@@ -122,7 +122,6 @@ class StudyroomService {
   static Future<List<Building>> getBuildingList(int campusId) async {
     try {
       final response = await _studyroomDio.get('/campus/${campusId}/building');
-      print("==> result: " + response.toString());
       return List<Building>.from(
         response.data.map((e) => Building.fromJson(e)),
       );
@@ -140,8 +139,6 @@ class StudyroomService {
       if (session == -1) {
         response = await _studyroomDio.get('/building/${buildingId}/room');
       } else {
-        print("==> request:" +
-            '/building/${buildingId}/room/session/${session}/date/${DateFormat('yyyy-MM-dd').format(date)}');
         response = await _studyroomDio.get(
             '/building/${buildingId}/room/session/${session}/date/${DateFormat('yyyy-MM-dd').format(date)}');
       }
