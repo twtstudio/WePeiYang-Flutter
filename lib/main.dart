@@ -51,7 +51,6 @@ import 'package:flutter/scheduler.dart' show timeDilation;
 final _entry = WePeiYangApp();
 
 void main() async {
-  timeDilation = 10.0;
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
