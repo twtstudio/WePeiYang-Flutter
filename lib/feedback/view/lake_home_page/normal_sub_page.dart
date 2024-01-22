@@ -304,13 +304,17 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                 if (index == 0 && ind == 0) return HotCard();
                 if (index != 0 && ind == 0) return SizedBox(height: 10.h);
                 ind--;
-                if (ind == 0 &&
-                    context.read<FestivalProvider>().nonePopupList.length > 0)
-                  return Padding(
-                    padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
-                    child: ActivityCard(1.sw - 40.w),
-                  );
-                ind--;
+                if (ind == 0) {
+                  return Builder(builder: (context) {
+                    final _len =
+                        context.watch<FestivalProvider>().nonePopupListLength;
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                      child: _len > 0 ? ActivityCard(1.sw - 40.w) : Loading(),
+                    );
+                  });
+                  ind--;
+                }
                 if (ind == 0)
                   return Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -482,7 +486,9 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       end: Alignment.bottomCenter,
                       colors: [
                         isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
-                        !isOpa ? ColorUtil.black32Color : ColorUtil.black90Color,
+                        !isOpa
+                            ? ColorUtil.black32Color
+                            : ColorUtil.black90Color,
                       ],
                     ),
                   ),

@@ -21,17 +21,25 @@ class GeneralSettingPage extends StatefulWidget {
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
-  static final titleTextStyle = TextUtil.base.bold.sp(14).grey177;
-  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98122;
-  static final hintTextStyle = TextUtil.base.regular.sp(12).whiteHint205;
+  static final titleTextStyle = TextUtil.base.bold
+      .sp(14)
+      .grey177;
+  static final mainTextStyle = TextUtil.base.bold
+      .sp(14)
+      .blue98122;
+  static final hintTextStyle = TextUtil.base.regular
+      .sp(12)
+      .whiteHint205;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
+  Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz),
+        title: Text('应用设置', style: TextUtil.base.bold
+            .sp(16)
+            .blue52hz),
         elevation: 0,
         centerTitle: true,
         backgroundColor: ColorUtil.whiteFFColor,
@@ -65,13 +73,15 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               },
               child: Row(
                 children: [
-                  Expanded(child: Text('重新加载字体文件', style: mainTextStyle)),
+                  Expanded(
+                      child: Text('重新加载字体文件', style: mainTextStyle)),
                   arrow,
                   SizedBox(width: 15.w),
                 ],
               ),
             ),
           ),
+          SizedBox(height: 10.h),
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
@@ -104,6 +114,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               ],
             ),
           ),
+          SizedBox(height: 10.h),
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
@@ -127,7 +138,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   value: !CommonPreferences.hideGPA.value,
                   onChanged: (value) {
                     setState(() => CommonPreferences.hideGPA.value = !value);
-                    context.read<GPANotifier>().hideGPA = !value;
+                    context
+                        .read<GPANotifier>()
+                        .hideGPA = !value;
                   },
                   activeColor: ColorUtil.blue105,
                   inactiveThumbColor: ColorUtil.hintWhite205,
@@ -242,7 +255,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     children: [
                       Text('智能云端服务（BETA）', style: mainTextStyle),
                       SizedBox(height: 3.h),
-                      Text('获取课表、GPA、考表无需输入图形验证码', style: hintTextStyle)
+                      Text('获取课表、GPA、考表无需输入图形验证码',
+                          style: hintTextStyle)
                     ],
                   ),
                 ),
@@ -250,7 +264,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   value: CommonPreferences.useClassesBackend.value,
                   onChanged: (value) {
                     setState(() =>
-                        CommonPreferences.useClassesBackend.value = value);
+                    CommonPreferences.useClassesBackend.value = value);
                   },
                   activeColor: ColorUtil.blue105,
                   inactiveThumbColor: ColorUtil.hintWhite205,
@@ -285,7 +299,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   value: CommonPreferences.nightMode.value,
                   onChanged: (value) {
                     setState(() => CommonPreferences.nightMode.value = value);
-                    Provider.of<CourseDisplayProvider>(context, listen: false)
+                    Provider
+                        .of<CourseDisplayProvider>(context, listen: false)
                         .nightMode = value;
                   },
                   activeColor: ColorUtil.blue105,
@@ -356,7 +371,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                 Builder(builder: (context) {
                   return Switch(
                     value:
-                        context.select((PushManager manger) => manger.openPush),
+                    context.select((PushManager manger) => manger.openPush),
                     onChanged: (value) {
                       if (value) {
                         context.read<PushManager>().turnOnPushService(() {

@@ -334,7 +334,17 @@ class FestivalProvider extends ChangeNotifier {
   List<Festival> festivalList = [];
   List<Festival> nonePopupList = [];
 
+  int get nonePopupListLength {
+    if (_notInit) {
+      initFestivalList();
+    }
+    return nonePopupList.length;
+  }
+
+  bool _notInit = true;
+
   Future<void> initFestivalList() async {
+    _notInit = false;
     await FeedbackService.getFestCards(
       onSuccess: (list) {
         festivalList.clear();
@@ -354,7 +364,7 @@ class FestivalProvider extends ChangeNotifier {
     );
   }
 
-  int popUpIndex () {
+  int popUpIndex() {
     for (int i = 0; i < festivalList.length; i++) {
       if (festivalList[i].name == 'popup') return i;
     }
