@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
@@ -50,8 +51,9 @@ class UserAvatarImage extends StatelessWidget {
                   ),
                 ),
           if (avatarBoxUrl != "")
-            WpyPic(
-              avatarBoxUrl,
+            FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
+              image: avatarBoxUrl,
               width: size,
               height: size,
               fit: BoxFit.contain,

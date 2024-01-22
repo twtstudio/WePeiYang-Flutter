@@ -16,22 +16,22 @@ class BuildingGridViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CampusProvider>(builder: (_, data, __) {
-      if (!data.buildingLoaded) return Loading();
-
-      if (data.buildings.isEmpty) {
-        return Center(
-          child: Text('暂无数据', style: TextUtil.base.PingFangSC.black2A.sp(14)),
-        );
-      }
-
-      final buildingGrid = BuildingGrid(data.buildings);
-
       return AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        child: ListView(
-          children: [buildingGrid],
-          key: ValueKey(data.buildings.hashCode),
-        ),
+        child: Builder(
+            key: UniqueKey(),
+            builder: (context) {
+              if (!data.buildingLoaded) return Loading();
+
+              if (data.buildings.isEmpty) {
+                return Center(
+                  child: Text('暂无数据',
+                      style: TextUtil.base.PingFangSC.black2A.sp(14)),
+                );
+              }
+
+              return BuildingGrid(data.buildings);
+            }),
         transitionBuilder: (child, animation) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -48,8 +48,6 @@ class BuildingGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
         childAspectRatio: 0.7,

@@ -16,10 +16,8 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  static final mainTextStyle =
-      TextUtil.base.bold.sp(14).blue98;
-  static final hintTextStyle =
-      TextUtil.base.w600.sp(12).whiteHint205;
+  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98;
+  static final hintTextStyle = TextUtil.base.w600.sp(12).whiteHint205;
   static const arrow =
       Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
 
@@ -27,18 +25,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('个人信息更改',
-            style: TextUtil.base.bold
-                .sp(16)
-                .blue52hz),
+        title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
         backgroundColor: ColorUtil.whiteFFColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
-            child: Icon(Icons.arrow_back,
-                color: ColorUtil.blue52hz, size: 32),
+            child: Icon(Icons.arrow_back, color: ColorUtil.blue52hz, size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -65,14 +59,14 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       Expanded(
                         child: Text(S.current.avatar, style: mainTextStyle),
                       ),
-                      Hero(tag: 'avatar', child: UserAvatarImage(size: 45)),
+                      Hero(tag: 'UserAvatar', child: UserAvatarImage(size: 45)),
                       arrow,
                       SizedBox(width: 15.w)
                     ],
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Container(height: 1, color:ColorUtil.white212 ),
+                Container(height: 1, color: ColorUtil.white212),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {

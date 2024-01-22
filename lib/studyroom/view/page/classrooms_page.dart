@@ -74,19 +74,32 @@ class _FloorsView extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
               child: ConstrainedBox(
+                key: ValueKey(_session),
                 constraints: BoxConstraints(
                   minHeight: 600.h,
                 ),
                 child: ListenableBuilder(
                   listenable: splitRooms,
                   builder: (_, __) {
-                    if (splitRooms.value.isEmpty) return Loading();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (var entry in splitRooms.value.entries)
-                          FloorWidget(entry.key, entry.value),
-                      ],
+                    return AnimatedSwitcher(
+                      layoutBuilder: (Widget? currentChild,
+                          List<Widget> previousChildren) {
+                        return currentChild ?? SizedBox();
+                      },
+                      duration: Duration(milliseconds: 300),
+                      child: Builder(
+                        key: ValueKey(splitRooms.value.isEmpty),
+                        builder: (_) {
+                          if (splitRooms.value.isEmpty) return Loading();
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var entry in splitRooms.value.entries)
+                                FloorWidget(entry.key, entry.value),
+                            ],
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

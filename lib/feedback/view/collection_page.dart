@@ -124,19 +124,27 @@ class _CollectionPageState extends State<CollectionPage> {
       itemCount: _favList.length,
     ));
     var favListShow;
-    if (_favList.length.isZero) {
-      favListShow = Container(
-          height: 200,
-          alignment: Alignment.center,
-          child: Text("暂无收藏", style: TextUtil.base.grey6267));
-    } else {
-      favListShow = Column(
-        children: [favLists, SizedBox(height: 20.w)],
-      );
-    }
     var list = ExpandablePageView(
       controller: _tabController,
-      children: [favListShow],
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 700),
+          child: Builder(
+              key: ValueKey(_favList.length.isZero),
+              builder: (context) {
+                if (_favList.length.isZero) {
+                  return Container(
+                      height: 200,
+                      alignment: Alignment.center,
+                      child: Text("暂无收藏", style: TextUtil.base.grey6267));
+                } else {
+                  return Column(
+                    children: [favLists, SizedBox(height: 20.w)],
+                  );
+                }
+              }),
+        )
+      ],
     );
 
     Widget body = CustomScrollView(

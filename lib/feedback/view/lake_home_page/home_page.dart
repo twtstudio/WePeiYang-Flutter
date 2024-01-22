@@ -298,11 +298,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         cacheExtent: cacheNum,
                         controller: context.read<LakeModel>().tabController,
                         children: List<Widget>.generate(
-                            // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
-                            tabs.length,
-                            (i) => NSubPage(
-                                  index: tabList[i].id,
-                                )));
+                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                          tabs.length,
+                          (i) => NSubPage(
+                            index: tabList[i].id,
+                          ),
+                        ),
+                      );
               },
             ),
           ),
