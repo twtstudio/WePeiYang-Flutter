@@ -167,7 +167,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         context.select((LakeModel model) => model.lakeAreas[index]!.status);
 
     return AnimatedSwitcher(
-      duration: Duration(milliseconds: 700),
+      duration: Duration(milliseconds: 300),
       child: Builder(
           key: ValueKey(status),
           builder: (BuildContext context) {
