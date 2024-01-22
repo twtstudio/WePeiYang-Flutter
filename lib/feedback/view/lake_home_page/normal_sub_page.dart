@@ -78,22 +78,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     return true;
   }
 
-  String get _getGreetText {
-    int hour = DateTime.now().hour;
-    if (hour < 5)
-      return '晚上好';
-    else if (hour >= 5 && hour < 12)
-      return '早上好';
-    else if (hour >= 12 && hour < 14)
-      return '中午好';
-    else if (hour >= 12 && hour < 17)
-      return '下午好';
-    else if (hour >= 17 && hour < 19)
-      return '傍晚好';
-    else
-      return '晚上好';
-  }
-
   onRefresh() async {
     context.read<LakeModel>().lakeAreas[index]?.status = LakePageStatus.loading;
     FeedbackService.getToken(onResult: (_) {
@@ -182,195 +166,156 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     var status =
         context.select((LakeModel model) => model.lakeAreas[index]!.status);
 
-    if (status == LakePageStatus.idle)
-      return NotificationListener<ScrollNotification>(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller:
-              context.read<LakeModel>().lakeAreas[index]!.refreshController,
-          header: ClassicHeader(
-            height: 5.h,
-            completeDuration: Duration(milliseconds: 300),
-            idleText: '下拉以刷新 (乀*･ω･)乀',
-            releaseText: '下拉以刷新',
-            refreshingText: topText[Random().nextInt(topText.length)],
-            completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-            failedText: '刷新失败（；´д｀）ゞ',
-          ),
-          cacheExtent: 11,
-          enablePullDown: true,
-          onRefresh: onRefresh,
-          footer: ClassicFooter(
-            idleText: '下拉以刷新',
-            noDataText: '无数据',
-            loadingText: '加载中，请稍等  ;P',
-            failedText: '加载失败（；´д｀）ゞ',
-          ),
-          enablePullUp: true,
-          onLoading: _onLoading,
-          child: ListView.builder(
-            controller: context.read<LakeModel>().lakeAreas[index]!.controller,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: context.select((LakeModel model) => index == 0
-                ? model.lakeAreas[index]!.dataList.values.toList().length + 3
-                : model.lakeAreas[index]!.dataList.values.toList().length + 2),
-            itemBuilder: (context, ind) {
-              return Builder(builder: (context) {
-                if (ind == 0)
-                  return Container(
-                    height: 35.h,
-                    margin: EdgeInsets.only(
-                        top: 12.h + FeedbackHomePageState().searchBarHeight,
-                        left: 14.w,
-                        right: 14.w),
-                    padding: EdgeInsets.symmetric(vertical: 2),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
-                        color: ColorUtil.blue2CColor.withAlpha(12)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(width: 12),
-                          context.read<NoticeProvider>().noticeList.length > 0
-                              ? WButton(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/svg_pics/lake_butt_icons/la_ba.svg",
-                                        width: 20,
-                                      ),
-                                      SizedBox(width: 6),
-                                      SizedBox(
-                                          height: 20,
-                                          width: WePeiYangApp.screenWidth - 83,
-                                          child: context
-                                                      .read<NoticeProvider>()
-                                                      .noticeList
-                                                      .length >
-                                                  1
-                                              ? TextScroller(
-                                                  stepOffset: 500,
-                                                  duration:
-                                                      Duration(seconds: 20),
-                                                  paddingLeft: 0.0,
-                                                  children: List.generate(
-                                                    context
-                                                        .read<NoticeProvider>()
-                                                        .noticeList
-                                                        .length,
-                                                    (index) => Text(
-                                                        '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
-                                                        style: TextUtil
-                                                            .base
-                                                            .blue2C
-                                                            .w400
-                                                            .NotoSansSC
-                                                            .sp(15)),
-                                                  ),
-                                                )
-                                              : Text(
-                                                  '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                                  style: TextUtil.base.blue2C
-                                                      .w400.NotoSansSC
-                                                      .sp(15))),
-                                    ],
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 700),
+      child: Builder(
+          key: ValueKey(status),
+          builder: (BuildContext context) {
+            if (status == LakePageStatus.idle)
+              return NotificationListener<ScrollNotification>(
+                child: SmartRefresher(
+                  physics: BouncingScrollPhysics(),
+                  controller: context
+                      .read<LakeModel>()
+                      .lakeAreas[index]!
+                      .refreshController,
+                  header: ClassicHeader(
+                    height: 5.h,
+                    completeDuration: Duration(milliseconds: 300),
+                    idleText: '下拉以刷新 (乀*･ω･)乀',
+                    releaseText: '下拉以刷新',
+                    refreshingText: topText[Random().nextInt(topText.length)],
+                    completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+                    failedText: '刷新失败（；´д｀）ゞ',
+                  ),
+                  cacheExtent: 11,
+                  enablePullDown: true,
+                  onRefresh: onRefresh,
+                  footer: ClassicFooter(
+                    idleText: '下拉以刷新',
+                    noDataText: '无数据',
+                    loadingText: '加载中，请稍等  ;P',
+                    failedText: '加载失败（；´д｀）ゞ',
+                  ),
+                  enablePullUp: true,
+                  onLoading: _onLoading,
+                  child: ListView.builder(
+                    controller:
+                        context.read<LakeModel>().lakeAreas[index]!.controller,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: context.select((LakeModel model) => index == 0
+                        ? model.lakeAreas[index]!.dataList.values
+                                .toList()
+                                .length +
+                            3
+                        : model.lakeAreas[index]!.dataList.values
+                                .toList()
+                                .length +
+                            2),
+                    itemBuilder: (context, ind) {
+                      return Builder(builder: (context) {
+                        if (ind == 0) return AnnouncementBannerWidget();
+                        ind--;
+                        if (ind == 0)
+                          return index == 0
+                              ? HotCard()
+                              : SizedBox(height: 10.h);
+                        ind--;
+                        if (ind == 0) return AdCardWidget();
+                        ind--;
+                        if (ind == 0)
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                WButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      context.read<LakeModel>().sortSeq = 1;
+                                      listToTop();
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        20.w, 14.h, 5.w, 6.h),
+                                    child: Text('默认排序',
+                                        style: context
+                                                    .read<LakeModel>()
+                                                    .sortSeq !=
+                                                0
+                                            ? TextUtil.base.blue2C.w600.sp(14)
+                                            : TextUtil.base.black2A.w400
+                                                .sp(14)),
                                   ),
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, HomeRouter.notice),
-                                )
-                              : WButton(
-                                  child: SizedBox(
-                                    width: WePeiYangApp.screenWidth - 83,
-                                    child: Text(
-                                      '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
-                                      style: TextUtil
-                                          .base.blue2C.w600.NotoSansSC
-                                          .sp(16),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, HomeRouter.notice),
                                 ),
-                          Spacer()
-                        ]),
-                  );
-                ind--;
-                if (index == 0 && ind == 0) return HotCard();
-                if (index != 0 && ind == 0) return SizedBox(height: 10.h);
-                ind--;
-                if (ind == 0) {
-                  return Builder(builder: (context) {
-                    final _len =
-                        context.watch<FestivalProvider>().nonePopupListLength;
-                    return Padding(
-                      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
-                      child: _len > 0 ? ActivityCard(1.sw - 40.w) : Loading(),
-                    );
-                  });
-                  ind--;
-                }
-                if (ind == 0)
-                  return Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        WButton(
-                          onPressed: () {
-                            setState(() {
-                              context.read<LakeModel>().sortSeq = 1;
-                              listToTop();
-                            });
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(20.w, 14.h, 5.w, 6.h),
-                            child: Text('默认排序',
-                                style: context.read<LakeModel>().sortSeq != 0
-                                    ? TextUtil.base.blue2C.w600.sp(14)
-                                    : TextUtil.base.black2A.w400.sp(14)),
-                          ),
-                        ),
-                        WButton(
-                          onPressed: () {
-                            setState(() {
-                              context.read<LakeModel>().sortSeq = 0;
-                              listToTop();
-                            });
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(5.w, 14.h, 10.w, 6.h),
-                            child: Text('最新发帖',
-                                style: context.read<LakeModel>().sortSeq != 0
-                                    ? TextUtil.base.black2A.w400.sp(14)
-                                    : TextUtil.base.blue2C.w600.sp(14)),
-                          ),
-                        ),
-                      ]);
-                ind--;
-                final post = context
-                    .read<LakeModel>()
-                    .lakeAreas[index]!
-                    .dataList
-                    .values
-                    .toList()[ind];
-                return PostCardNormal(post);
-              });
-            },
-          ),
-        ),
-        onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
-      );
-    else if (status == LakePageStatus.unload)
-      return SizedBox();
-    else if (status == LakePageStatus.error)
-      return HomeErrorContainer(onRefresh, true, index);
-    else
-      return LoadingPageWidget(index, onRefresh);
+                                WButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      context.read<LakeModel>().sortSeq = 0;
+                                      listToTop();
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(
+                                        5.w, 14.h, 10.w, 6.h),
+                                    child: Text('最新发帖',
+                                        style: context
+                                                    .read<LakeModel>()
+                                                    .sortSeq !=
+                                                0
+                                            ? TextUtil.base.black2A.w400.sp(14)
+                                            : TextUtil.base.blue2C.w600.sp(14)),
+                                  ),
+                                ),
+                              ]);
+                        ind--;
+                        final post = context
+                            .read<LakeModel>()
+                            .lakeAreas[index]!
+                            .dataList
+                            .values
+                            .toList()[ind];
+                        return PostCardNormal(post);
+                      });
+                    },
+                  ),
+                ),
+                onNotification: (ScrollNotification scrollInfo) =>
+                    _onScrollNotification(scrollInfo),
+              );
+            else if (status == LakePageStatus.unload)
+              return SizedBox();
+            else if (status == LakePageStatus.error)
+              return HomeErrorContainer(onRefresh, true, index);
+            else
+              return LoadingPageWidget(index, onRefresh);
+          }),
+    );
+  }
+}
+
+class AdCardWidget extends StatelessWidget {
+  const AdCardWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final _len = context.watch<FestivalProvider>().nonePopupListLength;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: _len > 0
+            ? ActivityCard(1.sw - 40.w)
+            : Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                  color: ColorUtil.grey145,
+                ),
+                width: 1.sw - 40.w,
+                height: (1.sw - 40.w) * 0.32,
+              ),
+      ),
+    );
   }
 }
 
@@ -477,22 +422,21 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                 },
               ),
               AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  width: 1.sw,
-                  height: 1.sh,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
-                        !isOpa
-                            ? ColorUtil.black32Color
-                            : ColorUtil.black90Color,
-                      ],
-                    ),
+                duration: Duration(milliseconds: 200),
+                width: 1.sw,
+                height: 1.sh,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
+                      !isOpa ? ColorUtil.black32Color : ColorUtil.black90Color,
+                    ],
                   ),
-                  child: Center(child: Loading()))
+                ),
+                // child: Center(child: Loading())
+              )
             ],
           );
   }
@@ -590,6 +534,104 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
           widget.networkFailPageUsage ? retryButton : SizedBox(),
         ],
       ),
+    );
+  }
+}
+
+class AnnouncementBannerWidget extends StatelessWidget {
+  const AnnouncementBannerWidget({super.key});
+
+  String get _getGreetText {
+    int hour = DateTime.now().hour;
+    if (hour < 5)
+      return '晚上好';
+    else if (hour >= 5 && hour < 12)
+      return '早上好';
+    else if (hour >= 12 && hour < 14)
+      return '中午好';
+    else if (hour >= 12 && hour < 17)
+      return '下午好';
+    else if (hour >= 17 && hour < 19)
+      return '傍晚好';
+    else
+      return '晚上好';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 35.h,
+      margin: EdgeInsets.only(
+          top: 12.h + FeedbackHomePageState().searchBarHeight,
+          left: 14.w,
+          right: 14.w),
+      padding: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          color: ColorUtil.blue2CColor.withAlpha(12)),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 12),
+            context.read<NoticeProvider>().noticeList.length > 0
+                ? WButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/svg_pics/lake_butt_icons/la_ba.svg",
+                          width: 20,
+                        ),
+                        SizedBox(width: 6),
+                        SizedBox(
+                            height: 20,
+                            width: WePeiYangApp.screenWidth - 83,
+                            child: context
+                                        .read<NoticeProvider>()
+                                        .noticeList
+                                        .length >
+                                    1
+                                ? TextScroller(
+                                    stepOffset: 500,
+                                    duration: Duration(seconds: 20),
+                                    paddingLeft: 0.0,
+                                    children: List.generate(
+                                      context
+                                          .read<NoticeProvider>()
+                                          .noticeList
+                                          .length,
+                                      (index) => Text(
+                                          '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
+                                          style: TextUtil
+                                              .base.blue2C.w400.NotoSansSC
+                                              .sp(15)),
+                                    ),
+                                  )
+                                : Text(
+                                    '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
+                                    style: TextUtil.base.blue2C.w400.NotoSansSC
+                                        .sp(15))),
+                      ],
+                    ),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, HomeRouter.notice),
+                  )
+                : WButton(
+                    child: SizedBox(
+                      width: WePeiYangApp.screenWidth - 83,
+                      child: Text(
+                        '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
+                        style: TextUtil.base.blue2C.w600.NotoSansSC.sp(16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, HomeRouter.notice),
+                  ),
+            Spacer()
+          ]),
     );
   }
 }

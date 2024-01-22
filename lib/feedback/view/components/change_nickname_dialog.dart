@@ -30,6 +30,10 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
       titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).black00,
       confirmButtonColor: ColorUtil.blue2CColor,
       confirmFun: () {
+        if (_textEditingController.text == "") {
+          ToastProvider.error('昵称不能为空喵');
+          return;
+        }
         FeedbackService.changeNickname(
             onSuccess: () {
               ToastProvider.success('修改成功喵');

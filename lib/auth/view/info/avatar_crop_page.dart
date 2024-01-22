@@ -157,7 +157,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         child: SizedBox(width: width, height: width),
       );
     }
-    return UserAvatarImage(size: width);
+    return Hero(tag: 'avatar', child: UserAvatarImage(size: width));
   }
 
   @override
@@ -177,7 +177,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           child: Column(
             children: [
               Spacer(),
-              Hero(tag: 'avatar', child: getAvatar()),
+              getAvatar(),
               Spacer(),
               Divider(height: 1.0, color: ColorUtil.whiteFFColor),
               SizedBox(height: 10),
@@ -189,7 +189,6 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 child: Text(
                   '更换头像框',
                   style: TextUtil.base.white.sp(16),
-
                 ),
               ),
               SizedBox(height: 10),

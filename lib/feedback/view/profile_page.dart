@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
@@ -89,6 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     print(CommonPreferences.curLevelPoint.value.toDouble());
@@ -112,7 +112,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: postLists,
       );
     }
-//静态header，头像和资料以及appbar
+    //静态header，头像和资料以及appbar
     Widget appBar = Stack(
       children: [
         Column(
@@ -137,7 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   WButton(
                     onPressed: () =>
                         Navigator.pushNamed(context, AuthRouter.setting)
-                            ..then((_) => _refreshController.requestRefresh()),
+                          ..then((_) => _refreshController.requestRefresh()),
                     child: Image.asset(
                       'assets/images/setting.png',
                       width: 24,
@@ -189,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: SvgPicture.asset(
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
-                            color: ColorUtil.mainColor,
+                            color: ColorUtil.whiteFFColor,
                           ),
                         ),
                       ),
@@ -239,26 +239,27 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             SizedBox(height: 6.h),
                             LevelProgress(
-                              value: (CommonPreferences.levelPoint.value - CommonPreferences.curLevelPoint.value)
+                              value: (CommonPreferences.levelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble() /
-                                  (CommonPreferences.nextLevelPoint.value - CommonPreferences.curLevelPoint.value)
+                                  (CommonPreferences.nextLevelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble(),
                             ),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                      "还需 ${CommonPreferences.nextLevelPoint.value - CommonPreferences.levelPoint.value} 点经验升至下一级",
-                                    style: TextUtil.base.ProductSans.greyA6
-                                        .sp(9),
-                                  ),
-                                  Text(
-                                    " (${CommonPreferences.levelPoint.value.toString()}/${CommonPreferences.nextLevelPoint.value.toString()})",
-                                    style: TextUtil.base.ProductSans.greyA6.bold
-                                        .sp(9),
-                                  ),
-                                ],
+                              children: [
+                                Text(
+                                  "还需 ${CommonPreferences.nextLevelPoint.value - CommonPreferences.levelPoint.value} 点经验升至下一级",
+                                  style: TextUtil.base.ProductSans.greyA6.sp(9),
+                                ),
+                                Text(
+                                  " (${CommonPreferences.levelPoint.value.toString()}/${CommonPreferences.nextLevelPoint.value.toString()})",
+                                  style: TextUtil.base.ProductSans.greyA6.bold
+                                      .sp(9),
+                                ),
+                              ],
                             )
                           ],
                         )
@@ -327,17 +328,20 @@ class _ProfilePageState extends State<ProfilePage> {
     Widget body = ListView(
       children: [
         appBar,
-        Container(
-          color: ColorUtil.whiteFFColor,
-          child: postListShow,
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 700),
+          child: Container(
+            key: ValueKey(_refreshController.isRefresh),
+            color: ColorUtil.whiteFFColor,
+            child: postListShow,
+          ),
         )
       ],
     );
 
     return Container(
       //改背景色用
-      decoration: BoxDecoration(
-          gradient: ColorUtil.gradientBlue04),
+      decoration: BoxDecoration(gradient: ColorUtil.gradientBlue04),
       child: SafeArea(
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),

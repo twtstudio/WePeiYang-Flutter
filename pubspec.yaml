@@ -92,6 +92,9 @@ dependencies:
   image_size_getter_http_input: ^2.0.0
   flutter_staggered_grid_view: ^0.4.0
 
+  # 用于图片加载占位符
+  transparent_image: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:
