@@ -329,10 +329,10 @@ class _ProfilePageState extends State<ProfilePage> {
       children: [
         appBar,
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 700),
+          duration: Duration(milliseconds: 300),
           child: Container(
             key: ValueKey(_refreshController.isRefresh),
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.whiteFFColor,  
             child: postListShow,
           ),
         )

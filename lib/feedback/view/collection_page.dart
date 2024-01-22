@@ -132,7 +132,7 @@ class _CollectionPageState extends State<CollectionPage> {
       controller: _tabController,
       children: [
         AnimatedSwitcher(
-          duration: Duration(milliseconds: 700),
+          duration: Duration(milliseconds: 300),
           child: Builder(
               key: ValueKey(_favList.length.isZero),
               builder: (context) {
