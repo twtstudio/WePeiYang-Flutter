@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -258,46 +260,51 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     : MediaQuery.of(context).padding.top + searchBarHeight,
                 bottom: 70.h - 18),
             child: Selector<LakeModel, List<WPYTab>>(
-                selector: (BuildContext context, LakeModel lakeModel) {
-              return lakeModel.tabList;
-            }, builder: (_, tabs, __) {
-              if (!context.read<LakeModel>().tabControllerLoaded) {
-                context.read<LakeModel>().tabController = TabController(
-                    length: tabs.length, vsync: this, initialIndex: 1)
-                  ..addListener(() {
-                    if (context
-                            .read<LakeModel>()
-                            .tabController
-                            .index
-                            .toDouble() ==
-                        context
-                            .read<LakeModel>()
-                            .tabController
-                            .animation!
-                            .value) {
-                      WPYTab tab = context.read<LakeModel>().lakeAreas[1]!.tab;
-                      if (context.read<LakeModel>().tabController.index !=
-                              tabList.indexOf(tab) &&
-                          canSee) _onFeedbackTapped();
-                      context.read<LakeModel>().currentTab =
-                          context.read<LakeModel>().tabController.index;
-                      context.read<LakeModel>().onFeedbackOpen();
-                    }
-                  });
-              }
-              int cacheNum = 0;
-              return tabs.length == 1
-                  ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
-                  : ExtendedTabBarView(
-                      cacheExtent: cacheNum,
-                      controller: context.read<LakeModel>().tabController,
-                      children: List<Widget>.generate(
-                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
-                          tabs.length,
-                          (i) => NSubPage(
-                                index: tabList[i].id,
-                              )));
-            }),
+              selector: (BuildContext context, LakeModel lakeModel) {
+                return lakeModel.tabList;
+              },
+              builder: (_, tabs, __) {
+                if (!context.read<LakeModel>().tabControllerLoaded) {
+                  context.read<LakeModel>().tabController = TabController(
+                      length: tabs.length,
+                      vsync: this,
+                      initialIndex: min(max(0, tabs.length - 1), 1))
+                    ..addListener(() {
+                      if (context
+                              .read<LakeModel>()
+                              .tabController
+                              .index
+                              .toDouble() ==
+                          context
+                              .read<LakeModel>()
+                              .tabController
+                              .animation!
+                              .value) {
+                        WPYTab tab =
+                            context.read<LakeModel>().lakeAreas[1]!.tab;
+                        if (context.read<LakeModel>().tabController.index !=
+                                tabList.indexOf(tab) &&
+                            canSee) _onFeedbackTapped();
+                        context.read<LakeModel>().currentTab =
+                            context.read<LakeModel>().tabController.index;
+                        context.read<LakeModel>().onFeedbackOpen();
+                      }
+                    });
+                }
+                int cacheNum = 0;
+                return tabs.length == 1
+                    ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
+                    : ExtendedTabBarView(
+                        cacheExtent: cacheNum,
+                        controller: context.read<LakeModel>().tabController,
+                        children: List<Widget>.generate(
+                            // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                            tabs.length,
+                            (i) => NSubPage(
+                                  index: tabList[i].id,
+                                )));
+              },
+            ),
           ),
           Padding(
             padding: EdgeInsets.only(
