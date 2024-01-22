@@ -209,7 +209,6 @@ class _CourseDisplayWidget extends StatelessWidget {
       child: ListenableBuilder(
         listenable: loader,
         builder: (context, __) {
-          print("==> rebuild");
           return Stack(
             children: _generatePositioned(
               context,
@@ -229,7 +228,6 @@ class _CourseDisplayWidget extends StatelessWidget {
     Map<DateTime, List<int>> plan,
     int dayCount,
   ) {
-    print("==> plan: " + plan.toString());
     List<Widget> list = [];
     var d = 1;
     var middleStep = 40.h;
