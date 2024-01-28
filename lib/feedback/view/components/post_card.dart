@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
@@ -30,9 +31,11 @@ class PostCardNormal extends StatefulWidget {
   ///
   /// 包括论坛首页展示的 (outer = true / null) 和 详情页展示的 (outer = false)
 
-  PostCardNormal(this.post, {this.outer = true});
+  PostCardNormal(this.post, {this.outer = true, this.screenshotController});
 
   final Post post;
+
+  final ScreenshotController? screenshotController;
 
   /// 以下默认 outer
   final bool outer;
@@ -298,61 +301,68 @@ class _PostCardNormalState extends State<PostCardNormal> {
     ///           ↓ build's return is here  ↓             ///
     /////////////////////////////////////////////////////////
 
-    return widget.outer
-        // outer 框架
-        ? WButton(
-            onPressed: () {
-              FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
-              Navigator.pushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              );
-            },
-            child: Container(
-              padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
-              color: ColorUtil.whiteFFColor,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...head,
-                  if (post.imageUrls.isNotEmpty)
-                    Padding(
-                        padding: EdgeInsets.only(left: 12.w, bottom: 8.h),
-                        child: outerImages),
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.w),
-                    child: likeUnlikeVisit,
-                  )
-                ],
-              ),
-            ),
-          )
-
-        // inner 框架
-        : Container(
-            padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom:
-                        BorderSide(color: ColorUtil.greyEAColor, width: 1.h))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...head,
-                if (post.imageUrls.isNotEmpty)
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
-                    child: innerImages,
+    return Screenshot(
+      controller: widget.screenshotController ?? ScreenshotController(),
+      child: Container(
+        color: ColorUtil.whiteFFColor,
+        child: widget.outer
+            // outer 框架
+            ? WButton(
+                onPressed: () {
+                  FeedbackService.visitPost(
+                      id: widget.post.id, onFailure: (_) {});
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.detail,
+                    arguments: post,
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
+                  color: ColorUtil.whiteFFColor,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...head,
+                      if (post.imageUrls.isNotEmpty)
+                        Padding(
+                            padding: EdgeInsets.only(left: 12.w, bottom: 8.h),
+                            child: outerImages),
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.w),
+                        child: likeUnlikeVisit,
+                      )
+                    ],
                   ),
-                Padding(
-                  padding: EdgeInsets.only(left: 8.w),
-                  child: tagCampusVisit,
                 ),
-              ],
-            ),
-          );
+              )
+
+            // inner 框架
+            : Container(
+                padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(
+                            color: ColorUtil.greyEAColor, width: 1.h))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...head,
+                    if (post.imageUrls.isNotEmpty)
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
+                        child: innerImages,
+                      ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.w),
+                      child: tagCampusVisit,
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
 
     /////////////////////////////////////////////////////////
     ///           ↑ build's return is here  ↑             ///
@@ -544,7 +554,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                 Spacer(),
                                                 Container(
                                                     decoration: BoxDecoration(
-                                                        color: ColorUtil.black38,
+                                                        color:
+                                                            ColorUtil.black38,
                                                         borderRadius:
                                                             BorderRadius.only(
                                                                 topLeft: Radius

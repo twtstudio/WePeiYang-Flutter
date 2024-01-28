@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -151,11 +155,11 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
-      if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
-          (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
-        context.read<NewFloorProvider>().inputFieldEnabled = false;
-        context.read<NewFloorProvider>().clearAndClose();
-        _previousOffset = scrollInfo.metrics.pixels;
+    if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
+        (scrollInfo.metrics.pixels - _previousOffset).abs() >= 20) {
+      context.read<NewFloorProvider>().inputFieldEnabled = false;
+      context.read<NewFloorProvider>().clearAndClose();
+      _previousOffset = scrollInfo.metrics.pixels;
     }
     return true;
   }
@@ -204,6 +208,8 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
     return success;
   }
+
+  ScreenshotController screenshotController = ScreenshotController();
 
   _getComments(
       {required Function(List<Floor>) onSuccess,
@@ -270,7 +276,10 @@ class _PostDetailPageState extends State<PostDetailPage>
     if (status == DetailPageStatus.loading) {
       body = ListView(
         children: [
-          PostCardNormal(widget.post, outer: false),
+          PostCardNormal(
+            widget.post,
+            outer: false,
+          ),
           SizedBox(
             height: 120,
             child: Center(child: Loading()),
@@ -283,7 +292,12 @@ class _PostDetailPageState extends State<PostDetailPage>
           if (i == 0) {
             return Column(
               children: [
-                if (_showPostCard) PostCardNormal(widget.post, outer: false),
+                if (_showPostCard)
+                  PostCardNormal(
+                    widget.post,
+                    outer: false,
+                    screenshotController: screenshotController,
+                  ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -537,7 +551,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 offstage: value.inputFieldEnabled,
                                 child: WButton(
                                   onPressed: () {
-                                    context.read<NewFloorProvider>().inputFieldEnabled = true;
+                                    context
+                                        .read<NewFloorProvider>()
+                                        .inputFieldEnabled = true;
                                     value.inputFieldOpenAndReplyTo(0);
                                     FocusScope.of(context)
                                         .requestFocus(value.focusNode);
@@ -647,49 +663,68 @@ class _PostDetailPageState extends State<PostDetailPage>
                           TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
                     ),
                   ),
-                  (widget.post.isOwner == false)
-                      ? CupertinoActionSheetAction(
-                          onPressed: () {
-                            Navigator.pushNamed(context, FeedbackRouter.report,
-                                arguments:
-                                    ReportPageArgs(widget.post.id, true));
-                          },
-                          child: Text(
-                            '举报',
-                            style: TextUtil.base.normal.w400.NotoSansSC.black00
-                                .sp(16),
-                          ))
-                      : CupertinoActionSheetAction(
-                          onPressed: () async {
-                            bool? confirm =
-                                await _showDeleteConfirmDialog('删除');
-                            if (confirm ?? false) {
-                              FeedbackService.deletePost(
-                                id: widget.post.id,
-                                onSuccess: () {
-                                  final lake = context.read<LakeModel>();
-                                  lake
-                                      .lakeAreas[
-                                          lake.tabList[lake.currentTab].id]!
-                                      .refreshController
-                                      .requestRefresh();
-                                  ToastProvider.success(
-                                      S.current.feedback_delete_success);
-                                  Navigator.of(context).popAndPushNamed(
-                                      FeedbackRouter.home,
-                                      arguments: 2);
-                                },
-                                onFailure: (e) {
-                                  ToastProvider.error(e.error.toString());
-                                },
-                              );
-                            }
-                          },
-                          child: Text(
-                            '删除',
-                            style: TextUtil.base.normal.w400.NotoSansSC.black00
-                                .sp(16),
-                          )),
+                  CupertinoActionSheetAction(
+                    onPressed: () async {
+                      ToastProvider.running("生成截图中");
+                      final dir = (await getTemporaryDirectory()).path;
+                      final name =
+                          "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png";
+                      final fullPath = path.join(dir, name);
+                      await screenshotController.captureAndSave(dir,
+                          fileName: name);
+                      await GallerySaver.saveImage(fullPath, albumName: "微北洋");
+                      await File(fullPath).delete();
+                      ToastProvider.success("图片保存成功");
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '截图分享',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                  if (widget.post.isOwner == false)
+                    CupertinoActionSheetAction(
+                        onPressed: () {
+                          Navigator.pushNamed(context, FeedbackRouter.report,
+                              arguments: ReportPageArgs(widget.post.id, true));
+                        },
+                        child: Text(
+                          '举报',
+                          style: TextUtil.base.normal.w400.NotoSansSC.black00
+                              .sp(16),
+                        ))
+                  else
+                    CupertinoActionSheetAction(
+                        onPressed: () async {
+                          bool? confirm = await _showDeleteConfirmDialog('删除');
+                          if (confirm ?? false) {
+                            FeedbackService.deletePost(
+                              id: widget.post.id,
+                              onSuccess: () {
+                                final lake = context.read<LakeModel>();
+                                lake
+                                    .lakeAreas[
+                                        lake.tabList[lake.currentTab].id]!
+                                    .refreshController
+                                    .requestRefresh();
+                                ToastProvider.success(
+                                    S.current.feedback_delete_success);
+                                Navigator.of(context).popAndPushNamed(
+                                    FeedbackRouter.home,
+                                    arguments: 2);
+                              },
+                              onFailure: (e) {
+                                ToastProvider.error(e.error.toString());
+                              },
+                            );
+                          }
+                        },
+                        child: Text(
+                          '删除',
+                          style: TextUtil.base.normal.w400.NotoSansSC.black00
+                              .sp(16),
+                        )),
                   CupertinoActionSheetAction(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
@@ -1070,7 +1105,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           margin: EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            border: Border.all(width: 1, color: ColorUtil.black26),
+                            border:
+                                Border.all(width: 1, color: ColorUtil.black26),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1205,7 +1241,8 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                   action: 100),
             ]),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14), color: ColorUtil.whiteFFColor),
+            borderRadius: BorderRadius.circular(14),
+            color: ColorUtil.whiteFFColor),
       ),
     );
   }

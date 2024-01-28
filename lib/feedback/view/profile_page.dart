@@ -332,7 +332,7 @@ class _ProfilePageState extends State<ProfilePage> {
           duration: Duration(milliseconds: 300),
           child: Container(
             key: ValueKey(_refreshController.isRefresh),
-            color: ColorUtil.whiteFFColor,  
+            color: ColorUtil.whiteFFColor,
             child: postListShow,
           ),
         )

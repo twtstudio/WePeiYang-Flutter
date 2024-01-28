@@ -59,7 +59,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       Expanded(
                         child: Text(S.current.avatar, style: mainTextStyle),
                       ),
-                      Hero(tag: 'UserAvatar', child: UserAvatarImage(size: 45)),
+                      Hero(tag: 'avatar', child: UserAvatarImage(size: 45)),
                       arrow,
                       SizedBox(width: 15.w)
                     ],

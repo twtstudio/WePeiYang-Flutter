@@ -83,7 +83,8 @@ android {
                 keyAlias pro.getProperty('keyAlias')
                 keyPassword pro.getProperty('storePassword')
             } catch (ex) {
-                ex.printStackTrace()
+                println "You are running without keystore, please configure your keystore in local.properties when packaging."
+//                ex.printStackTrace()
             }
         }
     }
@@ -221,6 +222,7 @@ android {
             }
         }
     }
+    namespace 'com.twt.service'
 }
 
 flutter {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class NewPostProvider {
