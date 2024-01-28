@@ -599,7 +599,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                   ?.getClipboardData()),
                                           IconButton(
                                               icon: Image.asset(
-                                                'assets/images/lake_butt_icons/x.png',
+                                                'assets/images/lake_butt_icons/xx.png',
                                                 width: 24,
                                                 height: 24,
                                                 fit: BoxFit.fitWidth,
@@ -761,8 +761,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                   ),
                   CupertinoActionSheetAction(
                     onPressed: () async {
-                      screenshotSelecting.value = !screenshotSelecting.value;
-                      print(screenshotSelecting.value);
+                      screenshotSelecting.value = true;
+                      ToastProvider.running("点击右上角保存或取消");
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -846,6 +846,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           await takeScreenshot(selectedScreenshotController,
               "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
           screenshotting.value = false;
+          screenshotList.empty();
         },
         icon: Icon(Icons.add_a_photo_outlined, color: ColorUtil.black2AColor));
 
