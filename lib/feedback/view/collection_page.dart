@@ -123,7 +123,6 @@ class _CollectionPageState extends State<CollectionPage> {
       },
       itemCount: _favList.length,
     ));
-    var favListShow;
     var list = ExpandablePageView(
       controller: _tabController,
       children: [

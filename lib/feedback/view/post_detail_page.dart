@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:path/path.dart' as path;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -210,6 +211,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   ScreenshotController screenshotController = ScreenshotController();
+  ScreenshotController selectedScreenshotController = ScreenshotController();
 
   _getComments(
       {required Function(List<Floor>) onSuccess,
@@ -258,6 +260,25 @@ class _PostDetailPageState extends State<PostDetailPage>
     super.dispose();
   }
 
+  final screenshotList = ScreenshotNotifier();
+  final screenshotSelecting = ValueNotifier(false);
+  final screenshotting = ValueNotifier(false);
+
+  Future<void> takeScreenshot(
+    ScreenshotController _controller,
+    String name,
+    // Widget? widget,
+  ) async {
+    ToastProvider.running("生成截图中");
+    final dir = (await getTemporaryDirectory()).path;
+    final fullPath = path.join(dir, name);
+    await _controller.captureAndSave(dir,
+        fileName: name, delay: Duration(milliseconds: 500));
+    await GallerySaver.saveImage(fullPath, albumName: "微北洋");
+    await File(fullPath).delete();
+    ToastProvider.success("图片保存成功");
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget body;
@@ -272,7 +293,6 @@ class _PostDetailPageState extends State<PostDetailPage>
       child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
           width: 20),
     );
-
     if (status == DetailPageStatus.loading) {
       body = ListView(
         children: [
@@ -288,6 +308,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       );
     } else if (status == DetailPageStatus.idle) {
       Widget contentList = ListView.builder(
+        shrinkWrap: true,
         itemBuilder: (BuildContext context, int i) {
           if (i == 0) {
             return Column(
@@ -360,45 +381,99 @@ class _PostDetailPageState extends State<PostDetailPage>
             );
           }
           i--;
-
           if (i < _officialCommentList.length) {
             if (i > 2) i--;
             var data = _officialCommentList[i];
             var list = _officialCommentList;
-            return i == 0
-                ? OfficialReplyCard.reply(
-                    tag: widget.post.department?.name ?? '',
-                    comment: data,
-                    placeAppeared: i,
-                    ratings: widget.post.rating,
-                    ancestorId: widget.post.uid,
-                    onContentPressed: (refresh) async {
-                      refresh.call(list);
-                    },
-                  )
-                : i == 1
-                    // 楼中楼显示
-                    ? OfficialReplyCard.subFloor(
-                        comment: data,
-                        placeAppeared: i,
-                        ratings: widget.post.rating,
-                        ancestorId: widget.post.uid,
-                        onContentPressed: (refresh) async {
-                          refresh.call(list);
-                        },
-                      )
-                    : SizedBox();
+            if (i == 0) {
+              return OfficialReplyCard.reply(
+                tag: widget.post.department?.name ?? '',
+                comment: data,
+                placeAppeared: i,
+                ratings: widget.post.rating,
+                ancestorId: widget.post.uid,
+                onContentPressed: (refresh) async {
+                  refresh.call(list);
+                },
+              );
+            } else if (i == 1) {
+              return OfficialReplyCard.subFloor(
+                comment: data,
+                placeAppeared: i,
+                ratings: widget.post.rating,
+                ancestorId: widget.post.uid,
+                onContentPressed: (refresh) async {
+                  refresh.call(list);
+                },
+              );
+            } else {
+              return SizedBox();
+            }
           } else {
             var data = _commentList[i - _officialCommentList.length];
-            return NCommentCard(
-              uid: widget.post.uid,
-              comment: data,
-              ancestorUId: widget.post.id,
-              ancestorName: widget.post.nickname,
-              commentFloor: i + 1,
-              isSubFloor: false,
-              isFullView: false,
-              showBlockButton: _showBlockButton,
+            if (screenshotting.value && !screenshotList.list.contains(data.id))
+              return SizedBox.shrink();
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                var _commentBody = ListenableBuilder(
+                    listenable: screenshotSelecting,
+                    child: ConstrainedBox(
+                        constraints: constraints,
+                        child: NCommentCard(
+                          uid: widget.post.uid,
+                          comment: data,
+                          ancestorUId: widget.post.id,
+                          ancestorName: widget.post.nickname,
+                          commentFloor: i + 1,
+                          isSubFloor: false,
+                          isFullView: false,
+                          showBlockButton: _showBlockButton,
+                        )),
+                    builder: (context, comment) {
+                      return Container(
+                        color: ColorUtil.whiteTransparent,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (screenshotSelecting.value)
+                              Container(
+                                margin: EdgeInsets.only(left: 8.w),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  // color: ColorUtil.greyShade300,
+                                ),
+                                child: ListenableBuilder(
+                                    listenable: screenshotList,
+                                    builder: (context, _) {
+                                      return Checkbox(
+                                        activeColor: ColorUtil.blue105,
+                                        focusColor: ColorUtil.hintWhite205,
+                                        hoverColor: ColorUtil.white240,
+                                        value: screenshotList.list
+                                            .contains(data.id),
+                                        onChanged: (value) {
+                                          if (value!)
+                                            screenshotList.list.add(data.id);
+                                          else
+                                            screenshotList.list.remove(data.id);
+                                          screenshotList.update();
+                                        },
+                                      );
+                                    }),
+                              ),
+                            comment ?? SizedBox.shrink(),
+                          ],
+                        ),
+                      );
+                    });
+
+                return SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    child: _commentBody);
+              },
             );
           }
         },
@@ -428,7 +503,16 @@ class _PostDetailPageState extends State<PostDetailPage>
           ),
           enablePullUp: true,
           onLoading: _onLoading,
-          child: contentList,
+          child: ListenableBuilder(
+              listenable: screenshotting,
+              builder: (context, _) {
+                if (screenshotting.value)
+                  return Screenshot(
+                      child: Container(
+                          color: ColorUtil.whiteFFColor, child: contentList),
+                      controller: selectedScreenshotController);
+                return Container(child: contentList);
+              }),
         ),
         onNotification: (ScrollNotification scrollInfo) =>
             _onScrollNotification(scrollInfo),
@@ -665,20 +749,24 @@ class _PostDetailPageState extends State<PostDetailPage>
                   ),
                   CupertinoActionSheetAction(
                     onPressed: () async {
-                      ToastProvider.running("生成截图中");
-                      final dir = (await getTemporaryDirectory()).path;
-                      final name =
-                          "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png";
-                      final fullPath = path.join(dir, name);
-                      await screenshotController.captureAndSave(dir,
-                          fileName: name);
-                      await GallerySaver.saveImage(fullPath, albumName: "微北洋");
-                      await File(fullPath).delete();
-                      ToastProvider.success("图片保存成功");
+                      await takeScreenshot(screenshotController,
+                          "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
                       Navigator.pop(context);
                     },
                     child: Text(
                       '截图分享',
+                      style:
+                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    ),
+                  ),
+                  CupertinoActionSheetAction(
+                    onPressed: () async {
+                      screenshotSelecting.value = !screenshotSelecting.value;
+                      print(screenshotSelecting.value);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      '选择评论截图',
                       style:
                           TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
                     ),
@@ -751,6 +839,23 @@ class _PostDetailPageState extends State<PostDetailPage>
             size: 23, color: ColorUtil.black2AColor),
         onPressed: () => _showManageDialog());
 
+    var confirmScreenshot = IconButton(
+        onPressed: () async {
+          screenshotSelecting.value = false;
+          screenshotting.value = true;
+          await takeScreenshot(selectedScreenshotController,
+              "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
+          screenshotting.value = false;
+        },
+        icon: Icon(Icons.add_a_photo_outlined, color: ColorUtil.black2AColor));
+
+    var cancelScreenshot = IconButton(
+        onPressed: () {
+          screenshotList.empty();
+          screenshotSelecting.value = false;
+        },
+        icon: Icon(Icons.cancel_outlined, color: ColorUtil.black2AColor));
+
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
@@ -762,7 +867,27 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
         onPressed: () => Navigator.pop(context, widget.post),
       ),
-      actions: [if (hasAdmin) manageButton, menuButton, SizedBox(width: 10)],
+      actions: [
+        if (hasAdmin) manageButton,
+        // confirmScreenshot,
+        ListenableBuilder(
+          listenable: screenshotSelecting,
+          builder: (context, child) {
+            if (screenshotSelecting.value) return cancelScreenshot;
+            return SizedBox.shrink();
+          },
+        ),
+        ListenableBuilder(
+          listenable: screenshotSelecting,
+          child: menuButton,
+          builder: (context, child) {
+            if (screenshotSelecting.value) return confirmScreenshot;
+            return child!;
+          },
+        ),
+
+        SizedBox(width: 10),
+      ],
       title: WButton(
         onPressed: () => _refreshController.requestRefresh(),
         child: SizedBox(

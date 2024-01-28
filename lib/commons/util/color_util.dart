@@ -9,6 +9,7 @@ class ColorUtil {
   static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
   static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
   static const whiteFFColor = Colors.white;
+  static const whiteTransparent = Color(0x00ffffff);
   static const white38 = Colors.white38;
   static const whiteOpacity05 = Color.fromRGBO(255, 255, 255, 0.5);
   static const whiteOpacity03 = Color.fromRGBO(255, 255, 255, 0.3);
@@ -20,7 +21,8 @@ class ColorUtil {
   static const white228 = Color.fromRGBO(228, 232, 234, 1.0);
   static const white234 = Color.fromRGBO(234, 234, 234, 1);
   static const white235 = Color.fromRGBO(235, 238, 243, 1);
-  static const white236 = Color.fromRGBO(236, 238, 237, 1) ;
+  static const white236 = Color.fromRGBO(236, 238, 237, 1);
+
   static const white237 = Color.fromRGBO(237, 240, 244, 1);
   static const white240 = Color.fromRGBO(240, 241, 242, 1);
   static const white248 = Color.fromARGB(248, 248, 248, 248);
@@ -88,7 +90,7 @@ class ColorUtil {
   static const black26 = Colors.black26;
   static const black12 = Colors.black12;
   static const black19 = Color(0x19000000);
-  static const greyHotColor=Color(0xff898989);
+  static const greyHotColor = Color(0xff898989);
   static const whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
   static const whiteOpacity02 = Color.fromRGBO(255, 255, 255, 0.2);
   static const whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
@@ -208,12 +210,11 @@ class ColorUtil {
     Color(0xFF6A63E1)
   ];
 
-  static const List<Color> gradientGrey=[
+  static const List<Color> gradientGrey = [
     Color(0x2262677b),
     Color(0x8862677b),
     Color(0xff62677b),
   ];
-
 
   static const List<Color> rainbowColors = [
     Color.fromRGBO(94, 192, 91, 1),

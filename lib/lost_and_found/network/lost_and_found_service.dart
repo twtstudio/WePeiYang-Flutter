@@ -17,7 +17,7 @@ class LostAndFoundDio extends DioAbstract {
     InterceptorsWrapper(onRequest: (options, handler) {
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response?.data['code'] ?? 0;
+      var code = response.data['code'] ?? 0;
       switch (code) {
         case "200": // 成功
           return handler.next(response);

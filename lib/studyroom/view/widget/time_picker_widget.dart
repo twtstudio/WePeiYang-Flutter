@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -141,8 +140,6 @@ class _TableCalenderState extends State<_TableCalender>
         color: Theme.of(context).calenderTodayText,
       ),
     );
-    final termStart = DateTime.parse(CommonPreferences.termStartDate.value);
-    final termEnd = termStart.add(Duration(days: 180));
 
     final tableCalendar = TableCalendar(
       firstDay: DateTime.now(),

@@ -183,7 +183,7 @@ class _SearchBarState extends State<SearchBar>
                           _controller.text = '#MP';
                           ToastProvider.error('后面跟数字啦！！！');
                         } else {
-                          widget.onSubmitted?.call(content);
+                          widget.onSubmitted.call(content);
                         }
                       } else {
                         Navigator.pushNamed(

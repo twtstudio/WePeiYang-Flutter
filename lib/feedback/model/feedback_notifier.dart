@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class NewPostProvider {
@@ -27,6 +26,21 @@ class NewPostProvider {
     images = [];
     tag = null;
     department = null;
+  }
+}
+
+class ScreenshotNotifier extends ChangeNotifier {
+  List<int> screenshotList = [];
+
+  List<int> get list => screenshotList;
+
+  void empty() {
+    screenshotList = [];
+    notifyListeners();
+  }
+
+  void update() {
+    notifyListeners();
   }
 }
 

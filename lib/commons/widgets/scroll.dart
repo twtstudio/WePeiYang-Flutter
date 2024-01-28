@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ForceAdjustableScrollPhysics extends ScrollPhysics {
-  double scrollFactor = 1;
+  final double scrollFactor;
 
   ForceAdjustableScrollPhysics(
       {required this.scrollFactor, ScrollPhysics? parent})
@@ -19,3 +19,4 @@ class ForceAdjustableScrollPhysics extends ScrollPhysics {
     return offset / scrollFactor;
   }
 }
+
