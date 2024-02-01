@@ -31,8 +31,10 @@ class PostCardNormal extends StatefulWidget {
   ///
   /// 包括论坛首页展示的 (outer = true / null) 和 详情页展示的 (outer = false)
 
-  PostCardNormal(this.post, {this.outer = true, this.screenshotController});
+  PostCardNormal(this.post,
+      {this.outer = true, this.screenshotController, this.expandAll = false});
 
+  final bool expandAll;
   final Post post;
 
   final ScreenshotController? screenshotController;
@@ -158,7 +160,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 text: post.content,
                 maxLines: 8,
                 style: TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.6),
-                expand: false,
+                expand: widget.expandAll,
                 buttonIsShown: true,
                 isHTML: false,
               ));

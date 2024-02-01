@@ -273,7 +273,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     final dir = (await getTemporaryDirectory()).path;
     final fullPath = path.join(dir, name);
     await _controller.captureAndSave(dir,
-        fileName: name, delay: Duration(milliseconds: 500));
+        fileName: name, delay: Duration(seconds: 1));
     await GallerySaver.saveImage(fullPath, albumName: "微北洋");
     await File(fullPath).delete();
     ToastProvider.success("图片保存成功");
@@ -318,6 +318,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     widget.post,
                     outer: false,
                     screenshotController: screenshotController,
+                    expandAll: screenshotting.value,
                   ),
                 const SizedBox(height: 10),
                 Row(
@@ -428,6 +429,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                           isSubFloor: false,
                           isFullView: false,
                           showBlockButton: _showBlockButton,
+                          expandAll: screenshotting.value,
                         )),
                     builder: (context, comment) {
                       return Container(
@@ -599,7 +601,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                   ?.getClipboardData()),
                                           IconButton(
                                               icon: Image.asset(
-                                                'assets/images/lake_butt_icons/xx.png',
+                                                'assets/images/lake_butt_icons/x.png',
                                                 width: 24,
                                                 height: 24,
                                                 fit: BoxFit.fitWidth,

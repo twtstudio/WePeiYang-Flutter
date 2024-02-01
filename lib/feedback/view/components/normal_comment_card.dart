@@ -47,6 +47,7 @@ class NCommentCard extends StatefulWidget {
   final bool isSubFloor;
   final bool isFullView;
   final bool showBlockButton;
+  final bool expandAll;
 
   @override
   _NCommentCardState createState() => _NCommentCardState();
@@ -63,6 +64,7 @@ class NCommentCard extends StatefulWidget {
     required this.isFullView,
     this.type,
     this.showBlockButton = false,
+    this.expandAll = false,
   });
 }
 
@@ -130,6 +132,7 @@ class _NCommentCardState extends State<NCommentCard>
 
   @override
   Widget build(BuildContext context) {
+    _picFullView = widget.expandAll || _picFullView;
     var commentMenuButton = WButton(
         child: Padding(
           padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
@@ -422,7 +425,7 @@ class _NCommentCardState extends State<NCommentCard>
               text: widget.comment.content,
               maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
               style: TextUtil.base.w400.NotoSansSC.black2A.h(1.8).sp(14),
-              expand: false,
+              expand: false || widget.expandAll,
               buttonIsShown: true,
               isHTML: false,
               replyTo: widget.comment.replyToName,
@@ -536,7 +539,8 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: 68.h, color: ColorUtil.transparent)))
+                                    height: 68.h,
+                                    color: ColorUtil.transparent)))
                       ],
                     ),
         ));
@@ -557,6 +561,7 @@ class _NCommentCardState extends State<NCommentCard>
               commentFloor: index + 1,
               isSubFloor: true,
               isFullView: widget.isFullView,
+              expandAll: widget.expandAll,
             );
           },
           childCount: widget.isFullView
@@ -665,24 +670,25 @@ class _NCommentCardState extends State<NCommentCard>
             SizedBox(height: 4.h),
             commentContent,
             if (widget.comment.imageUrl != '') commentImage,
-            _picFullView == true
-                ? TextButton(
-                    style: ButtonStyle(
-                        alignment: Alignment.topRight,
-                        padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                    onPressed: () {
-                      setState(() {
-                        _picFullView = false;
-                      });
-                    },
-                    child: Row(
-                      children: [
-                        Spacer(),
-                        Text('收起',
-                            style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
-                      ],
-                    ))
-                : SizedBox(height: 8.h),
+            if (_picFullView == true && widget.comment.imageUrl != '')
+              TextButton(
+                  style: ButtonStyle(
+                      alignment: Alignment.topRight,
+                      padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                  onPressed: () {
+                    setState(() {
+                      _picFullView = false;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Spacer(),
+                      Text('收起',
+                          style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
+                    ],
+                  ))
+            else
+              SizedBox(height: 8.h),
             bottomWidget,
             SizedBox(height: 4.h)
           ],
