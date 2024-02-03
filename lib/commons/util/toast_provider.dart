@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show AsyncTimer;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
-import 'color_util.dart';
+import '../themes/color_util.dart';
 
 class ToastProvider with AsyncTimer {
   ToastProvider._();

@@ -7,7 +7,7 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 
-import '../../../commons/util/color_util.dart';
+import '../../../commons/themes/color_util.dart';
 
 /// 自习室 某个教室详情页
 class StyClassRoomDetailPage extends StatelessWidget {

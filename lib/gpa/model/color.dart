@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 
 class GPAColor {
   static final List<Color> blue = [

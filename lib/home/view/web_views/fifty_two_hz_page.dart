@@ -3,7 +3,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../commons/util/color_util.dart';
+import '../../../commons/themes/color_util.dart';
 import '../../../commons/widgets/w_button.dart';
 
 // ignore: must_be_immutable

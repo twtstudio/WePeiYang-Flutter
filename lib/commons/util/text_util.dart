@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'color_util.dart';
+import '../themes/color_util.dart';
 
 class TextUtil {
   TextUtil._();

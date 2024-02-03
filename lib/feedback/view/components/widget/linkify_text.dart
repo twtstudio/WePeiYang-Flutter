@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:linkfy_text/linkfy_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';

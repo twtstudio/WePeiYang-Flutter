@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../util/color_util.dart';
+import '../../themes/color_util.dart';
 
 // https://blog.csdn.net/shving/article/details/111146673
 class GradientLinearProgressBar extends StatelessWidget {
