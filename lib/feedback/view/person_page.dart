@@ -195,16 +195,16 @@ class _PersonPageState extends State<PersonPage> {
                     textAlign: TextAlign.start,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: TextUtil.base.ProductSans.black4E.w400.sp(20)),
+                    style: TextUtil.base.ProductSans.infoText.w400.sp(20)),
               ),
               Text('uid: ${uid}',
                   textAlign: TextAlign.start,
-                  style: TextUtil.base.ProductSans.black4E.w400.sp(14)),
+                  style: TextUtil.base.ProductSans.infoText.w400.sp(14)),
               LevelUtil(
                 level: level ?? '',
                 width: 34,
                 height: 17,
-                style: TextUtil.base.white.bold.sp(9),
+                style: TextUtil.base.reverse.bold.sp(9),
               ),
             ],
           )
@@ -298,7 +298,7 @@ class _PersonPageState extends State<PersonPage> {
     );
 
     return Container(
-      color: ColorUtil.whiteFFColor,
+      color: ColorUtil.primaryBackgroundColor,
       child: SafeArea(
         child: (CommonPreferences.isSuper.value ||
                 CommonPreferences.isStuAdmin.value)
@@ -335,7 +335,7 @@ class _PersonPageState extends State<PersonPage> {
                           height: 1.sw,
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
-                            ColorUtil.whiteFFColor,
+                            ColorUtil.primaryBackgroundColor,
                             ColorUtil.white70,
                             ColorUtil.white54,
                             ColorUtil.white10

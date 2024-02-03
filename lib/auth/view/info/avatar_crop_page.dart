@@ -50,10 +50,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
           toolbarColor: ColorUtil.blue98,
-          toolbarWidgetColor: ColorUtil.whiteFFColor,
+          toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor: ColorUtil.black26,
-          statusBarColor: ColorUtil.mainColor,
+          statusBarColor: ColorUtil.defaultActionColor,
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
@@ -92,10 +92,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
           toolbarColor: ColorUtil.blue98,
-          toolbarWidgetColor: ColorUtil.whiteFFColor,
+          toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor: ColorUtil.black26,
-          statusBarColor: ColorUtil.mainColor,
+          statusBarColor: ColorUtil.defaultActionColor,
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
@@ -168,18 +168,19 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           backgroundColor: ColorUtil.transparent,
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Icon(CupertinoIcons.back, color: ColorUtil.whiteFFColor),
+            child: Icon(CupertinoIcons.back,
+                color: ColorUtil.primaryBackgroundColor),
           ),
           elevation: 0,
         ),
         body: Container(
-          color: ColorUtil.black00Color,
+          color: ColorUtil.reverseBackgroundColor,
           child: Column(
             children: [
               Spacer(),
               getAvatar(),
               Spacer(),
-              Divider(height: 1.0, color: ColorUtil.whiteFFColor),
+              Divider(height: 1.0, color: ColorUtil.primaryBackgroundColor),
               SizedBox(height: 10),
               WButton(
                 onPressed: () {
@@ -188,17 +189,17 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 },
                 child: Text(
                   '更换头像框',
-                  style: TextUtil.base.white.sp(16),
+                  style: TextUtil.base.reverse.sp(16),
                 ),
               ),
               SizedBox(height: 10),
-              Divider(height: 1.0, color: ColorUtil.whiteFFColor),
+              Divider(height: 1.0, color: ColorUtil.primaryBackgroundColor),
               SizedBox(height: 10),
               WButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',
-                  style: TextUtil.base.white.sp(16),
+                  style: TextUtil.base.reverse.sp(16),
                 ),
               ),
               SizedBox(height: 10),

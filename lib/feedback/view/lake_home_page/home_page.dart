@@ -144,7 +144,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
         decoration: BoxDecoration(
-            color: ColorUtil.backgroundColor,
+            color: ColorUtil.secondaryBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(15))),
         child: Row(children: [
           SizedBox(width: 14),
@@ -241,7 +241,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           alignment: Alignment.center,
                           child: Text(
                             '点击重新加载分区',
-                            style: TextUtil.base.mainColor.w400.sp(16),
+                            style: TextUtil.base.mainTextColor.w400.sp(16),
                           ),
                         ),
                       ),
@@ -249,7 +249,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: ColorUtil.whiteFFColor,
+      backgroundColor: ColorUtil.primaryBackgroundColor,
       body: Stack(
         children: [
           Padding(
@@ -342,7 +342,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ? 0
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
-                color: ColorUtil.whiteFFColor,
+                color: ColorUtil.primaryBackgroundColor,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -363,7 +363,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           }),
           // 挡上面
           Container(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),

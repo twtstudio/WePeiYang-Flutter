@@ -58,8 +58,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                 title: Padding(
                   padding: EdgeInsets.only(bottom: 5.h),
                   child: TabBar(
-                    labelStyle: TextUtil.base.sp(20).white.w600,
-                    unselectedLabelStyle: TextUtil.base.normal.sp(20).white,
+                    labelStyle: TextUtil.base.sp(20).reverse.w600,
+                    unselectedLabelStyle: TextUtil.base.normal.sp(20).reverse,
                     labelPadding:
                         EdgeInsetsDirectional.only(start: 52.w, end: 50.w),
                     isScrollable: true,

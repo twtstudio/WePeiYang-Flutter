@@ -15,9 +15,9 @@ class AnimatedActiveCourse extends StatelessWidget {
 
   AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
-  final _activeNameStyle = TextUtil.base.white.bold.sp(11);
-  final _activeTeacherStyle = TextUtil.base.white.sp(8);
-  final _activeClassroomStyle = TextUtil.base.white.sp(11);
+  final _activeNameStyle = TextUtil.base.reverse.bold.sp(11);
+  final _activeTeacherStyle = TextUtil.base.reverse.sp(8);
+  final _activeClassroomStyle = TextUtil.base.reverse.sp(11);
 
   @override
   Widget build(BuildContext context) {

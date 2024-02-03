@@ -50,7 +50,7 @@ class WpyExamWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 7.5.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(15.r),
               boxShadow: [
                 BoxShadow(
@@ -101,13 +101,13 @@ class WpyExamWidget extends StatelessWidget {
                           Text(
                             exam.arrange,
                             style:
-                                TextUtil.base.PingFangSC.normal.sp(12).blue2C,
+                                TextUtil.base.PingFangSC.normal.sp(12).primaryAction,
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             exam.date,
                             style:
-                                TextUtil.base.PingFangSC.normal.sp(12).blue2C,
+                                TextUtil.base.PingFangSC.normal.sp(12).primaryAction,
                           ),
                         ],
                       ),

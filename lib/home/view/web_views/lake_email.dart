@@ -8,7 +8,7 @@ class LakeEmailPage extends WbyWebView {
   LakeEmailPage({Key? key})
       : super(
             page: '湖底通知',
-            backgroundColor: ColorUtil.whiteFFColor,
+            backgroundColor: ColorUtil.primaryBackgroundColor,
             fullPage: true,
             key: key);
 

@@ -111,7 +111,7 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: TextUtil.base.blue2C.w600.sp(17),
+            style: TextUtil.base.primaryAction.w600.sp(17),
           ),
           WButton(
             child: Icon(Icons.delete, size: 16),
@@ -185,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
-                    color: ColorUtil.lightTextColor, size: 16),
+                    color: ColorUtil.secondaryTextColor, size: 16),
                 onDeleted: () {
                   setState(() {
                     list.removeAt(list.length - index - 1);
@@ -213,14 +213,14 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return ColoredBox(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: ColorUtil.backgroundColor, child: searchHistory)),
+                    color: ColorUtil.secondaryBackgroundColor, child: searchHistory)),
           ],
         ));
   }
@@ -231,12 +231,12 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context) {
           return LakeDialogWidget(
               title: '清除记录',
-              confirmButtonColor: ColorUtil.selectionButtonColor,
+              confirmButtonColor: ColorUtil.primaryTextButtonColor,
               titleTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
-                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,

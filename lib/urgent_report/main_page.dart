@@ -706,7 +706,7 @@ class _PickImageState extends State<PickImage> {
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
-          themeColor: ColorUtil.selectionButtonColor),
+          themeColor: ColorUtil.primaryTextButtonColor),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {

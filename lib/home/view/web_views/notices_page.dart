@@ -7,7 +7,7 @@ class NoticesPage extends WbyWebView {
   NoticesPage({Key? key})
       : super(
             page: '部门通知',
-            backgroundColor: ColorUtil.backgroundColor,
+            backgroundColor: ColorUtil.secondaryBackgroundColor,
             fullPage: false,
             key: key);
 

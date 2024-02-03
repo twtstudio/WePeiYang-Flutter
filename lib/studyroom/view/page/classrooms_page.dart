@@ -125,7 +125,7 @@ class _PathTitle extends StatelessWidget {
       children: [
         Text(
           buildingName,
-          style: TextUtil.base.white.sp(20).Swis.w400.space(letterSpacing: 5),
+          style: TextUtil.base.reverse.sp(20).Swis.w400.space(letterSpacing: 5),
         )
       ],
     );

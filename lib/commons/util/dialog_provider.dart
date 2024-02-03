@@ -88,7 +88,7 @@ class LakeDialogWidget extends Dialog {
 
   Widget _buildBottomOnline() {
     return Container(
-      color: ColorUtil.backgroundColor,
+      color: ColorUtil.secondaryBackgroundColor,
     );
   }
 
@@ -107,10 +107,10 @@ class LakeDialogWidget extends Dialog {
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
               return ColorUtil.blue79;
-            return ColorUtil.backgroundColor;
+            return ColorUtil.secondaryBackgroundColor;
           }),
           backgroundColor: MaterialStateProperty.all(
-              cancelButtonColor ?? ColorUtil.backgroundColor),
+              cancelButtonColor ?? ColorUtil.secondaryBackgroundColor),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
         ),
@@ -138,7 +138,7 @@ class LakeDialogWidget extends Dialog {
               onPressed: this.confirmFun,
               child: Text(confirmText,
                   style: confirmTextStyle ??
-                      TextUtil.base.normal.white.NotoSansSC.sp(16).w400),
+                      TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20))),
@@ -153,7 +153,7 @@ class LakeDialogWidget extends Dialog {
               child: Text(
                 confirmText,
                 style: confirmTextStyle ??
-                    TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+                    TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               ),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
@@ -161,10 +161,10 @@ class LakeDialogWidget extends Dialog {
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.blue79;
-                  return ColorUtil.backgroundColor;
+                  return ColorUtil.secondaryBackgroundColor;
                 }),
                 backgroundColor: MaterialStateProperty.all(
-                    confirmButtonColor ?? ColorUtil.backgroundColor),
+                    confirmButtonColor ?? ColorUtil.secondaryBackgroundColor),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20))),
               ),

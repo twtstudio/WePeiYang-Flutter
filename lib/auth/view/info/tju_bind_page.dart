@@ -86,7 +86,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: TextUtil.base.regular.white.sp(13)),
+                style: TextUtil.base.regular.reverse.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -120,7 +120,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: TextField(
               textInputAction: TextInputAction.next,
               focusNode: _accountFocus,
-              cursorColor: ColorUtil.mainColor,
+              cursorColor: ColorUtil.defaultActionColor,
               decoration: InputDecoration(
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
@@ -150,7 +150,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
-                    cursorColor: ColorUtil.mainColor,
+                    cursorColor: ColorUtil.defaultActionColor,
                     decoration: InputDecoration(
                       hintText: S.current.password,
                       hintStyle: hintStyle,
@@ -164,7 +164,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       suffixIcon: WButton(
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: ColorUtil.mainColor,
+                          color: ColorUtil.defaultActionColor,
                         ),
                         onPressed: () {
                           visNotifier.value = !visNotifier.value;
@@ -188,7 +188,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

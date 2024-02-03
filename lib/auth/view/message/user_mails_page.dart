@@ -26,17 +26,15 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
       backgroundColor: ColorUtil.whiteF8Color,
       appBar: AppBar(
           title: Text(S.current.message,
-              style: TextUtil.base.bold
-                  .sp(16)
-                  .blue52hz),
+              style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
-                child: Icon(Icons.arrow_back,
-                    color: ColorUtil.blue53, size: 32),
+                child:
+                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -104,13 +102,13 @@ class _MailItemState extends State<MailItem> {
             boxShadow: [
               BoxShadow(
                   blurRadius: 5,
-                  color:ColorUtil.greyShadow64 ,
+                  color: ColorUtil.greyShadow64,
                   offset: Offset.zero,
                   spreadRadius: 3),
             ],
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,18 +163,14 @@ class MailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: ColorUtil.whiteF8Color,
       appBar: AppBar(
-        title: Text('通知',
-            style: TextUtil.base.regular
-                .sp(16)
-                .blue52hz),
+        title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
-              child: Icon(Icons.arrow_back,
-                  color: ColorUtil.blue53, size: 32),
+              child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -261,7 +255,7 @@ class _TextMailContent extends StatelessWidget {
         Text(
           DateFormat('yyyy-MM-dd HH:mm:ss')
               .format(DateTime.parse(data.time).toLocal()),
-          style:TextUtil.base.grey6267.sp(12),
+          style: TextUtil.base.grey6267.sp(12),
         )
       ],
     );
@@ -297,7 +291,7 @@ class _TextMailContent extends StatelessWidget {
                 ],
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(10),
-                color: ColorUtil.whiteFFColor,
+                color: ColorUtil.primaryBackgroundColor,
               ),
               child: Column(
                 children: [
@@ -331,7 +325,7 @@ class _TextMailContent extends StatelessWidget {
                       child: Text(
                         '阅读原文',
                         style:
-                            TextUtil.base.textButtonBlue.w400.NotoSansSC.sp(14),
+                            TextUtil.base.textButtonPrimary.w400.NotoSansSC.sp(14),
                       ),
                       onPressed: () async {
                         var url = data.url.startsWith('http')
@@ -367,7 +361,8 @@ class _TextMailContent extends StatelessWidget {
                                         ),
                                         SimpleUrlPreview(
                                           url: url,
-                                          bgColor: ColorUtil.whiteFFColor,
+                                          bgColor:
+                                              ColorUtil.primaryBackgroundColor,
                                           titleLines: 2,
                                           imageLoaderColor: ColorUtil.black12,
                                           previewHeight: 130,
@@ -388,13 +383,16 @@ class _TextMailContent extends StatelessWidget {
                                               : TextUtil.base.black2A.w600
                                                   .h(1.6)
                                                   .sp(24),
-                                          siteNameStyle: TextUtil.base.sp(12).customColor(Theme.of(context).primaryColor),
+                                          siteNameStyle: TextUtil.base
+                                              .sp(12)
+                                              .customColor(Theme.of(context)
+                                                  .primaryColor),
                                         ),
                                       ],
                                     ),
                                     cancelText: "取消",
                                     confirmTextStyle: TextUtil
-                                        .base.normal.white.NotoSansSC
+                                        .base.normal.reverse.NotoSansSC
                                         .sp(16)
                                         .w600,
                                     confirmButtonColor:
@@ -402,9 +400,9 @@ class _TextMailContent extends StatelessWidget {
                                                 url.startsWith(
                                                     'https://www.bilibili.com/')
                                             ? ColorUtil.biliPink
-                                            : ColorUtil.selectionButtonColor,
+                                            : ColorUtil.primaryActionColor,
                                     cancelTextStyle: TextUtil
-                                        .base.normal.black2A.NotoSansSC
+                                        .base.normal.primary.NotoSansSC
                                         .sp(16)
                                         .w400,
                                     confirmText: "继续",

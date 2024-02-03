@@ -11,7 +11,7 @@ class FeedbackSummaryPage extends WbyWebView {
   const FeedbackSummaryPage({Key? key})
       : super(
             page: "年度总结",
-            backgroundColor: ColorUtil.whiteFFColor,
+            backgroundColor: ColorUtil.primaryBackgroundColor,
             fullPage: false,
             key: key);
 

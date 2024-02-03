@@ -40,7 +40,7 @@ class FindPwWidget extends StatelessWidget {
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
               child: Text(S.current.has_bind_phone,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
@@ -65,7 +65,7 @@ class FindPwWidget extends StatelessWidget {
                   barrierDismissible: true,
                   builder: (BuildContext context) => FindPwDialog()),
               child: Text(S.current.has_not_bind_phone,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
@@ -222,7 +222,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: TextUtil.base.regular.white.sp(13)),
+                                style: TextUtil.base.regular.reverse.sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:

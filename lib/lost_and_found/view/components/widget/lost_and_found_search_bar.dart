@@ -69,7 +69,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080.w),
                       ),
-                      fillColor: ColorUtil.backgroundColor,
+                      fillColor: ColorUtil.secondaryBackgroundColor,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
@@ -97,7 +97,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
     return Column(
       children: [
         Container(
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6.h)),
         SizedBox(height: 8.w),

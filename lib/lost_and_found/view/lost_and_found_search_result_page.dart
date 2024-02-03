@@ -129,7 +129,7 @@ class _LostAndFoundSearchResultPageState
         padding: EdgeInsets.only(bottom: 8.h),
         child: Text(
           '搜索结果',
-          style: TextUtil.base.white.NotoSansSC.w400.sp(20),
+          style: TextUtil.base.reverse.NotoSansSC.w400.sp(20),
         ),
       ),
     );

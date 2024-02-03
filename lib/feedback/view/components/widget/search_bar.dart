@@ -149,7 +149,7 @@ class _SearchBarState extends State<SearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080),
                       ),
-                      fillColor: ColorUtil.backgroundColor,
+                      fillColor: ColorUtil.secondaryBackgroundColor,
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
@@ -220,7 +220,7 @@ class _SearchBarState extends State<SearchBar>
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(ColorUtil.whiteFFColor),
+                      backgroundColor: MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -231,7 +231,7 @@ class _SearchBarState extends State<SearchBar>
                             width: 12,
                           )
                         : Icon(Icons.clear,
-                            size: 14, color: ColorUtil.mainColor),
+                            size: 14, color: ColorUtil.defaultActionColor),
                   ))
             ],
           )),
@@ -240,11 +240,11 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
-          color: ColorUtil.backgroundColor,
+          color: ColorUtil.secondaryBackgroundColor,
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
@@ -253,7 +253,7 @@ class _SearchBarState extends State<SearchBar>
                     padding: EdgeInsets.only(bottom: 10),
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                        color: ColorUtil.whiteFFColor,
+                        color: ColorUtil.primaryBackgroundColor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),

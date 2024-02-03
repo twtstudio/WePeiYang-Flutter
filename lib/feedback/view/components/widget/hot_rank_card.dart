@@ -66,7 +66,7 @@ class _HotCardState extends State<HotCard> {
                     data.hotTagCardState == 1
                         ? Text(
                             '     loading...',
-                            style: TextUtil.base.w400.NotoSansSC.sp(18).black4E,
+                            style: TextUtil.base.w400.NotoSansSC.sp(18).infoText,
                           )
                         : data.hotTagCardState == 2
                             ? Column(

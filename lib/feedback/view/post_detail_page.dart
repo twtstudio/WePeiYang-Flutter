@@ -331,7 +331,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间正序',
                           style: order.value == 1
-                              ? TextUtil.base.black2A.w700.sp(14).blue2C
+                              ? TextUtil.base.black2A.w700.sp(14).primaryAction
                               : TextUtil.base.black2A.w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
@@ -341,7 +341,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间倒序',
                           style: order.value == 0
-                              ? TextUtil.base.black2A.w700.sp(14).blue2C
+                              ? TextUtil.base.black2A.w700.sp(14).primaryAction
                               : TextUtil.base.black2A.w500.sp(14)),
                     ),
                     Spacer(),
@@ -361,7 +361,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
-                                      style: TextUtil.base.white.w400.sp(14)),
+                                      style: TextUtil.base.reverse.w400.sp(14)),
                                 )
                               : Container(
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
@@ -434,7 +434,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         )),
                     builder: (context, comment) {
                       return Container(
-                        color: ColorUtil.whiteTransparent,
+                        color: ColorUtil.transparent,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,7 +512,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 if (screenshotting.value)
                   return Screenshot(
                       child: Container(
-                          color: ColorUtil.whiteFFColor, child: contentList),
+                          color: ColorUtil.primaryBackgroundColor, child: contentList),
                       controller: selectedScreenshotController);
                 return Container(child: contentList);
               }),
@@ -545,7 +545,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         blurRadius: 6,
                         spreadRadius: 0),
                   ],
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                 ),
                 child: Column(
                   children: [
@@ -721,7 +721,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       child: Text(
                         '拉黑',
                         style:
-                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                       ),
                     ),
                   // 分享按钮
@@ -747,7 +747,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     child: Text(
                       '分享',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
                   CupertinoActionSheetAction(
@@ -759,7 +759,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     child: Text(
                       '截图分享',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
                   CupertinoActionSheetAction(
@@ -771,7 +771,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     child: Text(
                       '选择评论截图',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
                   if (widget.post.isOwner == false)
@@ -782,7 +782,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         },
                         child: Text(
                           '举报',
-                          style: TextUtil.base.normal.w400.NotoSansSC.black00
+                          style: TextUtil.base.normal.w400.NotoSansSC.primary
                               .sp(16),
                         ))
                   else
@@ -813,7 +813,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         },
                         child: Text(
                           '删除',
-                          style: TextUtil.base.normal.w400.NotoSansSC.black00
+                          style: TextUtil.base.normal.w400.NotoSansSC.primary
                               .sp(16),
                         )),
                   CupertinoActionSheetAction(
@@ -821,7 +821,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     child: Text(
                       '收藏',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
                 ],
@@ -830,7 +830,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    style: TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                   ),
                 ),
               );
@@ -863,7 +863,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
-      backgroundColor: ColorUtil.whiteFFColor,
+      backgroundColor: ColorUtil.primaryBackgroundColor,
       leading: IconButton(
         icon: Icon(
           CupertinoIcons.back,
@@ -917,7 +917,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: GestureDetector(
         child: Scaffold(
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           appBar: appBar,
           body: body,
         ),
@@ -951,7 +951,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               content: Text('您确定要$quote这条冒泡吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600,
               confirmText: "确认",
@@ -1030,7 +1030,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     Widget inputField = Consumer<NewFloorProvider>(builder: (_, data, __) {
       data.focusNode = _commentFocus;
       return TextField(
-        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
+        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary,
         focusNode: _commentFocus,
         controller: textEditingController,
         maxLength: 200,
@@ -1164,7 +1164,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
-          themeColor: ColorUtil.selectionButtonColor),
+          themeColor: ColorUtil.primaryTextButtonColor),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
@@ -1270,7 +1270,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           child: Icon(
                             Icons.close,
                             size: 14,
-                            color: ColorUtil.searchBarBackgroundColor,
+                            color: ColorUtil.secondaryBackgroundColor,
                           ),
                         ),
                       ),
@@ -1371,7 +1371,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
             ]),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: ColorUtil.whiteFFColor),
+            color: ColorUtil.primaryBackgroundColor),
       ),
     );
   }
@@ -1436,7 +1436,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
             children: [
               Text(
                 widget.title,
-                style: TextUtil.base.white.medium.sp(20),
+                style: TextUtil.base.reverse.medium.sp(20),
               ),
               // 置顶动作
               if (isSelected && widget.action == 0 && !widget.origin)
@@ -1446,27 +1446,27 @@ class _AnimatedOptionState extends State<AnimatedOption>
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         '0为取消置顶，只能为0~30000',
-                        style: TextUtil.base.white.medium.sp(10),
+                        style: TextUtil.base.reverse.medium.sp(10),
                       ),
                     ),
                     TextField(
                       controller: tc,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelStyle: TextUtil.base.white.NotoSansSC.w400.sp(16),
-                        hintStyle: TextUtil.base.white.NotoSansSC.w800.sp(16),
+                        labelStyle: TextUtil.base.reverse.NotoSansSC.w400.sp(16),
+                        hintStyle: TextUtil.base.reverse.NotoSansSC.w800.sp(16),
                         hintText: '置顶数值',
                         contentPadding: const EdgeInsets.all(0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      style: TextUtil.base.white.medium.sp(16),
+                      style: TextUtil.base.reverse.medium.sp(16),
                     ),
                     Container(
                         height: 1.5,
                         width: double.infinity,
-                        color: ColorUtil.whiteFFColor),
+                        color: ColorUtil.primaryBackgroundColor),
                   ],
                 ),
               if (isSelected)
@@ -1479,7 +1479,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                         Spacer(),
                         Text(
                           origin ? '取消' : '确认',
-                          style: TextUtil.base.white.medium.sp(18),
+                          style: TextUtil.base.reverse.medium.sp(18),
                         ),
                       ],
                     ),

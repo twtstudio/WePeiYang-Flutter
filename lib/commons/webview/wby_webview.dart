@@ -52,12 +52,12 @@ class WbyWebViewState extends State<WbyWebView> {
   PreferredSizeWidget get appBar => AppBar(
         title: Text(
           widget.page,
-          style: TextUtil.base.black00.sp(16),
+          style: TextUtil.base.primary.sp(16),
         ),
         elevation: 0,
         toolbarHeight: 40,
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(

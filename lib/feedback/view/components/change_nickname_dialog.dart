@@ -27,7 +27,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
   Widget build(BuildContext context) {
     return LakeDialogWidget(
       title: '修改你的昵称',
-      titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).black00,
+      titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary,
       confirmButtonColor: ColorUtil.blue2CColor,
       confirmFun: () {
         if (_textEditingController.text == "") {
@@ -50,13 +50,13 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             },
             nickName: _textEditingController.text);
       },
-      confirmTextStyle: TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).white,
+      confirmTextStyle: TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).reverse,
       confirmText: '确定',
       cancelText: '取消',
       content: Column(
         children: [
           TextField(
-            style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).black00,
+            style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary,
             controller: _textEditingController,
             focusNode: _focus,
             maxLength: 20,

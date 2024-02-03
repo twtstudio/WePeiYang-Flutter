@@ -16,7 +16,7 @@ class FestivalPage extends WbyWebView {
   FestivalPage(this.args, {Key? key})
       : super(
             page: args.name,
-            backgroundColor: ColorUtil.whiteFFColor,
+            backgroundColor: ColorUtil.primaryBackgroundColor,
             fullPage: false,
             key: key);
 

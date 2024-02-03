@@ -243,7 +243,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '取消',
-                              style: TextUtil.base.bold.black00,
+                              style: TextUtil.base.bold.primary,
                             ),
                           ),
                         ),
@@ -298,7 +298,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '确定',
-                              style: TextUtil.base.normal.white,
+                              style: TextUtil.base.normal.reverse,
                             ),
                           ),
                         ),
@@ -364,7 +364,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '取消',
-                              style: TextUtil.base.bold.black00,
+                              style: TextUtil.base.bold.primary,
                             ),
                           ),
                         ),
@@ -395,7 +395,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '确定',
-                              style: TextUtil.base.normal.white,
+                              style: TextUtil.base.normal.reverse,
                             ),
                           ),
                         ),
@@ -461,12 +461,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     '分享',
-                                    style: TextUtil.base.bold.black00.sp(15),
+                                    style: TextUtil.base.bold.primary.sp(15),
                                   ),
                                 ),
                               )),
                           Divider(
-                            color: ColorUtil.whiteFFColor
+                            color: ColorUtil.primaryBackgroundColor
                           ), // 添加分隔线
                           Padding(
                             padding: EdgeInsets.only(bottom: 5.h),
@@ -513,7 +513,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           alignment: Alignment.center,
                           child: Text(
                             '取消',
-                            style: TextUtil.base.bold.black00.sp(15),
+                            style: TextUtil.base.bold.primary.sp(15),
                           ),
                         ),
                       ),
@@ -602,7 +602,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               children: [
                                 Text(
                                   post.author,
-                                  style: TextUtil.base.normal.black00.sp(14),
+                                  style: TextUtil.base.normal.primary.sp(14),
                                 ),
                                 SizedBox(height: 6.h),
                                 Row(
@@ -652,12 +652,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               Container(
                                 padding: EdgeInsets.all(2.r),
                                 decoration: BoxDecoration(
-                                  color:ColorUtil.whiteFFColor,
+                                  color:ColorUtil.primaryBackgroundColor,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
                                   '#',
-                                  style: TextUtil.base.normal.black00.sp(10),
+                                  style: TextUtil.base.normal.primary.sp(10),
                                 ),
                               ),
                               SizedBox(width: 2.w),
@@ -689,7 +689,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('丢失日期',
-                              style: TextUtil.base.w600.black00.sp(14)),
+                              style: TextUtil.base.w600.primary.sp(14)),
                           SizedBox(width: 15.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -697,7 +697,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               SizedBox(height: 3.h),
                               Text(
                                   "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
-                                  style: TextUtil.base.w600.blue2C.sp(14)),
+                                  style: TextUtil.base.w600.primaryAction.sp(14)),
                             ],
                           ),
                         ],
@@ -711,7 +711,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         children: [
                           Text(
                             '丢失地点',
-                            style: TextUtil.base.w600.black00.sp(14),
+                            style: TextUtil.base.w600.primary.sp(14),
                           ),
                           SizedBox(width: 15.w),
                           Column(
@@ -720,7 +720,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 SizedBox(height: 3.h),
                                 Text(
                                   post.location,
-                                  style: TextUtil.base.w600.blue2C.sp(14),
+                                  style: TextUtil.base.w600.primaryAction.sp(14),
                                 ),
                               ])
                         ],
@@ -743,7 +743,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             child: WButton(
                               child: Text(
                                 findOwner ? '我遗失的' : '我找到了',
-                                style: TextUtil.base.white.sp(16),
+                                style: TextUtil.base.reverse.sp(16),
                               ),
                               onPressed: _showConfirmationDialog,
                             )),
@@ -755,7 +755,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: polished ? Colors.grey[200] : ColorUtil.whiteFFColor,
+                              color: polished ? Colors.grey[200] : ColorUtil.primaryBackgroundColor,
                               borderRadius: BorderRadius.circular(20.r),
                               border: polished
                                   ? null
@@ -782,7 +782,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                     polished ? '已擦亮' : '擦亮',
                                     style: polished?
                                     TextUtil.base.grey.sp(16):
-                                    TextUtil.base.blue2C.sp(16)
+                                    TextUtil.base.primaryAction.sp(16)
                                     ,
                                   ),
                                 ],
@@ -885,7 +885,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                 },
                                 child: Text('收起',
                                     style: TextUtil
-                                        .base.textButtonBlue.w600.NotoSansSC
+                                        .base.textButtonPrimary.w600.NotoSansSC
                                         .sp(14))),
                           ],
                         )
@@ -953,7 +953,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                                     child: Text(
                                                       '长图模式',
                                                       style: TextUtil
-                                                          .base.w300.white
+                                                          .base.w300.reverse
                                                           .sp(12),
                                                     ))
                                               ]))))

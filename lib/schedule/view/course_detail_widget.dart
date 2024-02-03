@@ -62,7 +62,7 @@ class _WeekDisplayWidget extends StatelessWidget {
         width: _cardWidth,
         decoration: BoxDecoration(
             color: deep
-                ? ColorUtil.whiteFFColor
+                ? ColorUtil.primaryBackgroundColor
                 : ColorUtil.grey246,
             borderRadius: BorderRadius.circular(5.r)),
         child: Center(
@@ -177,7 +177,7 @@ class _CourseDisplayWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
-              child: Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+              child: Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
             ),
           ),
           Positioned(
@@ -192,7 +192,7 @@ class _CourseDisplayWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
-              child: Text("DINNER BREAK", style: TextUtil.base.w900.white.sp(10)),
+              child: Text("DINNER BREAK", style: TextUtil.base.w900.reverse.sp(10)),
             ),
           ),
         ],

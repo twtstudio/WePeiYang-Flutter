@@ -45,7 +45,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
     var appBar = AppBar(
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
+        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
@@ -78,7 +78,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 });
           },
           child: Text(S.current.feedback_report,
-              style: TextUtil.base.NotoSansSC.white.w600.sp(18)),
+              style: TextUtil.base.NotoSansSC.reverse.w600.sp(18)),
           style: buttonStyle,
         ));
 
@@ -93,7 +93,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 60,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: ColorUtil.whiteFFColor),
+                  color: ColorUtil.primaryBackgroundColor),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Align(
@@ -121,7 +121,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 300,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: ColorUtil.whiteFFColor),
+                  color: ColorUtil.primaryBackgroundColor),
               child: TextField(
                 minLines: 7,
                 maxLines: 15,
@@ -164,7 +164,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(16)
                         .w400
-                        .textButtonBlue,
+                        .textButtonPrimary,
                     overflow: TextOverflow.ellipsis,
                   )),
             ],

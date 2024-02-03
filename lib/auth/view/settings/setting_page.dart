@@ -54,7 +54,7 @@ class _SettingPageState extends State<SettingPage> {
             Text(S.current.setting, style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
@@ -70,7 +70,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -95,7 +95,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -125,7 +125,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -152,7 +152,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -181,7 +181,7 @@ class _SettingPageState extends State<SettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(

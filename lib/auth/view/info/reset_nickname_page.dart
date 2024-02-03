@@ -43,7 +43,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
               style: TextUtil.base.bold.sp(17).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(

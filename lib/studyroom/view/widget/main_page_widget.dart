@@ -37,7 +37,7 @@ class MainPageStudyRoomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 22.w, right: 22.w, bottom: 15.h),
+      padding: EdgeInsets.only(left: 22.w, right: 22.w, bottom: 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

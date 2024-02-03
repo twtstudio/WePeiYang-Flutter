@@ -69,7 +69,7 @@ class WeekSelectWidget extends StatelessWidget {
     );
 
     return Theme(
-      data: Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
+      data: Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
       child: Builder(
         builder: (context) {
           var shrink =
@@ -103,7 +103,7 @@ class WeekSelectWidget extends StatelessWidget {
         Text('WEEK ${i + 1}',
             style: TextUtil.base.Swis.w900.sp(10).customColor(
                 (provider.selectedWeek == i + 1)
-                    ? ColorUtil.whiteFFColor
+                    ? ColorUtil.primaryBackgroundColor
                     : ColorUtil.whiteOpacity04))
       ],
     );
@@ -128,7 +128,7 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 白色cube，代表该点没课
   final Paint _spacePaint = Paint()
-    ..color = ColorUtil.whiteFFColor
+    ..color = ColorUtil.primaryBackgroundColor
     ..style = PaintingStyle.fill;
 
   @override

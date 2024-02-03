@@ -24,7 +24,7 @@ class MapCalenderState extends State<MapCalendarPage> {
         appBar: AppBar(
           toolbarHeight: 40,
           titleSpacing: 0,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: IconButton(
             icon: Icon(
               CupertinoIcons.back,
@@ -57,7 +57,7 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   BoxDecoration get cardDecoration => BoxDecoration(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -75,7 +75,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
         padding: EdgeInsets.only(left: 28.w),
         child: Text(
           '校园地图',
-          style: TextUtil.base.PingFangSC.black00.bold.sp(14),
+          style: TextUtil.base.PingFangSC.primary.bold.sp(14),
         ),
       ),
       SizedBox(
@@ -114,7 +114,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '卫津路校区',
-                        style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
+                        style: TextUtil.base.PingFangSC.infoText.w900.sp(22),
                       ),
                     ),
                   ),
@@ -150,7 +150,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '北洋园校区',
-                        style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
+                        style: TextUtil.base.PingFangSC.infoText.w900.sp(22),
                       ),
                     ),
                   ),
@@ -164,7 +164,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
         padding: EdgeInsets.only(left: 28.w),
         child: Text(
           '校历',
-          style: TextUtil.base.PingFangSC.black00.bold.sp(14),
+          style: TextUtil.base.PingFangSC.primary.bold.sp(14),
         ),
       ),
       SizedBox(
@@ -206,7 +206,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '23-24第一学期',
-                        style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
+                        style: TextUtil.base.PingFangSC.infoText.w900.sp(22),
                       ),
                     ),
                   ),
@@ -245,7 +245,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '23-24第二学期',
-                        style: TextUtil.base.PingFangSC.black4E.w900.sp(22),
+                        style: TextUtil.base.PingFangSC.infoText.w900.sp(22),
                       ),
                     ),
                   ),

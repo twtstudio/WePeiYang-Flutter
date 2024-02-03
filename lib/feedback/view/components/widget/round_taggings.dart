@@ -25,7 +25,7 @@ class CommentIdentificationContainer extends StatelessWidget {
         : Container(
             margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C),
+                style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction),
           );
   }
 }
@@ -68,7 +68,7 @@ class _ETagWidgetState extends State<ETagWidget> {
         widget.full
             ? tagUtils[widget.entry]!.fullName
             : tagUtils[widget.entry]!.text,
-        style: TextUtil.base.NotoSansSC.w800.sp(12).white,
+        style: TextUtil.base.NotoSansSC.w800.sp(12).reverse,
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
       ),
@@ -189,8 +189,8 @@ class TagShowWidget extends StatelessWidget {
                       color: type == 0
                           ? ColorUtil.greyEAColor
                           : type == 1
-                              ? ColorUtil.mainColor
-                              : ColorUtil.whiteFFColor,
+                              ? ColorUtil.defaultActionColor
+                              : ColorUtil.primaryBackgroundColor,
                     ),
                     child: SvgPicture.asset(
                       type == 0
@@ -205,7 +205,7 @@ class TagShowWidget extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: width - 30),
                     child: Text(
                       tag,
-                      style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                      style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),

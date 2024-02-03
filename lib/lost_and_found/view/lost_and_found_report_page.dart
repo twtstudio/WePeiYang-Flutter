@@ -11,7 +11,7 @@ class LostAndFoundReportPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           elevation: 0, // 取消阴影
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: IconButton(
             icon: Image.asset(
               'assets/images/back.png',
@@ -23,7 +23,7 @@ class LostAndFoundReportPage extends StatelessWidget {
 
           title: Text(
             '举报',
-            style: TextUtil.base.w500.black00.sp(18)
+            style: TextUtil.base.w500.primary.sp(18)
           ),
           centerTitle: true,
         ),
@@ -60,7 +60,7 @@ class LostAndFoundReportPage extends StatelessWidget {
                   child: Center(
                     child: Text(
                       '发送',
-                      style: TextUtil.base.white.sp(14),
+                      style: TextUtil.base.reverse.sp(14),
                     ),
                   ),
                 ),

@@ -95,7 +95,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "Welcome\n\n",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
               ])),
             ),
             Expanded(
@@ -194,29 +194,29 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       children: [
         Text.rich(TextSpan(
             text: "账号",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
-            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-            cursorColor: ColorUtil.whiteFFColor,
+            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
+            cursorColor: ColorUtil.primaryBackgroundColor,
             textInputAction: TextInputAction.next,
             focusNode: _accountFocus,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                   width: 1.0,
                 ),
               ),
               hintText: "学号/手机号/邮箱",
-              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
               isCollapsed: true,
               contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
             ),
@@ -230,7 +230,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         SizedBox(height: 20),
         Text.rich(TextSpan(
             text: "密码",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: ValueListenableBuilder(
@@ -240,25 +240,25 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 data:
                     Theme.of(context).copyWith(primaryColor: ColorUtil.blue53),
                 child: TextField(
-                  style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                  cursorColor: ColorUtil.whiteFFColor,
+                  style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
+                  cursorColor: ColorUtil.primaryBackgroundColor,
                   keyboardType: TextInputType.visiblePassword,
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ColorUtil.whiteFFColor,
+                          color: ColorUtil.primaryBackgroundColor,
                           width: 1.0,
                         ),
                       ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ColorUtil.whiteFFColor,
+                          color: ColorUtil.primaryBackgroundColor,
                           width: 1.0,
                         ),
                       ),
                       hintText: "请输入密码",
-                      hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                      hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
                       suffixIcon: WButton(
@@ -267,7 +267,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                         },
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: ColorUtil.whiteFFColor,
+                          color: ColorUtil.primaryBackgroundColor,
                         ),
                       )),
                   obscureText: value,
@@ -284,13 +284,13 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).primaryAction)),
             ),
           ),
         ),
@@ -302,7 +302,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "短信登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
               onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
@@ -320,7 +320,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "忘记密码?",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
               onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             SizedBox(width: 10),
@@ -361,7 +361,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         ),
         child: Text(
           code.length > index ? code.substring(index, index + 1) : '',
-          style: TextUtil.base.normal.NotoSansSC.blue2C.sp(16),
+          style: TextUtil.base.normal.NotoSansSC.primaryAction.sp(16),
         ),
       );
     };
@@ -371,7 +371,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       children: [
         Text.rich(TextSpan(
             text: "手机号",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white)),
+            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
         SizedBox(height: 16),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
@@ -380,23 +380,23 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
             ],
-            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-            cursorColor: ColorUtil.whiteFFColor,
+            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
+            cursorColor: ColorUtil.primaryBackgroundColor,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                   width: 1.0,
                 ),
               ),
               hintText: "请输入手机号",
-              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
               isCollapsed: true,
               contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
             ),
@@ -406,7 +406,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         SizedBox(height: 20),
         Text.rich(TextSpan(
           text: "验证码",
-          style: TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
+          style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
         )),
         SizedBox(height: 20),
         Stack(
@@ -438,13 +438,13 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).blue2C)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).primaryAction)),
             ),
           ),
         ),
@@ -459,7 +459,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     onPressed: (_fetchCaptcha),
                     child: Text(
                       '获取验证码',
-                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white,
+                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse,
                     ),
                   );
                 } else {
@@ -467,7 +467,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     onPressed: () {},
                     child: Text(
                       '重新获取验证码($value)',
-                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white,
+                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse,
                     ),
                   );
                 }
@@ -477,7 +477,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "密码登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).white)),
+                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
               onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();

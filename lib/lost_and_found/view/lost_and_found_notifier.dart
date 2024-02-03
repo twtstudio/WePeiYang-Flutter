@@ -178,7 +178,7 @@ class LAFWeKoDialog extends StatelessWidget {
           margin:  EdgeInsets.symmetric(horizontal: 30.w),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
-              color: ColorUtil.backgroundColor),
+              color: ColorUtil.secondaryBackgroundColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -217,10 +217,10 @@ class LAFWeKoDialog extends StatelessWidget {
                   MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
                       return ColorUtil.blue79;
-                    return ColorUtil.backgroundColor;
+                    return ColorUtil.secondaryBackgroundColor;
                   }),
                   backgroundColor:
-                  MaterialStateProperty.all(ColorUtil.backgroundColor),
+                  MaterialStateProperty.all(ColorUtil.secondaryBackgroundColor),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),

@@ -149,11 +149,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
         titleSpacing: 0,
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: ColorUtil.mainColor,
+            color: ColorUtil.defaultActionColor,
           ),
           onPressed: () {
             Navigator.pop(context, true);
@@ -227,7 +227,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   (context, index) {
                     if (index == 0) {
                       return Container(
-                        color: ColorUtil.whiteFFColor,
+                        color: ColorUtil.primaryBackgroundColor,
                         child: Column(
                           children: [
                             const SizedBox(height: 10),
@@ -243,7 +243,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                       style: searchMode == 0
                                           ? TextUtil.base.black2A.w700
                                               .sp(14)
-                                              .blue2C
+                                              .primaryAction
                                           : TextUtil.base.black2A.w500.sp(14)),
                                 ),
                                 const SizedBox(width: 15),
@@ -256,7 +256,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                       style: searchMode == 1
                                           ? TextUtil.base.black2A.w700
                                               .sp(14)
-                                              .blue2C
+                                              .primaryAction
                                           : TextUtil.base.black2A.w500.sp(14)),
                                 ),
                                 Spacer(),

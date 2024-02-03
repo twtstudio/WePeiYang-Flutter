@@ -157,7 +157,7 @@ class _NCommentCardState extends State<NCommentCard>
                       child: Text(
                         "恢复原评论状态（取消置顶）",
                         style:
-                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                       ),
                     ),
 
@@ -170,7 +170,7 @@ class _NCommentCardState extends State<NCommentCard>
                       child: Text(
                         "评论置顶",
                         style:
-                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                       ),
                     ),
 
@@ -185,7 +185,7 @@ class _NCommentCardState extends State<NCommentCard>
                       child: Text(
                         '拉黑',
                         style:
-                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                       ),
                     ),
                   // 分享按钮
@@ -207,7 +207,7 @@ class _NCommentCardState extends State<NCommentCard>
                     child: Text(
                       '分享',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
 
@@ -222,7 +222,7 @@ class _NCommentCardState extends State<NCommentCard>
                     child: Text(
                       '复制',
                       style:
-                          TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                     ),
                   ),
                   widget.comment.isOwner
@@ -249,7 +249,7 @@ class _NCommentCardState extends State<NCommentCard>
                           },
                           child: Text(
                             '删除',
-                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                            style: TextUtil.base.normal.w400.NotoSansSC.primary
                                 .sp(16),
                           ),
                         )
@@ -262,7 +262,7 @@ class _NCommentCardState extends State<NCommentCard>
                           },
                           child: Text(
                             '举报',
-                            style: TextUtil.base.normal.w400.NotoSansSC.black00
+                            style: TextUtil.base.normal.w400.NotoSansSC.primary
                                 .sp(16),
                           ),
                         ),
@@ -290,7 +290,7 @@ class _NCommentCardState extends State<NCommentCard>
                       child: Text(
                         '删评',
                         style:
-                            TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                       ),
                     ),
                 ],
@@ -299,7 +299,7 @@ class _NCommentCardState extends State<NCommentCard>
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC.black00.sp(16),
+                    style: TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
                   ),
                 ),
               );
@@ -328,7 +328,7 @@ class _NCommentCardState extends State<NCommentCard>
                 child: LevelUtil(
                   width: 24,
                   height: 12,
-                  style: TextUtil.base.white.bold.sp(7),
+                  style: TextUtil.base.reverse.bold.sp(7),
                   level: widget.comment.level.toString(),
                 ),
               ),
@@ -405,7 +405,7 @@ class _NCommentCardState extends State<NCommentCard>
               if (widget.comment.value != 0)
                 Text(
                   "  置顶评论",
-                  style: TextUtil.base.w500.NotoSansSC.sp(10).blue2C,
+                  style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction,
                 ),
             ],
           ),
@@ -739,7 +739,7 @@ class _NCommentCardState extends State<NCommentCard>
                                             : '查看回复详情 >',
                                         style: TextUtil.base.NotoSansSC.w400
                                             .sp(12)
-                                            .blue2C),
+                                            .primaryAction),
                                     Spacer()
                                   ],
                                 ),
@@ -823,7 +823,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(2),
                   backgroundColor:
-                      MaterialStateProperty.all(ColorUtil.backgroundColor),
+                      MaterialStateProperty.all(ColorUtil.secondaryBackgroundColor),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),

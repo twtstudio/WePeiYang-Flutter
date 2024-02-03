@@ -98,13 +98,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style:
-                                  TextUtil.base.w400.NotoSansSC.sp(16).black2A),
+                                  TextUtil.base.w400.NotoSansSC.sp(16).primary),
                         ),
                         SizedBox(width: 4.w),
                         LevelUtil(
                           width: 24,
                           height: 12,
-                          style: TextUtil.base.white.bold.sp(7),
+                          style: TextUtil.base.reverse.bold.sp(7),
                           level: post.level.toString(),
                         ),
                       ],
@@ -114,7 +114,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       DateFormat('yyyy-MM-dd HH:mm:ss')
                           .format(post.createAt!.toLocal()),
                       textAlign: TextAlign.left,
-                      style: TextUtil.base.grey6C.normal.ProductSans.sp(10),
+                      style: TextUtil.base.secondary.normal.ProductSans.sp(10),
                     )
                   ])),
           Spacer(),
@@ -143,7 +143,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           post.title,
           maxLines: widget.outer ? 1 : 10,
           overflow: TextOverflow.ellipsis,
-          style: TextUtil.base.w400.NotoSansSC.sp(18).black00.bold,
+          style: TextUtil.base.w400.NotoSansSC.sp(18).primary.bold,
         ),
       )
     ]);
@@ -155,11 +155,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
             ? Text(post.content,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.4))
+                style: TextUtil.base.NotoSansSC.w400.sp(14).primary.h(1.4))
             : ExpandableText(
                 text: post.content,
                 maxLines: 8,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).black2A.h(1.6),
+                style: TextUtil.base.NotoSansSC.w400.sp(14).primary.h(1.6),
                 expand: widget.expandAll,
                 buttonIsShown: true,
                 isHTML: false,
@@ -183,7 +183,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(width: 3.w),
           Text(
             post.commentCount.toString() + '   ',
-            style: TextUtil.base.ProductSans.black2A.normal.sp(12).w700,
+            style: TextUtil.base.ProductSans.primary.normal.sp(12).w700,
           ),
           IconWidget(
             IconType.like,
@@ -272,7 +272,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               constraints: BoxConstraints(),
               child: Text(
                 const ['', '卫津路', '北洋园'][post.campus],
-                style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+                style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -306,7 +306,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     return Screenshot(
       controller: widget.screenshotController ?? ScreenshotController(),
       child: Container(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         child: widget.outer
             // outer 框架
             ? WButton(
@@ -321,7 +321,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 },
                 child: Container(
                   padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -501,7 +501,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                 },
                                 child: Text('收起',
                                     style: TextUtil
-                                        .base.textButtonBlue.w600.NotoSansSC
+                                        .base.textButtonPrimary.w600.NotoSansSC
                                         .sp(14))),
                           ],
                         )
@@ -569,7 +569,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                     child: Text(
                                                       '长图模式',
                                                       style: TextUtil
-                                                          .base.w300.white
+                                                          .base.w300.reverse
                                                           .sp(12),
                                                     ))
                                               ]))))

@@ -100,7 +100,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                       child: Icon(
                         CupertinoIcons.back,
-                        color: ColorUtil.whiteFFColor,
+                        color: ColorUtil.primaryBackgroundColor,
                         size: 30.h,
                       )),
                   onPressed: () {
@@ -123,7 +123,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.square_arrow_down,
-                      color: ColorUtil.whiteFFColor,
+                      color: ColorUtil.primaryBackgroundColor,
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -134,7 +134,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.share,
-                      color: ColorUtil.whiteFFColor,
+                      color: ColorUtil.primaryBackgroundColor,
                       size: 30.h,
                     ),
                     onPressed: () {

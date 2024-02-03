@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/home.svg',
                 color: ColorUtil.grey144,
               ),
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         onPressed: () => _tabController.animateTo(0),
       ),
     );
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             : SvgPicture.asset(
                 'assets/svg_pics/lake_grey.svg',
               ),
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState?.listToTop();
@@ -168,14 +168,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/my.svg',
                 color: ColorUtil.grey144,
               ),
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         onPressed: () => _tabController.animateTo(2),
       ),
     );
 
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         boxShadow: [
           BoxShadow(color: ColorUtil.black26, spreadRadius: -1, blurRadius: 2)
         ],
@@ -191,10 +191,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
-          ? SystemUiOverlayStyle.light
-              .copyWith(systemNavigationBarColor: ColorUtil.whiteFFColor)
-          : SystemUiOverlayStyle.dark
-              .copyWith(systemNavigationBarColor: ColorUtil.whiteFFColor),
+          ? SystemUiOverlayStyle.light.copyWith(
+              systemNavigationBarColor: ColorUtil.primaryBackgroundColor)
+          : SystemUiOverlayStyle.dark.copyWith(
+              systemNavigationBarColor: ColorUtil.primaryBackgroundColor),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,

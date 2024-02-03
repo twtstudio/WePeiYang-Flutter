@@ -72,7 +72,7 @@ class _BuildingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget buildingName = Text(
       building.name,
-      style: TextUtil.base.Swis.blue2C.w400.sp(10),
+      style: TextUtil.base.Swis.primaryAction.w400.sp(10),
       textAlign: TextAlign.center,
     );
 

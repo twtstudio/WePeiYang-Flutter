@@ -130,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Icon(
                       Icons.email_outlined,
                       size: 28,
-                      color: ColorUtil.whiteFFColor,
+                      color: ColorUtil.reverseTextColor,
                     ),
                   ),
                   SizedBox(width: 15),
@@ -142,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'assets/images/setting.png',
                       width: 24,
                       height: 24,
-                      color: ColorUtil.whiteFFColor,
+                      color: ColorUtil.reverseTextColor,
                     ),
                   ),
                   SizedBox(width: 10),
@@ -167,12 +167,12 @@ class _ProfilePageState extends State<ProfilePage> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style:
-                                  TextUtil.base.ProductSans.white.w700.sp(20))),
+                                  TextUtil.base.ProductSans.reverse.w700.sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
                         width: 44,
                         height: 20,
-                        style: TextUtil.base.white.w100.sp(12),
+                        style: TextUtil.base.reverse.w100.sp(12),
                         level: CommonPreferences.level.value.toString(),
                       ),
                       SizedBox(width: 5.w),
@@ -189,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: SvgPicture.asset(
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
-                            color: ColorUtil.whiteFFColor,
+                            color: ColorUtil.reverseTextColor,
                           ),
                         ),
                       ),
@@ -204,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r)),
-                color: ColorUtil.whiteFFColor,
+                color: ColorUtil.primaryBackgroundColor,
               ),
               child: Column(
                 children: [
@@ -226,14 +226,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Text(CommonPreferences.userNumber.value,
                                     textAlign: TextAlign.start,
                                     style: TextUtil
-                                        .base.ProductSans.black4E.w900
+                                        .base.ProductSans.infoText.w900
                                         .sp(14)),
                                 SizedBox(width: 20.w),
                                 Text(
                                     "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                     textAlign: TextAlign.start,
                                     style: TextUtil
-                                        .base.ProductSans.black4E.w900
+                                        .base.ProductSans.infoText.w900
                                         .sp(14)),
                               ],
                             ),
@@ -252,11 +252,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Text(
                                   "还需 ${CommonPreferences.nextLevelPoint.value - CommonPreferences.levelPoint.value} 点经验升至下一级",
-                                  style: TextUtil.base.ProductSans.greyA6.sp(9),
+                                  style:
+                                      TextUtil.base.ProductSans.secondary.sp(9),
                                 ),
                                 Text(
                                   " (${CommonPreferences.levelPoint.value.toString()}/${CommonPreferences.nextLevelPoint.value.toString()})",
-                                  style: TextUtil.base.ProductSans.greyA6.bold
+                                  style: TextUtil
+                                      .base.ProductSans.secondary.bold
                                       .sp(9),
                                 ),
                               ],
@@ -317,7 +319,7 @@ class _ProfilePageState extends State<ProfilePage> {
               tag: 'avatar',
               child: UserAvatarImage(
                 size: 0.3.sw,
-                iconColor: ColorUtil.whiteFFColor,
+                iconColor: ColorUtil.primaryBackgroundColor,
               ),
             ),
           ),
@@ -332,7 +334,7 @@ class _ProfilePageState extends State<ProfilePage> {
           duration: Duration(milliseconds: 300),
           child: Container(
             key: ValueKey(_refreshController.isRefresh),
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
             child: postListShow,
           ),
         )
@@ -341,15 +343,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Container(
       //改背景色用
-      decoration: BoxDecoration(gradient: ColorUtil.gradientBlue04),
+      decoration: BoxDecoration(gradient: ColorUtil.backgroundGradient),
       child: SafeArea(
+        bottom: false,
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController,
           header: RefreshHeader(),
           footer: ClassicFooter(
+            textStyle: TextStyle(color: ColorUtil.secondaryTextColor),
             idleText: '没有更多数据了:>',
-            idleIcon: Icon(Icons.check),
+            idleIcon: Icon(Icons.check, color: ColorUtil.secondaryTextColor),
           ),
           enablePullDown: true,
           onRefresh: _onRefresh,
@@ -384,7 +388,7 @@ class CustomCard extends StatelessWidget {
         width: 113.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -408,7 +412,7 @@ class CustomCard extends StatelessWidget {
             ),
             SizedBox(height: 7.h),
             Text(text,
-                maxLines: 1, style: TextUtil.base.w400.black2A.sp(12).medium),
+                maxLines: 1, style: TextUtil.base.w400.primary.sp(12).medium),
           ],
         ),
       ),

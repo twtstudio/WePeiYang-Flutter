@@ -43,7 +43,7 @@ class StyClassRoomDetailPage extends StatelessWidget {
 Widget _PageTitleWidget(Room room, String areaName) {
   final title = Text(
     room.name,
-    style: TextUtil.base.white.sp(20).Swis.w400,
+    style: TextUtil.base.reverse.sp(20).Swis.w400,
   );
 
   return Row(
@@ -310,7 +310,7 @@ class _CourseDisplayWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.r),
             ),
             margin: EdgeInsets.symmetric(vertical: 5.h),
-            child: Text("NIGHT BREAK", style: TextUtil.base.w900.white.sp(10)),
+            child: Text("NIGHT BREAK", style: TextUtil.base.w900.reverse.sp(10)),
           )));
     }
 
@@ -327,8 +327,8 @@ class _CourseDisplayWidget extends StatelessWidget {
           ),
           margin: EdgeInsets.symmetric(vertical: 5.h),
           child: list.isEmpty
-              ? Text("全部空闲", style: TextUtil.base.w900.white.sp(16))
-              : Text("LUNCH BREAK", style: TextUtil.base.w900.white.sp(10)),
+              ? Text("全部空闲", style: TextUtil.base.w900.reverse.sp(16))
+              : Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
         )));
     return list;
   }

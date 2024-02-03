@@ -3,13 +3,26 @@ import 'package:flutter/material.dart';
 class ColorUtil {
   ColorUtil._();
 
-  static const mainColor = Color.fromARGB(255, 54, 60, 84);
-  static const backgroundColor = Color.fromARGB(255, 248, 248, 248);
-  static const searchBarBackgroundColor = Color.fromARGB(255, 236, 237, 239);
-  static const boldTextColor = Color.fromARGB(255, 48, 60, 102);
-  static const lightTextColor = Color.fromARGB(255, 145, 145, 145);
-  static const whiteFFColor = Colors.white;
-  static const whiteTransparent = Color(0x00ffffff);
+  // Theme color
+
+  static const defaultActionColor = Color.fromARGB(255, 54, 60, 84);
+  static const primaryBackgroundColor = Colors.white;
+  static const secondaryBackgroundColor = Color.fromARGB(255, 248, 248, 248);
+  static const reverseBackgroundColor = Colors.black;
+
+  static const reverseTextColor = Colors.white;
+  static const basicTextColor = Colors.black;
+  static const secondaryTextColor = Color.fromARGB(255, 145, 145, 145);
+  static const cursorColor = Color.fromARGB(255, 48, 60, 102);
+  static const infoTextColor = Color(0xFF4E4E4E);
+
+  static const primaryActionColor = Color(0xFF2C7EDF);
+  static const primaryTextButtonColor = Color(0xFF2D4E9A);
+
+  // The Color below shouldn't be customized
+
+  static const dangerousRed = Color(0xFFFF0000);
+
   static const white38 = Colors.white38;
   static const whiteOpacity05 = Color.fromRGBO(255, 255, 255, 0.5);
   static const whiteOpacity03 = Color.fromRGBO(255, 255, 255, 0.3);
@@ -50,7 +63,6 @@ class ColorUtil {
   static const black88Color = Color(0x88444444);
   static const whiteF8Color = Color(0xFFF7F7F8);
   static const greyCAColor = Color(0xFFCACACA);
-  static const selectionButtonColor = Color(0xFF2D4E9A);
   static const blue2CColor = Color(0xFF2C7EDF); //44,126,223
   static const blue28Color = Color(0xFF2887FF);
   static const blue38Color = Color(0xFF3884DE);
@@ -75,7 +87,6 @@ class ColorUtil {
   static const white70 = Color(0xB3FFFFFF);
   static const blue52hz = Color.fromRGBO(36, 43, 69, 1);
   static const red = Colors.red;
-  static const dangerousRed = Color(0xFFFF0000);
   static const yellow = Colors.yellow;
   static const redAccent = Colors.redAccent;
   static const pinkAccent = Colors.pinkAccent;
@@ -179,12 +190,12 @@ class ColorUtil {
     stops: [0, 0.53, 0.7],
   );
 
-  static const gradientBlue04 = LinearGradient(
+  static const backgroundGradient = LinearGradient(
       colors: [
         Color(0xFF2C7EDF),
         Color(0xFFA6CFFF),
         // 用来挡下面圆角左右的空
-        Colors.white
+        ColorUtil.primaryBackgroundColor,
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,

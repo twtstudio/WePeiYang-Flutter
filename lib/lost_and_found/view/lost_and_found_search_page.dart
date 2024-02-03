@@ -122,7 +122,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: TextUtil.base.black00.w600.sp(19),
+            style: TextUtil.base.primary.w600.sp(19),
           ),
           InkWell(
             child: WpyPic(
@@ -203,14 +203,14 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
     );
 
     return ColoredBox(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: ColorUtil.whiteFFColor, child: searchHistory)),
+                    color: ColorUtil.primaryBackgroundColor, child: searchHistory)),
           ],
         ));
   }
@@ -221,12 +221,12 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         builder: (BuildContext context) {
           return LakeDialogWidget(
               title: '清除记录',
-              confirmButtonColor: ColorUtil.selectionButtonColor,
+              confirmButtonColor: ColorUtil.primaryTextButtonColor,
               titleTextStyle:
               TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
-              TextUtil.base.normal.white.NotoSansSC.sp(16).w400,
+              TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               cancelTextStyle:
               TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
@@ -277,7 +277,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
             child: Text(
                 widget.category,
                 style: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
-                    ? TextUtil.base.normal.NotoSansSC.w400.sp(10).blue2C
+                    ? TextUtil.base.normal.NotoSansSC.w400.sp(10).primaryAction
                     : TextUtil.base.normal.NotoSansSC.w400.sp(10).black2A
             ),
           ),

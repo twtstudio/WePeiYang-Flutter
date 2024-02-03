@@ -35,7 +35,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         title: Text(
           '更换头像框',
           style: TextUtil.base.black2A.sp(16),
@@ -45,7 +45,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
               child: Icon(Icons.arrow_back,
-                  color: ColorUtil.mainColor, size: 32),
+                  color: ColorUtil.defaultActionColor, size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
       ),
@@ -65,7 +65,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                             tag: 'avatar',
                             child: UserAvatarImage(
                               size: 0.3.sw,
-                              iconColor: ColorUtil.whiteFFColor,
+                              iconColor: ColorUtil.primaryBackgroundColor,
                               tempUrl: _valueNotifier.value,
                             ),
                           ),
@@ -187,7 +187,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style:
-                                              TextUtil.base.w200.black4E.sp(16),
+                                              TextUtil.base.w200.infoText.sp(16),
                                         )),
                                   ),
                                 ],
@@ -220,7 +220,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           child: Center(
                             child: Text(
                               '立即装扮',
-                              style: TextUtil.base.white.w500.sp(16),
+                              style: TextUtil.base.reverse.w500.sp(16),
                             ),
                           ),
                         ),
@@ -246,14 +246,14 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
       decoration: BoxDecoration(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         borderRadius: BorderRadius.all(Radius.circular(10.r)),
         boxShadow: [
           choose == true
               ? BoxShadow(
                   color: ColorUtil.begoniaPink, blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                 ),
         ],
         image: DecorationImage(

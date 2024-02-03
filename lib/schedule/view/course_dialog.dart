@@ -24,12 +24,12 @@ class CourseDialog extends Dialog {
 
   CourseDialog(this._pairs);
 
-  final _nameStyle = TextUtil.base.bold.white.noLine.sp(20);
-  final _teacherStyle = TextUtil.base.regular.white.noLine.sp(12);
+  final _nameStyle = TextUtil.base.bold.reverse.noLine.sp(20);
+  final _teacherStyle = TextUtil.base.regular.reverse.noLine.sp(12);
   final _hintNameStyle =
-      TextUtil.base.regular.white.noLine.sp(10).space(letterSpacing: 1);
+      TextUtil.base.regular.reverse.noLine.sp(10).space(letterSpacing: 1);
   final _hintValueStyle =
-      TextUtil.base.Swis.white.noLine.sp(9).space(letterSpacing: 0.5);
+      TextUtil.base.Swis.reverse.noLine.sp(9).space(letterSpacing: 0.5);
   final _width = 1.sw - 120.w;
 
   @override
@@ -41,7 +41,7 @@ class CourseDialog extends Dialog {
             ? _getSingleCard(context, _pairs[0])
             : Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
+                    .copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 40.w),

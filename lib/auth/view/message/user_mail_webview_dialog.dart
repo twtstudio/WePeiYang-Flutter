@@ -19,7 +19,7 @@ class UserMailDialog extends Dialog {
           child: Container(
             height: 500,
             width: 300,
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
             child: CustomWebView(url),
           ),
         ),

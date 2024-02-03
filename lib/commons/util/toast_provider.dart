@@ -87,7 +87,7 @@ class ToastProvider with AsyncTimer {
           children: [
             SvgPicture.asset(
               'assets/svg_pics/lake_butt_icons/error_background.svg',
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               width: 15,
             ),
             SizedBox(width: 10),
@@ -95,7 +95,7 @@ class ToastProvider with AsyncTimer {
               constraints: BoxConstraints(maxWidth: 1.sw - 90),
               child: Text(
                 msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -134,7 +134,7 @@ class ToastProvider with AsyncTimer {
               constraints: BoxConstraints(maxWidth: 1.sw - 90),
               child: Text(
                 msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -173,7 +173,7 @@ class ToastProvider with AsyncTimer {
               constraints: BoxConstraints(maxWidth: 1.sw - 90),
               child: Text(
                 msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).white,
+                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

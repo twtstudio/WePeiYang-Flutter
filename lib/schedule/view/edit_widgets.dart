@@ -76,7 +76,7 @@ class TimeFrameWidget extends StatelessWidget {
                   child: Icon(Icons.cancel,
                       color: canDelete
                           ? ColorUtil.blue2CColor
-                          : ColorUtil.whiteFFColor),
+                          : ColorUtil.primaryBackgroundColor),
                 ),
               ),
             ],
@@ -269,7 +269,7 @@ class CardWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
@@ -298,7 +298,7 @@ class CardWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5.h),
       padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
       decoration: BoxDecoration(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
@@ -325,7 +325,7 @@ class UnitPicker extends Dialog {
   static const _text = ['至', '节'];
 
   final _textStyle =
-      TextUtil.base.PingFangSC.w900.black00.space(letterSpacing: 1);
+      TextUtil.base.PingFangSC.w900.primary.space(letterSpacing: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +377,7 @@ class UnitPicker extends Dialog {
         height: 150.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
@@ -425,7 +425,7 @@ class WeekPicker extends Dialog {
   static const _weekTypes = ['每周', '单周', '双周'];
 
   final _textStyle =
-      TextUtil.base.PingFangSC.w900.black00.space(letterSpacing: 1);
+      TextUtil.base.PingFangSC.w900.primary.space(letterSpacing: 1);
 
   static String _weekTypeInit(List<int> weekInit) {
     if (weekInit.every((e) => e == 1)) return '每周';
@@ -527,7 +527,7 @@ class WeekPicker extends Dialog {
         height: 220.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
@@ -565,7 +565,7 @@ class WeekPicker extends Dialog {
                               style: TextUtil.base.PingFangSC.regular
                                   .sp(12)
                                   .customColor(index == _weekTypes.indexOf(type)
-                                      ? ColorUtil.whiteFFColor
+                                      ? ColorUtil.primaryBackgroundColor
                                       : ColorUtil.greyCAColor)),
                         );
                       },

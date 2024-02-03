@@ -78,7 +78,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
                 child: Text('新用户注册',
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
               ),
             ),
             Padding(
@@ -99,7 +99,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "学号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .white,
+                                      .reverse,
                                 ),
                               ),
                               ConstrainedBox(
@@ -110,27 +110,27 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .white,
-                                  cursorColor: ColorUtil.whiteFFColor,
+                                      .reverse,
+                                  cursorColor: ColorUtil.primaryBackgroundColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _userNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入学号",
                                     //S.current.student_id,
                                     hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.white,
+                                        TextUtil.base.normal.sp(14).w400.reverse,
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -155,7 +155,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: '昵称',
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .white,
+                                      .reverse,
                                 ),
                               ),
                               ConstrainedBox(
@@ -166,27 +166,27 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .white,
-                                  cursorColor: ColorUtil.whiteFFColor,
+                                      .reverse,
+                                  cursorColor: ColorUtil.primaryBackgroundColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _nicknameFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入昵称",
                                     //S.current.user_name,
                                     hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.white,
+                                        TextUtil.base.normal.sp(14).w400.reverse,
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -211,7 +211,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "身份证号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .white,
+                                      .reverse,
                                 ),
                               ),
                               ConstrainedBox(
@@ -222,27 +222,27 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .white,
-                                  cursorColor: ColorUtil.whiteFFColor,
+                                      .reverse,
+                                  cursorColor: ColorUtil.primaryBackgroundColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _idNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入身份证号",
                                     //S.current.user_name,
                                     hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.white,
+                                        TextUtil.base.normal.sp(14).w400.reverse,
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -267,7 +267,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "邮箱",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .white,
+                                      .reverse,
                                 ),
                               ),
                               ConstrainedBox(
@@ -278,27 +278,27 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .white,
-                                  cursorColor: ColorUtil.whiteFFColor,
+                                      .reverse,
+                                  cursorColor: ColorUtil.primaryBackgroundColor,
                                   textInputAction: TextInputAction.next,
                                   focusNode: _emailFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.whiteFFColor,
+                                        color: ColorUtil.primaryBackgroundColor,
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入邮箱",
                                     //S.current.user_name,
                                     hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.white,
+                                        TextUtil.base.normal.sp(14).w400.reverse,
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -318,13 +318,13 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               width: width - 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
-                                color: ColorUtil.whiteFFColor,
+                                color: ColorUtil.primaryBackgroundColor,
                               ),
                               child: Center(
                                 child: Text("下一步",
                                     style: TextUtil.base.normal.NotoSansSC.w400
                                         .sp(16)
-                                        .blue2C),
+                                        .primaryAction),
                               ),
                             ),
                           )),
@@ -421,7 +421,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "新用户注册",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
               ])),
             ),
             SizedBox(height: 62),
@@ -436,7 +436,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       Text.rich(TextSpan(
                         text: "手机号",
                         style:
-                            TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
+                            TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
                       )),
                       ConstrainedBox(
                         constraints: BoxConstraints(
@@ -444,25 +444,25 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         ),
                         child: TextField(
                           style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.white,
-                          cursorColor: ColorUtil.whiteFFColor,
+                              TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
+                          cursorColor: ColorUtil.primaryBackgroundColor,
                           textInputAction: TextInputAction.next,
                           focusNode: _phoneFocus,
                           decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: ColorUtil.whiteFFColor,
+                                color: ColorUtil.primaryBackgroundColor,
                                 width: 1.0,
                               ),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: ColorUtil.whiteFFColor,
+                                color: ColorUtil.primaryBackgroundColor,
                                 width: 1.0,
                               ),
                             ),
                             hintText: "请输入手机号",
-                            hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                            hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
                             isCollapsed: true,
                             contentPadding:
                                 const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -479,7 +479,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                       Text.rich(TextSpan(
                         text: "验证码",
                         style:
-                            TextUtil.base.normal.NotoSansSC.w400.sp(16).white,
+                            TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
                       )),
                       SizedBox(height: 20),
                       Stack(
@@ -498,7 +498,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 0 ? code.substring(0, 1) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -513,7 +513,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 1 ? code.substring(1, 2) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -528,7 +528,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 2 ? code.substring(2, 3) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -543,7 +543,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 3 ? code.substring(3, 4) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -558,7 +558,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 4 ? code.substring(4, 5) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -573,7 +573,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 5 ? code.substring(5, 6) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.blue2C
+                                        .base.normal.NotoSansSC.primaryAction
                                         .sp(16),
                                   ),
                                 ),
@@ -608,13 +608,13 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                           width: width - 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
-                            color: ColorUtil.whiteFFColor,
+                            color: ColorUtil.primaryBackgroundColor,
                           ),
                           child: Center(
                             child: Text("下一步",
                                 style: TextUtil.base.normal.NotoSansSC.w400
                                     .sp(16)
-                                    .blue2C),
+                                    .primaryAction),
                           ),
                         ),
                       )),
@@ -642,7 +642,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                             style: TextUtil
                                                 .base.normal.NotoSansSC.w400
                                                 .sp(14)
-                                                .white,
+                                                .reverse,
                                           )));
                                     })
                                 : WButton(
@@ -652,7 +652,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                       style: TextUtil
                                           .base.normal.NotoSansSC.w400
                                           .sp(14)
-                                          .white,
+                                          .reverse,
                                     ),
                                   ),
                             onPressed: () {},
@@ -757,7 +757,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "新用户注册",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
               ])),
             ),
             SizedBox(height: 62),
@@ -775,7 +775,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "设置密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .white,
+                                .reverse,
                           ),
                         ),
                         ConstrainedBox(
@@ -783,11 +783,11 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             maxHeight: 55,
                           ),
                           child: TextField(
-                            cursorColor: ColorUtil.whiteFFColor,
+                            cursorColor: ColorUtil.primaryBackgroundColor,
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .white,
+                                .reverse,
                             keyboardType: TextInputType.visiblePassword,
                             textInputAction: TextInputAction.next,
                             focusNode: _pw1Focus,
@@ -795,18 +795,18 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.whiteFFColor,
+                                  color: ColorUtil.primaryBackgroundColor,
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.whiteFFColor,
+                                  color: ColorUtil.primaryBackgroundColor,
                                   width: 1.0,
                                 ),
                               ),
                               hintText: "请输入密码",
-                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -830,7 +830,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "确认密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .white,
+                                .reverse,
                           ),
                         ),
                         ConstrainedBox(
@@ -841,26 +841,26 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .white,
-                            cursorColor: ColorUtil.whiteFFColor,
+                                .reverse,
+                            cursorColor: ColorUtil.primaryBackgroundColor,
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: _pw2Focus,
                             obscureText: true,
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.whiteFFColor,
+                                  color: ColorUtil.primaryBackgroundColor,
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.whiteFFColor,
+                                  color: ColorUtil.primaryBackgroundColor,
                                   width: 1.0,
                                 ),
                               ),
                               hintText: '请再次输入您的密码',
-                              hintStyle: TextUtil.base.normal.sp(14).w400.white,
+                              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -882,17 +882,17 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: '注册并登录',
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .blue2C)),
+                                .primaryAction)),
                         style: ButtonStyle(
                           overlayColor:
                               MaterialStateProperty.resolveWith<Color>(
                                   (states) {
                             if (states.contains(MaterialState.pressed))
                               return ColorUtil.whiteOpacity01;
-                            return ColorUtil.whiteFFColor;
+                            return ColorUtil.primaryBackgroundColor;
                           }),
                           backgroundColor:
-                              MaterialStateProperty.all(ColorUtil.whiteFFColor),
+                              MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),

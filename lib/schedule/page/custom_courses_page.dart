@@ -51,7 +51,7 @@ class CustomCoursesPage extends StatelessWidget {
           ),
           body: Theme(
             data:
-                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
+                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
             child: ListView.builder(
               itemCount: customCourses.length,
               itemBuilder: (context, index) {
@@ -69,7 +69,7 @@ class CustomCoursesPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       child: Container(
         decoration: BoxDecoration(
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
@@ -118,7 +118,7 @@ class CustomCoursesPage extends StatelessWidget {
                           SizedBox(width: 5.w),
                           Text(_timeRange(arrange.unitList),
                               style:
-                                  TextUtil.base.PingFangSC.w900.black00.sp(14)),
+                                  TextUtil.base.PingFangSC.w900.primary.sp(14)),
                           SizedBox(width: 5.w),
                           Text(type,
                               style: TextUtil.base.PingFangSC.normal.black2A

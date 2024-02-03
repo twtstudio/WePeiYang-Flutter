@@ -164,10 +164,10 @@ class _NucPassportPageState extends State<NucPassportPage> {
                     ),
                     SizedBox(height: 34.w),
                     Text('请向志愿者出示您的号码牌',
-                        style: TextUtil.base.white.sp(18).w700),
+                        style: TextUtil.base.reverse.sp(18).w700),
                     SizedBox(height: 8.w),
                     Text('Please show your number to the volunteer',
-                        style: TextUtil.base.white.sp(16).w700),
+                        style: TextUtil.base.reverse.sp(16).w700),
                     SizedBox(height: 10.w),
                     Container(
                         padding: EdgeInsets.symmetric(vertical: 6.w),
@@ -175,10 +175,10 @@ class _NucPassportPageState extends State<NucPassportPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('${CommonPreferences.area.value}',
-                                style: TextUtil.base.white.sp(78).w900.h(1.4)),
+                                style: TextUtil.base.reverse.sp(78).w900.h(1.4)),
                             Text(
                                 '${CommonPreferences.building.value}\n${CommonPreferences.room.value}',
-                                style: TextUtil.base.white.sp(78).w900.h(1.4)),
+                                style: TextUtil.base.reverse.sp(78).w900.h(1.4)),
                           ],
                         ),
                         decoration: BoxDecoration(
@@ -187,11 +187,11 @@ class _NucPassportPageState extends State<NucPassportPage> {
                     SizedBox(height: 10.w),
                     Text(
                         '${CommonPreferences.department.value}  ${CommonPreferences.realName.value}',
-                        style: TextUtil.base.white.sp(17).w700),
+                        style: TextUtil.base.reverse.sp(17).w700),
                     SizedBox(height: 4.w),
                     Text(
                         '${CommonPreferences.userNumber.value == '' ? '请绑定办公网' : CommonPreferences.userNumber.value}',
-                        style: TextUtil.base.white.sp(17).w700),
+                        style: TextUtil.base.reverse.sp(17).w700),
                     Spacer(),
                     Text(
                         DateTime.now()
@@ -203,9 +203,9 @@ class _NucPassportPageState extends State<NucPassportPage> {
                                 .toLocal()
                                 .toIso8601String()
                                 .substring(11, 19),
-                        style: TextUtil.base.white.sp(18).w700),
+                        style: TextUtil.base.reverse.sp(18).w700),
                     Text('请在核酸检测时出示，请勿截图',
-                        style: TextUtil.base.white.sp(18).w700),
+                        style: TextUtil.base.reverse.sp(18).w700),
                     SizedBox(height: 20.w)
                   ],
                 ),

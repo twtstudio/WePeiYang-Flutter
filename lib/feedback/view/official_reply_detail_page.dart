@@ -289,7 +289,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: ColorUtil.whiteFFColor,
+                            color: ColorUtil.primaryBackgroundColor,
                           )),
                     ),
                   ),
@@ -333,7 +333,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     var appBar = AppBar(
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
+        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
@@ -360,7 +360,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.backgroundColor,
+        backgroundColor: ColorUtil.secondaryBackgroundColor,
         appBar: appBar,
         body: body,
       ),

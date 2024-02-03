@@ -59,7 +59,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
@@ -185,7 +185,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 child: ElevatedButton(
                   onPressed: _reset,
                   child: Text(S.current.reset_ok,
-                      style: TextUtil.base.regular.white.sp(13)),
+                      style: TextUtil.base.regular.reverse.sp(13)),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(5),
                     overlayColor:

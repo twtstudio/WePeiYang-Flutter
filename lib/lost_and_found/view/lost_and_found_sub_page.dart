@@ -577,7 +577,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                         context
                             .read<LostAndFoundModel>()
                             .currentCategory[widget.type]
-                    ? TextUtil.base.normal.PingFangSC.w400.sp(10.sp).blue2C
+                    ? TextUtil.base.normal.PingFangSC.w400.sp(10.sp).primaryAction
                     : TextUtil.base.normal.PingFangSC.w400.sp(10.sp).black2A),
           ),
         ),

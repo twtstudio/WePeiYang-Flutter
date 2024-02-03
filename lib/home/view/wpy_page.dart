@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -143,7 +144,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor: ColorUtil.whiteFFColor,
+      systemNavigationBarColor: ColorUtil.primaryBackgroundColor,
     ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
@@ -168,6 +169,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                     ? ColorUtil.gradientBlue
                     : ColorUtil.gradientWhite)),
         SafeArea(
+          bottom: false,
           child: Stack(
             children: [
               Padding(
@@ -190,7 +192,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
-                                color: ColorUtil.whiteFFColor,
+                                color: ColorUtil.primaryBackgroundColor,
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
@@ -206,8 +208,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
                   style: showSchedule
-                      ? TextUtil.base.white.w400.sp(22)
-                      : TextUtil.base.black00.w400.sp(22),
+                      ? TextUtil.base.reverse.w400.sp(22)
+                      : TextUtil.base.primary.w400.sp(22),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                   onEnd: () => setState(() => useRound = showSchedule),
@@ -241,8 +243,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: ColorUtil.black00Color,
-              unselectedLabelColor: ColorUtil.lightTextColor,
+              labelColor: ColorUtil.basicTextColor,
+              unselectedLabelColor: ColorUtil.secondaryTextColor,
               indicator: CustomIndicator(
                   left: true,
                   borderSide: BorderSide(color: ColorUtil.warning, width: 4)),
@@ -259,7 +261,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               ]),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height - 370.h,
+          height: MediaQuery.of(context).size.height - 365.h,
           child: TabBarView(
               controller: _tc,
               physics: BouncingScrollPhysics(),
@@ -415,7 +417,7 @@ class WPYScrollBehavior extends ScrollBehavior {
       showLeading: false,
       showTrailing: false,
       axisDirection: AxisDirection.down,
-      color: ColorUtil.mainColor,
+      color: ColorUtil.defaultActionColor,
     );
   }
 

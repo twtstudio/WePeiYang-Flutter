@@ -149,7 +149,7 @@ class _CollectionPageState extends State<CollectionPage> {
     Widget body = CustomScrollView(
       slivers: [
         SliverAppBar(
-          backgroundColor: ColorUtil.backgroundColor,
+          backgroundColor: ColorUtil.secondaryBackgroundColor,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
@@ -165,14 +165,14 @@ class _CollectionPageState extends State<CollectionPage> {
           centerTitle: true,
         ),
         SliverToBoxAdapter(
-          child: Container(color: ColorUtil.backgroundColor, child: list),
+          child: Container(color: ColorUtil.secondaryBackgroundColor, child: list),
         )
       ],
     );
 
     return Container(
       //改背景色用
-      color: ColorUtil.backgroundColor,
+      color: ColorUtil.secondaryBackgroundColor,
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,

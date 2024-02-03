@@ -44,7 +44,7 @@ class _TabGridViewState extends State<TabGridView>
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
-        color: ColorUtil.whiteFFColor,
+        color: ColorUtil.primaryBackgroundColor,
         borderRadius: BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -55,7 +55,7 @@ class _TabGridViewState extends State<TabGridView>
           end: Alignment.bottomCenter,
           colors: [
             ColorUtil.white10,
-            ColorUtil.whiteFFColor,
+            ColorUtil.primaryBackgroundColor,
           ],
         ),
       ),
@@ -85,7 +85,7 @@ class _TabGridViewState extends State<TabGridView>
         label: Text(
           tag.name,
           style: chose
-              ? TextUtil.base.white.NotoSansSC.w400.sp(14)
+              ? TextUtil.base.reverse.NotoSansSC.w400.sp(14)
               : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),

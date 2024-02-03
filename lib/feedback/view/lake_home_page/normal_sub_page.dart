@@ -242,7 +242,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .read<LakeModel>()
                                                     .sortSeq !=
                                                 0
-                                            ? TextUtil.base.blue2C.w600.sp(14)
+                                            ? TextUtil.base.primaryAction.w600.sp(14)
                                             : TextUtil.base.black2A.w400
                                                 .sp(14)),
                                   ),
@@ -263,7 +263,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .sortSeq !=
                                                 0
                                             ? TextUtil.base.black2A.w400.sp(14)
-                                            : TextUtil.base.blue2C.w600.sp(14)),
+                                            : TextUtil.base.primaryAction.w600.sp(14)),
                                   ),
                                 ),
                               ]);
@@ -493,8 +493,8 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       ),
       elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: ColorUtil.whiteFFColor,
-      foregroundColor: ColorUtil.mainColor,
+      backgroundColor: ColorUtil.primaryBackgroundColor,
+      foregroundColor: ColorUtil.defaultActionColor,
       onPressed: () {
         FeedbackService.getToken(
             forceRefresh: true,
@@ -604,13 +604,13 @@ class AnnouncementBannerWidget extends StatelessWidget {
                                       (index) => Text(
                                           '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
                                           style: TextUtil
-                                              .base.blue2C.w400.NotoSansSC
+                                              .base.primaryAction.w400.NotoSansSC
                                               .sp(15)),
                                     ),
                                   )
                                 : Text(
                                     '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                    style: TextUtil.base.blue2C.w400.NotoSansSC
+                                    style: TextUtil.base.primaryAction.w400.NotoSansSC
                                         .sp(15))),
                       ],
                     ),
@@ -622,7 +622,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
                       width: WePeiYangApp.screenWidth - 83,
                       child: Text(
                         '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
-                        style: TextUtil.base.blue2C.w600.NotoSansSC.sp(16),
+                        style: TextUtil.base.primaryAction.w600.NotoSansSC.sp(16),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

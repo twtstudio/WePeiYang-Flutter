@@ -99,7 +99,7 @@ class TodayCoursesWidget extends StatelessWidget {
                             width: 1.sw - 125.w - 50.r,
                             child: Text(
                               todayPairs[i].first.name,
-                              style: TextUtil.base.PingFangSC.white.bold.sp(14),
+                              style: TextUtil.base.PingFangSC.reverse.bold.sp(14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

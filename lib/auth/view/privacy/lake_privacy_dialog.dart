@@ -23,8 +23,7 @@ class LakePrivacyDialog extends Dialog {
           horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: ColorUtil.white251),
+          borderRadius: BorderRadius.circular(10), color: ColorUtil.white251),
       child: Column(
         children: [
           Expanded(
@@ -66,7 +65,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonBlue,
+                            .textButtonPrimary,
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -84,7 +83,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonBlue,
+                            .textButtonPrimary,
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -102,7 +101,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonBlue,
+                            .textButtonPrimary,
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -261,7 +260,7 @@ class LakePrivacyDialog extends Dialog {
             ),
           ),
           SizedBox(height: 13),
-          Divider(height: 1, color:ColorUtil.grey172 ),
+          Divider(height: 1, color: ColorUtil.grey172),
           _detail(context),
         ],
       ),
@@ -276,9 +275,7 @@ class LakePrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text(S.current.ok,
-              style: TextUtil.base.bold.noLine
-                  .sp(16)
-                  .blue98),
+              style: TextUtil.base.bold.noLine.sp(16).blue98),
         ),
       );
     } else {
@@ -304,10 +301,7 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('同意',
-                  style: TextUtil.base.bold.noLine
-                      .sp(16)
-                      .blue98),
+              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).blue98),
             ),
           ),
         ],

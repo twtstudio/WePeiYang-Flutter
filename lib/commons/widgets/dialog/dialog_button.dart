@@ -27,12 +27,12 @@ class WbyDialogButton extends StatelessWidget {
     else if (type == ButtonType.dark)
       return ColorUtil.grey6267Color;
     else
-      return ColorUtil.whiteFFColor;
+      return ColorUtil.primaryBackgroundColor;
   }
 
   Color get _textColor {
     if (type == ButtonType.dark || type == ButtonType.blue)
-      return ColorUtil.whiteFFColor;
+      return ColorUtil.primaryBackgroundColor;
     else
       return ColorUtil.black00Color;
   }

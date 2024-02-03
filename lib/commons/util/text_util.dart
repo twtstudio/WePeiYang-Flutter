@@ -41,7 +41,9 @@ extension TextStyleAttr on TextStyle {
   /// 颜色
   TextStyle customColor(Color c) => this.copyWith(color: c);
 
-  TextStyle get white => this.copyWith(color: ColorUtil.whiteFFColor);
+  TextStyle get reverse => this.copyWith(color: ColorUtil.reverseTextColor);
+
+  TextStyle get secondary => this.copyWith(color: ColorUtil.secondaryTextColor);
 
   TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
 
@@ -51,8 +53,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get dangerousRed => this.copyWith(color: ColorUtil.dangerousRed);
 
-  TextStyle get textButtonBlue =>
-      this.copyWith(color: ColorUtil.selectionButtonColor);
+  TextStyle get textButtonPrimary =>
+      this.copyWith(color: ColorUtil.primaryTextButtonColor);
 
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
@@ -80,11 +82,11 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get blue363C => this.copyWith(color: ColorUtil.blue363C);
 
-  TextStyle get black00 => this.copyWith(color: ColorUtil.black00Color);
+  TextStyle get primary => this.copyWith(color: ColorUtil.basicTextColor);
 
   TextStyle get black42 => this.copyWith(color: ColorUtil.black42);
 
-  TextStyle get black4E => this.copyWith(color: ColorUtil.black4E);
+  TextStyle get infoText => this.copyWith(color: ColorUtil.infoTextColor);
 
   TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
 
@@ -128,7 +130,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get grey6267 => this.copyWith(color: ColorUtil.grey6267Color);
 
-  TextStyle get blue98Opacity061 => this.copyWith(color: ColorUtil.blue98Opacity061);
+  TextStyle get blue98Opacity061 =>
+      this.copyWith(color: ColorUtil.blue98Opacity061);
 
   TextStyle get grey177 => this.copyWith(color: ColorUtil.grey177);
 
@@ -138,9 +141,11 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 
-  TextStyle get mainColor => this.copyWith(color: ColorUtil.mainColor);
+  TextStyle get mainTextColor =>
+      this.copyWith(color: ColorUtil.defaultActionColor);
 
-  TextStyle get blue2C => this.copyWith(color: ColorUtil.blue2CColor);
+  TextStyle get primaryAction =>
+      this.copyWith(color: ColorUtil.primaryActionColor);
 
   TextStyle get transParent => this.copyWith(color: ColorUtil.transparent);
 

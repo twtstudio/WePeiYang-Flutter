@@ -70,7 +70,7 @@ class _GPAPageState extends State<GPAPage> {
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data:
-                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
+                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
             child: ListView(
               children: [
                 RadarChartWidget(widget._gpaColors),
@@ -113,7 +113,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: ColorUtil.whiteFFColor,
+            color: ColorUtil.primaryBackgroundColor,
           ),
         ),
       ),
@@ -126,7 +126,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 40.w,
       title: Text(
           'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-          style: TextUtil.base.white.w900.sp(18)),
+          style: TextUtil.base.reverse.w900.sp(18)),
       titleSpacing: 0,
       actions: [
         WButton(

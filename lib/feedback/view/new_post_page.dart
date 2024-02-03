@@ -169,12 +169,12 @@ class _NewPostPageState extends State<NewPostPage> {
           }
         },
         child: Text(S.current.feedback_submit,
-            style: TextUtil.base.NotoSansSC.w500.sp(14).white),
+            style: TextUtil.base.NotoSansSC.w500.sp(14).reverse),
       ),
     );
 
     return Scaffold(
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         appBar: appBar,
         body: Column(
           children: [
@@ -292,7 +292,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                       ? TextUtil
                                                           .base.NotoSansSC.w400
                                                           .sp(15)
-                                                          .blue2C
+                                                          .primaryAction
                                                       : TextUtil.base.w400
                                                           .sp(15)
                                                           .black2A),
@@ -303,7 +303,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                             tabList[index + 1]
                                                                 .id
                                                         ? ColorUtil.blue2CColor
-                                                        : ColorUtil.whiteFFColor,
+                                                        : ColorUtil.primaryBackgroundColor,
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -348,7 +348,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                 : Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: ColorUtil.whiteFFColor,
+                        color: ColorUtil.primaryBackgroundColor,
                         borderRadius: BorderRadius.circular(16)),
                     child: Center(
                       child: Text('点击刷新'),
@@ -388,7 +388,7 @@ class _departmentTagViewState extends State<departmentTagView> {
         builder: (context, type, _) {
           return Container(
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),
@@ -434,7 +434,7 @@ class _CampusSelectorState extends State<CampusSelector> {
               SizedBox(width: 10),
               Text(
                 texts[value],
-                style: TextUtil.base.sp(14).w400.NotoSansSC.normal.blue2C,
+                style: TextUtil.base.sp(14).w400.NotoSansSC.normal.primaryAction,
               ),
               SizedBox(width: 18),
             ],
@@ -523,7 +523,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         inputFormatters: [
           CustomizedLengthTextInputFormatter(30),
         ],
-        cursorColor: ColorUtil.boldTextColor,
+        cursorColor: ColorUtil.cursorColor,
         cursorHeight: 20,
       ),
     );
@@ -637,7 +637,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: maxImage - context.read<NewPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: ColorUtil.selectionButtonColor),
+          themeColor: ColorUtil.primaryTextButtonColor),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -716,7 +716,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             child: Icon(
               Icons.close,
               size: MediaQuery.of(context).size.width / 32,
-              color: ColorUtil.searchBarBackgroundColor,
+              color: ColorUtil.secondaryBackgroundColor,
             ),
           ),
         ),

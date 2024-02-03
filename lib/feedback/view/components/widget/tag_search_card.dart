@@ -176,7 +176,7 @@ class _SearchTagCardState extends State<SearchTagCard>
           width: 14,
           color: _controller.text == ''
               ? ColorUtil.grey97Color
-              : ColorUtil.mainColor,
+              : ColorUtil.defaultActionColor,
         ),
         labelStyle: TextUtil.base.black2A.NotoSansSC.w400.sp(16),
         fillColor: ColorUtil.whiteFDFE,

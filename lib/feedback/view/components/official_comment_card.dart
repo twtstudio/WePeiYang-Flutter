@@ -283,7 +283,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             itemCount: 5,
             itemSize: 16.w,
             ignoreGestures: true,
-            unratedColor: ColorUtil.lightTextColor,
+            unratedColor: ColorUtil.secondaryTextColor,
             onRatingUpdate: (_) {},
           ),
         ]),
@@ -305,7 +305,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           itemCount: 5,
           itemSize: 16.w,
           ignoreGestures: true,
-          unratedColor: ColorUtil.lightTextColor,
+          unratedColor: ColorUtil.secondaryTextColor,
           onRatingUpdate: (_) {},
         ),
       ]);
@@ -413,7 +413,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: list,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: ColorUtil.whiteFFColor,
+          color: ColorUtil.primaryBackgroundColor,
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
@@ -492,7 +492,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                                     ? comments[0]
                                     : comments[checkedNotifier.value.toInt()]) +
                                 '」',
-                            style: TextUtil.base.normal.black00.NotoSansSC
+                            style: TextUtil.base.normal.primary.NotoSansSC
                                 .sp(16)
                                 .w400);
                       }),

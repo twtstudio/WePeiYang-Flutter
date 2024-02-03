@@ -35,7 +35,7 @@ class ResetDoneWidget extends StatelessWidget {
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context, AuthRouter.login, (route) => false),
               child: Text(S.current.login3,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

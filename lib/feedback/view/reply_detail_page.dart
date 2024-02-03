@@ -332,7 +332,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: ColorUtil.whiteFFColor,
+                            color: ColorUtil.primaryBackgroundColor,
                           )),
                     ),
                   ),
@@ -398,7 +398,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       titleSpacing: 0,
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.mainColor),
+        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],

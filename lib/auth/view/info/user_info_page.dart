@@ -28,7 +28,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
@@ -44,7 +44,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -157,7 +157,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -214,7 +214,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFFColor,
+              color: ColorUtil.primaryBackgroundColor,
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(

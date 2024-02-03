@@ -12,13 +12,13 @@ class AboutTwtPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorUtil.whiteFFColor,
+      backgroundColor: ColorUtil.primaryBackgroundColor,
       appBar: AppBar(
           title: Text(S.current.about_twt,
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(

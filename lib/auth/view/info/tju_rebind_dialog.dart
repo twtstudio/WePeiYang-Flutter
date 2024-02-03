@@ -22,7 +22,7 @@ class TjuRebindDialog extends Dialog {
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.whiteFFColor),
+            color: ColorUtil.primaryBackgroundColor),
         child: _TjuRebindWidget(),
       ),
     );
@@ -140,7 +140,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.login,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

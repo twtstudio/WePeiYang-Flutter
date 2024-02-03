@@ -220,7 +220,7 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel,
-                        style: TextUtil.base.w400.blue2C.sp(15)),
+                        style: TextUtil.base.w400.primaryAction.sp(15)),
                   ),
                 ),
                 SizedBox(width: 30),

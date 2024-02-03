@@ -223,7 +223,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           });
         },
         child: Text("#  ${categoryNotifier.value}",
-            style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C));
+            style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction));
   }
 
   Visibility selectCategoryDialog(BuildContext context) {
@@ -235,7 +235,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             height: 120.h,
             width: 86.w,
             decoration: BoxDecoration(
-                color: ColorUtil.whiteFFColor,
+                color: ColorUtil.primaryBackgroundColor,
                 borderRadius: BorderRadius.circular(10.r),
                 boxShadow: [
                   BoxShadow(
@@ -264,7 +264,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         },
         child: Container(
             child: Text(option,
-                style: TextUtil.base.NotoSansSC.w400.sp(12).black00)));
+                style: TextUtil.base.NotoSansSC.w400.sp(12).primary)));
   }
 
   SizedBox LostAndFoundPostButton() {
@@ -288,7 +288,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             },
             child: Text(
               '发送',
-              style: TextUtil.base.NotoSansSC.w400.sp(14).white,
+              style: TextUtil.base.NotoSansSC.w400.sp(14).reverse,
             )));
   }
 }
@@ -337,7 +337,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
               titleCounter.value = '${text.characters.length} / 30';
             },
             inputFormatters: [CustomizedLengthTextInputFormatter(30)],
-            cursorColor: ColorUtil.boldTextColor,
+            cursorColor: ColorUtil.cursorColor,
             cursorHeight: 20));
 
     Widget textCounter = ValueListenableBuilder(
@@ -447,7 +447,7 @@ class _LostAndFoundImagesGridViewState
           maxAssets: maxImage -
               context.read<NewLostAndFoundPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: ColorUtil.selectionButtonColor),
+          themeColor: ColorUtil.primaryTextButtonColor),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -527,7 +527,7 @@ class _LostAndFoundImagesGridViewState
                   child: Icon(
                     Icons.close,
                     size: MediaQuery.of(context).size.width / 32,
-                    color: ColorUtil.searchBarBackgroundColor,
+                    color: ColorUtil.secondaryBackgroundColor,
                   ))))
     ]);
   }
@@ -648,7 +648,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                           ? Text(
                               "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
                               style:
-                                  TextUtil.base.NotoSansSC.w400.sp(14).blue2C)
+                                  TextUtil.base.NotoSansSC.w400.sp(14).primaryAction)
                           : Text(yyyymmddtexts[widget.typeNotifier.value],
                               style:
                                   TextUtil.base.NotoSansSC.w400.sp(14).grey89))
@@ -705,7 +705,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
         maxLines: 1,
-        style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
             hintText:
@@ -796,7 +796,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
         maxLines: 1,
-        style: TextUtil.base.NotoSansSC.w400.sp(14).blue2C,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
             hintText: isFocused ? "" : '请填写联系方式'),

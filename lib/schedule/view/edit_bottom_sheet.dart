@@ -236,7 +236,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.regular.white.sp(12)),
+                      style: TextUtil.base.PingFangSC.regular.reverse.sp(12)),
                 ),
                 SizedBox(width: 12.w),
               ],
@@ -244,7 +244,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor:ColorUtil.whiteFFColor),
+                    .copyWith(secondaryHeaderColor:ColorUtil.primaryBackgroundColor),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

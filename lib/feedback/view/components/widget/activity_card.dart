@@ -181,7 +181,7 @@ class _ActivityCardState extends State<ActivityCard> {
                     color: dark ? Colors.black38 : Colors.transparent,
                     child: Center(
                         child: Text('是未知领域！\n没有可跳转的网页喵(っ °Д °;)っ',
-                            style: TextUtil.base.white.w700.sp(17))),
+                            style: TextUtil.base.reverse.w700.sp(17))),
                   ),
                 )
               ],

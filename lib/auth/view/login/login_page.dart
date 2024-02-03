@@ -24,10 +24,10 @@ class LoginHomeWidget extends StatelessWidget {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "Welcome\n\n",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
                 TextSpan(
                     text: "微北洋",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w400.white),
+                    style: TextUtil.base.normal.NotoSansSC.sp(40).w400.reverse),
               ])),
             ),
             Spacer(
@@ -45,7 +45,7 @@ class LoginHomeWidget extends StatelessWidget {
                     child: Text.rich(TextSpan(
                         text: "登录",
                         style:
-                            TextUtil.base.bold.NotoSansSC.sp(16).w400.blue2C)),
+                            TextUtil.base.bold.NotoSansSC.sp(16).w400.primaryAction)),
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(0),
                       //水波纹颜色暂时没确定
@@ -57,7 +57,7 @@ class LoginHomeWidget extends StatelessWidget {
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
                       backgroundColor:
-                          MaterialStateProperty.all(ColorUtil.whiteFFColor),
+                          MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24))),
                     ),
@@ -73,7 +73,7 @@ class LoginHomeWidget extends StatelessWidget {
                     child: Text.rich(TextSpan(
                         text: "注册",
                         style:
-                            TextUtil.base.bold.NotoSansSC.sp(16).w400.blue2C)),
+                            TextUtil.base.bold.NotoSansSC.sp(16).w400.primaryAction)),
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.all(0),
                       overlayColor:
@@ -83,7 +83,7 @@ class LoginHomeWidget extends StatelessWidget {
                         return ColorUtil.blue98;
                       }),
                       backgroundColor:
-                          MaterialStateProperty.all(ColorUtil.whiteFFColor),
+                          MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                     ),
@@ -96,7 +96,7 @@ class LoginHomeWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                     text: "首次登录微北洋请使用天外天账号密码登录\n在登陆后绑定手机号码即可手机验证登录",
-                    style: TextUtil.base.normal.NotoSansSC.sp(12).w400.white)),
+                    style: TextUtil.base.normal.NotoSansSC.sp(12).w400.reverse)),
             Spacer(flex: 9),
           ],
         ),

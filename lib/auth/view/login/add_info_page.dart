@@ -185,7 +185,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: TextUtil.base.regular.white.sp(13)),
+                                style: TextUtil.base.regular.reverse.sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:
@@ -213,7 +213,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               child: ElevatedButton(
                 onPressed: _submit,
                 child: Text(S.current.login2,
-                    style: TextUtil.base.regular.white.sp(13)),
+                    style: TextUtil.base.regular.reverse.sp(13)),
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(5),
                   overlayColor:

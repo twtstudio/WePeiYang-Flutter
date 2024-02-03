@@ -129,7 +129,7 @@ class GPACurve extends StatefulWidget {
 
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
-  static const Color _popupCardPreview = ColorUtil.whiteFFColor;
+  static const Color _popupCardPreview = ColorUtil.primaryBackgroundColor;
   static const Color _popupTextPreview = ColorUtil.blue53;
   static late Color _popupCardColor;
   static late Color _popupTextColor;
@@ -343,7 +343,7 @@ class _GPACurvePainter extends CustomPainter {
 
   /// 在wpy_page显示的颜色
   static const Color _linePreview = ColorUtil.blue2CColor;
-  static const Color _pointPreview = ColorUtil.whiteFFColor;
+  static const Color _pointPreview = ColorUtil.primaryBackgroundColor;
 
   final Paint _linePaint;
   final Paint _pointPaint;

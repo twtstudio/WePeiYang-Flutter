@@ -34,7 +34,7 @@ class AcidCheckDialog extends Dialog {
                 width: 0.7.sw,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: ColorUtil.whiteFFColor,
+                  color: ColorUtil.primaryBackgroundColor,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,7 +64,7 @@ class AcidCheckDialog extends Dialog {
                     SizedBox(height: 10.w),
                     Text(
                       '${DateFormat('HH:mm').format(start.toLocal())} - ${DateFormat('HH:mm').format(end.toLocal())}',
-                      style: TextUtil.base.PingFangSC.blue2C.w500.sp(20),
+                      style: TextUtil.base.PingFangSC.primaryAction.w500.sp(20),
                     ),
                     SizedBox(height: 10.w),
                     ValueListenableBuilder(

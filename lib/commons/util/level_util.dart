@@ -70,7 +70,7 @@ class LevelProgress extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ColorUtil.blue2CColor, ColorUtil.whiteFFColor],
+            colors: [ColorUtil.blue2CColor, ColorUtil.primaryBackgroundColor],
             stops: [value, value]),
         borderRadius: BorderRadius.circular(5),
         boxShadow: [

@@ -73,7 +73,7 @@ class _LinkTextState extends State<LinkText> {
             return LakeDialogWidget(
                 title: '天外天工作室提示您',
                 titleTextStyle:
-                    TextUtil.base.normal.black4E.NotoSansSC.sp(22).w600,
+                    TextUtil.base.normal.infoText.NotoSansSC.sp(22).w600,
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -91,10 +91,10 @@ class _LinkTextState extends State<LinkText> {
                 ),
                 cancelText: "取消",
                 confirmTextStyle:
-                    TextUtil.base.normal.white.NotoSansSC.sp(16).w600,
+                    TextUtil.base.normal.reverse.NotoSansSC.sp(16).w600,
                 confirmButtonColor: checkBili(url)
                     ? ColorUtil.biliPink
-                    : ColorUtil.selectionButtonColor,
+                    : ColorUtil.primaryTextButtonColor,
                 cancelTextStyle:
                     TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
                 confirmText: "继续",

@@ -26,7 +26,7 @@ class _FeedbackBadgeWidgetState extends State<FeedbackBadgeWidget> {
               padding: EdgeInsets.all(4),
               child: Text(
                 count.toString(),
-                style: TextUtil.base.white.sp(7),
+                style: TextUtil.base.reverse.sp(7),
               ),
             ),
             child: widget.child,

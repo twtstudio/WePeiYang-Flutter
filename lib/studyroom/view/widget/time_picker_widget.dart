@@ -29,7 +29,7 @@ class TimePickerWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 '确定',
-                style: TextUtil.base.w400.PingFangSC.white.sp(14),
+                style: TextUtil.base.w400.PingFangSC.reverse.sp(14),
               ),
             ),
           )),
@@ -127,7 +127,7 @@ class _TableCalenderState extends State<_TableCalender>
         color: Theme.of(context).calenderSelectBackground,
         shape: BoxShape.circle,
       ),
-      selectedTextStyle: TextUtil.base.PingFangSC.w400.blue2C.sp(16),
+      selectedTextStyle: TextUtil.base.PingFangSC.w400.primaryAction.sp(16),
       todayDecoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).calenderTodayBorder,
@@ -239,7 +239,7 @@ class _TimeItem extends StatelessWidget {
     final text = Text(
       title,
       style: isChecked
-          ? TextUtil.base.PingFangSC.w400.blue2C.sp(12)
+          ? TextUtil.base.PingFangSC.w400.primaryAction.sp(12)
           : TextUtil.base.PingFangSC.w400.black2A.sp(12),
     );
 

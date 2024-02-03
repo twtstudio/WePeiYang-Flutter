@@ -17,7 +17,7 @@ class MessageDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             shape: BoxShape.rectangle,
-            color: ColorUtil.whiteFFColor),
+            color: ColorUtil.primaryBackgroundColor),
         child: Center(child: Text(data)),
       ),
     );

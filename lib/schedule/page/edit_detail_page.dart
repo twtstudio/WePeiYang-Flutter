@@ -119,7 +119,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 ),
               ),
               SizedBox(height: 25.h),
-              Text(text, style: TextUtil.base.PingFangSC.black00.medium.sp(15)),
+              Text(text, style: TextUtil.base.PingFangSC.primary.medium.sp(15)),
               SizedBox(height: 30.h),
               WbyDialogStandardTwoButton(
                 first: () {
@@ -173,10 +173,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Center(
             child: WButton(
               onPressed: () {
@@ -211,7 +211,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.bold.white.sp(12)),
+                      style: TextUtil.base.PingFangSC.bold.reverse.sp(12)),
                 ),
               ),
             ),
@@ -224,7 +224,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: ColorUtil.whiteFFColor),
+                    .copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,
@@ -305,7 +305,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                           height: 18.r, width: 18.r),
                       SizedBox(width: 5.w),
                       Text('删除',
-                          style: TextUtil.base.PingFangSC.medium.white.sp(14)),
+                          style: TextUtil.base.PingFangSC.medium.reverse.sp(14)),
                     ],
                   ),
                 ),

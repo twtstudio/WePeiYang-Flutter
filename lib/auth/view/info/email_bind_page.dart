@@ -56,7 +56,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     builder: (BuildContext context) => EmailUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: TextUtil.base.regular.white.sp(13)),
+                style: TextUtil.base.regular.reverse.sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -101,7 +101,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: TextUtil.base.regular.white.sp(13)),
+                  style: TextUtil.base.regular.reverse.sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:

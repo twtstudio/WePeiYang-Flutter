@@ -54,7 +54,7 @@ class _OpenBoxState extends State<OpenBox> {
                   .blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.whiteFFColor,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
@@ -106,7 +106,7 @@ class _OpenBoxState extends State<OpenBox> {
       child: SizedBox(
         width: double.infinity,
         child: Text(src + ': ' + content,
-            style: TextUtil.base.black00.w400.sp(20).h(2).ProductSans),
+            style: TextUtil.base.primary.w400.sp(20).h(2).ProductSans),
       ),
       onPressed: () async {
         if (src == '归属地') {

@@ -134,7 +134,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                             content: Text('这将清除所有的消息提醒'),
                             cancelText: "取消",
                             confirmTextStyle: TextUtil
-                                .base.normal.white.PingFangSC
+                                .base.normal.reverse.PingFangSC
                                 .sp(16)
                                 .w600,
                             cancelTextStyle: TextUtil
@@ -152,7 +152,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                               setState(() {});
                               Navigator.pop(context);
                             },
-                            confirmButtonColor: ColorUtil.selectionButtonColor,
+                            confirmButtonColor: ColorUtil.primaryTextButtonColor,
                           );
                         });
                   })
@@ -233,7 +233,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: Text('湖底通知'),
                   badgeContent: Text(
                     count.toString(),
-                    style: TextUtil.base.white.sp(8),
+                    style: TextUtil.base.reverse.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -260,7 +260,7 @@ class _MessageTabState extends State<MessageTab> {
                   child: tab,
                   badgeContent: Text(
                     count.toString(),
-                    style: TextUtil.base.white.sp(8),
+                    style: TextUtil.base.reverse.sp(8),
                   )),
           SizedBox(width: _tabPaddingWidth),
         ],
@@ -485,11 +485,11 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               children: [
                 Text(
                   '共计 ${widget.data.type == 1 ? widget.data.floor.likeCount : widget.data.post.likeCount}名用户 ',
-                  style: TextUtil.base.black00.bold.sp(16).PingFangSC,
+                  style: TextUtil.base.primary.bold.sp(16).PingFangSC,
                 ),
                 Text(
                   '为你点赞',
-                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
+                  style: TextUtil.base.primary.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
@@ -829,13 +829,13 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   constraints: BoxConstraints(maxWidth: 0.3.sw),
                   child: Text(
                     widget.data.floor.nickname + ' ',
-                    style: TextUtil.base.black00.bold.sp(16).PingFangSC,
+                    style: TextUtil.base.primary.bold.sp(16).PingFangSC,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
                   widget.data.type == 0 ? '回复了你的冒泡' : '回复了你的评论',
-                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
+                  style: TextUtil.base.primary.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
@@ -1040,12 +1040,12 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
               if (widget.data.floor.content != '')
                 Text(
                   widget.data.floor.content,
-                  style: TextUtil.base.sp(14).PingFangSC.w400.black00,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.primary,
                 ),
               if (widget.data.floor.imageUrl != '')
                 Text(
                   '[图片]',
-                  style: TextUtil.base.sp(14).PingFangSC.w400.black00,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.primary,
                 ),
               SizedBox(height: 8.w),
               messageWrapper ?? questionItem,
@@ -1226,11 +1226,11 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
               children: [
                 Text(
                   '官方部门 ',
-                  style: TextUtil.base.black00.bold.sp(16).PingFangSC,
+                  style: TextUtil.base.primary.bold.sp(16).PingFangSC,
                 ),
                 Text(
                   '回复了你的问题',
-                  style: TextUtil.base.black00.w400.sp(16).PingFangSC,
+                  style: TextUtil.base.primary.w400.sp(16).PingFangSC,
                 ),
               ],
             ),
@@ -1357,7 +1357,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
               SizedBox(height: 7.w),
               Text(
                 widget.data.reply.content,
-                style: TextUtil.base.sp(14).PingFangSC.w400.black00,
+                style: TextUtil.base.sp(14).PingFangSC.w400.primary,
               ),
               SizedBox(height: 8.w),
               messageWrapper ?? questionItem,
@@ -1382,7 +1382,7 @@ extension StringExtension on String {
 class CustomIndicator extends Decoration {
   const CustomIndicator({
     this.left = false,
-    this.borderSide = const BorderSide(width: 2, color: ColorUtil.whiteFFColor),
+    this.borderSide = const BorderSide(width: 2, color: ColorUtil.primaryBackgroundColor),
     this.insets = EdgeInsets.zero,
   });
 

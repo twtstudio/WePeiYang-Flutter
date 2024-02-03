@@ -42,7 +42,7 @@ class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
-      backgroundColor: ColorUtil.whiteFFColor,
+      backgroundColor: ColorUtil.primaryBackgroundColor,
       elevation: 0,
       leading: WButton(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
@@ -148,7 +148,7 @@ class _ExamPageState extends State<ExamPage> {
               children: [
                 DefaultTextStyle(
                   style: TextStyle(
-                      color: finished ? ColorUtil.hintWhite205 : ColorUtil.whiteFFColor),
+                      color: finished ? ColorUtil.hintWhite205 : ColorUtil.primaryBackgroundColor),
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -171,7 +171,7 @@ class _ExamPageState extends State<ExamPage> {
                                 size: 17.r,
                                 color: finished
                                     ? ColorUtil.hintWhite205
-                                    : ColorUtil.whiteFFColor),
+                                    : ColorUtil.primaryBackgroundColor),
                             SizedBox(width: 3.w),
                             Text('${exam.location}-$seat',
                                 overflow: TextOverflow.ellipsis,

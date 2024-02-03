@@ -20,7 +20,7 @@ class WikiPage extends StatelessWidget {
         return !flag;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.whiteFFColor,
+        backgroundColor: ColorUtil.primaryBackgroundColor,
         appBar: AppBar(
             title: Text(S.current.wiki,
                 style: TextUtil.base.bold
@@ -28,12 +28,12 @@ class WikiPage extends StatelessWidget {
                     .customColor(ColorUtil.blue52hz)),
             elevation: 0,
             centerTitle: true,
-            backgroundColor: ColorUtil.whiteFFColor,
+            backgroundColor: ColorUtil.primaryBackgroundColor,
             leading: Padding(
               padding: const EdgeInsets.only(left: 15),
               child: WButton(
                   child: Icon(Icons.arrow_back,
-                      color: ColorUtil.mainColor, size: 32),
+                      color: ColorUtil.defaultActionColor, size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
         body: WebView(
