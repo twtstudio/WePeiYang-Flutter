@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -270,7 +271,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     // Widget? widget,
   ) async {
     ToastProvider.running("生成截图中");
-    final dir = (await getTemporaryDirectory()).path;
+    final dir = StorageUtil.tempDir.path;
     final fullPath = path.join(dir, name);
     await _controller.captureAndSave(dir,
         fileName: name, delay: Duration(seconds: 1));
