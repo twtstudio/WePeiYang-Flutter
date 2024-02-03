@@ -58,7 +58,7 @@ class MainPageStudyRoomWidget extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.only(left: 8.w))),
             icon: Text(
               context.watch<CampusProvider>().name,
-              style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
+              style: TextUtil.base.PingFangSC.label.bold.sp(14),
             ),
             label: SvgPicture.asset(
               StudyroomImages.direction,

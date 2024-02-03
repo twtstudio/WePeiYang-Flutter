@@ -58,7 +58,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextStyle().black2A.NotoSansSC.w400.sp(15),
+                    style: TextStyle().label.NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
                       hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null

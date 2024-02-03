@@ -13,7 +13,7 @@ class ClassesNeedVPNDialog extends Dialog {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         padding: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white251),
+            borderRadius: BorderRadius.circular(10), color: ColorUtil.reverseTextColor),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -24,17 +24,17 @@ class ClassesNeedVPNDialog extends Dialog {
                 Icon(
                   Icons.notifications_none,
                   size: 23,
-                  color: ColorUtil.blue98,
+                  color: ColorUtil.oldThirdActionColor,
                 ),
                 SizedBox(width: 3),
-                Text('通知', style: TextUtil.base.bold.noLine.sp(18).blue98)
+                Text('通知', style: TextUtil.base.bold.noLine.sp(18).oldThirdAction)
               ],
             ),
             SizedBox(height: 10),
             Text(
                 '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
                 '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
-                style: TextUtil.base.regular.noLine.sp(14).blue98),
+                style: TextUtil.base.regular.noLine.sp(14).oldThirdAction),
             SizedBox(height: 15),
             Divider(height: 1, color: ColorUtil.grey172),
             WButton(
@@ -43,7 +43,7 @@ class ClassesNeedVPNDialog extends Dialog {
                 decoration: BoxDecoration(),
                 padding: const EdgeInsets.all(12),
                 child: Text(S.current.ok,
-                    style: TextUtil.base.bold.noLine.sp(16).blue98),
+                    style: TextUtil.base.bold.noLine.sp(16).oldThirdAction),
               ),
             ),
           ],

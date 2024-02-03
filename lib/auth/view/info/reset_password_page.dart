@@ -50,8 +50,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleStyle = TextUtil.base.bold.sp(14.5).blue98;
-    var hintStyle = TextUtil.base.w400.sp(13).whiteHint205;
+    var titleStyle = TextUtil.base.bold.sp(14.5).oldThirdAction;
+    var hintStyle = TextUtil.base.w400.sp(13).oldHintWhite;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -64,7 +64,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
@@ -191,11 +191,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
-                        return ColorUtil.blue103;
-                      return ColorUtil.blue53;
+                        return ColorUtil.oldActionRippleColor;
+                      return ColorUtil.oldActionColor;
                     }),
                     backgroundColor:
-                        MaterialStateProperty.all(ColorUtil.blue53),
+                        MaterialStateProperty.all(ColorUtil.oldActionColor),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30))),
                   ),

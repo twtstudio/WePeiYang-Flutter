@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 class FindPwDialog extends Dialog {
-  static final _hintStyle = TextUtil.base.w600.noLine.sp(13).blue79;
+  static final _hintStyle = TextUtil.base.w600.noLine.sp(13).oldSecondaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,8 @@ class FindPwDialog extends Dialog {
         width: WePeiYangApp.screenWidth - 40,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.primaryBackgroundColor),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

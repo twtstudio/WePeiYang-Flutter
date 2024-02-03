@@ -112,7 +112,7 @@ const StudyRoomGray8 = Color(0xff363c54);
 const StudyRoomGray9 = Color(0xff7a7d89);
 const StudyRoomPurple = Color(0xff303c66);
 const StudyRoomPurple2 = Color(0xff3d486c);
-const StudyRoomBlue = ColorUtil.blue2CColor;
+const StudyRoomBlue = ColorUtil.primaryActionColor;
 
 const List<Color> roomPlanItems = [
   Color.fromRGBO(114, 117, 136, 1), // #727588

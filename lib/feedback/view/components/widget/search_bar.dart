@@ -138,7 +138,7 @@ class _SearchBarState extends State<SearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextUtil.base.black2A.NotoSansSC.w400.sp(15),
+                    style: TextUtil.base.label.NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
                       hintStyle: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
@@ -260,7 +260,7 @@ class _SearchBarState extends State<SearchBar>
                         ),
                         boxShadow: [
                           BoxShadow(
-                              color: ColorUtil.black12,
+                              color: ColorUtil.iconAnimationStartColor,
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度

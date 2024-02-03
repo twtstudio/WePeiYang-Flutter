@@ -31,7 +31,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = ColorUtil.black12;
+    final Color _color = ColorUtil.iconAnimationStartColor;
     return SizedBox(
       height: 130,
       child: WButton(
@@ -51,7 +51,7 @@ class GameCard extends StatelessWidget {
                     width: WePeiYangApp.screenWidth - 160,
                     child: Text(
                       this.title,
-                      style: TextUtil.base.w600.black2A.NotoSansSC.sp(18),
+                      style: TextUtil.base.w600.label.NotoSansSC.sp(18),
                       maxLines: 3,
                     )),
                 Container(

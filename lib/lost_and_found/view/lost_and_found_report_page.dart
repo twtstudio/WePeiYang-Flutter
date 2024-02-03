@@ -54,7 +54,7 @@ class LostAndFoundReportPage extends StatelessWidget {
                   width: 80.w,
                   height: 32.h,
                   decoration: BoxDecoration(
-                    color: ColorUtil.blue2CColor,
+                    color: ColorUtil.primaryActionColor,
                     borderRadius: BorderRadius.circular(30.r),
                   ),
                   child: Center(

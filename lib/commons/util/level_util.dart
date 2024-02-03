@@ -28,7 +28,7 @@ class LevelUtil extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: double.parse(level) == 0
-                ? [ColorUtil.black26, ColorUtil.black26]
+                ? [ColorUtil.dislikeSecondary, ColorUtil.dislikeSecondary]
                 : [
                     double.parse(level) >= 0
                         ? colors[(double.parse(level) / 10).floor() % 10]
@@ -70,7 +70,7 @@ class LevelProgress extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ColorUtil.blue2CColor, ColorUtil.primaryBackgroundColor],
+            colors: [ColorUtil.primaryActionColor, ColorUtil.primaryBackgroundColor],
             stops: [value, value]),
         borderRadius: BorderRadius.circular(5),
         boxShadow: [

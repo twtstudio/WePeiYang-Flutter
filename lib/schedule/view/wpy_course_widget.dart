@@ -68,7 +68,7 @@ class TodayCoursesWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
-              color: ColorUtil.black12,
+              color: ColorUtil.iconAnimationStartColor,
               borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
@@ -79,7 +79,7 @@ class TodayCoursesWidget extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: ColorUtil.black26,
+                splashColor: ColorUtil.dislikeSecondary,
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(

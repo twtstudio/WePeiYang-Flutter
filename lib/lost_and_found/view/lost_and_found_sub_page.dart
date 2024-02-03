@@ -443,7 +443,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                       child: Text(
                                           tuple.item1[index].title,
                                           style: TextUtil
-                                              .base.w600.black2A
+                                              .base.w600.label
                                               .sp(15)
                                               .NotoSansSC),
                                     ),
@@ -568,7 +568,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                     context
                         .read<LostAndFoundModel>()
                         .currentCategory[widget.type]
-                ? ColorUtil.blue2CColor.withOpacity(0.1)
+                ? ColorUtil.primaryActionColor.withOpacity(0.1)
                 : ColorUtil.whiteF8Color,
           ),
           child: Center(
@@ -578,7 +578,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                             .read<LostAndFoundModel>()
                             .currentCategory[widget.type]
                     ? TextUtil.base.normal.PingFangSC.w400.sp(10.sp).primaryAction
-                    : TextUtil.base.normal.PingFangSC.w400.sp(10.sp).black2A),
+                    : TextUtil.base.normal.PingFangSC.w400.sp(10.sp).label),
           ),
         ),
       ),

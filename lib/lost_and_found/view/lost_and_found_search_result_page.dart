@@ -285,7 +285,7 @@ class _LostAndFoundSearchResultPageState
                                   start: 12.w, end: 12.w),
                               child: Text(
                                 postList[index].title,
-                                style: TextUtil.base.w600.black2A
+                                style: TextUtil.base.w600.label
                                     .sp(15)
                                     .NotoSansSC,
                               ),

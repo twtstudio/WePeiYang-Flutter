@@ -16,10 +16,10 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98;
-  static final hintTextStyle = TextUtil.base.w600.sp(12).whiteHint205;
+  static final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction;
+  static final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
+      Icon(Icons.arrow_forward_ios, color: ColorUtil.oldListActionColor, size: 22);
 
   @override
   Widget build(BuildContext context) {

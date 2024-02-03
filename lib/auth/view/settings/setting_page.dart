@@ -25,10 +25,10 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static final mainTextStyle = TextUtil.base.bold.sp(14).blue98122;
-  static final hintTextStyle = TextUtil.base.bold.sp(12).grey177;
+  static final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction;
+  static final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle;
   static const arrow =
-      Icon(Icons.arrow_forward_ios, color: ColorUtil.grey, size: 22);
+      Icon(Icons.arrow_forward_ios, color: ColorUtil.oldListActionColor, size: 22);
   String md = '';
   String iosLocalVersion = '';
 
@@ -58,7 +58,7 @@ class _SettingPageState extends State<SettingPage> {
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
-            child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+            child: Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),

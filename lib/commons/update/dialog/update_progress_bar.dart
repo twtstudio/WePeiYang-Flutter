@@ -83,7 +83,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       Rect rect = Rect.fromPoints(start, valueEnd);
       p.shader =
           LinearGradient(colors: colors).createShader(rect);
-      p.color =ColorUtil.amber ;
+      p.color =ColorUtil.FavorBubbleStartColor ;
       canvas.drawLine(start, valueEnd, p);
     }
   }

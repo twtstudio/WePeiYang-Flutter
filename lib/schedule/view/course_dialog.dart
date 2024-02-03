@@ -16,7 +16,7 @@ void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: ColorUtil.black26,
+        barrierColor: ColorUtil.dislikeSecondary,
         builder: (BuildContext context) => CourseDialog(pairs));
 
 class CourseDialog extends Dialog {

@@ -77,7 +77,7 @@ class WpyExamWidget extends StatelessWidget {
                         children: [
                           Text(
                             exam.name,
-                            style: TextUtil.base.PingFangSC.black2A.bold.sp(14),
+                            style: TextUtil.base.PingFangSC.label.bold.sp(14),
                           ),
                           SizedBox(height: 5.h),
                           Row(
@@ -87,7 +87,7 @@ class WpyExamWidget extends StatelessWidget {
                               SizedBox(width: 8.w),
                               Text(
                                 '${exam.location}-$seat',
-                                style: TextUtil.base.PingFangSC.normal.black2A
+                                style: TextUtil.base.PingFangSC.normal.label
                                     .sp(12),
                               ),
                             ],

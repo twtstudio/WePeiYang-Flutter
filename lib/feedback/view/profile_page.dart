@@ -166,8 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style:
-                                  TextUtil.base.ProductSans.reverse.w700.sp(20))),
+                              style: TextUtil.base.ProductSans.reverse.w700
+                                  .sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
                         width: 44,

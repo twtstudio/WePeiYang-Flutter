@@ -144,7 +144,7 @@ class LostAndFoundAppBar extends StatelessWidget
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [ColorUtil.blue2CColor, ColorUtil.blue64Color]),
+              colors: [ColorUtil.primaryActionColor, ColorUtil.blue64Color]),
         ),
         child: Stack(
           children: [

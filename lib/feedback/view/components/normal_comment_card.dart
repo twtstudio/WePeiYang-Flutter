@@ -82,8 +82,8 @@ class _NCommentCardState extends State<NCommentCard>
           title: '$quote评论',
           content: Text('您确定要$quote这条评论吗？'),
           cancelText: "取消",
-          confirmTextStyle: TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
-          cancelTextStyle: TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+          confirmTextStyle: TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
+          cancelTextStyle: TextUtil.base.normal.label.NotoSansSC.sp(16).w600,
           confirmText: quote == '摧毁' ? 'BOOM' : "确认",
           cancelFun: () {
             Navigator.of(context).pop();
@@ -320,7 +320,7 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.comment.nickname,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).black2A,
+                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).label,
                 ),
               ),
               Padding(
@@ -369,7 +369,7 @@ class _NCommentCardState extends State<NCommentCard>
                             : widget.comment.replyToName.length > 8
                                 ? "${widget.comment.replyToName.substring(0, 7)}..."
                                 : widget.comment.replyToName,
-                        style: TextUtil.base.w700.NotoSansSC.sp(16).black2A,
+                        style: TextUtil.base.w700.NotoSansSC.sp(16).label,
                       ),
                     ),
                     SizedBox(width: 2)
@@ -424,7 +424,7 @@ class _NCommentCardState extends State<NCommentCard>
             child: ExpandableText(
               text: widget.comment.content,
               maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-              style: TextUtil.base.w400.NotoSansSC.black2A.h(1.8).sp(14),
+              style: TextUtil.base.w400.NotoSansSC.label.h(1.8).sp(14),
               expand: false || widget.expandAll,
               buttonIsShown: true,
               isHTML: false,
@@ -641,7 +641,7 @@ class _NCommentCardState extends State<NCommentCard>
                 : DateTime.now()
                     .difference(widget.comment.createAt!)
                     .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans.grey97.regular
+            style: TextUtil.base.ProductSans.secondaryInfo.regular
                 .sp(12)
                 .space(letterSpacing: 0.6),
           ),
@@ -794,7 +794,7 @@ class AdminPopUpState extends State<AdminPopUp> {
             SizedBox(height: 4),
             Center(
                 child: Text("评论置顶",
-                    style: TextUtil.base.NotoSansSC.w500.sp(16).black2A)),
+                    style: TextUtil.base.NotoSansSC.w500.sp(16).label)),
             SizedBox(
               height: 20,
             ),
@@ -803,7 +803,7 @@ class AdminPopUpState extends State<AdminPopUp> {
               decoration: InputDecoration(
                   hintMaxLines: 2,
                   hintText: "评论置顶值，0-3000，0为取消置顶",
-                  hintStyle: TextUtil.base.black2A.bold.w500.sp(14),
+                  hintStyle: TextUtil.base.label.bold.w500.sp(14),
                   filled: true,
                   fillColor: ColorUtil.white235,
                   isCollapsed: true,
@@ -831,7 +831,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   ),
                 ),
                 child: Text("确认",
-                    style: TextUtil.base.NotoSansSC.w500.sp(14).black2A),
+                    style: TextUtil.base.NotoSansSC.w500.sp(14).label),
               ),
             )
           ]),

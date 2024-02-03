@@ -26,7 +26,7 @@ class BuildingGridViewWidget extends StatelessWidget {
               if (data.buildings.isEmpty) {
                 return Center(
                   child: Text('暂无数据',
-                      style: TextUtil.base.PingFangSC.black2A.sp(14)),
+                      style: TextUtil.base.PingFangSC.label.sp(14)),
                 );
               }
 

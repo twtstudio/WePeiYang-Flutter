@@ -183,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
                 elevation: 1,
                 backgroundColor: ColorUtil.white234,
                 label: Text(list[list.length - index - 1],
-                    style: TextUtil.base.normal.black2A.NotoSansSC.sp(16)),
+                    style: TextUtil.base.normal.label.NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
                     color: ColorUtil.secondaryTextColor, size: 16),
                 onDeleted: () {
@@ -233,12 +233,12 @@ class _SearchPageState extends State<SearchPage> {
               title: '清除记录',
               confirmButtonColor: ColorUtil.primaryTextButtonColor,
               titleTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+                  TextUtil.base.normal.label.NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
                   TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
               cancelFun: () {
                 Navigator.pop(context);

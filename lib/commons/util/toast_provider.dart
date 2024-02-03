@@ -79,7 +79,7 @@ class ToastProvider with AsyncTimer {
       child: Container(
         padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
         decoration: BoxDecoration(
-          color: ColorUtil.red,
+          color: ColorUtil.dangerousRed,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

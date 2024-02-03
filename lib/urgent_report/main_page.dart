@@ -1108,7 +1108,7 @@ class StateItem extends StatelessWidget {
             ? BoxDecoration(
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(itemHeight / 2),
-                color: ColorUtil.blue2CColor)
+                color: ColorUtil.primaryActionColor)
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(itemHeight / 2),
                 border: Border.all(color: Color(0XFF62677B), width: 1)),
@@ -1158,7 +1158,7 @@ class _ReportButtonState extends State<ReportButton> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(height / 2))),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.blue2CColor),
+                    MaterialStateProperty.all(ColorUtil.primaryActionColor),
                 minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
         ],

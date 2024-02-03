@@ -16,14 +16,14 @@ class LakePrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = ColorUtil.blue98;
+    var textColor = ColorUtil.oldThirdActionColor;
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(
           horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: ColorUtil.white251),
+          borderRadius: BorderRadius.circular(10), color: ColorUtil.reverseTextColor),
       child: Column(
         children: [
           Expanded(
@@ -275,7 +275,7 @@ class LakePrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text(S.current.ok,
-              style: TextUtil.base.bold.noLine.sp(16).blue98),
+              style: TextUtil.base.bold.noLine.sp(16).oldThirdAction),
         ),
       );
     } else {
@@ -301,7 +301,7 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).blue98),
+              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).oldThirdAction),
             ),
           ),
         ],

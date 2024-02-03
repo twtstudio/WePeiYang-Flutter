@@ -186,12 +186,12 @@ class LAFWeKoDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50.w),
                 child: Text('有人给你分享了微口令!',
-                    style: TextUtil.base.black2A.regular.sp(16).NotoSansSC),
+                    style: TextUtil.base.label.regular.sp(16).NotoSansSC),
               ),
               Padding(
                 padding: EdgeInsets.all(20.r),
                 child: Text(post.title,
-                    style: TextUtil.base.black2A.bold.sp(17).NotoSansSC),
+                    style: TextUtil.base.label.bold.sp(17).NotoSansSC),
               ),
               if (post.coverPhotoPath != null)
                 WpyPic(
@@ -216,7 +216,7 @@ class LAFWeKoDialog extends StatelessWidget {
                   overlayColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return ColorUtil.blue79;
+                      return ColorUtil.oldSecondaryActionColor;
                     return ColorUtil.secondaryBackgroundColor;
                   }),
                   backgroundColor:
@@ -228,7 +228,7 @@ class LAFWeKoDialog extends StatelessWidget {
                   margin: EdgeInsets.all(7.r),
                   child: Text(
                     '查看详情',
-                    style: TextUtil.base.black2A.regular.sp(16).NotoSansSC,
+                    style: TextUtil.base.label.regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),

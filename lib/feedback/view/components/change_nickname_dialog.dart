@@ -28,7 +28,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
     return LakeDialogWidget(
       title: '修改你的昵称',
       titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary,
-      confirmButtonColor: ColorUtil.blue2CColor,
+      confirmButtonColor: ColorUtil.primaryActionColor,
       confirmFun: () {
         if (_textEditingController.text == "") {
           ToastProvider.error('昵称不能为空喵');

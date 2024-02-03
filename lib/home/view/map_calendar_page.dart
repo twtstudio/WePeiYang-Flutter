@@ -35,7 +35,7 @@ class MapCalenderState extends State<MapCalendarPage> {
           centerTitle: true,
           title: Text(
             '地图·校历',
-            style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
+            style: TextUtil.base.NotoSansSC.label.w600.sp(18),
           ),
           elevation: 0,
         ),

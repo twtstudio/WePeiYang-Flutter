@@ -58,7 +58,7 @@ class TimeFrameWidget extends StatelessWidget {
           Row(
             children: [
               Text('time frame ${index + 1}',
-                  style: TextUtil.base.Swis.medium.black2A.sp(16)),
+                  style: TextUtil.base.Swis.medium.label.sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
               WButton(
@@ -75,7 +75,7 @@ class TimeFrameWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
-                          ? ColorUtil.blue2CColor
+                          ? ColorUtil.primaryActionColor
                           : ColorUtil.primaryBackgroundColor),
                 ),
               ),
@@ -83,7 +83,7 @@ class TimeFrameWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Text('周数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+              Text('周数：', style: TextUtil.base.PingFangSC.bold.label.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -131,7 +131,7 @@ class TimeFrameWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Text('节数：', style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+              Text('节数：', style: TextUtil.base.PingFangSC.bold.label.sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -233,7 +233,7 @@ class InputWidget extends StatelessWidget {
         children: [
           if (title != null)
             Text('$title：',
-                style: TextUtil.base.PingFangSC.bold.black2A.sp(14)),
+                style: TextUtil.base.PingFangSC.bold.label.sp(14)),
           Expanded(
             child: TextField(
               focusNode: focusNode,
@@ -242,8 +242,8 @@ class InputWidget extends StatelessWidget {
               keyboardType: keyboardType,
               inputFormatters: inputFormatter,
               textAlign: TextAlign.end,
-              style: TextUtil.base.PingFangSC.medium.black2A.sp(16),
-              cursorColor: ColorUtil.blue2CColor,
+              style: TextUtil.base.PingFangSC.medium.label.sp(16),
+              cursorColor: ColorUtil.primaryActionColor,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -555,7 +555,7 @@ class WeekPicker extends Dialog {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: index == _weekTypes.indexOf(type)
-                                ? ColorUtil.blue2CColor
+                                ? ColorUtil.primaryActionColor
                                 : ColorUtil.whiteF8Color,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),

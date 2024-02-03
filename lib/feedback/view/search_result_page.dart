@@ -170,7 +170,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   curve: Curves.easeInOut);
           },
           child: Center(
-            child: Text(title, style: TextUtil.base.bold.black2A.sp(16)),
+            child: Text(title, style: TextUtil.base.bold.label.sp(16)),
           ),
         ),
         actions: [
@@ -241,10 +241,10 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                   },
                                   child: Text('发帖时间正序',
                                       style: searchMode == 0
-                                          ? TextUtil.base.black2A.w700
+                                          ? TextUtil.base.label.w700
                                               .sp(14)
                                               .primaryAction
-                                          : TextUtil.base.black2A.w500.sp(14)),
+                                          : TextUtil.base.label.w500.sp(14)),
                                 ),
                                 const SizedBox(width: 15),
                                 WButton(
@@ -254,10 +254,10 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                   },
                                   child: Text('更新时间正序',
                                       style: searchMode == 1
-                                          ? TextUtil.base.black2A.w700
+                                          ? TextUtil.base.label.w700
                                               .sp(14)
                                               .primaryAction
-                                          : TextUtil.base.black2A.w500.sp(14)),
+                                          : TextUtil.base.label.w500.sp(14)),
                                 ),
                                 Spacer(),
                                 const SizedBox(width: 15),

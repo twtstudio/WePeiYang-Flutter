@@ -39,20 +39,20 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
 
   static final TextStyle _hintStyle = TextUtil.base.regular
       .sp(13)
-      .whiteHint201;
+      .oldHintDarker;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.reverseTextColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.blue98, size: 35),
+                    color: ColorUtil.oldThirdActionColor, size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -61,7 +61,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             child: Text(S.current.find_password_title,
                 style: TextUtil.base.bold
                     .sp(16)
-                    .blue98),
+                    .oldThirdAction),
           ),
           SizedBox(height: 30),
           Padding(

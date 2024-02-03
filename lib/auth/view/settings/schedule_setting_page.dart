@@ -44,8 +44,8 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   }
 
   Widget _getNumberOfDaysCard(BuildContext context, int index) {
-    var hintTextStyle = TextUtil.base.regular.sp(12).whiteHint205;
-    var mainTextStyle = TextUtil.base.regular.sp(16.5).blue98122;
+    var hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
+    var mainTextStyle = TextUtil.base.regular.sp(16.5).oldThirdAction;
     return InkWell(
       onTap: () {
         setState(() => _index = index);
@@ -83,13 +83,13 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.reverseTextColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: ListView(
@@ -99,7 +99,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
             child: Text(
               "${S.current.schedule}-${S.current.setting_day_number}",
-              style: TextUtil.base.bold.sp(28).blue48,
+              style: TextUtil.base.bold.sp(28).oldFurthAction,
             ),
           ),
           Container(
@@ -107,7 +107,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             alignment: Alignment.centerLeft,
             child: Text(
               S.current.setting_day_number_hint,
-              style: TextUtil.base.regular.sp(11.5).blue98,
+              style: TextUtil.base.regular.sp(11.5).oldThirdAction,
             ),
           ),
           Card(

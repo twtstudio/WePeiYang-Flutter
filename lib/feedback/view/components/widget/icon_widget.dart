@@ -27,28 +27,28 @@ extension IconTypeExt on IconType {
   double get size => [15.w, 22.w, 15.w, 22.w][index];
 
   CircleColor get circleColor => [
-        CircleColor(start: ColorUtil.black12, end: ColorUtil.redAccent),
-        CircleColor(start: ColorUtil.black12, end: ColorUtil.redAccent),
-        CircleColor(start: ColorUtil.black12, end: ColorUtil.yellow),
-        CircleColor(start: ColorUtil.black12, end: ColorUtil.yellow),
+        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.likeColor),
+        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.likeColor),
+        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.FavorColor),
+        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.FavorColor),
       ][index];
 
   BubblesColor get bubblesColor => [
         BubblesColor(
-          dotPrimaryColor: ColorUtil.redAccent,
-          dotSecondaryColor: ColorUtil.pinkAccent,
+          dotPrimaryColor: ColorUtil.likeColor,
+          dotSecondaryColor: ColorUtil.likeBubbleColor,
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.redAccent,
-          dotSecondaryColor: ColorUtil.pinkAccent,
+          dotPrimaryColor: ColorUtil.likeColor,
+          dotSecondaryColor: ColorUtil.likeBubbleColor,
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.amber,
-          dotSecondaryColor: ColorUtil.amberAccent,
+          dotPrimaryColor: ColorUtil.FavorBubbleStartColor,
+          dotSecondaryColor: ColorUtil.FavorBubbleColor,
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.amber,
-          dotSecondaryColor: ColorUtil.amberAccent,
+          dotPrimaryColor: ColorUtil.FavorBubbleStartColor,
+          dotSecondaryColor: ColorUtil.FavorBubbleColor,
         ),
       ][index];
 
@@ -126,7 +126,7 @@ class _IconWidgetState extends State<IconWidget> {
         builder: (_, int value, __) {
           return Text(
             value.toString() + (value < 100 ? '   ' : ' '),
-            style: TextUtil.base.black2A.bold.ProductSans
+            style: TextUtil.base.label.bold.ProductSans
                 .sp(widget.iconType.textSize),
           );
         });
@@ -176,10 +176,10 @@ class DislikeWidget extends StatelessWidget {
           isLiked: value,
           // end的值是Colors.blue[200]
           circleColor:
-              CircleColor(start: ColorUtil.black12, end:ColorUtil.blue90Color ),
+              CircleColor(start: ColorUtil.iconAnimationStartColor, end:ColorUtil.blue90Color ),
           bubblesColor: BubblesColor(
-            dotPrimaryColor: ColorUtil.blueGrey,
-            dotSecondaryColor: ColorUtil.black26,
+            dotPrimaryColor: ColorUtil.dislikePrimary,
+            dotSecondaryColor: ColorUtil.dislikeSecondary,
           ),
           animationDuration: Duration(milliseconds: 600),
         );

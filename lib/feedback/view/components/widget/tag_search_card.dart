@@ -124,7 +124,7 @@ class _SearchTagCardState extends State<SearchTagCard>
                         width: ScreenUtil().setWidth(230),
                         child: Text(
                           "添加“${_controller.text}”话题",
-                          style: TextUtil.base.w400.NotoSansSC.sp(16).black2A,
+                          style: TextUtil.base.w400.NotoSansSC.sp(16).label,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         )),
@@ -175,12 +175,12 @@ class _SearchTagCardState extends State<SearchTagCard>
           "assets/svg_pics/lake_butt_icons/hashtag.svg",
           width: 14,
           color: _controller.text == ''
-              ? ColorUtil.grey97Color
+              ? ColorUtil.unlabeledColor
               : ColorUtil.defaultActionColor,
         ),
-        labelStyle: TextUtil.base.black2A.NotoSansSC.w400.sp(16),
-        fillColor: ColorUtil.whiteFDFE,
-        hintStyle: TextUtil.base.grey97.NotoSansSC.w400.sp(16),
+        labelStyle: TextUtil.base.label.NotoSansSC.w400.sp(16),
+        fillColor: ColorUtil.primaryBackgroundColor,
+        hintStyle: TextUtil.base.secondaryInfo.NotoSansSC.w400.sp(16),
         hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(

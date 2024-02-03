@@ -62,7 +62,7 @@ class WbyWebViewState extends State<WbyWebView> {
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: ColorUtil.blue53, size: 32),
+                color: ColorUtil.oldActionColor, size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),

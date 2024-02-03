@@ -236,7 +236,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   Text(
                     '重置昵称',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).black2A,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
                   ),
                 ],
               ),
@@ -265,7 +265,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   Text(
                     '重置头像',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).black2A,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
                   ),
                 ],
               ),
@@ -280,7 +280,7 @@ class _PersonPageState extends State<PersonPage> {
                   Icon(Icons.person_search_rounded),
                   Text(
                     '开盒',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).black2A,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
                   ),
                 ],
               ),
@@ -361,9 +361,9 @@ class _PersonPageState extends State<PersonPage> {
               content: Text('您确定要重置该用户$quote吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.label.NotoSansSC.sp(16).w600,
               confirmText: '确认',
               cancelFun: () {
                 Navigator.of(context).pop();

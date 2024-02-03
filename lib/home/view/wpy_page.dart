@@ -382,14 +382,14 @@ class SliverCardsWidget extends StatelessWidget {
                 width: 70.w,
                 child: Text(bean.eng,
                     maxLines: 2,
-                    style: TextUtil.base.w500.black2A.sp(12).w400,
+                    style: TextUtil.base.w500.label.sp(12).w400,
                     overflow: TextOverflow.ellipsis),
               ),
               SizedBox(
                 width: 70.w,
                 child: Text(bean.label,
                     maxLines: 2,
-                    style: TextUtil.base.w400.black2A.sp(12).medium),
+                    style: TextUtil.base.w400.label.sp(12).medium),
               ),
             ],
           )

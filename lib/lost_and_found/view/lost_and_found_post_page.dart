@@ -160,7 +160,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                   Navigator.of(context).pop();
                 }),
             title: Text("发布${selectTypeText[typeNotifier.value]}",
-                style: TextUtil.base.NotoSansSC.w400.sp(18).black2A),
+                style: TextUtil.base.NotoSansSC.w400.sp(18).label),
             actions: [
               InkWell(
                   onTap: () async {
@@ -275,7 +275,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all(
-                    ColorUtil.blue2CColor),
+                    ColorUtil.primaryActionColor),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r)))),
             onPressed: () async {
@@ -327,7 +327,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             controller: _titleController,
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.done,
-            style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
+            style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label,
             minLines: 1,
             maxLines: 10,
             decoration: InputDecoration.collapsed(
@@ -398,7 +398,7 @@ class _LostAndFoundContentInputFieldState
         textInputAction: TextInputAction.newline,
         minLines: 1,
         maxLines: 100,
-        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label,
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(16).grey6C,
             hintText: '请添加正文'),
@@ -475,7 +475,7 @@ class _LostAndFoundImagesGridViewState
     return showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
-                titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
+                titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label,
                 title: Text(S.current.feedback_delete_image_content),
                 actions: [
                   TextButton(
@@ -622,7 +622,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.white240,
+            color: ColorUtil.oldSwitchBarColor,
             borderRadius: BorderRadius.circular(16.r)),
         child: InkWell(
             onTap: () => _selectDate(context),
@@ -630,7 +630,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                 width: 195.w,
                 height: 36.h,
                 decoration: BoxDecoration(
-                    color: ColorUtil.white240,
+                    color: ColorUtil.oldSwitchBarColor,
                     borderRadius: BorderRadius.circular(16.r)),
                 child: Stack(children: [
                   Container(
@@ -736,7 +736,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.white240,
+            color: ColorUtil.oldSwitchBarColor,
             borderRadius: BorderRadius.circular(16)),
         child: Stack(children: [
           Container(
@@ -826,7 +826,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.white240,
+            color: ColorUtil.oldSwitchBarColor,
             borderRadius: BorderRadius.circular(16.r)),
         child: Stack(children: [
           Container(

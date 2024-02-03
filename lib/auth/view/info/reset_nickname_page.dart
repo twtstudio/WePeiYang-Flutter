@@ -48,7 +48,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Padding(
@@ -58,14 +58,14 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(0, 16, 0, 12),
               enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: ColorUtil.grey)),
+                  borderSide: BorderSide(color: ColorUtil.oldListActionColor)),
               focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: ColorUtil.blue48, width: 2)),
+                  borderSide: BorderSide(color: ColorUtil.oldFurthActionColor, width: 2)),
               suffixIcon: IconButton(
                 onPressed: _reset,
                 icon: Text(
                   S.current.save,
-                  style: TextUtil.base.bold.sp(13).blue98,
+                  style: TextUtil.base.bold.sp(13).oldThirdAction,
                 ),
               ),
             ),

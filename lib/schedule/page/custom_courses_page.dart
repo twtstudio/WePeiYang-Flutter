@@ -47,7 +47,7 @@ class CustomCoursesPage extends StatelessWidget {
             titleSpacing: 0,
             leadingWidth: 40.w,
             title: Text('我的自定义课程',
-                style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
+                style: TextUtil.base.PingFangSC.bold.label.sp(18)),
           ),
           body: Theme(
             data:
@@ -96,7 +96,7 @@ class CustomCoursesPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(course.name,
-                      style: TextUtil.base.PingFangSC.bold.black2A.sp(16)),
+                      style: TextUtil.base.PingFangSC.bold.label.sp(16)),
                   SizedBox(height: 10.h),
                   ...course.arrangeList.map((arrange) {
                     var type = '每周';
@@ -113,7 +113,7 @@ class CustomCoursesPage extends StatelessWidget {
                         children: [
                           Text(
                               '第${arrange.weekList.first}-${arrange.weekList.last}周 ${_weekDays[arrange.weekday]}',
-                              style: TextUtil.base.PingFangSC.normal.black2A
+                              style: TextUtil.base.PingFangSC.normal.label
                                   .sp(12)),
                           SizedBox(width: 5.w),
                           Text(_timeRange(arrange.unitList),
@@ -121,7 +121,7 @@ class CustomCoursesPage extends StatelessWidget {
                                   TextUtil.base.PingFangSC.w900.primary.sp(14)),
                           SizedBox(width: 5.w),
                           Text(type,
-                              style: TextUtil.base.PingFangSC.normal.black2A
+                              style: TextUtil.base.PingFangSC.normal.label
                                   .sp(12)),
                         ],
                       ),

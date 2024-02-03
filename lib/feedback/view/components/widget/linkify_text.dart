@@ -84,7 +84,7 @@ class _LinkTextState extends State<LinkText> {
                       child: Text(url,
                           style: checkBili(url)
                               ? TextUtil.base.NotoSansSC.biliPink.w600.h(1.6)
-                              : TextUtil.base.NotoSansSC.black2A.w600.h(1.6)),
+                              : TextUtil.base.NotoSansSC.label.w600.h(1.6)),
                     ),
                     Text(' 请注意您的账号和财产安全\n'),
                   ],
@@ -96,7 +96,7 @@ class _LinkTextState extends State<LinkText> {
                     ? ColorUtil.biliPink
                     : ColorUtil.primaryTextButtonColor,
                 cancelTextStyle:
-                    TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+                    TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
                 confirmText: "继续",
                 cancelFun: () {
                   Navigator.pop(context);

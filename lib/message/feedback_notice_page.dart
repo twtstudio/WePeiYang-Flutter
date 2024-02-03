@@ -26,7 +26,7 @@ class FeedbackNoticePage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title:
-            Text('湖底通知', style: TextUtil.base.black2A.w500.NotoSansSC.sp(18)),
+            Text('湖底通知', style: TextUtil.base.label.w500.NotoSansSC.sp(18)),
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
@@ -59,7 +59,7 @@ class FeedbackNoticePage extends StatelessWidget {
       notice.title,
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
-      style: TextUtil.base.w500.NotoSansSC.sp(18).black2A,
+      style: TextUtil.base.w500.NotoSansSC.sp(18).label,
     );
 
     var content = InkWell(
@@ -73,7 +73,7 @@ class FeedbackNoticePage extends StatelessWidget {
         child: ExpandableText(
           text: notice.content,
           maxLines: 8,
-          style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
+          style: TextUtil.base.NotoSansSC.w400.sp(16).label.h(1.2),
           expand: false,
           buttonIsShown: true,
           isHTML: false,
@@ -88,7 +88,7 @@ class FeedbackNoticePage extends StatelessWidget {
 
     var bottomWidget = LinkText(
       text: notice.url,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).black2A.h(1.2),
+      style: TextUtil.base.NotoSansSC.w400.sp(16).label.h(1.2),
     );
 
     var mainWidget = Column(

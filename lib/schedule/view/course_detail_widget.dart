@@ -61,15 +61,13 @@ class _WeekDisplayWidget extends StatelessWidget {
         height: 28.h,
         width: _cardWidth,
         decoration: BoxDecoration(
-            color: deep
-                ? ColorUtil.primaryBackgroundColor
-                : ColorUtil.grey246,
+            color: deep ? ColorUtil.primaryBackgroundColor : ColorUtil.grey246,
             borderRadius: BorderRadius.circular(5.r)),
         child: Center(
           child: Text(date,
               style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                  ? ColorUtil.blue2CColor
-                  : ColorUtil.white202)),
+                  ? ColorUtil.primaryActionColor
+                   : ColorUtil.reverseTextColor)),
         ),
       );
 }
@@ -88,7 +86,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         var verNum = 8; // 显示每天第1-verNum节课，verNum取值范围为[8, 12]
         if (provider.totalCourses.length == 0) {
           return SizedBox(
-            height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
+            height: (_singleCourseHeight + verStep) * verNum + _middleStep * 2,
             child: Stack(children: [child!]),
           );
         }
@@ -114,7 +112,7 @@ class _CourseDisplayWidget extends StatelessWidget {
           if (start > 4) top += _middleStep;
           if (start > 8) top += _middleStep;
           if (start <= 4 && end > 4) height += _middleStep;
-          if (start <=8 && end >8) height += _middleStep;
+          if (start <= 8 && end > 8) height += _middleStep;
           // 是否需要“漂浮”显示
           if (activeList[i][0].arrange.showMode == 1) top += 6;
           // 是否不显示内容
@@ -154,7 +152,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         positionedList.addAll(tempList.reversed);
 
         return SizedBox(
-          height: (_singleCourseHeight + verStep) * verNum + _middleStep*2,
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep * 2,
           child: Stack(
             children: [
               child!,
@@ -177,12 +175,13 @@ class _CourseDisplayWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
-              child: Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
+              child:
+                  Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
             ),
           ),
           Positioned(
             left: 0,
-            top: 8 * (_singleCourseHeight + verStep)+ _middleStep ,
+            top: 8 * (_singleCourseHeight + verStep) + _middleStep,
             height: _middleStep,
             width: 1.sw - 30.w,
             child: Container(
@@ -192,7 +191,8 @@ class _CourseDisplayWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
-              child: Text("DINNER BREAK", style: TextUtil.base.w900.reverse.sp(10)),
+              child: Text("DINNER BREAK",
+                  style: TextUtil.base.w900.reverse.sp(10)),
             ),
           ),
         ],

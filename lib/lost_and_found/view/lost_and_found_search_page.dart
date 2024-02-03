@@ -176,7 +176,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               child: Chip(
                 shadowColor: ColorUtil.transparent,
                 elevation: 1,
-                backgroundColor: ColorUtil.white248,
+                backgroundColor: ColorUtil.reverseTextColor,
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.grey90.PingFangSC.sp(14)),
               ),
@@ -223,12 +223,12 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               title: '清除记录',
               confirmButtonColor: ColorUtil.primaryTextButtonColor,
               titleTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC.sp(18).w600,
+              TextUtil.base.normal.label.NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
               TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
               cancelTextStyle:
-              TextUtil.base.normal.black2A.NotoSansSC.sp(16).w400,
+              TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
               cancelFun: () {
                 Navigator.pop(context);
@@ -271,14 +271,14 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
               borderRadius: BorderRadius.circular(24.r),
               color: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
                   ? ColorUtil.white234
-                  : ColorUtil.white248
+                  : ColorUtil.reverseTextColor
           ),
           child: Center(
             child: Text(
                 widget.category,
                 style: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
                     ? TextUtil.base.normal.NotoSansSC.w400.sp(10).primaryAction
-                    : TextUtil.base.normal.NotoSansSC.w400.sp(10).black2A
+                    : TextUtil.base.normal.NotoSansSC.w400.sp(10).label
             ),
           ),
         ),

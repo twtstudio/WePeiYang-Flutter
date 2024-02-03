@@ -76,7 +76,7 @@ class _WpyPicState extends State<WpyPic> {
           return  Container(
                   width: widget.width ?? widget.holderHeight,
                   height: widget.height ?? widget.holderHeight,
-                  color: ColorUtil.black26,
+                  color: ColorUtil.dislikeSecondary,
                   child: Center(
                     child: SizedBox(
                         width: widget.width == null ? 20 : widget.width! * 0.25,

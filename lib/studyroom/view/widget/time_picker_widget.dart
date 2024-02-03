@@ -24,7 +24,7 @@ class TimePickerWidget extends StatelessWidget {
       child: Container(
           width: 1.sw,
           height: 54.h + ScreenUtil().bottomBarHeight,
-          color: ColorUtil.blue2CColor,
+          color: ColorUtil.primaryActionColor,
           child: SafeArea(
             child: Center(
               child: Text(
@@ -88,7 +88,7 @@ class _TableCalenderState extends State<_TableCalender>
     return Center(
       child: Text(
         dateTimeToNum(date),
-        style: TextUtil.base.PingFangSC.bold.black2A.sp(16),
+        style: TextUtil.base.PingFangSC.bold.label.sp(16),
       ),
     );
   }
@@ -113,12 +113,12 @@ class _TableCalenderState extends State<_TableCalender>
       titleTextFormatter: (dateTime, _) {
         return '${dateTime.year}年${dateTime.month}月';
       },
-      titleTextStyle: TextUtil.base.PingFangSC.w400.black2A.sp(16),
+      titleTextStyle: TextUtil.base.PingFangSC.w400.label.sp(16),
     );
 
     final calenderStyle = CalendarStyle(
       outsideDaysVisible: true,
-      defaultTextStyle: TextUtil.base.PingFangSC.w400.black2A.sp(16),
+      defaultTextStyle: TextUtil.base.PingFangSC.w400.label.sp(16),
       outsideTextStyle: TextStyle(
         fontSize: 16.sp,
         color: Theme.of(context).calenderOutsideText,
@@ -240,7 +240,7 @@ class _TimeItem extends StatelessWidget {
       title,
       style: isChecked
           ? TextUtil.base.PingFangSC.w400.primaryAction.sp(12)
-          : TextUtil.base.PingFangSC.w400.black2A.sp(12),
+          : TextUtil.base.PingFangSC.w400.label.sp(12),
     );
 
     final button = TextButton(
@@ -258,7 +258,7 @@ class _TimeItem extends StatelessWidget {
           BorderSide(
             color: isChecked
                 ? Theme.of(context).calenderTimeTableBorder
-                : ColorUtil.grey97Color,
+                : ColorUtil.unlabeledColor,
             width: 0.5.w,
           ),
         ),

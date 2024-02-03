@@ -86,7 +86,7 @@ class _TabGridViewState extends State<TabGridView>
           tag.name,
           style: chose
               ? TextUtil.base.reverse.NotoSansSC.w400.sp(14)
-              : TextUtil.base.black2A.NotoSansSC.w400.sp(14),
+              : TextUtil.base.label.NotoSansSC.w400.sp(14),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {

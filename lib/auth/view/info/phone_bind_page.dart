@@ -51,7 +51,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
   Widget _detail(BuildContext context) {
     var hintStyle = TextUtil.base.regular
         .sp(13)
-        .whiteHint201;
+        .oldHintDarker;
     double width = WePeiYangApp.screenWidth - 80;
     if (CommonPreferences.phone.value != "")
       return Column(children: [
@@ -61,7 +61,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               "${S.current.bind_phone}: ${CommonPreferences.phone.value}",
               style: TextUtil.base.bold
                   .sp(15)
-                  .blue79),
+                  .oldSecondaryAction),
         ),
         SizedBox(height: 95),
         SizedBox(
@@ -79,12 +79,12 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.blue103;
-                return ColorUtil.blue79;
+                  return ColorUtil.oldActionRippleColor;
+                return ColorUtil.oldSecondaryActionColor;
               }),
               backgroundColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
-                return ColorUtil.blue79;
+                return ColorUtil.oldSecondaryActionColor;
               }),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30))),
@@ -104,7 +104,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     hintText: S.current.phone,
                     hintStyle: hintStyle,
                     filled: true,
-                    fillColor: ColorUtil.white235,
+                    fillColor: ColorUtil.reverseTextColor,
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -155,7 +155,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             return ElevatedButton(
                               onPressed: () {},
                               child: Text('$time秒后重试',
-                                  style: TextUtil.base.bold.sp(13).blue98),
+                                  style: TextUtil.base.bold.sp(13).oldThirdAction),
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(5),
                                 overlayColor:
@@ -179,11 +179,11 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                                 MaterialStateProperty.resolveWith<Color>(
                                     (states) {
                               if (states.contains(MaterialState.pressed))
-                                return ColorUtil.blue103;
-                              return ColorUtil.blue53;
+                                return ColorUtil.oldActionRippleColor;
+                              return ColorUtil.oldActionColor;
                             }),
                             backgroundColor: MaterialStateProperty.all(
-                                ColorUtil.blue53),
+                                ColorUtil.oldActionColor),
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30)),
@@ -208,11 +208,11 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.blue103;
-                  return ColorUtil.blue53;
+                    return ColorUtil.oldActionRippleColor;
+                  return ColorUtil.oldActionColor;
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.blue53),
+                    MaterialStateProperty.all(ColorUtil.oldActionColor),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
@@ -230,13 +230,13 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.reverseTextColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.blue53, size: 32),
+                    color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -249,7 +249,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 child: Text(S.current.phone_bind,
                     style: TextUtil.base.bold
                         .sp(28)
-                        .blue48),
+                        .oldFurthAction),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),

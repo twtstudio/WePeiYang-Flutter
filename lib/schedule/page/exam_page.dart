@@ -18,7 +18,7 @@ class ExamPage extends StatefulWidget {
 }
 
 class _ExamPageState extends State<ExamPage> {
-  get _color => ColorUtil.blue98;
+  get _color => ColorUtil.oldThirdActionColor;
 
   @override
   void initState() {
@@ -138,7 +138,7 @@ class _ExamPageState extends State<ExamPage> {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            color: finished ? ColorUtil.white236 : unfinishedColor,
+            color: finished ? ColorUtil.reverseTextColor : unfinishedColor,
           ),
           child: InkWell(
             onTap: () {},
@@ -148,7 +148,7 @@ class _ExamPageState extends State<ExamPage> {
               children: [
                 DefaultTextStyle(
                   style: TextStyle(
-                      color: finished ? ColorUtil.hintWhite205 : ColorUtil.primaryBackgroundColor),
+                      color: finished ? ColorUtil.oldHintColor : ColorUtil.primaryBackgroundColor),
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -170,7 +170,7 @@ class _ExamPageState extends State<ExamPage> {
                             Icon(Icons.location_on_outlined,
                                 size: 17.r,
                                 color: finished
-                                    ? ColorUtil.hintWhite205
+                                    ? ColorUtil.oldHintColor
                                     : ColorUtil.primaryBackgroundColor),
                             SizedBox(width: 3.w),
                             Text('${exam.location}-$seat',

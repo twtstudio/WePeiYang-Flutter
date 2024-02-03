@@ -126,7 +126,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(widget.tag,
-                            style: TextUtil.base.NotoSansSC.black2A.normal.w500
+                            style: TextUtil.base.NotoSansSC.label.normal.w500
                                 .sp(14)),
                         CommentIdentificationContainer('官方', true),
                       ]),
@@ -143,7 +143,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                         : DateTime.now()
                             .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
-                    style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+                    style: TextUtil.base.ProductSans.secondaryInfo.regular.sp(10),
                   ),
                 ],
               )
@@ -169,7 +169,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text('帖主',
-                            style: TextUtil.base.NotoSansSC.black2A.normal.w500
+                            style: TextUtil.base.NotoSansSC.label.normal.w500
                                 .sp(14)),
                       ]),
                   Text(
@@ -185,7 +185,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                         : DateTime.now()
                             .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
-                    style: TextUtil.base.ProductSans.grey97.regular.sp(10),
+                    style: TextUtil.base.ProductSans.secondaryInfo.regular.sp(10),
                   ),
                 ],
               )
@@ -230,7 +230,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   child: Center(
                     child: Text(
                       '删除',
-                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                      style: TextUtil.base.label.regular.NotoSansSC.sp(12),
                     ),
                   ),
                 )
@@ -239,7 +239,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   child: Center(
                     child: Text(
                       '举报',
-                      style: TextUtil.base.black2A.regular.NotoSansSC.sp(12),
+                      style: TextUtil.base.label.regular.NotoSansSC.sp(12),
                     ),
                   ),
                 ),
@@ -270,12 +270,12 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: Row(children: [
           Text(
             S.current.feedback_rating,
-            style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
+            style: TextUtil.base.NotoSansSC.label.normal.w500.sp(14),
           ),
           RatingBar.builder(
             itemBuilder: (context, index) => Icon(
               Icons.star,
-              color: ColorUtil.yellow,
+              color: ColorUtil.FavorColor,
             ),
             allowHalfRating: true,
             glow: false,
@@ -292,12 +292,12 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       starWidget = Row(children: [
         Text(
           S.current.feedback_rating,
-          style: TextUtil.base.NotoSansSC.black2A.normal.w500.sp(14),
+          style: TextUtil.base.NotoSansSC.label.normal.w500.sp(14),
         ),
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: ColorUtil.yellow,
+            color: ColorUtil.FavorColor,
           ),
           allowHalfRating: true,
           glow: false,
@@ -351,7 +351,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         var comment = ExpandableText(
           text: widget.comment.content,
           maxLines: 5,
-          style: TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+          style: TextUtil.base.w400.normal.label.NotoSansSC.sp(16),
           expand: false,
           buttonIsShown: true,
           isHTML: true,
@@ -376,7 +376,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             context,
             widget.comment.content,
             defaultTextStyle:
-                TextUtil.base.w400.normal.black2A.NotoSansSC.sp(16),
+                TextUtil.base.w400.normal.label.NotoSansSC.sp(16),
           ),
         );
 
@@ -459,13 +459,13 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
-      unratedColor: ColorUtil.grey,
+      unratedColor: ColorUtil.oldListActionColor,
       itemCount: 5,
       itemSize: 47.w,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: ColorUtil.amber,
+        color: ColorUtil.FavorBubbleStartColor,
       ),
       onRatingUpdate: (rating) {
         setState(() {
@@ -501,9 +501,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
               ),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+                  TextUtil.base.normal.label.NotoSansSC.sp(14).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.black2A.NotoSansSC.sp(14).w400,
+                  TextUtil.base.normal.label.NotoSansSC.sp(14).w400,
               confirmText: "提交",
               cancelFun: () {
                 Navigator.pop(context);

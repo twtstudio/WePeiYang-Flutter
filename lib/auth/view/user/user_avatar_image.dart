@@ -14,7 +14,7 @@ class UserAvatarImage extends StatelessWidget {
 
   UserAvatarImage({
     required this.size,
-    this.iconColor = ColorUtil.blue98,
+    this.iconColor = ColorUtil.oldThirdActionColor,
     this.tempUrl = "",
   });
 

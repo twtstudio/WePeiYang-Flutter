@@ -121,7 +121,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   visualDensity: VisualDensity.compact,
-                                  activeColor: ColorUtil.blue2CColor,
+                                  activeColor: ColorUtil.primaryActionColor,
                                   onChanged: (_) {
                                     checkNotifier.value = !checkNotifier.value;
                                   },
@@ -134,7 +134,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "我已阅读并同意",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .black2A)),
+                                  .label)),
                           WButton(
                             onPressed: () => showDialog(
                                 context: context,
@@ -151,7 +151,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "与",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .black2A)),
+                                  .label)),
                           WButton(
                             onPressed: () => showDialog(
                                 context: context,
@@ -238,7 +238,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             builder: (context, bool value, _) {
               return Theme(
                 data:
-                    Theme.of(context).copyWith(primaryColor: ColorUtil.blue53),
+                    Theme.of(context).copyWith(primaryColor: ColorUtil.oldActionColor),
                 child: TextField(
                   style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
                   cursorColor: ColorUtil.primaryBackgroundColor,

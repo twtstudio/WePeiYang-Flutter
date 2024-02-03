@@ -129,7 +129,7 @@ class _NewPostPageState extends State<NewPostPage> {
     final appBar = AppBar(
       title: Text(
         S.current.feedback_new_post,
-        style: TextUtil.base.NotoSansSC.w700.sp(18).black2A,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).label,
       ),
       elevation: 0,
       leading: IconButton(
@@ -152,7 +152,7 @@ class _NewPostPageState extends State<NewPostPage> {
       child: ElevatedButton(
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(ColorUtil.blue2CColor),
+          backgroundColor: MaterialStateProperty.all(ColorUtil.primaryActionColor),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
@@ -194,7 +194,7 @@ class _NewPostPageState extends State<NewPostPage> {
                               ? Text('跟帖:',
                                   style: TextUtil.base.NotoSansSC.w500
                                       .sp(14)
-                                      .black2A)
+                                      .label)
                               : LakeSelector()),
                       SizedBox(height: 30),
                       Column(
@@ -216,7 +216,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       widget.args.isFollowing
                           ? Text('${widget.args.tagName}'.substring(3),
                               style:
-                                  TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                                  TextUtil.base.NotoSansSC.w500.sp(14).label)
                           : departmentTagView(context.read<NewPostProvider>().postTypeNotifier),
                     ],
                   ),
@@ -295,14 +295,14 @@ class _LakeSelectorState extends State<LakeSelector> {
                                                           .primaryAction
                                                       : TextUtil.base.w400
                                                           .sp(15)
-                                                          .black2A),
+                                                          .label),
                                               Container(
                                                 margin: EdgeInsets.only(top: 2),
                                                 decoration: BoxDecoration(
                                                     color: type ==
                                                             tabList[index + 1]
                                                                 .id
-                                                        ? ColorUtil.blue2CColor
+                                                        ? ColorUtil.primaryActionColor
                                                         : ColorUtil.primaryBackgroundColor,
                                                     borderRadius:
                                                         BorderRadius.all(
@@ -429,7 +429,7 @@ class _CampusSelectorState extends State<CampusSelector> {
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
-                color: ColorUtil.blue2CColor,
+                color: ColorUtil.primaryActionColor,
               ),
               SizedBox(width: 10),
               Text(
@@ -510,7 +510,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         controller: _titleController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).black2A,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label,
         minLines: 1,
         maxLines: 10,
         decoration: InputDecoration.collapsed(
@@ -589,7 +589,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       textInputAction: TextInputAction.newline,
       minLines: 1,
       maxLines: 100,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).black2A,
+      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
         hintText: '请添加正文',
@@ -663,7 +663,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).black2A,
+        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label,
         title: Text(S.current.feedback_delete_image_content),
         actions: [
           WButton(
@@ -689,7 +689,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: ColorUtil.black26),
+              border: Border.all(width: 1, color: ColorUtil.dislikeSecondary),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -709,7 +709,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: ColorUtil.black26,
+              color: ColorUtil.dislikeSecondary,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),

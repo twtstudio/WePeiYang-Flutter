@@ -196,7 +196,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
               Container(
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
-                  color: ColorUtil.black12)
+                  color: ColorUtil.iconAnimationStartColor)
             ],
           );
         },
@@ -240,7 +240,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: ColorUtil.black12,
+                        color: ColorUtil.iconAnimationStartColor,
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
@@ -284,7 +284,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500.grey97
+                                style: TextUtil.base.NotoSansSC.w500.secondaryInfo
                                     .sp(12)),
                           ),
                           decoration: BoxDecoration(
@@ -345,7 +345,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
           child: Center(
             child: Text(
               '官方回复',
-              style: TextUtil.base.NotoSansSC.black2A.w500.sp(18),
+              style: TextUtil.base.NotoSansSC.label.w500.sp(18),
             ),
           ),
         ),

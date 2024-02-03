@@ -103,7 +103,7 @@ class _HotCardState extends State<HotCard> {
                                                       style: TextUtil
                                                           .base.w400.NotoSansSC
                                                           .sp(16)
-                                                          .black2A,
+                                                          .label,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                     ),
@@ -120,7 +120,7 @@ class _HotCardState extends State<HotCard> {
                                                     style: TextUtil
                                                         .base.w400.NotoSansSC
                                                         .sp(14)
-                                                        .black2A,
+                                                        .label,
                                                   ),
                                                 ),
                                               ],

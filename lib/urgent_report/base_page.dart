@@ -21,7 +21,7 @@ class ReportBasePage extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140),
         child: Container(
-          color: ColorUtil.blue2CColor,
+          color: ColorUtil.primaryActionColor,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Hero(
             tag: 'appbar',
@@ -34,7 +34,7 @@ class ReportBasePage extends StatelessWidget {
               automaticallyImplyLeading: false,
               title: Text(
                 '健康信息填报',
-                style: TextUtil.base.bold.whiteFD.sp(18),
+                style: TextUtil.base.bold.reverse.sp(18),
               ),
               leading: IconButton(
                 padding: const EdgeInsets.all(0),

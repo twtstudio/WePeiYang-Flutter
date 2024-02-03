@@ -91,7 +91,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor = ColorUtil.blue2CColor;
+    var mainColor = ColorUtil.primaryActionColor;
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -174,7 +174,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
-                      color: ColorUtil.blue2CColor,
+                      color: ColorUtil.primaryActionColor,
                     ),
                   ),
                 )
@@ -223,7 +223,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
               children: [
                 SizedBox(width: 12.w),
                 Text('新建课程',
-                    style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
+                    style: TextUtil.base.PingFangSC.bold.label.sp(18)),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {

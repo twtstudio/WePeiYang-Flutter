@@ -288,7 +288,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110.w, 40.h)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  ColorUtil.blue2CColor),
+                                  ColorUtil.primaryActionColor),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -385,7 +385,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110, 40)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  ColorUtil.blue2CColor),
+                                  ColorUtil.primaryActionColor),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -737,7 +737,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: ColorUtil.blue2CColor,
+                              color: ColorUtil.primaryActionColor,
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: WButton(
@@ -760,7 +760,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               border: polished
                                   ? null
                                   : Border.all(
-                                      color: ColorUtil.blue2CColor,
+                                      color: ColorUtil.primaryActionColor,
                                       width: 1.w,
                                     ),
                             ),
@@ -974,7 +974,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                   Icons.refresh,
                   color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.black12,
+          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.iconAnimationStartColor,
         );
       },
     );

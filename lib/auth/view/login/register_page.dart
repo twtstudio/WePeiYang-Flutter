@@ -911,7 +911,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
-                              activeColor: ColorUtil.blue2CColor,
+                              activeColor: ColorUtil.primaryActionColor,
                               onChanged: (_) {
                                 checkNotifier.value = !checkNotifier.value;
                               },
@@ -922,7 +922,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "我已阅读并同意",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
-                                .black2A)),
+                                .label)),
                         WButton(
                           onPressed: () => showDialog(
                               context: context,
@@ -939,7 +939,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "与",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
-                                .black2A)),
+                                .label)),
                         WButton(
                           onPressed: () => showDialog(
                               context: context,

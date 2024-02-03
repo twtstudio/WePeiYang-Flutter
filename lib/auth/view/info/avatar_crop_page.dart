@@ -49,10 +49,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: ColorUtil.blue98,
+          toolbarColor: ColorUtil.oldThirdActionColor,
           toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: ColorUtil.black26,
+          dimmedLayerColor: ColorUtil.dislikeSecondary,
           statusBarColor: ColorUtil.defaultActionColor,
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
@@ -91,10 +91,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: ColorUtil.blue98,
+          toolbarColor: ColorUtil.oldThirdActionColor,
           toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: ColorUtil.black26,
+          dimmedLayerColor: ColorUtil.dislikeSecondary,
           statusBarColor: ColorUtil.defaultActionColor,
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
@@ -152,7 +152,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     if (file != null) {
       return CircleAvatar(
         radius: width / 2,
-        backgroundColor: ColorUtil.blue98,
+        backgroundColor: ColorUtil.oldThirdActionColor,
         backgroundImage: FileImage(file!),
         child: SizedBox(width: width, height: width),
       );

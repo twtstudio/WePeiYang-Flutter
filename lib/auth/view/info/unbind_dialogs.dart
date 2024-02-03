@@ -16,7 +16,7 @@ import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 import '../../../commons/widgets/w_button.dart';
 
-final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
+final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction;
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
@@ -36,7 +36,9 @@ class TjuUnbindDialog extends Dialog {
         height: 120,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+          borderRadius: BorderRadius.circular(10),
+          color: ColorUtil.primaryBackgroundColor,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -44,7 +46,7 @@ class TjuUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.tju_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).blue79),
+                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +89,8 @@ class PhoneUnbindDialog extends Dialog {
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.primaryBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -95,7 +98,7 @@ class PhoneUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.phone_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).blue79),
+                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -138,7 +141,8 @@ class EmailUnbindDialog extends Dialog {
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.primaryBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -146,7 +150,7 @@ class EmailUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.email_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).blue79),
+                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -197,7 +201,8 @@ class LogoffDialog extends Dialog {
         height: 160,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.primaryBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -229,7 +234,7 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok,
-                        style: TextUtil.base.w400.black2A.sp(15)),
+                        style: TextUtil.base.w400.label.sp(15)),
                   ),
                 )
               ],

@@ -331,8 +331,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间正序',
                           style: order.value == 1
-                              ? TextUtil.base.black2A.w700.sp(14).primaryAction
-                              : TextUtil.base.black2A.w500.sp(14)),
+                              ? TextUtil.base.label.w700.sp(14).primaryAction
+                              : TextUtil.base.label.w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
                     WButton(
@@ -341,8 +341,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间倒序',
                           style: order.value == 0
-                              ? TextUtil.base.black2A.w700.sp(14).primaryAction
-                              : TextUtil.base.black2A.w500.sp(14)),
+                              ? TextUtil.base.label.w700.sp(14).primaryAction
+                              : TextUtil.base.label.w500.sp(14)),
                     ),
                     Spacer(),
                     ValueListenableBuilder(
@@ -357,7 +357,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                               ? Container(
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.blue2CColor,
+                                    color: ColorUtil.primaryActionColor,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
@@ -370,7 +370,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
-                                      style: TextUtil.base.black2A.w400.sp(14)),
+                                      style: TextUtil.base.label.w400.sp(14)),
                                 ),
                         );
                       },
@@ -452,8 +452,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     builder: (context, _) {
                                       return Checkbox(
                                         activeColor: ColorUtil.blue105,
-                                        focusColor: ColorUtil.hintWhite205,
-                                        hoverColor: ColorUtil.white240,
+                                        focusColor: ColorUtil.oldHintColor,
+                                        hoverColor: ColorUtil.oldSwitchBarColor,
                                         value: screenshotList.list
                                             .contains(data.id),
                                         onChanged: (value) {
@@ -540,7 +540,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: ColorUtil.black12,
+                        color: ColorUtil.iconAnimationStartColor,
                         offset: Offset(0, 1),
                         blurRadius: 6,
                         spreadRadius: 0),
@@ -660,7 +660,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                     .sp(12))
                                             : Text('友善回复，真诚沟通',
                                                 style: TextUtil
-                                                    .base.NotoSansSC.w500.grey97
+                                                    .base.NotoSansSC.w500.secondaryInfo
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
@@ -901,7 +901,7 @@ class _PostDetailPageState extends State<PostDetailPage>
             alignment: Alignment.center,
             child: Text(
               widget.post.type == 1 ? '校务提问：实名' : '冒泡',
-              style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
+              style: TextUtil.base.NotoSansSC.label.w600.sp(18),
             ),
           ),
         ),
@@ -957,7 +957,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               confirmText: "确认",
               gradient: LinearGradient(
                   colors: [
-                    ColorUtil.blue2CColor,
+                    ColorUtil.primaryActionColor,
                     ColorUtil.blueA6Color,
                   ],
                   begin: Alignment.topCenter,
@@ -1235,7 +1235,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
                             border:
-                                Border.all(width: 1, color: ColorUtil.black26),
+                                Border.all(width: 1, color: ColorUtil.dislikeSecondary),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1262,7 +1262,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: ColorUtil.black26,
+                            color: ColorUtil.dislikeSecondary,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomRight: Radius.circular(8)),
@@ -1333,11 +1333,11 @@ class _ManagerPopUpState extends State<ManagerPopUp>
               SizedBox(height: 4),
               Text(
                 ' 帖子：' + widget.post.title,
-                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+                style: TextUtil.base.ProductSans.label.medium.sp(18),
               ),
               Text(
                 ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
-                style: TextUtil.base.ProductSans.black2A.medium.sp(18),
+                style: TextUtil.base.ProductSans.label.medium.sp(18),
               ),
               AnimatedOption(
                 origin: originTag == 0,

@@ -16,17 +16,17 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hintTextStyle = TextUtil.base.regular.sp(12).whiteHint205;
-    var mainTextStyle = TextUtil.base.regular.sp(18).blue98122;
+    var hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
+    var mainTextStyle = TextUtil.base.regular.sp(18).oldThirdAction;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.reverseTextColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -35,13 +35,13 @@ class LanguageSettingPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language,
-                style: TextUtil.base.bold.sp(30).blue48),
+                style: TextUtil.base.bold.sp(30).oldFurthAction),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(35, 15, 35, 15),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language_hint,
-                style: TextUtil.base.regular.sp(9).blue98),
+                style: TextUtil.base.regular.sp(9).oldThirdAction),
           ),
           Consumer<LocaleModel>(
             builder: (_, model, __) => ListView.builder(

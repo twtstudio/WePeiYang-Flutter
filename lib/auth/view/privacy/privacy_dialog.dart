@@ -14,7 +14,7 @@ class PrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = ColorUtil.blue98;
+    var textColor = ColorUtil.oldThirdActionColor;
     return WillPopScope(
       onWillPop: () async => false,
       child: Container(
@@ -24,7 +24,7 @@ class PrivacyDialog extends Dialog {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.white251),
+            color: ColorUtil.reverseTextColor),
         child: Column(
           children: [
             Expanded(
@@ -57,7 +57,7 @@ class PrivacyDialog extends Dialog {
           child: Text('确定',
               style: TextUtil.base.bold.noLine
                   .sp(16)
-                  .blue98),
+                  .oldThirdAction),
         ),
       );
     } else {
@@ -86,7 +86,7 @@ class PrivacyDialog extends Dialog {
               child: Text('同意',
                   style: TextUtil.base.bold.noLine
                       .sp(16)
-                      .blue98),
+                      .oldThirdAction),
             ),
           ),
         ],

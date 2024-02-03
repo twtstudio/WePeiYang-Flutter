@@ -212,14 +212,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
-                          labelColor: ColorUtil.blue2CColor,
+                          labelColor: ColorUtil.primaryActionColor,
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
                           unselectedLabelStyle:
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
-                                  color: ColorUtil.blue2CColor, width: 2)),
+                                  color: ColorUtil.primaryActionColor, width: 2)),
                           tabs: List<Widget>.generate(
                               tabList.length,
                               (index) => DaTab(
@@ -487,7 +487,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
                 child: Chip(
                   backgroundColor: ColorUtil.white234,
                   label: Text(provider.departmentList[index].name,
-                      style: TextUtil.base.normal.black2A.NotoSansSC.sp(13)),
+                      style: TextUtil.base.normal.label.NotoSansSC.sp(13)),
                 ),
                 onTap: () {
                   Navigator.pushNamed(

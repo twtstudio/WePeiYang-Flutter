@@ -160,7 +160,7 @@ class _CollectionPageState extends State<CollectionPage> {
           ),
           title: Text(
             "我的收藏",
-            style: TextUtil.base.NotoSansSC.black2A.w600.sp(18),
+            style: TextUtil.base.NotoSansSC.label.w600.sp(18),
           ),
           centerTitle: true,
         ),

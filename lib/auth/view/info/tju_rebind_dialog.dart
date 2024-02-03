@@ -89,17 +89,17 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).whiteHint201;
+    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).blue79)
+          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).oldSecondaryAction)
         ]),
         SizedBox(height: 8),
-        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).blue79),
+        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).oldSecondaryAction),
         if (!_canConnectToClasses)
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -146,10 +146,10 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.blue103;
-                  return ColorUtil.blue53;
+                    return ColorUtil.oldActionRippleColor;
+                  return ColorUtil.oldActionColor;
                 }),
-                backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
+                backgroundColor: MaterialStateProperty.all(ColorUtil.oldActionColor),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),

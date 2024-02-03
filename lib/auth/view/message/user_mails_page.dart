@@ -34,7 +34,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -115,14 +115,14 @@ class _MailItemState extends State<MailItem> {
             children: [
               Text(
                 widget.data.title,
-                style: TextUtil.base.bold.blue53.sp(15),
+                style: TextUtil.base.bold.oldActionColor.sp(15),
               ),
               SizedBox(height: 10),
               Text(
                 widget.data.content,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: TextUtil.base.blue53.sp(13),
+                style: TextUtil.base.oldActionColor.sp(13),
               ),
               SizedBox(height: 10),
               Row(
@@ -170,7 +170,7 @@ class MailPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
-              child: Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+              child: Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -319,7 +319,7 @@ class _TextMailContent extends StatelessWidget {
                   children: [
                     Text(
                       '更多信息请点击链接查看喵~',
-                      style: TextUtil.base.black2A.w500.NotoSansSC.sp(14),
+                      style: TextUtil.base.label.w500.NotoSansSC.sp(14),
                     ),
                     WButton(
                       child: Text(
@@ -338,7 +338,7 @@ class _TextMailContent extends StatelessWidget {
                                 return LakeDialogWidget(
                                     title: '同学你好：',
                                     titleTextStyle: TextUtil
-                                        .base.normal.black2A.NotoSansSC
+                                        .base.normal.label.NotoSansSC
                                         .sp(26)
                                         .w600,
                                     content: Column(
@@ -356,7 +356,7 @@ class _TextMailContent extends StatelessWidget {
                                                           'https://www.bilibili.com/')
                                                   ? TextUtil.base.biliPink.w600
                                                       .h(1.6)
-                                                  : TextUtil.base.black2A.w600
+                                                  : TextUtil.base.label.w600
                                                       .h(1.6)),
                                         ),
                                         SimpleUrlPreview(
@@ -364,7 +364,7 @@ class _TextMailContent extends StatelessWidget {
                                           bgColor:
                                               ColorUtil.primaryBackgroundColor,
                                           titleLines: 2,
-                                          imageLoaderColor: ColorUtil.black12,
+                                          imageLoaderColor: ColorUtil.iconAnimationStartColor,
                                           previewHeight: 130,
                                           previewContainerPadding:
                                               EdgeInsets.symmetric(
@@ -380,7 +380,7 @@ class _TextMailContent extends StatelessWidget {
                                               ? TextUtil.base.biliPink.w600
                                                   .h(1.6)
                                                   .sp(14)
-                                              : TextUtil.base.black2A.w600
+                                              : TextUtil.base.label.w600
                                                   .h(1.6)
                                                   .sp(24),
                                           siteNameStyle: TextUtil.base

@@ -31,10 +31,10 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
     elevation: MaterialStateProperty.all(1),
     overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
       if (states.contains(MaterialState.pressed))
-        return ColorUtil.blue103;
-      return ColorUtil.blue53;
+        return ColorUtil.oldActionRippleColor;
+      return ColorUtil.oldActionColor;
     }),
-    backgroundColor: MaterialStateProperty.all(ColorUtil.blue53),
+    backgroundColor: MaterialStateProperty.all(ColorUtil.oldActionColor),
     shape: MaterialStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
     minimumSize: MaterialStateProperty.all(Size(80, 40)),
@@ -50,7 +50,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       ),
       title: Text(
         S.current.feedback_report,
-        style: TextUtil.base.NotoSansSC.medium.black2A.sp(18),
+        style: TextUtil.base.NotoSansSC.medium.label.sp(18),
       ),
       centerTitle: true,
       elevation: 0,
@@ -102,12 +102,12 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                       ? Text(
                           "你正在举报" +
                               "“#MP${widget.args.id.toString().padLeft(6, '0')}”",
-                          style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
+                          style: TextUtil.base.label.NotoSansSC.medium.sp(18),
                         )
                       : Text(
                           "你正在举报" +
                               "“#FL${widget.args.id.toString().padLeft(6, '0')}”",
-                          style: TextUtil.base.black2A.NotoSansSC.medium.sp(18),
+                          style: TextUtil.base.label.NotoSansSC.medium.sp(18),
                         ),
                 ),
               ),
@@ -130,7 +130,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 style: TextUtil.base.normal.blue303C.sp(14),
                 decoration: InputDecoration.collapsed(
                   hintText: '请填写举报理由，如“色情暴力”“政治敏感”等',
-                  hintStyle: TextUtil.base.regular.NotoSansSC.black2A.sp(16),
+                  hintStyle: TextUtil.base.regular.NotoSansSC.label.sp(16),
                 ),
                 onChanged: (text) {
                   textInput = text;

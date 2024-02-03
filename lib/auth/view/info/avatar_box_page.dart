@@ -38,7 +38,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
         backgroundColor: ColorUtil.primaryBackgroundColor,
         title: Text(
           '更换头像框',
-          style: TextUtil.base.black2A.sp(16),
+          style: TextUtil.base.label.sp(16),
         ),
         elevation: 0,
         leading: Padding(
@@ -213,7 +213,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           width: 110.w,
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: ColorUtil.blue2CColor,
+                            color: ColorUtil.primaryActionColor,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.r)),
                           ),
@@ -241,7 +241,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
       foregroundDecoration: canChange
           ? null
           : BoxDecoration(
-              color: ColorUtil.grey,
+              color: ColorUtil.oldListActionColor,
               backgroundBlendMode: BlendMode.saturation,
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),

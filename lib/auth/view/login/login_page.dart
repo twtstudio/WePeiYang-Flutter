@@ -52,8 +52,8 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return ColorUtil.blue103;
-                        return ColorUtil.blue98;
+                          return ColorUtil.oldActionRippleColor;
+                        return ColorUtil.oldThirdActionColor;
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
                       backgroundColor:
@@ -79,8 +79,8 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return ColorUtil.blue103;
-                        return ColorUtil.blue98;
+                          return ColorUtil.oldActionRippleColor;
+                        return ColorUtil.oldThirdActionColor;
                       }),
                       backgroundColor:
                           MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),

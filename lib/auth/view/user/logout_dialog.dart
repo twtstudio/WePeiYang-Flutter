@@ -25,7 +25,7 @@ class LogoutDialog extends Dialog {
         (route) => false);
   }
 
-  static final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
+  static final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +34,14 @@ class LogoutDialog extends Dialog {
         height: 120,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: ColorUtil.white237),
+            borderRadius: BorderRadius.circular(10),
+            color: ColorUtil.primaryBackgroundColor),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 20),
             Text(S.current.logout_hint,
-                style: TextUtil.base.normal.noLine.sp(13).blue79),
+                style: TextUtil.base.normal.noLine.sp(13).oldSecondaryAction),
             SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

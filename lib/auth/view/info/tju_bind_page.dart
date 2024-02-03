@@ -52,9 +52,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   void checkNetWork(bool jump) async {
     var rsp = await ClassesService.check();
-    if(!rsp){
+    if (!rsp) {
       ToastProvider.error('请连接校园网或连接VPN!');
-    }else{
+    } else {
       if (jump) {
         String url = 'http://classes.tju.edu.cn/';
         await launchUrl(Uri.parse(url));
@@ -65,16 +65,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular
-        .sp(13)
-        .whiteHint201;
+    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
     if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
         Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
-            style: TextUtil.base.bold
-                .sp(15)
-                .blue79),
+            style: TextUtil.base.bold.sp(15).oldSecondaryAction),
         SizedBox(height: 60),
         SizedBox(
           height: 50,
@@ -91,11 +87,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.blue103;
-                return ColorUtil.blue79;
+                  return ColorUtil.oldActionRippleColor;
+                return ColorUtil.oldSecondaryActionColor;
               }),
               backgroundColor:
-                  MaterialStateProperty.all(ColorUtil.blue79),
+                  MaterialStateProperty.all(ColorUtil.oldSecondaryActionColor),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -110,9 +106,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
           SizedBox(height: 30),
           Text(
             S.current.tju_bind_hint,
-            style: TextUtil.base.regular
-                .sp(10)
-                .blue98,
+            style: TextUtil.base.regular.sp(10).oldThirdAction,
           ),
           SizedBox(height: 20),
           ConstrainedBox(
@@ -146,7 +140,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               builder: (context, bool value, _) {
                 return Theme(
                   data: Theme.of(context)
-                      .copyWith(primaryColor: ColorUtil.blue53),
+                      .copyWith(primaryColor: ColorUtil.oldActionColor),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
@@ -194,11 +188,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.blue103;
-                  return ColorUtil.blue53;
+                    return ColorUtil.oldActionRippleColor;
+                  return ColorUtil.oldActionColor;
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.blue53),
+                    MaterialStateProperty.all(ColorUtil.oldActionColor),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -208,17 +202,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
           Text(
             '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
             '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
-            style: TextUtil.base.regular
-                .sp(10)
-                .blue98,
+            style: TextUtil.base.regular.sp(10).oldThirdAction,
           ),
           Row(
             children: [
               Text(
                 '办公网网址为 ',
-                style: TextUtil.base.regular
-                    .sp(10)
-                    .blue98,
+                style: TextUtil.base.regular.sp(10).oldThirdAction,
               ),
               WButton(
                 onPressed: () async {
@@ -245,13 +235,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.primaryBackgroundColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:ColorUtil.blue53, size: 32),
+                    color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -265,9 +255,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
                   child: Text(S.current.tju_bind,
-                      style: TextUtil.base.bold
-                          .sp(28)
-                          .blue48),
+                      style: TextUtil.base.bold.sp(28).oldFurthAction),
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
@@ -275,8 +263,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       CommonPreferences.isBindTju.value
                           ? S.current.is_bind
                           : S.current.not_bind,
-                      style:TextUtil.base.bold.grey.sp(12)
-                  ),
+                      style: TextUtil.base.bold.grey.sp(12)),
                 ),
               ],
             ),

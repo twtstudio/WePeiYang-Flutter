@@ -233,7 +233,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
+            style: TextUtil.base.ProductSans.secondaryInfo.normal.sp(10).w400,
           )
         ]);
 
@@ -281,7 +281,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.grey97.normal.sp(10).w400,
+            style: TextUtil.base.ProductSans.secondaryInfo.normal.sp(10).w400,
           )
         ]);
 
@@ -377,7 +377,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
           width: 350.w,
           height: 197.w,
-          color: ColorUtil.black12,
+          color: ColorUtil.iconAnimationStartColor,
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
@@ -590,7 +590,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                   Icons.refresh,
                   color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.black12,
+          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.iconAnimationStartColor,
         );
       },
     );

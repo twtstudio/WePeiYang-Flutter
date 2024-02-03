@@ -14,7 +14,7 @@ import '../../../main.dart';
 import '../../auth_router.dart';
 
 class AccountUpgradeDialog extends Dialog {
-  static final _hintStyle = TextUtil.base.bold.noLine.sp(15).blue98;
+  static final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction;
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class AccountUpgradeDialog extends Dialog {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: ColorUtil.white237),
+              color: ColorUtil.primaryBackgroundColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 20),
               Text("点击下方按钮进行账号升级",
-                  style: TextUtil.base.normal.noLine.sp(13).blue79),
+                  style: TextUtil.base.normal.noLine.sp(13).oldSecondaryAction),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

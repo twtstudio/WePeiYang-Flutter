@@ -54,7 +54,7 @@ class LakeDialogWidget extends Dialog {
                     children: [
                       Text(title,
                           style: titleTextStyle ??
-                              TextUtil.base.black2A.NotoSansSC.w500.normal
+                              TextUtil.base.label.NotoSansSC.w500.normal
                                   .sp(18)),
                     ],
                   ),
@@ -106,7 +106,7 @@ class LakeDialogWidget extends Dialog {
           elevation: MaterialStateProperty.all(3),
           overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
             if (states.contains(MaterialState.pressed))
-              return ColorUtil.blue79;
+              return ColorUtil.oldSecondaryActionColor;
             return ColorUtil.secondaryBackgroundColor;
           }),
           backgroundColor: MaterialStateProperty.all(
@@ -129,7 +129,7 @@ class LakeDialogWidget extends Dialog {
               boxShadow: [
                 BoxShadow(
                     blurRadius: 1.6,
-                    color: ColorUtil.black12,
+                    color: ColorUtil.iconAnimationStartColor,
                     offset: Offset(-1, 3),
                     spreadRadius: 1),
               ],
@@ -160,7 +160,7 @@ class LakeDialogWidget extends Dialog {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.blue79;
+                    return ColorUtil.oldSecondaryActionColor;
                   return ColorUtil.secondaryBackgroundColor;
                 }),
                 backgroundColor: MaterialStateProperty.all(

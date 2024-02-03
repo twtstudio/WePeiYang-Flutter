@@ -243,7 +243,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .sortSeq !=
                                                 0
                                             ? TextUtil.base.primaryAction.w600.sp(14)
-                                            : TextUtil.base.black2A.w400
+                                            : TextUtil.base.label.w400
                                                 .sp(14)),
                                   ),
                                 ),
@@ -262,7 +262,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .read<LakeModel>()
                                                     .sortSeq !=
                                                 0
-                                            ? TextUtil.base.black2A.w400.sp(14)
+                                            ? TextUtil.base.label.w400.sp(14)
                                             : TextUtil.base.primaryAction.w600.sp(14)),
                                   ),
                                 ),
@@ -382,14 +382,14 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
-                            color: ColorUtil.blue2CColor.withAlpha(12)),
+                            color: ColorUtil.primaryActionColor.withAlpha(12)),
                       );
                     ind--;
                     if (widget.index == 0 && ind == 0)
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: ColorUtil.black26,
+                            color: ColorUtil.dislikeSecondary,
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -403,7 +403,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: ColorUtil.black26,
+                            color: ColorUtil.dislikeSecondary,
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -413,7 +413,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: ColorUtil.black26,
+                          color: ColorUtil.dislikeSecondary,
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);
@@ -483,7 +483,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
 
     var errorText = Text(
         widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
-        style: TextUtil.base.black2A.NotoSansSC.w600.sp(16));
+        style: TextUtil.base.label.NotoSansSC.w600.sp(16));
 
     var retryButton = FloatingActionButton(
       child: RotationTransition(
@@ -567,7 +567,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
-          color: ColorUtil.blue2CColor.withAlpha(12)),
+          color: ColorUtil.primaryActionColor.withAlpha(12)),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,

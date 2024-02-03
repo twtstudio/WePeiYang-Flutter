@@ -205,7 +205,7 @@ class _TitleWidget extends StatelessWidget {
               var currentWeek =
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
-                  style: TextUtil.base.Swis.bold.sp(12).white202);
+                  style: TextUtil.base.Swis.bold.sp(12).reverse);
             }),
           ),
           Builder(builder: (context) {
@@ -265,7 +265,7 @@ class _HoursCounterWidget extends StatelessWidget {
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: ColorUtil.black12),
+                    color: ColorUtil.iconAnimationStartColor),
               ),
               Container(
                 height: 8.h,

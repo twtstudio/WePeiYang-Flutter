@@ -30,20 +30,20 @@ class _EmailBindPageState extends State<EmailBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).whiteHint201;
+    var hintStyle = TextUtil.base.regular.sp(13).oldHintWhite;
     if (CommonPreferences.email.value != "")
       return Column(children: [
         SizedBox(height: 60),
         Text(
           "${S.current.bind_email}: ",
           textAlign: TextAlign.center,
-          style: TextUtil.base.bold.sp(15).blue79,
+          style: TextUtil.base.bold.sp(15).oldSecondaryAction,
         ),
         SizedBox(height: 5),
         Text(
           CommonPreferences.email.value,
           textAlign: TextAlign.center,
-          style: TextUtil.base.bold.sp(15).blue79,
+          style: TextUtil.base.bold.sp(15).oldSecondaryAction,
         ),
         SizedBox(height: 95),
         SizedBox(
@@ -61,10 +61,10 @@ class _EmailBindPageState extends State<EmailBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.blue103;
-                return ColorUtil.blue79;
+                  return ColorUtil.oldActionRippleColor;
+                return ColorUtil.oldSecondaryActionColor;
               }),
-              backgroundColor: MaterialStateProperty.all(ColorUtil.blue79),
+              backgroundColor: MaterialStateProperty.all(ColorUtil.oldSecondaryActionColor),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -107,12 +107,12 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.blue103;
-                  return ColorUtil.blue53;
+                    return ColorUtil.oldActionRippleColor;
+                  return ColorUtil.oldActionColor;
                 }),
                 backgroundColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
-                  return ColorUtil.blue53;
+                  return ColorUtil.oldActionColor;
                 }),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
@@ -127,13 +127,13 @@ class _EmailBindPageState extends State<EmailBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.white250,
+          backgroundColor: ColorUtil.reverseTextColor,
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
-                child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue53, size: 32),
+                child: Icon(Icons.arrow_back,
+                    color: ColorUtil.oldActionColor, size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -144,7 +144,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 30),
                 child: Text(S.current.email_bind,
-                    style: TextUtil.base.bold.sp(28).blue48),
+                    style: TextUtil.base.bold.sp(28).oldFurthAction),
               ),
               Column(
                 children: [

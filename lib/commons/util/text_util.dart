@@ -45,22 +45,43 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get secondary => this.copyWith(color: ColorUtil.secondaryTextColor);
 
-  TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
-
-  TextStyle get white38 => this.copyWith(color: ColorUtil.white38);
-
-  TextStyle get whiteFD => this.copyWith(color: ColorUtil.whiteFDFE);
-
-  TextStyle get dangerousRed => this.copyWith(color: ColorUtil.dangerousRed);
+  TextStyle get label => this.copyWith(color: ColorUtil.labelTextColor);
 
   TextStyle get textButtonPrimary =>
       this.copyWith(color: ColorUtil.primaryTextButtonColor);
 
+  TextStyle get oldActionColor =>
+      this.copyWith(color: ColorUtil.oldActionColor);
+
+  TextStyle get oldSecondaryAction =>
+      this.copyWith(color: ColorUtil.oldSecondaryActionColor);
+
+  TextStyle get oldThirdAction =>
+      this.copyWith(color: ColorUtil.oldThirdActionColor);
+
+  TextStyle get oldFurthAction =>
+      this.copyWith(color: ColorUtil.oldFurthActionColor);
+
+  TextStyle get linkBlue => this.copyWith(color: ColorUtil.linkBlue);
+
+  TextStyle get infoText => this.copyWith(color: ColorUtil.infoTextColor);
+
+  TextStyle get oldHintWhite => this.copyWith(color: ColorUtil.oldHintColor);
+
+  TextStyle get oldHintDarker =>
+      this.copyWith(color: ColorUtil.oldHintDarkerColor);
+
+  //--------- unformatted --------
+
+  TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
+
+  TextStyle get white38 => this.copyWith(color: ColorUtil.white38);
+
+  TextStyle get dangerousRed => this.copyWith(color: ColorUtil.dangerousRed);
+
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
   TextStyle get greyHot => this.copyWith(color: ColorUtil.greyHotColor);
-
-  TextStyle get linkBlue => this.copyWith(color: ColorUtil.linkBlue);
 
   TextStyle get greyEB => this.copyWith(color: ColorUtil.whiteEBColor);
 
@@ -72,7 +93,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get whiteO60 => this.copyWith(color: Colors.white.withOpacity(0.6));
 
-  TextStyle get grey97 => this.copyWith(color: ColorUtil.grey97);
+  TextStyle get secondaryInfo =>
+      this.copyWith(color: ColorUtil.secondaryInfoTextColor);
 
   TextStyle get grey6C => this.copyWith(color: ColorUtil.grey6C);
 
@@ -86,11 +108,7 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get black42 => this.copyWith(color: ColorUtil.black42);
 
-  TextStyle get infoText => this.copyWith(color: ColorUtil.infoTextColor);
-
   TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
-
-  TextStyle get black2A => this.copyWith(color: ColorUtil.black2A);
 
   TextStyle get green5C => this.copyWith(color: ColorUtil.green5CColor);
 
@@ -100,31 +118,15 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get yellowF0 => this.copyWith(color: ColorUtil.yellowF0);
 
-  TextStyle get whiteHint201 => this.copyWith(color: ColorUtil.hintWhite201);
-
-  TextStyle get whiteHint205 => this.copyWith(color: ColorUtil.hintWhite205);
-
-  TextStyle get blue79 => this.copyWith(color: ColorUtil.blue79);
-
-  TextStyle get blue48 => this.copyWith(color: ColorUtil.blue48);
-
-  TextStyle get blue53 => this.copyWith(color: ColorUtil.blue53);
-
   TextStyle get grey89 => this.copyWith(color: ColorUtil.grey89);
-
-  TextStyle get blue98 => this.copyWith(color: ColorUtil.blue98);
-
-  TextStyle get blue98122 => this.copyWith(color: ColorUtil.blue98122);
 
   TextStyle get blue52hz => this.copyWith(color: ColorUtil.blue52hz);
 
   TextStyle get blue89 => this.copyWith(color: const Color(0xFF5189DC));
 
-  TextStyle get grey => this.copyWith(color: ColorUtil.grey);
+  TextStyle get grey => this.copyWith(color: ColorUtil.oldListActionColor);
 
   TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.whiteb1b2Color);
-
-  TextStyle get white202 => this.copyWith(color: ColorUtil.white202);
 
   TextStyle get white222 => this.copyWith(color: ColorUtil.white222);
 
@@ -133,7 +135,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle get blue98Opacity061 =>
       this.copyWith(color: ColorUtil.blue98Opacity061);
 
-  TextStyle get grey177 => this.copyWith(color: ColorUtil.grey177);
+  TextStyle get oldListGroupTitle =>
+      this.copyWith(color: ColorUtil.oldListGroupTitleColor);
 
   TextStyle get whiteCD => this.copyWith(color: ColorUtil.whiteCDColor);
 

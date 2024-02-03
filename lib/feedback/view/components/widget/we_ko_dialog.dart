@@ -35,12 +35,12 @@ class WeKoDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: Text('有人给你分享了微口令!',
-                    style: TextUtil.base.black2A.regular.sp(16).NotoSansSC),
+                    style: TextUtil.base.label.regular.sp(16).NotoSansSC),
               ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(post.title,
-                    style: TextUtil.base.black2A.bold.sp(17).NotoSansSC),
+                    style: TextUtil.base.label.bold.sp(17).NotoSansSC),
               ),
               if (post.imageUrls.isNotEmpty)
                 Image.network(
@@ -65,7 +65,7 @@ class WeKoDialog extends StatelessWidget {
                   overlayColor:
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return ColorUtil.blue79;
+                      return ColorUtil.oldSecondaryActionColor;
                     return ColorUtil.secondaryBackgroundColor;
                   }),
                   backgroundColor:
@@ -77,7 +77,7 @@ class WeKoDialog extends StatelessWidget {
                   margin: const EdgeInsets.all(7),
                   child: Text(
                     '查看详情',
-                    style: TextUtil.base.black2A.regular.sp(16).NotoSansSC,
+                    style: TextUtil.base.label.regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),

@@ -143,7 +143,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor =ColorUtil.blue2CColor;
+    var mainColor =ColorUtil.primaryActionColor;
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -196,7 +196,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
           titleSpacing: 0,
           leadingWidth: 40.w,
           title:
-              Text('课程详情', style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
+              Text('课程详情', style: TextUtil.base.PingFangSC.bold.label.sp(18)),
           actions: [
             Center(
               child: Container(

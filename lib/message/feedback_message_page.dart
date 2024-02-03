@@ -105,7 +105,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             elevation: 0,
             centerTitle: true,
             title: Text('消息中心',
-                style: TextUtil.base.PingFangSC.bold.black2A.sp(18)),
+                style: TextUtil.base.PingFangSC.bold.label.sp(18)),
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
@@ -128,7 +128,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                           return LakeDialogWidget(
                             title: '一键已读：',
                             titleTextStyle: TextUtil
-                                .base.normal.black2A.PingFangSC
+                                .base.normal.label.PingFangSC
                                 .sp(18)
                                 .w600,
                             content: Text('这将清除所有的消息提醒'),
@@ -138,7 +138,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                                 .sp(16)
                                 .w600,
                             cancelTextStyle: TextUtil
-                                .base.normal.black2A.PingFangSC
+                                .base.normal.label.PingFangSC
                                 .sp(16)
                                 .w400,
                             confirmText: "确认",
@@ -172,14 +172,14 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   isScrollable: false,
                   physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
-                  labelColor: ColorUtil.blue2CColor,
+                  labelColor: ColorUtil.primaryActionColor,
                   labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
                   unselectedLabelColor: ColorUtil.black2AColor,
                   unselectedLabelStyle:
-                      TextUtil.base.black2A.w500.PingFangSC.sp(14),
+                      TextUtil.base.label.w500.PingFangSC.sp(14),
                   indicator: CustomIndicator(
                       borderSide:
-                          BorderSide(color: ColorUtil.blue2CColor, width: 2)),
+                          BorderSide(color: ColorUtil.primaryActionColor, width: 2)),
                   tabs: tb,
                   onTap: (index) {
                     currentIndex.value = _tabController.index;

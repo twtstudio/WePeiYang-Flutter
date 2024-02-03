@@ -23,7 +23,7 @@ class WbyDialogButton extends StatelessWidget {
 
   Color get _buttonColor {
     if (type == ButtonType.blue)
-      return ColorUtil.blue2CColor;
+      return ColorUtil.primaryActionColor;
     else if (type == ButtonType.dark)
       return ColorUtil.grey6267Color;
     else
