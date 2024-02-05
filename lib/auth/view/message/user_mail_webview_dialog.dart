@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../commons/themes/wpy_theme.dart';
 
 class UserMailDialog extends Dialog {
   final String url;
@@ -19,7 +21,7 @@ class UserMailDialog extends Dialog {
           child: Container(
             height: 500,
             width: 300,
-            color: ColorUtil.primaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: CustomWebView(url),
           ),
         ),

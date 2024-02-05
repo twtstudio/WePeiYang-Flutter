@@ -5,12 +5,15 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
+
+import '../../../commons/themes/wpy_theme.dart';
 
 class RegisterPageOne extends StatefulWidget {
   @override
@@ -69,7 +72,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
       body: Container(
         height: 1.sh,
         decoration: BoxDecoration(
-          gradient: ColorUtil.gradientBlueAllScreen,
+          gradient: ColorUtil.primaryGradientAllScreen,
         ),
         child: Stack(
           children: [
@@ -78,7 +81,10 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
                 child: Text('新用户注册',
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
+                    style: TextUtil.base.normal.NotoSansSC
+                        .sp(40)
+                        .w700
+                        .reverse(context)),
               ),
             ),
             Padding(
@@ -99,7 +105,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "学号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse,
+                                      .reverse(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -110,27 +116,34 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse,
-                                  cursorColor: ColorUtil.primaryBackgroundColor,
+                                      .reverse(context),
+                                  cursorColor: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _userNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入学号",
                                     //S.current.student_id,
-                                    hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.reverse,
+                                    hintStyle: TextUtil.base.normal
+                                        .sp(14)
+                                        .w400
+                                        .reverse(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -155,7 +168,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: '昵称',
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse,
+                                      .reverse(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -166,27 +179,34 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse,
-                                  cursorColor: ColorUtil.primaryBackgroundColor,
+                                      .reverse(context),
+                                  cursorColor: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _nicknameFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入昵称",
                                     //S.current.user_name,
-                                    hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.reverse,
+                                    hintStyle: TextUtil.base.normal
+                                        .sp(14)
+                                        .w400
+                                        .reverse(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -211,7 +231,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "身份证号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse,
+                                      .reverse(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -222,27 +242,34 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse,
-                                  cursorColor: ColorUtil.primaryBackgroundColor,
+                                      .reverse(context),
+                                  cursorColor: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _idNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入身份证号",
                                     //S.current.user_name,
-                                    hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.reverse,
+                                    hintStyle: TextUtil.base.normal
+                                        .sp(14)
+                                        .w400
+                                        .reverse(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -267,7 +294,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "邮箱",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse,
+                                      .reverse(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -278,27 +305,34 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse,
-                                  cursorColor: ColorUtil.primaryBackgroundColor,
+                                      .reverse(context),
+                                  cursorColor: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _emailFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: ColorUtil.primaryBackgroundColor,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     hintText: "请输入邮箱",
                                     //S.current.user_name,
-                                    hintStyle:
-                                        TextUtil.base.normal.sp(14).w400.reverse,
+                                    hintStyle: TextUtil.base.normal
+                                        .sp(14)
+                                        .w400
+                                        .reverse(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -318,13 +352,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               width: width - 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
-                                color: ColorUtil.primaryBackgroundColor,
+                                color: WpyTheme.of(context)
+                                    .get(WpyThemeKeys.primaryBackgroundColor),
                               ),
                               child: Center(
                                 child: Text("下一步",
                                     style: TextUtil.base.normal.NotoSansSC.w400
                                         .sp(16)
-                                        .primaryAction),
+                                        .primaryAction(context)),
                               ),
                             ),
                           )),
@@ -411,7 +446,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: ColorUtil.gradientBlueAllScreen,
+          gradient: ColorUtil.primaryGradientAllScreen,
         ),
         child: Column(
           children: [
@@ -421,7 +456,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "新用户注册",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
+                    style: TextUtil.base.normal.NotoSansSC
+                        .sp(40)
+                        .w700
+                        .reverse(context)),
               ])),
             ),
             SizedBox(height: 62),
@@ -435,34 +473,43 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     children: [
                       Text.rich(TextSpan(
                         text: "手机号",
-                        style:
-                            TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
+                        style: TextUtil.base.normal.NotoSansSC.w400
+                            .sp(16)
+                            .reverse(context),
                       )),
                       ConstrainedBox(
                         constraints: BoxConstraints(
                           maxHeight: 55,
                         ),
                         child: TextField(
-                          style:
-                              TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
-                          cursorColor: ColorUtil.primaryBackgroundColor,
+                          style: TextUtil.base.normal.w400
+                              .sp(14)
+                              .NotoSansSC
+                              .reverse(context),
+                          cursorColor: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor),
                           textInputAction: TextInputAction.next,
                           focusNode: _phoneFocus,
                           decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: ColorUtil.primaryBackgroundColor,
+                                color: WpyTheme.of(context)
+                                    .get(WpyThemeKeys.primaryBackgroundColor),
                                 width: 1.0,
                               ),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: ColorUtil.primaryBackgroundColor,
+                                color: WpyTheme.of(context)
+                                    .get(WpyThemeKeys.primaryBackgroundColor),
                                 width: 1.0,
                               ),
                             ),
                             hintText: "请输入手机号",
-                            hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+                            hintStyle: TextUtil.base.normal
+                                .sp(14)
+                                .w400
+                                .reverse(context),
                             isCollapsed: true,
                             contentPadding:
                                 const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -478,8 +525,9 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     children: [
                       Text.rich(TextSpan(
                         text: "验证码",
-                        style:
-                            TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
+                        style: TextUtil.base.normal.NotoSansSC.w400
+                            .sp(16)
+                            .reverse(context),
                       )),
                       SizedBox(height: 20),
                       Stack(
@@ -497,8 +545,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   ),
                                   child: Text(
                                     code.length > 0 ? code.substring(0, 1) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -512,8 +560,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   ),
                                   child: Text(
                                     code.length > 1 ? code.substring(1, 2) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -527,8 +575,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   ),
                                   child: Text(
                                     code.length > 2 ? code.substring(2, 3) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -543,7 +591,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 3 ? code.substring(3, 4) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                        .base.normal.NotoSansSC.primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -558,7 +606,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 4 ? code.substring(4, 5) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                        .base.normal.NotoSansSC.primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -573,7 +621,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   child: Text(
                                     code.length > 5 ? code.substring(5, 6) : "",
                                     style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction
+                                        .base.normal.NotoSansSC.primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -608,13 +656,14 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                           width: width - 60,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
-                            color: ColorUtil.primaryBackgroundColor,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                           ),
                           child: Center(
                             child: Text("下一步",
                                 style: TextUtil.base.normal.NotoSansSC.w400
                                     .sp(16)
-                                    .primaryAction),
+                                    .primaryAction(context)),
                           ),
                         ),
                       )),
@@ -642,7 +691,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                             style: TextUtil
                                                 .base.normal.NotoSansSC.w400
                                                 .sp(14)
-                                                .reverse,
+                                                .reverse(context),
                                           )));
                                     })
                                 : WButton(
@@ -652,7 +701,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                       style: TextUtil
                                           .base.normal.NotoSansSC.w400
                                           .sp(14)
-                                          .reverse,
+                                          .reverse(context),
                                     ),
                                   ),
                             onPressed: () {},
@@ -747,7 +796,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: ColorUtil.gradientBlueAllScreen,
+          gradient: ColorUtil.primaryGradientAllScreen,
         ),
         child: Column(
           children: [
@@ -757,7 +806,10 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "新用户注册",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
+                    style: TextUtil.base.normal.NotoSansSC
+                        .sp(40)
+                        .w700
+                        .reverse(context)),
               ])),
             ),
             SizedBox(height: 62),
@@ -775,7 +827,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "设置密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .reverse,
+                                .reverse(context),
                           ),
                         ),
                         ConstrainedBox(
@@ -783,11 +835,12 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             maxHeight: 55,
                           ),
                           child: TextField(
-                            cursorColor: ColorUtil.primaryBackgroundColor,
+                            cursorColor: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .reverse,
+                                .reverse(context),
                             keyboardType: TextInputType.visiblePassword,
                             textInputAction: TextInputAction.next,
                             focusNode: _pw1Focus,
@@ -795,18 +848,23 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.primaryBackgroundColor,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.primaryBackgroundColor,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               hintText: "请输入密码",
-                              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+                              hintStyle: TextUtil.base.normal
+                                  .sp(14)
+                                  .w400
+                                  .reverse(context),
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -830,7 +888,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "确认密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .reverse,
+                                .reverse(context),
                           ),
                         ),
                         ConstrainedBox(
@@ -841,26 +899,32 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .reverse,
-                            cursorColor: ColorUtil.primaryBackgroundColor,
+                                .reverse(context),
+                            cursorColor: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: _pw2Focus,
                             obscureText: true,
                             decoration: InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.primaryBackgroundColor,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: ColorUtil.primaryBackgroundColor,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               hintText: '请再次输入您的密码',
-                              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+                              hintStyle: TextUtil.base.normal
+                                  .sp(14)
+                                  .w400
+                                  .reverse(context),
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -882,17 +946,19 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: '注册并登录',
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .primaryAction)),
+                                .primaryAction(context))),
                         style: ButtonStyle(
                           overlayColor:
                               MaterialStateProperty.resolveWith<Color>(
                                   (states) {
                             if (states.contains(MaterialState.pressed))
                               return ColorUtil.whiteOpacity01;
-                            return ColorUtil.primaryBackgroundColor;
+                            return WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor);
                           }),
-                          backgroundColor:
-                              MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(
+                              WpyTheme.of(context)
+                                  .get(WpyThemeKeys.primaryBackgroundColor)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),
@@ -911,7 +977,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               materialTapTargetSize:
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
-                              activeColor: ColorUtil.primaryActionColor,
+                              activeColor: WpyTheme.of(context)
+                                  .get(WpyThemeKeys.primaryActionColor),
                               onChanged: (_) {
                                 checkNotifier.value = !checkNotifier.value;
                               },
@@ -922,7 +989,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "我已阅读并同意",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
-                                .label)),
+                                .label(context))),
                         WButton(
                           onPressed: () => showDialog(
                               context: context,
@@ -939,7 +1006,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "与",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(10)
-                                .label)),
+                                .label(context))),
                         WButton(
                           onPressed: () => showDialog(
                               context: context,

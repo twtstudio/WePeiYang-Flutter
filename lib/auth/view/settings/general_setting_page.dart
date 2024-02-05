@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -6,14 +7,15 @@ import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
 
 import '../../../commons/local/animation_provider.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../gpa/model/gpa_notifier.dart';
 
@@ -23,25 +25,26 @@ class GeneralSettingPage extends StatefulWidget {
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
-  static final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle;
-  static final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction;
-  static final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
-  static const arrow =
-      Icon(Icons.arrow_forward_ios, color: ColorUtil.oldListActionColor, size: 22);
-
   @override
   Widget build(BuildContext context) {
+    final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle;
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
+    final arrow = Icon(Icons.arrow_forward_ios,
+        color: ColorUtil.oldListActionColor, size: 22);
+    final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: ColorUtil.oldActionColor, size: 32),
+                color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -59,7 +62,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -79,7 +83,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -112,7 +117,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -235,7 +241,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -269,7 +276,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -305,7 +313,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -342,7 +351,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -397,7 +407,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(

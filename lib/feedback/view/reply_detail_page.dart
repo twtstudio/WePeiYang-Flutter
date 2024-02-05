@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -18,6 +19,7 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class ReplyDetailPage extends StatefulWidget {
@@ -39,7 +41,6 @@ class ReplyDetailPageArgs {
 
 class _ReplyDetailPageState extends State<ReplyDetailPage>
     with SingleTickerProviderStateMixin {
-
   int currentPage = 1;
   List<Floor>? floors;
 
@@ -327,12 +328,14 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500.secondaryInfo
+                                style: TextUtil.base.NotoSansSC.w500
+                                    .secondaryInfo(context)
                                     .sp(12)),
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: ColorUtil.primaryBackgroundColor,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                           )),
                     ),
                   ),
@@ -348,7 +351,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       child: Center(
           child: Text(
         '查看原帖',
-        style: TextUtil.base.label.bold,
+        style: TextUtil.base.label(context).bold,
       )),
       onPressed: () async {
         await FeedbackService.getPostById(
@@ -398,7 +401,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       titleSpacing: 0,
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
+        icon: Icon(Icons.arrow_back,
+            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],
@@ -411,7 +415,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
             alignment: Alignment.centerLeft,
             child: Text(
               '回复',
-              style: TextUtil.base.NotoSansSC.label.w600.sp(18),
+              style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
             ),
           ),
         ),

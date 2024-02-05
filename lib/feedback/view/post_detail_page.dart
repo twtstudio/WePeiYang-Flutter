@@ -9,7 +9,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
@@ -31,6 +30,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../commons/themes/template/wpy_theme_data.dart';
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
@@ -331,8 +332,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间正序',
                           style: order.value == 1
-                              ? TextUtil.base.label.w700.sp(14).primaryAction
-                              : TextUtil.base.label.w500.sp(14)),
+                              ? TextUtil.base
+                                  .label(context)
+                                  .w700
+                                  .sp(14)
+                                  .primaryAction(context)
+                              : TextUtil.base.label(context).w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
                     WButton(
@@ -341,8 +346,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间倒序',
                           style: order.value == 0
-                              ? TextUtil.base.label.w700.sp(14).primaryAction
-                              : TextUtil.base.label.w500.sp(14)),
+                              ? TextUtil.base
+                                  .label(context)
+                                  .w700
+                                  .sp(14)
+                                  .primaryAction(context)
+                              : TextUtil.base.label(context).w500.sp(14)),
                     ),
                     Spacer(),
                     ValueListenableBuilder(
@@ -357,11 +366,15 @@ class _PostDetailPageState extends State<PostDetailPage>
                               ? Container(
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.primaryActionColor,
+                                    color: WpyTheme.of(context)
+                                        .get(WpyThemeKeys.primaryActionColor),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
-                                      style: TextUtil.base.reverse.w400.sp(14)),
+                                      style: TextUtil.base
+                                          .reverse(context)
+                                          .w400
+                                          .sp(14)),
                                 )
                               : Container(
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
@@ -370,7 +383,10 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
-                                      style: TextUtil.base.label.w400.sp(14)),
+                                      style: TextUtil.base
+                                          .label(context)
+                                          .w400
+                                          .sp(14)),
                                 ),
                         );
                       },
@@ -512,7 +528,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                 if (screenshotting.value)
                   return Screenshot(
                       child: Container(
-                          color: ColorUtil.primaryBackgroundColor, child: contentList),
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor),
+                          child: contentList),
                       controller: selectedScreenshotController);
                 return Container(child: contentList);
               }),
@@ -545,7 +563,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                         blurRadius: 6,
                         spreadRadius: 0),
                   ],
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                 ),
                 child: Column(
                   children: [
@@ -656,11 +675,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         child: widget.post.type == 1
                                             ? Text('校务帖子为实名发言!!!',
                                                 style: TextUtil.base.NotoSansSC
-                                                    .w500.dangerousRed
+                                                    .w500.dangerousRed(context)
                                                     .sp(12))
                                             : Text('友善回复，真诚沟通',
                                                 style: TextUtil
-                                                    .base.NotoSansSC.w500.secondaryInfo
+                                                    .base.NotoSansSC.w500
+                                                    .secondaryInfo(context)
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
@@ -720,8 +740,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text(
                         '拉黑',
-                        style:
-                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
                       ),
                     ),
                   // 分享按钮
@@ -746,8 +767,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                     },
                     child: Text(
                       '分享',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
                   CupertinoActionSheetAction(
@@ -758,8 +780,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                     },
                     child: Text(
                       '截图分享',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
                   CupertinoActionSheetAction(
@@ -770,8 +793,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                     },
                     child: Text(
                       '选择评论截图',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
                   if (widget.post.isOwner == false)
@@ -782,7 +806,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                         },
                         child: Text(
                           '举报',
-                          style: TextUtil.base.normal.w400.NotoSansSC.primary
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
                               .sp(16),
                         ))
                   else
@@ -813,15 +838,17 @@ class _PostDetailPageState extends State<PostDetailPage>
                         },
                         child: Text(
                           '删除',
-                          style: TextUtil.base.normal.w400.NotoSansSC.primary
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
                               .sp(16),
                         )),
                   CupertinoActionSheetAction(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
                       '收藏',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
                 ],
@@ -830,7 +857,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                    style: TextUtil.base.normal.w400.NotoSansSC
+                        .primary(context)
+                        .sp(16),
                   ),
                 ),
               );
@@ -863,7 +892,8 @@ class _PostDetailPageState extends State<PostDetailPage>
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
-      backgroundColor: ColorUtil.primaryBackgroundColor,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
       leading: IconButton(
         icon: Icon(
           CupertinoIcons.back,
@@ -901,7 +931,7 @@ class _PostDetailPageState extends State<PostDetailPage>
             alignment: Alignment.center,
             child: Text(
               widget.post.type == 1 ? '校务提问：实名' : '冒泡',
-              style: TextUtil.base.NotoSansSC.label.w600.sp(18),
+              style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
             ),
           ),
         ),
@@ -917,7 +947,8 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: GestureDetector(
         child: Scaffold(
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           appBar: appBar,
           body: body,
         ),
@@ -951,14 +982,14 @@ class _PostDetailPageState extends State<PostDetailPage>
               content: Text('您确定要$quote这条冒泡吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600,
               confirmText: "确认",
               gradient: LinearGradient(
                   colors: [
-                    ColorUtil.primaryActionColor,
-                    ColorUtil.blueA6Color,
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryLightActionColor),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -1030,7 +1061,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     Widget inputField = Consumer<NewFloorProvider>(builder: (_, data, __) {
       data.focusNode = _commentFocus;
       return TextField(
-        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary,
+        style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary(context),
         focusNode: _commentFocus,
         controller: textEditingController,
         maxLength: 200,
@@ -1164,7 +1195,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
-          themeColor: ColorUtil.primaryTextButtonColor),
+          themeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
@@ -1234,8 +1265,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           margin: EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
-                            border:
-                                Border.all(width: 1, color: ColorUtil.dislikeSecondary),
+                            border: Border.all(
+                                width: 1, color: ColorUtil.dislikeSecondary),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1270,7 +1301,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           child: Icon(
                             Icons.close,
                             size: 14,
-                            color: ColorUtil.secondaryBackgroundColor,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.secondaryBackgroundColor),
                           ),
                         ),
                       ),
@@ -1333,11 +1365,11 @@ class _ManagerPopUpState extends State<ManagerPopUp>
               SizedBox(height: 4),
               Text(
                 ' 帖子：' + widget.post.title,
-                style: TextUtil.base.ProductSans.label.medium.sp(18),
+                style: TextUtil.base.ProductSans.label(context).medium.sp(18),
               ),
               Text(
                 ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
-                style: TextUtil.base.ProductSans.label.medium.sp(18),
+                style: TextUtil.base.ProductSans.label(context).medium.sp(18),
               ),
               AnimatedOption(
                 origin: originTag == 0,
@@ -1371,7 +1403,8 @@ class _ManagerPopUpState extends State<ManagerPopUp>
             ]),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: ColorUtil.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
       ),
     );
   }
@@ -1436,7 +1469,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
             children: [
               Text(
                 widget.title,
-                style: TextUtil.base.reverse.medium.sp(20),
+                style: TextUtil.base.reverse(context).medium.sp(20),
               ),
               // 置顶动作
               if (isSelected && widget.action == 0 && !widget.origin)
@@ -1446,27 +1479,36 @@ class _AnimatedOptionState extends State<AnimatedOption>
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         '0为取消置顶，只能为0~30000',
-                        style: TextUtil.base.reverse.medium.sp(10),
+                        style: TextUtil.base.reverse(context).medium.sp(10),
                       ),
                     ),
                     TextField(
                       controller: tc,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelStyle: TextUtil.base.reverse.NotoSansSC.w400.sp(16),
-                        hintStyle: TextUtil.base.reverse.NotoSansSC.w800.sp(16),
+                        labelStyle: TextUtil.base
+                            .reverse(context)
+                            .NotoSansSC
+                            .w400
+                            .sp(16),
+                        hintStyle: TextUtil.base
+                            .reverse(context)
+                            .NotoSansSC
+                            .w800
+                            .sp(16),
                         hintText: '置顶数值',
                         contentPadding: const EdgeInsets.all(0),
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      style: TextUtil.base.reverse.medium.sp(16),
+                      style: TextUtil.base.reverse(context).medium.sp(16),
                     ),
                     Container(
                         height: 1.5,
                         width: double.infinity,
-                        color: ColorUtil.primaryBackgroundColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor)),
                   ],
                 ),
               if (isSelected)
@@ -1479,7 +1521,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                         Spacer(),
                         Text(
                           origin ? '取消' : '确认',
-                          style: TextUtil.base.reverse.medium.sp(18),
+                          style: TextUtil.base.reverse(context).medium.sp(18),
                         ),
                       ],
                     ),

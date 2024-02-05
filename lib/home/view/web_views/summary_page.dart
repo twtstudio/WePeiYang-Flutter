@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save_channel.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../commons/themes/color_util.dart';
+import '../../../commons/themes/wpy_theme.dart';
 
 class FeedbackSummaryPage extends WbyWebView {
-  const FeedbackSummaryPage({Key? key})
+  FeedbackSummaryPage({Key? key,required BuildContext context})
       : super(
             page: "年度总结",
-            backgroundColor: ColorUtil.primaryBackgroundColor,
+            backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             fullPage: false,
             key: key);
 

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 
+import '../themes/template/wpy_theme_data.dart';
+import '../themes/wpy_theme.dart';
+
 class LevelUtil extends StatelessWidget {
   final String level;
   final TextStyle style;
@@ -16,7 +19,7 @@ class LevelUtil extends StatelessWidget {
       required this.style})
       : super(key: key);
 
-  static const List<Color> colors = ColorUtil.rainbowColors;
+  static List<Color> colors = ColorUtil.levelColors;
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +73,14 @@ class LevelProgress extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [ColorUtil.primaryActionColor, ColorUtil.primaryBackgroundColor],
-            stops: [value, value]),
+            colors: [
+              WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+            ],
+            stops: [
+              value,
+              value
+            ]),
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(

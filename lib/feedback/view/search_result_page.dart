@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -9,6 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
@@ -149,11 +151,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
         titleSpacing: 0,
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: ColorUtil.defaultActionColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
           ),
           onPressed: () {
             Navigator.pop(context, true);
@@ -170,7 +173,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   curve: Curves.easeInOut);
           },
           child: Center(
-            child: Text(title, style: TextUtil.base.bold.label.sp(16)),
+            child: Text(title, style: TextUtil.base.bold.label(context).sp(16)),
           ),
         ),
         actions: [
@@ -227,7 +230,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   (context, index) {
                     if (index == 0) {
                       return Container(
-                        color: ColorUtil.primaryBackgroundColor,
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor),
                         child: Column(
                           children: [
                             const SizedBox(height: 10),
@@ -241,10 +245,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                   },
                                   child: Text('发帖时间正序',
                                       style: searchMode == 0
-                                          ? TextUtil.base.label.w700
+                                          ? TextUtil.base
+                                              .label(context)
+                                              .w700
                                               .sp(14)
-                                              .primaryAction
-                                          : TextUtil.base.label.w500.sp(14)),
+                                              .primaryAction(context)
+                                          : TextUtil.base
+                                              .label(context)
+                                              .w500
+                                              .sp(14)),
                                 ),
                                 const SizedBox(width: 15),
                                 WButton(
@@ -254,10 +263,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
                                   },
                                   child: Text('更新时间正序',
                                       style: searchMode == 1
-                                          ? TextUtil.base.label.w700
+                                          ? TextUtil.base
+                                              .label(context)
+                                              .w700
                                               .sp(14)
-                                              .primaryAction
-                                          : TextUtil.base.label.w500.sp(14)),
+                                              .primaryAction(context)
+                                          : TextUtil.base
+                                              .label(context)
+                                              .w500
+                                              .sp(14)),
                                 ),
                                 Spacer(),
                                 const SizedBox(width: 15),
@@ -281,8 +295,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         } else {
           body = Center(
             child: Text(S.current.feedback_no_post,
-                style: TextUtil.base.regular
-                    .grey145),
+                style: TextUtil.base.regular.grey145),
           );
         }
         break;

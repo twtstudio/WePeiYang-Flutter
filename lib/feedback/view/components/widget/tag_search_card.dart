@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-
-import '../../../../commons/widgets/w_button.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -124,7 +124,9 @@ class _SearchTagCardState extends State<SearchTagCard>
                         width: ScreenUtil().setWidth(230),
                         child: Text(
                           "添加“${_controller.text}”话题",
-                          style: TextUtil.base.w400.NotoSansSC.sp(16).label,
+                          style: TextUtil.base.w400.NotoSansSC
+                              .sp(16)
+                              .label(context),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         )),
@@ -175,12 +177,13 @@ class _SearchTagCardState extends State<SearchTagCard>
           "assets/svg_pics/lake_butt_icons/hashtag.svg",
           width: 14,
           color: _controller.text == ''
-              ? ColorUtil.unlabeledColor
-              : ColorUtil.defaultActionColor,
+              ? WpyTheme.of(context).get(WpyThemeKeys.unlabeledColor)
+              : WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
         ),
-        labelStyle: TextUtil.base.label.NotoSansSC.w400.sp(16),
-        fillColor: ColorUtil.primaryBackgroundColor,
-        hintStyle: TextUtil.base.secondaryInfo.NotoSansSC.w400.sp(16),
+        labelStyle: TextUtil.base.label(context).NotoSansSC.w400.sp(16),
+        fillColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        hintStyle: TextUtil.base.secondaryInfo(context).NotoSansSC.w400.sp(16),
         hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(
@@ -202,7 +205,7 @@ class _SearchTagCardState extends State<SearchTagCard>
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 '使用此tag:',
-                style: TextUtil.base.w600.NotoSansSC.sp(12).greyA6,
+                style: TextUtil.base.w600.NotoSansSC.sp(12).unlabeled(context),
               ),
             ),
           searchBar,

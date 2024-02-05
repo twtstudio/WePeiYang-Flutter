@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class EditBottomSheet extends StatefulWidget {
@@ -91,7 +92,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor = ColorUtil.primaryActionColor;
+    var mainColor = WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -174,7 +175,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
-                      color: ColorUtil.primaryActionColor,
+                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                     ),
                   ),
                 )
@@ -223,7 +224,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
               children: [
                 SizedBox(width: 12.w),
                 Text('新建课程',
-                    style: TextUtil.base.PingFangSC.bold.label.sp(18)),
+                    style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
@@ -236,7 +237,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.regular.reverse.sp(12)),
+                      style: TextUtil.base.PingFangSC.regular.reverse(context).sp(12)),
                 ),
                 SizedBox(width: 12.w),
               ],
@@ -244,7 +245,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor:ColorUtil.primaryBackgroundColor),
+                    .copyWith(secondaryHeaderColor:WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

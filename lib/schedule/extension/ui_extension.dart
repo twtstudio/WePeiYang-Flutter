@@ -15,9 +15,11 @@ class AnimatedActiveCourse extends StatelessWidget {
 
   AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
-  final _activeNameStyle = TextUtil.base.reverse.bold.sp(11);
-  final _activeTeacherStyle = TextUtil.base.reverse.sp(8);
-  final _activeClassroomStyle = TextUtil.base.reverse.sp(11);
+  _activeNameStyle(context) => TextUtil.base.reverse(context).bold.sp(11);
+
+  _activeTeacherStyle(context) => TextUtil.base.reverse(context).sp(8);
+
+  _activeClassroomStyle(context) => TextUtil.base.reverse(context).sp(11);
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +70,18 @@ class AnimatedActiveCourse extends StatelessWidget {
                     children: [
                       Spacer(),
                       Text(formatText(_pairs[0].first.name),
-                          style: _activeNameStyle, textAlign: TextAlign.center),
+                          style: _activeNameStyle(context),
+                          textAlign: TextAlign.center),
                       SizedBox(height: 2),
                       Text(teacher,
-                          style: _activeTeacherStyle,
+                          style: _activeTeacherStyle(context),
                           textAlign: TextAlign.center),
                       if (_pairs[0].arrange.location != "")
                         Padding(
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
                               replaceBuildingWord(_pairs[0].arrange.location),
-                              style: _activeClassroomStyle,
+                              style: _activeClassroomStyle(context),
                               textAlign: TextAlign.center),
                         ),
                       SizedBox(height: 2),

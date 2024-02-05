@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 /// 构建wpy_page中的gpa部分
@@ -23,14 +25,14 @@ class GPAPreview extends StatelessWidget {
       return
 
           ///去掉周围padding的懒方法
-        WButton(
-          onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
-          child: Column(
-            children: [
-              Image.asset("assets/images/schedule_empty.png"),
-            ],
-          ),
-        );
+          WButton(
+        onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
+        child: Column(
+          children: [
+            Image.asset("assets/images/schedule_empty.png"),
+          ],
+        ),
+      );
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
       behavior: HitTestBehavior.opaque,
@@ -42,7 +44,7 @@ class GPAPreview extends StatelessWidget {
             //_CurveText(),
             SizedBox(height: 45.h),
             _GPAIntro(),
-            GPACurve(GPAColor.blue, isPreview: true),
+            GPACurve(GPAColor.blue(context), isPreview: true),
           ]),
         ),
       ),
@@ -52,12 +54,11 @@ class GPAPreview extends StatelessWidget {
 
 /// wpy_page中显示数值信息
 class _GPAIntro extends StatelessWidget {
-  static final _textStyle =
-      TextUtil.base.w300.sp(14).whiteCD;
-  static final _numStyle = TextUtil.base.Swis.bold.label.sp(22);
-
   @override
   Widget build(BuildContext context) {
+    final _textStyle = TextUtil.base.w300.sp(14).whiteCD;
+    final _numStyle = TextUtil.base.Swis.bold.label(context).sp(22);
+
     var total = context.select<GPANotifier, Total?>((p) => p.total);
     var weighted = "不";
     var grade = "知";
@@ -129,8 +130,9 @@ class GPACurve extends StatefulWidget {
 
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
-  static const Color _popupCardPreview = ColorUtil.primaryBackgroundColor;
-  static const Color _popupTextPreview = ColorUtil.oldActionColor;
+  late final Color _popupCardPreview =
+      WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
+  late final Color _popupTextPreview = WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
   static late Color _popupCardColor;
   static late Color _popupTextColor;
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
@@ -181,8 +183,10 @@ class _GPACurveState extends State<GPACurve>
                       painter: _GPACurvePainter(widget._gpaColors,
                           isPreview: widget.isPreview,
                           points: points,
+                          context: context,
                           taped: _newTaped),
-                      size: Size(double.maxFinite, _canvasHeight+20),
+                      size: Size(double.maxFinite, _canvasHeight + 20),
+
                       ///+20为了给下面留空
                     ),
 
@@ -227,13 +231,10 @@ class _GPACurveState extends State<GPACurve>
                                   ),
                                 ),
                                 CustomPaint(
-                                  painter: _GPAPopupPainter(
-                                    widget._gpaColors,
-                                    points,
-                                    _newTaped,
-                                    widget.isPreview,
-                                    isPreview: widget.isPreview,
-                                  ),
+                                  painter: _GPAPopupPainter(widget._gpaColors,
+                                      points, _newTaped, widget.isPreview,
+                                      isPreview: widget.isPreview,
+                                      context: context),
                                   size: const Size(80, 30),
                                 ),
                               ],
@@ -254,9 +255,9 @@ class _GPACurveState extends State<GPACurve>
   _initPoints(List<Point<double>> points, List<double> list, double maxWidth) {
     var width = maxWidth;
     var step = width / (list.length + 1);
-    var h1 = _canvasHeight ; // canvas除去上面的空白
+    var h1 = _canvasHeight; // canvas除去上面的空白
     var h2 = _canvasHeight - 40; // canvas中间区域大小
-    
+
     /// 求gpa最小值（算上起止）与最值差，使曲线高度符合比例
     var minStat = list.reduce(min);
     var maxStat = list.reduce(max);
@@ -301,8 +302,7 @@ class _GPAPopupPainter extends CustomPainter {
   final bool isPre;
 
   /// 在wpy_page显示的颜色
-  static const Color _outerPreview = ColorUtil.white10;
-  static const Color _innerPreview = ColorUtil.primaryActionColor;
+  static final Color _outerPreview = ColorUtil.white10;
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
@@ -312,9 +312,11 @@ class _GPAPopupPainter extends CustomPainter {
   final Paint _outerPaint;
 
   _GPAPopupPainter(List<Color> gpaColors, this.points, this.taped, this.isPre,
-      {required this.isPreview})
+      {required this.isPreview, required BuildContext context})
       : _innerPaint = Paint()
-          ..color = isPreview ? _innerPreview : gpaColors[0]
+          ..color = isPreview
+              ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+              : gpaColors[0]
           ..style = PaintingStyle.fill,
         _outerPaint = Paint()
           ..color = isPreview ? _outerPreview : gpaColors[1]
@@ -341,21 +343,24 @@ class _GPACurvePainter extends CustomPainter {
   final List<Point<double>> points;
   final int taped;
 
-  /// 在wpy_page显示的颜色
-  static const Color _linePreview = ColorUtil.primaryActionColor;
-  static const Color _pointPreview = ColorUtil.primaryBackgroundColor;
-
   final Paint _linePaint;
   final Paint _pointPaint;
 
   _GPACurvePainter(List<Color> gpaColors,
-      {required this.isPreview, required this.points, required this.taped})
+      {required this.isPreview,
+      required this.points,
+      required this.taped,
+      required BuildContext context})
       : _linePaint = Paint()
-          ..color = isPreview ? _linePreview : gpaColors[3]
+          ..color = isPreview
+              ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+              : gpaColors[3]
           ..style = PaintingStyle.stroke
           ..strokeWidth = 5.0,
         _pointPaint = Paint()
-          ..color = isPreview ? _pointPreview : gpaColors[1]
+          ..color = isPreview
+              ? WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+              : gpaColors[1]
           ..style = PaintingStyle.fill;
 
   _drawLine(Canvas canvas, List<Point<double>> points) {

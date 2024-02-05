@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
@@ -706,7 +708,8 @@ class _PickImageState extends State<PickImage> {
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
-          themeColor: ColorUtil.primaryTextButtonColor),
+          themeColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -1108,7 +1111,8 @@ class StateItem extends StatelessWidget {
             ? BoxDecoration(
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(itemHeight / 2),
-                color: ColorUtil.primaryActionColor)
+                color:
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor))
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(itemHeight / 2),
                 border: Border.all(color: Color(0XFF62677B), width: 1)),
@@ -1157,8 +1161,8 @@ class _ReportButtonState extends State<ReportButton> {
             style: ButtonStyle(
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(height / 2))),
-                backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.primaryActionColor),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
                 minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
         ],

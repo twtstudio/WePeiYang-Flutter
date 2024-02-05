@@ -125,7 +125,7 @@ class _PathTitle extends StatelessWidget {
       children: [
         Text(
           buildingName,
-          style: TextUtil.base.reverse.sp(20).Swis.w400.space(letterSpacing: 5),
+          style: TextUtil.base.reverse(context).sp(20).Swis.w400.space(letterSpacing: 5),
         )
       ],
     );
@@ -176,7 +176,7 @@ class FloorWidget extends StatelessWidget {
               SizedBox(width: 6.w),
               Text(
                 areaName,
-                style: TextUtil.base.PingFangSC.w400.label.sp(16),
+                style: TextUtil.base.PingFangSC.w400.label(context).sp(16),
               ),
             ],
           ),
@@ -208,7 +208,7 @@ class _RoomItem extends StatelessWidget {
       children: [
         Text(
           classroom.name,
-          style: TextUtil.base.label.w400.PingFangSC.sp(14),
+          style: TextUtil.base.label(context).w400.PingFangSC.sp(14),
         ),
         SizedBox(height: 5.w),
         roomState,

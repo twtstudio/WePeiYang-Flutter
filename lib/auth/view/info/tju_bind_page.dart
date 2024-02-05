@@ -5,12 +5,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/network/classes_backend_service.dart';
 import '../../../commons/network/classes_service.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../schedule/model/course_provider.dart';
 
@@ -70,7 +72,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
       return Column(children: [
         SizedBox(height: 30),
         Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
-            style: TextUtil.base.bold.sp(15).oldSecondaryAction),
+            style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         SizedBox(height: 60),
         SizedBox(
           height: 50,
@@ -82,16 +84,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: TextUtil.base.regular.reverse.sp(13)),
+                style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
                   return ColorUtil.oldActionRippleColor;
-                return ColorUtil.oldSecondaryActionColor;
+                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               backgroundColor:
-                  MaterialStateProperty.all(ColorUtil.oldSecondaryActionColor),
+                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -106,7 +108,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
           SizedBox(height: 30),
           Text(
             S.current.tju_bind_hint,
-            style: TextUtil.base.regular.sp(10).oldThirdAction,
+            style: TextUtil.base.regular.sp(10).oldThirdAction(context),
           ),
           SizedBox(height: 20),
           ConstrainedBox(
@@ -114,7 +116,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: TextField(
               textInputAction: TextInputAction.next,
               focusNode: _accountFocus,
-              cursorColor: ColorUtil.defaultActionColor,
+              cursorColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
               decoration: InputDecoration(
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
@@ -140,11 +142,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
               builder: (context, bool value, _) {
                 return Theme(
                   data: Theme.of(context)
-                      .copyWith(primaryColor: ColorUtil.oldActionColor),
+                      .copyWith(primaryColor: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
-                    cursorColor: ColorUtil.defaultActionColor,
+                    cursorColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
                     decoration: InputDecoration(
                       hintText: S.current.password,
                       hintStyle: hintStyle,
@@ -158,7 +160,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       suffixIcon: WButton(
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: ColorUtil.defaultActionColor,
+                          color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
                         ),
                         onPressed: () {
                           visNotifier.value = !visNotifier.value;
@@ -182,17 +184,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.oldActionColor),
+                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -202,13 +204,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
           Text(
             '应学校要求，校外使用教育教学信息管理系统需先登录天津大学VPN，'
             '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
-            style: TextUtil.base.regular.sp(10).oldThirdAction,
+            style: TextUtil.base.regular.sp(10).oldThirdAction(context),
           ),
           Row(
             children: [
               Text(
                 '办公网网址为 ',
-                style: TextUtil.base.regular.sp(10).oldThirdAction,
+                style: TextUtil.base.regular.sp(10).oldThirdAction(context),
               ),
               WButton(
                 onPressed: () async {
@@ -235,13 +237,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldActionColor, size: 32),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),

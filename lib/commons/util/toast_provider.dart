@@ -7,6 +7,8 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import '../themes/color_util.dart';
+import '../themes/template/wpy_theme_data.dart';
+import '../themes/wpy_theme.dart';
 
 class ToastProvider with AsyncTimer {
   ToastProvider._();
@@ -76,33 +78,38 @@ class ToastProvider with AsyncTimer {
   static void error(String msg) {
     if (msg == '') return;
     ToastProvider.custom(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-        decoration: BoxDecoration(
-          color: ColorUtil.dangerousRed,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              'assets/svg_pics/lake_butt_icons/error_background.svg',
-              color: ColorUtil.primaryBackgroundColor,
-              width: 15,
-            ),
-            SizedBox(width: 10),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1.sw - 90),
-              child: Text(
-                msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      child: Builder(builder: (context) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+          decoration: BoxDecoration(
+            color: WpyTheme.of(context).get(WpyThemeKeys.dangerousRed),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Builder(
+                  builder: (context) => SvgPicture.asset(
+                        'assets/svg_pics/lake_butt_icons/error_background.svg',
+                        color:
+                            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                        width: 15,
+                      )),
+              SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+                child: Text(
+                  msg,
+                  style:
+                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
       positionedToastBuilder: (context, child) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
@@ -116,32 +123,35 @@ class ToastProvider with AsyncTimer {
 
   static running(String msg) {
     ToastProvider.custom(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-        decoration: BoxDecoration(
-          color: ColorUtil.yellowF0,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              'assets/svg_pics/lake_butt_icons/running_background.svg',
-              width: 15,
-            ),
-            SizedBox(width: 10),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1.sw - 90),
-              child: Text(
-                msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      child: Builder(builder: (context) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+          decoration: BoxDecoration(
+            color: WpyTheme.of(context).get(WpyThemeKeys.infoStatusColor),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                'assets/svg_pics/lake_butt_icons/running_background.svg',
+                width: 15,
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+                child: Text(
+                  msg,
+                  style:
+                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
       positionedToastBuilder: (context, child) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
@@ -155,32 +165,35 @@ class ToastProvider with AsyncTimer {
 
   static success(String msg) {
     ToastProvider.custom(
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
-        decoration: BoxDecoration(
-          color: ColorUtil.green5CColor,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              'assets/svg_pics/lake_butt_icons/success_background.svg',
-              width: 15,
-            ),
-            SizedBox(width: 10),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 1.sw - 90),
-              child: Text(
-                msg,
-                style: TextUtil.base.NotoSansSC.regular.sp(14).reverse,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+      child: Builder(builder: (context) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
+          decoration: BoxDecoration(
+            color: ColorUtil.green5CColor,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SvgPicture.asset(
+                'assets/svg_pics/lake_butt_icons/success_background.svg',
+                width: 15,
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+                child: Text(
+                  msg,
+                  style:
+                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
       positionedToastBuilder: (context, child) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中

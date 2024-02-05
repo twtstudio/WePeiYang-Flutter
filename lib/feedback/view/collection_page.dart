@@ -11,6 +11,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
+import '../../commons/themes/template/wpy_theme_data.dart';
+import '../../commons/themes/wpy_theme.dart';
 import 'components/post_card.dart';
 
 /// Almost the same as [UserPage].
@@ -149,7 +151,7 @@ class _CollectionPageState extends State<CollectionPage> {
     Widget body = CustomScrollView(
       slivers: [
         SliverAppBar(
-          backgroundColor: ColorUtil.secondaryBackgroundColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
@@ -160,19 +162,19 @@ class _CollectionPageState extends State<CollectionPage> {
           ),
           title: Text(
             "我的收藏",
-            style: TextUtil.base.NotoSansSC.label.w600.sp(18),
+            style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
           ),
           centerTitle: true,
         ),
         SliverToBoxAdapter(
-          child: Container(color: ColorUtil.secondaryBackgroundColor, child: list),
+          child: Container(color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor), child: list),
         )
       ],
     );
 
     return Container(
       //改背景色用
-      color: ColorUtil.secondaryBackgroundColor,
+      color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,

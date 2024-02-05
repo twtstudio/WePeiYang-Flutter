@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class ResetPasswordPage extends StatefulWidget {
@@ -50,8 +52,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    var titleStyle = TextUtil.base.bold.sp(14.5).oldThirdAction;
-    var hintStyle = TextUtil.base.w400.sp(13).oldHintWhite;
+    final titleStyle = TextUtil.base.bold.sp(14.5).oldThirdAction(context);
+    final hintStyle = TextUtil.base.w400.sp(13).oldHintWhite;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -59,12 +61,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
-                child:
-                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
+                child: Icon(Icons.arrow_back,
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: SingleChildScrollView(
@@ -175,7 +180,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               child: WButton(
                 child: Text(S.current.forget_password,
                     style: TextUtil.base.regular.underLine.sp(12)),
-                onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
+                onPressed: () =>
+                    Navigator.pushNamed(context, AuthRouter.findHome),
               ),
             ),
             Container(
@@ -185,17 +191,18 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 child: ElevatedButton(
                   onPressed: _reset,
                   child: Text(S.current.reset_ok,
-                      style: TextUtil.base.regular.reverse.sp(13)),
+                      style: TextUtil.base.regular.reverse(context).sp(13)),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(5),
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
                         return ColorUtil.oldActionRippleColor;
-                      return ColorUtil.oldActionColor;
+                      return WpyTheme.of(context)
+                          .get(WpyThemeKeys.oldActionColor);
                     }),
-                    backgroundColor:
-                        MaterialStateProperty.all(ColorUtil.oldActionColor),
+                    backgroundColor: MaterialStateProperty.all(
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30))),
                   ),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 
 enum WpyThemeType {
@@ -56,36 +54,6 @@ class WpyThemeMetaData {
   }
 }
 
-abstract class WpyColorAbstract {}
-
-class WpyColor extends WpyColorAbstract {
-  final Color value;
-
-  WpyColor(this.value);
-}
-
-class WpyGradient extends WpyColorAbstract {
-  final List<Color> value;
-
-  WpyGradient(this.value);
-}
-
-class WpyThemeDetail {
-  final Map<String, WpyColorAbstract> _details;
-  static final Map<String, WpyColorAbstract> _defaultScheme =
-      LightScheme().data.details;
-
-  WpyThemeDetail(this._details);
-
-  get details => _details;
-
-  WpyColorAbstract get(String key) {
-    final value = this._details[key] ?? _defaultScheme[key];
-    assert(value != null, 'Illegal Color key: $key');
-    return value!;
-  }
-}
-
 class WpyThemeData {
   final WpyThemeMetaData meta;
   final WpyThemeDetail data;
@@ -94,4 +62,83 @@ class WpyThemeData {
     required this.meta,
     required this.data,
   });
+
+  factory WpyThemeData.light() => light_scheme();
+
+  factory WpyThemeData.dark() => light_scheme();
+}
+
+class WpyThemeDetail {
+  final Map<WpyThemeKeys, dynamic> details;
+  static final Map<WpyThemeKeys, dynamic> _defaultScheme =
+      light_scheme().data.details;
+
+  WpyThemeDetail(this.details);
+
+  dynamic get(WpyThemeKeys key) {
+    final value = this.details[key] ?? _defaultScheme[key];
+    assert(value != null, 'Illegal Color key: $key');
+    return value!;
+  }
+}
+
+enum WpyThemeKeys {
+  defaultActionColor,
+  primaryBackgroundColor,
+  secondaryBackgroundColor,
+  reverseBackgroundColor,
+  reverseTextColor,
+  basicTextColor,
+  secondaryTextColor,
+  labelTextColor,
+  unlabeledColor,
+  cursorColor,
+  infoTextColor,
+  backgroundGradientEndColor,
+  secondaryInfoTextColor,
+  primaryActionColor,
+  primaryLightActionColor,
+  primaryTextButtonColor,
+  beanDarkColor,
+  beanLightColor,
+
+// schedule page background color
+  primaryLighterActionColor,
+  primaryLightestActionColor,
+
+// The Color below shouldn't be customized
+  linkBlue,
+  dangerousRed,
+  warningColor,
+  infoStatusColor,
+
+// bind classes pages
+  oldActionColor,
+  oldSecondaryActionColor,
+  oldThirdActionColor,
+  oldFurthActionColor,
+  oldActionRippleColor,
+
+/* ----- this colors for setting pages ----- */
+  oldSwitchBarColor,
+  oldHintColor,
+  oldHintDarkerColor,
+  oldListGroupTitleColor,
+  oldListActionColor,
+
+/* ----- icon widget colors ----- */
+  iconAnimationStartColor,
+
+//Dislike
+  dislikePrimary,
+  dislikeSecondary,
+
+// Like
+  likeColor,
+  likeBubbleColor,
+
+// Favor
+  FavorColor,
+  FavorBubbleStartColor,
+  FavorBubbleColor,
 }

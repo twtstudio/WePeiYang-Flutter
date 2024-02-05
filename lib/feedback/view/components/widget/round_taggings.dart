@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../../commons/themes/wpy_theme.dart';
 import '../../../../commons/widgets/w_button.dart';
 
 class CommentIdentificationContainer extends StatelessWidget {
@@ -25,7 +27,7 @@ class CommentIdentificationContainer extends StatelessWidget {
         : Container(
             margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction),
+                style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction(context)),
           );
   }
 }
@@ -68,7 +70,7 @@ class _ETagWidgetState extends State<ETagWidget> {
         widget.full
             ? tagUtils[widget.entry]!.fullName
             : tagUtils[widget.entry]!.text,
-        style: TextUtil.base.NotoSansSC.w800.sp(12).reverse,
+        style: TextUtil.base.NotoSansSC.w800.sp(12).reverse(context),
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
       ),
@@ -189,8 +191,8 @@ class TagShowWidget extends StatelessWidget {
                       color: type == 0
                           ? ColorUtil.greyEAColor
                           : type == 1
-                              ? ColorUtil.defaultActionColor
-                              : ColorUtil.primaryBackgroundColor,
+                              ? WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)
+                              : WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                     ),
                     child: SvgPicture.asset(
                       type == 0
@@ -205,7 +207,7 @@ class TagShowWidget extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: width - 30),
                     child: Text(
                       tag,
-                      style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
+                      style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -231,7 +233,7 @@ class TextPod extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: ColorUtil.white54,
+          color: WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(color: ColorUtil.black38)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),

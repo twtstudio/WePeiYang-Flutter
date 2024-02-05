@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import '../themes/template/wpy_theme_data.dart';
+import '../themes/wpy_theme.dart';
+
 class LakeDialogWidget extends Dialog {
   final String title; //标题
   final Widget content; //内容
@@ -54,7 +57,7 @@ class LakeDialogWidget extends Dialog {
                     children: [
                       Text(title,
                           style: titleTextStyle ??
-                              TextUtil.base.label.NotoSansSC.w500.normal
+                              TextUtil.base.label(context).NotoSansSC.w500.normal
                                   .sp(18)),
                     ],
                   ),
@@ -87,88 +90,106 @@ class LakeDialogWidget extends Dialog {
   }
 
   Widget _buildBottomOnline() {
-    return Container(
-      color: ColorUtil.secondaryBackgroundColor,
-    );
+    return Builder(
+        builder: (context) => Container(
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.secondaryBackgroundColor),
+            ));
   }
 
   Widget _buildBottomCancelButton() {
-    return Container(
-      height: 44.w,
-      width: 136.w,
-      child: TextButton(
-        onPressed: cancelFun,
-        child: Text(cancelText,
-            style: cancelTextStyle ??
-                TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600),
-
-        style: ButtonStyle(
-          elevation: MaterialStateProperty.all(3),
-          overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-            if (states.contains(MaterialState.pressed))
-              return ColorUtil.oldSecondaryActionColor;
-            return ColorUtil.secondaryBackgroundColor;
-          }),
-          backgroundColor: MaterialStateProperty.all(
-              cancelButtonColor ?? ColorUtil.secondaryBackgroundColor),
-          shape: MaterialStateProperty.all(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-        ),
-      ),
-    );
+    return Builder(
+        builder: (context) => Container(
+              height: 44.w,
+              width: 136.w,
+              child: TextButton(
+                onPressed: cancelFun,
+                child: Text(cancelText,
+                    style: cancelTextStyle ??
+                        TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600),
+                style: ButtonStyle(
+                  elevation: MaterialStateProperty.all(3),
+                  overlayColor:
+                      MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.pressed))
+                      return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.secondaryBackgroundColor);
+                  }),
+                  backgroundColor: MaterialStateProperty.all(
+                      cancelButtonColor ??
+                          WpyTheme.of(context)
+                              .get(WpyThemeKeys.secondaryBackgroundColor)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+                ),
+              ),
+            ));
   }
 
   Widget _buildBottomPositiveButton() {
-    return gradient != null
-        ? Container(
-            height: 44.w,
-            width: 136.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: gradient,
-              boxShadow: [
-                BoxShadow(
-                    blurRadius: 1.6,
-                    color: ColorUtil.iconAnimationStartColor,
-                    offset: Offset(-1, 3),
-                    spreadRadius: 1),
-              ],
-            ),
-            child: TextButton(
-              onPressed: this.confirmFun,
-              child: Text(confirmText,
-                  style: confirmTextStyle ??
-                      TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400),
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20))),
-              ),
-            ),
-          )
-        : Container(
-            height: 44.w,
-            width: 136.w,
-            child: TextButton(
-              onPressed: this.confirmFun,
-              child: Text(
-                confirmText,
-                style: confirmTextStyle ??
-                    TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
-              ),
-              style: ButtonStyle(
-                elevation: MaterialStateProperty.all(3),
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldSecondaryActionColor;
-                  return ColorUtil.secondaryBackgroundColor;
-                }),
-                backgroundColor: MaterialStateProperty.all(
-                    confirmButtonColor ?? ColorUtil.secondaryBackgroundColor),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20))),
-              ),
-            ),
-          );
+    return Builder(
+        builder: (context) => gradient != null
+            ? Container(
+                height: 44.w,
+                width: 136.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: gradient,
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 1.6,
+                        color: ColorUtil.iconAnimationStartColor,
+                        offset: Offset(-1, 3),
+                        spreadRadius: 1),
+                  ],
+                ),
+                child: TextButton(
+                  onPressed: this.confirmFun,
+                  child: Text(confirmText,
+                      style: confirmTextStyle ??
+                          TextUtil.base.normal
+                              .reverse(context)
+                              .NotoSansSC
+                              .sp(16)
+                              .w400),
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                  ),
+                ),
+              )
+            : Container(
+                height: 44.w,
+                width: 136.w,
+                child: TextButton(
+                  onPressed: this.confirmFun,
+                  child: Text(
+                    confirmText,
+                    style: confirmTextStyle ??
+                        TextUtil.base.normal
+                            .reverse(context)
+                            .NotoSansSC
+                            .sp(16)
+                            .w400,
+                  ),
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(3),
+                    overlayColor:
+                        MaterialStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(MaterialState.pressed))
+                        return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                      return WpyTheme.of(context)
+                          .get(WpyThemeKeys.secondaryBackgroundColor);
+                    }),
+                    backgroundColor: MaterialStateProperty.all(
+                        confirmButtonColor ??
+                            WpyTheme.of(context)
+                                .get(WpyThemeKeys.secondaryBackgroundColor)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                  ),
+                ),
+              ));
   }
 }

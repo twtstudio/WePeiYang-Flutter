@@ -6,11 +6,13 @@ import 'package:simple_url_preview_v2/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../network/message_service.dart';
 
@@ -29,12 +31,13 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
-                child:
-                    Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
+                child: Icon(Icons.arrow_back,
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -108,21 +111,22 @@ class _MailItemState extends State<MailItem> {
             ],
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.primaryBackgroundColor,
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 widget.data.title,
-                style: TextUtil.base.bold.oldActionColor.sp(15),
+                style: TextUtil.base.bold.oldActionColor(context).sp(15),
               ),
               SizedBox(height: 10),
               Text(
                 widget.data.content,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                style: TextUtil.base.oldActionColor.sp(13),
+                style: TextUtil.base.oldActionColor(context).sp(13),
               ),
               SizedBox(height: 10),
               Row(
@@ -166,11 +170,13 @@ class MailPage extends StatelessWidget {
         title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
-              child: Icon(Icons.arrow_back, color: ColorUtil.oldActionColor, size: 32),
+              child: Icon(Icons.arrow_back,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -291,7 +297,8 @@ class _TextMailContent extends StatelessWidget {
                 ],
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(10),
-                color: ColorUtil.primaryBackgroundColor,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
               ),
               child: Column(
                 children: [
@@ -319,13 +326,13 @@ class _TextMailContent extends StatelessWidget {
                   children: [
                     Text(
                       '更多信息请点击链接查看喵~',
-                      style: TextUtil.base.label.w500.NotoSansSC.sp(14),
+                      style: TextUtil.base.label(context).w500.NotoSansSC.sp(14),
                     ),
                     WButton(
                       child: Text(
                         '阅读原文',
-                        style:
-                            TextUtil.base.textButtonPrimary.w400.NotoSansSC.sp(14),
+                        style: TextUtil.base.textButtonPrimary(context).w400.NotoSansSC
+                            .sp(14),
                       ),
                       onPressed: () async {
                         var url = data.url.startsWith('http')
@@ -338,7 +345,7 @@ class _TextMailContent extends StatelessWidget {
                                 return LakeDialogWidget(
                                     title: '同学你好：',
                                     titleTextStyle: TextUtil
-                                        .base.normal.label.NotoSansSC
+                                        .base.normal.label(context).NotoSansSC
                                         .sp(26)
                                         .w600,
                                     content: Column(
@@ -356,15 +363,17 @@ class _TextMailContent extends StatelessWidget {
                                                           'https://www.bilibili.com/')
                                                   ? TextUtil.base.biliPink.w600
                                                       .h(1.6)
-                                                  : TextUtil.base.label.w600
+                                                  : TextUtil.base.label(context).w600
                                                       .h(1.6)),
                                         ),
                                         SimpleUrlPreview(
                                           url: url,
-                                          bgColor:
-                                              ColorUtil.primaryBackgroundColor,
+                                          bgColor: WpyTheme.of(context).get(
+                                              WpyThemeKeys
+                                                  .primaryBackgroundColor),
                                           titleLines: 2,
-                                          imageLoaderColor: ColorUtil.iconAnimationStartColor,
+                                          imageLoaderColor:
+                                              ColorUtil.iconAnimationStartColor,
                                           previewHeight: 130,
                                           previewContainerPadding:
                                               EdgeInsets.symmetric(
@@ -380,7 +389,7 @@ class _TextMailContent extends StatelessWidget {
                                               ? TextUtil.base.biliPink.w600
                                                   .h(1.6)
                                                   .sp(14)
-                                              : TextUtil.base.label.w600
+                                              : TextUtil.base.label(context).w600
                                                   .h(1.6)
                                                   .sp(24),
                                           siteNameStyle: TextUtil.base
@@ -391,8 +400,9 @@ class _TextMailContent extends StatelessWidget {
                                       ],
                                     ),
                                     cancelText: "取消",
-                                    confirmTextStyle: TextUtil
-                                        .base.normal.reverse.NotoSansSC
+                                    confirmTextStyle: TextUtil.base.normal
+                                        .reverse(context)
+                                        .NotoSansSC
                                         .sp(16)
                                         .w600,
                                     confirmButtonColor:
@@ -400,9 +410,10 @@ class _TextMailContent extends StatelessWidget {
                                                 url.startsWith(
                                                     'https://www.bilibili.com/')
                                             ? ColorUtil.biliPink
-                                            : ColorUtil.primaryActionColor,
-                                    cancelTextStyle: TextUtil
-                                        .base.normal.primary.NotoSansSC
+                                            : WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                                    cancelTextStyle: TextUtil.base.normal
+                                        .primary(context)
+                                        .NotoSansSC
                                         .sp(16)
                                         .w400,
                                     confirmText: "继续",

@@ -22,6 +22,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../../../commons/preferences/common_prefs.dart';
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../home/view/web_views/festival_page.dart';
 
@@ -144,7 +146,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
         decoration: BoxDecoration(
-            color: ColorUtil.secondaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
             borderRadius: BorderRadius.all(Radius.circular(15))),
         child: Row(children: [
           SizedBox(width: 14),
@@ -212,14 +214,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
-                          labelColor: ColorUtil.primaryActionColor,
+                          labelColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
                           unselectedLabelStyle:
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
-                                  color: ColorUtil.primaryActionColor, width: 2)),
+                                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                                  width: 2)),
                           tabs: List<Widget>.generate(
                               tabList.length,
                               (index) => DaTab(
@@ -241,7 +244,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           alignment: Alignment.center,
                           child: Text(
                             '点击重新加载分区',
-                            style: TextUtil.base.mainTextColor.w400.sp(16),
+                            style: TextUtil.base
+                                .mainTextColor(context)
+                                .w400
+                                .sp(16),
                           ),
                         ),
                       ),
@@ -249,7 +255,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: ColorUtil.primaryBackgroundColor,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
       body: Stack(
         children: [
           Padding(
@@ -342,7 +348,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ? 0
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
-                color: ColorUtil.primaryBackgroundColor,
+                color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -363,7 +369,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           }),
           // 挡上面
           Container(
-              color: ColorUtil.primaryBackgroundColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
@@ -487,7 +493,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
                 child: Chip(
                   backgroundColor: ColorUtil.white234,
                   label: Text(provider.departmentList[index].name,
-                      style: TextUtil.base.normal.label.NotoSansSC.sp(13)),
+                      style: TextUtil.base.normal.label(context).NotoSansSC.sp(13)),
                 ),
                 onTap: () {
                   Navigator.pushNamed(

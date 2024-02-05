@@ -51,7 +51,7 @@ class GameCard extends StatelessWidget {
                     width: WePeiYangApp.screenWidth - 160,
                     child: Text(
                       this.title,
-                      style: TextUtil.base.w600.label.NotoSansSC.sp(18),
+                      style: TextUtil.base.w600.label(context).NotoSansSC.sp(18),
                       maxLines: 3,
                     )),
                 Container(

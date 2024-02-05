@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+
+import '../commons/themes/wpy_theme.dart';
 
 class ReportBasePage extends StatelessWidget {
   final Widget body;
@@ -21,7 +24,7 @@ class ReportBasePage extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140),
         child: Container(
-          color: ColorUtil.primaryActionColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Hero(
             tag: 'appbar',
@@ -34,7 +37,7 @@ class ReportBasePage extends StatelessWidget {
               automaticallyImplyLeading: false,
               title: Text(
                 '健康信息填报',
-                style: TextUtil.base.bold.reverse.sp(18),
+                style: TextUtil.base.bold.reverse(context).sp(18),
               ),
               leading: IconButton(
                 padding: const EdgeInsets.all(0),

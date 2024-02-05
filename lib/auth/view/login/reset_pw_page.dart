@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class ResetPwWidget extends StatefulWidget {
@@ -46,13 +48,13 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.reverseTextColor,
+          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldThirdActionColor, size: 35),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -61,7 +63,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
             child: Text(S.current.find_password_title,
                 style: TextUtil.base.bold
                     .sp(16)
-                    .oldThirdAction),
+                    .oldThirdAction(context)),
           ),
           SizedBox(height: 30),
           Padding(

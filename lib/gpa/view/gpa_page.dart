@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -16,16 +17,17 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class GPAPage extends StatefulWidget {
-  final List<Color> _gpaColors = GPAColor.blue;
-
   @override
   _GPAPageState createState() => _GPAPageState();
 }
 
 class _GPAPageState extends State<GPAPage> {
+  late final List<Color> _gpaColors = GPAColor.blue(context);
+
   @override
   void initState() {
     super.initState();
@@ -49,10 +51,10 @@ class _GPAPageState extends State<GPAPage> {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark
-          .copyWith(systemNavigationBarColor: widget._gpaColors[0]),
+          .copyWith(systemNavigationBarColor: _gpaColors[0]),
       child: Scaffold(
-        appBar: GPAAppBar(widget._gpaColors),
-        backgroundColor: widget._gpaColors[0],
+        appBar: GPAAppBar(_gpaColors),
+        backgroundColor: _gpaColors[0],
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -63,18 +65,19 @@ class _GPAPageState extends State<GPAPage> {
                   0.8
                 ],
                 colors: [
-                  widget._gpaColors[0],
-                  widget._gpaColors[2],
+                  _gpaColors[0],
+                  _gpaColors[2],
                 ]),
           ),
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
-            data:
-                Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
+            data: Theme.of(context).copyWith(
+                secondaryHeaderColor:
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
             child: ListView(
               children: [
-                RadarChartWidget(widget._gpaColors),
-                GPAStatsWidget(widget._gpaColors),
+                RadarChartWidget(_gpaColors),
+                GPAStatsWidget(_gpaColors),
                 SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: ConstrainedBox(
@@ -84,8 +87,8 @@ class _GPAPageState extends State<GPAPage> {
                                         4
                                     ? 800.w
                                     : 1.sw),
-                        child: GPACurve(widget._gpaColors, isPreview: false))),
-                CourseListWidget(widget._gpaColors)
+                        child: GPACurve(_gpaColors, isPreview: false))),
+                CourseListWidget(_gpaColors)
               ],
             ),
           ),
@@ -113,7 +116,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: ColorUtil.primaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           ),
         ),
       ),
@@ -126,7 +129,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 40.w,
       title: Text(
           'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-          style: TextUtil.base.reverse.w900.sp(18)),
+          style: TextUtil.base.reverse(context).w900.sp(18)),
       titleSpacing: 0,
       actions: [
         WButton(

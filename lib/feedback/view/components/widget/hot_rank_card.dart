@@ -66,7 +66,8 @@ class _HotCardState extends State<HotCard> {
                     data.hotTagCardState == 1
                         ? Text(
                             '     loading...',
-                            style: TextUtil.base.w400.NotoSansSC.sp(18).infoText,
+                            style:
+                                TextUtil.base.w400.NotoSansSC.sp(18).infoText(context),
                           )
                         : data.hotTagCardState == 2
                             ? Column(
@@ -103,7 +104,7 @@ class _HotCardState extends State<HotCard> {
                                                       style: TextUtil
                                                           .base.w400.NotoSansSC
                                                           .sp(16)
-                                                          .label,
+                                                          .label(context),
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                     ),
@@ -115,12 +116,12 @@ class _HotCardState extends State<HotCard> {
                                                       Alignment.centerRight,
                                                   child: Text(
                                                     data.hotTagsList[index]
-                                                            .point
-                                                            .toString(),
+                                                        .point
+                                                        .toString(),
                                                     style: TextUtil
                                                         .base.w400.NotoSansSC
                                                         .sp(14)
-                                                        .label,
+                                                        .label(context),
                                                   ),
                                                 ),
                                               ],

@@ -4,10 +4,13 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+
+import '../../../commons/themes/wpy_theme.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -85,7 +88,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       body: Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(gradient: ColorUtil.gradientBlueAllScreen),
+        decoration: BoxDecoration(gradient: ColorUtil.primaryGradientAllScreen),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -95,7 +98,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               child: Text.rich(TextSpan(children: [
                 TextSpan(
                     text: "Welcome\n\n",
-                    style: TextUtil.base.normal.NotoSansSC.sp(40).w700.reverse),
+                    style: TextUtil.base.normal.NotoSansSC
+                        .sp(40)
+                        .w700
+                        .reverse(context)),
               ])),
             ),
             Expanded(
@@ -121,7 +127,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   visualDensity: VisualDensity.compact,
-                                  activeColor: ColorUtil.primaryActionColor,
+                                  activeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                                   onChanged: (_) {
                                     checkNotifier.value = !checkNotifier.value;
                                   },
@@ -134,7 +140,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "我已阅读并同意",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .label)),
+                                  .label(context))),
                           WButton(
                             onPressed: () => showDialog(
                                 context: context,
@@ -151,7 +157,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               text: "与",
                               style: TextUtil.base.normal.NotoSansSC.w400
                                   .sp(10)
-                                  .label)),
+                                  .label(context))),
                           WButton(
                             onPressed: () => showDialog(
                                 context: context,
@@ -194,29 +200,30 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       children: [
         Text.rich(TextSpan(
             text: "账号",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
+            style:
+                TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse(context))),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
-            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
-            cursorColor: ColorUtil.primaryBackgroundColor,
+            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse(context),
+            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             textInputAction: TextInputAction.next,
             focusNode: _accountFocus,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               hintText: "学号/手机号/邮箱",
-              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+              hintStyle: TextUtil.base.normal.sp(14).w400.reverse(context),
               isCollapsed: true,
               contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
             ),
@@ -230,35 +237,43 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         SizedBox(height: 20),
         Text.rich(TextSpan(
             text: "密码",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
+            style:
+                TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse(context))),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
           child: ValueListenableBuilder(
             valueListenable: visNotifier,
             builder: (context, bool value, _) {
               return Theme(
-                data:
-                    Theme.of(context).copyWith(primaryColor: ColorUtil.oldActionColor),
+                data: Theme.of(context)
+                    .copyWith(primaryColor: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 child: TextField(
-                  style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
-                  cursorColor: ColorUtil.primaryBackgroundColor,
+                  style: TextUtil.base.normal.w400
+                      .sp(14)
+                      .NotoSansSC
+                      .reverse(context),
+                  cursorColor:
+                      WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                   keyboardType: TextInputType.visiblePassword,
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ColorUtil.primaryBackgroundColor,
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor),
                           width: 1.0,
                         ),
                       ),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                          color: ColorUtil.primaryBackgroundColor,
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor),
                           width: 1.0,
                         ),
                       ),
                       hintText: "请输入密码",
-                      hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+                      hintStyle:
+                          TextUtil.base.normal.sp(14).w400.reverse(context),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
                       suffixIcon: WButton(
@@ -267,7 +282,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                         },
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: ColorUtil.primaryBackgroundColor,
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor),
                         ),
                       )),
                   obscureText: value,
@@ -284,13 +300,15 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).primaryAction)),
+                  style: TextUtil.base.normal.NotoSansSC.w400
+                      .sp(16)
+                      .primaryAction(context))),
             ),
           ),
         ),
@@ -302,7 +320,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "短信登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
+                  style: TextUtil.base.normal.NotoSansSC.w400
+                      .sp(14)
+                      .reverse(context))),
               onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();
@@ -320,8 +340,11 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "忘记密码?",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
-              onPressed: () => Navigator.pushNamed(context, AuthRouter.findHome),
+                  style: TextUtil.base.normal.NotoSansSC.w400
+                      .sp(14)
+                      .reverse(context))),
+              onPressed: () =>
+                  Navigator.pushNamed(context, AuthRouter.findHome),
             ),
             SizedBox(width: 10),
           ],
@@ -361,7 +384,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         ),
         child: Text(
           code.length > index ? code.substring(index, index + 1) : '',
-          style: TextUtil.base.normal.NotoSansSC.primaryAction.sp(16),
+          style: TextUtil.base.normal.NotoSansSC.primaryAction(context).sp(16),
         ),
       );
     };
@@ -371,7 +394,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       children: [
         Text.rich(TextSpan(
             text: "手机号",
-            style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse)),
+            style:
+                TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse(context))),
         SizedBox(height: 16),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 55),
@@ -380,23 +404,23 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
             ],
-            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse,
-            cursorColor: ColorUtil.primaryBackgroundColor,
+            style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse(context),
+            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               hintText: "请输入手机号",
-              hintStyle: TextUtil.base.normal.sp(14).w400.reverse,
+              hintStyle: TextUtil.base.normal.sp(14).w400.reverse(context),
               isCollapsed: true,
               contentPadding: const EdgeInsets.fromLTRB(0, 18, 0, 18),
             ),
@@ -406,7 +430,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         SizedBox(height: 20),
         Text.rich(TextSpan(
           text: "验证码",
-          style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse,
+          style: TextUtil.base.normal.NotoSansSC.w400.sp(16).reverse(context),
         )),
         SizedBox(height: 20),
         Stack(
@@ -438,13 +462,15 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
               child: Text.rich(TextSpan(
                   text: "登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(16).primaryAction)),
+                  style: TextUtil.base.normal.NotoSansSC.w400
+                      .sp(16)
+                      .primaryAction(context))),
             ),
           ),
         ),
@@ -459,7 +485,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     onPressed: (_fetchCaptcha),
                     child: Text(
                       '获取验证码',
-                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse,
+                      style: TextUtil.base.normal.NotoSansSC.w400
+                          .sp(14)
+                          .reverse(context),
                     ),
                   );
                 } else {
@@ -467,7 +495,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                     onPressed: () {},
                     child: Text(
                       '重新获取验证码($value)',
-                      style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse,
+                      style: TextUtil.base.normal.NotoSansSC.w400
+                          .sp(14)
+                          .reverse(context),
                     ),
                   );
                 }
@@ -477,7 +507,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             WButton(
               child: Text.rich(TextSpan(
                   text: "密码登录",
-                  style: TextUtil.base.normal.NotoSansSC.w400.sp(14).reverse)),
+                  style: TextUtil.base.normal.NotoSansSC.w400
+                      .sp(14)
+                      .reverse(context))),
               onPressed: () {
                 if (_usePwLogin) {
                   _accountFocus.unfocus();

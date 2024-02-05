@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class TjuRebindDialog extends Dialog {
@@ -22,7 +24,7 @@ class TjuRebindDialog extends Dialog {
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: _TjuRebindWidget(),
       ),
     );
@@ -96,10 +98,10 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).oldSecondaryAction)
+          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).oldSecondaryAction(context))
         ]),
         SizedBox(height: 8),
-        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).oldSecondaryAction),
+        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).oldSecondaryAction(context)),
         if (!_canConnectToClasses)
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -140,16 +142,16 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.login,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor: MaterialStateProperty.all(ColorUtil.oldActionColor),
+                backgroundColor: MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),

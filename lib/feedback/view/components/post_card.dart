@@ -24,6 +24,8 @@ import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dar
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class PostCardNormal extends StatefulWidget {
@@ -94,17 +96,19 @@ class _PostCardNormalState extends State<PostCardNormal> {
                                 (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
                           ),
                           child: Text(
-                              post.nickname == '' ? '没名字的微友' : post.nickname,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  TextUtil.base.w400.NotoSansSC.sp(16).primary),
+                            post.nickname == '' ? '没名字的微友' : post.nickname,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextUtil.base.w400.NotoSansSC
+                                .sp(16)
+                                .primary(context),
+                          ),
                         ),
                         SizedBox(width: 4.w),
                         LevelUtil(
                           width: 24,
                           height: 12,
-                          style: TextUtil.base.reverse.bold.sp(7),
+                          style: TextUtil.base.reverse(context).bold.sp(7),
                           level: post.level.toString(),
                         ),
                       ],
@@ -114,7 +118,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       DateFormat('yyyy-MM-dd HH:mm:ss')
                           .format(post.createAt!.toLocal()),
                       textAlign: TextAlign.left,
-                      style: TextUtil.base.secondary.normal.ProductSans.sp(10),
+                      style: TextUtil.base.secondary(context).normal.ProductSans.sp(10),
                     )
                   ])),
           Spacer(),
@@ -143,7 +147,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           post.title,
           maxLines: widget.outer ? 1 : 10,
           overflow: TextOverflow.ellipsis,
-          style: TextUtil.base.w400.NotoSansSC.sp(18).primary.bold,
+          style: TextUtil.base.w400.NotoSansSC.sp(18).primary(context).bold,
         ),
       )
     ]);
@@ -155,11 +159,17 @@ class _PostCardNormalState extends State<PostCardNormal> {
             ? Text(post.content,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).primary.h(1.4))
+                style: TextUtil.base.NotoSansSC.w400
+                    .sp(14)
+                    .primary(context)
+                    .h(1.4))
             : ExpandableText(
                 text: post.content,
                 maxLines: 8,
-                style: TextUtil.base.NotoSansSC.w400.sp(14).primary.h(1.6),
+                style: TextUtil.base.NotoSansSC.w400
+                    .sp(14)
+                    .primary(context)
+                    .h(1.6),
                 expand: widget.expandAll,
                 buttonIsShown: true,
                 isHTML: false,
@@ -183,7 +193,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(width: 3.w),
           Text(
             post.commentCount.toString() + '   ',
-            style: TextUtil.base.ProductSans.primary.normal.sp(12).w700,
+            style:
+                TextUtil.base.ProductSans.primary(context).normal.sp(12).w700,
           ),
           IconWidget(
             IconType.like,
@@ -233,7 +244,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.secondaryInfo.normal.sp(10).w400,
+            style: TextUtil.base.ProductSans.secondaryInfo(context).normal.sp(10).w400,
           )
         ]);
 
@@ -272,7 +283,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               constraints: BoxConstraints(),
               child: Text(
                 const ['', '卫津路', '北洋园'][post.campus],
-                style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
+                style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -281,7 +292,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.secondaryInfo.normal.sp(10).w400,
+            style: TextUtil.base.ProductSans.secondaryInfo(context).normal.sp(10).w400,
           )
         ]);
 
@@ -306,7 +317,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     return Screenshot(
       controller: widget.screenshotController ?? ScreenshotController(),
       child: Container(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         child: widget.outer
             // outer 框架
             ? WButton(
@@ -321,7 +332,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 },
                 child: Container(
                   padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -501,7 +513,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                 },
                                 child: Text('收起',
                                     style: TextUtil
-                                        .base.textButtonPrimary.w600.NotoSansSC
+                                        .base.textButtonPrimary(context).w600.NotoSansSC
                                         .sp(14))),
                           ],
                         )
@@ -568,8 +580,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                             12, 4, 10, 6),
                                                     child: Text(
                                                       '长图模式',
-                                                      style: TextUtil
-                                                          .base.w300.reverse
+                                                      style: TextUtil.base.w300
+                                                          .reverse(context)
                                                           .sp(12),
                                                     ))
                                               ]))))
@@ -590,7 +602,9 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                   Icons.refresh,
                   color: ColorUtil.black54,
                 ),
-          color: snapshot.hasData ? ColorUtil.transparent : ColorUtil.iconAnimationStartColor,
+          color: snapshot.hasData
+              ? ColorUtil.transparent
+              : ColorUtil.iconAnimationStartColor,
         );
       },
     );

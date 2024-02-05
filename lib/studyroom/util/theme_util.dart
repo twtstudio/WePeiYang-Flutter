@@ -3,12 +3,15 @@ import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 
 extension StudyRoomColorsExt on ThemeData {
   Color get baseBackgroundColor => StudyRoomBackgroundColor;
+
   Color get baseIconColor => StudyRoomPrimaryColor;
+
   Color get dataUpdateTime => StudyRoomPrimaryColor;
 }
 
 extension StudyRoomBuildGridColors on ThemeData {
   Color get buildingIcon => StudyRoomGray5;
+
   Color get buildingName => StudyRoomGray4;
 }
 
@@ -18,51 +21,73 @@ extension StudyRoomCampusButtonColors on ThemeData {
 
 extension StudyRoomFavorListColors on ThemeData {
   Color get favorListTitle => StudyRoomPrimaryColor;
+
   Color get favorRoomName => StudyRoomPrimaryColor;
+
   List<Color> get favorRoomIconColors => favorRooms;
+
   Color get favorRoomItemShadow => StudyRoomGray6;
+
   Color get favorCardBackground => StudyRoomWhite5;
 }
 
 extension StudyRoomClassroomsPageColors on ThemeData {
   Color get classroomItemShadow => StudyRoomGray6;
+
   Color get classroomTitle => StudyRoomPrimaryColor;
+
   Color get classroomItemName => StudyRoomPrimaryColor;
+
   Color get classroomFloor => StudyRoomPrimaryColor;
+
   Color get classroomIcon => StudyRoomPrimaryColor;
+
   Color get classroomItemBackground => StudyRoomWhite5;
 }
 
 extension StudyRoomAreaPageColors on ThemeData {
   Color get areaTitle => StudyRoomPrimaryColor;
+
   Color get areaIconColor => baseIconColor;
+
   Color get areaText => StudyRoomWhite4;
+
   List<Color> get areaItemColors => areaItems;
 }
 
 extension StudyRoomRoomPageColors on ThemeData {
   Color get coordinateBackground => Colors.white.withOpacity(0.2);
+
   Color get coordinateText => ColorUtil.greyCAColor;
+
   Color get coordinateChosenBackground => Colors.white;
-  Color get coordinateChosenText => StudyRoomBlue;
+
   Color get roomTitle => StudyRoomPrimaryColor;
+
   Color get roomConvertWeek => ColorUtil.greyCAColor;
+
   Color get favorButtonUnfavor => StudyRoomPrimaryColor;
+
   Color get favorButtonFavor => StudyRoomGray3;
+
   Color get roomPlanItemText => StudyRoomWhite3;
+
   List<Color> get roomPlanItemColors => roomPlanItems;
 }
 
 extension StudyRoomCalenderColors on ThemeData {
   Color get calenderBaseText => StudyRoomPrimaryColor;
+
   Color get calenderOutsideText => StudyRoomGray2;
+
   Color get calenderSelectText => StudyRoomWhite4;
-  Color get calenderSelectBackground => StudyRoomBlue.withOpacity(0.1);
-  Color get calenderTodayBorder => StudyRoomBlue;
+
   Color get calenderTodayText => StudyRoomPrimaryColor;
+
   Color get calenderTimeTableSelectText => StudyRoomWhite4;
-  Color get calenderTimeTableBorder => StudyRoomBlue;
+
   Color get calenderTimeTableText => StudyRoomPrimaryColor;
+
   Color get calenderOkButton => StudyRoomPrimaryColor;
 }
 
@@ -70,27 +95,40 @@ extension StudyRoomSearchPageColors on ThemeData {
   Color get mainPageSearchBarBackground => StudyRoomWhite2;
 
   Color get searchIcon => StudyRoomGray7;
+
   Color get searchInputField => StudyRoomGray8;
+
   Color get searchInputFieldHint => StudyRoomGray8.withAlpha(0x77);
+
   Color get searchInputFieldButtonLine => StudyRoomPurple;
+
   Color get searchCancelButton => StudyRoomPrimaryColor;
 
   Color get searchHistoryTitle => StudyRoomPrimaryColor;
+
   Color get searchHistoryChipText => StudyRoomPrimaryColor;
+
   Color get searchHistoryChipBackground => StudyRoomWhite4;
+
   Color get searchClearHistoryDialogTextColor => StudyRoomPrimaryColor;
+
   Color get searchClearHistoryDialogBackground => StudyRoomBackgroundColor;
 
   Color get searchResultRoomItemShadow => StudyRoomGray6;
+
   Color get searchResultRoomItemBackground => StudyRoomWhite5;
+
   Color get searchResultRoomItemText => StudyRoomPrimaryColor;
 
   List<Color> get searchResultAreaItemBackground => areaItems;
+
   Color get searchResultAreaItemBuildingText => StudyRoomWhite5;
+
   Color get searchResultAreaItemWaterMark =>
       StudyRoomBackgroundColor.withAlpha(0x25);
 
   Color get searchErrorPageTitle => StudyRoomPurple2;
+
   Color get searchErrorPageContent => StudyRoomGray9;
 }
 
@@ -112,7 +150,6 @@ const StudyRoomGray8 = Color(0xff363c54);
 const StudyRoomGray9 = Color(0xff7a7d89);
 const StudyRoomPurple = Color(0xff303c66);
 const StudyRoomPurple2 = Color(0xff3d486c);
-const StudyRoomBlue = ColorUtil.primaryActionColor;
 
 const List<Color> roomPlanItems = [
   Color.fromRGBO(114, 117, 136, 1), // #727588

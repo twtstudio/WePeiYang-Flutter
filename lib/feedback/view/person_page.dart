@@ -4,6 +4,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -12,6 +13,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
@@ -195,16 +197,20 @@ class _PersonPageState extends State<PersonPage> {
                     textAlign: TextAlign.start,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
-                    style: TextUtil.base.ProductSans.infoText.w400.sp(20)),
+                    style: TextUtil.base.ProductSans
+                        .infoText(context)
+                        .w400
+                        .sp(20)),
               ),
               Text('uid: ${uid}',
                   textAlign: TextAlign.start,
-                  style: TextUtil.base.ProductSans.infoText.w400.sp(14)),
+                  style:
+                      TextUtil.base.ProductSans.infoText(context).w400.sp(14)),
               LevelUtil(
                 level: level ?? '',
                 width: 34,
                 height: 17,
-                style: TextUtil.base.reverse.bold.sp(9),
+                style: TextUtil.base.reverse(context).bold.sp(9),
               ),
             ],
           )
@@ -216,7 +222,8 @@ class _PersonPageState extends State<PersonPage> {
           if (CommonPreferences.isSuper.value ||
               CommonPreferences.isStuAdmin.value)
             WButton(
-              onPressed: () => _showResetConfirmDialog(context, '昵称').then((value) {
+              onPressed: () =>
+                  _showResetConfirmDialog(context, '昵称').then((value) {
                 if (value ?? false)
                   FeedbackService.adminResetName(
                       id: uid,
@@ -236,7 +243,7 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   Text(
                     '重置昵称',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label(context),
                   ),
                 ],
               ),
@@ -245,7 +252,8 @@ class _PersonPageState extends State<PersonPage> {
           if (CommonPreferences.isSuper.value ||
               CommonPreferences.isStuAdmin.value)
             WButton(
-              onPressed: () => _showResetConfirmDialog(context, '头像').then((value) {
+              onPressed: () =>
+                  _showResetConfirmDialog(context, '头像').then((value) {
                 if (value ?? false)
                   FeedbackService.adminResetAva(
                       id: uid,
@@ -265,14 +273,15 @@ class _PersonPageState extends State<PersonPage> {
                   ),
                   Text(
                     '重置头像',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label(context),
                   ),
                 ],
               ),
             ),
           if (CommonPreferences.isSuper.value)
             WButton(
-              onPressed: () => Navigator.pushNamed(context, FeedbackRouter.openBox,
+              onPressed: () => Navigator.pushNamed(
+                  context, FeedbackRouter.openBox,
                   arguments: uid),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -280,7 +289,7 @@ class _PersonPageState extends State<PersonPage> {
                   Icon(Icons.person_search_rounded),
                   Text(
                     '开盒',
-                    style: TextUtil.base.w600.NotoSansSC.sp(12).label,
+                    style: TextUtil.base.w600.NotoSansSC.sp(12).label(context),
                   ),
                 ],
               ),
@@ -298,7 +307,7 @@ class _PersonPageState extends State<PersonPage> {
     );
 
     return Container(
-      color: ColorUtil.primaryBackgroundColor,
+      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
       child: SafeArea(
         child: (CommonPreferences.isSuper.value ||
                 CommonPreferences.isStuAdmin.value)
@@ -335,9 +344,11 @@ class _PersonPageState extends State<PersonPage> {
                           height: 1.sw,
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
-                            ColorUtil.primaryBackgroundColor,
+                            WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                             ColorUtil.white70,
-                            ColorUtil.white54,
+                            WpyTheme.of(context)
+                                .get(WpyThemeKeys.backgroundGradientEndColor),
                             ColorUtil.white10
                           ], stops: [
                             0,
@@ -361,9 +372,9 @@ class _PersonPageState extends State<PersonPage> {
               content: Text('您确定要重置该用户$quote吗？'),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.label.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(16).w600,
               confirmText: '确认',
               cancelFun: () {
                 Navigator.of(context).pop();

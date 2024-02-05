@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
@@ -276,7 +278,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                       : (tuple.item2 == LostAndFoundSubPageStatus.unload
                           ? Loading()
                           : SmartRefresher(
-                    physics: BouncingScrollPhysics(),
+                              physics: BouncingScrollPhysics(),
                               enablePullDown: true,
                               enablePullUp: true,
                               header: ClassicHeader(
@@ -288,68 +290,68 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               ),
                               controller: context
                                   .read<LostAndFoundModel>()
-                        .refreshController[widget.type]!,
-                    footer: ClassicFooter(
-                      idleText: '下拉以刷新',
-                      noDataText: '无数据',
-                      loadingText: '加载中，请稍等  ;P',
-                      failedText: '加载失败（；´д｀）ゞ',
-                    ),
-                    onRefresh: _onRefresh,
-                    onLoading: _onLoading,
-                    child: WaterfallFlow.builder(
-                      gridDelegate:
-                      SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 10.w,
-                        crossAxisSpacing: 10.w,
-                        crossAxisCount: 2,
-                      ),
-                      controller: _scrollController,
-                      itemCount: tuple.item1.length,
-                      itemBuilder: (BuildContext context,
-                          int index) =>
-                          InkWell(
-                              onTap: () {
-                                Tuple2 detailTuple = Tuple2(
-                                    tuple.item1[index].id,
-                                    widget.findOwner);
-                                Navigator.pushNamed(
-                                    context,
-                                    LostAndFoundRouter
-                                        .lostAndFoundDetailPage,
-                                    arguments: detailTuple);
-                              },
-                              child: Card(
-                                elevation: 3,
-                                shadowColor: ColorUtil.greyB4AFColor
-                                    .withOpacity(0.1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8.r),
-                                  side: const BorderSide(
-                                      color: Colors.transparent,
-                                      width: 0.0),
+                                  .refreshController[widget.type]!,
+                              footer: ClassicFooter(
+                                idleText: '下拉以刷新',
+                                noDataText: '无数据',
+                                loadingText: '加载中，请稍等  ;P',
+                                failedText: '加载失败（；´д｀）ゞ',
+                              ),
+                              onRefresh: _onRefresh,
+                              onLoading: _onLoading,
+                              child: WaterfallFlow.builder(
+                                gridDelegate:
+                                    SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                                  mainAxisSpacing: 10.w,
+                                  crossAxisSpacing: 10.w,
+                                  crossAxisCount: 2,
                                 ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    tuple.item1[index]
-                                        .coverPhotoPath ==
-                                        null
-                                        ? Padding(
-                                      padding:
-                                      EdgeInsetsDirectional
-                                          .only(
-                                          bottom: 8.h,
-                                          start: 3.w,
-                                          end: 3.w,
-                                          top: 7.h),
-                                      child: SizedBox(
-                                          width:
-                                          double.infinity,
-                                          child: Card(
-                                            child: Padding(
+                                controller: _scrollController,
+                                itemCount: tuple.item1.length,
+                                itemBuilder: (BuildContext context,
+                                        int index) =>
+                                    InkWell(
+                                        onTap: () {
+                                          Tuple2 detailTuple = Tuple2(
+                                              tuple.item1[index].id,
+                                              widget.findOwner);
+                                          Navigator.pushNamed(
+                                              context,
+                                              LostAndFoundRouter
+                                                  .lostAndFoundDetailPage,
+                                              arguments: detailTuple);
+                                        },
+                                        child: Card(
+                                          elevation: 3,
+                                          shadowColor: ColorUtil.greyB4AFColor
+                                              .withOpacity(0.1),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8.r),
+                                            side: const BorderSide(
+                                                color: Colors.transparent,
+                                                width: 0.0),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              tuple.item1[index]
+                                                          .coverPhotoPath ==
+                                                      null
+                                                  ? Padding(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(
+                                                                  bottom: 8.h,
+                                                                  start: 3.w,
+                                                                  end: 3.w,
+                                                                  top: 7.h),
+                                                      child: SizedBox(
+                                                          width:
+                                                              double.infinity,
+                                                          child: Card(
+                                                            child: Padding(
                                                               padding:
                                                                   EdgeInsets
                                                                       .all(
@@ -366,129 +368,129 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                                           .item1[
                                                                               index]
                                                                           .text,
-                                                  style: TextUtil
-                                                      .base
-                                                      .w400
-                                                      .grey89
-                                                      .sp(14)
-                                                      .h(1.1)
-                                                      .NotoSansSC),
-                                            ),
-                                            elevation: 0,
-                                            color: ColorUtil
-                                                .whiteF8Color,
-                                          )),
-                                    )
-                                        : Container(
-                                        padding:
-                                        EdgeInsetsDirectional
-                                            .only(
-                                            start: 11.w,
-                                            end: 11.w,
-                                            bottom: 7.h,
-                                            top: 7.h),
-                                        child: LayoutBuilder(
-                                          builder: (context,
-                                              constrains) {
-                                            final maxWidth =
-                                            constrains
-                                                .constrainWidth();
-                                            final width = tuple
-                                                .item1[index]
-                                                .coverPhotoSize
-                                                ?.width
-                                                .toDouble() ??
-                                                1.r;
-                                            final height = tuple
-                                                .item1[index]
-                                                .coverPhotoSize
-                                                ?.height
-                                                .toDouble() ??
-                                                0;
-                                            return ClipRRect(
-                                              borderRadius:
-                                              BorderRadius
-                                                  .circular(10
-                                                  .r), // 设置圆角半径为10.0
-                                              child: Container(
-                                                width: maxWidth,
-                                                child: WpyPic(
-                                                  tuple
-                                                      .item1[
-                                                  index]
-                                                      .coverPhotoPath!,
-                                                  withHolder:
-                                                  true,
-                                                  holderHeight:
-                                                  height *
-                                                      maxWidth /
-                                                      width,
-                                                  fit: BoxFit
-                                                      .fitWidth,
-                                                ),
-                                                height: height >=
-                                                    3 * width
-                                                    ? 3 * maxWidth
-                                                    : height *
-                                                    maxWidth /
-                                                    width,
+                                                                  style: TextUtil
+                                                                      .base
+                                                                      .w400
+                                                                      .grey89
+                                                                      .sp(14)
+                                                                      .h(1.1)
+                                                                      .NotoSansSC),
+                                                            ),
+                                                            elevation: 0,
+                                                            color: ColorUtil
+                                                                .whiteF8Color,
+                                                          )),
+                                                    )
+                                                  : Container(
+                                                      padding:
+                                                          EdgeInsetsDirectional
+                                                              .only(
+                                                                  start: 11.w,
+                                                                  end: 11.w,
+                                                                  bottom: 7.h,
+                                                                  top: 7.h),
+                                                      child: LayoutBuilder(
+                                                        builder: (context,
+                                                            constrains) {
+                                                          final maxWidth =
+                                                              constrains
+                                                                  .constrainWidth();
+                                                          final width = tuple
+                                                                  .item1[index]
+                                                                  .coverPhotoSize
+                                                                  ?.width
+                                                                  .toDouble() ??
+                                                              1.r;
+                                                          final height = tuple
+                                                                  .item1[index]
+                                                                  .coverPhotoSize
+                                                                  ?.height
+                                                                  .toDouble() ??
+                                                              0;
+                                                          return ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(10
+                                                                        .r), // 设置圆角半径为10.0
+                                                            child: Container(
+                                                              width: maxWidth,
+                                                              child: WpyPic(
+                                                                tuple
+                                                                    .item1[
+                                                                        index]
+                                                                    .coverPhotoPath!,
+                                                                withHolder:
+                                                                    true,
+                                                                holderHeight:
+                                                                    height *
+                                                                        maxWidth /
+                                                                        width,
+                                                                fit: BoxFit
+                                                                    .fitWidth,
+                                                              ),
+                                                              height: height >=
+                                                                      3 * width
+                                                                  ? 3 * maxWidth
+                                                                  : height *
+                                                                      maxWidth /
+                                                                      width,
+                                                            ),
+                                                          );
+                                                        },
+                                                      )),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 12.w, end: 12.w),
+                                                child: Text(
+                                                    tuple.item1[index].title,
+                                                    style: TextUtil.base.w600
+                                                        .label(context)
+                                                        .sp(15)
+                                                        .NotoSansSC),
                                               ),
-                                            );
-                                          },
-                                        )),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.only(
-                                          start: 12.w, end: 12.w),
-                                      child: Text(
-                                          tuple.item1[index].title,
-                                          style: TextUtil
-                                              .base.w600.label
-                                              .sp(15)
-                                              .NotoSansSC),
-                                    ),
-                                    Padding(
-                                      padding:
-                                      EdgeInsetsDirectional.only(
-                                          start: 12.w,
-                                          end: 25.w,
-                                          bottom: 18.h,
-                                          top: 10.h),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                              _timeAgo(tuple
-                                                  .item1[index]
-                                                  .detailedUploadTime),
-                                              style: TextUtil
-                                                  .base.w400.grey89
-                                                  .sp(10)
-                                                  .NotoSansSC),
-                                          Row(
-                                            children: <Widget>[
-                                              SvgPicture.asset(
-                                                  'assets/svg_pics/icon_flame.svg',
-                                                  width: 14.w,
-                                                  height: 14.h),
-                                              Text(
-                                                '${tuple.item1[index].hot.toString()}',
-                                                style: TextUtil
-                                                    .base.w400.greyHot
-                                                    .sp(10)
-                                                    .NotoSansSC,
+                                              Padding(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 12.w,
+                                                        end: 25.w,
+                                                        bottom: 18.h,
+                                                        top: 10.h),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                        _timeAgo(tuple
+                                                            .item1[index]
+                                                            .detailedUploadTime),
+                                                        style: TextUtil
+                                                            .base.w400.grey89
+                                                            .sp(10)
+                                                            .NotoSansSC),
+                                                    Row(
+                                                      children: <Widget>[
+                                                        SvgPicture.asset(
+                                                            'assets/svg_pics/icon_flame.svg',
+                                                            width: 14.w,
+                                                            height: 14.h),
+                                                        Text(
+                                                          '${tuple.item1[index].hot.toString()}',
+                                                          style: TextUtil
+                                                              .base.w400.greyHot
+                                                              .sp(10)
+                                                              .NotoSansSC,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                    ),
+                                        )),
+                              ),
                             ));
                 }),
               ),
@@ -568,7 +570,9 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                     context
                         .read<LostAndFoundModel>()
                         .currentCategory[widget.type]
-                ? ColorUtil.primaryActionColor.withOpacity(0.1)
+                ? WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryActionColor)
+                    .withOpacity(0.1)
                 : ColorUtil.whiteF8Color,
           ),
           child: Center(
@@ -577,8 +581,12 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                         context
                             .read<LostAndFoundModel>()
                             .currentCategory[widget.type]
-                    ? TextUtil.base.normal.PingFangSC.w400.sp(10.sp).primaryAction
-                    : TextUtil.base.normal.PingFangSC.w400.sp(10.sp).label),
+                    ? TextUtil.base.normal.PingFangSC.w400
+                        .sp(10.sp)
+                        .primaryAction(context)
+                    : TextUtil.base.normal.PingFangSC.w400
+                        .sp(10.sp)
+                        .label(context)),
           ),
         ),
       ),

@@ -4,10 +4,12 @@ import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class UserInfoPage extends StatefulWidget {
@@ -16,19 +18,20 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  static final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction;
   static final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite;
-  static const arrow =
-      Icon(Icons.arrow_forward_ios, color: ColorUtil.oldListActionColor, size: 22);
+  static final arrow = Icon(Icons.arrow_forward_ios,
+      color: ColorUtil.oldListActionColor, size: 22);
 
   @override
   Widget build(BuildContext context) {
+    final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
@@ -44,7 +47,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -59,7 +63,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                       Expanded(
                         child: Text(S.current.avatar, style: mainTextStyle),
                       ),
-                      Hero(tag: 'avatar', child: UserAvatarImage(size: 45)),
+                      Hero(
+                          tag: 'avatar',
+                          child: UserAvatarImage(
+                            size: 45,
+                            context: context,
+                          )),
                       arrow,
                       SizedBox(width: 15.w)
                     ],
@@ -157,7 +166,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -214,7 +224,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(

@@ -8,6 +8,9 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 
+import '../../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../../commons/themes/wpy_theme.dart';
+
 class TabGridView extends StatefulWidget {
   final Department department;
 
@@ -44,7 +47,7 @@ class _TabGridViewState extends State<TabGridView>
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         borderRadius: BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -55,7 +58,7 @@ class _TabGridViewState extends State<TabGridView>
           end: Alignment.bottomCenter,
           colors: [
             ColorUtil.white10,
-            ColorUtil.primaryBackgroundColor,
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           ],
         ),
       ),
@@ -85,8 +88,8 @@ class _TabGridViewState extends State<TabGridView>
         label: Text(
           tag.name,
           style: chose
-              ? TextUtil.base.reverse.NotoSansSC.w400.sp(14)
-              : TextUtil.base.label.NotoSansSC.w400.sp(14),
+              ? TextUtil.base.reverse(context).NotoSansSC.w400.sp(14)
+              : TextUtil.base.label(context).NotoSansSC.w400.sp(14),
         ),
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
         onPressed: () {

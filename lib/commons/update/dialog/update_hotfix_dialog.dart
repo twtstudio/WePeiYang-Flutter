@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_title.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
@@ -25,12 +26,12 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
         Icon(
           Icons.error,
           size: 12,
-          color: ColorUtil.yellowF0,
+          color: WpyTheme.of(context).get(WpyThemeKeys.infoStatusColor),
         ),
         SizedBox(width: 4),
         Text(
           '本次更新需要重启后生效',
-          style: TextUtil.base.yellowF0.sp(8),
+          style: TextUtil.base.infoColor(context).sp(8),
         ),
       ],
     );

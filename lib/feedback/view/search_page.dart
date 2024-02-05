@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -13,6 +14,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.d
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class SearchPage extends StatefulWidget {
@@ -52,8 +54,7 @@ class _SearchPageState extends State<SearchPage> {
     var searchBar = wpySearchBar.SearchBar(
       onSubmitted: (text) {
         if (text.startsWith('#MP') &&
-            RegExp(r'^-?[0-9]+').hasMatch(
-                text.substring(3))) {
+            RegExp(r'^-?[0-9]+').hasMatch(text.substring(3))) {
           FeedbackService.getPostById(
             id: int.parse(text.substring(3)),
             onResult: (post) {
@@ -65,13 +66,11 @@ class _SearchPageState extends State<SearchPage> {
               );
             },
             onFailure: (e) {
-              ToastProvider.error(
-                  '无法找到对应帖子，报错信息：${e.error}');
+              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
             },
           );
           return;
-        }
-        else{
+        } else {
           _searchHistoryList.unequalAdd(text);
           Navigator.pushNamed(
             context,
@@ -111,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: TextUtil.base.primaryAction.w600.sp(17),
+            style: TextUtil.base.primaryAction(context).w600.sp(17),
           ),
           WButton(
             child: Icon(Icons.delete, size: 16),
@@ -153,8 +152,8 @@ class _SearchPageState extends State<SearchPage> {
               splashColor: ColorUtil.transparent,
               onTap: () {
                 if (searchArgument.keyword.startsWith('#MP') &&
-                    RegExp(r'^-?[0-9]+').hasMatch(
-                        searchArgument.keyword.substring(3))) {
+                    RegExp(r'^-?[0-9]+')
+                        .hasMatch(searchArgument.keyword.substring(3))) {
                   FeedbackService.getPostById(
                     id: int.parse(searchArgument.keyword.substring(3)),
                     onResult: (post) {
@@ -165,8 +164,7 @@ class _SearchPageState extends State<SearchPage> {
                       );
                     },
                     onFailure: (e) {
-                      ToastProvider.error(
-                          '无法找到对应帖子，报错信息：${e.error}');
+                      ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
                     },
                   );
                   return;
@@ -183,9 +181,11 @@ class _SearchPageState extends State<SearchPage> {
                 elevation: 1,
                 backgroundColor: ColorUtil.white234,
                 label: Text(list[list.length - index - 1],
-                    style: TextUtil.base.normal.label.NotoSansSC.sp(16)),
+                    style: TextUtil.base.normal.label(context).NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
-                    color: ColorUtil.secondaryTextColor, size: 16),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.secondaryTextColor),
+                    size: 16),
                 onDeleted: () {
                   setState(() {
                     list.removeAt(list.length - index - 1);
@@ -213,14 +213,16 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return ColoredBox(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: ColorUtil.secondaryBackgroundColor, child: searchHistory)),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.secondaryBackgroundColor),
+                    child: searchHistory)),
           ],
         ));
   }
@@ -231,14 +233,13 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context) {
           return LakeDialogWidget(
               title: '清除记录',
-              confirmButtonColor: ColorUtil.primaryTextButtonColor,
-              titleTextStyle:
-                  TextUtil.base.normal.label.NotoSansSC.sp(18).w600,
+              confirmButtonColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
+              titleTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
-                  TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
               cancelFun: () {
                 Navigator.pop(context);

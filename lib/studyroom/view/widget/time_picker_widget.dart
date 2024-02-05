@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
@@ -24,12 +26,12 @@ class TimePickerWidget extends StatelessWidget {
       child: Container(
           width: 1.sw,
           height: 54.h + ScreenUtil().bottomBarHeight,
-          color: ColorUtil.primaryActionColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
           child: SafeArea(
             child: Center(
               child: Text(
                 '确定',
-                style: TextUtil.base.w400.PingFangSC.reverse.sp(14),
+                style: TextUtil.base.w400.PingFangSC.reverse(context).sp(14),
               ),
             ),
           )),
@@ -88,7 +90,7 @@ class _TableCalenderState extends State<_TableCalender>
     return Center(
       child: Text(
         dateTimeToNum(date),
-        style: TextUtil.base.PingFangSC.bold.label.sp(16),
+        style: TextUtil.base.PingFangSC.bold.label(context).sp(16),
       ),
     );
   }
@@ -113,24 +115,27 @@ class _TableCalenderState extends State<_TableCalender>
       titleTextFormatter: (dateTime, _) {
         return '${dateTime.year}年${dateTime.month}月';
       },
-      titleTextStyle: TextUtil.base.PingFangSC.w400.label.sp(16),
+      titleTextStyle: TextUtil.base.PingFangSC.w400.label(context).sp(16),
     );
 
     final calenderStyle = CalendarStyle(
       outsideDaysVisible: true,
-      defaultTextStyle: TextUtil.base.PingFangSC.w400.label.sp(16),
+      defaultTextStyle: TextUtil.base.PingFangSC.w400.label(context).sp(16),
       outsideTextStyle: TextStyle(
         fontSize: 16.sp,
         color: Theme.of(context).calenderOutsideText,
       ),
       selectedDecoration: BoxDecoration(
-        color: Theme.of(context).calenderSelectBackground,
+        color: WpyTheme.of(context)
+            .get(WpyThemeKeys.primaryActionColor)
+            .withOpacity(0.1),
         shape: BoxShape.circle,
       ),
-      selectedTextStyle: TextUtil.base.PingFangSC.w400.primaryAction.sp(16),
+      selectedTextStyle:
+          TextUtil.base.PingFangSC.w400.primaryAction(context).sp(16),
       todayDecoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).calenderTodayBorder,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
           width: 0.5.w,
         ),
         shape: BoxShape.circle,
@@ -239,8 +244,8 @@ class _TimeItem extends StatelessWidget {
     final text = Text(
       title,
       style: isChecked
-          ? TextUtil.base.PingFangSC.w400.primaryAction.sp(12)
-          : TextUtil.base.PingFangSC.w400.label.sp(12),
+          ? TextUtil.base.PingFangSC.w400.primaryAction(context).sp(12)
+          : TextUtil.base.PingFangSC.w400.label(context).sp(12),
     );
 
     final button = TextButton(
@@ -257,8 +262,8 @@ class _TimeItem extends StatelessWidget {
         side: MaterialStateProperty.all(
           BorderSide(
             color: isChecked
-                ? Theme.of(context).calenderTimeTableBorder
-                : ColorUtil.unlabeledColor,
+                ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+                : WpyTheme.of(context).get(WpyThemeKeys.unlabeledColor),
             width: 0.5.w,
           ),
         ),

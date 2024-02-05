@@ -3,6 +3,8 @@ import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 
+import '../../themes/template/wpy_theme_data.dart';
+import '../../themes/wpy_theme.dart';
 import '../w_button.dart';
 
 enum ButtonType { light, dark, blue }
@@ -21,18 +23,18 @@ class WbyDialogButton extends StatelessWidget {
     this.expand = false,
   }) : super(key: key);
 
-  Color get _buttonColor {
+  Color _buttonColor(context) {
     if (type == ButtonType.blue)
-      return ColorUtil.primaryActionColor;
+      return WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
     else if (type == ButtonType.dark)
       return ColorUtil.grey6267Color;
     else
-      return ColorUtil.primaryBackgroundColor;
+      return WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
   }
 
-  Color get _textColor {
+  Color _textColor(context) {
     if (type == ButtonType.dark || type == ButtonType.blue)
-      return ColorUtil.primaryBackgroundColor;
+      return WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
     else
       return ColorUtil.black00Color;
   }
@@ -52,8 +54,8 @@ class WbyDialogButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(buttonRadius),
-          color: _buttonColor,
-          boxShadow: const [
+          color: _buttonColor(context),
+          boxShadow: [
             BoxShadow(
               color: ColorUtil.black19,
               offset: Offset(0, 2),
@@ -63,7 +65,7 @@ class WbyDialogButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextUtil.base.w600.sp(12).customColor(_textColor),
+          style: TextUtil.base.w600.sp(12).customColor(_textColor(context)),
         ),
       ),
     );

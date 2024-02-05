@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
@@ -26,7 +27,7 @@ class BuildingGridViewWidget extends StatelessWidget {
               if (data.buildings.isEmpty) {
                 return Center(
                   child: Text('暂无数据',
-                      style: TextUtil.base.PingFangSC.label.sp(14)),
+                      style: TextUtil.base.PingFangSC.label(context).sp(14)),
                 );
               }
 
@@ -72,7 +73,7 @@ class _BuildingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget buildingName = Text(
       building.name,
-      style: TextUtil.base.Swis.primaryAction.w400.sp(10),
+      style: TextUtil.base.Swis.primaryAction(context).w400.sp(10),
       textAlign: TextAlign.center,
     );
 
@@ -94,8 +95,12 @@ class _BuildingItem extends StatelessWidget {
             buildingImage
           else
             Container(
-                height: 54.h,
-                child: Image.asset(StudyroomImages.collectedBuilding)),
+              height: 54.h,
+              child: ColoredIcon(
+                StudyroomImages.collectedBuilding,
+                color: Color.fromRGBO(126, 12, 110, 1),
+              ),
+            ),
           SizedBox(height: 8.h),
           buildingName,
         ],

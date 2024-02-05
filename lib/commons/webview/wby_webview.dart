@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../themes/template/wpy_theme_data.dart';
+import '../themes/wpy_theme.dart';
 import '../widgets/w_button.dart';
 
 class WbyWebView extends StatefulWidget {
@@ -52,17 +53,17 @@ class WbyWebViewState extends State<WbyWebView> {
   PreferredSizeWidget get appBar => AppBar(
         title: Text(
           widget.page,
-          style: TextUtil.base.primary.sp(16),
+          style: TextUtil.base.primary(context).sp(16),
         ),
         elevation: 0,
         toolbarHeight: 40,
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: ColorUtil.oldActionColor, size: 32),
+                color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),

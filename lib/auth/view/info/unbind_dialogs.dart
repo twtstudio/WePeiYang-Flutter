@@ -4,7 +4,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -14,9 +14,8 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
-
-final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction;
 
 class TjuUnbindDialog extends Dialog {
   void _unbind(BuildContext context) {
@@ -31,13 +30,14 @@ class TjuUnbindDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+    final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction(context);
     return Center(
       child: Container(
         height: 120,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: ColorUtil.primaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +46,9 @@ class TjuUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.tju_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .oldSecondaryAction(context)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -84,13 +86,15 @@ class PhoneUnbindDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+    final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction(context);
     return Center(
       child: Container(
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -98,7 +102,9 @@ class PhoneUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.phone_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .oldSecondaryAction(context)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -136,13 +142,15 @@ class EmailUnbindDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+    final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction(context);
     return Center(
       child: Container(
         height: 140,
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -150,7 +158,9 @@ class EmailUnbindDialog extends Dialog {
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text(S.current.email_unbind_hint,
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.normal.noLine.sp(11).oldSecondaryAction),
+                  style: TextUtil.base.normal.noLine
+                      .sp(11)
+                      .oldSecondaryAction(context)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -202,20 +212,22 @@ class LogoffDialog extends Dialog {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
               child: Text('警告',
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.bold.noLine.sp(18).dangerousRed),
+                  style:
+                      TextUtil.base.bold.noLine.sp(18).dangerousRed(context)),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
               child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
                   textAlign: TextAlign.center,
-                  style: TextUtil.base.noLine.sp(16).dangerousRed),
+                  style: TextUtil.base.noLine.sp(16).dangerousRed(context)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -225,7 +237,8 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.cancel,
-                        style: TextUtil.base.w400.primaryAction.sp(15)),
+                        style:
+                            TextUtil.base.w400.primaryAction(context).sp(15)),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -234,7 +247,7 @@ class LogoffDialog extends Dialog {
                   child: Container(
                     margin: const EdgeInsets.all(10),
                     child: Text(S.current.ok,
-                        style: TextUtil.base.w400.label.sp(15)),
+                        style: TextUtil.base.w400.label(context).sp(15)),
                   ),
                 )
               ],

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
@@ -13,6 +14,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class EditDetailPageArgs {
@@ -119,7 +121,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 ),
               ),
               SizedBox(height: 25.h),
-              Text(text, style: TextUtil.base.PingFangSC.primary.medium.sp(15)),
+              Text(text, style: TextUtil.base.PingFangSC.primary(context).medium.sp(15)),
               SizedBox(height: 30.h),
               WbyDialogStandardTwoButton(
                 first: () {
@@ -143,7 +145,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor =ColorUtil.primaryActionColor;
+    var mainColor =WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -173,10 +175,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: Center(
             child: WButton(
               onPressed: () {
@@ -196,7 +198,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
           titleSpacing: 0,
           leadingWidth: 40.w,
           title:
-              Text('课程详情', style: TextUtil.base.PingFangSC.bold.label.sp(18)),
+              Text('课程详情', style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
           actions: [
             Center(
               child: Container(
@@ -211,7 +213,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.bold.reverse.sp(12)),
+                      style: TextUtil.base.PingFangSC.bold.reverse(context).sp(12)),
                 ),
               ),
             ),
@@ -224,7 +226,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
+                    .copyWith(secondaryHeaderColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,
@@ -305,7 +307,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                           height: 18.r, width: 18.r),
                       SizedBox(width: 5.w),
                       Text('删除',
-                          style: TextUtil.base.PingFangSC.medium.reverse.sp(14)),
+                          style: TextUtil.base.PingFangSC.medium.reverse(context).sp(14)),
                     ],
                   ),
                 ),

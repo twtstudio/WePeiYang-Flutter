@@ -13,6 +13,9 @@ import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
+
 class ImageViewPageArgs {
   final List<String> urlList;
   final int urlListLength;
@@ -100,7 +103,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                       child: Icon(
                         CupertinoIcons.back,
-                        color: ColorUtil.primaryBackgroundColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                         size: 30.h,
                       )),
                   onPressed: () {
@@ -123,7 +126,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.square_arrow_down,
-                      color: ColorUtil.primaryBackgroundColor,
+                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -134,7 +137,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.share,
-                      color: ColorUtil.primaryBackgroundColor,
+                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {

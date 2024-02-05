@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -27,8 +29,8 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
   Widget build(BuildContext context) {
     return LakeDialogWidget(
       title: '修改你的昵称',
-      titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary,
-      confirmButtonColor: ColorUtil.primaryActionColor,
+      titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary(context),
+      confirmButtonColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
       confirmFun: () {
         if (_textEditingController.text == "") {
           ToastProvider.error('昵称不能为空喵');
@@ -50,13 +52,14 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             },
             nickName: _textEditingController.text);
       },
-      confirmTextStyle: TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).reverse,
+      confirmTextStyle:
+          TextUtil.base.w700.NotoSansSC.sp(16).h(1.4).reverse(context),
       confirmText: '确定',
       cancelText: '取消',
       content: Column(
         children: [
           TextField(
-            style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary,
+            style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary(context),
             controller: _textEditingController,
             focusNode: _focus,
             maxLength: 20,
@@ -85,11 +88,11 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
           ),
           SizedBox(height: 10),
           Text('（仅在求实论坛非实名区生效）',
-              style: TextUtil.base.w400.NotoSansSC.sp(12).h(1.4).greyA6),
+              style: TextUtil.base.w400.NotoSansSC.sp(12).h(1.4).unlabeled(context)),
         ],
       ),
       cancelFun: () => Navigator.pop(context),
-      cancelTextStyle: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).greyA6,
+      cancelTextStyle: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).unlabeled(context),
     );
   }
 }

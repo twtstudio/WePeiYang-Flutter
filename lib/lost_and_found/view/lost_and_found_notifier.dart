@@ -7,7 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
@@ -15,6 +15,8 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 class LostAndFoundModel with ChangeNotifier {
   Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事': []};
@@ -178,7 +180,7 @@ class LAFWeKoDialog extends StatelessWidget {
           margin:  EdgeInsets.symmetric(horizontal: 30.w),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
-              color: ColorUtil.secondaryBackgroundColor),
+              color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -186,12 +188,12 @@ class LAFWeKoDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50.w),
                 child: Text('有人给你分享了微口令!',
-                    style: TextUtil.base.label.regular.sp(16).NotoSansSC),
+                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC),
               ),
               Padding(
                 padding: EdgeInsets.all(20.r),
                 child: Text(post.title,
-                    style: TextUtil.base.label.bold.sp(17).NotoSansSC),
+                    style: TextUtil.base.label(context).bold.sp(17).NotoSansSC),
               ),
               if (post.coverPhotoPath != null)
                 WpyPic(
@@ -216,11 +218,11 @@ class LAFWeKoDialog extends StatelessWidget {
                   overlayColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return ColorUtil.oldSecondaryActionColor;
-                    return ColorUtil.secondaryBackgroundColor;
+                      return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                    return WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor);
                   }),
                   backgroundColor:
-                  MaterialStateProperty.all(ColorUtil.secondaryBackgroundColor),
+                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),
@@ -228,7 +230,7 @@ class LAFWeKoDialog extends StatelessWidget {
                   margin: EdgeInsets.all(7.r),
                   child: Text(
                     '查看详情',
-                    style: TextUtil.base.label.regular.sp(16).NotoSansSC,
+                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),

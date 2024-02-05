@@ -3,11 +3,13 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class PhoneBindPage extends StatefulWidget {
@@ -49,9 +51,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular
-        .sp(13)
-        .oldHintDarker;
+    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
     double width = WePeiYangApp.screenWidth - 80;
     if (CommonPreferences.phone.value != "")
       return Column(children: [
@@ -59,9 +59,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         Center(
           child: Text(
               "${S.current.bind_phone}: ${CommonPreferences.phone.value}",
-              style: TextUtil.base.bold
-                  .sp(15)
-                  .oldSecondaryAction),
+              style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         ),
         SizedBox(height: 95),
         SizedBox(
@@ -74,17 +72,17 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     builder: (BuildContext context) => PhoneUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: TextUtil.base.regular.reverse.sp(13)),
+                style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
                   return ColorUtil.oldActionRippleColor;
-                return ColorUtil.oldSecondaryActionColor;
+                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               backgroundColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
-                return ColorUtil.oldSecondaryActionColor;
+                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30))),
@@ -104,7 +102,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     hintText: S.current.phone,
                     hintStyle: hintStyle,
                     filled: true,
-                    fillColor: ColorUtil.reverseTextColor,
+                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -155,13 +153,14 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             return ElevatedButton(
                               onPressed: () {},
                               child: Text('$time秒后重试',
-                                  style: TextUtil.base.bold.sp(13).oldThirdAction),
+                                  style:
+                                      TextUtil.base.bold.sp(13).oldThirdAction(context)),
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(5),
-                                overlayColor:
-                                    MaterialStateProperty.all(ColorUtil.greyShade300),
-                                backgroundColor:
-                                    MaterialStateProperty.all(ColorUtil.greyShade300),
+                                overlayColor: MaterialStateProperty.all(
+                                    ColorUtil.greyShade300),
+                                backgroundColor: MaterialStateProperty.all(
+                                    ColorUtil.greyShade300),
                                 shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30)),
@@ -172,7 +171,9 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                       : ElevatedButton(
                           onPressed: _fetchCaptcha,
                           child: Text(S.current.fetch_captcha,
-                              style: TextUtil.base.regular.reverse.sp(13)),
+                              style: TextUtil.base.regular
+                                  .reverse(context)
+                                  .sp(13)),
                           style: ButtonStyle(
                             elevation: MaterialStateProperty.all(5),
                             overlayColor:
@@ -180,10 +181,10 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                                     (states) {
                               if (states.contains(MaterialState.pressed))
                                 return ColorUtil.oldActionRippleColor;
-                              return ColorUtil.oldActionColor;
+                              return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                             }),
                             backgroundColor: MaterialStateProperty.all(
-                                ColorUtil.oldActionColor),
+                                WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30)),
@@ -202,17 +203,17 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.oldActionColor),
+                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
@@ -230,13 +231,13 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.reverseTextColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldActionColor, size: 32),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -247,9 +248,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 20),
                 child: Text(S.current.phone_bind,
-                    style: TextUtil.base.bold
-                        .sp(28)
-                        .oldFurthAction),
+                    style: TextUtil.base.bold.sp(28).oldFurthAction),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
@@ -257,7 +256,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     (CommonPreferences.phone.value != "")
                         ? S.current.is_bind
                         : S.current.not_bind,
-                    style: TextUtil.base.bold.greyA6.sp(12)),
+                    style: TextUtil.base.bold.unlabeled(context).sp(12)),
               ),
             ],
           ),

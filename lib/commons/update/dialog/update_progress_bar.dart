@@ -14,7 +14,7 @@ class GradientLinearProgressBar extends StatelessWidget {
   final double value;
 
   ///进度条背景色
-  final Color backgroundColor;
+  late final Color backgroundColor;
 
   ///渐变的颜色列表
   final List<Color> colors;
@@ -23,11 +23,11 @@ class GradientLinearProgressBar extends StatelessWidget {
       {this.strokeWidth = 2.0,
       required this.colors,
       required this.value,
-      this.backgroundColor = ColorUtil.whiteEEColor,
       this.strokeCapRound = false});
 
   @override
   Widget build(BuildContext context) {
+    this.backgroundColor = ColorUtil.whiteEEColor;
     // very very very very very important : [RepaintBoundary]
     // to avoid repaint and confused bugs
     return RepaintBoundary(
@@ -52,12 +52,13 @@ class _GradientLinearProgressPainter extends CustomPainter {
   final List<Color> colors;
   final p = Paint();
 
-  _GradientLinearProgressPainter(
-      {this.strokeWidth = 2.0,
-      required this.colors,
-      this.value = 0.0,
-      this.backgroundColor = ColorUtil.whiteEEColor,
-      this.strokeCapRound = false});
+  _GradientLinearProgressPainter({
+    this.strokeWidth = 2.0,
+    required this.colors,
+    this.value = 0.0,
+    Color? backgroundColor,
+    this.strokeCapRound = false,
+  }) : this.backgroundColor = backgroundColor ?? ColorUtil.whiteEEColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -81,9 +82,8 @@ class _GradientLinearProgressPainter extends CustomPainter {
     if (value > 0) {
       var valueEnd = Offset(value * size.width + _offset, _offset); //计算进度的长度
       Rect rect = Rect.fromPoints(start, valueEnd);
-      p.shader =
-          LinearGradient(colors: colors).createShader(rect);
-      p.color =ColorUtil.FavorBubbleStartColor ;
+      p.shader = LinearGradient(colors: colors).createShader(rect);
+      p.color = ColorUtil.FavorBubbleStartColor;
       canvas.drawLine(start, valueEnd, p);
     }
   }

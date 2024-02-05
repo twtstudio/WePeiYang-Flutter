@@ -18,6 +18,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../commons/themes/template/wpy_theme_data.dart';
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/widget/pop_menu_shape.dart';
@@ -129,7 +131,7 @@ class _NewPostPageState extends State<NewPostPage> {
     final appBar = AppBar(
       title: Text(
         S.current.feedback_new_post,
-        style: TextUtil.base.NotoSansSC.w700.sp(18).label,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).label(context),
       ),
       elevation: 0,
       leading: IconButton(
@@ -152,7 +154,8 @@ class _NewPostPageState extends State<NewPostPage> {
       child: ElevatedButton(
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(ColorUtil.primaryActionColor),
+          backgroundColor: MaterialStateProperty.all(
+              WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
@@ -169,12 +172,13 @@ class _NewPostPageState extends State<NewPostPage> {
           }
         },
         child: Text(S.current.feedback_submit,
-            style: TextUtil.base.NotoSansSC.w500.sp(14).reverse),
+            style: TextUtil.base.NotoSansSC.w500.sp(14).reverse(context)),
       ),
     );
 
     return Scaffold(
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         appBar: appBar,
         body: Column(
           children: [
@@ -194,7 +198,7 @@ class _NewPostPageState extends State<NewPostPage> {
                               ? Text('跟帖:',
                                   style: TextUtil.base.NotoSansSC.w500
                                       .sp(14)
-                                      .label)
+                                      .label(context))
                               : LakeSelector()),
                       SizedBox(height: 30),
                       Column(
@@ -215,9 +219,11 @@ class _NewPostPageState extends State<NewPostPage> {
                       SizedBox(height: 22),
                       widget.args.isFollowing
                           ? Text('${widget.args.tagName}'.substring(3),
-                              style:
-                                  TextUtil.base.NotoSansSC.w500.sp(14).label)
-                          : departmentTagView(context.read<NewPostProvider>().postTypeNotifier),
+                              style: TextUtil.base.NotoSansSC.w500
+                                  .sp(14)
+                                  .label(context))
+                          : departmentTagView(
+                              context.read<NewPostProvider>().postTypeNotifier),
                     ],
                   ),
                 ),
@@ -238,122 +244,115 @@ class _LakeSelectorState extends State<LakeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final notifier =
-        context.read<NewPostProvider>().postTypeNotifier;
+    final notifier = context.read<NewPostProvider>().postTypeNotifier;
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
-    return status == LakePageStatus.unload
-        ? SizedBox()
-        : status == LakePageStatus.loading
-            ? Container(
-                height: 60,
-                child: Center(
-                  child: Loading(),
-                ),
-              )
-            : status == LakePageStatus.idle
-                ? SizedBox(
-                    height: 60,
-                    width: double.infinity,
-                    child: Stack(
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        ValueListenableBuilder<int>(
-                          valueListenable: notifier,
-                          builder: (context, type, _) {
-                            return Padding(
-                                padding: const EdgeInsets.only(right: 40.0),
-                                child: Builder(builder: (context) {
-                                  return ListView.builder(
-                                    controller: controller,
-                                    itemCount: tabList.length - 1,
-                                    scrollDirection: Axis.horizontal,
-                                    physics: BouncingScrollPhysics(),
-                                    itemBuilder: (context, index) {
-                                      return WButton(
-                                        onPressed: () {
-                                          notifier.value =
-                                              tabList[index + 1].id;
+    return switch (status) {
+      LakePageStatus.unload => SizedBox(),
+      LakePageStatus.loading => Container(
+          height: 60,
+          child: Center(
+            child: Loading(),
+          ),
+        ),
+      LakePageStatus.error => Container(
+          height: 60,
+          decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(16)),
+          child: Center(
+            child: Text('点击刷新'),
+          ),
+        ),
+      LakePageStatus.idle => SizedBox(
+          height: 60,
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.centerLeft,
+            children: [
+              ValueListenableBuilder<int>(
+                valueListenable: notifier,
+                builder: (context, type, _) {
+                  return Padding(
+                      padding: const EdgeInsets.only(right: 40.0),
+                      child: Builder(builder: (context) {
+                        return ListView.builder(
+                          controller: controller,
+                          itemCount: tabList.length - 1,
+                          scrollDirection: Axis.horizontal,
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return WButton(
+                              onPressed: () {
+                                notifier.value = tabList[index + 1].id;
 
-                                          ///在切换发帖区时，要清空department，不然就会导致参数问题
-                                          context
-                                              .read<NewPostProvider>()
-                                              .department = null;
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(right: 25.w),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(tabList[index + 1].shortname,
-                                                  style: type ==
-                                                          tabList[index + 1].id
-                                                      ? TextUtil
-                                                          .base.NotoSansSC.w400
-                                                          .sp(15)
-                                                          .primaryAction
-                                                      : TextUtil.base.w400
-                                                          .sp(15)
-                                                          .label),
-                                              Container(
-                                                margin: EdgeInsets.only(top: 2),
-                                                decoration: BoxDecoration(
-                                                    color: type ==
-                                                            tabList[index + 1]
-                                                                .id
-                                                        ? ColorUtil.primaryActionColor
-                                                        : ColorUtil.primaryBackgroundColor,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                16))),
-                                                width: 28,
-                                                height: 2,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }));
+                                ///在切换发帖区时，要清空department，不然就会导致参数问题
+                                context.read<NewPostProvider>().department =
+                                    null;
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(right: 25.w),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(tabList[index + 1].shortname,
+                                        style: type == tabList[index + 1].id
+                                            ? TextUtil.base.NotoSansSC.w400
+                                                .sp(15)
+                                                .primaryAction(context)
+                                            : TextUtil.base.w400
+                                                .sp(15)
+                                                .label(context)),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 2),
+                                      decoration: BoxDecoration(
+                                          color: type == tabList[index + 1].id
+                                              ? WpyTheme.of(context).get(
+                                                  WpyThemeKeys
+                                                      .primaryActionColor)
+                                              : WpyTheme.of(context).get(
+                                                  WpyThemeKeys
+                                                      .primaryBackgroundColor),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16))),
+                                      width: 28,
+                                      height: 2,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           },
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            highlightColor: ColorUtil.transparent,
-                            splashColor: ColorUtil.transparent,
-                            onTap: () {
-                              controller.offset <= 100 * (tabList.length - 2)
-                                  ? controller.animateTo(
-                                      controller.offset + 100,
-                                      duration: Duration(milliseconds: 400),
-                                      curve: Curves.fastOutSlowIn)
-                                  : controller.animateTo(
-                                      100 * (tabList.length - 2).toDouble(),
-                                      duration: Duration(milliseconds: 800),
-                                      curve: Curves.slowMiddle);
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 15.w),
-                              child: Icon(Icons.arrow_forward_ios_sharp,
-                                  color: ColorUtil.black2AColor, size: 10.h),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ))
-                : Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: ColorUtil.primaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(16)),
-                    child: Center(
-                      child: Text('点击刷新'),
-                    ),
-                  );
+                        );
+                      }));
+                },
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  highlightColor: ColorUtil.transparent,
+                  splashColor: ColorUtil.transparent,
+                  onTap: () {
+                    controller.offset <= 100 * (tabList.length - 2)
+                        ? controller.animateTo(controller.offset + 100,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.fastOutSlowIn)
+                        : controller.animateTo(
+                            100 * (tabList.length - 2).toDouble(),
+                            duration: Duration(milliseconds: 800),
+                            curve: Curves.slowMiddle);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 15.w),
+                    child: Icon(Icons.arrow_forward_ios_sharp,
+                        color: ColorUtil.black2AColor, size: 10.h),
+                  ),
+                ),
+              ),
+            ],
+          )),
+    };
   }
 }
 
@@ -381,14 +380,14 @@ class _departmentTagViewState extends State<departmentTagView> {
 
   @override
   Widget build(BuildContext context) {
-    final notifier =
-        context.read<NewPostProvider>().postTypeNotifier;
+    final notifier = context.read<NewPostProvider>().postTypeNotifier;
     return ValueListenableBuilder<int>(
         valueListenable: notifier,
         builder: (context, type, _) {
           return Container(
             decoration: BoxDecoration(
-              color: ColorUtil.primaryBackgroundColor,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),
@@ -429,12 +428,18 @@ class _CampusSelectorState extends State<CampusSelector> {
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
-                color: ColorUtil.primaryActionColor,
+                color:
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
               ),
               SizedBox(width: 10),
               Text(
                 texts[value],
-                style: TextUtil.base.sp(14).w400.NotoSansSC.normal.primaryAction,
+                style: TextUtil.base
+                    .sp(14)
+                    .w400
+                    .NotoSansSC
+                    .normal
+                    .primaryAction(context),
               ),
               SizedBox(width: 18),
             ],
@@ -510,7 +515,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         controller: _titleController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
-        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label,
+        style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label(context),
         minLines: 1,
         maxLines: 10,
         decoration: InputDecoration.collapsed(
@@ -523,7 +528,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         inputFormatters: [
           CustomizedLengthTextInputFormatter(30),
         ],
-        cursorColor: ColorUtil.cursorColor,
+        cursorColor: WpyTheme.of(context).get(WpyThemeKeys.cursorColor),
         cursorHeight: 20,
       ),
     );
@@ -589,7 +594,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       textInputAction: TextInputAction.newline,
       minLines: 1,
       maxLines: 100,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label,
+      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label(context),
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).grey6C,
         hintText: '请添加正文',
@@ -637,7 +642,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: maxImage - context.read<NewPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: ColorUtil.primaryTextButtonColor),
+          themeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -663,7 +668,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label,
+        titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label(context),
         title: Text(S.current.feedback_delete_image_content),
         actions: [
           WButton(
@@ -684,7 +689,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   Widget imgBuilder(index, List<File> data, length, {onTap}) {
     return Stack(fit: StackFit.expand, children: [
       WButton(
-        onPressed: () => Navigator.pushNamed(context, FeedbackRouter.localImageView,
+        onPressed: () => Navigator.pushNamed(
+            context, FeedbackRouter.localImageView,
             arguments: LocalImageViewPageArgs(data, [], length, index)),
         child: Container(
           decoration: BoxDecoration(
@@ -716,7 +722,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             child: Icon(
               Icons.close,
               size: MediaQuery.of(context).size.width / 32,
-              color: ColorUtil.secondaryBackgroundColor,
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.secondaryBackgroundColor),
             ),
           ),
         ),

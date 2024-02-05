@@ -16,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../commons/themes/template/wpy_theme_data.dart';
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import 'components/widget/pop_menu_shape.dart';
 
@@ -284,12 +286,12 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500.secondaryInfo
+                                style: TextUtil.base.NotoSansSC.w500.secondaryInfo(context)
                                     .sp(12)),
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: ColorUtil.primaryBackgroundColor,
+                            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                           )),
                     ),
                   ),
@@ -333,7 +335,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     var appBar = AppBar(
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
+        icon: Icon(Icons.arrow_back, color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
@@ -345,7 +347,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
           child: Center(
             child: Text(
               '官方回复',
-              style: TextUtil.base.NotoSansSC.label.w500.sp(18),
+              style: TextUtil.base.NotoSansSC.label(context).w500.sp(18),
             ),
           ),
         ),
@@ -360,7 +362,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorUtil.secondaryBackgroundColor,
+        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
         appBar: appBar,
         body: body,
       ),

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
@@ -23,6 +23,8 @@ import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
 
+import '../../commons/themes/wpy_theme.dart';
+import '../../commons/widgets/colored_icon.dart';
 import '../../commons/widgets/w_button.dart';
 
 class WPYPage extends StatefulWidget {
@@ -39,15 +41,16 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 
   final List<CardBean> cards = [
     CardBean(
-        Image.asset(
-          'assets/svg_pics/lake_butt_icons/daily.png',
-          width: 24.w,
+        ColoredIcon(
+          "assets/svg_pics/lake_butt_icons/daily.png",
+          width: 21.w,
+          // TODO: Icon Color changed based on the theme
         ),
         '课程表',
         'Schedule',
         ScheduleRouter.course),
     CardBean(
-        Image.asset(
+        ColoredIcon(
           'assets/svg_pics/lake_butt_icons/lost_and_found.png',
           width: 21.w,
         ),
@@ -55,7 +58,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Lost-\nFound',
         HomeRouter.laf),
     CardBean(
-        Image.asset(
+        ColoredIcon(
           'assets/images/schedule/add.png',
           width: 24.w,
         ),
@@ -63,14 +66,19 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Map-\nCalendar',
         HomeRouter.mapCalenderPage),
     CardBean(
-        Image.asset(
+        ColoredIcon(
           'assets/svg_pics/lake_butt_icons/wiki.png',
           width: 24.w,
         ),
         '北洋维基',
         'Wiki',
         'https://wiki.tjubot.cn/'),
-    CardBean(Icon(Icons.timeline, size: 25), '成绩', 'GPA', GPARouter.gpa),
+    CardBean(
+      Icon(Icons.timeline, size: 25),
+      '成绩',
+      'GPA',
+      GPARouter.gpa,
+    ),
   ];
   String md = '';
 
@@ -144,7 +152,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor: ColorUtil.primaryBackgroundColor,
+      systemNavigationBarColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
     ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
@@ -166,8 +175,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             curve: Curves.easeIn,
             decoration: BoxDecoration(
                 gradient: showSchedule
-                    ? ColorUtil.gradientBlue
-                    : ColorUtil.gradientWhite)),
+                    ? ColorUtil.primaryGradient
+                    : ColorUtil.gradientPrimaryBackground)),
         SafeArea(
           bottom: false,
           child: Stack(
@@ -192,7 +201,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             margin: EdgeInsets.only(top: 20.h),
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
-                                color: ColorUtil.primaryBackgroundColor,
+                                color: WpyTheme.of(context)
+                                    .get(WpyThemeKeys.primaryBackgroundColor),
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
@@ -208,8 +218,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
                   style: showSchedule
-                      ? TextUtil.base.reverse.w400.sp(22)
-                      : TextUtil.base.primary.w400.sp(22),
+                      ? TextUtil.base.reverse(context).w400.sp(22)
+                      : TextUtil.base.primary(context).w400.sp(22),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                   onEnd: () => setState(() => useRound = showSchedule),
@@ -243,11 +253,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: ColorUtil.basicTextColor,
-              unselectedLabelColor: ColorUtil.secondaryTextColor,
+              labelColor: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+              unselectedLabelColor:
+                  WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
               indicator: CustomIndicator(
                   left: true,
-                  borderSide: BorderSide(color: ColorUtil.warning, width: 4)),
+                  borderSide: BorderSide(color: WpyTheme.of(context).get(WpyThemeKeys.warningColor), width: 4)),
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
@@ -349,7 +360,7 @@ class SliverCardsWidget extends StatelessWidget {
       width: 150.w,
       height: 80.h,
       margin: EdgeInsets.fromLTRB(0, 2.h, 18.h, 16.h),
-      decoration: MapAndCalenderState().cardDecoration,
+      decoration: MapAndCalenderState().cardDecoration(context),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -365,8 +376,8 @@ class SliverCardsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: bean.label == '地图·校历'
-                        ? ColorUtil.blue28Color
-                        : ColorUtil.blue80Color,
+                        ? WpyTheme.of(context).get(WpyThemeKeys.beanLightColor)
+                        : WpyTheme.of(context).get(WpyThemeKeys.beanDarkColor),
                   ),
                 ),
               ),
@@ -382,14 +393,13 @@ class SliverCardsWidget extends StatelessWidget {
                 width: 70.w,
                 child: Text(bean.eng,
                     maxLines: 2,
-                    style: TextUtil.base.w500.label.sp(12).w400,
+                    style: TextUtil.base.w500.label(context).sp(12).w400,
                     overflow: TextOverflow.ellipsis),
               ),
               SizedBox(
                 width: 70.w,
                 child: Text(bean.label,
-                    maxLines: 2,
-                    style: TextUtil.base.w400.label.sp(12).medium),
+                    maxLines: 2, style: TextUtil.base.w400.label(context).sp(12).medium),
               ),
             ],
           )
@@ -417,7 +427,7 @@ class WPYScrollBehavior extends ScrollBehavior {
       showLeading: false,
       showTrailing: false,
       axisDirection: AxisDirection.down,
-      color: ColorUtil.defaultActionColor,
+      color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
     );
   }
 

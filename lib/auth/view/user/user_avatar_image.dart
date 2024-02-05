@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+
+import '../../../commons/themes/template/wpy_theme_data.dart';
 
 class UserAvatarImage extends StatelessWidget {
   final double size;
@@ -14,9 +16,11 @@ class UserAvatarImage extends StatelessWidget {
 
   UserAvatarImage({
     required this.size,
-    this.iconColor = ColorUtil.oldThirdActionColor,
+    Color? iconColor,
     this.tempUrl = "",
-  });
+    required BuildContext context,
+  }) : this.iconColor = iconColor ??
+            WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
 
   @override
   Widget build(BuildContext context) {

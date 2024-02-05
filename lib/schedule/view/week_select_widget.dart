@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../commons/themes/color_util.dart';
+import '../../commons/themes/wpy_theme.dart';
 
 /// 用这两个变量绘制点阵图
 const double _cubeSideLength = 6;
@@ -69,7 +71,9 @@ class WeekSelectWidget extends StatelessWidget {
     );
 
     return Theme(
-      data: Theme.of(context).copyWith(secondaryHeaderColor: ColorUtil.primaryBackgroundColor),
+      data: Theme.of(context).copyWith(
+          secondaryHeaderColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
       child: Builder(
         builder: (context) {
           var shrink =
@@ -91,20 +95,25 @@ class WeekSelectWidget extends StatelessWidget {
           height: _canvasHeight + 20.h,
           width: _canvasWidth + 25.w,
           alignment: Alignment.center,
-          child: CustomPaint(
-            painter: _WeekSelectPainter(
-              getBoolMatrix(i + 1, provider.weekCount, provider.totalCourses),
-              i + 1 == provider.selectedWeek,
-            ),
-            size: Size(_canvasWidth, _canvasHeight),
-          ),
+          child: Builder(builder: (context) {
+            return CustomPaint(
+              painter: _WeekSelectPainter(
+                  getBoolMatrix(
+                      i + 1, provider.weekCount, provider.totalCourses),
+                  i + 1 == provider.selectedWeek,
+                  context: context),
+              size: Size(_canvasWidth, _canvasHeight),
+            );
+          }),
         ),
         SizedBox(height: 3.h),
-        Text('WEEK ${i + 1}',
-            style: TextUtil.base.Swis.w900.sp(10).customColor(
-                (provider.selectedWeek == i + 1)
-                    ? ColorUtil.primaryBackgroundColor
-                    : ColorUtil.whiteOpacity04))
+        Builder(builder: (context) {
+          return Text('WEEK ${i + 1}',
+              style: TextUtil.base.Swis.w900.sp(10).customColor(
+                  (provider.selectedWeek == i + 1)
+                      ? WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+                      : ColorUtil.whiteOpacity04));
+        })
       ],
     );
   }
@@ -114,7 +123,13 @@ class _WeekSelectPainter extends CustomPainter {
   final List<List<bool>> _list;
   final bool _selected;
 
-  _WeekSelectPainter(this._list, this._selected) {
+  final BuildContext context;
+
+  _WeekSelectPainter(
+    this._list,
+    this._selected, {
+    required this.context,
+  }) {
     if (!_selected) {
       _cubePaint.color = _cubePaint.color.withOpacity(0.4);
       _spacePaint.color = _spacePaint.color.withOpacity(0.4);
@@ -127,8 +142,8 @@ class _WeekSelectPainter extends CustomPainter {
     ..style = PaintingStyle.fill;
 
   /// 白色cube，代表该点没课
-  final Paint _spacePaint = Paint()
-    ..color = ColorUtil.primaryBackgroundColor
+  late final Paint _spacePaint = Paint()
+    ..color = WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
     ..style = PaintingStyle.fill;
 
   @override

@@ -129,7 +129,7 @@ class _LostAndFoundSearchResultPageState
         padding: EdgeInsets.only(bottom: 8.h),
         child: Text(
           '搜索结果',
-          style: TextUtil.base.reverse.NotoSansSC.w400.sp(20),
+          style: TextUtil.base.reverse(context).NotoSansSC.w400.sp(20),
         ),
       ),
     );
@@ -246,7 +246,10 @@ class _LostAndFoundSearchResultPageState
                                     ))
                                 : Container(
                                     padding: EdgeInsetsDirectional.only(
-                                        start: 11.w, end: 11.w, bottom: 7.h, top: 7.h),
+                                        start: 11.w,
+                                        end: 11.w,
+                                        bottom: 7.h,
+                                        top: 7.h),
                                     child: LayoutBuilder(
                                       builder: (context, constrains) {
                                         final maxWidth =
@@ -285,14 +288,16 @@ class _LostAndFoundSearchResultPageState
                                   start: 12.w, end: 12.w),
                               child: Text(
                                 postList[index].title,
-                                style: TextUtil.base.w600.label
-                                    .sp(15)
-                                    .NotoSansSC,
+                                style:
+                                    TextUtil.base.w600.label(context).sp(15).NotoSansSC,
                               ),
                             ),
                             Padding(
                               padding: EdgeInsetsDirectional.only(
-                                  start: 12.w, end: 25.w, bottom: 18.h, top: 10.h),
+                                  start: 12.w,
+                                  end: 25.w,
+                                  bottom: 18.h,
+                                  top: 10.h),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,

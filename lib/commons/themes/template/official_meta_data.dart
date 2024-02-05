@@ -8,8 +8,8 @@ class BuiltInThemeMetaData extends WpyThemeMetaData {
   }) : super(
           author: "TWT Studio",
           version: "Built-in Theme",
-          publishedDate: DateTime.parse("2000-6-8"),
-          lastUpdatedDate: DateTime.parse("2000-6-8"),
+          publishedDate: DateTime.parse("2000-06-08"),
+          lastUpdatedDate: DateTime.parse("2000-06-08"),
           themeType: WpyThemeType.Official,
         );
 }

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+
+import '../../../commons/themes/wpy_theme.dart';
 
 /// 核酸检测提醒弹窗
 class AcidCheckDialog extends Dialog {
@@ -34,7 +36,7 @@ class AcidCheckDialog extends Dialog {
                 width: 0.7.sw,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,7 +66,7 @@ class AcidCheckDialog extends Dialog {
                     SizedBox(height: 10.w),
                     Text(
                       '${DateFormat('HH:mm').format(start.toLocal())} - ${DateFormat('HH:mm').format(end.toLocal())}',
-                      style: TextUtil.base.PingFangSC.primaryAction.w500.sp(20),
+                      style: TextUtil.base.PingFangSC.primaryAction(context).w500.sp(20),
                     ),
                     SizedBox(height: 10.w),
                     ValueListenableBuilder(

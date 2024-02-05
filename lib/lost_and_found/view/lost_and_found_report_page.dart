@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 class LostAndFoundReportPage extends StatelessWidget {
   LostAndFoundReportPage(reportPageArgs);
@@ -11,7 +13,7 @@ class LostAndFoundReportPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           elevation: 0, // 取消阴影
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/back.png',
@@ -23,7 +25,7 @@ class LostAndFoundReportPage extends StatelessWidget {
 
           title: Text(
             '举报',
-            style: TextUtil.base.w500.primary.sp(18)
+            style: TextUtil.base.w500.primary(context).sp(18)
           ),
           centerTitle: true,
         ),
@@ -54,13 +56,13 @@ class LostAndFoundReportPage extends StatelessWidget {
                   width: 80.w,
                   height: 32.h,
                   decoration: BoxDecoration(
-                    color: ColorUtil.primaryActionColor,
+                    color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                     borderRadius: BorderRadius.circular(30.r),
                   ),
                   child: Center(
                     child: Text(
                       '发送',
-                      style: TextUtil.base.reverse.sp(14),
+                      style: TextUtil.base.reverse(context).sp(14),
                     ),
                   ),
                 ),

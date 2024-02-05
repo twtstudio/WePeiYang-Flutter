@@ -7,10 +7,12 @@ import 'package:flutter/services.dart'
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 final _ITEM_HEIGHT = 48.h;
@@ -58,7 +60,7 @@ class TimeFrameWidget extends StatelessWidget {
           Row(
             children: [
               Text('time frame ${index + 1}',
-                  style: TextUtil.base.Swis.medium.label.sp(16)),
+                  style: TextUtil.base.Swis.medium.label(context).sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
               WButton(
@@ -75,15 +77,16 @@ class TimeFrameWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
-                          ? ColorUtil.primaryActionColor
-                          : ColorUtil.primaryBackgroundColor),
+                          ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+                          : WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor)),
                 ),
               ),
             ],
           ),
           Row(
             children: [
-              Text('周数：', style: TextUtil.base.PingFangSC.bold.label.sp(14)),
+              Text('周数：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -131,7 +134,7 @@ class TimeFrameWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Text('节数：', style: TextUtil.base.PingFangSC.bold.label.sp(14)),
+              Text('节数：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -232,8 +235,7 @@ class InputWidget extends StatelessWidget {
       child: Row(
         children: [
           if (title != null)
-            Text('$title：',
-                style: TextUtil.base.PingFangSC.bold.label.sp(14)),
+            Text('$title：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
           Expanded(
             child: TextField(
               focusNode: focusNode,
@@ -242,8 +244,8 @@ class InputWidget extends StatelessWidget {
               keyboardType: keyboardType,
               inputFormatters: inputFormatter,
               textAlign: TextAlign.end,
-              style: TextUtil.base.PingFangSC.medium.label.sp(16),
-              cursorColor: ColorUtil.primaryActionColor,
+              style: TextUtil.base.PingFangSC.medium.label(context).sp(16),
+              cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -269,7 +271,7 @@ class CardWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
-          color: ColorUtil.primaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
@@ -298,7 +300,7 @@ class CardWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5.h),
       padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
       decoration: BoxDecoration(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
@@ -324,11 +326,10 @@ class UnitPicker extends Dialog {
 
   static const _text = ['至', '节'];
 
-  final _textStyle =
-      TextUtil.base.PingFangSC.w900.primary.space(letterSpacing: 1);
-
   @override
   Widget build(BuildContext context) {
+    final _textStyle =
+        TextUtil.base.PingFangSC.w900.primary(context).space(letterSpacing: 1);
     List<Widget> children = [];
 
     for (int section = 0; section < 2; section++) {
@@ -377,7 +378,7 @@ class UnitPicker extends Dialog {
         height: 150.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: ColorUtil.primaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
@@ -424,9 +425,6 @@ class WeekPicker extends Dialog {
 
   static const _weekTypes = ['每周', '单周', '双周'];
 
-  final _textStyle =
-      TextUtil.base.PingFangSC.w900.primary.space(letterSpacing: 1);
-
   static String _weekTypeInit(List<int> weekInit) {
     if (weekInit.every((e) => e == 1)) return '每周';
     var odd = weekInit.any((e) => e.isOdd);
@@ -463,6 +461,9 @@ class WeekPicker extends Dialog {
 
   @override
   Widget build(BuildContext context) {
+    final _textStyle =
+        TextUtil.base.PingFangSC.w900.primary(context).space(letterSpacing: 1);
+
     var pvd = context.read<EditProvider>();
     var weekCount = context.read<CourseProvider>().weekCount;
     List<Widget> children = [
@@ -527,7 +528,7 @@ class WeekPicker extends Dialog {
         height: 220.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: ColorUtil.primaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
@@ -555,7 +556,7 @@ class WeekPicker extends Dialog {
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
                             backgroundColor: index == _weekTypes.indexOf(type)
-                                ? ColorUtil.primaryActionColor
+                                ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
                                 : ColorUtil.whiteF8Color,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),
@@ -565,7 +566,8 @@ class WeekPicker extends Dialog {
                               style: TextUtil.base.PingFangSC.regular
                                   .sp(12)
                                   .customColor(index == _weekTypes.indexOf(type)
-                                      ? ColorUtil.primaryBackgroundColor
+                                      ? WpyTheme.of(context).get(
+                                          WpyThemeKeys.primaryBackgroundColor)
                                       : ColorUtil.greyCAColor)),
                         );
                       },

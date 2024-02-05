@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
@@ -58,8 +60,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                 title: Padding(
                   padding: EdgeInsets.only(bottom: 5.h),
                   child: TabBar(
-                    labelStyle: TextUtil.base.sp(20).reverse.w600,
-                    unselectedLabelStyle: TextUtil.base.normal.sp(20).reverse,
+                    labelStyle: TextUtil.base.sp(20).reverse(context).w600,
+                    unselectedLabelStyle: TextUtil.base.normal.sp(20).reverse(context),
                     labelPadding:
                         EdgeInsetsDirectional.only(start: 52.w, end: 50.w),
                     isScrollable: true,
@@ -144,7 +146,7 @@ class LostAndFoundAppBar extends StatelessWidget
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [ColorUtil.primaryActionColor, ColorUtil.blue64Color]),
+              colors: [WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor), ColorUtil.blue64Color]),
         ),
         child: Stack(
           children: [

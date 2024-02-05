@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
@@ -19,6 +20,7 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
+import '../../commons/themes/wpy_theme.dart';
 
 class HomePage extends StatefulWidget {
   final int? page;
@@ -126,7 +128,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/home.svg',
                 color: ColorUtil.grey144,
               ),
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(0),
       ),
     );
@@ -143,7 +145,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             : SvgPicture.asset(
                 'assets/svg_pics/lake_grey.svg',
               ),
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState?.listToTop();
@@ -168,14 +170,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/my.svg',
                 color: ColorUtil.grey144,
               ),
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(2),
       ),
     );
 
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         boxShadow: [
           BoxShadow(color: ColorUtil.dislikeSecondary, spreadRadius: -1, blurRadius: 2)
         ],
@@ -192,9 +194,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: _tabController.index == 2
           ? SystemUiOverlayStyle.light.copyWith(
-              systemNavigationBarColor: ColorUtil.primaryBackgroundColor)
+              systemNavigationBarColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor))
           : SystemUiOverlayStyle.dark.copyWith(
-              systemNavigationBarColor: ColorUtil.primaryBackgroundColor),
+              systemNavigationBarColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,

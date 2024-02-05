@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -20,6 +21,7 @@ import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.d
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../feedback/feedback_router.dart';
 
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
@@ -243,7 +245,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '取消',
-                              style: TextUtil.base.bold.primary,
+                              style: TextUtil.base.bold.primary(context),
                             ),
                           ),
                         ),
@@ -288,7 +290,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110.w, 40.h)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  ColorUtil.primaryActionColor),
+                                  WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -298,7 +300,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '确定',
-                              style: TextUtil.base.normal.reverse,
+                              style: TextUtil.base.normal.reverse(context),
                             ),
                           ),
                         ),
@@ -364,7 +366,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '取消',
-                              style: TextUtil.base.bold.primary,
+                              style: TextUtil.base.bold.primary(context),
                             ),
                           ),
                         ),
@@ -385,7 +387,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(110, 40)),
                               backgroundColor: MaterialStateProperty.all<Color>(
-                                  ColorUtil.primaryActionColor),
+                                  WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -395,7 +397,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ),
                             child: Text(
                               '确定',
-                              style: TextUtil.base.normal.reverse,
+                              style: TextUtil.base.normal.reverse(context),
                             ),
                           ),
                         ),
@@ -461,12 +463,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   alignment: Alignment.center,
                                   child: Text(
                                     '分享',
-                                    style: TextUtil.base.bold.primary.sp(15),
+                                    style: TextUtil.base.bold.primary(context).sp(15),
                                   ),
                                 ),
                               )),
                           Divider(
-                            color: ColorUtil.primaryBackgroundColor
+                            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
                           ), // 添加分隔线
                           Padding(
                             padding: EdgeInsets.only(bottom: 5.h),
@@ -513,7 +515,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           alignment: Alignment.center,
                           child: Text(
                             '取消',
-                            style: TextUtil.base.bold.primary.sp(15),
+                            style: TextUtil.base.bold.primary(context).sp(15),
                           ),
                         ),
                       ),
@@ -602,7 +604,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               children: [
                                 Text(
                                   post.author,
-                                  style: TextUtil.base.normal.primary.sp(14),
+                                  style: TextUtil.base.normal.primary(context).sp(14),
                                 ),
                                 SizedBox(height: 6.h),
                                 Row(
@@ -652,12 +654,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               Container(
                                 padding: EdgeInsets.all(2.r),
                                 decoration: BoxDecoration(
-                                  color:ColorUtil.primaryBackgroundColor,
+                                  color:WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
                                   '#',
-                                  style: TextUtil.base.normal.primary.sp(10),
+                                  style: TextUtil.base.normal.primary(context).sp(10),
                                 ),
                               ),
                               SizedBox(width: 2.w),
@@ -689,7 +691,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('丢失日期',
-                              style: TextUtil.base.w600.primary.sp(14)),
+                              style: TextUtil.base.w600.primary(context).sp(14)),
                           SizedBox(width: 15.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -697,7 +699,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               SizedBox(height: 3.h),
                               Text(
                                   "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
-                                  style: TextUtil.base.w600.primaryAction.sp(14)),
+                                  style: TextUtil.base.w600.primaryAction(context).sp(14)),
                             ],
                           ),
                         ],
@@ -711,7 +713,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         children: [
                           Text(
                             '丢失地点',
-                            style: TextUtil.base.w600.primary.sp(14),
+                            style: TextUtil.base.w600.primary(context).sp(14),
                           ),
                           SizedBox(width: 15.w),
                           Column(
@@ -720,7 +722,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 SizedBox(height: 3.h),
                                 Text(
                                   post.location,
-                                  style: TextUtil.base.w600.primaryAction.sp(14),
+                                  style: TextUtil.base.w600.primaryAction(context).sp(14),
                                 ),
                               ])
                         ],
@@ -737,13 +739,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: ColorUtil.primaryActionColor,
+                              color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: WButton(
                               child: Text(
                                 findOwner ? '我遗失的' : '我找到了',
-                                style: TextUtil.base.reverse.sp(16),
+                                style: TextUtil.base.reverse(context).sp(16),
                               ),
                               onPressed: _showConfirmationDialog,
                             )),
@@ -755,12 +757,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: polished ? Colors.grey[200] : ColorUtil.primaryBackgroundColor,
+                              color: polished ? Colors.grey[200] : WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                               borderRadius: BorderRadius.circular(20.r),
                               border: polished
                                   ? null
                                   : Border.all(
-                                      color: ColorUtil.primaryActionColor,
+                                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                                       width: 1.w,
                                     ),
                             ),
@@ -782,7 +784,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                     polished ? '已擦亮' : '擦亮',
                                     style: polished?
                                     TextUtil.base.grey.sp(16):
-                                    TextUtil.base.primaryAction.sp(16)
+                                    TextUtil.base.primaryAction(context).sp(16)
                                     ,
                                   ),
                                 ],
@@ -885,7 +887,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                 },
                                 child: Text('收起',
                                     style: TextUtil
-                                        .base.textButtonPrimary.w600.NotoSansSC
+                                        .base.textButtonPrimary(context).w600.NotoSansSC
                                         .sp(14))),
                           ],
                         )
@@ -953,7 +955,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                                     child: Text(
                                                       '长图模式',
                                                       style: TextUtil
-                                                          .base.w300.reverse
+                                                          .base.w300.reverse(context)
                                                           .sp(12),
                                                     ))
                                               ]))))

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -14,6 +15,8 @@ import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/components/widget/lost_and_found_search_bar.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_result_page.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 class LostAndFoundSearchPage extends StatefulWidget {
   @override
@@ -25,7 +28,8 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
   late final SharedPreferences _prefs;
 
   _addHistory() {
-    _prefs.setStringList('feedback_found_search_history', _foundSearchHistoryList.value);
+    _prefs.setStringList(
+        'feedback_found_search_history', _foundSearchHistoryList.value);
   }
 
   @override
@@ -41,7 +45,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         _addHistory();
       } else {
         _foundSearchHistoryList.value =
-        _prefs.getStringList('feedback_found_search_history')!;
+            _prefs.getStringList('feedback_found_search_history')!;
       }
     });
     super.initState();
@@ -49,7 +53,6 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final String type = context.read<LostAndFoundModel2>().currentType;
 
     var searchBar = LostAndFoundSearchBar(
@@ -71,48 +74,61 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
     var topView = SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(children: [
-              searchBar,
-              InkWell(
-                child: Padding(
-                  padding:  EdgeInsets.only(top: 12.h, left: 12.h),
-                  child: Icon(
-                    CupertinoIcons.back,
-                    color: ColorUtil.black25Color,
-                    size: 27.r,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(children: [
+          searchBar,
+          InkWell(
+            child: Padding(
+              padding: EdgeInsets.only(top: 12.h, left: 12.h),
+              child: Icon(
+                CupertinoIcons.back,
+                color: ColorUtil.black25Color,
+                size: 27.r,
+              ),
+            ),
+            onTap: () => Navigator.pop(context),
+          ),
+        ]),
+        Padding(
+          padding:
+              EdgeInsetsDirectional.only(bottom: 10.h, start: 20.h, end: 20.h),
+          child: Selector<LostAndFoundModel2, String>(
+            selector: (context, model) {
+              return model.currentCategory[type]!;
+            },
+            builder: (context, category, _) {
+              return Flex(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                direction: Axis.horizontal,
+                children: <Widget>[
+                  Expanded(
+                    child: LostAndFoundTag(category: '全部', type: type),
+                    flex: 4,
                   ),
-                ),
-                onTap: () => Navigator.pop(context),
-              ),
-            ]
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.only(bottom: 10.h, start: 20.h, end: 20.h),
-              child: Selector<LostAndFoundModel2,String>(
-                selector: (context, model){
-                  return model.currentCategory[type]!;
-                },
-                builder:(context, category, _){
-                  return Flex(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      Expanded(child: LostAndFoundTag(category: '全部',type: type), flex: 4,),
-                      Expanded(child: LostAndFoundTag(category: '生活日用',type: type), flex: 5,),
-                      Expanded(child: LostAndFoundTag(category: '数码产品',type: type), flex: 5,),
-                      Expanded(child: LostAndFoundTag(category: '钱包卡证',type: type), flex: 5,),
-                      Expanded(child: LostAndFoundTag(category: '其他',type: type), flex: 4,),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
-        ));
-
-
+                  Expanded(
+                    child: LostAndFoundTag(category: '生活日用', type: type),
+                    flex: 5,
+                  ),
+                  Expanded(
+                    child: LostAndFoundTag(category: '数码产品', type: type),
+                    flex: 5,
+                  ),
+                  Expanded(
+                    child: LostAndFoundTag(category: '钱包卡证', type: type),
+                    flex: 5,
+                  ),
+                  Expanded(
+                    child: LostAndFoundTag(category: '其他', type: type),
+                    flex: 4,
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    ));
 
     var searchHistoryContainer = Container(
       padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
@@ -122,7 +138,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         children: <Widget>[
           Text(
             S.current.feedback_search_history,
-            style: TextUtil.base.primary.w600.sp(19),
+            style: TextUtil.base.primary(context).w600.sp(19),
           ),
           InkWell(
             child: WpyPic(
@@ -141,7 +157,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       builder: (_, List<String> list, __) {
         if (list.isEmpty) {
           return Padding(
-            padding:  EdgeInsets.only(top: 12.0.r),
+            padding: EdgeInsets.only(top: 12.0.r),
             child: Center(
               child: Text(
                 "暂无历史记录",
@@ -154,20 +170,21 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         List<Widget> searchHistory = [SizedBox(width: double.infinity)];
         searchHistory.addAll(List.generate(
           list.length,
-              (index) {
+          (index) {
             return InkResponse(
               radius: 30.r,
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
-                _foundSearchHistoryList.unequalAdd(list[list.length - index - 1]);
+                _foundSearchHistoryList
+                    .unequalAdd(list[list.length - index - 1]);
                 Navigator.pushNamed(
                   context,
                   LostAndFoundRouter.lostAndFoundSearchResult,
                   arguments: LostAndFoundSearchResultPageArgs(
                       context.read<LostAndFoundModel2>().currentType,
                       context.read<LostAndFoundModel2>().currentCategory[
-                      context.read<LostAndFoundModel2>().currentType]!,
+                          context.read<LostAndFoundModel2>().currentType]!,
                       list[list.length - index - 1]),
                 ).then((_) {
                   Navigator.pop(context);
@@ -176,11 +193,11 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               child: Chip(
                 shadowColor: ColorUtil.transparent,
                 elevation: 1,
-                backgroundColor: ColorUtil.reverseTextColor,
+                backgroundColor: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.grey90.PingFangSC.sp(14)),
               ),
-
             );
           },
         ));
@@ -194,23 +211,22 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
     var searchHistory = Padding(
       child: Column(
-        children:
-        [searchHistoryContainer,
-          searchHistoryList
-        ],
+        children: [searchHistoryContainer, searchHistoryList],
       ),
       padding: EdgeInsets.symmetric(horizontal: 10.w),
     );
 
     return ColoredBox(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
                 child: ColoredBox(
-                    color: ColorUtil.primaryBackgroundColor, child: searchHistory)),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.primaryBackgroundColor),
+                    child: searchHistory)),
           ],
         ));
   }
@@ -221,14 +237,15 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         builder: (BuildContext context) {
           return LakeDialogWidget(
               title: '清除记录',
-              confirmButtonColor: ColorUtil.primaryTextButtonColor,
+              confirmButtonColor:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
               titleTextStyle:
-              TextUtil.base.normal.label.NotoSansSC.sp(18).w600,
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
-              TextUtil.base.normal.reverse.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
-              TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
               confirmText: S.current.feedback_ok,
               cancelFun: () {
                 Navigator.pop(context);
@@ -244,12 +261,17 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
   }
 }
 
-
 class LostAndFoundTag extends StatefulWidget {
   final String type;
   final String category;
   final String? tag;
-  const LostAndFoundTag({Key? key, required this.type, required this.category, this.tag,}) : super(key: key);
+
+  const LostAndFoundTag({
+    Key? key,
+    required this.type,
+    required this.category,
+    this.tag,
+  }) : super(key: key);
 
   @override
   LostAndFoundTagState createState() => LostAndFoundTagState();
@@ -259,27 +281,37 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 8.w,right: 8.w),
+      padding: EdgeInsets.only(left: 8.w, right: 8.w),
       child: WButton(
         onPressed: () {
-          context.read<LostAndFoundModel2>().resetCategory(type: widget.type, category: widget.category);
+          context
+              .read<LostAndFoundModel2>()
+              .resetCategory(type: widget.type, category: widget.category);
           context.read<LostAndFoundModel2>().clearByType(widget.type);
         },
         child: Container(
           height: 30.w,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24.r),
-              color: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
+              color: widget.category ==
+                      context
+                          .read<LostAndFoundModel2>()
+                          .currentCategory[widget.type]
                   ? ColorUtil.white234
-                  : ColorUtil.reverseTextColor
-          ),
+                  : WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)),
           child: Center(
-            child: Text(
-                widget.category,
-                style: widget.category == context.read<LostAndFoundModel2>().currentCategory[widget.type]
-                    ? TextUtil.base.normal.NotoSansSC.w400.sp(10).primaryAction
-                    : TextUtil.base.normal.NotoSansSC.w400.sp(10).label
-            ),
+            child: Text(widget.category,
+                style: widget.category ==
+                        context
+                            .read<LostAndFoundModel2>()
+                            .currentCategory[widget.type]
+                    ? TextUtil.base.normal.NotoSansSC.w400
+                        .sp(10)
+                        .primaryAction(context)
+                    : TextUtil.base.normal.NotoSansSC.w400
+                        .sp(10)
+                        .label(context)),
           ),
         ),
       ),

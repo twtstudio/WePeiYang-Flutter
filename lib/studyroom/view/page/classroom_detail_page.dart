@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
@@ -22,7 +24,7 @@ class StyClassRoomDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final pageTitle = Padding(
       padding: EdgeInsets.only(left: 21.w, right: 11.w),
-      child: _PageTitleWidget(room, areaName),
+      child: _PageTitleWidget(room, areaName, context),
     );
 
     final table = Padding(
@@ -40,10 +42,10 @@ class StyClassRoomDetailPage extends StatelessWidget {
   }
 }
 
-Widget _PageTitleWidget(Room room, String areaName) {
+Widget _PageTitleWidget(Room room, String areaName, BuildContext context) {
   final title = Text(
     room.name,
-    style: TextUtil.base.reverse.sp(20).Swis.w400,
+    style: TextUtil.base.reverse(context).sp(20).Swis.w400,
   );
 
   return Row(
@@ -137,7 +139,7 @@ class _WeekDisplayWidget extends StatelessWidget {
             : Theme.of(context).coordinateBackground;
 
         final textColor = now.isSameDay(date)
-            ? Theme.of(context).coordinateChosenText
+            ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
             : Theme.of(context).coordinateText;
 
         return Container(
@@ -310,7 +312,8 @@ class _CourseDisplayWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.r),
             ),
             margin: EdgeInsets.symmetric(vertical: 5.h),
-            child: Text("NIGHT BREAK", style: TextUtil.base.w900.reverse.sp(10)),
+            child: Text("NIGHT BREAK",
+                style: TextUtil.base.w900.reverse(context).sp(10)),
           )));
     }
 
@@ -327,8 +330,9 @@ class _CourseDisplayWidget extends StatelessWidget {
           ),
           margin: EdgeInsets.symmetric(vertical: 5.h),
           child: list.isEmpty
-              ? Text("全部空闲", style: TextUtil.base.w900.reverse.sp(16))
-              : Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
+              ? Text("全部空闲", style: TextUtil.base.w900.reverse(context).sp(16))
+              : Text("LUNCH BREAK",
+                  style: TextUtil.base.w900.reverse(context).sp(10)),
         )));
     return list;
   }

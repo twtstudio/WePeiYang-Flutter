@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+
+import '../../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../../commons/themes/wpy_theme.dart';
 
 class WeKoDialog extends StatelessWidget {
   final Post post;
@@ -27,7 +29,7 @@ class WeKoDialog extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 30),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: ColorUtil.secondaryBackgroundColor),
+              color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -35,12 +37,12 @@ class WeKoDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: Text('有人给你分享了微口令!',
-                    style: TextUtil.base.label.regular.sp(16).NotoSansSC),
+                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC),
               ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(post.title,
-                    style: TextUtil.base.label.bold.sp(17).NotoSansSC),
+                    style: TextUtil.base.label(context).bold.sp(17).NotoSansSC),
               ),
               if (post.imageUrls.isNotEmpty)
                 Image.network(
@@ -65,11 +67,11 @@ class WeKoDialog extends StatelessWidget {
                   overlayColor:
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return ColorUtil.oldSecondaryActionColor;
-                    return ColorUtil.secondaryBackgroundColor;
+                      return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                    return WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor);
                   }),
-                  backgroundColor:
-                      MaterialStateProperty.all(ColorUtil.secondaryBackgroundColor),
+                  backgroundColor: MaterialStateProperty.all(
+                      WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10))),
                 ),
@@ -77,7 +79,7 @@ class WeKoDialog extends StatelessWidget {
                   margin: const EdgeInsets.all(7),
                   child: Text(
                     '查看详情',
-                    style: TextUtil.base.label.regular.sp(16).NotoSansSC,
+                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),

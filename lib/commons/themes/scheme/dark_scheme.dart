@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
-class light_scheme extends WpyThemeData {
-  light_scheme()
+class DarkScheme extends WpyThemeData {
+  DarkScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_dark",
-            name: "Dark Theme",
-            description: "Built-in Dark Theme",
+            themeId: "builtin_light",
+            name: "Light Theme",
+            description: "Built-in Light Theme",
           ),
-          data: WpyThemeDetail(lightSchemeDetail),
+          data: WpyThemeDetail(darkSchemeDetail),
         );
 }
 
-const lightSchemeDetail = <WpyThemeKeys, dynamic>{
+const darkSchemeDetail = <WpyThemeKeys, dynamic>{
   WpyThemeKeys.defaultActionColor: Color.fromARGB(255, 54, 60, 84),
   WpyThemeKeys.primaryBackgroundColor: Colors.white,
   WpyThemeKeys.secondaryBackgroundColor: Color.fromARGB(255, 248, 248, 248),

@@ -14,6 +14,8 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
 
 class AvatarCropPage extends StatefulWidget {
@@ -29,7 +31,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         pickerConfig: AssetPickerConfig(
             maxAssets: 1,
             requestType: RequestType.image,
-            themeColor: ColorUtil.blueA6Color));
+            themeColor: WpyTheme.of(context)
+                .get(WpyThemeKeys.primaryLightActionColor)));
     if (assets == null) return; // 取消选择图片的情况
     File? file = await assets[0].file;
     if (file == null) {
@@ -49,11 +52,14 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: ColorUtil.oldThirdActionColor,
-          toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
+          toolbarColor:
+              WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+          toolbarWidgetColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor: ColorUtil.dislikeSecondary,
-          statusBarColor: ColorUtil.defaultActionColor,
+          statusBarColor:
+              WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
@@ -91,11 +97,14 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
-          toolbarColor: ColorUtil.oldThirdActionColor,
-          toolbarWidgetColor: ColorUtil.primaryBackgroundColor,
+          toolbarColor:
+              WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+          toolbarWidgetColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor: ColorUtil.dislikeSecondary,
-          statusBarColor: ColorUtil.defaultActionColor,
+          statusBarColor:
+              WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
           backgroundColor: ColorUtil.blue3A3BColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
@@ -152,12 +161,18 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     if (file != null) {
       return CircleAvatar(
         radius: width / 2,
-        backgroundColor: ColorUtil.oldThirdActionColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
         backgroundImage: FileImage(file!),
         child: SizedBox(width: width, height: width),
       );
     }
-    return Hero(tag: 'avatar', child: UserAvatarImage(size: width));
+    return Hero(
+        tag: 'avatar',
+        child: UserAvatarImage(
+          size: width,
+          context: context,
+        ));
   }
 
   @override
@@ -169,18 +184,22 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Icon(CupertinoIcons.back,
-                color: ColorUtil.primaryBackgroundColor),
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor)),
           ),
           elevation: 0,
         ),
         body: Container(
-          color: ColorUtil.reverseBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.reverseBackgroundColor),
           child: Column(
             children: [
               Spacer(),
               getAvatar(),
               Spacer(),
-              Divider(height: 1.0, color: ColorUtil.primaryBackgroundColor),
+              Divider(
+                  height: 1.0,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)),
               SizedBox(height: 10),
               WButton(
                 onPressed: () {
@@ -189,17 +208,20 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 },
                 child: Text(
                   '更换头像框',
-                  style: TextUtil.base.reverse.sp(16),
+                  style: TextUtil.base.reverse(context).sp(16),
                 ),
               ),
               SizedBox(height: 10),
-              Divider(height: 1.0, color: ColorUtil.primaryBackgroundColor),
+              Divider(
+                  height: 1.0,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)),
               SizedBox(height: 10),
               WButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',
-                  style: TextUtil.base.reverse.sp(16),
+                  style: TextUtil.base.reverse(context).sp(16),
                 ),
               ),
               SizedBox(height: 10),

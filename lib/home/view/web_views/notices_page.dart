@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
+
 class NoticesPage extends WbyWebView {
-  NoticesPage({Key? key})
+  NoticesPage({Key? key, required BuildContext context})
       : super(
             page: '部门通知',
-            backgroundColor: ColorUtil.secondaryBackgroundColor,
+            backgroundColor:
+                WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
             fullPage: false,
             key: key);
 

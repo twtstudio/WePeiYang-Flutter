@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -16,6 +17,8 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 class NewLostAndFoundPostProvider {
   String title = "";
@@ -160,7 +163,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                   Navigator.of(context).pop();
                 }),
             title: Text("发布${selectTypeText[typeNotifier.value]}",
-                style: TextUtil.base.NotoSansSC.w400.sp(18).label),
+                style: TextUtil.base.NotoSansSC.w400.sp(18).label(context)),
             actions: [
               InkWell(
                   onTap: () async {
@@ -172,14 +175,14 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                       width: 36.w,
                       height: 36.h,
                       child: Column(children: [
-                         SizedBox(height: 11.h),
+                        SizedBox(height: 11.h),
                         Image.asset("assets/images/post_swap.png"),
                         Text(
                           texts[typeNotifier.value],
                           style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
                         )
                       ]))),
-               SizedBox(width: 10.w)
+              SizedBox(width: 10.w)
             ],
             centerTitle: true,
             backgroundColor: Colors.transparent,
@@ -209,7 +212,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     selectCategoryDialog(context),
                     SelectCategoryButton(),
-                     SizedBox(width: 8.w),
+                    SizedBox(width: 8.w),
                     LostAndFoundPostButton()
                   ]))
             ])));
@@ -223,7 +226,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           });
         },
         child: Text("#  ${categoryNotifier.value}",
-            style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction));
+            style:
+                TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context)));
   }
 
   Visibility selectCategoryDialog(BuildContext context) {
@@ -235,7 +239,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             height: 120.h,
             width: 86.w,
             decoration: BoxDecoration(
-                color: ColorUtil.primaryBackgroundColor,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
                 borderRadius: BorderRadius.circular(10.r),
                 boxShadow: [
                   BoxShadow(
@@ -264,7 +269,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         },
         child: Container(
             child: Text(option,
-                style: TextUtil.base.NotoSansSC.w400.sp(12).primary)));
+                style: TextUtil.base.NotoSansSC.w400.sp(12).primary(context))));
   }
 
   SizedBox LostAndFoundPostButton() {
@@ -275,7 +280,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all(
-                    ColorUtil.primaryActionColor),
+                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r)))),
             onPressed: () async {
@@ -288,7 +293,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             },
             child: Text(
               '发送',
-              style: TextUtil.base.NotoSansSC.w400.sp(14).reverse,
+              style: TextUtil.base.NotoSansSC.w400.sp(14).reverse(context),
             )));
   }
 }
@@ -327,7 +332,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             controller: _titleController,
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.done,
-            style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label,
+            style: TextUtil.base.NotoSansSC.w700.sp(18).h(1.2).label(context),
             minLines: 1,
             maxLines: 10,
             decoration: InputDecoration.collapsed(
@@ -337,7 +342,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
               titleCounter.value = '${text.characters.length} / 30';
             },
             inputFormatters: [CustomizedLengthTextInputFormatter(30)],
-            cursorColor: ColorUtil.cursorColor,
+            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.cursorColor),
             cursorHeight: 20));
 
     Widget textCounter = ValueListenableBuilder(
@@ -348,7 +353,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
         });
 
     return Container(
-        padding:  EdgeInsets.fromLTRB(0, 15.h, 0, 14.h),
+        padding: EdgeInsets.fromLTRB(0, 15.h, 0, 14.h),
         child: Column(children: [
           Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -398,7 +403,7 @@ class _LostAndFoundContentInputFieldState
         textInputAction: TextInputAction.newline,
         minLines: 1,
         maxLines: 100,
-        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label,
+        style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label(context),
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(16).grey6C,
             hintText: '请添加正文'),
@@ -447,7 +452,8 @@ class _LostAndFoundImagesGridViewState
           maxAssets: maxImage -
               context.read<NewLostAndFoundPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: ColorUtil.primaryTextButtonColor),
+          themeColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -475,7 +481,8 @@ class _LostAndFoundImagesGridViewState
     return showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
-                titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label,
+                titleTextStyle:
+                    TextUtil.base.NotoSansSC.w500.sp(14).label(context),
                 title: Text(S.current.feedback_delete_image_content),
                 actions: [
                   TextButton(
@@ -527,7 +534,8 @@ class _LostAndFoundImagesGridViewState
                   child: Icon(
                     Icons.close,
                     size: MediaQuery.of(context).size.width / 32,
-                    color: ColorUtil.secondaryBackgroundColor,
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.secondaryBackgroundColor),
                   ))))
     ]);
   }
@@ -647,8 +655,9 @@ class _SelectDateFieldState extends State<SelectDateField> {
                       child: selectedDate != null
                           ? Text(
                               "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
-                              style:
-                                  TextUtil.base.NotoSansSC.w400.sp(14).primaryAction)
+                              style: TextUtil.base.NotoSansSC.w400
+                                  .sp(14)
+                                  .primaryAction(context))
                           : Text(yyyymmddtexts[widget.typeNotifier.value],
                               style:
                                   TextUtil.base.NotoSansSC.w400.sp(14).grey89))
@@ -705,7 +714,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
         maxLines: 1,
-        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
             hintText:
@@ -746,7 +755,8 @@ class _InputLocationFieldState extends State<InputLocationField> {
               child: !(isFilled || isFocused)
                   ? Image.asset("assets/images/icon_location.png")
                   : Image.asset("assets/images/icon_location_fill.png")),
-          Container(margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
+          Container(
+              margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
         ]));
   }
 }
@@ -796,7 +806,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         keyboardType: TextInputType.multiline,
         textInputAction: TextInputAction.newline,
         maxLines: 1,
-        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
             hintText: isFocused ? "" : '请填写联系方式'),
@@ -836,7 +846,8 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
               child: !(isFilled || isFocused)
                   ? Image.asset("assets/images/icon_smile_chat.png")
                   : Image.asset("assets/images/icon_smile_chat_fill.png")),
-          Container(margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
+          Container(
+              margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
         ]));
   }
 }

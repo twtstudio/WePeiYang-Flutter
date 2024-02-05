@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class OpenBox extends StatefulWidget {
@@ -54,12 +56,12 @@ class _OpenBoxState extends State<OpenBox> {
                   .blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: ColorUtil.primaryBackgroundColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldActionColor, size: 32),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           actions: [
@@ -106,7 +108,7 @@ class _OpenBoxState extends State<OpenBox> {
       child: SizedBox(
         width: double.infinity,
         child: Text(src + ': ' + content,
-            style: TextUtil.base.primary.w400.sp(20).h(2).ProductSans),
+            style: TextUtil.base.primary(context).w400.sp(20).h(2).ProductSans),
       ),
       onPressed: () async {
         if (src == '归属地') {

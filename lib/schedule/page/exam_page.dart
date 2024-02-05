@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
 import '../../commons/themes/color_util.dart';
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
 class ExamPage extends StatefulWidget {
@@ -18,7 +20,7 @@ class ExamPage extends StatefulWidget {
 }
 
 class _ExamPageState extends State<ExamPage> {
-  get _color => ColorUtil.oldThirdActionColor;
+  get _color => WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
 
   @override
   void initState() {
@@ -42,7 +44,8 @@ class _ExamPageState extends State<ExamPage> {
   @override
   Widget build(BuildContext context) {
     var appBar = AppBar(
-      backgroundColor: ColorUtil.primaryBackgroundColor,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
       elevation: 0,
       leading: WButton(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
@@ -69,7 +72,7 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有未完成的考试哦',
-                            style: TextUtil.base.w300.greyA6.sp(12)))
+                            style: TextUtil.base.w300.unlabeled(context).sp(12)))
                   ]
                 : provider.unfinished
                     .map((e) => examCard(context, e, false))
@@ -78,7 +81,7 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有已完成的考试哦',
-                            style: TextUtil.base.w300.greyA6.sp(12)))
+                            style: TextUtil.base.w300.unlabeled(context).sp(12)))
                   ]
                 : provider.finished
                     .map((e) => examCard(context, e, true))
@@ -138,7 +141,9 @@ class _ExamPageState extends State<ExamPage> {
         borderRadius: BorderRadius.circular(10.r),
         child: Container(
           decoration: BoxDecoration(
-            color: finished ? ColorUtil.reverseTextColor : unfinishedColor,
+            color: finished
+                ? WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor)
+                : unfinishedColor,
           ),
           child: InkWell(
             onTap: () {},
@@ -148,7 +153,10 @@ class _ExamPageState extends State<ExamPage> {
               children: [
                 DefaultTextStyle(
                   style: TextStyle(
-                      color: finished ? ColorUtil.oldHintColor : ColorUtil.primaryBackgroundColor),
+                      color: finished
+                          ? ColorUtil.oldHintColor
+                          : WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor)),
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -171,14 +179,14 @@ class _ExamPageState extends State<ExamPage> {
                                 size: 17.r,
                                 color: finished
                                     ? ColorUtil.oldHintColor
-                                    : ColorUtil.primaryBackgroundColor),
+                                    : WpyTheme.of(context).get(
+                                        WpyThemeKeys.primaryBackgroundColor)),
                             SizedBox(width: 3.w),
                             Text('${exam.location}-$seat',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextUtil.base.w300.sp(14)),
                             Spacer(),
-                            Text(exam.date,
-                                style: TextUtil.base.w500.sp(14)),
+                            Text(exam.date, style: TextUtil.base.w500.sp(14)),
                           ],
                         ),
                       ],

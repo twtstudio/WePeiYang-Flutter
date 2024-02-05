@@ -30,6 +30,8 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 typedef LikeCallback = void Function(bool, int);
@@ -82,8 +84,8 @@ class _NCommentCardState extends State<NCommentCard>
           title: '$quote评论',
           content: Text('您确定要$quote这条评论吗？'),
           cancelText: "取消",
-          confirmTextStyle: TextUtil.base.normal.label.NotoSansSC.sp(16).w400,
-          cancelTextStyle: TextUtil.base.normal.label.NotoSansSC.sp(16).w600,
+          confirmTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+          cancelTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(16).w600,
           confirmText: quote == '摧毁' ? 'BOOM' : "确认",
           cancelFun: () {
             Navigator.of(context).pop();
@@ -156,8 +158,9 @@ class _NCommentCardState extends State<NCommentCard>
                       },
                       child: Text(
                         "恢复原评论状态（取消置顶）",
-                        style:
-                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
                       ),
                     ),
 
@@ -169,8 +172,9 @@ class _NCommentCardState extends State<NCommentCard>
                       },
                       child: Text(
                         "评论置顶",
-                        style:
-                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
                       ),
                     ),
 
@@ -184,8 +188,9 @@ class _NCommentCardState extends State<NCommentCard>
                       },
                       child: Text(
                         '拉黑',
-                        style:
-                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
                       ),
                     ),
                   // 分享按钮
@@ -206,8 +211,9 @@ class _NCommentCardState extends State<NCommentCard>
                     },
                     child: Text(
                       '分享',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
 
@@ -221,8 +227,9 @@ class _NCommentCardState extends State<NCommentCard>
                     },
                     child: Text(
                       '复制',
-                      style:
-                          TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
                   ),
                   widget.comment.isOwner
@@ -249,7 +256,8 @@ class _NCommentCardState extends State<NCommentCard>
                           },
                           child: Text(
                             '删除',
-                            style: TextUtil.base.normal.w400.NotoSansSC.primary
+                            style: TextUtil.base.normal.w400.NotoSansSC
+                                .primary(context)
                                 .sp(16),
                           ),
                         )
@@ -262,7 +270,8 @@ class _NCommentCardState extends State<NCommentCard>
                           },
                           child: Text(
                             '举报',
-                            style: TextUtil.base.normal.w400.NotoSansSC.primary
+                            style: TextUtil.base.normal.w400.NotoSansSC
+                                .primary(context)
                                 .sp(16),
                           ),
                         ),
@@ -289,8 +298,9 @@ class _NCommentCardState extends State<NCommentCard>
                       },
                       child: Text(
                         '删评',
-                        style:
-                            TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
                       ),
                     ),
                 ],
@@ -299,7 +309,9 @@ class _NCommentCardState extends State<NCommentCard>
                   onPressed: () => Navigator.pop(context),
                   child: Text(
                     '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC.primary.sp(16),
+                    style: TextUtil.base.normal.w400.NotoSansSC
+                        .primary(context)
+                        .sp(16),
                   ),
                 ),
               );
@@ -320,7 +332,7 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.comment.nickname,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).label,
+                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).label(context),
                 ),
               ),
               Padding(
@@ -328,7 +340,7 @@ class _NCommentCardState extends State<NCommentCard>
                 child: LevelUtil(
                   width: 24,
                   height: 12,
-                  style: TextUtil.base.reverse.bold.sp(7),
+                  style: TextUtil.base.reverse(context).bold.sp(7),
                   level: widget.comment.level.toString(),
                 ),
               ),
@@ -369,7 +381,7 @@ class _NCommentCardState extends State<NCommentCard>
                             : widget.comment.replyToName.length > 8
                                 ? "${widget.comment.replyToName.substring(0, 7)}..."
                                 : widget.comment.replyToName,
-                        style: TextUtil.base.w700.NotoSansSC.sp(16).label,
+                        style: TextUtil.base.w700.NotoSansSC.sp(16).label(context),
                       ),
                     ),
                     SizedBox(width: 2)
@@ -405,7 +417,7 @@ class _NCommentCardState extends State<NCommentCard>
               if (widget.comment.value != 0)
                 Text(
                   "  置顶评论",
-                  style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction,
+                  style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction(context),
                 ),
             ],
           ),
@@ -424,7 +436,7 @@ class _NCommentCardState extends State<NCommentCard>
             child: ExpandableText(
               text: widget.comment.content,
               maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-              style: TextUtil.base.w400.NotoSansSC.label.h(1.8).sp(14),
+              style: TextUtil.base.w400.NotoSansSC.label(context).h(1.8).sp(14),
               expand: false || widget.expandAll,
               buttonIsShown: true,
               isHTML: false,
@@ -641,7 +653,7 @@ class _NCommentCardState extends State<NCommentCard>
                 : DateTime.now()
                     .difference(widget.comment.createAt!)
                     .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans.secondaryInfo.regular
+            style: TextUtil.base.ProductSans.secondaryInfo(context).regular
                 .sp(12)
                 .space(letterSpacing: 0.6),
           ),
@@ -739,7 +751,7 @@ class _NCommentCardState extends State<NCommentCard>
                                             : '查看回复详情 >',
                                         style: TextUtil.base.NotoSansSC.w400
                                             .sp(12)
-                                            .primaryAction),
+                                            .primaryAction(context)),
                                     Spacer()
                                   ],
                                 ),
@@ -794,7 +806,7 @@ class AdminPopUpState extends State<AdminPopUp> {
             SizedBox(height: 4),
             Center(
                 child: Text("评论置顶",
-                    style: TextUtil.base.NotoSansSC.w500.sp(16).label)),
+                    style: TextUtil.base.NotoSansSC.w500.sp(16).label(context))),
             SizedBox(
               height: 20,
             ),
@@ -803,7 +815,7 @@ class AdminPopUpState extends State<AdminPopUp> {
               decoration: InputDecoration(
                   hintMaxLines: 2,
                   hintText: "评论置顶值，0-3000，0为取消置顶",
-                  hintStyle: TextUtil.base.label.bold.w500.sp(14),
+                  hintStyle: TextUtil.base.label(context).bold.w500.sp(14),
                   filled: true,
                   fillColor: ColorUtil.white235,
                   isCollapsed: true,
@@ -822,8 +834,9 @@ class AdminPopUpState extends State<AdminPopUp> {
                 },
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(2),
-                  backgroundColor:
-                      MaterialStateProperty.all(ColorUtil.secondaryBackgroundColor),
+                  backgroundColor: MaterialStateProperty.all(
+                      WpyTheme.of(context)
+                          .get(WpyThemeKeys.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),
@@ -831,7 +844,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   ),
                 ),
                 child: Text("确认",
-                    style: TextUtil.base.NotoSansSC.w500.sp(14).label),
+                    style: TextUtil.base.NotoSansSC.w500.sp(14).label(context)),
               ),
             )
           ]),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' show Widget;
+import 'package:flutter/src/widgets/basic.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/map_calendar_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/fifty_two_hz_page.dart';
@@ -20,7 +21,7 @@ class HomeRouter {
     wiki: (_) => WikiPage(),
     mapCalenderPage: (_) => MapCalendarPage(),
     hz: (_) => FiftyTwoHzPage(),
-    notice: (_) => NoticesPage(),
+    notice: (_) => Builder(builder: (context) => NoticesPage(context: context)),
     laf: (_) => LostAndFoundHomePage()
   };
 }

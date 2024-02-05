@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+
+import '../../../../commons/themes/wpy_theme.dart';
 
 List<SearchTag> tagUtil = [];
 
@@ -58,7 +61,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextStyle().label.NotoSansSC.w400.sp(15),
+                    style: TextStyle().label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
                       hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
@@ -69,7 +72,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080.w),
                       ),
-                      fillColor: ColorUtil.secondaryBackgroundColor,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
@@ -97,7 +100,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
     return Column(
       children: [
         Container(
-            color: ColorUtil.primaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6.h)),
         SizedBox(height: 8.w),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -90,16 +92,20 @@ class TodayCoursesWidget extends StatelessWidget {
                         children: [
                           Text(
                             '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
-                            style: TextUtil.base.bold
-                                .sp(14)
-                                .customColor(ColorUtil.white54),
+                            style: TextUtil.base.bold.sp(14).customColor(
+                                  WpyTheme.of(context).get(
+                                      WpyThemeKeys.backgroundGradientEndColor),
+                                ),
                           ),
                           SizedBox(height: 4.h),
                           SizedBox(
                             width: 1.sw - 125.w - 50.r,
                             child: Text(
                               todayPairs[i].first.name,
-                              style: TextUtil.base.PingFangSC.reverse.bold.sp(14),
+                              style: TextUtil.base.PingFangSC
+                                  .reverse(context)
+                                  .bold
+                                  .sp(14),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

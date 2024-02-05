@@ -5,11 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 /// 课程表每个item之间的垂直、水平间距
 const double verStep = 6;
@@ -57,19 +60,24 @@ class _WeekDisplayWidget extends StatelessWidget {
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(String date, bool deep) => Container(
-        height: 28.h,
-        width: _cardWidth,
-        decoration: BoxDecoration(
-            color: deep ? ColorUtil.primaryBackgroundColor : ColorUtil.grey246,
-            borderRadius: BorderRadius.circular(5.r)),
-        child: Center(
-          child: Text(date,
-              style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                  ? ColorUtil.primaryActionColor
-                   : ColorUtil.reverseTextColor)),
-        ),
-      );
+  Widget _getCard(String date, bool deep) => Builder(builder: (context) {
+        return Container(
+          height: 28.h,
+          width: _cardWidth,
+          decoration: BoxDecoration(
+              color: deep
+                  ? WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)
+                  : ColorUtil.grey246,
+              borderRadius: BorderRadius.circular(5.r)),
+          child: Center(
+            child: Text(date,
+                style: TextUtil.base.Swis.bold.sp(10).customColor(deep
+                    ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+                    : WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor))),
+          ),
+        );
+      });
 }
 
 class _CourseDisplayWidget extends StatelessWidget {
@@ -175,8 +183,8 @@ class _CourseDisplayWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
-              child:
-                  Text("LUNCH BREAK", style: TextUtil.base.w900.reverse.sp(10)),
+              child: Text("LUNCH BREAK",
+                  style: TextUtil.base.w900.reverse(context).sp(10)),
             ),
           ),
           Positioned(
@@ -192,7 +200,7 @@ class _CourseDisplayWidget extends StatelessWidget {
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
               child: Text("DINNER BREAK",
-                  style: TextUtil.base.w900.reverse.sp(10)),
+                  style: TextUtil.base.w900.reverse(context).sp(10)),
             ),
           ),
         ],

@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -16,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_head
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
 import '../../commons/themes/color_util.dart';
+import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/change_nickname_dialog.dart';
@@ -38,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
         page: currentPage,
         page_size: 10,
         onResult: (list) {
+          if (!mounted) return;
           setState(() {
             onSuccess.call(list);
           });
@@ -130,7 +133,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Icon(
                       Icons.email_outlined,
                       size: 28,
-                      color: ColorUtil.reverseTextColor,
+                      color: WpyTheme.of(context)
+                          .get(WpyThemeKeys.reverseTextColor),
                     ),
                   ),
                   SizedBox(width: 15),
@@ -142,7 +146,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       'assets/images/setting.png',
                       width: 24,
                       height: 24,
-                      color: ColorUtil.reverseTextColor,
+                      color: WpyTheme.of(context)
+                          .get(WpyThemeKeys.reverseTextColor),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -166,13 +171,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style: TextUtil.base.ProductSans.reverse.w700
+                              style: TextUtil.base.ProductSans
+                                  .reverse(context)
+                                  .w700
                                   .sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
                         width: 44,
                         height: 20,
-                        style: TextUtil.base.reverse.w100.sp(12),
+                        style: TextUtil.base.reverse(context).w100.sp(12),
                         level: CommonPreferences.level.value.toString(),
                       ),
                       SizedBox(width: 5.w),
@@ -189,7 +196,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: SvgPicture.asset(
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
-                            color: ColorUtil.reverseTextColor,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.reverseTextColor),
                           ),
                         ),
                       ),
@@ -204,7 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r)),
-                color: ColorUtil.primaryBackgroundColor,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
               ),
               child: Column(
                 children: [
@@ -225,15 +234,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Text(CommonPreferences.userNumber.value,
                                     textAlign: TextAlign.start,
-                                    style: TextUtil
-                                        .base.ProductSans.infoText.w900
+                                    style: TextUtil.base.ProductSans
+                                        .infoText(context)
+                                        .w900
                                         .sp(14)),
                                 SizedBox(width: 20.w),
                                 Text(
                                     "MPID: ${CommonPreferences.lakeUid.value.toString().padLeft(6, '0')}",
                                     textAlign: TextAlign.start,
-                                    style: TextUtil
-                                        .base.ProductSans.infoText.w900
+                                    style: TextUtil.base.ProductSans
+                                        .infoText(context)
+                                        .w900
                                         .sp(14)),
                               ],
                             ),
@@ -252,13 +263,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: [
                                 Text(
                                   "还需 ${CommonPreferences.nextLevelPoint.value - CommonPreferences.levelPoint.value} 点经验升至下一级",
-                                  style:
-                                      TextUtil.base.ProductSans.secondary.sp(9),
+                                  style: TextUtil.base.ProductSans
+                                      .secondary(context)
+                                      .sp(9),
                                 ),
                                 Text(
                                   " (${CommonPreferences.levelPoint.value.toString()}/${CommonPreferences.nextLevelPoint.value.toString()})",
-                                  style: TextUtil
-                                      .base.ProductSans.secondary.bold
+                                  style: TextUtil.base.ProductSans
+                                      .secondary(context)
+                                      .bold
                                       .sp(9),
                                 ),
                               ],
@@ -319,7 +332,9 @@ class _ProfilePageState extends State<ProfilePage> {
               tag: 'avatar',
               child: UserAvatarImage(
                 size: 0.3.sw,
-                iconColor: ColorUtil.primaryBackgroundColor,
+                iconColor: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
+                context: context,
               ),
             ),
           ),
@@ -334,7 +349,8 @@ class _ProfilePageState extends State<ProfilePage> {
           duration: Duration(milliseconds: 300),
           child: Container(
             key: ValueKey(_refreshController.isRefresh),
-            color: ColorUtil.primaryBackgroundColor,
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: postListShow,
           ),
         )
@@ -351,9 +367,13 @@ class _ProfilePageState extends State<ProfilePage> {
           controller: _refreshController,
           header: RefreshHeader(),
           footer: ClassicFooter(
-            textStyle: TextStyle(color: ColorUtil.secondaryTextColor),
+            textStyle: TextStyle(
+                color:
+                    WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor)),
             idleText: '没有更多数据了:>',
-            idleIcon: Icon(Icons.check, color: ColorUtil.secondaryTextColor),
+            idleIcon: Icon(Icons.check,
+                color:
+                    WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor)),
           ),
           enablePullDown: true,
           onRefresh: _onRefresh,
@@ -388,7 +408,7 @@ class CustomCard extends StatelessWidget {
         width: 113.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: ColorUtil.primaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
@@ -412,7 +432,8 @@ class CustomCard extends StatelessWidget {
             ),
             SizedBox(height: 7.h),
             Text(text,
-                maxLines: 1, style: TextUtil.base.w400.primary.sp(12).medium),
+                maxLines: 1,
+                style: TextUtil.base.w400.primary(context).sp(12).medium),
           ],
         ),
       ),

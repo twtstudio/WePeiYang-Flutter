@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
@@ -55,8 +56,10 @@ class FeedbackRouter {
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
-    summary: (_) => FeedbackSummaryPage(),
-    haitang: (args) => FestivalPage(args),
+    summary: (_) =>
+        Builder(builder: (context) => FeedbackSummaryPage(context: context)),
+    haitang: (args) =>
+        Builder(builder: (context) => FestivalPage(args, context: context)),
     openBox: (args) => OpenBox(args),
     collection: (_) => CollectionPage(),
     person: (args) => PersonPage(args),

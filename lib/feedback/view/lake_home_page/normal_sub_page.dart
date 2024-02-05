@@ -22,6 +22,8 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/urgent_report/base_page.dart';
 
+import '../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class NSubPage extends StatefulWidget {
@@ -242,8 +244,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .read<LakeModel>()
                                                     .sortSeq !=
                                                 0
-                                            ? TextUtil.base.primaryAction.w600.sp(14)
-                                            : TextUtil.base.label.w400
+                                            ? TextUtil.base.primaryAction(context).w600.sp(14)
+                                            : TextUtil.base.label(context).w400
                                                 .sp(14)),
                                   ),
                                 ),
@@ -262,8 +264,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                                     .read<LakeModel>()
                                                     .sortSeq !=
                                                 0
-                                            ? TextUtil.base.label.w400.sp(14)
-                                            : TextUtil.base.primaryAction.w600.sp(14)),
+                                            ? TextUtil.base.label(context).w400.sp(14)
+                                            : TextUtil.base.primaryAction(context).w600.sp(14)),
                                   ),
                                 ),
                               ]);
@@ -382,7 +384,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
-                            color: ColorUtil.primaryActionColor.withAlpha(12)),
+                            color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor).withAlpha(12)),
                       );
                     ind--;
                     if (widget.index == 0 && ind == 0)
@@ -483,7 +485,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
 
     var errorText = Text(
         widget.networkFailPageUsage ? '错误！请重试' : '啊哦，没有找到相关消息... \n 要不然换一个试试？',
-        style: TextUtil.base.label.NotoSansSC.w600.sp(16));
+        style: TextUtil.base.label(context).NotoSansSC.w600.sp(16));
 
     var retryButton = FloatingActionButton(
       child: RotationTransition(
@@ -493,8 +495,8 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       ),
       elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: ColorUtil.primaryBackgroundColor,
-      foregroundColor: ColorUtil.defaultActionColor,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+      foregroundColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
       onPressed: () {
         FeedbackService.getToken(
             forceRefresh: true,
@@ -567,7 +569,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
-          color: ColorUtil.primaryActionColor.withAlpha(12)),
+          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor).withAlpha(12)),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -604,13 +606,13 @@ class AnnouncementBannerWidget extends StatelessWidget {
                                       (index) => Text(
                                           '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
                                           style: TextUtil
-                                              .base.primaryAction.w400.NotoSansSC
+                                              .base.primaryAction(context).w400.NotoSansSC
                                               .sp(15)),
                                     ),
                                   )
                                 : Text(
                                     '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                    style: TextUtil.base.primaryAction.w400.NotoSansSC
+                                    style: TextUtil.base.primaryAction(context).w400.NotoSansSC
                                         .sp(15))),
                       ],
                     ),
@@ -622,7 +624,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
                       width: WePeiYangApp.screenWidth - 83,
                       child: Text(
                         '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
-                        style: TextUtil.base.primaryAction.w600.NotoSansSC.sp(16),
+                        style: TextUtil.base.primaryAction(context).w600.NotoSansSC.sp(16),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

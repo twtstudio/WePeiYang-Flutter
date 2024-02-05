@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/lake_privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
+
+import '../../commons/themes/wpy_theme.dart';
 
 class ReportPageArgs {
   final int id;
@@ -27,30 +30,31 @@ class ReportQuestionPage extends StatefulWidget {
 class _ReportQuestionPageState extends State<ReportQuestionPage> {
   String textInput = '';
 
-  final buttonStyle = ButtonStyle(
-    elevation: MaterialStateProperty.all(1),
-    overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.pressed))
-        return ColorUtil.oldActionRippleColor;
-      return ColorUtil.oldActionColor;
-    }),
-    backgroundColor: MaterialStateProperty.all(ColorUtil.oldActionColor),
-    shape: MaterialStateProperty.all(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-    minimumSize: MaterialStateProperty.all(Size(80, 40)),
-  );
-
   @override
   Widget build(BuildContext context) {
+    final buttonStyle = ButtonStyle(
+      elevation: MaterialStateProperty.all(1),
+      overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
+        if (states.contains(MaterialState.pressed))
+          return ColorUtil.oldActionRippleColor;
+        return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+      }),
+      backgroundColor: MaterialStateProperty.all(
+          WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+      shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+      minimumSize: MaterialStateProperty.all(Size(80, 40)),
+    );
     var appBar = AppBar(
       backgroundColor: ColorUtil.whiteF8Color,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: ColorUtil.defaultActionColor),
+        icon: Icon(Icons.arrow_back,
+            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
         S.current.feedback_report,
-        style: TextUtil.base.NotoSansSC.medium.label.sp(18),
+        style: TextUtil.base.NotoSansSC.medium.label(context).sp(18),
       ),
       centerTitle: true,
       elevation: 0,
@@ -78,7 +82,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 });
           },
           child: Text(S.current.feedback_report,
-              style: TextUtil.base.NotoSansSC.reverse.w600.sp(18)),
+              style: TextUtil.base.NotoSansSC.reverse(context).w600.sp(18)),
           style: buttonStyle,
         ));
 
@@ -93,7 +97,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 60,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: ColorUtil.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Align(
@@ -102,12 +107,20 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                       ? Text(
                           "你正在举报" +
                               "“#MP${widget.args.id.toString().padLeft(6, '0')}”",
-                          style: TextUtil.base.label.NotoSansSC.medium.sp(18),
+                          style: TextUtil.base
+                              .label(context)
+                              .NotoSansSC
+                              .medium
+                              .sp(18),
                         )
                       : Text(
                           "你正在举报" +
                               "“#FL${widget.args.id.toString().padLeft(6, '0')}”",
-                          style: TextUtil.base.label.NotoSansSC.medium.sp(18),
+                          style: TextUtil.base
+                              .label(context)
+                              .NotoSansSC
+                              .medium
+                              .sp(18),
                         ),
                 ),
               ),
@@ -121,7 +134,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               height: 300,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
-                  color: ColorUtil.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor)),
               child: TextField(
                 minLines: 7,
                 maxLines: 15,
@@ -130,7 +144,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 style: TextUtil.base.normal.blue303C.sp(14),
                 decoration: InputDecoration.collapsed(
                   hintText: '请填写举报理由，如“色情暴力”“政治敏感”等',
-                  hintStyle: TextUtil.base.regular.NotoSansSC.label.sp(16),
+                  hintStyle:
+                      TextUtil.base.regular.NotoSansSC.label(context).sp(16),
                 ),
                 onChanged: (text) {
                   textInput = text;
@@ -164,7 +179,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(16)
                         .w400
-                        .textButtonPrimary,
+                        .textButtonPrimary(context),
                     overflow: TextOverflow.ellipsis,
                   )),
             ],

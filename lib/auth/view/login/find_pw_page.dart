@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/find_pw_dialog.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -8,6 +9,7 @@ import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/color_util.dart';
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class FindPwWidget extends StatelessWidget {
@@ -16,13 +18,13 @@ class FindPwWidget extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.reverseTextColor,
+          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldThirdActionColor, size: 35),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -30,7 +32,7 @@ class FindPwWidget extends StatelessWidget {
           Spacer(flex: 1),
           Center(
             child: Text(S.current.find_password_title,
-                style: TextUtil.base.bold.sp(16).oldThirdAction),
+                style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 40),
           SizedBox(
@@ -40,17 +42,17 @@ class FindPwWidget extends StatelessWidget {
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
               child: Text(S.current.has_bind_phone,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.oldActionColor),
+                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -66,17 +68,17 @@ class FindPwWidget extends StatelessWidget {
                   barrierDismissible: true,
                   builder: (BuildContext context) => FindPwDialog()),
               child: Text(S.current.has_not_bind_phone,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
-                    MaterialStateProperty.all(ColorUtil.oldActionColor),
+                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -134,13 +136,13 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.reverseTextColor,
+          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldThirdActionColor, size: 35),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Padding(
@@ -149,7 +151,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
           children: [
             Center(
               child: Text(S.current.find_password_title,
-                  style: TextUtil.base.bold.sp(16).oldThirdAction),
+                  style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
             ),
             SizedBox(height: 40),
             ConstrainedBox(
@@ -210,7 +212,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                 child: Text('$time秒后重试',
                                     style: TextUtil.base.bold
                                         .sp(13)
-                                        .oldThirdAction),
+                                        .oldThirdAction(context)),
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
@@ -227,7 +229,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: TextUtil.base.regular.reverse.sp(13)),
+                                style: TextUtil.base.regular.reverse(context).sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:
@@ -235,10 +237,10 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                       (states) {
                                 if (states.contains(MaterialState.pressed))
                                   return ColorUtil.oldActionRippleColor;
-                                return ColorUtil.oldActionColor;
+                                return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                               }),
                               backgroundColor: MaterialStateProperty.all(
-                                  ColorUtil.oldActionColor),
+                                  WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../themes/color_util.dart';
+import '../themes/template/wpy_theme_data.dart';
+import '../themes/wpy_theme.dart';
 
 class TextUtil {
   TextUtil._();
@@ -41,30 +43,38 @@ extension TextStyleAttr on TextStyle {
   /// 颜色
   TextStyle customColor(Color c) => this.copyWith(color: c);
 
-  TextStyle get reverse => this.copyWith(color: ColorUtil.reverseTextColor);
+  TextStyle reverse(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor));
 
-  TextStyle get secondary => this.copyWith(color: ColorUtil.secondaryTextColor);
+  TextStyle secondary(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor));
 
-  TextStyle get label => this.copyWith(color: ColorUtil.labelTextColor);
+  TextStyle label(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor));
 
-  TextStyle get textButtonPrimary =>
-      this.copyWith(color: ColorUtil.primaryTextButtonColor);
+  TextStyle unlabeled(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.unlabeledColor));
 
-  TextStyle get oldActionColor =>
-      this.copyWith(color: ColorUtil.oldActionColor);
+  TextStyle textButtonPrimary(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor));
 
-  TextStyle get oldSecondaryAction =>
-      this.copyWith(color: ColorUtil.oldSecondaryActionColor);
+  TextStyle oldActionColor(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor));
 
-  TextStyle get oldThirdAction =>
-      this.copyWith(color: ColorUtil.oldThirdActionColor);
+  TextStyle  oldSecondaryAction(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor));
+
+  TextStyle oldThirdAction(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor));
 
   TextStyle get oldFurthAction =>
       this.copyWith(color: ColorUtil.oldFurthActionColor);
 
-  TextStyle get linkBlue => this.copyWith(color: ColorUtil.linkBlue);
+  TextStyle linkBlue(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.linkBlue));
 
-  TextStyle get infoText => this.copyWith(color: ColorUtil.infoTextColor);
+  TextStyle infoText(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor));
 
   TextStyle get oldHintWhite => this.copyWith(color: ColorUtil.oldHintColor);
 
@@ -77,7 +87,7 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get white38 => this.copyWith(color: ColorUtil.white38);
 
-  TextStyle get dangerousRed => this.copyWith(color: ColorUtil.dangerousRed);
+  TextStyle  dangerousRed(context) => this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.dangerousRed));
 
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
@@ -89,12 +99,10 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get greyA8 => this.copyWith(color: ColorUtil.greyA8);
 
-  TextStyle get greyA6 => this.copyWith(color: ColorUtil.greyA6);
-
   TextStyle get whiteO60 => this.copyWith(color: Colors.white.withOpacity(0.6));
 
-  TextStyle get secondaryInfo =>
-      this.copyWith(color: ColorUtil.secondaryInfoTextColor);
+  TextStyle secondaryInfo(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.secondaryInfoTextColor));
 
   TextStyle get grey6C => this.copyWith(color: ColorUtil.grey6C);
 
@@ -104,7 +112,9 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get blue363C => this.copyWith(color: ColorUtil.blue363C);
 
-  TextStyle get primary => this.copyWith(color: ColorUtil.basicTextColor);
+  TextStyle primary(context) => this.copyWith(
+        color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+      );
 
   TextStyle get black42 => this.copyWith(color: ColorUtil.black42);
 
@@ -116,7 +126,7 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get orange6B => this.copyWith(color: ColorUtil.orange6B);
 
-  TextStyle get yellowF0 => this.copyWith(color: ColorUtil.yellowF0);
+  TextStyle infoColor(context) => this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.infoStatusColor));
 
   TextStyle get grey89 => this.copyWith(color: ColorUtil.grey89);
 
@@ -144,11 +154,11 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 
-  TextStyle get mainTextColor =>
-      this.copyWith(color: ColorUtil.defaultActionColor);
+  TextStyle mainTextColor(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor));
 
-  TextStyle get primaryAction =>
-      this.copyWith(color: ColorUtil.primaryActionColor);
+  TextStyle primaryAction(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor));
 
   TextStyle get transParent => this.copyWith(color: ColorUtil.transparent);
 

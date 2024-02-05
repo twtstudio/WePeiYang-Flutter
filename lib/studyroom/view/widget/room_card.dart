@@ -21,7 +21,7 @@ class RoomStateText extends StatelessWidget {
       stateDot = Container(
         width: 6.w,
         height: 6.w,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: ColorUtil.green5CColor,
           shape: BoxShape.circle,
         ),

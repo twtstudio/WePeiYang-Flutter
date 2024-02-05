@@ -3,6 +3,8 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -37,13 +39,13 @@ class _EmailBindPageState extends State<EmailBindPage> {
         Text(
           "${S.current.bind_email}: ",
           textAlign: TextAlign.center,
-          style: TextUtil.base.bold.sp(15).oldSecondaryAction,
+          style: TextUtil.base.bold.sp(15).oldSecondaryAction(context),
         ),
         SizedBox(height: 5),
         Text(
           CommonPreferences.email.value,
           textAlign: TextAlign.center,
-          style: TextUtil.base.bold.sp(15).oldSecondaryAction,
+          style: TextUtil.base.bold.sp(15).oldSecondaryAction(context),
         ),
         SizedBox(height: 95),
         SizedBox(
@@ -56,15 +58,16 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     builder: (BuildContext context) => EmailUnbindDialog())
                 .then((_) => this.setState(() {})),
             child: Text(S.current.unbind,
-                style: TextUtil.base.regular.reverse.sp(13)),
+                style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
                   return ColorUtil.oldActionRippleColor;
-                return ColorUtil.oldSecondaryActionColor;
+                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
               }),
-              backgroundColor: MaterialStateProperty.all(ColorUtil.oldSecondaryActionColor),
+              backgroundColor:
+                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -101,18 +104,18 @@ class _EmailBindPageState extends State<EmailBindPage> {
             child: ElevatedButton(
               onPressed: _bind,
               child: Text(S.current.bind,
-                  style: TextUtil.base.regular.reverse.sp(13)),
+                  style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return ColorUtil.oldActionRippleColor;
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
-                  return ColorUtil.oldActionColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
@@ -127,13 +130,13 @@ class _EmailBindPageState extends State<EmailBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: ColorUtil.reverseTextColor,
+          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: ColorUtil.oldActionColor, size: 32),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -154,7 +157,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                         (CommonPreferences.email.value != "")
                             ? S.current.is_bind
                             : S.current.not_bind,
-                        style: TextUtil.base.bold.greyA6.sp(12)),
+                        style: TextUtil.base.bold.unlabeled(context).sp(12)),
                   ),
                 ],
               ),

@@ -12,6 +12,8 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/themes/template/wpy_theme_data.dart';
+import '../../../../commons/themes/wpy_theme.dart';
 import '../../../../commons/widgets/w_button.dart';
 
 List<SearchTag> tagUtil = [];
@@ -138,7 +140,7 @@ class _SearchBarState extends State<SearchBar>
                   builder: (_, data, __) => TextField(
                     controller: _controller,
                     focusNode: _fNode,
-                    style: TextUtil.base.label.NotoSansSC.w400.sp(15),
+                    style: TextUtil.base.label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
                       hintStyle: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
@@ -149,7 +151,7 @@ class _SearchBarState extends State<SearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080),
                       ),
-                      fillColor: ColorUtil.secondaryBackgroundColor,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
@@ -220,7 +222,7 @@ class _SearchBarState extends State<SearchBar>
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(ColorUtil.primaryBackgroundColor),
+                      backgroundColor: MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -231,7 +233,7 @@ class _SearchBarState extends State<SearchBar>
                             width: 12,
                           )
                         : Icon(Icons.clear,
-                            size: 14, color: ColorUtil.defaultActionColor),
+                            size: 14, color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
                   ))
             ],
           )),
@@ -240,11 +242,11 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: ColorUtil.primaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
-          color: ColorUtil.secondaryBackgroundColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
@@ -253,7 +255,7 @@ class _SearchBarState extends State<SearchBar>
                     padding: EdgeInsets.only(bottom: 10),
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                        color: ColorUtil.primaryBackgroundColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),

@@ -13,6 +13,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/local/animation_provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
 import 'auth/network/auth_service.dart';
@@ -45,8 +46,6 @@ import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
 import 'urgent_report/report_server.dart';
 
-import 'package:flutter/scheduler.dart' show timeDilation;
-
 /// 应用入口
 final _entry = WePeiYangApp();
 
@@ -62,10 +61,10 @@ void main() async {
     try {
       if (Platform.isAndroid) await FlutterDisplayMode.setHighRefreshRate();
     } catch (e) {
-      print('不支持高刷');
+      print('[INFO]: This device isn\'t support high refresh rate');
     }
 
-    /// 初始化友盟
+    /// 初始化友盟 TODO: fix this or remove this
     await UmengCommonSdk.initCommon();
 
     /// 初始化sharedPreference
@@ -82,8 +81,16 @@ void main() async {
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
-    if ((now.month == 5 && now.day == 12) ||
-        (now.month == 12 && now.day == 13)) {
+    var importantDates = [
+      DateTime(now.year, 5, 12),
+      DateTime(now.year, 12, 13),
+    ];
+    bool isSpecialDate = importantDates.any((date) =>
+        date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day);
+
+    if (isSpecialDate) {
       runApp(
         ColorFiltered(
           colorFilter: ColorFilter.mode(Colors.white, BlendMode.color),
@@ -123,6 +130,7 @@ void main() async {
   }));
 }
 
+// TODO: put all message channels into a single file
 final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
@@ -274,52 +282,63 @@ class WePeiYangAppState extends State<WePeiYangApp>
         // 获取友盟在线参数
         context.read<RemoteConfig>().getRemoteConfig();
 
-        return ScreenUtilInit(
-            designSize: const Size(390, 844),
-            useInheritedMediaQuery: true,
-            minTextAdapt: true,
-            child: StartUpWidget(),
-            builder: ((context, child) {
-              return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: ThemeData(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                ),
-                title: '微北洋',
-                navigatorKey: WePeiYangApp.navigatorState,
-                onGenerateRoute: RouterManager.create,
-                navigatorObservers: [
-                  AppRouteAnalysis(),
-                  PageStackObserver(),
-                  FlutterSmartDialog.observer
-                ],
-                localizationsDelegates: [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: S.delegate.supportedLocales,
-                localeListResolutionCallback: (List<Locale>? preferredLocales,
-                    Iterable<Locale>? supportedLocales) {
-                  var supportedLanguages =
-                      supportedLocales?.map((e) => e.languageCode).toList() ??
-                          [];
-                  var preferredLanguages =
-                      preferredLocales?.map((e) => e.languageCode).toList() ??
-                          [];
-                  var availableLanguages = preferredLanguages
-                      .where((element) => supportedLanguages.contains(element))
-                      .toList();
-                  return Locale(availableLanguages.first);
-                },
-                locale: localModel.locale(),
-                home: child,
-                builder: FlutterSmartDialog.init(builder: _builder),
-                // builder: FToastBuilder(),
+        return ListenableBuilder(
+            listenable: globalTheme,
+            builder: (context, _) {
+              return WpyTheme(
+                themeData: globalTheme.value,
+                child: ScreenUtilInit(
+                    designSize: const Size(390, 844),
+                    useInheritedMediaQuery: true,
+                    minTextAdapt: true,
+                    child: StartUpWidget(),
+                    builder: ((context, child) {
+                      return MaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        theme: ThemeData(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                        ),
+                        title: '微北洋',
+                        navigatorKey: WePeiYangApp.navigatorState,
+                        onGenerateRoute: RouterManager.create,
+                        navigatorObservers: [
+                          AppRouteAnalysis(),
+                          PageStackObserver(),
+                          FlutterSmartDialog.observer
+                        ],
+                        localizationsDelegates: [
+                          S.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: S.delegate.supportedLocales,
+                        localeListResolutionCallback:
+                            (List<Locale>? preferredLocales,
+                                Iterable<Locale>? supportedLocales) {
+                          var supportedLanguages = supportedLocales
+                                  ?.map((e) => e.languageCode)
+                                  .toList() ??
+                              [];
+                          var preferredLanguages = preferredLocales
+                                  ?.map((e) => e.languageCode)
+                                  .toList() ??
+                              [];
+                          var availableLanguages = preferredLanguages
+                              .where((element) =>
+                                  supportedLanguages.contains(element))
+                              .toList();
+                          return Locale(availableLanguages.first);
+                        },
+                        locale: localModel.locale(),
+                        home: child,
+                        builder: FlutterSmartDialog.init(builder: _builder),
+                        // builder: FToastBuilder(),
+                      );
+                    })),
               );
-            }));
+            });
       }),
     );
   }

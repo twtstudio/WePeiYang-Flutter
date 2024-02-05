@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -35,17 +37,20 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: ColorUtil.primaryBackgroundColor,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         title: Text(
           '更换头像框',
-          style: TextUtil.base.label.sp(16),
+          style: TextUtil.base.label(context).sp(16),
         ),
         elevation: 0,
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
               child: Icon(Icons.arrow_back,
-                  color: ColorUtil.defaultActionColor, size: 32),
+                  color:
+                      WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                  size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
       ),
@@ -65,8 +70,10 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                             tag: 'avatar',
                             child: UserAvatarImage(
                               size: 0.3.sw,
-                              iconColor: ColorUtil.primaryBackgroundColor,
+                              iconColor: WpyTheme.of(context)
+                                  .get(WpyThemeKeys.primaryBackgroundColor),
                               tempUrl: _valueNotifier.value,
+                              context: context,
                             ),
                           ),
                         );
@@ -186,8 +193,9 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                                           '${avatarList[index].name}',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style:
-                                              TextUtil.base.w200.infoText.sp(16),
+                                          style: TextUtil.base.w200
+                                              .infoText(context)
+                                              .sp(16),
                                         )),
                                   ),
                                 ],
@@ -213,14 +221,15 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           width: 110.w,
                           height: 40.h,
                           decoration: BoxDecoration(
-                            color: ColorUtil.primaryActionColor,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryActionColor),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.r)),
                           ),
                           child: Center(
                             child: Text(
                               '立即装扮',
-                              style: TextUtil.base.reverse.w500.sp(16),
+                              style: TextUtil.base.reverse(context).w500.sp(16),
                             ),
                           ),
                         ),
@@ -246,14 +255,15 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
       decoration: BoxDecoration(
-        color: ColorUtil.primaryBackgroundColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         borderRadius: BorderRadius.all(Radius.circular(10.r)),
         boxShadow: [
           choose == true
               ? BoxShadow(
                   color: ColorUtil.begoniaPink, blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
-                  color: ColorUtil.primaryBackgroundColor,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                 ),
         ],
         image: DecorationImage(

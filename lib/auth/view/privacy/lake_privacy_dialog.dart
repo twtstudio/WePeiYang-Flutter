@@ -2,11 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class LakePrivacyDialog extends Dialog {
@@ -16,14 +18,14 @@ class LakePrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = ColorUtil.oldThirdActionColor;
+    var textColor = WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(
           horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color: ColorUtil.reverseTextColor),
+          borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
       child: Column(
         children: [
           Expanded(
@@ -65,7 +67,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonPrimary,
+                            .textButtonPrimary(context),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -83,7 +85,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonPrimary,
+                            .textButtonPrimary(context),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -101,7 +103,7 @@ class LakePrivacyDialog extends Dialog {
                         style: TextUtil.base.normal.NotoSansSC
                             .sp(14)
                             .w400
-                            .textButtonPrimary,
+                            .textButtonPrimary(context),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {
                             String url =
@@ -275,7 +277,7 @@ class LakePrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text(S.current.ok,
-              style: TextUtil.base.bold.noLine.sp(16).oldThirdAction),
+              style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
         ),
       );
     } else {
@@ -290,7 +292,7 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
+              child: Text('拒绝', style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
             ),
           ),
           WButton(
@@ -301,7 +303,7 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).oldThirdAction),
+              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],

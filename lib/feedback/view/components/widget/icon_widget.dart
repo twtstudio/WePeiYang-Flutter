@@ -126,7 +126,7 @@ class _IconWidgetState extends State<IconWidget> {
         builder: (_, int value, __) {
           return Text(
             value.toString() + (value < 100 ? '   ' : ' '),
-            style: TextUtil.base.label.bold.ProductSans
+            style: TextUtil.base.label(context).bold.ProductSans
                 .sp(widget.iconType.textSize),
           );
         });

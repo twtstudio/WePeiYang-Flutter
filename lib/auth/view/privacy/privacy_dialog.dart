@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
+import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class PrivacyDialog extends Dialog {
@@ -14,7 +16,7 @@ class PrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = ColorUtil.oldThirdActionColor;
+    var textColor = WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
     return WillPopScope(
       onWillPop: () async => false,
       child: Container(
@@ -24,7 +26,7 @@ class PrivacyDialog extends Dialog {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorUtil.reverseTextColor),
+            color:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Column(
           children: [
             Expanded(
@@ -57,7 +59,7 @@ class PrivacyDialog extends Dialog {
           child: Text('确定',
               style: TextUtil.base.bold.noLine
                   .sp(16)
-                  .oldThirdAction),
+                  .oldThirdAction(context)),
         ),
       );
     } else {
@@ -72,7 +74,7 @@ class PrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝', style: TextUtil.base.bold.greyA6.noLine.sp(16)),
+              child: Text('拒绝', style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
             ),
           ),
           WButton(
@@ -86,7 +88,7 @@ class PrivacyDialog extends Dialog {
               child: Text('同意',
                   style: TextUtil.base.bold.noLine
                       .sp(16)
-                      .oldThirdAction),
+                      .oldThirdAction(context)),
             ),
           ),
         ],
