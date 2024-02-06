@@ -161,7 +161,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
             child: Center(
               child: Text(
                 "暂无历史记录",
-                style: TextUtil.base.normal.blue98Opacity061.sp(16),
+                style: TextUtil.base.normal.secondary(context).sp(16),
               ),
             ),
           );
@@ -196,7 +196,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 backgroundColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor),
                 label: Text(list[list.length - index - 1],
-                    style: TextUtil.base.normal.grey90.PingFangSC.sp(14)),
+                    style: TextUtil.base.normal.infoText(context).PingFangSC.sp(14)),
               ),
             );
           },

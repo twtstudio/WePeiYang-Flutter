@@ -466,24 +466,25 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 ),
                                 child: ListenableBuilder(
                                     listenable: screenshotList,
-                                    builder: (context, _) {
-                                      return Checkbox(
-                                        activeColor: ColorUtil.blue105,
-                                        focusColor: WpyTheme.of(context)
-                                            .get(WpyColorKey.oldHintColor),
-                                        hoverColor: WpyTheme.of(context).get(
-                                            WpyColorKey.oldSwitchBarColor),
-                                        value: screenshotList.list
-                                            .contains(data.id),
-                                        onChanged: (value) {
-                                          if (value!)
-                                            screenshotList.list.add(data.id);
-                                          else
-                                            screenshotList.list.remove(data.id);
-                                          screenshotList.update();
-                                        },
-                                      );
-                                    }),
+                                    builder: (context, _) => Checkbox(
+                                          activeColor: WpyTheme.of(context).get(
+                                              WpyColorKey
+                                                  .oldSecondaryActionColor),
+                                          focusColor: WpyTheme.of(context)
+                                              .get(WpyColorKey.oldHintColor),
+                                          hoverColor: WpyTheme.of(context).get(
+                                              WpyColorKey.oldSwitchBarColor),
+                                          value: screenshotList.list
+                                              .contains(data.id),
+                                          onChanged: (value) {
+                                            if (value!)
+                                              screenshotList.list.add(data.id);
+                                            else
+                                              screenshotList.list
+                                                  .remove(data.id);
+                                            screenshotList.update();
+                                          },
+                                        )),
                               ),
                             comment ?? SizedBox.shrink(),
                           ],
@@ -1390,30 +1391,30 @@ class _ManagerPopUpState extends State<ManagerPopUp>
               AnimatedOption(
                 origin: originTag == 0,
                 id: widget.post.id,
-                color1: ColorUtil.pink208,
-                color2: ColorUtil.red134,
+                color1: ColorUtil.pinedPostTagBColor,
+                color2: ColorUtil.pinedPostTagCColor,
                 title: originTag == 0 ? '× 已置顶' : '将此帖置顶',
                 action: 0,
               ),
               AnimatedOption(
                   origin: originTag == 1,
                   id: widget.post.id,
-                  color1: ColorUtil.yellow190,
-                  color2: ColorUtil.orange157,
+                  color1: ColorUtil.elegantPostTagBColor,
+                  color2: ColorUtil.elegantPostTagCColor,
                   title: originTag == 1 ? '× 已加精' : '加入精华帖',
                   action: 1),
               AnimatedOption(
                   origin: originTag == 2,
                   id: widget.post.id,
-                  color1: ColorUtil.blue124,
-                  color2: ColorUtil.blue72,
+                  color1: ColorUtil.activityPostBColor,
+                  color2: ColorUtil.activityPostTagCColor,
                   title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
                   action: 2),
               AnimatedOption(
                   origin: false,
                   id: widget.post.id,
-                  color1: ColorUtil.red43,
-                  color2: ColorUtil.red42,
+                  color1: ColorUtil.deletePostAColor,
+                  color2: ColorUtil.deletePostBColor,
                   title: '⚠ 删帖',
                   action: 100),
             ]),

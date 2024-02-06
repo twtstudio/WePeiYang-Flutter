@@ -73,8 +73,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle link(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.linkBlue));
 
-  TextStyle infoText(context) => this
-      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
+  TextStyle infoText(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
 
   TextStyle oldHintWhite(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.oldHintColor));
@@ -85,8 +85,6 @@ extension TextStyleAttr on TextStyle {
   TextStyle get FavorRoomColor => this.copyWith(color: ColorUtil.FavorRoomColor);
   //--------- unformatted --------
 
-  TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
-
   TextStyle get examRemain => this.copyWith(color: ColorUtil.examRemain);
 
   TextStyle dangerousRed(context) =>
@@ -96,6 +94,7 @@ extension TextStyleAttr on TextStyle {
 
 
   TextStyle get greyAA => this.copyWith(color: ColorUtil.ReplySuffixColor);
+  TextStyle get greyAA => this.copyWith(color: ColorUtil.greyAA);
 
   TextStyle get greyA8 => this.copyWith(color: ColorUtil.greyA8);
 
@@ -116,6 +115,7 @@ extension TextStyleAttr on TextStyle {
 
 
   TextStyle get grey126 => this.copyWith(color: ColorUtil.courseGradientStopColor);
+  TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
 
   TextStyle get roomFree => this.copyWith(color: ColorUtil.roomFreeColor);
 
@@ -123,8 +123,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle infoColor(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor));
-
-  TextStyle get grey89 => this.copyWith(color: ColorUtil.grey89);
 
   TextStyle get blue52hz => this.copyWith(color: ColorUtil.blue52hz);
 
@@ -136,9 +134,6 @@ extension TextStyleAttr on TextStyle {
   TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.oldHintDarkestColor);
 
   TextStyle get grey6267 => this.copyWith(color: ColorUtil.grey6267Color);
-
-  TextStyle get blue98Opacity061 =>
-      this.copyWith(color: ColorUtil.blue98Opacity061);
 
   TextStyle oldListGroupTitle(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldListGroupTitleColor));

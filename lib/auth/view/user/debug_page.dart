@@ -10,7 +10,7 @@ class DebugPage extends StatelessWidget {
       appBar: AppBar(
           title: Text("日志页面"),
           centerTitle: true,
-          backgroundColor: ColorUtil.blue98122),
+          backgroundColor: ColorUtil.oldSecondaryActionColor),
       body: ListView.builder(
           padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
           itemCount: list.length,

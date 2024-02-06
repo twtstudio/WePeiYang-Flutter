@@ -339,7 +339,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                       child: Text(
                                                           tuple.item1[idx].text,
                                                           style: TextUtil
-                                                              .base.w400.grey89
+                                                              .base.w400.infoText(
+                                                              context)
                                                               .sp(14)
                                                               .h(1.1)
                                                               .NotoSansSC
@@ -428,7 +429,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                     _timeAgo(tuple.item1[idx]
                                                         .detailedUploadTime),
                                                     style: TextUtil
-                                                        .base.w400.grey89
+                                                        .base.w400.infoText(context)
                                                         .sp(10)
                                                         .NotoSansSC),
                                                 Row(

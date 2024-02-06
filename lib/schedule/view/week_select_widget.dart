@@ -57,7 +57,9 @@ class WeekSelectWidget extends StatelessWidget {
                         child: InkWell(
                           radius: 5000,
                           borderRadius: BorderRadius.circular(5.r),
-                          splashColor: ColorUtil.grey246Opacity05,
+                          splashColor: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryBackgroundColor)
+                              .withOpacity(0.4),
                           highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
                         ),
@@ -140,7 +142,7 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 深色cube，代表该点有课
   final Paint _cubePaint = Paint()
-    ..color = ColorUtil.yellow255
+    ..color = ColorUtil.scheduleOccupiedColor
     ..style = PaintingStyle.fill;
 
   /// 白色cube，代表该点没课
