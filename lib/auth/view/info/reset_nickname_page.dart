@@ -41,7 +41,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
     return Scaffold(
       appBar: AppBar(
           title: Text(S.current.reset_username,
-              style: TextUtil.base.bold.sp(17).blue52hz),
+              style: TextUtil.base.bold.sp(17).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
           backgroundColor:
@@ -50,8 +50,7 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -62,7 +61,9 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(0, 16, 0, 12),
               enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor))),
+                  borderSide: BorderSide(
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldListActionColor))),
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                       color: WpyTheme.of(context)

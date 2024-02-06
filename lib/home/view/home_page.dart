@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
@@ -126,7 +125,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )
             : SvgPicture.asset(
                 'assets/svg_pics/home.svg',
-                color: ColorUtil.unSelectedIcon,
+                color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
               ),
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(0),
@@ -168,7 +167,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )
             : SvgPicture.asset(
                 'assets/svg_pics/my.svg',
-                color: ColorUtil.unSelectedIcon,
+                color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
               ),
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(2),
@@ -200,8 +199,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               systemNavigationBarColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor))
           : SystemUiOverlayStyle.dark.copyWith(
-              systemNavigationBarColor: WpyTheme.of(context)
-                  .get(WpyColorKey.primaryBackgroundColor)),
+              systemNavigationBarColor:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,

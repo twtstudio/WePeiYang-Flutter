@@ -49,7 +49,7 @@ class _OpenBoxState extends State<OpenBox> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("开盒", style: TextUtil.base.bold.sp(17).blue52hz),
+          title: Text("开盒", style: TextUtil.base.bold.sp(17).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
           backgroundColor:

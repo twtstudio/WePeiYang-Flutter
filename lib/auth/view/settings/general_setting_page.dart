@@ -34,7 +34,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz),
+        title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:

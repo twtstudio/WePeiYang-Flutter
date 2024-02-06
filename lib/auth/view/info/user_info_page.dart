@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/unbind_dialogs.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -27,7 +26,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz),
+        title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -35,7 +34,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
-            child: Icon(Icons.arrow_back, color: ColorUtil.blue52hz, size: 32),
+            child: Icon(Icons.arrow_back,
+                color: WpyTheme.of(context).get(WpyColorKey.blue52hz),
+                size: 32),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -102,7 +103,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                Container(
+                    height: 1,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -125,7 +128,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                Container(
+                    height: 1,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -144,7 +149,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                Container(
+                    height: 1,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -196,7 +203,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                Container(
+                    height: 1,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () =>

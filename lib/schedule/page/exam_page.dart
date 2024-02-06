@@ -71,7 +71,8 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有未完成的考试哦',
-                            style: TextUtil.base.w300.unlabeled(context).sp(12)))
+                            style:
+                                TextUtil.base.w300.unlabeled(context).sp(12)))
                   ]
                 : provider.unfinished
                     .map((e) => examCard(context, e, false))
@@ -80,7 +81,8 @@ class _ExamPageState extends State<ExamPage> {
                 ? [
                     Center(
                         child: Text('没有已完成的考试哦',
-                            style: TextUtil.base.w300.unlabeled(context).sp(12)))
+                            style:
+                                TextUtil.base.w300.unlabeled(context).sp(12)))
                   ]
                 : provider.finished
                     .map((e) => examCard(context, e, true))
@@ -177,7 +179,8 @@ class _ExamPageState extends State<ExamPage> {
                             Icon(Icons.location_on_outlined,
                                 size: 17.r,
                                 color: finished
-                                    ? WpyTheme.of(context).get(WpyColorKey.oldHintColor)
+                                    ? WpyTheme.of(context)
+                                        .get(WpyColorKey.oldHintColor)
                                     : WpyTheme.of(context).get(
                                         WpyColorKey.primaryBackgroundColor)),
                             SizedBox(width: 3.w),
@@ -197,8 +200,10 @@ class _ExamPageState extends State<ExamPage> {
                   bottom: 1.h,
                   child: Text(
                     remain,
-                    style:
-                        TextUtil.base.Fourche.bold.italic.examRemain.h(0).sp(55),
+                    style: TextUtil.base.Fourche.bold.italic
+                        .examRemain(context)
+                        .h(0)
+                        .sp(55),
                   ),
                 ),
               ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -17,7 +16,7 @@ class AboutTwtPage extends StatelessWidget {
       backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       appBar: AppBar(
           title: Text(S.current.about_twt,
-              style: TextUtil.base.bold.sp(16).blue52hz),
+              style: TextUtil.base.bold.sp(16).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
           backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -25,7 +24,7 @@ class AboutTwtPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child:
-                    Icon(Icons.arrow_back, color: ColorUtil.blue52hz, size: 32),
+                    Icon(Icons.arrow_back, color: WpyTheme.of(context).get(WpyColorKey.blue52hz), size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body:

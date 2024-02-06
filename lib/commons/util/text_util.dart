@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../themes/color_util.dart';
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
 
@@ -87,12 +86,14 @@ extension TextStyleAttr on TextStyle {
 
   //--------- unformatted --------
 
-  TextStyle get examRemain => this.copyWith(color: ColorUtil.examRemain);
+  TextStyle examRemain(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.examRemain));
 
   TextStyle dangerousRed(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.dangerousRed));
 
-  TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
+  TextStyle biliPink(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.biliTextPink));
 
   TextStyle replySuffix(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.replySuffixColor));
@@ -118,7 +119,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle infoColor(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor));
 
-  TextStyle get blue52hz => this.copyWith(color: ColorUtil.blue52hz);
+  TextStyle blue52hz(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.blue52hz));
 
   TextStyle get blue89 => this.copyWith(color: const Color(0xFF5189DC));
 

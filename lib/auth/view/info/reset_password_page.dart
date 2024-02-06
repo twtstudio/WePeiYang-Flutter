@@ -57,7 +57,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           title: Text(S.current.reset_password,
-              style: TextUtil.base.bold.sp(16).blue52hz),
+              style: TextUtil.base.bold.sp(16).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
           backgroundColor:

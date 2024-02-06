@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:simple_url_preview_v2/simple_url_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -29,7 +28,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: AppBar(
           title: Text(S.current.message,
-              style: TextUtil.base.bold.sp(16).blue52hz),
+              style: TextUtil.base.bold.sp(16).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
           backgroundColor:
@@ -170,7 +169,7 @@ class MailPage extends StatelessWidget {
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: AppBar(
-        title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz),
+        title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -371,7 +370,9 @@ class _TextMailContent extends StatelessWidget {
                                                           'https://b23.tv/') ||
                                                       url.startsWith(
                                                           'https://www.bilibili.com/')
-                                                  ? TextUtil.base.biliPink.w600
+                                                  ? TextUtil.base
+                                                      .biliPink(context)
+                                                      .w600
                                                       .h(1.6)
                                                   : TextUtil.base
                                                       .label(context)
@@ -399,7 +400,9 @@ class _TextMailContent extends StatelessWidget {
                                                       'https://b23.tv/') ||
                                                   url.startsWith(
                                                       'https://www.bilibili.com/')
-                                              ? TextUtil.base.biliPink.w600
+                                              ? TextUtil.base
+                                                  .biliPink(context)
+                                                  .w600
                                                   .h(1.6)
                                                   .sp(14)
                                               : TextUtil.base
@@ -424,7 +427,8 @@ class _TextMailContent extends StatelessWidget {
                                         url.startsWith('https://b23.tv/') ||
                                                 url.startsWith(
                                                     'https://www.bilibili.com/')
-                                            ? ColorUtil.biliPink
+                                            ? WpyTheme.of(context)
+                                                .get(WpyColorKey.biliPink)
                                             : WpyTheme.of(context).get(
                                                 WpyColorKey.primaryActionColor),
                                     cancelTextStyle: TextUtil.base.normal

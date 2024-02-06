@@ -12,7 +12,7 @@ class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);
   final List<Pair<Course, int>> _pairs;
   final bool _hide;
-  bool _warning;
+  final bool _warning;
 
   AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
@@ -51,7 +51,9 @@ class AnimatedActiveCourse extends StatelessWidget {
           BoxShadow(
             offset: Offset(0, 2),
             blurRadius: 15,
-            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.08),
+            color: WpyTheme.of(context)
+                .get(WpyColorKey.basicTextColor)
+                .withOpacity(0.08),
           ),
         ],
         borderRadius: BorderRadius.circular(5),

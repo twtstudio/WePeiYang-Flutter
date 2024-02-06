@@ -24,7 +24,7 @@ class WpyTheme extends InheritedWidget {
   Color? get getPrimary => themeData.data.primaryColor;
 
   Color get(WpyColorKey key) {
-    return themeData.data.get(key) as Color;
+    return themeData.data.get(key);
   }
 
   List<Color> getColorSet(WpyColorSetKey key) {

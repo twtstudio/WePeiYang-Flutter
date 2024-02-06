@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linkfy_text/linkfy_text.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -88,7 +87,10 @@ class _LinkTextState extends State<LinkText> {
                       padding: const EdgeInsets.only(left: 6, bottom: 6),
                       child: Text(url,
                           style: checkBili(url)
-                              ? TextUtil.base.NotoSansSC.biliPink.w600.h(1.6)
+                              ? TextUtil.base.NotoSansSC
+                                  .biliPink(context)
+                                  .w600
+                                  .h(1.6)
                               : TextUtil.base.NotoSansSC
                                   .link(context)
                                   .w600
@@ -104,7 +106,7 @@ class _LinkTextState extends State<LinkText> {
                     .sp(16)
                     .w600,
                 confirmButtonColor: checkBili(url)
-                    ? ColorUtil.biliPink
+                    ? WpyTheme.of(context).get(WpyColorKey.biliPink)
                     : WpyTheme.of(context)
                         .get(WpyColorKey.primaryTextButtonColor),
                 cancelTextStyle:

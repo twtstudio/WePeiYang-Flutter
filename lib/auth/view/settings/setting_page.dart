@@ -53,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
     return Scaffold(
       appBar: AppBar(
         title:
-            Text(S.current.setting, style: TextUtil.base.bold.sp(16).blue52hz),
+            Text(S.current.setting, style: TextUtil.base.bold.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
