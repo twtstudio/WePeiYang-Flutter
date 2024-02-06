@@ -60,7 +60,9 @@ class WpyExamWidget extends StatelessWidget {
                 BoxShadow(
                   offset: Offset(0, 4),
                   blurRadius: 20,
-                  color: ColorUtil.blackOpacity005,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.basicTextColor)
+                      .withOpacity(0.05),
                 )
               ],
             ),

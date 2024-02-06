@@ -45,7 +45,6 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     Widget searchInputField = ConstrainedBox(
@@ -53,7 +52,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
         maxHeight: 30,
       ),
       child: Padding(
-          padding:  EdgeInsets.only(left: 45.w, right: 12.w),
+          padding: EdgeInsets.only(left: 45.w, right: 12.w),
           child: Row(
             children: [
               Expanded(
@@ -63,30 +62,29 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                     focusNode: _fNode,
                     style: TextStyle().label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextStyle().infoText(context).NotoSansSC.w400.sp(15),
-                      hintText: data.recTag == null
-                          ? '天大不能没有微北洋'
-                          : '暂无相关内容',
+                      hintStyle:
+                          TextStyle().infoText(context).NotoSansSC.w400.sp(15),
+                      hintText: data.recTag == null ? '天大不能没有微北洋' : '暂无相关内容',
                       contentPadding: EdgeInsets.only(right: 6.w),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080.w),
                       ),
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+                      fillColor: WpyTheme.of(context)
+                          .get(WpyThemeKeys.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 19.w,
-                        color: ColorUtil.grey108,
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.infoTextColor),
                       ),
                     ),
                     enabled: true,
                     onSubmitted: (content) {
                       if (content.isNotEmpty) {
                         widget.onSubmitted.call(content);
-                      } else {
-
-                      }
+                      } else {}
                     },
                     textInputAction: TextInputAction.search,
                   ),
@@ -100,7 +98,8 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
     return Column(
       children: [
         Container(
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6.h)),
         SizedBox(height: 8.w),

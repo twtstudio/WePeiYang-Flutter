@@ -31,8 +31,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         pickerConfig: AssetPickerConfig(
             maxAssets: 1,
             requestType: RequestType.image,
-            themeColor: WpyTheme.of(context)
-                .get(WpyThemeKeys.primaryLightActionColor)));
+            themeColor:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)));
     if (assets == null) return; // 取消选择图片的情况
     File? file = await assets[0].file;
     if (file == null) {
@@ -57,10 +57,11 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           toolbarWidgetColor:
               WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+          dimmedLayerColor:
+              WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
-          backgroundColor: ColorUtil.blue3A3BColor,
+          backgroundColor: ColorUtil.oldSecondaryActionColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
@@ -102,10 +103,12 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           toolbarWidgetColor:
               WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+          dimmedLayerColor:
+              WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
-          backgroundColor: ColorUtil.blue3A3BColor,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor),
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );

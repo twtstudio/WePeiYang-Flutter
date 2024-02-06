@@ -57,7 +57,9 @@ class WbyDialogButton extends StatelessWidget {
           color: _buttonColor(context),
           boxShadow: [
             BoxShadow(
-              color: ColorUtil.black19,
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.basicTextColor)
+                  .withOpacity(0.1),
               offset: Offset(0, 2),
               blurRadius: 20,
             )

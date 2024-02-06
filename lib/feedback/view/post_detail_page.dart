@@ -379,7 +379,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                               : Container(
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteF8Color,
+                                    color: WpyTheme.of(context).get(
+                                        WpyThemeKeys.secondaryBackgroundColor),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
@@ -689,7 +690,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                       ),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(18),
-                                        color: ColorUtil.whiteF8Color,
+                                        color: WpyTheme.of(context).get(
+                                            WpyThemeKeys
+                                                .secondaryBackgroundColor),
                                       )),
                                 ),
                               ),
@@ -872,7 +875,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         });
     var manageButton = IconButton(
         icon: Icon(Icons.admin_panel_settings,
-            size: 23, color: ColorUtil.black2AColor),
+            size: 23,
+            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)),
         onPressed: () => _showManageDialog());
 
     var confirmScreenshot = IconButton(
@@ -884,14 +888,16 @@ class _PostDetailPageState extends State<PostDetailPage>
           screenshotting.value = false;
           screenshotList.empty();
         },
-        icon: Icon(Icons.add_a_photo_outlined, color: ColorUtil.black2AColor));
+        icon: Icon(Icons.add_a_photo_outlined,
+            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)));
 
     var cancelScreenshot = IconButton(
         onPressed: () {
           screenshotList.empty();
           screenshotSelecting.value = false;
         },
-        icon: Icon(Icons.cancel_outlined, color: ColorUtil.black2AColor));
+        icon: Icon(Icons.cancel_outlined,
+            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)));
 
     var appBar = AppBar(
       toolbarHeight: 40,
@@ -901,7 +907,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       leading: IconButton(
         icon: Icon(
           CupertinoIcons.back,
-          color: ColorUtil.black25Color,
+          color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
         ),
         onPressed: () => Navigator.pop(context, widget.post),
       ),
@@ -1083,7 +1089,8 @@ class CommentInputFieldState extends State<CommentInputField> {
             borderSide: BorderSide.none,
           ),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-          fillColor: ColorUtil.whiteF8Color,
+          fillColor:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           filled: true,
           isDense: true,
         ),

@@ -71,52 +71,44 @@ class ColorUtil {
   static final courseGradientStopColor = Color.fromRGBO(255, 255, 255, 0.3);
   static final tagLabelColor = Color.fromRGBO(234, 234, 234, 1);
   static final gpaHintColor = Color(0xffcdcdd3);
+  static final lightBorderColor = Color(0xFFEAEAEA);
+  static final roomFreeColor = Color(0xFF5CB85C);
 
-  //
-  //
-  // -----还没有处理的
-  static final grey108 = Color.fromARGB(255, 108, 108, 108);
-  static final bold42TextColor = Color.fromARGB(255, 42, 42, 42);
-  static final whiteFDFE = Color.fromARGB(255, 253, 253, 254);
-  static final greyEAColor = Color(0xFFEAEAEA);
-  static final green5CColor = Color(0xFF5CB85C);
-  static final black2AColor = Color(0xFF2A2A2A);
-  static final black25Color = Color(0XFF252525);
-  static final black12Color = Color(0x12FFFFFF);
-  static final black76Color = Color(0x76FFFFFF);
-  static final black32Color = Color(0x32FFFFFF);
-  static final black90Color = Color(0x90FFFFFF);
-  static final black88Color = Color(0x88444444);
-  static final whiteF8Color = Color(0xFFF7F7F8);
-  static final greyCAColor = Color(0xFFCACACA);
+  // 骨架屏幕渐变
+  static final skeletonStartAColor = Color(0x12FFFFFF);
+  static final skeletonStartBColor = Color(0x76FFFFFF);
+  static final skeletonEndAColor = Color(0x32FFFFFF);
+  static final skeletonEndBColor = Color(0x90FFFFFF);
+
+  // 跳转BiliBili用的
+  static final biliPink = Color(0xFFF97198);
+  static final biliTextPink = Color(0xFFAE3B5E);
+
+  //三个加载的点点
+
   static final blue38Color = Color(0xFF3884DE);
   static final blue15Color = Color(0xFF156ACE);
   static final blue8DColor = Color(0xFF8DBBF1);
-  static final blue90Color = Color(0xFF90CAF9);
-  static final blueBEColor = Color(0xFFBED1FF);
-  static final blue64Color = Color(0xFF64A3EE);
-  static final blueDDColor = Color(0xFFDDF1FF);
-  static final blue3A3BColor = Color.fromRGBO(58, 59, 69, 1.0);
-  static final biliPink = Color(0xFFF97198);
-  static final biliTextPink = Color(0xFFAE3B5E);
-  static final begoniaPink = Color(0xFFFFCCD1);
-  static final mapRed = Color(0xFFFFF2F2);
-  static final grey144 = Color.fromARGB(255, 144, 144, 144);
-  static final grey145 = Color.fromARGB(255, 145, 145, 145);
-  static final white70 = Color(0xB3FFFFFF);
+
+  //Avatar chosen pink
+  static final avatarChosenColor = Color(0xFFFFCCD1);
+
+  // 地图 校历 页面的蒙版
+  static final beiyangCampusMaskColor = Color(0xFFFFF2F2);
+
+  static final unSelectedIcon = Color.fromARGB(255, 144, 144, 144);
+
+  static final backgroundMaskColor = Color(0xB3FFFFFF);
+  static final liteBackgroundMaskColor = Colors.white10;
+
   static final blue52hz = Color.fromRGBO(36, 43, 69, 1);
-  static final white10 = Colors.white10;
-  static final red85 = Color.fromRGBO(85, 0, 9, 1.0);
-  static final black54 = Colors.black54;
-  static final black45 = Colors.black45;
-  static final black42 = Color.fromRGBO(42, 42, 42, 1);
-  static final black38 = Colors.black38;
-  static final black19 = Color(0x19000000);
-  static final greyHotColor = Color(0xff898989);
-  static final whiteOpacity01 = Color.fromRGBO(255, 255, 255, 0.1);
-  static final whiteOpacity02 = Color.fromRGBO(255, 255, 255, 0.2);
-  static final whiteOpacity04 = Color.fromRGBO(255, 255, 255, 0.4);
-  static final blackOpacity005 = Color.fromARGB(13, 00, 00, 00);
+
+  // 负数等级的color
+  static final levelNegColor = Color.fromRGBO(85, 0, 9, 1.0);
+
+  //
+  //
+  // -----还没有处理的Q
   static final blackOpacityA64 = Color.fromARGB(64, 0, 0, 0);
   static final blackOpacity022 = Color.fromRGBO(0, 0, 25, 0.22);
   static final grey172 = Color.fromRGBO(172, 174, 186, 1);

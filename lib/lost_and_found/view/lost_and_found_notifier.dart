@@ -18,12 +18,12 @@ import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_servic
 
 import '../../commons/themes/wpy_theme.dart';
 
-class LostAndFoundModel with ChangeNotifier {
+class LAFoundModel with ChangeNotifier {
   Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事': []};
 
-  Map<String, LostAndFoundSubPageStatus> lostAndFoundSubPageStatus = {
-    '失物招领': LostAndFoundSubPageStatus.unload,
-    '寻物启事': LostAndFoundSubPageStatus.unload
+  Map<String, LAFSubStatus> lafSubStatus = {
+    '失物招领': LAFSubStatus.unload,
+    '寻物启事': LAFSubStatus.unload
   };
 
   Map<String, RefreshController> refreshController = {
@@ -38,7 +38,7 @@ class LostAndFoundModel with ChangeNotifier {
 
   clearByType(type){
     postList[type]?.clear();
-    lostAndFoundSubPageStatus[type] = LostAndFoundSubPageStatus.unload;
+    lafSubStatus[type] = LAFSubStatus.unload;
   }
 
   Map<String, bool> searchAndTagVisibility = {
@@ -129,7 +129,7 @@ class LostAndFoundModel with ChangeNotifier {
                   Tuple2 tuple = Tuple2(int.parse(id), post.type == '失物招领' ? true : false);
                   if (confirm != null && confirm) {
                     Navigator.pushNamed(
-                      context, LostAndFoundRouter.lostAndFoundDetailPage,
+                      context, LAFRouter.lafDetailPage,
                       arguments: tuple);
                     CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
                   } else {
@@ -151,7 +151,7 @@ class LostAndFoundModel with ChangeNotifier {
   }
 }
 
-enum LostAndFoundSubPageStatus{
+enum LAFSubStatus{
   loading,
   unload,
   ready,

@@ -70,7 +70,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle oldFurthAction(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyThemeKeys.oldFurthActionColor));
 
-  TextStyle linkBlue(context) =>
+  TextStyle link(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.linkBlue));
 
   TextStyle infoText(context) => this
@@ -93,7 +93,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
-  TextStyle get greyHot => this.copyWith(color: ColorUtil.greyHotColor);
 
   TextStyle get greyAA => this.copyWith(color: ColorUtil.greyAA);
 
@@ -114,11 +113,10 @@ extension TextStyleAttr on TextStyle {
         color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
       );
 
-  TextStyle get black42 => this.copyWith(color: ColorUtil.black42);
 
   TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
 
-  TextStyle get green5C => this.copyWith(color: ColorUtil.green5CColor);
+  TextStyle get roomFree => this.copyWith(color: ColorUtil.roomFreeColor);
 
   TextStyle get redD9 => this.copyWith(color: ColorUtil.redD9);
 
@@ -148,8 +146,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle gpaHintColor(context) =>
       this.copyWith(color: ColorUtil.gpaHintColor);
-
-  TextStyle get grey145 => this.copyWith(color: ColorUtil.grey145);
 
   TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 

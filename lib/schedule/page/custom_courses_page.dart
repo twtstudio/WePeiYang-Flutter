@@ -52,8 +52,9 @@ class CustomCoursesPage extends StatelessWidget {
                 style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
           ),
           body: Theme(
-            data:
-                Theme.of(context).copyWith(secondaryHeaderColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+            data: Theme.of(context).copyWith(
+                secondaryHeaderColor: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor)),
             child: ListView.builder(
               itemCount: customCourses.length,
               itemBuilder: (context, index) {
@@ -77,7 +78,9 @@ class CustomCoursesPage extends StatelessWidget {
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
-              color: ColorUtil.blackOpacity005,
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.basicTextColor)
+                  .withOpacity(0.05),
             ),
           ],
         ),
@@ -98,7 +101,8 @@ class CustomCoursesPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(course.name,
-                      style: TextUtil.base.PingFangSC.bold.label(context).sp(16)),
+                      style:
+                          TextUtil.base.PingFangSC.bold.label(context).sp(16)),
                   SizedBox(height: 10.h),
                   ...course.arrangeList.map((arrange) {
                     var type = '每周';
@@ -115,15 +119,18 @@ class CustomCoursesPage extends StatelessWidget {
                         children: [
                           Text(
                               '第${arrange.weekList.first}-${arrange.weekList.last}周 ${_weekDays[arrange.weekday]}',
-                              style: TextUtil.base.PingFangSC.normal.label(context)
+                              style: TextUtil.base.PingFangSC.normal
+                                  .label(context)
                                   .sp(12)),
                           SizedBox(width: 5.w),
                           Text(_timeRange(arrange.unitList),
-                              style:
-                                  TextUtil.base.PingFangSC.w900.primary(context).sp(14)),
+                              style: TextUtil.base.PingFangSC.w900
+                                  .primary(context)
+                                  .sp(14)),
                           SizedBox(width: 5.w),
                           Text(type,
-                              style: TextUtil.base.PingFangSC.normal.label(context)
+                              style: TextUtil.base.PingFangSC.normal
+                                  .label(context)
                                   .sp(12)),
                         ],
                       ),

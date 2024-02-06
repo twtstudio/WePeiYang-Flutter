@@ -34,7 +34,7 @@ class _LinkTextState extends State<LinkText> {
         linkTypes: [LinkType.url, LinkType.hashTag],
         overflow: TextOverflow.ellipsis,
         textStyle: widget.style.NotoSansSC.w400.sp(16),
-        linkStyle: widget.style.linkBlue(context).w500.sp(16), onTap: (link) async {
+        linkStyle: widget.style.link(context).w500.sp(16), onTap: (link) async {
       // 粗暴地解决了，但是肯定不是个长久之计
       if (link.value!.startsWith('#MP') &&
           RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
@@ -74,8 +74,11 @@ class _LinkTextState extends State<LinkText> {
           builder: (BuildContext context) {
             return LakeDialogWidget(
                 title: '天外天工作室提示您',
-                titleTextStyle:
-                    TextUtil.base.normal.infoText(context).NotoSansSC.sp(22).w600,
+                titleTextStyle: TextUtil.base.normal
+                    .infoText(context)
+                    .NotoSansSC
+                    .sp(22)
+                    .w600,
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -86,17 +89,24 @@ class _LinkTextState extends State<LinkText> {
                       child: Text(url,
                           style: checkBili(url)
                               ? TextUtil.base.NotoSansSC.biliPink.w600.h(1.6)
-                              : TextUtil.base.NotoSansSC.label(context).w600.h(1.6)),
+                              : TextUtil.base.NotoSansSC
+                                  .link(context)
+                                  .w600
+                                  .h(1.6)),
                     ),
                     Text(' 请注意您的账号和财产安全\n'),
                   ],
                 ),
                 cancelText: "取消",
-                confirmTextStyle:
-                    TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w600,
+                confirmTextStyle: TextUtil.base.normal
+                    .reverse(context)
+                    .NotoSansSC
+                    .sp(16)
+                    .w600,
                 confirmButtonColor: checkBili(url)
                     ? ColorUtil.biliPink
-                    : WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
+                    : WpyTheme.of(context)
+                        .get(WpyThemeKeys.primaryTextButtonColor),
                 cancelTextStyle:
                     TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
                 confirmText: "继续",

@@ -252,7 +252,13 @@ class _TimeItem extends StatelessWidget {
       onPressed: onclick,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(
-          isChecked ? ColorUtil.blueDDColor : ColorUtil.white10,
+          isChecked
+              ? WpyTheme.of(context)
+                  .get(WpyThemeKeys.primaryLightestActionColor)
+                  .withOpacity(0.5)
+              : WpyTheme.of(context)
+                  .get(WpyThemeKeys.primaryBackgroundColor)
+                  .withOpacity(0.1),
         ),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(

@@ -346,7 +346,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                   child: Padding(
                     padding: EdgeInsets.only(right: 15.w),
                     child: Icon(Icons.arrow_forward_ios_sharp,
-                        color: ColorUtil.black2AColor, size: 10.h),
+                        color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor), size: 10.h),
                   ),
                 ),
               ),
@@ -551,7 +551,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
           ),
           Container(
               margin: EdgeInsets.only(top: 16.h),
-              color: ColorUtil.greyEAColor,
+              color: ColorUtil.lightBorderColor,
               height: 1.h)
         ],
       ),

@@ -60,7 +60,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         _foundSearchHistoryList.unequalAdd(text);
         Navigator.pushNamed(
           context,
-          LostAndFoundRouter.lostAndFoundSearchResult,
+          LAFRouter.lostAndFoundSearchResult,
           arguments: LostAndFoundSearchResultPageArgs(
               context.read<LostAndFoundModel2>().currentType,
               context.read<LostAndFoundModel2>().currentCategory[
@@ -83,7 +83,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               padding: EdgeInsets.only(top: 12.h, left: 12.h),
               child: Icon(
                 CupertinoIcons.back,
-                color: ColorUtil.black25Color,
+                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
                 size: 27.r,
               ),
             ),
@@ -180,7 +180,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                     .unequalAdd(list[list.length - index - 1]);
                 Navigator.pushNamed(
                   context,
-                  LostAndFoundRouter.lostAndFoundSearchResult,
+                  LAFRouter.lostAndFoundSearchResult,
                   arguments: LostAndFoundSearchResultPageArgs(
                       context.read<LostAndFoundModel2>().currentType,
                       context.read<LostAndFoundModel2>().currentCategory[

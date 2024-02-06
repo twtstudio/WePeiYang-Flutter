@@ -29,8 +29,10 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
   Widget build(BuildContext context) {
     return LakeDialogWidget(
       title: '修改你的昵称',
-      titleTextStyle: TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary(context),
-      confirmButtonColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+      titleTextStyle:
+          TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary(context),
+      confirmButtonColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
       confirmFun: () {
         if (_textEditingController.text == "") {
           ToastProvider.error('昵称不能为空喵');
@@ -75,7 +77,8 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
                 borderSide: BorderSide.none,
               ),
               contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              fillColor: ColorUtil.whiteF8Color,
+              fillColor: WpyTheme.of(context)
+                  .get(WpyThemeKeys.secondaryBackgroundColor),
               filled: true,
               isDense: true,
             ),
@@ -88,11 +91,15 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
           ),
           SizedBox(height: 10),
           Text('（仅在求实论坛非实名区生效）',
-              style: TextUtil.base.w400.NotoSansSC.sp(12).h(1.4).unlabeled(context)),
+              style: TextUtil.base.w400.NotoSansSC
+                  .sp(12)
+                  .h(1.4)
+                  .unlabeled(context)),
         ],
       ),
       cancelFun: () => Navigator.pop(context),
-      cancelTextStyle: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).unlabeled(context),
+      cancelTextStyle:
+          TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).unlabeled(context),
     );
   }
 }

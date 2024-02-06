@@ -142,7 +142,11 @@ class _SearchBarState extends State<SearchBar>
                     focusNode: _fNode,
                     style: TextUtil.base.label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
+                      hintStyle: TextUtil.base
+                          .infoText(context)
+                          .NotoSansSC
+                          .w400
+                          .sp(15),
                       hintText: data.recTag == null
                           ? '搜索发现'
                           : '#${data.recTag?.name}#，输入“#”号搜索更多Tag',
@@ -151,12 +155,14 @@ class _SearchBarState extends State<SearchBar>
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(1080),
                       ),
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+                      fillColor: WpyTheme.of(context)
+                          .get(WpyThemeKeys.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 19,
-                        color: ColorUtil.grey108,
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.infoTextColor),
                       ),
                     ),
                     enabled: true,
@@ -222,7 +228,9 @@ class _SearchBarState extends State<SearchBar>
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                      backgroundColor: MaterialStateProperty.all(
+                          WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryBackgroundColor)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -233,7 +241,9 @@ class _SearchBarState extends State<SearchBar>
                             width: 12,
                           )
                         : Icon(Icons.clear,
-                            size: 14, color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
+                            size: 14,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.defaultActionColor)),
                   ))
             ],
           )),
@@ -242,11 +252,13 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
-          color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+          color:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
@@ -255,14 +267,16 @@ class _SearchBarState extends State<SearchBar>
                     padding: EdgeInsets.only(bottom: 10),
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
                         ),
                         boxShadow: [
                           BoxShadow(
-                              color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                              color: WpyTheme.of(context)
+                                  .get(WpyThemeKeys.iconAnimationStartColor),
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度

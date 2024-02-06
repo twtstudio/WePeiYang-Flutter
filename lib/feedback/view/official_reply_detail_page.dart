@@ -198,7 +198,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
               Container(
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor))
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.iconAnimationStartColor))
             ],
           );
         },
@@ -242,12 +243,14 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
                   ],
-                  color: ColorUtil.whiteF8Color),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.secondaryBackgroundColor)),
               child: Column(
                 children: [
                   Offstage(
@@ -286,12 +289,14 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500.secondaryInfo(context)
+                                style: TextUtil.base.NotoSansSC.w500
+                                    .secondaryInfo(context)
                                     .sp(12)),
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
-                            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryBackgroundColor),
                           )),
                     ),
                   ),
@@ -333,9 +338,11 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     );
 
     var appBar = AppBar(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
+        icon: Icon(Icons.arrow_back,
+            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
@@ -362,7 +369,8 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
         return true;
       },
       child: Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
         appBar: appBar,
         body: body,
       ),

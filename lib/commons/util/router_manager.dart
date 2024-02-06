@@ -33,7 +33,7 @@ class RouterManager {
       _routers.addAll(ReportRouter.routers);
       _routers.addAll(MessageRouter.routers);
       _routers.addAll(TestRouter.routers);
-      _routers.addAll(LostAndFoundRouter.routers);
+      _routers.addAll(LAFRouter.routers);
     }
     return MaterialPageRoute(
         builder: (ctx) => _routers[settings.name]!(settings.arguments),

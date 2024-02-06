@@ -25,7 +25,8 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       appBar: AppBar(
           title: Text(S.current.message,
               style: TextUtil.base.bold.sp(16).blue52hz),
@@ -168,7 +169,8 @@ class MailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       appBar: AppBar(
         title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz),
         elevation: 0,

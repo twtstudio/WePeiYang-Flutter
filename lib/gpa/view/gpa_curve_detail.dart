@@ -303,7 +303,7 @@ class _GPAPopupPainter extends CustomPainter {
   final bool isPre;
 
   /// 在wpy_page显示的颜色
-  static final Color _outerPreview = ColorUtil.white10;
+  static final Color _outerPreview = ColorUtil.liteBackgroundMaskColor;
 
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;

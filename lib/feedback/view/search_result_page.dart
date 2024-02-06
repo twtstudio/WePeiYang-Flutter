@@ -295,7 +295,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         } else {
           body = Center(
             child: Text(S.current.feedback_no_post,
-                style: TextUtil.base.regular.grey145),
+                style: TextUtil.base.regular.infoText(context)),
           );
         }
         break;

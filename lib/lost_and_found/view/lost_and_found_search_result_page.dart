@@ -52,16 +52,16 @@ class _LostAndFoundSearchResultPageState
           category: category,
           keyword: keyword,
           success: () {
-            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus.ready;
+            context.read<LostAndFoundModel2>().lafSubStatus[type] =
+                LAFSubStatus.ready;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
                 ?.refreshCompleted();
           },
           failure: (e) {
-            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus.error;
+            context.read<LostAndFoundModel2>().lafSubStatus[type] =
+                LAFSubStatus.error;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -77,16 +77,16 @@ class _LostAndFoundSearchResultPageState
           category: category,
           keyword: keyword,
           success: () {
-            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus.ready;
+            context.read<LostAndFoundModel2>().lafSubStatus[type] =
+                LAFSubStatus.ready;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
                 ?.loadComplete();
           },
           failure: (e) {
-            context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] =
-                LostAndFoundSubPageStatus.error;
+            context.read<LostAndFoundModel2>().lafSubStatus[type] =
+                LAFSubStatus.error;
             context
                 .read<LostAndFoundModel2>()
                 .refreshController[type]
@@ -98,12 +98,12 @@ class _LostAndFoundSearchResultPageState
 
   @override
   Widget build(BuildContext context) {
-    if (context.read<LostAndFoundModel2>().lostAndFoundSubPageStatus[type] ==
-            LostAndFoundSubPageStatus.ready &&
+    if (context.read<LostAndFoundModel2>().lafSubStatus[type] ==
+            LAFSubStatus.ready &&
         context
                 .read<LostAndFoundModel2>()
-                .lostAndFoundSubPageStatus[category] !=
-            LostAndFoundSubPageStatus.ready) {
+                .lafSubStatus[category] !=
+            LAFSubStatus.ready) {
       _onRefresh();
     }
 
@@ -207,7 +207,7 @@ class _LostAndFoundSearchResultPageState
                       onTap: () {
                         Tuple2 tuple2 = Tuple2(false, postList[index].id);
                         Navigator.pushNamed(
-                            context, LostAndFoundRouter.lostAndFoundDetailPage,
+                            context, LAFRouter.lafDetailPage,
                             arguments: tuple2);
                       },
                       child: Card(

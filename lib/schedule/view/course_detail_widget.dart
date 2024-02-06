@@ -179,7 +179,9 @@ class _CourseDisplayWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ColorUtil.whiteOpacity02,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
@@ -195,7 +197,9 @@ class _CourseDisplayWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: ColorUtil.whiteOpacity02,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),

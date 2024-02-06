@@ -94,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.only(top: 12, left: 12),
             child: Icon(
               CupertinoIcons.back,
-              color: ColorUtil.black25Color,
+              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
             ),
           ),
           onPressed: () => Navigator.pop(context),
@@ -181,7 +181,8 @@ class _SearchPageState extends State<SearchPage> {
                 elevation: 1,
                 backgroundColor: ColorUtil.tagLabelColor,
                 label: Text(list[list.length - index - 1],
-                    style: TextUtil.base.normal.label(context).NotoSansSC.sp(16)),
+                    style:
+                        TextUtil.base.normal.label(context).NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
                     color: WpyTheme.of(context)
                         .get(WpyThemeKeys.secondaryTextColor),
@@ -233,8 +234,10 @@ class _SearchPageState extends State<SearchPage> {
         builder: (BuildContext context) {
           return LakeDialogWidget(
               title: '清除记录',
-              confirmButtonColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
-              titleTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
+              confirmButtonColor:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
+              titleTextStyle:
+                  TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,

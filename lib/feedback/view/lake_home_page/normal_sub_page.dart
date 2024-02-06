@@ -240,13 +240,17 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     padding: EdgeInsets.fromLTRB(
                                         20.w, 14.h, 5.w, 6.h),
                                     child: Text('默认排序',
-                                        style: context
-                                                    .read<LakeModel>()
-                                                    .sortSeq !=
-                                                0
-                                            ? TextUtil.base.primaryAction(context).w600.sp(14)
-                                            : TextUtil.base.label(context).w400
-                                                .sp(14)),
+                                        style:
+                                            context.read<LakeModel>().sortSeq !=
+                                                    0
+                                                ? TextUtil.base
+                                                    .primaryAction(context)
+                                                    .w600
+                                                    .sp(14)
+                                                : TextUtil.base
+                                                    .label(context)
+                                                    .w400
+                                                    .sp(14)),
                                   ),
                                 ),
                                 WButton(
@@ -260,12 +264,17 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                                     padding: EdgeInsets.fromLTRB(
                                         5.w, 14.h, 10.w, 6.h),
                                     child: Text('最新发帖',
-                                        style: context
-                                                    .read<LakeModel>()
-                                                    .sortSeq !=
-                                                0
-                                            ? TextUtil.base.label(context).w400.sp(14)
-                                            : TextUtil.base.primaryAction(context).w600.sp(14)),
+                                        style:
+                                            context.read<LakeModel>().sortSeq !=
+                                                    0
+                                                ? TextUtil.base
+                                                    .label(context)
+                                                    .w400
+                                                    .sp(14)
+                                                : TextUtil.base
+                                                    .primaryAction(context)
+                                                    .w600
+                                                    .sp(14)),
                                   ),
                                 ),
                               ]);
@@ -310,7 +319,8 @@ class AdCardWidget extends StatelessWidget {
             : Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  color: ColorUtil.grey145,
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                 ),
                 width: 1.sw - 40.w,
                 height: (1.sw - 40.w) * 0.32,
@@ -384,14 +394,17 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
-                            color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor).withAlpha(12)),
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryActionColor)
+                                .withAlpha(12)),
                       );
                     ind--;
                     if (widget.index == 0 && ind == 0)
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.dislikeSecondary),
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -405,7 +418,8 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.dislikeSecondary),
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -415,7 +429,8 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.dislikeSecondary),
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);
@@ -431,8 +446,14 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      isOpa ? ColorUtil.black12Color : ColorUtil.black76Color,
-                      !isOpa ? ColorUtil.black32Color : ColorUtil.black90Color,
+                      if (isOpa)
+                        ColorUtil.skeletonStartAColor
+                      else
+                        ColorUtil.skeletonStartBColor,
+                      if (!isOpa)
+                        ColorUtil.skeletonEndAColor
+                      else
+                        ColorUtil.skeletonEndBColor,
                     ],
                   ),
                 ),
@@ -495,8 +516,10 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       ),
       elevation: 4,
       heroTag: 'error_btn',
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
-      foregroundColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+      foregroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
       onPressed: () {
         FeedbackService.getToken(
             forceRefresh: true,
@@ -569,7 +592,9 @@ class AnnouncementBannerWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor).withAlpha(12)),
+          color: WpyTheme.of(context)
+              .get(WpyThemeKeys.primaryActionColor)
+              .withAlpha(12)),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -605,14 +630,19 @@ class AnnouncementBannerWidget extends StatelessWidget {
                                           .length,
                                       (index) => Text(
                                           '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
-                                          style: TextUtil
-                                              .base.primaryAction(context).w400.NotoSansSC
+                                          style: TextUtil.base
+                                              .primaryAction(context)
+                                              .w400
+                                              .NotoSansSC
                                               .sp(15)),
                                     ),
                                   )
                                 : Text(
                                     '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                    style: TextUtil.base.primaryAction(context).w400.NotoSansSC
+                                    style: TextUtil.base
+                                        .primaryAction(context)
+                                        .w400
+                                        .NotoSansSC
                                         .sp(15))),
                       ],
                     ),
@@ -624,7 +654,11 @@ class AnnouncementBannerWidget extends StatelessWidget {
                       width: WePeiYangApp.screenWidth - 83,
                       child: Text(
                         '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
-                        style: TextUtil.base.primaryAction(context).w600.NotoSansSC.sp(16),
+                        style: TextUtil.base
+                            .primaryAction(context)
+                            .w600
+                            .NotoSansSC
+                            .sp(16),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

@@ -975,9 +975,13 @@ class _CurrentPlaceState extends State<CurrentPlace> {
         children: [
           Text(
             '选择地区',
-            style: TextStyle(fontSize: 13, color: ColorUtil.grey108),
+            style: TextStyle(
+                fontSize: 13,
+                color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
           ),
-          Icon(Icons.chevron_right, size: 20, color: ColorUtil.grey108),
+          Icon(Icons.chevron_right,
+              size: 20,
+              color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
         ],
       ),
     );
@@ -991,7 +995,9 @@ class _CurrentPlaceState extends State<CurrentPlace> {
           SizedBox(width: 10),
           Padding(
             padding: const EdgeInsets.only(top: 15, right: 3),
-            child: Icon(Icons.place, size: 20, color: ColorUtil.grey108),
+            child: Icon(Icons.place,
+                size: 20,
+                color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
           ),
           Column(
             mainAxisSize: MainAxisSize.max,

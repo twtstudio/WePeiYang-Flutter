@@ -57,7 +57,7 @@ Widget _PageTitleWidget(Room room, String areaName, BuildContext context) {
         child: Text(
           areaName,
           style: TextStyle(
-            color: ColorUtil.greyCAColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor),
             fontSize: 14.sp,
           ),
         ),
@@ -138,9 +138,11 @@ class _WeekDisplayWidget extends StatelessWidget {
             ? Theme.of(context).coordinateChosenBackground
             : Theme.of(context).coordinateBackground;
 
-        final textColor = now.isSameDay(date)
-            ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
-            : Theme.of(context).coordinateText;
+        final textColor = WpyTheme.of(context).get(
+          now.isSameDay(date)
+              ? WpyThemeKeys.primaryActionColor
+              : WpyThemeKeys.infoTextColor,
+        );
 
         return Container(
           height: _dateTabHeight,

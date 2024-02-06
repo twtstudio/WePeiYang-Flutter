@@ -239,7 +239,10 @@ class TextPod extends StatelessWidget {
           color:
               WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: ColorUtil.black38)),
+          border: Border.all(
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.reverseBackgroundColor)
+                  .withOpacity(0.38))),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text,
           style: TextUtil.base.NotoSansSC.w400.sp(12).infoText(context)),

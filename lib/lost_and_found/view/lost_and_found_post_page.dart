@@ -360,7 +360,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
               children: [inputField, SizedBox(width: 3.w), textCounter]),
           Container(
               margin: EdgeInsets.only(top: 16.h),
-              color: ColorUtil.greyEAColor,
+              color: ColorUtil.lightBorderColor,
               height: 1.h)
         ]));
   }

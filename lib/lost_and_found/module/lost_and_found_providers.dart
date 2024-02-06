@@ -6,7 +6,7 @@ import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_no
 
 List<SingleChildWidget> lostAndFoundProviders = [
   ChangeNotifierProvider.value(
-    value: LostAndFoundModel(),
+    value: LAFoundModel(),
   ),
   ChangeNotifierProvider.value(
     value: LostAndFoundModel2(),

@@ -8,6 +8,8 @@ import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -123,7 +125,8 @@ class ActivityDialog extends Dialog {
                         'assets/images/lake_butt_icons/x.png',
                         width: 50.w,
                         height: 100.w,
-                        color: ColorUtil.white70,
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.reverseTextColor),
                       ),
                     ),
                   ))

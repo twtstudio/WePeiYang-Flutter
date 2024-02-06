@@ -108,11 +108,13 @@ class WeekSelectWidget extends StatelessWidget {
         ),
         SizedBox(height: 3.h),
         Builder(builder: (context) {
-          return Text('WEEK ${i + 1}',
-              style: TextUtil.base.Swis.w900.sp(10).customColor(
-                  (provider.selectedWeek == i + 1)
-                      ? WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
-                      : ColorUtil.whiteOpacity04));
+          return Text(
+            'WEEK ${i + 1}',
+            style: TextUtil.base.Swis.w900.sp(10).customColor(
+                WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .withOpacity((provider.selectedWeek == i + 1) ? 1.0 : 0.4)),
+          );
         })
       ],
     );

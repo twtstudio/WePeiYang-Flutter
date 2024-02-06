@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )
             : SvgPicture.asset(
                 'assets/svg_pics/home.svg',
-                color: ColorUtil.grey144,
+                color: ColorUtil.unSelectedIcon,
               ),
         color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(0),
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               )
             : SvgPicture.asset(
                 'assets/svg_pics/my.svg',
-                color: ColorUtil.grey144,
+                color: ColorUtil.unSelectedIcon,
               ),
         color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(2),

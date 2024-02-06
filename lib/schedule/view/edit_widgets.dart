@@ -77,7 +77,8 @@ class TimeFrameWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   child: Icon(Icons.cancel,
                       color: canDelete
-                          ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+                          ? WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryActionColor)
                           : WpyTheme.of(context)
                               .get(WpyThemeKeys.primaryBackgroundColor)),
                 ),
@@ -86,7 +87,8 @@ class TimeFrameWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Text('周数：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
+              Text('周数：',
+                  style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -111,7 +113,9 @@ class TimeFrameWidget extends StatelessWidget {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        barrierColor: ColorUtil.whiteOpacity01,
+                        barrierColor: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor)
+                            .withOpacity(0.1),
                         builder: (_) => WeekPicker(
                             index,
                             top,
@@ -134,7 +138,8 @@ class TimeFrameWidget extends StatelessWidget {
           ),
           Row(
             children: [
-              Text('节数：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
+              Text('节数：',
+                  style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
               Expanded(
                 child: Builder(builder: (context) {
                   return WButton(
@@ -153,7 +158,9 @@ class TimeFrameWidget extends StatelessWidget {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
-                        barrierColor: ColorUtil.whiteOpacity01,
+                        barrierColor: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor)
+                            .withOpacity(0.1),
                         builder: (_) => UnitPicker(
                             index, top, pvd.arrangeList[index].unitList),
                       ).then((_) => pvd.notify());
@@ -235,7 +242,8 @@ class InputWidget extends StatelessWidget {
       child: Row(
         children: [
           if (title != null)
-            Text('$title：', style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
+            Text('$title：',
+                style: TextUtil.base.PingFangSC.bold.label(context).sp(14)),
           Expanded(
             child: TextField(
               focusNode: focusNode,
@@ -245,7 +253,8 @@ class InputWidget extends StatelessWidget {
               inputFormatters: inputFormatter,
               textAlign: TextAlign.end,
               style: TextUtil.base.PingFangSC.medium.label(context).sp(16),
-              cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+              cursorColor:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -547,30 +556,31 @@ class WeekPicker extends Dialog {
                   ...List.generate(3, (index) {
                     return ValueListenableBuilder(
                       valueListenable: _selectedWeekType,
-                      builder: (context, String type, _) {
-                        return ElevatedButton(
-                          onPressed: () {
-                            _selectedWeekType.value = _weekTypes[index];
-                            _save(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            backgroundColor: index == _weekTypes.indexOf(type)
-                                ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
-                                : ColorUtil.whiteF8Color,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
+                      builder: (context, String type, _) => ElevatedButton(
+                        onPressed: () {
+                          _selectedWeekType.value = _weekTypes[index];
+                          _save(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: index == _weekTypes.indexOf(type)
+                              ? WpyTheme.of(context)
+                                  .get(WpyThemeKeys.primaryActionColor)
+                              : WpyTheme.of(context)
+                                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
-                          child: Text(_weekTypes[index],
-                              style: TextUtil.base.PingFangSC.regular
-                                  .sp(12)
-                                  .customColor(index == _weekTypes.indexOf(type)
-                                      ? WpyTheme.of(context).get(
-                                          WpyThemeKeys.primaryBackgroundColor)
-                                      : ColorUtil.greyCAColor)),
-                        );
-                      },
+                        ),
+                        child: Text(_weekTypes[index],
+                            style: TextUtil.base.PingFangSC.regular
+                                .sp(12)
+                                .customColor(index == _weekTypes.indexOf(type)
+                                    ? WpyTheme.of(context).get(
+                                        WpyThemeKeys.primaryBackgroundColor)
+                                    : WpyTheme.of(context)
+                                        .get(WpyThemeKeys.infoTextColor))),
+                      ),
                     );
                   })
                 ],

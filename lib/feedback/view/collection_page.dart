@@ -151,11 +151,12 @@ class _CollectionPageState extends State<CollectionPage> {
     Widget body = CustomScrollView(
       slivers: [
         SliverAppBar(
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
-              color: ColorUtil.bold42TextColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
               size: 20.w,
             ),
             onPressed: () => Navigator.pop(context),
@@ -167,7 +168,10 @@ class _CollectionPageState extends State<CollectionPage> {
           centerTitle: true,
         ),
         SliverToBoxAdapter(
-          child: Container(color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor), child: list),
+          child: Container(
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.secondaryBackgroundColor),
+              child: list),
         )
       ],
     );

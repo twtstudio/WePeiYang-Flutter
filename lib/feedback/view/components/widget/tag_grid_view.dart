@@ -57,7 +57,7 @@ class _TabGridViewState extends State<TabGridView>
           begin: Alignment(0, 0.75),
           end: Alignment.bottomCenter,
           colors: [
-            ColorUtil.white10,
+            ColorUtil.liteBackgroundMaskColor,
             WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           ],
         ),

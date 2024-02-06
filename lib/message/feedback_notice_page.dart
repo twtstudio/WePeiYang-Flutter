@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
@@ -25,12 +27,12 @@ class FeedbackNoticePage extends StatelessWidget {
         backgroundColor: ColorUtil.transparent,
         elevation: 0,
         centerTitle: true,
-        title:
-            Text('湖底通知', style: TextUtil.base.label(context).w500.NotoSansSC.sp(18)),
+        title: Text('湖底通知',
+            style: TextUtil.base.label(context).w500.NotoSansSC.sp(18)),
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: ColorUtil.black25Color,
+            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -110,11 +112,13 @@ class FeedbackNoticePage extends StatelessWidget {
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: ColorUtil.whiteFDFE,
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               boxShadow: [
                 BoxShadow(
                     blurRadius: 5,
-                    color: ColorUtil.whiteF8Color,
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.secondaryBackgroundColor),
                     offset: Offset(0, 0),
                     spreadRadius: 3),
               ],
@@ -126,7 +130,7 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       appBar: appBar,
       body: noticeCard,
     );

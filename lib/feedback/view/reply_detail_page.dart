@@ -239,7 +239,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                         blurRadius: 2,
                         spreadRadius: 3),
                   ],
-                  color: ColorUtil.whiteF8Color),
+                  color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
               child: Column(
                 children: [
                   Offstage(
@@ -399,7 +399,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
             color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),

@@ -260,7 +260,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
         boxShadow: [
           choose == true
               ? BoxShadow(
-                  color: ColorUtil.begoniaPink, blurRadius: 8, spreadRadius: 5)
+                  color: ColorUtil.avatarChosenColor, blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
                   color: WpyTheme.of(context)
                       .get(WpyThemeKeys.primaryBackgroundColor),

@@ -50,19 +50,25 @@ extension IconTypeExt on IconType {
   BubblesColor bubblesColor(context) => [
         BubblesColor(
           dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
-          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
+          dotSecondaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
         ),
         BubblesColor(
           dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
-          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
+          dotSecondaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
-          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
+          dotPrimaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+          dotSecondaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
-          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
+          dotPrimaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+          dotSecondaryColor:
+              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
         ),
       ][index];
 
@@ -195,7 +201,7 @@ class DislikeWidget extends StatelessWidget {
           circleColor: CircleColor(
               start: WpyTheme.of(context)
                   .get(WpyThemeKeys.iconAnimationStartColor),
-              end: ColorUtil.blue90Color),
+              end: WpyTheme.of(context).get(WpyThemeKeys.dislikePrimary)),
           bubblesColor: BubblesColor(
             dotPrimaryColor:
                 WpyTheme.of(context).get(WpyThemeKeys.dislikePrimary),

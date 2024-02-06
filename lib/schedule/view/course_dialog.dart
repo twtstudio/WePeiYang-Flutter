@@ -92,11 +92,13 @@ class CourseDialog extends Dialog {
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
-              color: ColorUtil.blackOpacity005,
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.basicTextColor)
+                  .withOpacity(0.05),
             ),
             BoxShadow(
               blurRadius: 10,
-              color: ColorUtil.white10,
+              color: ColorUtil.liteBackgroundMaskColor,
             ),
           ]),
       child: WButton(

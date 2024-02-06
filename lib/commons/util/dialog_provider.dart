@@ -49,7 +49,7 @@ class LakeDialogWidget extends Dialog {
               padding: EdgeInsets.all(28.w),
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.secondaryBackgroundColor),
+                    .get(WpyThemeKeys.primaryBackgroundColor),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(

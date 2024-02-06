@@ -154,7 +154,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           Icon(
             Icons.search,
             size: 19,
-            color: ColorUtil.grey108,
+            color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor),
           ),
           SizedBox(width: 12),
           Consumer<FbHotTagsProvider>(
@@ -168,13 +168,21 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               ? '搜索发现'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
+                          style: TextUtil.base
+                              .infoText(context)
+                              .NotoSansSC
+                              .w400
+                              .sp(15),
                         ),
                       ),
                       Text(
                         data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
-                        style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
+                        style: TextUtil.base
+                            .infoText(context)
+                            .NotoSansSC
+                            .w400
+                            .sp(15),
                       ),
                     ],
                   )),
@@ -218,7 +226,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           labelColor: WpyTheme.of(context)
                               .get(WpyThemeKeys.primaryActionColor),
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
-                          unselectedLabelColor: ColorUtil.black2AColor,
+                          unselectedLabelColor: WpyTheme.of(context)
+                              .get(WpyThemeKeys.labelTextColor),
                           unselectedLabelStyle:
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
@@ -526,7 +535,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
     var _departmentSelectionContainer = Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color: ColorUtil.whiteFDFE,
+          color:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
@@ -545,7 +555,9 @@ class FbTagsWrapState extends State<FbTagsWrap>
               duration: Duration(milliseconds: 500),
               onEnd: _offstageTheBackground,
               child: Container(
-                color: ColorUtil.black45,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.reverseBackgroundColor)
+                    .withOpacity(0.45),
               ),
             )),
         Offstage(

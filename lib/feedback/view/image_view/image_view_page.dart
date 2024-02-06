@@ -99,7 +99,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 child: WButton(
                   child: Container(
                       decoration: BoxDecoration(
-                          color: ColorUtil.black88Color,
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.labelTextColor),
                           borderRadius:
                               BorderRadius.all(Radius.circular(14.r))),
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
@@ -120,7 +121,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
             right: 10.w,
             child: Container(
               decoration: BoxDecoration(
-                  color: ColorUtil.black88Color,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
                   borderRadius: BorderRadius.all(Radius.circular(14.r))),
               padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
               child: Row(

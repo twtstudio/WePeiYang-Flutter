@@ -37,61 +37,51 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
   final ScrollController _scrollController = ScrollController();
 
   void _onRefresh() async {
-    context.read<LostAndFoundModel>().clearByType(widget.type);
-    await context.read<LostAndFoundModel>().getNext(
+    context.read<LAFoundModel>().clearByType(widget.type);
+    await context.read<LAFoundModel>().getNext(
           type: widget.type,
           success: () {
+            context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                LAFSubStatus.ready;
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.ready;
-            context
-                .read<LostAndFoundModel>()
+                .read<LAFoundModel>()
                 .refreshController[widget.type]
                 ?.refreshCompleted();
           },
           failure: (e) {
+            context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                LAFSubStatus.error;
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.error;
-            context
-                .read<LostAndFoundModel>()
+                .read<LAFoundModel>()
                 .refreshController[widget.type]
                 ?.refreshFailed();
             ToastProvider.error(e.error.toString());
           },
-          category:
-              context.read<LostAndFoundModel>().currentCategory[widget.type]!,
+          category: context.read<LAFoundModel>().currentCategory[widget.type]!,
         );
   }
 
   void _onLoading() async {
-    await context.read<LostAndFoundModel>().getNext(
+    await context.read<LAFoundModel>().getNext(
           type: widget.type,
           success: () {
+            context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                LAFSubStatus.ready;
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.ready;
-            context
-                .read<LostAndFoundModel>()
+                .read<LAFoundModel>()
                 .refreshController[widget.type]
                 ?.loadComplete();
           },
           failure: (e) {
+            context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                LAFSubStatus.error;
             context
-                    .read<LostAndFoundModel>()
-                    .lostAndFoundSubPageStatus[widget.type] =
-                LostAndFoundSubPageStatus.error;
-            context
-                .read<LostAndFoundModel>()
+                .read<LAFoundModel>()
                 .refreshController[widget.type]
                 ?.loadFailed();
             ToastProvider.error(e.error.toString());
           },
-          category:
-              context.read<LostAndFoundModel>().currentCategory[widget.type]!,
+          category: context.read<LAFoundModel>().currentCategory[widget.type]!,
         );
   }
 
@@ -128,19 +118,15 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (context
-                .read<LostAndFoundModel>()
-                .lostAndFoundSubPageStatus[widget.type] ==
-            LostAndFoundSubPageStatus.unload ||
-        context
-                .read<LostAndFoundModel>()
-                .lostAndFoundSubPageStatus[widget.type] ==
-            LostAndFoundSubPageStatus.error) _onRefresh();
+    if (context.read<LAFoundModel>().lafSubStatus[widget.type] ==
+            LAFSubStatus.unload ||
+        context.read<LAFoundModel>().lafSubStatus[widget.type] ==
+            LAFSubStatus.error) _onRefresh();
 
     var searchBar = InkWell(
       onTap: () {
         context.read<LostAndFoundModel2>().currentType = widget.type;
-        Navigator.pushNamed(context, LostAndFoundRouter.lostAndFoundSearch);
+        Navigator.pushNamed(context, LAFRouter.lostAndFoundSearch);
       },
       child: Container(
         height: searchBarHeight,
@@ -168,7 +154,11 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               ? '天大不能没有微北洋'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
+                          style: TextUtil.base
+                              .infoText(context)
+                              .NotoSansSC
+                              .w400
+                              .sp(15),
                         ),
                       ),
                     ],
@@ -193,91 +183,89 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             ),
             Padding(
               padding: EdgeInsetsDirectional.only(bottom: 5.h),
-              child: Selector<LostAndFoundModel, String>(
-                selector: (context, model) {
-                  return model.currentCategory[widget.type]!;
-                },
-                builder: (context, category, _) {
-                  return Flex(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    direction: Axis.horizontal,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 15.w, end: 7.w),
-                          child: LostAndFoundTag(
-                              category: '全部', type: widget.type),
-                        ),
-                        flex: 4,
+              child: Selector<LAFoundModel, String>(
+                selector: (context, model) =>
+                    model.currentCategory[widget.type]!,
+                builder: (context, category, _) => Flex(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  direction: Axis.horizontal,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.only(start: 15.w, end: 7.w),
+                        child:
+                            LostAndFoundTag(category: '全部', type: widget.type),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(
-                              category: '生活日用', type: widget.type),
-                        ),
-                        flex: 5,
+                      flex: 4,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                        child: LostAndFoundTag(
+                            category: '生活日用', type: widget.type),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(
-                              category: '数码产品', type: widget.type),
-                        ),
-                        flex: 5,
+                      flex: 5,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                        child: LostAndFoundTag(
+                            category: '数码产品', type: widget.type),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
-                          child: LostAndFoundTag(
-                              category: '钱包卡证', type: widget.type),
-                        ),
-                        flex: 5,
+                      flex: 5,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.only(start: 7.w, end: 7.w),
+                        child: LostAndFoundTag(
+                            category: '钱包卡证', type: widget.type),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding:
-                              EdgeInsetsDirectional.only(start: 7.w, end: 15.w),
-                          child: LostAndFoundTag(
-                              category: '其他', type: widget.type),
-                        ),
-                        flex: 4,
+                      flex: 5,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.only(start: 7.w, end: 15.w),
+                        child:
+                            LostAndFoundTag(category: '其他', type: widget.type),
                       ),
-                    ],
-                  );
-                },
+                      flex: 4,
+                    ),
+                  ],
+                ),
               ),
             ),
+            //TODO: 这里的组建树太逆天了 请来整理一下
             Expanded(
               child: Container(
                 padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
-                child: Selector<
-                    LostAndFoundModel,
-                    Tuple2<List<LostAndFoundPost>,
-                        LostAndFoundSubPageStatus>>(selector: (context, model) {
-                  return Tuple2(model.postList[widget.type]!.toList(),
-                      model.lostAndFoundSubPageStatus[widget.type]!);
-                }, builder: (context, tuple, _) {
-                  return tuple.item2 == LostAndFoundSubPageStatus.error
-                      ? TextButton(
-                          onPressed: () {
-                            context
-                                    .read<LostAndFoundModel>()
-                                    .lostAndFoundSubPageStatus[widget.type] =
-                                LostAndFoundSubPageStatus.unload;
-                            _onRefresh();
-                          },
-                          child: Text(
-                            '点击重新加载',
-                            style: TextUtil.base.normal.infoText(context),
-                          ))
-                      : (tuple.item2 == LostAndFoundSubPageStatus.unload
-                          ? Loading()
-                          : SmartRefresher(
+                child: Selector<LAFoundModel,
+                        Tuple2<List<LostAndFoundPost>, LAFSubStatus>>(
+                    selector: (context, model) {
+                      return Tuple2(model.postList[widget.type]!.toList(),
+                          model.lafSubStatus[widget.type]!);
+                    },
+                    builder: (context, tuple, _) => switch (tuple.item2) {
+                          LAFSubStatus.error => TextButton(
+                              onPressed: () {
+                                context
+                                        .read<LAFoundModel>()
+                                        .lafSubStatus[widget.type] =
+                                    LAFSubStatus.unload;
+                                _onRefresh();
+                              },
+                              child: Text(
+                                '点击重新加载',
+                                style: TextUtil.base.normal.infoText(context),
+                              )),
+                          LAFSubStatus.unload ||
+                          LAFSubStatus.loading =>
+                            Loading(),
+                          LAFSubStatus.ready => SmartRefresher(
                               physics: BouncingScrollPhysics(),
                               enablePullDown: true,
                               enablePullUp: true,
@@ -289,7 +277,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                 failedText: '刷新失败（；´д｀）ゞ',
                               ),
                               controller: context
-                                  .read<LostAndFoundModel>()
+                                  .read<LAFoundModel>()
                                   .refreshController[widget.type]!,
                               footer: ClassicFooter(
                                 idleText: '下拉以刷新',
@@ -308,191 +296,165 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                 ),
                                 controller: _scrollController,
                                 itemCount: tuple.item1.length,
-                                itemBuilder: (BuildContext context,
-                                        int index) =>
-                                    InkWell(
-                                        onTap: () {
-                                          Tuple2 detailTuple = Tuple2(
-                                              tuple.item1[index].id,
-                                              widget.findOwner);
-                                          Navigator.pushNamed(
-                                              context,
-                                              LostAndFoundRouter
-                                                  .lostAndFoundDetailPage,
-                                              arguments: detailTuple);
-                                        },
-                                        child: Card(
-                                          elevation: 3,
-                                          shadowColor: ColorUtil.greyB4AFColor
-                                              .withOpacity(0.1),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.r),
-                                            side: const BorderSide(
-                                                color: Colors.transparent,
-                                                width: 0.0),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              tuple.item1[index]
-                                                          .coverPhotoPath ==
-                                                      null
-                                                  ? Padding(
+                                itemBuilder: (context, int idx) => InkWell(
+                                    onTap: () {
+                                      Tuple2 detailTuple = Tuple2(
+                                          tuple.item1[idx].id,
+                                          widget.findOwner);
+                                      Navigator.pushNamed(
+                                          context, LAFRouter.lafDetailPage,
+                                          arguments: detailTuple);
+                                    },
+                                    child: Card(
+                                      elevation: 3,
+                                      shadowColor: ColorUtil.greyB4AFColor
+                                          .withOpacity(0.1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                        side: const BorderSide(
+                                            color: Colors.transparent,
+                                            width: 0.0),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (tuple.item1[idx].coverPhotoPath ==
+                                              null)
+                                            Padding(
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                      bottom: 8.h,
+                                                      start: 3.w,
+                                                      end: 3.w,
+                                                      top: 7.h),
+                                              child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: Card(
+                                                    child: Padding(
                                                       padding:
-                                                          EdgeInsetsDirectional
-                                                              .only(
-                                                                  bottom: 8.h,
-                                                                  start: 3.w,
-                                                                  end: 3.w,
-                                                                  top: 7.h),
-                                                      child: SizedBox(
-                                                          width:
-                                                              double.infinity,
-                                                          child: Card(
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          14.w),
-                                                              // 设置所有方向的内边距为15个像素
-                                                              child: Text(
-                                                                  tuple.item1[index].text.length >
-                                                                          32
-                                                                      ? tuple.item1[index].text.substring(
-                                                                              0,
-                                                                              31) +
-                                                                          '……'
-                                                                      : tuple
-                                                                          .item1[
-                                                                              index]
-                                                                          .text,
-                                                                  style: TextUtil
-                                                                      .base
-                                                                      .w400
-                                                                      .grey89
-                                                                      .sp(14)
-                                                                      .h(1.1)
-                                                                      .NotoSansSC),
-                                                            ),
-                                                            elevation: 0,
-                                                            color: ColorUtil
-                                                                .whiteF8Color,
-                                                          )),
-                                                    )
-                                                  : Container(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .only(
-                                                                  start: 11.w,
-                                                                  end: 11.w,
-                                                                  bottom: 7.h,
-                                                                  top: 7.h),
-                                                      child: LayoutBuilder(
-                                                        builder: (context,
-                                                            constrains) {
-                                                          final maxWidth =
-                                                              constrains
-                                                                  .constrainWidth();
-                                                          final width = tuple
-                                                                  .item1[index]
-                                                                  .coverPhotoSize
-                                                                  ?.width
-                                                                  .toDouble() ??
-                                                              1.r;
-                                                          final height = tuple
-                                                                  .item1[index]
-                                                                  .coverPhotoSize
-                                                                  ?.height
-                                                                  .toDouble() ??
-                                                              0;
-                                                          return ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(10
-                                                                        .r), // 设置圆角半径为10.0
-                                                            child: Container(
-                                                              width: maxWidth,
-                                                              child: WpyPic(
-                                                                tuple
-                                                                    .item1[
-                                                                        index]
-                                                                    .coverPhotoPath!,
-                                                                withHolder:
-                                                                    true,
-                                                                holderHeight:
-                                                                    height *
-                                                                        maxWidth /
-                                                                        width,
-                                                                fit: BoxFit
-                                                                    .fitWidth,
-                                                              ),
-                                                              height: height >=
-                                                                      3 * width
-                                                                  ? 3 * maxWidth
-                                                                  : height *
-                                                                      maxWidth /
-                                                                      width,
-                                                            ),
-                                                          );
-                                                        },
-                                                      )),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsetsDirectional.only(
-                                                        start: 12.w, end: 12.w),
-                                                child: Text(
-                                                    tuple.item1[index].title,
-                                                    style: TextUtil.base.w600
-                                                        .label(context)
-                                                        .sp(15)
-                                                        .NotoSansSC),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    EdgeInsetsDirectional.only(
-                                                        start: 12.w,
-                                                        end: 25.w,
-                                                        bottom: 18.h,
-                                                        top: 10.h),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                        _timeAgo(tuple
-                                                            .item1[index]
-                                                            .detailedUploadTime),
-                                                        style: TextUtil
-                                                            .base.w400.grey89
-                                                            .sp(10)
-                                                            .NotoSansSC),
-                                                    Row(
-                                                      children: <Widget>[
-                                                        SvgPicture.asset(
-                                                            'assets/svg_pics/icon_flame.svg',
-                                                            width: 14.w,
-                                                            height: 14.h),
-                                                        Text(
-                                                          '${tuple.item1[index].hot.toString()}',
+                                                          EdgeInsets.all(14.w),
+                                                      // 设置所有方向的内边距为15个像素
+                                                      child: Text(
+                                                          tuple.item1[idx].text,
                                                           style: TextUtil
-                                                              .base.w400.greyHot
-                                                              .sp(10)
-                                                              .NotoSansSC,
+                                                              .base.w400.grey89
+                                                              .sp(14)
+                                                              .h(1.1)
+                                                              .NotoSansSC
+                                                              .copyWith(
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              )),
+                                                    ),
+                                                    elevation: 0,
+                                                    color: WpyTheme.of(context)
+                                                        .get(WpyThemeKeys
+                                                            .secondaryBackgroundColor),
+                                                  )),
+                                            )
+                                          else
+                                            Container(
+                                                padding:
+                                                    EdgeInsetsDirectional.only(
+                                                        start: 11.w,
+                                                        end: 11.w,
+                                                        bottom: 7.h,
+                                                        top: 7.h),
+                                                child: LayoutBuilder(
+                                                  builder: (ctx, cst) {
+                                                    final maxWidth =
+                                                        cst.constrainWidth();
+                                                    final width = tuple
+                                                            .item1[idx]
+                                                            .coverPhotoSize
+                                                            ?.width
+                                                            .toDouble() ??
+                                                        1.r;
+                                                    final height = tuple
+                                                            .item1[idx]
+                                                            .coverPhotoSize
+                                                            ?.height
+                                                            .toDouble() ??
+                                                        0;
+                                                    return ClipRRect(
+                                                      borderRadius: BorderRadius
+                                                          .circular(10
+                                                              .r), // 设置圆角半径为10.0
+                                                      child: Container(
+                                                        width: maxWidth,
+                                                        child: WpyPic(
+                                                          tuple.item1[idx]
+                                                              .coverPhotoPath!,
+                                                          withHolder: true,
+                                                          holderHeight: height *
+                                                              maxWidth /
+                                                              width,
+                                                          fit: BoxFit.fitWidth,
                                                         ),
-                                                      ],
+                                                        height:
+                                                            height >= 3 * width
+                                                                ? 3 * maxWidth
+                                                                : height *
+                                                                    maxWidth /
+                                                                    width,
+                                                      ),
+                                                    );
+                                                  },
+                                                )),
+                                          Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 12.w, end: 12.w),
+                                            child: Text(tuple.item1[idx].title,
+                                                style: TextUtil.base.w600
+                                                    .label(context)
+                                                    .sp(15)
+                                                    .NotoSansSC),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsetsDirectional.only(
+                                                start: 12.w,
+                                                end: 25.w,
+                                                bottom: 18.h,
+                                                top: 10.h),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                    _timeAgo(tuple.item1[idx]
+                                                        .detailedUploadTime),
+                                                    style: TextUtil
+                                                        .base.w400.grey89
+                                                        .sp(10)
+                                                        .NotoSansSC),
+                                                Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        'assets/svg_pics/icon_flame.svg',
+                                                        width: 14.w,
+                                                        height: 14.h),
+                                                    Text(
+                                                      '${tuple.item1[idx].hot.toString()}',
+                                                      style: TextUtil.base.w400
+                                                          .infoText(context)
+                                                          .sp(10)
+                                                          .NotoSansSC,
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        )),
+                                        ],
+                                      ),
+                                    )),
                               ),
-                            ));
-                }),
+                            ),
+                        }),
               ),
             )
           ],
@@ -526,40 +488,33 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
     return Container(
       child: WButton(
         onPressed: () async {
+          context.read<LAFoundModel>().lafSubStatus[widget.type] =
+              LAFSubStatus.unload;
           context
-                  .read<LostAndFoundModel>()
-                  .lostAndFoundSubPageStatus[widget.type] =
-              LostAndFoundSubPageStatus.unload;
-          context
-              .read<LostAndFoundModel>()
+              .read<LAFoundModel>()
               .resetCategory(type: widget.type, category: widget.category);
-          context.read<LostAndFoundModel>().clearByType(widget.type);
-          await context.read<LostAndFoundModel>().getNext(
+          context.read<LAFoundModel>().clearByType(widget.type);
+          await context.read<LAFoundModel>().getNext(
                 type: widget.type,
                 success: () {
+                  context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                      LAFSubStatus.ready;
                   context
-                          .read<LostAndFoundModel>()
-                          .lostAndFoundSubPageStatus[widget.type] =
-                      LostAndFoundSubPageStatus.ready;
-                  context
-                      .read<LostAndFoundModel>()
+                      .read<LAFoundModel>()
                       .refreshController[widget.type]
                       ?.refreshCompleted();
                 },
                 failure: (e) {
+                  context.read<LAFoundModel>().lafSubStatus[widget.type] =
+                      LAFSubStatus.error;
                   context
-                          .read<LostAndFoundModel>()
-                          .lostAndFoundSubPageStatus[widget.type] =
-                      LostAndFoundSubPageStatus.error;
-                  context
-                      .read<LostAndFoundModel>()
+                      .read<LAFoundModel>()
                       .refreshController[widget.type]
                       ?.refreshFailed();
                   ToastProvider.error(e.error.toString());
                 },
-                category: context
-                    .read<LostAndFoundModel>()
-                    .currentCategory[widget.type]!,
+                category:
+                    context.read<LAFoundModel>().currentCategory[widget.type]!,
               );
         },
         child: Container(
@@ -567,19 +522,18 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
             color: widget.category ==
-                    context
-                        .read<LostAndFoundModel>()
-                        .currentCategory[widget.type]
+                    context.read<LAFoundModel>().currentCategory[widget.type]
                 ? WpyTheme.of(context)
                     .get(WpyThemeKeys.primaryActionColor)
                     .withOpacity(0.1)
-                : ColorUtil.whiteF8Color,
+                : WpyTheme.of(context)
+                    .get(WpyThemeKeys.secondaryBackgroundColor),
           ),
           child: Center(
             child: Text(widget.category,
                 style: widget.category ==
                         context
-                            .read<LostAndFoundModel>()
+                            .read<LAFoundModel>()
                             .currentCategory[widget.type]
                     ? TextUtil.base.normal.PingFangSC.w400
                         .sp(10.sp)

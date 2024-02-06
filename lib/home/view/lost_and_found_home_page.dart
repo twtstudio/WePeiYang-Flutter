@@ -30,7 +30,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
               appBar: LostAndFoundAppBar(
                 height: 97.h,
                 leading: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 19.w,bottom: 9.h),
+                  padding: EdgeInsetsDirectional.only(start: 19.w, bottom: 9.h),
                   child: WButton(
                     child: WpyPic(
                       'assets/svg_pics/laf_butt_icons/back.svg',
@@ -61,7 +61,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   padding: EdgeInsets.only(bottom: 5.h),
                   child: TabBar(
                     labelStyle: TextUtil.base.sp(20).reverse(context).w600,
-                    unselectedLabelStyle: TextUtil.base.normal.sp(20).reverse(context),
+                    unselectedLabelStyle:
+                        TextUtil.base.normal.sp(20).reverse(context),
                     labelPadding:
                         EdgeInsetsDirectional.only(start: 52.w, end: 50.w),
                     isScrollable: true,
@@ -107,8 +108,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.pushNamed(context,
-                              LostAndFoundRouter.lostAndFoundPostPage);
+                          Navigator.pushNamed(
+                              context, LAFRouter.lostAndFoundPostPage);
                         }),
                   )
                 ],
@@ -119,7 +120,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<LostAndFoundModel>().getClipboardWeKoContents(context);
+    context.read<LAFoundModel>().getClipboardWeKoContents(context);
   }
 }
 
@@ -146,7 +147,11 @@ class LostAndFoundAppBar extends StatelessWidget
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor), ColorUtil.blue64Color]),
+              colors: [
+                WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryLighterActionColor),
+              ]),
         ),
         child: Stack(
           children: [

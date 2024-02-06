@@ -21,6 +21,59 @@ class LevelUtil extends StatelessWidget {
 
   static List<Color> colors = ColorUtil.levelColors;
 
+  /*
+
+  原来是这样 如果之后有问题可以参照修改
+  double.parse(level) == 0
+  ? [
+      WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+      WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)
+    ]
+  : [
+      double.parse(level) >= 0
+          ? colors[(double.parse(level) / 10).floor() % 10]
+              .withAlpha(175 + (int.parse(level) % 10) * 8)
+          : ColorUtil.levelNegColor,
+      double.parse(level) >= 0
+          ? double.parse(level) >= 50
+              ? colors[(double.parse(level) / 10).floor() % 10]
+                  .withAlpha(190)
+              : colors[(double.parse(level) / 10).floor() % 10]
+                  .withAlpha(175 + (int.parse(level) % 10) * 8)
+          : WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+    ]
+  * */
+
+  List<Color> getColorBasedOnLevel(BuildContext context) {
+    // Parse the level once at the beginning
+    double parsedLevel = double.parse(level);
+    int parsedLevelInt = parsedLevel.toInt();
+
+    // Define colors for negative, default, and base text
+    final Color negativeColor = ColorUtil.levelNegColor;
+    final Color dislikeSecondaryColor =
+        WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary);
+    final Color basicTextColor =
+        WpyTheme.of(context).get(WpyThemeKeys.basicTextColor);
+
+    // Calculate alpha based on level
+    int alphaValue = 175 + (parsedLevelInt % 10) * 8;
+    alphaValue =
+        parsedLevel >= 50 ? 190 : alphaValue; // Override alpha for levels >= 50
+
+    // Determine the color based on the level
+    Color color = parsedLevel >= 0
+        ? colors[(parsedLevelInt / 10).floor() % 10].withAlpha(alphaValue)
+        : negativeColor;
+
+    // Set the color array
+    List<Color> colorArray = parsedLevel == 0
+        ? [dislikeSecondaryColor, dislikeSecondaryColor]
+        : [color, parsedLevel >= 0 ? color : basicTextColor];
+
+    return colorArray;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,24 +83,7 @@ class LevelUtil extends StatelessWidget {
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: double.parse(level) == 0
-                ? [
-                    WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
-                    WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)
-                  ]
-                : [
-                    double.parse(level) >= 0
-                        ? colors[(double.parse(level) / 10).floor() % 10]
-                            .withAlpha(175 + (int.parse(level) % 10) * 8)
-                        : ColorUtil.red85,
-                    double.parse(level) >= 0
-                        ? double.parse(level) >= 50
-                            ? colors[(double.parse(level) / 10).floor() % 10]
-                                .withAlpha(190)
-                            : colors[(double.parse(level) / 10).floor() % 10]
-                                .withAlpha(175 + (int.parse(level) % 10) * 8)
-                        : WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
-                  ],
+            colors: getColorBasedOnLevel(context),
             stops: [0.5, 0.8]),
         borderRadius: BorderRadius.circular(20),
       ),
@@ -72,7 +108,7 @@ class LevelProgress extends StatelessWidget {
       width: 100.w,
       height: 4.w,
       decoration: BoxDecoration(
-        border: Border.all(width: 0.8, color: ColorUtil.greyEAColor),
+        border: Border.all(width: 0.8, color: ColorUtil.lightBorderColor),
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -89,7 +125,9 @@ class LevelProgress extends StatelessWidget {
           BoxShadow(
             offset: Offset(0, 4),
             blurRadius: 10,
-            color: ColorUtil.blackOpacity005,
+            color: WpyTheme.of(context)
+                .get(WpyThemeKeys.basicTextColor)
+                .withOpacity(0.05),
           ),
         ],
       ),

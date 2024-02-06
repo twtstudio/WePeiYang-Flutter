@@ -99,7 +99,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: ColorUtil.whiteFDFE,
+        backgroundColor:
+            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
@@ -113,7 +114,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: ColorUtil.bold42TextColor,
+                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
                 size: 20.w,
               ),
               onPressed: () {
@@ -183,7 +184,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   labelColor:
                       WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
                   labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
-                  unselectedLabelColor: ColorUtil.black2AColor,
+                  unselectedLabelColor: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
                   unselectedLabelStyle:
                       TextUtil.base.label(context).w500.PingFangSC.sp(14),
                   indicator: CustomIndicator(
@@ -558,9 +559,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: widget.data.type == 0
-            ? ColorUtil.whiteF8Color
-            : ColorUtil.whiteFDFE,
+        color: WpyTheme.of(context).get(widget.data.type == 0
+            ? WpyThemeKeys.secondaryBackgroundColor
+            : WpyThemeKeys.primaryBackgroundColor),
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -601,7 +602,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.whiteF8Color,
+            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -639,7 +640,9 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         }
       },
       child: Container(
-        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        decoration: BoxDecoration(
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -919,12 +922,11 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       child: Container(
         padding: EdgeInsets.all(10.w),
         decoration: BoxDecoration(
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(5),
-          color: widget.data.type == 0
-              ? ColorUtil.whiteF8Color
-              : ColorUtil.whiteFDFE,
-        ),
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(5),
+            color: WpyTheme.of(context).get(widget.data.type == 0
+                ? WpyThemeKeys.secondaryBackgroundColor
+                : WpyThemeKeys.primaryBackgroundColor)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -962,7 +964,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: ColorUtil.whiteF8Color,
+            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -1041,7 +1043,9 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
         }
       },
       child: Container(
-        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        decoration: BoxDecoration(
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -1304,7 +1308,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: ColorUtil.whiteF8Color,
+        color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -1359,7 +1363,9 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
         ).then((_) => context.read<MessageProvider>().refreshFeedbackCount());
       },
       child: Container(
-        decoration: BoxDecoration(color: ColorUtil.whiteFDFE),
+        decoration: BoxDecoration(
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(

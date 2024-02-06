@@ -652,7 +652,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         Container(
                           padding: EdgeInsets.all(4.r),
                           decoration: BoxDecoration(
-                            color: ColorUtil.whiteF8Color,
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.secondaryBackgroundColor),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Row(
@@ -691,7 +692,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       padding: EdgeInsets.all(7.r),
                       child: Text(
                         post.text,
-                        style: TextUtil.base.normal.black42.sp(15).h(1.5),
+                        style: TextUtil.base.normal.infoText(context).sp(15).h(1.5),
                       ),
                     ),
                     SizedBox(height: 45.h),
@@ -803,7 +804,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   Text(
                                     polished ? '已擦亮' : '擦亮',
                                     style: polished
-                                        ? TextUtil.base.oldListAction(context).sp(16)
+                                        ? TextUtil.base
+                                            .oldListAction(context)
+                                            .sp(16)
                                         : TextUtil.base
                                             .primaryAction(context)
                                             .sp(16),
@@ -876,135 +879,136 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
       builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
         return Container(
           width: 350.w,
-          child: snapshot.hasData
-              ? snapshot.data!.height / snapshot.data!.width > 2.0
-                  ? _picFullView
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12.r)),
-                              child: GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                        context,
-                                        FeedbackRouter.imageView,
-                                        arguments: ImageViewPageArgs(
-                                            [widget.imageUrl], 1, 0, true),
+          child: Builder(builder: (context) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.height / snapshot.data!.width > 2.0) {
+                if (_picFullView) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
+                        child: GestureDetector(
+                            onTap: () => Navigator.pushNamed(
+                                  context,
+                                  FeedbackRouter.imageView,
+                                  arguments: ImageViewPageArgs(
+                                      [widget.imageUrl], 1, 0, true),
+                                ),
+                            child: image),
+                      ),
+                      TextButton(
+                          style: ButtonStyle(
+                              alignment: Alignment.topRight,
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.zero),
+                              overlayColor: MaterialStateProperty.all(
+                                  Colors.transparent)),
+                          onPressed: () {
+                            setState(() {
+                              _picFullView = false;
+                            });
+                          },
+                          child: Text('收起',
+                              style: TextUtil.base
+                                  .textButtonPrimary(context)
+                                  .w600
+                                  .NotoSansSC
+                                  .sp(14))),
+                    ],
+                  );
+                } else {
+                  return SizedBox(
+                      height: WePeiYangApp.screenWidth * 1.2,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
+                        child: Stack(children: [
+                          GestureDetector(
+                              onTap: () => Navigator.pushNamed(
+                                    context,
+                                    //暂时用的湖底的
+                                    FeedbackRouter.imageView,
+                                    arguments: ImageViewPageArgs(
+                                        [widget.imageUrl], 1, 0, true),
+                                  ),
+                              child: image),
+                          Positioned(top: 8.h, left: 8.w, child: TextPod('长图')),
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _picFullView = true;
+                                    });
+                                  },
+                                  child: Container(
+                                      height: 60.h,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment(0, -0.7),
+                                          end: Alignment(0, 1),
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black54,
+                                          ],
+                                        ),
                                       ),
-                                  child: image),
-                            ),
-                            TextButton(
-                                style: ButtonStyle(
-                                    alignment: Alignment.topRight,
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.zero),
-                                    overlayColor: MaterialStateProperty.all(
-                                        Colors.transparent)),
-                                onPressed: () {
-                                  setState(() {
-                                    _picFullView = false;
-                                  });
-                                },
-                                child: Text('收起',
-                                    style: TextUtil.base
-                                        .textButtonPrimary(context)
-                                        .w600
-                                        .NotoSansSC
-                                        .sp(14))),
-                          ],
-                        )
-                      : SizedBox(
-                          height: WePeiYangApp.screenWidth * 1.2,
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.r)),
-                            child: Stack(children: [
-                              GestureDetector(
-                                  onTap: () => Navigator.pushNamed(
-                                        context,
-                                        //暂时用的湖底的
-                                        FeedbackRouter.imageView,
-                                        arguments: ImageViewPageArgs(
-                                            [widget.imageUrl], 1, 0, true),
-                                      ),
-                                  child: image),
-                              Positioned(
-                                  top: 8.h, left: 8.w, child: TextPod('长图')),
-                              Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _picFullView = true;
-                                        });
-                                      },
-                                      child: Container(
-                                          height: 60.h,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              begin: Alignment(0, -0.7),
-                                              end: Alignment(0, 1),
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.black54,
-                                              ],
+                                      child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            SizedBox(width: 10.w),
+                                            Text(
+                                              '点击展开\n',
+                                              style: TextUtil.base.w600
+                                                  .reverse(context)
+                                                  .sp(14)
+                                                  .h(0.6),
                                             ),
-                                          ),
-                                          child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                SizedBox(width: 10.w),
-                                                Text(
-                                                  '点击展开\n',
-                                                  style: TextUtil
-                                                      .base.w600.reverse(context)
-                                                      .sp(14)
-                                                      .h(0.6),
-                                                ),
-                                                Spacer(),
-                                                Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black38,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        16.r))),
-                                                    padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            12.w,
-                                                            4.h,
-                                                            10.w,
-                                                            6.h),
-                                                    child: Text(
-                                                      '长图模式',
-                                                      style: TextUtil.base.w300
-                                                          .reverse(context)
-                                                          .sp(12),
-                                                    ))
-                                              ]))))
-                            ]),
-                          ))
-                  : ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                      child: GestureDetector(
-                          onTap: () => Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.imageView,
-                                arguments: ImageViewPageArgs(
-                                    [widget.imageUrl], 1, 0, false),
-                              ),
-                          child: image),
-                    )
-              : Icon(
-                  Icons.refresh,
-                  color: ColorUtil.black54,
-                ),
+                                            Spacer(),
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.black38,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    16.r))),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    12.w, 4.h, 10.w, 6.h),
+                                                child: Text(
+                                                  '长图模式',
+                                                  style: TextUtil.base.w300
+                                                      .reverse(context)
+                                                      .sp(12),
+                                                ))
+                                          ]))))
+                        ]),
+                      ));
+                }
+              } else {
+                return ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(12.r)),
+                  child: GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                            context,
+                            FeedbackRouter.imageView,
+                            arguments: ImageViewPageArgs(
+                                [widget.imageUrl], 1, 0, false),
+                          ),
+                      child: image),
+                );
+              }
+            } else {
+              return Icon(
+                Icons.refresh,
+                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+              );
+            }
+          }),
           color: snapshot.hasData
-              ? ColorUtil.transparent
+              ? Colors.transparent
               : WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
         );
       },

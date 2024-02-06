@@ -46,7 +46,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       minimumSize: MaterialStateProperty.all(Size(80, 40)),
     );
     var appBar = AppBar(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
             color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),

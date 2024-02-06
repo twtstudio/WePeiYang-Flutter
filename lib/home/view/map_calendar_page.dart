@@ -26,11 +26,12 @@ class MapCalenderState extends State<MapCalendarPage> {
         appBar: AppBar(
           toolbarHeight: 40,
           titleSpacing: 0,
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               CupertinoIcons.back,
-              color: ColorUtil.black25Color,
+              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -65,7 +66,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
           BoxShadow(
             offset: Offset(0, 4),
             blurRadius: 8,
-            color: ColorUtil.blackOpacity005,
+            color: WpyTheme.of(ctx)
+                .get(WpyThemeKeys.basicTextColor)
+                .withOpacity(0.05),
           ),
         ],
       );
@@ -106,7 +109,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.topCenter,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  ColorUtil.blueBEColor, BlendMode.screen),
+                                  WpyTheme.of(context).get(
+                                      WpyThemeKeys.primaryLightestActionColor),
+                                  BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/account/map_wei_jin.jpg')))),
                   Positioned(
@@ -116,7 +121,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '卫津路校区',
-                        style: TextUtil.base.PingFangSC.infoText(context).w900.sp(22),
+                        style: TextUtil.base.PingFangSC
+                            .infoText(context)
+                            .w900
+                            .sp(22),
                       ),
                     ),
                   ),
@@ -142,7 +150,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.center,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  ColorUtil.mapRed, BlendMode.hardLight),
+                                  ColorUtil.beiyangCampusMaskColor,
+                                  BlendMode.hardLight),
                               image: AssetImage(
                                   'assets/images/account/map_pei_yang.jpg')))),
                   Positioned(
@@ -152,7 +161,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '北洋园校区',
-                        style: TextUtil.base.PingFangSC.infoText(context).w900.sp(22),
+                        style: TextUtil.base.PingFangSC
+                            .infoText(context)
+                            .w900
+                            .sp(22),
                       ),
                     ),
                   ),
@@ -198,7 +210,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.topCenter,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  ColorUtil.blueBEColor, BlendMode.screen),
+                                  WpyTheme.of(context).get(
+                                      WpyThemeKeys.primaryLightestActionColor),
+                                  BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/calender/first.jpg')))),
                   Positioned(
@@ -208,7 +222,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '23-24第一学期',
-                        style: TextUtil.base.PingFangSC.infoText(context).w900.sp(22),
+                        style: TextUtil.base.PingFangSC
+                            .infoText(context)
+                            .w900
+                            .sp(22),
                       ),
                     ),
                   ),
@@ -237,7 +254,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
                         alignment: Alignment.topCenter,
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
-                            ColorUtil.blueBEColor, BlendMode.screen),
+                            WpyTheme.of(context)
+                                .get(WpyThemeKeys.primaryLightestActionColor),
+                            BlendMode.screen),
                         image: AssetImage('assets/images/calender/second.jpg'),
                       ))),
                   Positioned(
@@ -247,7 +266,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       opacity: 0.34,
                       child: Text(
                         '23-24第二学期',
-                        style: TextUtil.base.PingFangSC.infoText(context).w900.sp(22),
+                        style: TextUtil.base.PingFangSC
+                            .infoText(context)
+                            .w900
+                            .sp(22),
                       ),
                     ),
                   ),

@@ -540,7 +540,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -555,7 +558,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -570,7 +576,10 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -585,13 +594,16 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
                                     code.length > 3 ? code.substring(3, 4) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction(context)
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -600,13 +612,16 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
                                     code.length > 4 ? code.substring(4, 5) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction(context)
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -615,13 +630,16 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: ColorUtil.whiteOpacity04,
+                                    color: WpyTheme.of(context)
+                                        .get(
+                                            WpyThemeKeys.primaryBackgroundColor)
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
                                     code.length > 5 ? code.substring(5, 6) : "",
-                                    style: TextUtil
-                                        .base.normal.NotoSansSC.primaryAction(context)
+                                    style: TextUtil.base.normal.NotoSansSC
+                                        .primaryAction(context)
                                         .sp(16),
                                   ),
                                 ),
@@ -952,7 +970,9 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               MaterialStateProperty.resolveWith<Color>(
                                   (states) {
                             if (states.contains(MaterialState.pressed))
-                              return ColorUtil.whiteOpacity01;
+                              return WpyTheme.of(context)
+                                  .get(WpyThemeKeys.reverseBackgroundColor)
+                                  .withOpacity(0.1);
                             return WpyTheme.of(context)
                                 .get(WpyThemeKeys.primaryBackgroundColor);
                           }),

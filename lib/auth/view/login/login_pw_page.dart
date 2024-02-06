@@ -127,7 +127,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                   materialTapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   visualDensity: VisualDensity.compact,
-                                  activeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                                  activeColor: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryActionColor),
                                   onChanged: (_) {
                                     checkNotifier.value = !checkNotifier.value;
                                   },
@@ -206,19 +207,22 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
           constraints: BoxConstraints(maxHeight: 55),
           child: TextField(
             style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse(context),
-            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            cursorColor:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             textInputAction: TextInputAction.next,
             focusNode: _accountFocus,
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
@@ -245,15 +249,16 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             valueListenable: visNotifier,
             builder: (context, bool value, _) {
               return Theme(
-                data: Theme.of(context)
-                    .copyWith(primaryColor: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                data: Theme.of(context).copyWith(
+                    primaryColor:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 child: TextField(
                   style: TextUtil.base.normal.w400
                       .sp(14)
                       .NotoSansSC
                       .reverse(context),
-                  cursorColor:
-                      WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  cursorColor: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   keyboardType: TextInputType.visiblePassword,
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
@@ -300,7 +305,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(
@@ -379,7 +385,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: ColorUtil.whiteOpacity04,
+          color: WpyTheme.of(context)
+              .get(WpyThemeKeys.primaryBackgroundColor)
+              .withOpacity(0.4),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -405,17 +413,20 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               FilteringTextInputFormatter.digitsOnly,
             ],
             style: TextUtil.base.normal.w400.sp(14).NotoSansSC.reverse(context),
-            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            cursorColor:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
             decoration: InputDecoration(
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
-                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyThemeKeys.primaryBackgroundColor),
                   width: 1.0,
                 ),
               ),
@@ -462,7 +473,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             width: width - 60,
             height: 48,
             decoration: BoxDecoration(
-              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(24),
             ),
             child: Center(

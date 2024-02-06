@@ -33,7 +33,8 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor);
+    final Color _color =
+        WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor);
     return SizedBox(
       height: 130,
       child: WButton(
@@ -42,7 +43,8 @@ class GameCard extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
             padding: EdgeInsets.fromLTRB(16.0, 20.0, 10.0, 8.0),
             decoration: BoxDecoration(
-              color: ColorUtil.whiteFDFE,
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.secondaryBackgroundColor),
               borderRadius: BorderRadius.all(Radius.circular(16)),
             ),
             child: Row(
@@ -53,7 +55,8 @@ class GameCard extends StatelessWidget {
                     width: WePeiYangApp.screenWidth - 160,
                     child: Text(
                       this.title,
-                      style: TextUtil.base.w600.label(context).NotoSansSC.sp(18),
+                      style:
+                          TextUtil.base.w600.label(context).NotoSansSC.sp(18),
                       maxLines: 3,
                     )),
                 Container(

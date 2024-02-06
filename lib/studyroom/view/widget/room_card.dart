@@ -22,13 +22,13 @@ class RoomStateText extends StatelessWidget {
         width: 6.w,
         height: 6.w,
         decoration: BoxDecoration(
-          color: ColorUtil.green5CColor,
+          color: ColorUtil.roomFreeColor,
           shape: BoxShape.circle,
         ),
       );
 
       stateText =
-          Text('空闲', style: TextUtil.base.PingFangSC.w400.green5C.sp(10));
+          Text('空闲', style: TextUtil.base.PingFangSC.w400.roomFree.sp(10));
     } else {
       stateDot = Container(
         width: 6.w,

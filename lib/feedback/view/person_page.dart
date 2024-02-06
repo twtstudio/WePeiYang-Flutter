@@ -339,23 +339,26 @@ class _PersonPageState extends State<PersonPage> {
                     ),
                   ),
                   Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                          height: 1.sw,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 1.sw,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
                             WpyTheme.of(context)
                                 .get(WpyThemeKeys.primaryBackgroundColor),
-                            ColorUtil.white70,
+                            ColorUtil.backgroundMaskColor,
                             WpyTheme.of(context)
                                 .get(WpyThemeKeys.backgroundGradientEndColor),
-                            ColorUtil.white10
-                          ], stops: [
-                            0,
-                            0.4,
-                            0.7,
-                            1
-                          ], begin: Alignment(0, -1), end: Alignment(0, 1))))),
+                            ColorUtil.liteBackgroundMaskColor
+                          ],
+                          stops: [0, 0.4, 0.7, 1],
+                          begin: Alignment(0, -1),
+                          end: Alignment(0, 1),
+                        ),
+                      ),
+                    ),
+                  ),
                   SingleChildScrollView(child: appBar),
                 ],
               ),

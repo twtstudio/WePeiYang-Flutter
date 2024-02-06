@@ -20,7 +20,7 @@ class ReportBasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorUtil.whiteF8Color,
+      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140),
         child: Container(
