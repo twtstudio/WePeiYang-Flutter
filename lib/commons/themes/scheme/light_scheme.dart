@@ -10,7 +10,9 @@ class light_scheme extends WpyThemeData {
             name: "Dark Theme",
             description: "Built-in Dark Theme",
           ),
-          data: WpyThemeDetail(lightSchemeDetail),
+          data: WpyThemeDetail(
+            lightSchemeDetail,
+          ),
         );
 }
 
@@ -33,6 +35,8 @@ const lightSchemeDetail = <WpyThemeKeys, dynamic>{
   WpyThemeKeys.primaryActionColor: Color(0xFF2C7EDF),
   WpyThemeKeys.primaryLightActionColor: Color(0xFFA6CFFF),
   WpyThemeKeys.primaryTextButtonColor: Color(0xFF2D4E9A),
+
+  // the Main Action on main page
   WpyThemeKeys.beanDarkColor: Color(0xFF80B7F9),
   WpyThemeKeys.beanLightColor: Color(0xFF2887FF),
 
@@ -40,7 +44,7 @@ const lightSchemeDetail = <WpyThemeKeys, dynamic>{
   WpyThemeKeys.primaryLighterActionColor: Color(0xFF81BBFF),
   WpyThemeKeys.primaryLightestActionColor: Color(0xFFC7D5EB),
 
-// The Color below shouldn't be customized
+// --- The Color below shouldn't be customized ---
   WpyThemeKeys.linkBlue: Color(0xFF222F80),
   WpyThemeKeys.dangerousRed: Color(0xFFFF0000),
   WpyThemeKeys.warningColor: Color(0xFFFFBC6B),
@@ -75,4 +79,20 @@ const lightSchemeDetail = <WpyThemeKeys, dynamic>{
   WpyThemeKeys.FavorColor: Colors.yellow,
   WpyThemeKeys.FavorBubbleStartColor: Colors.amber,
   WpyThemeKeys.FavorBubbleColor: Colors.amberAccent,
+
+  WpyThemeKeys.profileBackgroundColor: Color.fromARGB(255, 67, 70, 80),
+
+//level
+  WpyThemeKeys.levelColors: [
+    Color.fromRGBO(94, 192, 91, 1),
+    Color.fromRGBO(91, 150, 222, 1),
+    Color.fromRGBO(159, 105, 237, 1),
+    Color.fromRGBO(255, 135, 178, 1),
+    Color.fromRGBO(248, 190, 25, 1),
+    Color.fromRGBO(32, 91, 78, 1),
+    Color.fromRGBO(76, 77, 113, 1),
+    Color.fromRGBO(54, 27, 107, 1),
+    Color.fromRGBO(130, 20, 57, 1),
+    Color.fromRGBO(247, 117, 17, 1),
+  ],
 };

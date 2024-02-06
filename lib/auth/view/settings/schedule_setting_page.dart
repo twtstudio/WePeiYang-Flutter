@@ -127,13 +127,13 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   height: 1,
-                  color: ColorUtil.white212,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
                 ),
                 _getNumberOfDaysCard(context, 1),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   height: 1,
-                  color: ColorUtil.white212,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
                 ),
                 _getNumberOfDaysCard(context, 2),
               ],

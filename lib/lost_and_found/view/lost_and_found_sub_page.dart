@@ -168,7 +168,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                               ? '天大不能没有微北洋'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                          style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
                         ),
                       ),
                     ],
@@ -273,7 +273,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                           },
                           child: Text(
                             '点击重新加载',
-                            style: TextUtil.base.normal.grey6C,
+                            style: TextUtil.base.normal.infoText(context),
                           ))
                       : (tuple.item2 == LostAndFoundSubPageStatus.unload
                           ? Loading()

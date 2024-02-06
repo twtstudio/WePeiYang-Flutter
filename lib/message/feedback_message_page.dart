@@ -507,7 +507,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
             SizedBox(height: 2.w),
             Text(
               '某时某刻',
-              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.infoText(context),
             ),
           ],
         ),
@@ -516,36 +516,36 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
+      style: TextUtil.base.infoText(context).w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
       children: [
         Text(
           post?.likeCount.toString() ?? '0',
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           post?.commentCount.toString() ?? '0',
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           post?.favCount.toString() ?? '0',
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
       ],
     );
@@ -862,7 +862,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   : DateTime.now()
                       .difference(widget.data.floor.createAt!)
                       .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.infoText(context),
             ),
           ],
         ),
@@ -871,36 +871,36 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
+      style: TextUtil.base.infoText(context).w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
       children: [
         Text(
           widget.data.post.likeCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           widget.data.post.commentCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           widget.data.post.favCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
       ],
     );
@@ -1257,7 +1257,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                   : DateTime.now()
                       .difference(widget.data.reply.createdAt)
                       .dayHourMinuteSecondFormatted(),
-              style: TextUtil.base.sp(12).PingFangSC.w400.grey6C,
+              style: TextUtil.base.sp(12).PingFangSC.w400.infoText(context),
             ),
           ],
         ),
@@ -1266,36 +1266,36 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
 
     Widget pointText = Text(
       ' · ',
-      style: TextUtil.base.grey6C.w400.PingFangSC.sp(24),
+      style: TextUtil.base.infoText(context).w400.PingFangSC.sp(24),
     );
 
     Widget likeFloorFav = Row(
       children: [
         Text(
           widget.data.post.likeCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 点赞',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           widget.data.post.commentCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 评论',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
         pointText,
         Text(
           widget.data.post.favCount.toString(),
-          style: TextUtil.base.grey6C.w400.ProductSans.sp(14),
+          style: TextUtil.base.infoText(context).w400.ProductSans.sp(14),
         ),
         Text(
           ' 收藏',
-          style: TextUtil.base.grey6C.w400.PingFangSC.sp(14),
+          style: TextUtil.base.infoText(context).w400.PingFangSC.sp(14),
         ),
       ],
     );

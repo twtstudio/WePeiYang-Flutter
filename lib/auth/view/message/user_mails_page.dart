@@ -37,7 +37,9 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -134,7 +136,8 @@ class _MailItemState extends State<MailItem> {
                   Image.asset(
                     'assets/images/account/cloud.png',
                     width: 17,
-                    color: ColorUtil.black00Color,
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
                     fit: BoxFit.cover,
                   ),
                   SizedBox(width: 10),
@@ -176,7 +179,8 @@ class MailPage extends StatelessWidget {
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
               child: Icon(Icons.arrow_back,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                  color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                  size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -326,12 +330,16 @@ class _TextMailContent extends StatelessWidget {
                   children: [
                     Text(
                       '更多信息请点击链接查看喵~',
-                      style: TextUtil.base.label(context).w500.NotoSansSC.sp(14),
+                      style:
+                          TextUtil.base.label(context).w500.NotoSansSC.sp(14),
                     ),
                     WButton(
                       child: Text(
                         '阅读原文',
-                        style: TextUtil.base.textButtonPrimary(context).w400.NotoSansSC
+                        style: TextUtil.base
+                            .textButtonPrimary(context)
+                            .w400
+                            .NotoSansSC
                             .sp(14),
                       ),
                       onPressed: () async {
@@ -344,8 +352,9 @@ class _TextMailContent extends StatelessWidget {
                               builder: (BuildContext context) {
                                 return LakeDialogWidget(
                                     title: '同学你好：',
-                                    titleTextStyle: TextUtil
-                                        .base.normal.label(context).NotoSansSC
+                                    titleTextStyle: TextUtil.base.normal
+                                        .label(context)
+                                        .NotoSansSC
                                         .sp(26)
                                         .w600,
                                     content: Column(
@@ -363,7 +372,9 @@ class _TextMailContent extends StatelessWidget {
                                                           'https://www.bilibili.com/')
                                                   ? TextUtil.base.biliPink.w600
                                                       .h(1.6)
-                                                  : TextUtil.base.label(context).w600
+                                                  : TextUtil.base
+                                                      .label(context)
+                                                      .w600
                                                       .h(1.6)),
                                         ),
                                         SimpleUrlPreview(
@@ -372,8 +383,9 @@ class _TextMailContent extends StatelessWidget {
                                               WpyThemeKeys
                                                   .primaryBackgroundColor),
                                           titleLines: 2,
-                                          imageLoaderColor:
-                                              WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                                          imageLoaderColor: WpyTheme.of(context)
+                                              .get(WpyThemeKeys
+                                                  .iconAnimationStartColor),
                                           previewHeight: 130,
                                           previewContainerPadding:
                                               EdgeInsets.symmetric(
@@ -389,7 +401,9 @@ class _TextMailContent extends StatelessWidget {
                                               ? TextUtil.base.biliPink.w600
                                                   .h(1.6)
                                                   .sp(14)
-                                              : TextUtil.base.label(context).w600
+                                              : TextUtil.base
+                                                  .label(context)
+                                                  .w600
                                                   .h(1.6)
                                                   .sp(24),
                                           siteNameStyle: TextUtil.base
@@ -405,12 +419,13 @@ class _TextMailContent extends StatelessWidget {
                                         .NotoSansSC
                                         .sp(16)
                                         .w600,
-                                    confirmButtonColor:
-                                        url.startsWith('https://b23.tv/') ||
-                                                url.startsWith(
-                                                    'https://www.bilibili.com/')
-                                            ? ColorUtil.biliPink
-                                            : WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                                    confirmButtonColor: url.startsWith(
+                                                'https://b23.tv/') ||
+                                            url.startsWith(
+                                                'https://www.bilibili.com/')
+                                        ? ColorUtil.biliPink
+                                        : WpyTheme.of(context).get(
+                                            WpyThemeKeys.primaryActionColor),
                                     cancelTextStyle: TextUtil.base.normal
                                         .primary(context)
                                         .NotoSansSC

@@ -95,7 +95,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password3,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: ColorUtil.white235,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -129,7 +129,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password1,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: ColorUtil.white235,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -163,7 +163,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password4,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: ColorUtil.white235,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(

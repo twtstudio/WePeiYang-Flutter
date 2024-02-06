@@ -48,7 +48,8 @@ class LakeDialogWidget extends Dialog {
             Container(
               padding: EdgeInsets.all(28.w),
               decoration: BoxDecoration(
-                color: ColorUtil.whiteF2Color,
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.secondaryBackgroundColor),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -57,7 +58,11 @@ class LakeDialogWidget extends Dialog {
                     children: [
                       Text(title,
                           style: titleTextStyle ??
-                              TextUtil.base.label(context).NotoSansSC.w500.normal
+                              TextUtil.base
+                                  .label(context)
+                                  .NotoSansSC
+                                  .w500
+                                  .normal
                                   .sp(18)),
                     ],
                   ),
@@ -112,7 +117,8 @@ class LakeDialogWidget extends Dialog {
                   overlayColor:
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                      return WpyTheme.of(context)
+                          .get(WpyThemeKeys.oldSecondaryActionColor);
                     return WpyTheme.of(context)
                         .get(WpyThemeKeys.secondaryBackgroundColor);
                   }),
@@ -139,7 +145,8 @@ class LakeDialogWidget extends Dialog {
                   boxShadow: [
                     BoxShadow(
                         blurRadius: 1.6,
-                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(-1, 3),
                         spreadRadius: 1),
                   ],
@@ -178,7 +185,8 @@ class LakeDialogWidget extends Dialog {
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
-                        return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                        return WpyTheme.of(context)
+                            .get(WpyThemeKeys.oldSecondaryActionColor);
                       return WpyTheme.of(context)
                           .get(WpyThemeKeys.secondaryBackgroundColor);
                     }),

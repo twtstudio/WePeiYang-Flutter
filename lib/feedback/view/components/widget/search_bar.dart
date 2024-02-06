@@ -85,7 +85,7 @@ class _SearchBarState extends State<SearchBar>
               Expanded(
                   child: Text(
                 tagUtil[total].name,
-                style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                style: TextUtil.base.w500.NotoSansSC.sp(16).infoText(context),
                 overflow: TextOverflow.ellipsis,
               )),
               SizedBox(width: 4),
@@ -142,7 +142,7 @@ class _SearchBarState extends State<SearchBar>
                     focusNode: _fNode,
                     style: TextUtil.base.label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                      hintStyle: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
                           ? '搜索发现'
                           : '#${data.recTag?.name}#，输入“#”号搜索更多Tag',
@@ -313,7 +313,7 @@ class _SearchBarState extends State<SearchBar>
                                         : '跳转至：${_controller.text}',
                                     style: TextUtil.base.w500.NotoSansSC
                                         .sp(16)
-                                        .grey6C,
+                                        .infoText(context),
                                     overflow: TextOverflow.ellipsis,
                                   )),
                                   SizedBox(width: 4),

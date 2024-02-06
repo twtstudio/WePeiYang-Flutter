@@ -67,13 +67,13 @@ class _SearchTagCardState extends State<SearchTagCard>
                 Expanded(
                     child: Text(
                   tagUtil[total].name,
-                  style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).infoText(context),
                   overflow: TextOverflow.ellipsis,
                 )),
                 SizedBox(width: 4),
                 Text(
                   "",
-                  style: TextUtil.base.w500.NotoSansSC.sp(16).grey6C,
+                  style: TextUtil.base.w500.NotoSansSC.sp(16).infoText(context),
                 )
               ],
             ),

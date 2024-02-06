@@ -94,7 +94,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.email,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: ColorUtil.white235,
+                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -121,7 +121,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: ColorUtil.white235,
+                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -146,7 +146,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
-                        fillColor: ColorUtil.white235,
+                        fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                         isCollapsed: true,
                         contentPadding:
                             const EdgeInsets.fromLTRB(15, 18, 0, 18),

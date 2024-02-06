@@ -27,7 +27,9 @@ class CommentIdentificationContainer extends StatelessWidget {
         : Container(
             margin: EdgeInsets.only(left: 3),
             child: Text(this.text,
-                style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction(context)),
+                style: TextUtil.base.w500.NotoSansSC
+                    .sp(10)
+                    .primaryAction(context)),
           );
   }
 }
@@ -53,12 +55,9 @@ class _ETagWidgetState extends State<ETagWidget> {
   bool colorState = false;
   var timeDuration = Duration(milliseconds: 1900);
   Map<String, ETagUtil> tagUtils = {
-    'recommend': ETagUtil(ColorUtil.yellow232,
-        ColorUtil.orange236, '精', '精华帖'),
-    'theme': ETagUtil(ColorUtil.blue66,
-        ColorUtil.blue57, '活动', '活动帖'),
-    'top': ETagUtil(ColorUtil.pink223,
-        ColorUtil.red243, '置顶', '置顶帖')
+    'recommend': ETagUtil(ColorUtil.yellow232, ColorUtil.orange236, '精', '精华帖'),
+    'theme': ETagUtil(ColorUtil.blue66, ColorUtil.blue57, '活动', '活动帖'),
+    'top': ETagUtil(ColorUtil.pink223, ColorUtil.red243, '置顶', '置顶帖')
   };
 
   @override
@@ -189,10 +188,12 @@ class TagShowWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: type == 0
-                          ? ColorUtil.greyEAColor
+                          ? ColorUtil.tagLabelColor
                           : type == 1
-                              ? WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)
-                              : WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                              ? WpyTheme.of(context)
+                                  .get(WpyThemeKeys.defaultActionColor)
+                              : WpyTheme.of(context)
+                                  .get(WpyThemeKeys.primaryBackgroundColor),
                     ),
                     child: SvgPicture.asset(
                       type == 0
@@ -207,7 +208,9 @@ class TagShowWidget extends StatelessWidget {
                     constraints: BoxConstraints(maxWidth: width - 30),
                     child: Text(
                       tag,
-                      style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
+                      style: TextUtil.base.NotoSansSC.w400
+                          .sp(14)
+                          .primaryAction(context),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -233,11 +236,13 @@ class TextPod extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
+          color:
+              WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(color: ColorUtil.black38)),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-      child: Text(text, style: TextUtil.base.NotoSansSC.w400.sp(12).grey6C),
+      child: Text(text,
+          style: TextUtil.base.NotoSansSC.w400.sp(12).infoText(context)),
     );
   }
 }

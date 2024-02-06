@@ -5,6 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 import '../../../commons/widgets/w_button.dart';
 
@@ -66,7 +68,9 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
           },
           scrollDirection: Axis.horizontal,
           itemCount: widget.args.uriListLength,
-          backgroundDecoration: BoxDecoration(color: ColorUtil.black00Color),
+          backgroundDecoration: BoxDecoration(
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.reverseBackgroundColor)),
           pageController: PageController(
             initialPage: widget.args.indexNow,
           ),

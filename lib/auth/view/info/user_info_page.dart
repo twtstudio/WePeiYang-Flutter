@@ -75,7 +75,9 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                Container(height: 1, color: ColorUtil.white212),
+                Container(
+                    height: 1,
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -100,7 +102,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: ColorUtil.white212),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -123,7 +125,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: ColorUtil.white212),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -142,7 +144,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: ColorUtil.white212),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -194,7 +196,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: ColorUtil.white212),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () =>

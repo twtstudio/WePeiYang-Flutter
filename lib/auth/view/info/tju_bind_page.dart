@@ -124,7 +124,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
                   filled: true,
-                  fillColor: ColorUtil.white235,
+                  fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -156,7 +156,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       hintText: S.current.password,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: ColorUtil.white235,
+                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(

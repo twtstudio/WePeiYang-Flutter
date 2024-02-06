@@ -25,11 +25,13 @@ class GradientLinearProgressBar extends StatelessWidget {
       {this.strokeWidth = 2.0,
       required this.colors,
       required this.value,
-      this.strokeCapRound = false});
+      required BuildContext context,
+      this.strokeCapRound = false})
+      : backgroundColor =
+            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor);
 
   @override
   Widget build(BuildContext context) {
-    this.backgroundColor = ColorUtil.whiteEEColor;
     // very very very very very important : [RepaintBoundary]
     // to avoid repaint and confused bugs
     return RepaintBoundary(
@@ -60,10 +62,9 @@ class _GradientLinearProgressPainter extends CustomPainter {
       {this.strokeWidth = 2.0,
       required this.colors,
       this.value = 0.0,
-      Color? backgroundColor,
+      required this.backgroundColor,
       this.strokeCapRound = false,
-      required this.context})
-      : this.backgroundColor = backgroundColor ?? ColorUtil.whiteEEColor;
+      required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -86,7 +86,7 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
 
-  TextStyle get white38 => this.copyWith(color: ColorUtil.white38);
+  TextStyle get examRemain => this.copyWith(color: ColorUtil.examRemain);
 
   TextStyle dangerousRed(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.dangerousRed));
@@ -94,8 +94,6 @@ extension TextStyleAttr on TextStyle {
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
   TextStyle get greyHot => this.copyWith(color: ColorUtil.greyHotColor);
-
-  TextStyle get greyEB => this.copyWith(color: ColorUtil.whiteEBColor);
 
   TextStyle get greyAA => this.copyWith(color: ColorUtil.greyAA);
 
@@ -105,8 +103,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle secondaryInfo(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyThemeKeys.secondaryInfoTextColor));
-
-  TextStyle get grey6C => this.copyWith(color: ColorUtil.grey6C);
 
   TextStyle get greyC8 => this.copyWith(color: ColorUtil.greyC8);
 
@@ -137,21 +133,21 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get blue89 => this.copyWith(color: const Color(0xFF5189DC));
 
-  TextStyle oldListAction(context) => this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor));
+  TextStyle oldListAction(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor));
 
   TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.whiteb1b2Color);
-
-  TextStyle get white222 => this.copyWith(color: ColorUtil.white222);
 
   TextStyle get grey6267 => this.copyWith(color: ColorUtil.grey6267Color);
 
   TextStyle get blue98Opacity061 =>
       this.copyWith(color: ColorUtil.blue98Opacity061);
 
-  TextStyle oldListGroupTitle(context) =>
-      this.copyWith(color: WpyTheme.of(context).get(WpyThemeKeys.oldListGroupTitleColor));
+  TextStyle oldListGroupTitle(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyThemeKeys.oldListGroupTitleColor));
 
-  TextStyle get whiteCD => this.copyWith(color: ColorUtil.whiteCDColor);
+  TextStyle gpaHintColor(context) =>
+      this.copyWith(color: ColorUtil.gpaHintColor);
 
   TextStyle get grey145 => this.copyWith(color: ColorUtil.grey145);
 

@@ -24,7 +24,7 @@ class TodayShowAgainCheck extends StatelessWidget {
     } else {
       final checkboxTextWidget = Text(
         '今日不再弹出',
-        style: TextUtil.base.sp(10).white222,
+        style: TextUtil.base.sp(10).oldHintWhite(context),
       );
 
       dismiss = GestureDetector(

@@ -21,6 +21,8 @@ class WpyTheme extends InheritedWidget {
     return oldWidget.themeData.meta.themeId != themeData.meta.themeId;
   }
 
+  Color? get getPrimary => themeData.data.primaryColor;
+
   Color get(WpyThemeKeys key) {
     return themeData.data.get(key) as Color;
   }

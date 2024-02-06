@@ -50,18 +50,18 @@ class _OpenBoxState extends State<OpenBox> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("开盒",
-              style: TextUtil.base.bold
-                  .sp(17)
-                  .blue52hz),
+          title: Text("开盒", style: TextUtil.base.bold.sp(17).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           actions: [
@@ -89,7 +89,7 @@ class _OpenBoxState extends State<OpenBox> {
                 },
                 icon: Icon(
                   Icons.refresh,
-                  color: ColorUtil.black00Color,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
                 )),
           ],
         ),

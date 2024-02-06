@@ -128,7 +128,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(widget.tag,
-                            style: TextUtil.base.NotoSansSC.label(context).normal.w500
+                            style: TextUtil.base.NotoSansSC
+                                .label(context)
+                                .normal
+                                .w500
                                 .sp(14)),
                         CommentIdentificationContainer('官方', true),
                       ]),
@@ -145,7 +148,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                         : DateTime.now()
                             .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
-                    style: TextUtil.base.ProductSans.secondaryInfo(context).regular.sp(10),
+                    style: TextUtil.base.ProductSans
+                        .secondaryInfo(context)
+                        .regular
+                        .sp(10),
                   ),
                 ],
               )
@@ -171,7 +177,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text('帖主',
-                            style: TextUtil.base.NotoSansSC.label(context).normal.w500
+                            style: TextUtil.base.NotoSansSC
+                                .label(context)
+                                .normal
+                                .w500
                                 .sp(14)),
                       ]),
                   Text(
@@ -187,7 +196,10 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                         : DateTime.now()
                             .difference(widget.comment.createAt!)
                             .dayHourMinuteSecondFormatted(),
-                    style: TextUtil.base.ProductSans.secondaryInfo(context).regular.sp(10),
+                    style: TextUtil.base.ProductSans
+                        .secondaryInfo(context)
+                        .regular
+                        .sp(10),
                   ),
                 ],
               )
@@ -232,7 +244,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   child: Center(
                     child: Text(
                       '删除',
-                      style: TextUtil.base.label(context).regular.NotoSansSC.sp(12),
+                      style: TextUtil.base
+                          .label(context)
+                          .regular
+                          .NotoSansSC
+                          .sp(12),
                     ),
                   ),
                 )
@@ -241,7 +257,11 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   child: Center(
                     child: Text(
                       '举报',
-                      style: TextUtil.base.label(context).regular.NotoSansSC.sp(12),
+                      style: TextUtil.base
+                          .label(context)
+                          .regular
+                          .NotoSansSC
+                          .sp(12),
                     ),
                   ),
                 ),
@@ -285,7 +305,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             itemCount: 5,
             itemSize: 16.w,
             ignoreGestures: true,
-            unratedColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
+            unratedColor:
+                WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
             onRatingUpdate: (_) {},
           ),
         ]),
@@ -307,7 +328,8 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           itemCount: 5,
           itemSize: 16.w,
           ignoreGestures: true,
-          unratedColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
+          unratedColor:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
           onRatingUpdate: (_) {},
         ),
       ]);
@@ -340,9 +362,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   padding: const EdgeInsets.all(0),
                   labelPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  backgroundColor: ColorUtil.whiteEBColor,
+                  backgroundColor: ColorUtil.tagLabelColor,
                   label: Text('查看回复详情 >',
-                      style: TextUtil.base.ProductSans.w400.sp(14).grey6C),
+                      style: TextUtil.base.ProductSans.w400.sp(14).infoText(context)),
                 ),
               ),
             )
@@ -494,7 +516,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                                     ? comments[0]
                                     : comments[checkedNotifier.value.toInt()]) +
                                 '」',
-                            style: TextUtil.base.normal.primary(context).NotoSansSC
+                            style: TextUtil.base.normal
+                                .primary(context)
+                                .NotoSansSC
                                 .sp(16)
                                 .w400);
                       }),

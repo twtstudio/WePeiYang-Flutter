@@ -130,7 +130,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                         hintText: S.current.text_captcha,
                         hintStyle: hintStyle,
                         filled: true,
-                        fillColor: ColorUtil.white235,
+                        fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                         isCollapsed: true,
                         contentPadding:
                             const EdgeInsets.fromLTRB(15, 18, 0, 18),

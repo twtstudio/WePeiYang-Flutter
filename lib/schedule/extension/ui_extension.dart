@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/animation_executor.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
@@ -11,7 +13,7 @@ class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);
   final List<Pair<Course, int>> _pairs;
   final bool _hide;
-  final bool _warning;
+  bool _warning;
 
   AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
@@ -23,6 +25,7 @@ class AnimatedActiveCourse extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // _warning = true;
     var start = _pairs[0].arrange.unitList.first;
     var day = _pairs[0].arrange.weekday;
 
@@ -41,8 +44,8 @@ class AnimatedActiveCourse extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            ColorUtil.whiteOpacity05,
-            ColorUtil.whiteOpacity03,
+            ColorUtil.courseGradientStartColor,
+            ColorUtil.courseGradientStopColor,
           ],
         ),
         boxShadow: [
@@ -61,7 +64,8 @@ class AnimatedActiveCourse extends StatelessWidget {
           onTap: () => showCourseDialog(context, _pairs),
           borderRadius: BorderRadius.circular(5),
           splashFactory: InkRipple.splashFactory,
-          splashColor: ColorUtil.white199,
+          splashColor:
+              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
           child: _hide
               ? Container()
               : Padding(

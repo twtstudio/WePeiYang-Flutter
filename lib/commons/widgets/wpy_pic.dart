@@ -92,7 +92,7 @@ class _WpyPicState extends State<WpyPic> {
             ? (context, exception, stacktrace) {
                 Logger.reportError(exception, stacktrace);
                 return Text('💔[图片加载失败]',
-                    style: TextUtil.base.grey6C.w400.sp(12));
+                    style: TextUtil.base.infoText(context).w400.sp(12));
               }
             : null,
       );}

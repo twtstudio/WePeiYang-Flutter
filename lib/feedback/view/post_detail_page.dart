@@ -468,8 +468,10 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     builder: (context, _) {
                                       return Checkbox(
                                         activeColor: ColorUtil.blue105,
-                                        focusColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                                        hoverColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                                        focusColor: WpyTheme.of(context)
+                                            .get(WpyThemeKeys.oldHintColor),
+                                        hoverColor: WpyTheme.of(context).get(
+                                            WpyThemeKeys.oldSwitchBarColor),
                                         value: screenshotList.list
                                             .contains(data.id),
                                         onChanged: (value) {
@@ -558,7 +560,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(0, 1),
                         blurRadius: 6,
                         spreadRadius: 0),
@@ -674,8 +677,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         alignment: Alignment.centerLeft,
                                         child: widget.post.type == 1
                                             ? Text('校务帖子为实名发言!!!',
-                                                style: TextUtil.base.NotoSansSC
-                                                    .w500.dangerousRed(context)
+                                                style: TextUtil
+                                                    .base.NotoSansSC.w500
+                                                    .dangerousRed(context)
                                                     .sp(12))
                                             : Text('友善回复，真诚沟通',
                                                 style: TextUtil
@@ -722,7 +726,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
           width: 25,
-          color: ColorUtil.black00Color,
+          color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
         ),
         onPressed: () {
           showCupertinoModalPopup(
@@ -989,7 +993,8 @@ class _PostDetailPageState extends State<PostDetailPage>
               gradient: LinearGradient(
                   colors: [
                     WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryLightActionColor),
+                    WpyTheme.of(context)
+                        .get(WpyThemeKeys.primaryLightActionColor),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -1195,7 +1200,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,
           requestType: RequestType.image,
-          themeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
+          themeColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
@@ -1266,7 +1272,9 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
                             border: Border.all(
-                                width: 1, color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)),
+                                width: 1,
+                                color: WpyTheme.of(context)
+                                    .get(WpyThemeKeys.dislikeSecondary)),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1293,7 +1301,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                            color: WpyTheme.of(context)
+                                .get(WpyThemeKeys.dislikeSecondary),
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomRight: Radius.circular(8)),

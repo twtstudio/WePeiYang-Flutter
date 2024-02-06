@@ -42,13 +42,13 @@ class FeedbackNoticePage extends StatelessWidget {
 
     var id = Text(
       '#TZ' + notice.id.toString().padLeft(6, '0'),
-      style: TextUtil.base.w400.normal.grey6C.ProductSans.sp(14),
+      style: TextUtil.base.w400.normal.infoText(context).ProductSans.sp(14),
     );
 
     var createTime = Text(
       DateFormat('yyyy-MM-dd HH:mm:ss').format(notice.createdAt.toLocal()),
       textAlign: TextAlign.right,
-      style: TextUtil.base.grey6C.normal.ProductSans.sp(14),
+      style: TextUtil.base.infoText(context).normal.ProductSans.sp(14),
     );
 
     var topWidget = Row(

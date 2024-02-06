@@ -31,7 +31,10 @@ class LevelUtil extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: double.parse(level) == 0
-                ? [WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary), WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)]
+                ? [
+                    WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                    WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)
+                  ]
                 : [
                     double.parse(level) >= 0
                         ? colors[(double.parse(level) / 10).floor() % 10]
@@ -43,7 +46,7 @@ class LevelUtil extends StatelessWidget {
                                 .withAlpha(190)
                             : colors[(double.parse(level) / 10).floor() % 10]
                                 .withAlpha(175 + (int.parse(level) % 10) * 8)
-                        : ColorUtil.black00Color,
+                        : WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
                   ],
             stops: [0.5, 0.8]),
         borderRadius: BorderRadius.circular(20),

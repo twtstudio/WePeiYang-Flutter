@@ -118,7 +118,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       DateFormat('yyyy-MM-dd HH:mm:ss')
                           .format(post.createAt!.toLocal()),
                       textAlign: TextAlign.left,
-                      style: TextUtil.base.secondary(context).normal.ProductSans.sp(10),
+                      style: TextUtil.base
+                          .secondary(context)
+                          .normal
+                          .ProductSans
+                          .sp(10),
                     )
                   ])),
           Spacer(),
@@ -133,7 +137,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               },
               child: Text(
                 '#MP' + post.id.toString().padLeft(6, '0'),
-                style: TextUtil.base.w400.grey6C.NotoSansSC.sp(12),
+                style: TextUtil.base.w400.infoText(context).NotoSansSC.sp(12),
               ),
             ),
         ]));
@@ -244,7 +248,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.secondaryInfo(context).normal.sp(10).w400,
+            style: TextUtil.base.ProductSans
+                .secondaryInfo(context)
+                .normal
+                .sp(10)
+                .w400,
           )
         ]);
 
@@ -273,7 +281,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: ColorUtil.whiteEAColor),
+                  color: ColorUtil.tagLabelColor),
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
@@ -283,7 +291,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
               constraints: BoxConstraints(),
               child: Text(
                 const ['', '卫津路', '北洋园'][post.campus],
-                style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
+                style:
+                    TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -292,7 +301,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans.secondaryInfo(context).normal.sp(10).w400,
+            style: TextUtil.base.ProductSans
+                .secondaryInfo(context)
+                .normal
+                .sp(10)
+                .w400,
           )
         ]);
 
@@ -512,8 +525,10 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                   });
                                 },
                                 child: Text('收起',
-                                    style: TextUtil
-                                        .base.textButtonPrimary(context).w600.NotoSansSC
+                                    style: TextUtil.base
+                                        .textButtonPrimary(context)
+                                        .w600
+                                        .NotoSansSC
                                         .sp(14))),
                           ],
                         )
@@ -560,8 +575,8 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                                 SizedBox(width: 10),
                                                 Text(
                                                   '点击展开\n',
-                                                  style: TextUtil
-                                                      .base.w600.greyEB
+                                                  style: TextUtil.base.w600
+                                                      .reverse(context)
                                                       .sp(14)
                                                       .h(0.6),
                                                 ),

@@ -297,7 +297,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                       context
                           .read<LostAndFoundModel2>()
                           .currentCategory[widget.type]
-                  ? ColorUtil.white234
+                  ? ColorUtil.tagLabelColor
                   : WpyTheme.of(context)
                       .get(WpyThemeKeys.primaryBackgroundColor)),
           child: Center(

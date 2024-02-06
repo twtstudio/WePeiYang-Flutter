@@ -960,7 +960,7 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                                 Text(
                                                   '点击展开\n',
                                                   style: TextUtil
-                                                      .base.w600.greyEB
+                                                      .base.w600.reverse(context)
                                                       .sp(14)
                                                       .h(0.6),
                                                 ),

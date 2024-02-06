@@ -206,7 +206,7 @@ class LAFWeKoDialog extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 10.h),
                 child: Text(
                   post.text,
-                  style: TextUtil.base.grey6C.regular.sp(14).NotoSansSC,
+                  style: TextUtil.base.infoText(context).regular.sp(14).NotoSansSC,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

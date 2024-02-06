@@ -34,6 +34,7 @@ class UpdateProgressDialog extends StatelessWidget {
             child: GradientLinearProgressBar(
               value: progress,
               strokeWidth: progressHeight,
+              context: context,
               colors: ColorUtil.gradientGrey,
             ),
           );

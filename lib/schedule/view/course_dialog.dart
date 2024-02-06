@@ -16,33 +16,38 @@ import '../../commons/widgets/w_button.dart';
 
 void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
-        builder: (BuildContext context) => CourseDialog(pairs));
+      context: context,
+      barrierDismissible: true,
+      barrierColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+      builder: (BuildContext context) => CourseDialog(pairs, context),
+    );
 
 class CourseDialog extends Dialog {
   final List<Pair<Course, int>> _pairs;
 
-  CourseDialog(this._pairs);
+  CourseDialog(this._pairs, BuildContext context)
+      : _nameStyle = TextUtil.base.bold.reverse(context).noLine.sp(20),
+        _teacherStyle = TextUtil.base.regular.reverse(context).noLine.sp(12),
+        _hintNameStyle = TextUtil.base.regular
+            .reverse(context)
+            .noLine
+            .sp(10)
+            .space(letterSpacing: 1),
+        _hintValueStyle = TextUtil.base.Swis
+            .reverse(context)
+            .noLine
+            .sp(9)
+            .space(letterSpacing: 0.5);
 
-  _nameStyle(context) => TextUtil.base.bold.reverse(context).noLine.sp(20);
-
-  _teacherStyle(context) =>
-      TextUtil.base.regular.reverse(context).noLine.sp(12);
-
-  _hintNameStyle(context) => TextUtil.base.regular
-      .reverse(context)
-      .noLine
-      .sp(10)
-      .space(letterSpacing: 1);
-
-  _hintValueStyle(context) => TextUtil.base.Swis
-      .reverse(context)
-      .noLine
-      .sp(9)
-      .space(letterSpacing: 0.5);
   final _width = 1.sw - 120.w;
+
+  final TextStyle _nameStyle;
+
+  final TextStyle _teacherStyle;
+
+  final TextStyle _hintNameStyle;
+
+  final TextStyle _hintValueStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +58,8 @@ class CourseDialog extends Dialog {
             ? _getSingleCard(context, _pairs[0])
             : Theme(
                 data: Theme.of(context).copyWith(
-                    secondaryHeaderColor:
-                        WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                    secondaryHeaderColor: WpyTheme.of(context)
+                        .get(WpyThemeKeys.primaryBackgroundColor)),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 40.w),
@@ -103,9 +108,9 @@ class CourseDialog extends Dialog {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pair.first.name, style: _nameStyle(context)),
+                  Text(pair.first.name, style: _nameStyle),
                   SizedBox(height: 12.h),
-                  Text(teacher, style: _teacherStyle(context)),
+                  Text(teacher, style: _teacherStyle),
                   Spacer(),
                   _getRow1(pair),
                   SizedBox(height: 12.h),
@@ -140,94 +145,89 @@ class CourseDialog extends Dialog {
     );
   }
 
-  Widget _getRow1(Pair<Course, int> pair) => Builder(
-      builder: (context) => Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 1),
-                    child: Text('ID', style: _hintNameStyle(context)),
-                  ),
-                  SizedBox(height: 3.h),
-                  Text(pair.first.courseId, style: _hintValueStyle(context))
-                ],
-              ),
-              SizedBox(width: 18.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.current.class_id, style: _hintNameStyle(context)),
-                  SizedBox(height: 3.h),
-                  Text(pair.first.classId, style: _hintValueStyle(context))
-                ],
-              ),
-              SizedBox(width: 18.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.current.campus,
-                      style:
-                          _hintNameStyle(context).copyWith(letterSpacing: 3)),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 1, left: 1),
-                    child: Text(
-                        '${pair.first.campus}${pair.first.campus.isNotEmpty ? "校区" : ""}',
-                        style: _hintValueStyle(context).copyWith(fontSize: 10)),
-                  )
-                ],
-              )
-            ],
-          ));
-
-  Widget _getRow2(Pair<Course, int> pair) => Builder(
-      builder: (context) => Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.current.arrange_room, style: _hintNameStyle(context)),
-                  SizedBox(height: 3.h),
-                  Text(replaceBuildingWord(pair.arrange.location),
-                      style: _hintValueStyle(context))
-                ],
-              ),
-              SizedBox(width: 18.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.current.arrange_week, style: _hintNameStyle(context)),
-                  SizedBox(height: 3.h),
-                  Text(pair.first.weeks, style: _hintValueStyle(context))
-                ],
-              ),
-              SizedBox(width: 28.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.current.credit,
-                      style:
-                          _hintNameStyle(context).copyWith(letterSpacing: 3)),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, left: 2),
-                    child: Text(pair.first.credit,
-                        style: _hintValueStyle(context)),
-                  )
-                ],
-              )
-            ],
-          ));
-
-  Widget _getRow3(Pair<Course, int> pair) => Builder(
-      builder: (context) => Column(
+  Widget _getRow1(Pair<Course, int> pair) => Row(
+        children: [
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.current.time,
-                  style: _hintNameStyle(context).copyWith(letterSpacing: 3)),
+              Padding(
+                padding: const EdgeInsets.only(left: 1),
+                child: Text('ID', style: _hintNameStyle),
+              ),
               SizedBox(height: 3.h),
-              Text(getCourseTime(pair.arrange.unitList),
-                  style: _hintValueStyle(context))
+              Text(pair.first.courseId, style: _hintValueStyle)
             ],
-          ));
+          ),
+          SizedBox(width: 18.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(S.current.class_id, style: _hintNameStyle),
+              SizedBox(height: 3.h),
+              Text(pair.first.classId, style: _hintValueStyle)
+            ],
+          ),
+          SizedBox(width: 18.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                S.current.campus,
+                style: _hintNameStyle.copyWith(letterSpacing: 3.0),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 1, left: 1),
+                child: Text(
+                    '${pair.first.campus}${pair.first.campus.isNotEmpty ? "校区" : ""}',
+                    style: _hintValueStyle.copyWith(fontSize: 10)),
+              )
+            ],
+          )
+        ],
+      );
+
+  Widget _getRow2(Pair<Course, int> pair) => Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(S.current.arrange_room, style: _hintNameStyle),
+              SizedBox(height: 3.h),
+              Text(replaceBuildingWord(pair.arrange.location),
+                  style: _hintValueStyle)
+            ],
+          ),
+          SizedBox(width: 18.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(S.current.arrange_week, style: _hintNameStyle),
+              SizedBox(height: 3.h),
+              Text(pair.first.weeks, style: _hintValueStyle)
+            ],
+          ),
+          SizedBox(width: 28.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(S.current.credit,
+                  style: _hintNameStyle.copyWith(letterSpacing: 3)),
+              Padding(
+                padding: const EdgeInsets.only(top: 3, left: 2),
+                child: Text(pair.first.credit, style: _hintValueStyle),
+              )
+            ],
+          )
+        ],
+      );
+
+  Widget _getRow3(Pair<Course, int> pair) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(S.current.time,
+              style: _hintNameStyle.copyWith(letterSpacing: 3)),
+          SizedBox(height: 3.h),
+          Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle)
+        ],
+      );
 }

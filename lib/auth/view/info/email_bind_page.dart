@@ -63,11 +63,13 @@ class _EmailBindPageState extends State<EmailBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
-                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                  return WpyTheme.of(context)
+                      .get(WpyThemeKeys.oldActionRippleColor);
+                return WpyTheme.of(context)
+                    .get(WpyThemeKeys.oldSecondaryActionColor);
               }),
-              backgroundColor:
-                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor)),
+              backgroundColor: MaterialStateProperty.all(WpyTheme.of(context)
+                  .get(WpyThemeKeys.oldSecondaryActionColor)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -86,7 +88,8 @@ class _EmailBindPageState extends State<EmailBindPage> {
                   hintText: S.current.email2,
                   hintStyle: hintStyle,
                   filled: true,
-                  fillColor: ColorUtil.white235,
+                  fillColor:
+                      WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -110,7 +113,8 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
@@ -130,13 +134,16 @@ class _EmailBindPageState extends State<EmailBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(

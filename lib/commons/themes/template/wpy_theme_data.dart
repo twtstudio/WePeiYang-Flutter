@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 
 enum WpyThemeType {
@@ -54,6 +55,8 @@ class WpyThemeMetaData {
   }
 }
 
+extension ColorAlgorithm on Color {}
+
 class WpyThemeData {
   final WpyThemeMetaData meta;
   final WpyThemeDetail data;
@@ -73,12 +76,26 @@ class WpyThemeDetail {
   static final Map<WpyThemeKeys, dynamic> _defaultScheme =
       light_scheme().data.details;
 
-  WpyThemeDetail(this.details);
+  // Use this to  calculate the icon's color
+  Color? primaryColor;
+
+  WpyThemeDetail(this.details, {this.primaryColor});
+
+  Color shift(Color source, Color target) {
+    final hsl = HSLColor.fromColor(source);
+    final targetHsl = HSLColor.fromColor(target);
+
+    return hsl
+        .withHue(targetHsl.hue)
+        .withSaturation((hsl.saturation - 0.05).clamp(0, 1))
+        .toColor();
+  }
 
   dynamic get(WpyThemeKeys key) {
     final value = this.details[key] ?? _defaultScheme[key];
     assert(value != null, 'Illegal Color key: $key');
-    return value!;
+
+    return value;
   }
 }
 
@@ -141,4 +158,8 @@ enum WpyThemeKeys {
   FavorColor,
   FavorBubbleStartColor,
   FavorBubbleColor,
+  profileBackgroundColor,
+
+  // Level
+  levelColors,
 }

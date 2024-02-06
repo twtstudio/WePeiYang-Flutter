@@ -179,7 +179,7 @@ class _SearchPageState extends State<SearchPage> {
               },
               child: Chip(
                 elevation: 1,
-                backgroundColor: ColorUtil.white234,
+                backgroundColor: ColorUtil.tagLabelColor,
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.label(context).NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,

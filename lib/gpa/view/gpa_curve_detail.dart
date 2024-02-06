@@ -56,7 +56,7 @@ class GPAPreview extends StatelessWidget {
 class _GPAIntro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _textStyle = TextUtil.base.w300.sp(14).whiteCD;
+    final _textStyle = TextUtil.base.w300.sp(14).gpaHintColor(context);
     final _numStyle = TextUtil.base.Swis.bold.label(context).sp(22);
 
     var total = context.select<GPANotifier, Total?>((p) => p.total);
@@ -132,7 +132,8 @@ class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
   late final Color _popupCardPreview =
       WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
-  late final Color _popupTextPreview = WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+  late final Color _popupTextPreview =
+      WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
   static late Color _popupCardColor;
   static late Color _popupTextColor;
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度

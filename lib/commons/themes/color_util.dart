@@ -23,61 +23,58 @@ class ColorUtil {
   static final primaryTextButtonColor = Color(0xFF2D4E9A);
   static final beanDarkColor = Color(0xFF80B7F9);
   static final beanLightColor = Color(0xFF2887FF);
+
   // schedule page background color
   static final primaryLighterActionColor = Color(0xFF81BBFF);
   static final primaryLightestActionColor = Color(0xFFC7D5EB);
+
   // The Color below shouldn't be customized
   static final linkBlue = Color(0xFF222F80);
   static final dangerousRed = Color(0xFFFF0000);
   static final warning = Color(0xFFFFBC6B);
   static final info = Color(0xfff0ad4e);
+
   // bind classes pages
   static final oldActionColor = Color.fromRGBO(53, 59, 84, 1);
   static final oldSecondaryActionColor = Color.fromRGBO(79, 88, 107, 1);
   static final oldThirdActionColor = Color.fromRGBO(98, 103, 124, 1.0);
   static final oldFurthActionColor = Color.fromRGBO(48, 60, 102, 1);
   static final oldActionRippleColor = Color.fromRGBO(103, 110, 150, 1.0);
+
   /* ----- this colors for setting pages ----- */
   static final oldSwitchBarColor = Color.fromRGBO(240, 241, 242, 1);
   static final oldHintColor = Color.fromRGBO(205, 206, 212, 1);
   static final oldHintDarkerColor = Color.fromRGBO(201, 204, 209, 1);
   static final oldListGroupTitleColor = Color.fromRGBO(177, 180, 186, 1);
   static final oldListActionColor = Colors.grey;
+
   /* ----- icon widget colors ----- */
   static final iconAnimationStartColor = Colors.black12;
+
   //Dislike
   static final dislikePrimary = Colors.blueGrey;
   static final dislikeSecondary = Colors.black26;
+
   // Like
   static final likeColor = Colors.redAccent;
   static final likeBubbleColor = Colors.pinkAccent;
+
   // Favor
   static final FavorColor = Colors.yellow;
   static final FavorBubbleStartColor = Colors.amber;
   static final FavorBubbleColor = Colors.amberAccent;
-
-
-
-  static final white38 = Colors.white38;
-  static final whiteOpacity05 = Color.fromRGBO(255, 255, 255, 0.5);
-  static final whiteOpacity03 = Color.fromRGBO(255, 255, 255, 0.3);
-  static final white210 = Color.fromRGBO(210, 210, 210, 1);
-  static final white202 = Color.fromRGBO(202, 202, 202, 1);
-  static final white199 = Color.fromRGBO(199, 216, 235, 1);
-  static final white212 = Color.fromRGBO(212, 214, 226, 1);
-  static final white222 = Color(0xffdedede);
-  static final white228 = Color.fromRGBO(228, 232, 234, 1.0);
-  static final white234 = Color.fromRGBO(234, 234, 234, 1);
-  static final white235 = Color.fromRGBO(235, 238, 243, 1);
-  static final white236 = Color.fromRGBO(236, 238, 237, 1);
-
-  static final whiteCDColor = Color(0xffcdcdd3);
-  static final whiteEEColor = Color(0xFFEEEEEE);
-  static final whiteEBColor = Color(0xffebebeb);
-  static final whiteEAColor = Color(0xffeaeaea);
-  static final whiteF2Color = Color(0xfff2f2f2);
-  static final black00Color = Color.fromARGB(255, 0, 0, 0);
   static final profileBackgroundColor = Color.fromARGB(255, 67, 70, 80);
+
+  // 还没有放到theme里面的
+  static final examRemain = Colors.white38;
+  static final courseGradientStartColor = Color.fromRGBO(255, 255, 255, 0.5);
+  static final courseGradientStopColor = Color.fromRGBO(255, 255, 255, 0.3);
+  static final tagLabelColor = Color.fromRGBO(234, 234, 234, 1);
+  static final gpaHintColor = Color(0xffcdcdd3);
+
+  //
+  //
+  // -----还没有处理的
   static final grey108 = Color.fromARGB(255, 108, 108, 108);
   static final bold42TextColor = Color.fromARGB(255, 42, 42, 42);
   static final whiteFDFE = Color.fromARGB(255, 253, 253, 254);
@@ -168,7 +165,6 @@ class ColorUtil {
   static final greyA8 = Color(0xFFA8A8A8);
   static final greyA6 = Color(0xFFA6A6A6);
   static final grey126 = Color.fromARGB(255, 126, 126, 126);
-  static final grey6C = Color(0xFF6C6C6C);
   static final greyC8 = Color(0xFFC8C8C8);
   static final blue303C = Color(0xFF303C66);
   static final blue363C = Color(0xFF363C54);

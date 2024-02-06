@@ -336,7 +336,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             minLines: 1,
             maxLines: 10,
             decoration: InputDecoration.collapsed(
-                hintStyle: TextUtil.base.NotoSansSC.w700.sp(18).grey6C,
+                hintStyle: TextUtil.base.NotoSansSC.w700.sp(18).infoText(context),
                 hintText: S.current.feedback_enter_title),
             onChanged: (text) {
               titleCounter.value = '${text.characters.length} / 30';
@@ -349,7 +349,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
         valueListenable: titleCounter,
         builder: (_, String value, __) {
           return Text(value,
-              style: TextUtil.base.NotoSansSC.w400.sp(14).grey6C);
+              style: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context));
         });
 
     return Container(
@@ -405,7 +405,7 @@ class _LostAndFoundContentInputFieldState
         maxLines: 100,
         style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label(context),
         decoration: InputDecoration.collapsed(
-            hintStyle: TextUtil.base.NotoSansSC.w400.sp(16).grey6C,
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(16).infoText(context),
             hintText: '请添加正文'),
         onChanged: (text) {
           contentCounter.value = '${text.characters.length}/300';
@@ -418,7 +418,7 @@ class _LostAndFoundContentInputFieldState
         valueListenable: contentCounter,
         builder: (_, String value, __) {
           return Text(value,
-              style: TextUtil.base.NotoSansSC.w500.sp(12).grey6C);
+              style: TextUtil.base.NotoSansSC.w500.sp(12).infoText(context));
         });
 
     return Container(

@@ -55,7 +55,7 @@ class WeKoDialog extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Text(
                   post.content,
-                  style: TextUtil.base.grey6C.regular.sp(14).NotoSansSC,
+                  style: TextUtil.base.infoText(context).regular.sp(14).NotoSansSC,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

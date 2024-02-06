@@ -63,7 +63,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                     focusNode: _fNode,
                     style: TextStyle().label(context).NotoSansSC.w400.sp(15),
                     decoration: InputDecoration(
-                      hintStyle: TextStyle().grey6C.NotoSansSC.w400.sp(15),
+                      hintStyle: TextStyle().infoText(context).NotoSansSC.w400.sp(15),
                       hintText: data.recTag == null
                           ? '天大不能没有微北洋'
                           : '暂无相关内容',

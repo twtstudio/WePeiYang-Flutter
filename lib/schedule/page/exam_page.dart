@@ -199,7 +199,7 @@ class _ExamPageState extends State<ExamPage> {
                   child: Text(
                     remain,
                     style:
-                        TextUtil.base.Fourche.bold.italic.white38.h(0).sp(55),
+                        TextUtil.base.Fourche.bold.italic.examRemain.h(0).sp(55),
                   ),
                 ),
               ],

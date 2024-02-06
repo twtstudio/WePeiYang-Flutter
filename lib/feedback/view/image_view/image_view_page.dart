@@ -81,7 +81,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
           },
           scrollDirection: Axis.horizontal,
           itemCount: widget.args.urlListLength,
-          backgroundDecoration: BoxDecoration(color: ColorUtil.black00Color),
+          backgroundDecoration: BoxDecoration(
+              color: WpyTheme.of(context)
+                  .get(WpyThemeKeys.reverseBackgroundColor)),
           pageController: PageController(
             initialPage: indexNow,
           ),
@@ -103,7 +105,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                       child: Icon(
                         CupertinoIcons.back,
-                        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyThemeKeys.primaryBackgroundColor),
                         size: 30.h,
                       )),
                   onPressed: () {
@@ -126,7 +129,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.square_arrow_down,
-                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                      color: WpyTheme.of(context)
+                          .get(WpyThemeKeys.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -137,7 +141,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   WButton(
                     child: Icon(
                       CupertinoIcons.share,
-                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                      color: WpyTheme.of(context)
+                          .get(WpyThemeKeys.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -153,8 +158,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   void saveImage() async {
     ToastProvider.running('保存中');
-    await GallerySaver.saveImage(
-        baseUrl + widget.args.urlList[indexNow],
+    await GallerySaver.saveImage(baseUrl + widget.args.urlList[indexNow],
         albumName: "微北洋");
     ToastProvider.success('保存成功');
   }

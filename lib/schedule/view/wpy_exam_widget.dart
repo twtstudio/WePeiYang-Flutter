@@ -53,7 +53,8 @@ class WpyExamWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 7.5.h),
             decoration: BoxDecoration(
-              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(15.r),
               boxShadow: [
                 BoxShadow(
@@ -69,7 +70,8 @@ class WpyExamWidget extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
                 borderRadius: BorderRadius.circular(15.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: ColorUtil.white228,
+                splashColor: WpyTheme.of(context)
+                    .get(WpyThemeKeys.secondaryBackgroundColor),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: Row(
@@ -80,7 +82,10 @@ class WpyExamWidget extends StatelessWidget {
                         children: [
                           Text(
                             exam.name,
-                            style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
+                            style: TextUtil.base.PingFangSC
+                                .label(context)
+                                .bold
+                                .sp(14),
                           ),
                           SizedBox(height: 5.h),
                           Row(
@@ -90,7 +95,8 @@ class WpyExamWidget extends StatelessWidget {
                               SizedBox(width: 8.w),
                               Text(
                                 '${exam.location}-$seat',
-                                style: TextUtil.base.PingFangSC.normal.label(context)
+                                style: TextUtil.base.PingFangSC.normal
+                                    .label(context)
                                     .sp(12),
                               ),
                             ],
@@ -103,14 +109,16 @@ class WpyExamWidget extends StatelessWidget {
                         children: [
                           Text(
                             exam.arrange,
-                            style:
-                                TextUtil.base.PingFangSC.normal.sp(12).primaryAction(context),
+                            style: TextUtil.base.PingFangSC.normal
+                                .sp(12)
+                                .primaryAction(context),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             exam.date,
-                            style:
-                                TextUtil.base.PingFangSC.normal.sp(12).primaryAction(context),
+                            style: TextUtil.base.PingFangSC.normal
+                                .sp(12)
+                                .primaryAction(context),
                           ),
                         ],
                       ),

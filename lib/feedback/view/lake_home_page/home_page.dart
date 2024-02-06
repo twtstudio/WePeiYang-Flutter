@@ -146,7 +146,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         height: searchBarHeight - 8,
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
         decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
             borderRadius: BorderRadius.all(Radius.circular(15))),
         child: Row(children: [
           SizedBox(width: 14),
@@ -167,13 +168,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               ? '搜索发现'
                               : '#${data.recTag?.name}#',
                           overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                          style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
                         ),
                       ),
                       Text(
                         data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
-                        style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                        style: TextUtil.base.infoText(context).NotoSansSC.w400.sp(15),
                       ),
                     ],
                   )),
@@ -214,14 +215,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
-                          labelColor: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                          labelColor: WpyTheme.of(context)
+                              .get(WpyThemeKeys.primaryActionColor),
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
                           unselectedLabelStyle:
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
-                                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                                  color: WpyTheme.of(context)
+                                      .get(WpyThemeKeys.primaryActionColor),
                                   width: 2)),
                           tabs: List<Widget>.generate(
                               tabList.length,
@@ -255,7 +258,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
       body: Stack(
         children: [
           Padding(
@@ -348,7 +352,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             ? 0
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
-                color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                color: WpyTheme.of(context)
+                    .get(WpyThemeKeys.primaryBackgroundColor),
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -369,7 +374,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           }),
           // 挡上面
           Container(
-              color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              color:
+                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
@@ -491,9 +497,12 @@ class FbTagsWrapState extends State<FbTagsWrap>
                 radius: 30,
                 highlightColor: ColorUtil.transparent,
                 child: Chip(
-                  backgroundColor: ColorUtil.white234,
+                  backgroundColor: ColorUtil.tagLabelColor,
                   label: Text(provider.departmentList[index].name,
-                      style: TextUtil.base.normal.label(context).NotoSansSC.sp(13)),
+                      style: TextUtil.base.normal
+                          .label(context)
+                          .NotoSansSC
+                          .sp(13)),
                 ),
                 onTap: () {
                   Navigator.pushNamed(

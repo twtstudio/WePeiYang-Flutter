@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -77,8 +78,13 @@ class _BuildingItem extends StatelessWidget {
       textAlign: TextAlign.center,
     );
 
-    final buildingImage =
-        Container(height: 54.h, child: Image.asset(StudyroomImages.building));
+    final buildingImage = Container(
+      height: 54.h,
+      child: ColoredIcon(
+        StudyroomImages.building,
+        color: WpyTheme.of(context).getPrimary,
+      ),
+    );
 
     return WButton(
       onPressed: () {

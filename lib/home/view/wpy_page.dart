@@ -39,12 +39,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  final List<CardBean> cards = [
+  late final Color? themePrimary = WpyTheme.of(context).getPrimary;
+
+  late final List<CardBean> cards = [
     CardBean(
         ColoredIcon(
           "assets/svg_pics/lake_butt_icons/daily.png",
           width: 21.w,
-          // TODO: Icon Color changed based on the theme
+          color: themePrimary,
         ),
         '课程表',
         'Schedule',
@@ -53,6 +55,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         ColoredIcon(
           'assets/svg_pics/lake_butt_icons/lost_and_found.png',
           width: 21.w,
+          color: themePrimary,
         ),
         '失物招领',
         'Lost-\nFound',
@@ -61,6 +64,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         ColoredIcon(
           'assets/images/schedule/add.png',
           width: 24.w,
+          color: themePrimary,
         ),
         '地图·校历',
         'Map-\nCalendar',
@@ -69,12 +73,17 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         ColoredIcon(
           'assets/svg_pics/lake_butt_icons/wiki.png',
           width: 24.w,
+          color: themePrimary,
         ),
         '北洋维基',
         'Wiki',
         'https://wiki.tjubot.cn/'),
     CardBean(
-      Icon(Icons.timeline, size: 25),
+      Icon(
+        Icons.timeline,
+        size: 25,
+        color: themePrimary,
+      ),
       '成绩',
       'GPA',
       GPARouter.gpa,
@@ -258,7 +267,10 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                   WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
               indicator: CustomIndicator(
                   left: true,
-                  borderSide: BorderSide(color: WpyTheme.of(context).get(WpyThemeKeys.warningColor), width: 4)),
+                  borderSide: BorderSide(
+                      color:
+                          WpyTheme.of(context).get(WpyThemeKeys.warningColor),
+                      width: 4)),
               tabs: [
                 Align(
                     alignment: Alignment.centerLeft,
@@ -399,7 +411,8 @@ class SliverCardsWidget extends StatelessWidget {
               SizedBox(
                 width: 70.w,
                 child: Text(bean.label,
-                    maxLines: 2, style: TextUtil.base.w400.label(context).sp(12).medium),
+                    maxLines: 2,
+                    style: TextUtil.base.w400.label(context).sp(12).medium),
               ),
             ],
           )
