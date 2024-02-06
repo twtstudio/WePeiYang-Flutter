@@ -69,11 +69,11 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final dotOneColor =
-        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue38Color);
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.loadPointA);
     final dotTwoColor =
-        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue8DColor);
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.loadPointC);
     final dotThreeColor =
-        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue15Color);
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.loadPointB);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

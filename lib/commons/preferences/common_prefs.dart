@@ -42,7 +42,8 @@ class CommonPreferences {
   static final feedbackFloorSortType =
       PrefsBean<int>('feedbackFloorSortType', 0);
   static final feedbackLastWeCo = PrefsBean<String>('feedbackLastWeKo');
-  static final feedbackLastLostAndFoundWeCo = PrefsBean<String>('feedbackLastWeKo');
+  static final feedbackLastLostAndFoundWeCo =
+      PrefsBean<String>('feedbackLastWeKo');
   static final avatarBoxMyUrl = PrefsBean<String>('avatarBoxMyUrl');
 
   /// 求实论坛--等级系统
@@ -94,6 +95,7 @@ class CommonPreferences {
   static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）
+  static final useDarkMode = PrefsBean<bool>('useDarkMode', false);
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');

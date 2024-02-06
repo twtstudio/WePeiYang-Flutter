@@ -115,7 +115,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.reverseTextColor),
           ),
         ),
       ),
@@ -588,21 +588,26 @@ class CourseListWidget extends StatelessWidget {
                 var sortType = context
                     .select<GPANotifier, String>((p) => p.sortType)
                     .toUpperCase();
-                return RichText(
+                return Builder(builder: (context) {
+                  print("==>${_gpaColors[2]}");
+                  return RichText(
                     text: TextSpan(
-                        text: 'ORDERED\tBY\t',
-                        style: TextUtil.base.Swis
-                            .sp(14)
-                            .customColor(_gpaColors[2])
-                            .space(letterSpacing: 4),
-                        children: <TextSpan>[
-                      TextSpan(
-                          text: sortType,
-                          style: TextUtil.base.Swis.bold
-                              .sp(14)
-                              .customColor(_gpaColors[1])
-                              .space(letterSpacing: 4))
-                    ]));
+                      text: 'ORDERED\tBY\t',
+                      style: TextUtil.base.Swis
+                          .sp(14)
+                          .customColor(_gpaColors[2])
+                          .space(letterSpacing: 4),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: sortType,
+                            style: TextUtil.base.Swis.bold
+                                .sp(14)
+                                .customColor(_gpaColors[1])
+                                .space(letterSpacing: 4))
+                      ],
+                    ),
+                  );
+                });
               },
             )),
       ),

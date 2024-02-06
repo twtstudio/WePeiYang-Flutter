@@ -13,6 +13,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/local/animation_provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
@@ -410,6 +411,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<GPANotifier>().readPref();
     context.read<ExamProvider>().readPref();
     context.read<CourseProvider>().readPref();
+
+    if (CommonPreferences.useDarkMode.value) {
+      globalTheme.value = WpyThemeData.dark();
+    }
 
     /// 如果登陆过，尝试刷新token
     if (CommonPreferences.isLogin.value &&

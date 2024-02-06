@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
-class lightScheme extends WpyThemeData {
-  lightScheme()
+class LightScheme extends WpyThemeData {
+  LightScheme()
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_light",
@@ -107,9 +107,9 @@ final Map<WpyColorKey, Color> lightSchemeDetail = {
 
 //三个加载的点点
 
-  WpyColorKey.blue38Color: Color(0xFF3884DE),
-  WpyColorKey.blue15Color: Color(0xFF156ACE),
-  WpyColorKey.blue8DColor: Color(0xFF8DBBF1),
+  WpyColorKey.loadPointA: Color(0xFF3884DE),
+  WpyColorKey.loadPointB: Color(0xFF156ACE),
+  WpyColorKey.loadPointC: Color(0xFF8DBBF1),
 
 //Avatar chosen pink
   WpyColorKey.avatarChosenColor: Color(0xFFFFCCD1),

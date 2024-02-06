@@ -6,8 +6,8 @@ import '../../commons/themes/wpy_theme.dart';
 class GPAColor {
   static List<Color> blue(context) => [
         WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        WpyTheme.of(context).get(WpyColorKey.reverseTextColor),
         WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor),
-        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        WpyTheme.of(context).get(WpyColorKey.reverseTextColor),
       ];
 }

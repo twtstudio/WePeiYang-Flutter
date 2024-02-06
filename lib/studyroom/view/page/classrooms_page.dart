@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -67,7 +69,8 @@ class _FloorsView extends StatelessWidget {
           ),
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
+                color: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor),
                 image: DecorationImage(
                     image: AssetImage('assets/images/studyroom_background.png'),
                     fit: BoxFit.fill)),
@@ -125,7 +128,12 @@ class _PathTitle extends StatelessWidget {
       children: [
         Text(
           buildingName,
-          style: TextUtil.base.reverse(context).sp(20).Swis.w400.space(letterSpacing: 5),
+          style: TextUtil.base
+              .reverse(context)
+              .sp(20)
+              .Swis
+              .w400
+              .space(letterSpacing: 5),
         )
       ],
     );
@@ -218,13 +226,15 @@ class _RoomItem extends StatelessWidget {
     var boxDecoration = BoxDecoration(
       boxShadow: [
         BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: WpyTheme.of(context)
+                .get(WpyColorKey.basicTextColor)
+                .withOpacity(0.1),
             blurRadius: 4,
             offset: Offset(0, 2))
       ],
       borderRadius: BorderRadius.circular(8.w),
       shape: BoxShape.rectangle,
-      color: Theme.of(context).classroomItemBackground,
+      color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
     );
 
     return WButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/themes/scheme/dark_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 
 enum WpyThemeType {
@@ -66,16 +67,16 @@ class WpyThemeData {
     required this.data,
   });
 
-  factory WpyThemeData.light() => lightScheme();
+  factory WpyThemeData.light() => LightScheme();
 
-  factory WpyThemeData.dark() => lightScheme();
+  factory WpyThemeData.dark() => DarkScheme();
 }
 
 class WpyThemeDetail {
   final Map<WpyColorKey, Color> colors;
   final Map<WpyColorSetKey, dynamic> gradients;
 
-  static final _defaultScheme = lightScheme().data;
+  static final _defaultScheme = LightScheme().data;
 
   // Use this to  calculate the icon's color
   Color? primaryColor;
@@ -194,9 +195,9 @@ enum WpyColorKey {
 
 //三个加载的点点
 
-  blue38Color,
-  blue15Color,
-  blue8DColor,
+  loadPointA,
+  loadPointB,
+  loadPointC,
 
 //Avatar chosen pink
   avatarChosenColor,

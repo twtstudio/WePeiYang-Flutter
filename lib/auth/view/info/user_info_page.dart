@@ -26,7 +26,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz(context)),
+        title:
+            Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -41,6 +42,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
           ),
         ),
       ),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [

@@ -21,10 +21,9 @@ class GPAPreview extends StatelessWidget {
     if (hideGPA) return Image.asset("assets/images/schedule_empty.png");
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
     if (stats.isEmpty)
-      return
 
-          ///去掉周围padding的懒方法
-          WButton(
+      ///去掉周围padding的懒方法
+      return WButton(
         onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
         child: Column(
           children: [
@@ -37,6 +36,7 @@ class GPAPreview extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Card(
         elevation: 2,
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(children: <Widget>[

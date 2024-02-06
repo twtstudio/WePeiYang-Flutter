@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/time_picker_widget.dart';
 
@@ -35,6 +37,8 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
+                backgroundColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.w),

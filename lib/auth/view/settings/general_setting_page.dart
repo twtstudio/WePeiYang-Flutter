@@ -50,6 +50,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
         ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [
@@ -156,6 +158,48 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               ],
             ),
           ),
+          SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+            decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('开启深色模式', style: mainTextStyle),
+                      SizedBox(height: 3.h),
+                      Text('Beta功能 Bug乱飞', style: hintTextStyle)
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: !CommonPreferences.useDarkMode.value,
+                  onChanged: (value) {
+                    setState(
+                        () => CommonPreferences.useDarkMode.value = !value);
+                    globalTheme.value =
+                        value ? WpyThemeData.dark() : WpyThemeData.light();
+                  },
+                  activeColor: WpyTheme.of(context)
+                      .get(WpyColorKey.oldSecondaryActionColor),
+                  inactiveThumbColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  activeTrackColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  inactiveTrackColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                ),
+              ],
+            ),
+          ),
+
           // SizedBox(height: 10.h),
           // Container(
           //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),

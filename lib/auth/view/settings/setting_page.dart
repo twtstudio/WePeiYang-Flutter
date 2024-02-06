@@ -52,8 +52,8 @@ class _SettingPageState extends State<SettingPage> {
     final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle(context);
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text(S.current.setting, style: TextUtil.base.bold.sp(16).blue52hz(context)),
+        title: Text(S.current.setting,
+            style: TextUtil.base.bold.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -68,6 +68,8 @@ class _SettingPageState extends State<SettingPage> {
           ),
         ),
       ),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [
@@ -119,7 +121,9 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.widgets_outlined,
-                      color: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor), size: 20),
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20),
                   SizedBox(width: 12.w),
                   Expanded(child: Text('应用设置', style: mainTextStyle)),
                   arrow,
@@ -171,7 +175,9 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.update,
-                      color: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor), size: 20),
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(S.current.check_new, style: mainTextStyle),

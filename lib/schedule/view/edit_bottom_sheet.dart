@@ -175,7 +175,8 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
-                      color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryActionColor),
                     ),
                   ),
                 )
@@ -212,10 +213,11 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
         height: 647.h,
         padding: EdgeInsets.symmetric(vertical: 10.h),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/schedule/sheet_bg.png'),
-            fit: BoxFit.cover,
-          ),
+          // image: DecorationImage(
+          //   image: AssetImage('assets/images/schedule/sheet_bg.png'),
+          //   fit: BoxFit.cover,
+          // ),
+          color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
         ),
         child: Column(
@@ -237,15 +239,18 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.regular.reverse(context).sp(12)),
+                      style: TextUtil.base.PingFangSC.regular
+                          .reverse(context)
+                          .sp(12)),
                 ),
                 SizedBox(width: 12.w),
               ],
             ),
             Expanded(
               child: Theme(
-                data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor:WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+                data: Theme.of(context).copyWith(
+                    secondaryHeaderColor: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor)),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

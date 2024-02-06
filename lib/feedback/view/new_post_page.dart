@@ -345,7 +345,9 @@ class _LakeSelectorState extends State<LakeSelector> {
                   child: Padding(
                     padding: EdgeInsets.only(right: 15.w),
                     child: Icon(Icons.arrow_forward_ios_sharp,
-                        color: WpyTheme.of(context).get(WpyColorKey.labelTextColor), size: 10.h),
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.labelTextColor),
+                        size: 10.h),
                   ),
                 ),
               ),
@@ -427,8 +429,7 @@ class _CampusSelectorState extends State<CampusSelector> {
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
-                color:
-                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               ),
               SizedBox(width: 10),
               Text(
@@ -535,7 +536,8 @@ class _TitleInputFieldState extends State<TitleInputField> {
     Widget textCounter = ValueListenableBuilder(
       valueListenable: titleCounter,
       builder: (_, String value, __) {
-        return Text(value, style: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context));
+        return Text(value,
+            style: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context));
       },
     );
 
@@ -611,7 +613,8 @@ class _ContentInputFieldState extends State<ContentInputField> {
     Widget bottomTextCounter = ValueListenableBuilder(
       valueListenable: contentCounter,
       builder: (_, String value, __) {
-        return Text(value, style: TextUtil.base.NotoSansSC.w500.sp(12).infoText(context));
+        return Text(value,
+            style: TextUtil.base.NotoSansSC.w500.sp(12).infoText(context));
       },
     );
 
@@ -641,7 +644,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: maxImage - context.read<NewPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
+          themeColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -694,7 +698,10 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary)),
+              border: Border.all(
+                  width: 1,
+                  color:
+                      WpyTheme.of(context).get(WpyColorKey.dislikeSecondary)),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -781,7 +788,10 @@ class _ImagePickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.crop_original),
+      icon: Icon(
+        Icons.crop_original,
+        color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+      ),
       onPressed: onTap,
     );
   }

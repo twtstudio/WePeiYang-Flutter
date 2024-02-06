@@ -35,7 +35,7 @@ class _CoursePageState extends State<CoursePage> {
   /// 进入课程表页面后重设选中周并自动刷新自定义课程
   _CoursePageState() {
     var provider =
-    WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
+        WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
     provider.quietResetWeek();
     provider.refreshCustomCourse();
   }
@@ -108,7 +108,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
             'assets/images/schedule/back.png',
             height: 18.r,
             width: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
           ),
         ),
       ),
@@ -182,9 +182,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 40.w,
       actions: actions,
       title: Text(
-          'HELLO${(CommonPreferences.lakeNickname.value == '')
-              ? ''
-              : ', ${CommonPreferences.lakeNickname.value}'}',
+          'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
           style: TextUtil.base.reverse(context).w900.sp(18)),
       titleSpacing: 0,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -208,11 +206,9 @@ class _TitleWidget extends StatelessWidget {
             padding: EdgeInsets.only(left: 8.w, top: 4.h),
             child: Builder(builder: (context) {
               var currentWeek =
-              context.select<CourseProvider, int>((p) => p.currentWeek);
+                  context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
-                  style: TextUtil.base.Swis.bold
-                      .sp(12)
-                      .reverse(context));
+                  style: TextUtil.base.Swis.bold.sp(12).reverse(context));
             }),
           ),
           Builder(builder: (context) {
@@ -228,7 +224,8 @@ class _TitleWidget extends StatelessWidget {
                       provider.shrink
                           ? 'assets/images/schedule/up.png'
                           : 'assets/images/schedule/down.png',
-                      color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryBackgroundColor),
                       height: 18.r,
                       width: 18.r),
                 ));
@@ -246,9 +243,7 @@ class _HoursCounterWidget extends StatelessWidget {
     var provider = context.watch<CourseProvider>();
     if (provider.schoolCourses.length == 0) return Container();
     int currentHours = getCurrentHours(
-        provider.currentWeek, DateTime
-        .now()
-        .weekday, provider.schoolCourses);
+        provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
     int totalHours = getTotalHours(provider.schoolCourses);
     print("==> totalHours $totalHours");
     double totalWidth = 1.sw - 2 * 15.w;
@@ -274,7 +269,8 @@ class _HoursCounterWidget extends StatelessWidget {
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor)),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.iconAnimationStartColor)),
               ),
               if (!leftWidth.isNaN) // Avoid No Class in a semester
                 Container(
@@ -285,8 +281,10 @@ class _HoursCounterWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.r),
                     gradient: LinearGradient(
                       colors: [
-                        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-                        WpyTheme.of(context).get(WpyColorKey.backgroundGradientEndColor),
+                        WpyTheme.of(context)
+                            .get(WpyColorKey.primaryBackgroundColor),
+                        WpyTheme.of(context)
+                            .get(WpyColorKey.backgroundGradientEndColor),
                       ],
                     ),
                   ),
