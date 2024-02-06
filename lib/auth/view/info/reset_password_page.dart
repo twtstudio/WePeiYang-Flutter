@@ -53,7 +53,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final titleStyle = TextUtil.base.bold.sp(14.5).oldThirdAction(context);
-    final hintStyle = TextUtil.base.w400.sp(13).oldHintWhite;
+    final hintStyle = TextUtil.base.w400.sp(13).oldHintWhite(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -197,7 +197,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
-                        return ColorUtil.oldActionRippleColor;
+                        return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
                       return WpyTheme.of(context)
                           .get(WpyThemeKeys.oldActionColor);
                     }),

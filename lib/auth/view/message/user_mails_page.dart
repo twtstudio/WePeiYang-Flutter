@@ -373,7 +373,7 @@ class _TextMailContent extends StatelessWidget {
                                                   .primaryBackgroundColor),
                                           titleLines: 2,
                                           imageLoaderColor:
-                                              ColorUtil.iconAnimationStartColor,
+                                              WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                                           previewHeight: 130,
                                           previewContainerPadding:
                                               EdgeInsets.symmetric(

@@ -468,8 +468,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                     builder: (context, _) {
                                       return Checkbox(
                                         activeColor: ColorUtil.blue105,
-                                        focusColor: ColorUtil.oldHintColor,
-                                        hoverColor: ColorUtil.oldSwitchBarColor,
+                                        focusColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                                        hoverColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                                         value: screenshotList.list
                                             .contains(data.id),
                                         onChanged: (value) {
@@ -558,7 +558,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: ColorUtil.iconAnimationStartColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(0, 1),
                         blurRadius: 6,
                         spreadRadius: 0),
@@ -1266,7 +1266,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
                             border: Border.all(
-                                width: 1, color: ColorUtil.dislikeSecondary),
+                                width: 1, color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1293,7 +1293,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: ColorUtil.dislikeSecondary,
+                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomRight: Radius.circular(8)),

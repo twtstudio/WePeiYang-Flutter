@@ -9,8 +9,7 @@ class NoticesPage extends WbyWebView {
   NoticesPage({Key? key, required BuildContext context})
       : super(
             page: '部门通知',
-            backgroundColor:
-                WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            backgroundColor:WpyThemeKeys.secondaryBackgroundColor,
             fullPage: false,
             key: key);
 

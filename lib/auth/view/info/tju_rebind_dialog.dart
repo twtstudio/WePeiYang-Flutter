@@ -24,7 +24,8 @@ class TjuRebindDialog extends Dialog {
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+            color:
+                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
         child: _TjuRebindWidget(),
       ),
     );
@@ -91,17 +92,19 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
+    final hintStyle = TextUtil.base.regular.sp(13).oldHintDarker(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text(S.current.wrong + "！", style: TextUtil.base.bold.sp(17).oldSecondaryAction(context))
+          Text(S.current.wrong + "！",
+              style: TextUtil.base.bold.sp(17).oldSecondaryAction(context))
         ]),
         SizedBox(height: 8),
-        Text('请求异常，请手动输入验证码', style: TextUtil.base.regular.sp(12).oldSecondaryAction(context)),
+        Text('请求异常，请手动输入验证码',
+            style: TextUtil.base.regular.sp(12).oldSecondaryAction(context)),
         if (!_canConnectToClasses)
           Padding(
             padding: EdgeInsets.only(top: 10),
@@ -148,10 +151,12 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor: MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),

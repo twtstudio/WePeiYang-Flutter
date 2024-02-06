@@ -18,13 +18,16 @@ class FindPwWidget extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldThirdActionColor),
+                    size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -48,11 +51,12 @@ class FindPwWidget extends StatelessWidget {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -74,11 +78,12 @@ class FindPwWidget extends StatelessWidget {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -127,22 +132,23 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         onFailure: (e) => ToastProvider.error(e.error.toString()));
   }
 
-  static final TextStyle _hintStyle =
-      TextUtil.base.regular.sp(13).oldHintDarker;
-
   @override
   Widget build(BuildContext context) {
+    final TextStyle _hintStyle = TextUtil.base.regular.sp(13).oldHintDarker(context);
     double width = WePeiYangApp.screenWidth - 80;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldThirdActionColor),
+                    size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Padding(
@@ -229,18 +235,23 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
                             child: Text(S.current.fetch_captcha,
-                                style: TextUtil.base.regular.reverse(context).sp(13)),
+                                style: TextUtil.base.regular
+                                    .reverse(context)
+                                    .sp(13)),
                             style: ButtonStyle(
                               elevation: MaterialStateProperty.all(5),
                               overlayColor:
                                   MaterialStateProperty.resolveWith<Color>(
                                       (states) {
                                 if (states.contains(MaterialState.pressed))
-                                  return ColorUtil.oldActionRippleColor;
-                                return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+                                  return WpyTheme.of(context)
+                                      .get(WpyThemeKeys.oldActionRippleColor);
+                                return WpyTheme.of(context)
+                                    .get(WpyThemeKeys.oldActionColor);
                               }),
                               backgroundColor: MaterialStateProperty.all(
-                                  WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                                  WpyTheme.of(context)
+                                      .get(WpyThemeKeys.oldActionColor)),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),

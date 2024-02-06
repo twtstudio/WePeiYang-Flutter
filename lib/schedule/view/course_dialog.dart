@@ -18,7 +18,7 @@ void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: ColorUtil.dislikeSecondary,
+        barrierColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
         builder: (BuildContext context) => CourseDialog(pairs));
 
 class CourseDialog extends Dialog {

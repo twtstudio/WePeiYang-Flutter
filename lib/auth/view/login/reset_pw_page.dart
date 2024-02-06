@@ -39,31 +39,30 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
   final FocusNode _pwInput1 = FocusNode();
   final FocusNode _pwInput2 = FocusNode();
 
-  static final TextStyle _hintStyle = TextUtil.base.regular
-      .sp(13)
-      .oldHintDarker;
-
   @override
   Widget build(BuildContext context) {
+    final TextStyle _hintStyle =
+        TextUtil.base.regular.sp(13).oldHintDarker(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor), size: 35),
+                    color: WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldThirdActionColor),
+                    size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
         children: [
           Center(
             child: Text(S.current.find_password_title,
-                style: TextUtil.base.bold
-                    .sp(16)
-                    .oldThirdAction(context)),
+                style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 30),
           Padding(

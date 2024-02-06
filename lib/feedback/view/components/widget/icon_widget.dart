@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:like_button/like_button.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 typedef WithCountNotifierCallback = Future<void> Function(
@@ -26,29 +28,41 @@ extension IconTypeExt on IconType {
 
   double get size => [15.w, 22.w, 15.w, 22.w][index];
 
-  CircleColor get circleColor => [
-        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.likeColor),
-        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.likeColor),
-        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.FavorColor),
-        CircleColor(start: ColorUtil.iconAnimationStartColor, end: ColorUtil.FavorColor),
+  CircleColor circleColor(context) => [
+        CircleColor(
+            start:
+                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyThemeKeys.likeColor)),
+        CircleColor(
+            start:
+                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyThemeKeys.likeColor)),
+        CircleColor(
+            start:
+                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyThemeKeys.FavorColor)),
+        CircleColor(
+            start:
+                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyThemeKeys.FavorColor)),
       ][index];
 
-  BubblesColor get bubblesColor => [
+  BubblesColor bubblesColor(context) => [
         BubblesColor(
-          dotPrimaryColor: ColorUtil.likeColor,
-          dotSecondaryColor: ColorUtil.likeBubbleColor,
+          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
+          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.likeColor,
-          dotSecondaryColor: ColorUtil.likeBubbleColor,
+          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
+          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.FavorBubbleStartColor,
-          dotSecondaryColor: ColorUtil.FavorBubbleColor,
+          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: ColorUtil.FavorBubbleStartColor,
-          dotSecondaryColor: ColorUtil.FavorBubbleColor,
+          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+          dotSecondaryColor: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
         ),
       ][index];
 
@@ -113,8 +127,8 @@ class _IconWidgetState extends State<IconWidget> {
               return !value;
             },
             isLiked: value,
-            circleColor: widget.iconType.circleColor,
-            bubblesColor: widget.iconType.bubblesColor,
+            circleColor: widget.iconType.circleColor(context),
+            bubblesColor: widget.iconType.bubblesColor(context),
             animationDuration: Duration(milliseconds: 600),
           );
         },
@@ -126,7 +140,10 @@ class _IconWidgetState extends State<IconWidget> {
         builder: (_, int value, __) {
           return Text(
             value.toString() + (value < 100 ? '   ' : ' '),
-            style: TextUtil.base.label(context).bold.ProductSans
+            style: TextUtil.base
+                .label(context)
+                .bold
+                .ProductSans
                 .sp(widget.iconType.textSize),
           );
         });
@@ -175,11 +192,15 @@ class DislikeWidget extends StatelessWidget {
           },
           isLiked: value,
           // end的值是Colors.blue[200]
-          circleColor:
-              CircleColor(start: ColorUtil.iconAnimationStartColor, end:ColorUtil.blue90Color ),
+          circleColor: CircleColor(
+              start: WpyTheme.of(context)
+                  .get(WpyThemeKeys.iconAnimationStartColor),
+              end: ColorUtil.blue90Color),
           bubblesColor: BubblesColor(
-            dotPrimaryColor: ColorUtil.dislikePrimary,
-            dotSecondaryColor: ColorUtil.dislikeSecondary,
+            dotPrimaryColor:
+                WpyTheme.of(context).get(WpyThemeKeys.dislikePrimary),
+            dotSecondaryColor:
+                WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
           ),
           animationDuration: Duration(milliseconds: 600),
         );

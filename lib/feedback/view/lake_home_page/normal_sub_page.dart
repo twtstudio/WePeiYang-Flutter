@@ -391,7 +391,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: ColorUtil.dislikeSecondary,
+                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -405,7 +405,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                       return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
-                            color: ColorUtil.dislikeSecondary,
+                            color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -415,7 +415,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: ColorUtil.dislikeSecondary,
+                          color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);

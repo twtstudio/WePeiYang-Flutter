@@ -18,7 +18,7 @@ class FestivalPage extends WbyWebView {
   FestivalPage(this.args, {Key? key, required BuildContext context})
       : super(
             page: args.name,
-            backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            backgroundColor: WpyThemeKeys.primaryBackgroundColor,
             fullPage: false,
             key: key);
 

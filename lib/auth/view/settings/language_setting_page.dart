@@ -17,17 +17,20 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
-    var mainTextStyle = TextUtil.base.regular.sp(18).oldThirdAction(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
+    final mainTextStyle = TextUtil.base.regular.sp(18).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-          backgroundColor:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
-                child:
-                    Icon(Icons.arrow_back, color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                child: Icon(Icons.arrow_back,
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -36,7 +39,7 @@ class LanguageSettingPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
             alignment: Alignment.centerLeft,
             child: Text(S.current.setting_language,
-                style: TextUtil.base.bold.sp(30).oldFurthAction),
+                style: TextUtil.base.bold.sp(30).oldFurthAction(context)),
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(35, 15, 35, 15),

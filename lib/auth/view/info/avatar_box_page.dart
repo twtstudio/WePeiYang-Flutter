@@ -250,7 +250,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
       foregroundDecoration: canChange
           ? null
           : BoxDecoration(
-              color: ColorUtil.oldListActionColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
               backgroundBlendMode: BlendMode.saturation,
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),

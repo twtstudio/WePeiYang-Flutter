@@ -36,7 +36,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       elevation: MaterialStateProperty.all(1),
       overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
         if (states.contains(MaterialState.pressed))
-          return ColorUtil.oldActionRippleColor;
+          return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
         return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
       }),
       backgroundColor: MaterialStateProperty.all(

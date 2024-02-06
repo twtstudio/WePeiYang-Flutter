@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
         boxShadow: [
-          BoxShadow(color: ColorUtil.dislikeSecondary, spreadRadius: -1, blurRadius: 2)
+          BoxShadow(color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary), spreadRadius: -1, blurRadius: 2)
         ],
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),

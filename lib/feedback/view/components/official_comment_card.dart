@@ -277,7 +277,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           RatingBar.builder(
             itemBuilder: (context, index) => Icon(
               Icons.star,
-              color: ColorUtil.FavorColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.FavorColor),
             ),
             allowHalfRating: true,
             glow: false,
@@ -299,7 +299,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: ColorUtil.FavorColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.FavorColor),
           ),
           allowHalfRating: true,
           glow: false,
@@ -461,13 +461,13 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
-      unratedColor: ColorUtil.oldListActionColor,
+      unratedColor: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
       itemCount: 5,
       itemSize: 47.w,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: ColorUtil.FavorBubbleStartColor,
+        color: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
       ),
       onRatingUpdate: (rating) {
         setState(() {

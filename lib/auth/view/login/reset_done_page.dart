@@ -44,7 +44,7 @@ class ResetDoneWidget extends StatelessWidget {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:

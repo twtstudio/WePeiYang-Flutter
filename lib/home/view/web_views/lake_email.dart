@@ -9,7 +9,7 @@ class LakeEmailPage extends WbyWebView {
   LakeEmailPage({Key? key,required BuildContext context})
       : super(
             page: '湖底通知',
-            backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            backgroundColor: WpyThemeKeys.primaryBackgroundColor,
             fullPage: true,
             key: key);
 

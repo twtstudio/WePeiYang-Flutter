@@ -27,10 +27,10 @@ class GeneralSettingPage extends StatefulWidget {
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle;
-    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite;
+    final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
     final arrow = Icon(Icons.arrow_forward_ios,
-        color: ColorUtil.oldListActionColor, size: 22);
+        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor), size: 22);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
@@ -106,9 +106,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     setState(() => CommonPreferences.showMap.value = value);
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: ColorUtil.oldHintColor,
-                  activeTrackColor: ColorUtil.oldSwitchBarColor,
-                  inactiveTrackColor: ColorUtil.oldSwitchBarColor,
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -141,9 +141,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     context.read<GPANotifier>().hideGPA = !value;
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: ColorUtil.oldHintColor,
-                  activeTrackColor: ColorUtil.oldSwitchBarColor,
-                  inactiveTrackColor: ColorUtil.oldSwitchBarColor,
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -265,9 +265,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         CommonPreferences.useClassesBackend.value = value);
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: ColorUtil.oldHintColor,
-                  activeTrackColor: ColorUtil.oldSwitchBarColor,
-                  inactiveTrackColor: ColorUtil.oldSwitchBarColor,
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -302,9 +302,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         .nightMode = value;
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: ColorUtil.oldHintColor,
-                  activeTrackColor: ColorUtil.oldSwitchBarColor,
-                  inactiveTrackColor: ColorUtil.oldSwitchBarColor,
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -390,9 +390,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       }
                     },
                     activeColor: ColorUtil.blue105,
-                    inactiveThumbColor: ColorUtil.oldHintColor,
-                    activeTrackColor: ColorUtil.oldSwitchBarColor,
-                    inactiveTrackColor: ColorUtil.oldSwitchBarColor,
+                    inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                    activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                   );
                 }),
               ],
@@ -428,8 +428,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                 ),
                 Slider(
                   activeColor: ColorUtil.blue105,
-                  inactiveColor: ColorUtil.oldHintColor,
-                  thumbColor: ColorUtil.oldSwitchBarColor,
+                  inactiveColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  thumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                   value:
                       context.watch<AnimationProvider>().speedIndex.toDouble(),
                   onChanged: (e) {

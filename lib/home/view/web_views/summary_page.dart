@@ -9,10 +9,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../commons/themes/wpy_theme.dart';
 
 class FeedbackSummaryPage extends WbyWebView {
-  FeedbackSummaryPage({Key? key,required BuildContext context})
+  FeedbackSummaryPage({Key? key, required BuildContext context})
       : super(
             page: "年度总结",
-            backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            backgroundColor: WpyThemeKeys.primaryBackgroundColor,
             fullPage: false,
             key: key);
 

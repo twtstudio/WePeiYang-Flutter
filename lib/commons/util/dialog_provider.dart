@@ -139,7 +139,7 @@ class LakeDialogWidget extends Dialog {
                   boxShadow: [
                     BoxShadow(
                         blurRadius: 1.6,
-                        color: ColorUtil.iconAnimationStartColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(-1, 3),
                         spreadRadius: 1),
                   ],

@@ -389,7 +389,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
           width: 350.w,
           height: 197.w,
-          color: ColorUtil.iconAnimationStartColor,
+          color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
@@ -604,7 +604,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                 ),
           color: snapshot.hasData
               ? ColorUtil.transparent
-              : ColorUtil.iconAnimationStartColor,
+              : WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
         );
       },
     );

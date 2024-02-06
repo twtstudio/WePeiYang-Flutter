@@ -695,7 +695,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: ColorUtil.dislikeSecondary),
+              border: Border.all(width: 1, color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -715,7 +715,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: ColorUtil.dislikeSecondary,
+              color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),

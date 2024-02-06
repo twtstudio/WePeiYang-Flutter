@@ -275,7 +275,7 @@ class _HoursCounterWidget extends StatelessWidget {
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: ColorUtil.iconAnimationStartColor),
+                    color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor)),
               ),
               if (!leftWidth.isNaN) // Avoid No Class in a semester
                 Container(

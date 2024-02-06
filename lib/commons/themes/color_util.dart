@@ -34,34 +34,29 @@ class ColorUtil {
   // bind classes pages
   static final oldActionColor = Color.fromRGBO(53, 59, 84, 1);
   static final oldSecondaryActionColor = Color.fromRGBO(79, 88, 107, 1);
-
-
   static final oldThirdActionColor = Color.fromRGBO(98, 103, 124, 1.0);
   static final oldFurthActionColor = Color.fromRGBO(48, 60, 102, 1);
   static final oldActionRippleColor = Color.fromRGBO(103, 110, 150, 1.0);
-
   /* ----- this colors for setting pages ----- */
   static final oldSwitchBarColor = Color.fromRGBO(240, 241, 242, 1);
   static final oldHintColor = Color.fromRGBO(205, 206, 212, 1);
   static final oldHintDarkerColor = Color.fromRGBO(201, 204, 209, 1);
   static final oldListGroupTitleColor = Color.fromRGBO(177, 180, 186, 1);
   static final oldListActionColor = Colors.grey;
-
   /* ----- icon widget colors ----- */
   static final iconAnimationStartColor = Colors.black12;
-
   //Dislike
   static final dislikePrimary = Colors.blueGrey;
   static final dislikeSecondary = Colors.black26;
-
   // Like
   static final likeColor = Colors.redAccent;
   static final likeBubbleColor = Colors.pinkAccent;
-
   // Favor
   static final FavorColor = Colors.yellow;
   static final FavorBubbleStartColor = Colors.amber;
   static final FavorBubbleColor = Colors.amberAccent;
+
+
 
   static final white38 = Colors.white38;
   static final whiteOpacity05 = Color.fromRGBO(255, 255, 255, 0.5);

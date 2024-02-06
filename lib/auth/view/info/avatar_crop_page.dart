@@ -57,7 +57,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           toolbarWidgetColor:
               WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: ColorUtil.dislikeSecondary,
+          dimmedLayerColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
           backgroundColor: ColorUtil.blue3A3BColor,
@@ -102,7 +102,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           toolbarWidgetColor:
               WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
-          dimmedLayerColor: ColorUtil.dislikeSecondary,
+          dimmedLayerColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
           backgroundColor: ColorUtil.blue3A3BColor,

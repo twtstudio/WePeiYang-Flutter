@@ -198,7 +198,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
               Container(
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
-                  color: ColorUtil.iconAnimationStartColor)
+                  color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor))
             ],
           );
         },
@@ -242,7 +242,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: ColorUtil.iconAnimationStartColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),

@@ -27,9 +27,6 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  static final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle;
-  static final arrow = Icon(Icons.arrow_forward_ios,
-      color: ColorUtil.oldListActionColor, size: 22);
   String md = '';
   String iosLocalVersion = '';
 
@@ -49,7 +46,11 @@ class _SettingPageState extends State<SettingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final arrow = Icon(Icons.arrow_forward_ios,
+        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+        size: 22);
     var mainTextStyle = TextUtil.base.regular.sp(18).oldThirdAction(context);
+    final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle(context);
     return Scaffold(
       appBar: AppBar(
         title:

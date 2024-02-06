@@ -154,7 +154,7 @@ class _ExamPageState extends State<ExamPage> {
                 DefaultTextStyle(
                   style: TextStyle(
                       color: finished
-                          ? ColorUtil.oldHintColor
+                          ? WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)
                           : WpyTheme.of(context)
                               .get(WpyThemeKeys.primaryBackgroundColor)),
                   child: Padding(
@@ -178,7 +178,7 @@ class _ExamPageState extends State<ExamPage> {
                             Icon(Icons.location_on_outlined,
                                 size: 17.r,
                                 color: finished
-                                    ? ColorUtil.oldHintColor
+                                    ? WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)
                                     : WpyTheme.of(context).get(
                                         WpyThemeKeys.primaryBackgroundColor)),
                             SizedBox(width: 3.w),

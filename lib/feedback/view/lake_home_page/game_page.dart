@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -31,7 +33,7 @@ class GameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = ColorUtil.iconAnimationStartColor;
+    final Color _color = WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor);
     return SizedBox(
       height: 130,
       child: WButton(

@@ -630,7 +630,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.oldSwitchBarColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16.r)),
         child: InkWell(
             onTap: () => _selectDate(context),
@@ -638,7 +638,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                 width: 195.w,
                 height: 36.h,
                 decoration: BoxDecoration(
-                    color: ColorUtil.oldSwitchBarColor,
+                    color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
                     borderRadius: BorderRadius.circular(16.r)),
                 child: Stack(children: [
                   Container(
@@ -745,7 +745,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.oldSwitchBarColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16)),
         child: Stack(children: [
           Container(
@@ -836,7 +836,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: ColorUtil.oldSwitchBarColor,
+            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16.r)),
         child: Stack(children: [
           Container(

@@ -262,7 +262,7 @@ class _SearchBarState extends State<SearchBar>
                         ),
                         boxShadow: [
                           BoxShadow(
-                              color: ColorUtil.iconAnimationStartColor,
+                              color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度

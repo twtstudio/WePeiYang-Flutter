@@ -172,7 +172,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               Container(
                 width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
-                color: ColorUtil.iconAnimationStartColor,
+                color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
               ),
               SizedBox(height: 6.h)
             ],
@@ -234,7 +234,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: ColorUtil.iconAnimationStartColor,
+                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),

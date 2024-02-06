@@ -18,12 +18,12 @@ class UserInfoPage extends StatefulWidget {
 }
 
 class _UserInfoPageState extends State<UserInfoPage> {
-  static final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite;
-  static final arrow = Icon(Icons.arrow_forward_ios,
-      color: ColorUtil.oldListActionColor, size: 22);
-
   @override
   Widget build(BuildContext context) {
+    final arrow = Icon(Icons.arrow_forward_ios,
+        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+        size: 22);
+    final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite(context);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(

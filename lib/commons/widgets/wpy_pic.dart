@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -76,7 +78,7 @@ class _WpyPicState extends State<WpyPic> {
           return  Container(
                   width: widget.width ?? widget.holderHeight,
                   height: widget.height ?? widget.holderHeight,
-                  color: ColorUtil.dislikeSecondary,
+                  color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                   child: Center(
                     child: SizedBox(
                         width: widget.width == null ? 20 : widget.width! * 0.25,

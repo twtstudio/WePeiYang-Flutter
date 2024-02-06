@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 import '../../themes/color_util.dart';
 
@@ -38,6 +40,7 @@ class GradientLinearProgressBar extends StatelessWidget {
             strokeCapRound: strokeCapRound,
             backgroundColor: backgroundColor,
             value: value,
+            context: context,
             colors: colors),
       ),
     );
@@ -51,14 +54,16 @@ class _GradientLinearProgressPainter extends CustomPainter {
   final Color backgroundColor;
   final List<Color> colors;
   final p = Paint();
+  final BuildContext context;
 
-  _GradientLinearProgressPainter({
-    this.strokeWidth = 2.0,
-    required this.colors,
-    this.value = 0.0,
-    Color? backgroundColor,
-    this.strokeCapRound = false,
-  }) : this.backgroundColor = backgroundColor ?? ColorUtil.whiteEEColor;
+  _GradientLinearProgressPainter(
+      {this.strokeWidth = 2.0,
+      required this.colors,
+      this.value = 0.0,
+      Color? backgroundColor,
+      this.strokeCapRound = false,
+      required this.context})
+      : this.backgroundColor = backgroundColor ?? ColorUtil.whiteEEColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -83,7 +88,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       var valueEnd = Offset(value * size.width + _offset, _offset); //计算进度的长度
       Rect rect = Rect.fromPoints(start, valueEnd);
       p.shader = LinearGradient(colors: colors).createShader(rect);
-      p.color = ColorUtil.FavorBubbleStartColor;
+      p.color = WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor);
       canvas.drawLine(start, valueEnd, p);
     }
   }

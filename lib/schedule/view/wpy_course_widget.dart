@@ -70,7 +70,7 @@ class TodayCoursesWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
-              color: ColorUtil.iconAnimationStartColor,
+              color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
               borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
@@ -81,7 +81,7 @@ class TodayCoursesWidget extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: ColorUtil.dislikeSecondary,
+                splashColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(

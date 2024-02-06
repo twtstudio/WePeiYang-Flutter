@@ -32,7 +32,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).oldHintWhite;
+    var hintStyle = TextUtil.base.regular.sp(13).oldHintWhite(context);
     if (CommonPreferences.email.value != "")
       return Column(children: [
         SizedBox(height: 60),
@@ -63,7 +63,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.oldActionRippleColor;
+                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
                 return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               backgroundColor:
@@ -110,7 +110,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
                 backgroundColor:
@@ -147,7 +147,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 30),
                 child: Text(S.current.email_bind,
-                    style: TextUtil.base.bold.sp(28).oldFurthAction),
+                    style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
               ),
               Column(
                 children: [

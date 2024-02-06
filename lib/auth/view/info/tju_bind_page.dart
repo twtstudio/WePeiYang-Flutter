@@ -67,7 +67,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
+    final hintStyle = TextUtil.base.regular.sp(13).oldHintDarker(context);
     if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
@@ -89,11 +89,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.oldActionRippleColor;
-                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                  return WpyTheme.of(context)
+                      .get(WpyThemeKeys.oldActionRippleColor);
+                return WpyTheme.of(context)
+                    .get(WpyThemeKeys.oldSecondaryActionColor);
               }),
-              backgroundColor:
-                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor)),
+              backgroundColor: MaterialStateProperty.all(WpyTheme.of(context)
+                  .get(WpyThemeKeys.oldSecondaryActionColor)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -116,7 +118,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
             child: TextField(
               textInputAction: TextInputAction.next,
               focusNode: _accountFocus,
-              cursorColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+              cursorColor:
+                  WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
               decoration: InputDecoration(
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
@@ -141,12 +144,14 @@ class _TjuBindPageState extends State<TjuBindPage> {
               valueListenable: visNotifier,
               builder: (context, bool value, _) {
                 return Theme(
-                  data: Theme.of(context)
-                      .copyWith(primaryColor: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                  data: Theme.of(context).copyWith(
+                      primaryColor: WpyTheme.of(context)
+                          .get(WpyThemeKeys.oldActionColor)),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
-                    cursorColor: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                    cursorColor: WpyTheme.of(context)
+                        .get(WpyThemeKeys.defaultActionColor),
                     decoration: InputDecoration(
                       hintText: S.current.password,
                       hintStyle: hintStyle,
@@ -160,7 +165,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       suffixIcon: WButton(
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
-                          color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                          color: WpyTheme.of(context)
+                              .get(WpyThemeKeys.defaultActionColor),
                         ),
                         onPressed: () {
                           visNotifier.value = !visNotifier.value;
@@ -190,11 +196,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -237,13 +244,16 @@ class _TjuBindPageState extends State<TjuBindPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
@@ -257,7 +267,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
                   child: Text(S.current.tju_bind,
-                      style: TextUtil.base.bold.sp(28).oldFurthAction),
+                      style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
                 ),
                 Container(
                   margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
@@ -265,7 +275,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       CommonPreferences.isBindTju.value
                           ? S.current.is_bind
                           : S.current.not_bind,
-                      style: TextUtil.base.bold.grey.sp(12)),
+                      style: TextUtil.base.bold.oldListAction(context).sp(12)),
                 ),
               ],
             ),

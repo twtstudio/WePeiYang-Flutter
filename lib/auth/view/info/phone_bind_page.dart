@@ -51,7 +51,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).oldHintDarker;
+    final hintStyle = TextUtil.base.regular.sp(13).oldHintDarker(context);
     double width = WePeiYangApp.screenWidth - 80;
     if (CommonPreferences.phone.value != "")
       return Column(children: [
@@ -77,12 +77,15 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               elevation: MaterialStateProperty.all(3),
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
-                  return ColorUtil.oldActionRippleColor;
-                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                  return WpyTheme.of(context)
+                      .get(WpyThemeKeys.oldActionRippleColor);
+                return WpyTheme.of(context)
+                    .get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               backgroundColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
-                return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
+                return WpyTheme.of(context)
+                    .get(WpyThemeKeys.oldSecondaryActionColor);
               }),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30))),
@@ -102,7 +105,8 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     hintText: S.current.phone,
                     hintStyle: hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor),
+                    fillColor:
+                        WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -153,8 +157,9 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             return ElevatedButton(
                               onPressed: () {},
                               child: Text('$time秒后重试',
-                                  style:
-                                      TextUtil.base.bold.sp(13).oldThirdAction(context)),
+                                  style: TextUtil.base.bold
+                                      .sp(13)
+                                      .oldThirdAction(context)),
                               style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(5),
                                 overlayColor: MaterialStateProperty.all(
@@ -180,11 +185,14 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                                 MaterialStateProperty.resolveWith<Color>(
                                     (states) {
                               if (states.contains(MaterialState.pressed))
-                                return ColorUtil.oldActionRippleColor;
-                              return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+                                return WpyTheme.of(context)
+                                    .get(WpyThemeKeys.oldActionRippleColor);
+                              return WpyTheme.of(context)
+                                  .get(WpyThemeKeys.oldActionColor);
                             }),
                             backgroundColor: MaterialStateProperty.all(
-                                WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                                WpyTheme.of(context)
+                                    .get(WpyThemeKeys.oldActionColor)),
                             shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30)),
@@ -209,11 +217,12 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 overlayColor:
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
-                    return ColorUtil.oldActionRippleColor;
+                    return WpyTheme.of(context)
+                        .get(WpyThemeKeys.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
                 }),
-                backgroundColor:
-                    MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
@@ -231,13 +240,16 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor), size: 32),
+                    color:
+                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                    size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
       body: Column(
@@ -248,7 +260,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 20),
                 child: Text(S.current.phone_bind,
-                    style: TextUtil.base.bold.sp(28).oldFurthAction),
+                    style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
