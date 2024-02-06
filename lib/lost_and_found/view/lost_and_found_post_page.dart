@@ -156,7 +156,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 icon: Icon(Icons.keyboard_arrow_left,
-                    color: ColorUtil.grey6267Color, size: 36.r),
+                    color:WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor), size: 36.r),
                 onPressed: () {
                   var dataModel = context.read<NewLostAndFoundPostProvider>();
                   dataModel.clear();

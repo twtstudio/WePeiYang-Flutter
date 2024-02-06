@@ -151,7 +151,7 @@ class _PersonPageState extends State<PersonPage> {
       postListShow = Container(
           height: 430,
           alignment: Alignment.center,
-          child: Text("暂无冒泡", style: TextUtil.base.grey6267));
+          child: Text("暂无冒泡", style: TextUtil.base.oldThirdAction(context)));
     } else {
       postListShow = Column(
         children: postLists,

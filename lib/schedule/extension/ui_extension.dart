@@ -52,7 +52,7 @@ class AnimatedActiveCourse extends StatelessWidget {
           BoxShadow(
             offset: Offset(0, 2),
             blurRadius: 15,
-            color: ColorUtil.blackOpacity008,
+            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.08),
           ),
         ],
         borderRadius: BorderRadius.circular(5),

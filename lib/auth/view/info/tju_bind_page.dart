@@ -224,7 +224,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   checkNetWork(true);
                 },
                 child: Text('classes.tju.edu.cn',
-                    style: TextUtil.base.regular.blue363C.underLine.sp(10)),
+                    style: TextUtil.base.regular.label(context).underLine.sp(10)),
               ),
             ],
           ),

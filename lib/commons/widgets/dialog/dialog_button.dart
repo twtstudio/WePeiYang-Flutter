@@ -27,7 +27,7 @@ class WbyDialogButton extends StatelessWidget {
     if (type == ButtonType.blue)
       return WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
     else if (type == ButtonType.dark)
-      return ColorUtil.grey6267Color;
+      return WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
     else
       return WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
   }

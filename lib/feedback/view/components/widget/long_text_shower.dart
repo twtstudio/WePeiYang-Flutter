@@ -93,7 +93,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                       SizedBox(width: 6),
                       if (!expand)
                         Text('共${text.length}字',
-                            style: TextUtil.base.greyA8.w400.NotoSansSC.sp(15))
+                            style: TextUtil.base.infoText(context).w400.NotoSansSC.sp(15))
                     ],
                   ),
                 ),

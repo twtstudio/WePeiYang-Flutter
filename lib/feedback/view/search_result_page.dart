@@ -184,7 +184,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('跟帖', style: TextUtil.base.bold.blue303C.sp(12)),
+                    Text('跟帖', style: TextUtil.base.bold.customColor(WpyTheme.of(context).get(WpyColorKey.cursorColor)).sp(12)),
                     SizedBox(width: 4),
                     Container(
                         height: 24,

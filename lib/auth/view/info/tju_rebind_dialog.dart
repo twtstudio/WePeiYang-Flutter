@@ -109,7 +109,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           Padding(
             padding: EdgeInsets.only(top: 10),
             child: Text('请连接至校园网环境以获取数据，请检查网络',
-                style: TextUtil.base.regular.sp(10).redD9),
+                style: TextUtil.base.regular.sp(10).roomOccupied),
           ),
         SizedBox(height: 18),
         Row(

@@ -39,7 +39,7 @@ class RoomStateText extends StatelessWidget {
         ),
       );
 
-      stateText = Text('占用', style: TextUtil.base.PingFangSC.w400.redD9.sp(10));
+      stateText = Text('占用', style: TextUtil.base.PingFangSC.w400.roomOccupied.sp(10));
     }
 
     return Row(

@@ -324,7 +324,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
             PopupMenuItem<String>(
               value: '举报',
               child: Center(
-                child: Text('举报', style: TextUtil.base.regular.blue303C.sp(13)),
+                child: Text('举报', style: TextUtil.base.regular.customColor(WpyTheme.of(context).get(WpyColorKey.cursorColor)).sp(13)),
               ),
             ),
           ],

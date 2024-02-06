@@ -129,7 +129,7 @@ class TimeFrameWidget extends StatelessWidget {
                       decoration: const BoxDecoration(),
                       padding: EdgeInsets.only(right: 8.w),
                       child: Text('${weekType}${weekDay}${weekText}',
-                          style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
+                          style: TextUtil.base.PingFangSC.medium.infoText(context).sp(13)),
                     ),
                   );
                 }),
@@ -171,7 +171,7 @@ class TimeFrameWidget extends StatelessWidget {
                       decoration: const BoxDecoration(),
                       padding: EdgeInsets.only(right: 8.w),
                       child: Text(unitText,
-                          style: TextUtil.base.PingFangSC.medium.greyA8.sp(13)),
+                          style: TextUtil.base.PingFangSC.medium.infoText(context).sp(13)),
                     ),
                   );
                 }),
@@ -257,7 +257,7 @@ class InputWidget extends StatelessWidget {
                   WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
+                hintStyle: TextUtil.base.PingFangSC.medium.infoText(context).sp(13),
                 border: InputBorder.none,
               ),
             ),
@@ -286,7 +286,7 @@ class CardWidget extends StatelessWidget {
             BoxShadow(
               offset: Offset(0, 2),
               blurRadius: 10,
-              color: ColorUtil.blackOpacity006,
+              color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.06),
             ),
           ],
         ),
@@ -315,7 +315,7 @@ class CardWidget extends StatelessWidget {
           BoxShadow(
             offset: Offset(0, 2),
             blurRadius: 10,
-            color: ColorUtil.blackOpacity008,
+            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.08),
           ),
         ],
       ),

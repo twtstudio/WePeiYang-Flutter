@@ -140,7 +140,7 @@ class _NewPostPageState extends State<NewPostPage> {
         highlightColor: Colors.transparent,
         icon: Icon(
           Icons.keyboard_arrow_left,
-          color: ColorUtil.grey6267Color,
+          color: WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
           size: 36,
         ),
         onPressed: () => Navigator.of(context).pop(),

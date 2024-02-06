@@ -179,9 +179,9 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
-                                      ColorUtil.greyShade300),
+                                      WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      ColorUtil.greyShade300),
+                                      WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:

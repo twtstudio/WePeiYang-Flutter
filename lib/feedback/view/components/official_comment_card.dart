@@ -441,7 +441,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
-                color: ColorUtil.greyShadow64,
+                color: ColorUtil.backgroundMaskColor,
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],

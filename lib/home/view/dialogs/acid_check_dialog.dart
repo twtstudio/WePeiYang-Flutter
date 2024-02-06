@@ -51,17 +51,17 @@ class AcidCheckDialog extends Dialog {
                     SizedBox(height: 20.w),
                     Text(
                       '#${data.title}',
-                      style: TextUtil.base.NotoSansSC.grey126.normal.sp(18),
+                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(18),
                     ),
                     SizedBox(height: 20.w),
                     Text(
                       '${data.content}',
-                      style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
+                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(16),
                     ),
                     SizedBox(height: 10.w),
                     Text(
                       '${data.campus}校区',
-                      style: TextUtil.base.NotoSansSC.grey126.normal.sp(16),
+                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(16),
                     ),
                     SizedBox(height: 10.w),
                     Text(
@@ -82,12 +82,12 @@ class AcidCheckDialog extends Dialog {
                           return time.isBefore(end)
                               ? Text(
                                   '距检测${before ? '开始' : '结束'}还有$hr时$min分',
-                                  style: TextUtil.base.PingFangSC.grey126.normal
+                                  style: TextUtil.base.PingFangSC.courseGradientStopColor.normal
                                       .sp(16),
                                 )
                               : Text(
                                   '今日核酸已结束',
-                                  style: TextUtil.base.PingFangSC.grey126.normal
+                                  style: TextUtil.base.PingFangSC.courseGradientStopColor.normal
                                       .sp(16),
                                 );
                         }),

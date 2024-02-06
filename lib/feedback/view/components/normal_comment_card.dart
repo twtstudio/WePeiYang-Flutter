@@ -696,7 +696,7 @@ class _NCommentCardState extends State<NCommentCard>
                     children: [
                       Spacer(),
                       Text('收起',
-                          style: TextUtil.base.greyA8.w800.NotoSansSC.sp(12)),
+                          style: TextUtil.base.infoText(context).w800.NotoSansSC.sp(12)),
                     ],
                   ))
             else

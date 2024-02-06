@@ -131,7 +131,7 @@ class _HotCardState extends State<HotCard> {
                             : Text(
                                 '     加载失败',
                                 style:
-                                    TextUtil.base.w400.NotoSansSC.sp(18).redD9,
+                                    TextUtil.base.w400.NotoSansSC.sp(18).roomOccupied,
                               ),
                   ],
                 ),

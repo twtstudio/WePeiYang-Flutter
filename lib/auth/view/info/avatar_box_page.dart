@@ -82,7 +82,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                     alignment: Alignment(0, 0.8),
                     child: Text(
                       '点击下方头像框预览',
-                      style: TextUtil.base.w400.greyC8.sp(16),
+                      style: TextUtil.base.w400.customColor(WpyTheme.of(context).get(WpyColorKey.oldHintColor)).sp(16),
                     ),
                   ),
                 ],

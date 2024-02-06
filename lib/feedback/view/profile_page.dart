@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
       postListShow = Container(
           height: 430,
           alignment: Alignment.center,
-          child: Text("暂无冒泡", style: TextUtil.base.grey6267));
+          child: Text("暂无冒泡", style: TextUtil.base.oldThirdAction(context)));
     } else {
       postListShow = Column(
         children: postLists,
@@ -415,7 +415,7 @@ class CustomCard extends StatelessWidget {
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 8,
-              color: ColorUtil.blackOpacity01,
+              color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.1),
             ),
           ],
         ),

@@ -52,7 +52,7 @@ class UpdateProgressDialog extends StatelessWidget {
         },
         child: Text(
           "稍等片刻...",
-          style: TextUtil.base.grey6267.sp(12),
+          style: TextUtil.base.oldThirdAction(context).sp(12),
         ),
       );
     } else {
@@ -62,7 +62,7 @@ class UpdateProgressDialog extends StatelessWidget {
         },
         child: Text(
           "点击隐藏窗口",
-          style: TextUtil.base.grey6267.sp(12),
+          style: TextUtil.base.oldThirdAction(context).sp(12),
         ),
       );
     }

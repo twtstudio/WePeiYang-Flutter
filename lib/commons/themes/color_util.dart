@@ -74,6 +74,7 @@ class ColorUtil {
   static final FavorRoomColor =Color(0xFFFFBC6B);
   static final lightBorderColor = Color(0xFFEAEAEA);
   static final roomFreeColor = Color(0xFF5CB85C);
+  static final roomOccupiedColor = Color(0xFFD9534F);
   static final ReplySuffixColor = Color(0xFFAAAAAA);
   static final oldHintDarkestColor = Color(0xffb1b2be);
 
@@ -102,6 +103,7 @@ class ColorUtil {
   static final unSelectedIcon = Color.fromARGB(255, 144, 144, 144);
 
   static final backgroundMaskColor = Color(0xB3FFFFFF);
+
   static final liteBackgroundMaskColor = Colors.white10;
 
   static final blue52hz = Color.fromRGBO(36, 43, 69, 1);
@@ -149,21 +151,6 @@ class ColorUtil {
   //
   // -----还没有处理的
 
-  //
-  // ------- divider --------
-  //
-  static final greyShade300 = Colors.grey[300];
-  static final blackOpacity01 = Colors.black.withOpacity(0.1);
-  static final blackOpacity006 = Colors.black.withOpacity(0.06);
-  static final blackOpacity008 = Colors.black.withOpacity(0.08);
-  static final grey6267Color = Color(0xff62677b);
-  static final greyShadow64 = Color.fromARGB(64, 236, 237, 239);
-  static final greyA8 = Color(0xFFA8A8A8);
-  static final greyA6 = Color(0xFFA6A6A6);
-  static final greyC8 = Color(0xFFC8C8C8);
-  static final blue303C = Color(0xFF303C66);
-  static final blue363C = Color(0xFF363C54);
-  static final redD9 = Color(0xFFD9534F);
 
 
   static final primaryGradient = LinearGradient(

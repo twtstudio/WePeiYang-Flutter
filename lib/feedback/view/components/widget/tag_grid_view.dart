@@ -84,7 +84,7 @@ class _TabGridViewState extends State<TabGridView>
   }
 
   ActionChip _tagChip(bool chose, Department tag) => ActionChip(
-        backgroundColor: chose ? ColorUtil.grey6267Color : ColorUtil.tagLabelColor,
+        backgroundColor: chose ? WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor) : ColorUtil.tagLabelColor,
         label: Text(
           tag.name,
           style: chose

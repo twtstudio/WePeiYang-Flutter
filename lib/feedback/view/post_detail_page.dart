@@ -995,7 +995,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
-                  TextUtil.base.normal.greyA8.NotoSansSC.sp(16).w600,
+                  TextUtil.base.normal.infoText(context).NotoSansSC.sp(16).w600,
               confirmText: "确认",
               gradient: LinearGradient(
                   colors: [

@@ -137,7 +137,7 @@ class _CollectionPageState extends State<CollectionPage> {
                   return Container(
                       height: 200,
                       alignment: Alignment.center,
-                      child: Text("暂无收藏", style: TextUtil.base.grey6267));
+                      child: Text("暂无收藏", style: TextUtil.base.oldThirdAction(context)));
                 } else {
                   return Column(
                     children: [favLists, SizedBox(height: 20.w)],

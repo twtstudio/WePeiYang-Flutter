@@ -578,7 +578,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
                     maxLines: 2,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.label(context),
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,
@@ -611,7 +611,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               children: [
                 Text(
                   widget.data.floor.nickname + ': ' + widget.data.floor.content,
-                  style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.label(context),
                 ),
                 SizedBox(height: 8.w),
                 questionItem,
@@ -940,7 +940,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
-                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.label(context),
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,
@@ -975,7 +975,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                   widget.data.toFloor!.nickname +
                       ': ' +
                       widget.data.toFloor!.content,
-                  style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
+                  style: TextUtil.base.sp(14).PingFangSC.w400.label(context),
                 ),
                 SizedBox(height: 8.w),
                 questionItem,
@@ -1325,7 +1325,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     softWrap: true,
-                    style: TextUtil.base.sp(14).PingFangSC.w400.blue363C,
+                    style: TextUtil.base.sp(14).PingFangSC.w400.label(context),
                   ),
                   SizedBox(height: 6.w),
                   likeFloorFav,

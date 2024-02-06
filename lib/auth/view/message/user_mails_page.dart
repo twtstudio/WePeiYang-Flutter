@@ -108,7 +108,7 @@ class _MailItemState extends State<MailItem> {
             boxShadow: [
               BoxShadow(
                   blurRadius: 5,
-                  color: ColorUtil.greyShadow64,
+                  color: ColorUtil.liteBackgroundMaskColor,
                   offset: Offset.zero,
                   spreadRadius: 3),
             ],
@@ -149,7 +149,7 @@ class _MailItemState extends State<MailItem> {
                   Spacer(),
                   Text(
                     widget.data.time.replaceRange(10, 11, ' ').substring(0, 19),
-                    style: TextUtil.base.whiteb1b2.sp(11),
+                    style: TextUtil.base.oldHintDarkest.sp(11),
                   )
                 ],
               )
@@ -267,7 +267,7 @@ class _TextMailContent extends StatelessWidget {
         Text(
           DateFormat('yyyy-MM-dd HH:mm:ss')
               .format(DateTime.parse(data.time).toLocal()),
-          style: TextUtil.base.grey6267.sp(12),
+          style: TextUtil.base.oldThirdAction(context).sp(12),
         )
       ],
     );
@@ -297,7 +297,7 @@ class _TextMailContent extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                       blurRadius: 5,
-                      color: ColorUtil.greyShadow64,
+                      color: ColorUtil.liteBackgroundMaskColor,
                       offset: Offset.zero,
                       spreadRadius: 3),
                 ],
