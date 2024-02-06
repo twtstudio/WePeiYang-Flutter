@@ -110,7 +110,7 @@ final colorSetsList = {
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    // 在0.7停止同理
+// 在0.7停止同理
     stops: [0, 0.53, 0.7],
   ),
 
@@ -140,4 +140,10 @@ final colorSetsList = {
     lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
   ]),
+
+  WpyColorSetKey.progressBarGradientSet: [
+    Color(0x2262677b),
+    Color(0x8862677b),
+    Color(0xff62677b),
+  ]
 };

@@ -185,4 +185,5 @@ enum WpyColorSetKey {
   backgroundGradient,
   primaryGradientAllScreen,
   gradientPrimaryBackground,
+  progressBarGradientSet,
 }

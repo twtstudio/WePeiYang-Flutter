@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/update_progress_bar.dart';
 import 'package:we_pei_yang_flutter/commons/update/dialog/widgets/update_detail.dart';
@@ -35,7 +37,8 @@ class UpdateProgressDialog extends StatelessWidget {
               value: progress,
               strokeWidth: progressHeight,
               context: context,
-              colors: ColorUtil.gradientGrey,
+              colors: WpyTheme.of(context)
+                  .getColorSet(WpyColorSetKey.progressBarGradientSet),
             ),
           );
         }
