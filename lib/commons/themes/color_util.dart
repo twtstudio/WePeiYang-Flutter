@@ -192,7 +192,7 @@ class ColorUtil {
     ColorUtil.primaryBackgroundColor,
   ]);
 
-  static final List<Color> gradientGrey = [
+  static final List<Color> progressBarGradient = [
     Color(0x2262677b),
     Color(0x8862677b),
     Color(0xff62677b),
