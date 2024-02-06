@@ -20,6 +20,7 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
+import '../../commons/widgets/colored_icon.dart';
 
 class HomePage extends StatefulWidget {
   final int? page;
@@ -120,12 +121,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: IconButton(
         splashRadius: 1,
         icon: _currentIndex == 0
-            ? SvgPicture.asset(
-                'assets/svg_pics/home.svg',
+            ? ColoredIcon(
+                'assets/images/home.png',
+                width: 24.h,
               )
-            : SvgPicture.asset(
-                'assets/svg_pics/home.svg',
-                color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+            : ColoredIcon(
+                'assets/images/home_grey.png',
+                width: 24.h,
+                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon,)
               ),
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(0),
@@ -138,11 +141,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: IconButton(
         splashRadius: 1,
         icon: _currentIndex == 1
-            ? SvgPicture.asset(
-                'assets/svg_pics/lake.svg',
+            ? ColoredIcon(
+                'assets/images/lake.png',
+                width: 29.h,
               )
-            : SvgPicture.asset(
-                'assets/svg_pics/lake_grey.svg',
+            : ColoredIcon(
+                'assets/images/lake_grey.png',
+                width: 29.h,
+                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
               ),
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () {
@@ -162,12 +168,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: IconButton(
         splashRadius: 1,
         icon: _currentIndex == 2
-            ? SvgPicture.asset(
-                'assets/svg_pics/my.svg',
+            ? ColoredIcon(
+                'assets/images/my.png',
+                width: 24.h,
               )
-            : SvgPicture.asset(
-                'assets/svg_pics/my.svg',
-                color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+            : ColoredIcon(
+                'assets/images/my_grey.png',
+                width: 24.h,
+                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
               ),
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(2),
