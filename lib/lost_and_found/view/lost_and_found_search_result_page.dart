@@ -212,7 +212,7 @@ class _LostAndFoundSearchResultPageState
                       },
                       child: Card(
                         elevation: 3,
-                        shadowColor: ColorUtil.greyB4AFColor.withOpacity(0.1),
+                        shadowColor: ColorUtil.backgroundGradientEndColor.withOpacity(0.1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           side: const BorderSide(

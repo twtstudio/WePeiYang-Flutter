@@ -82,6 +82,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle oldHintDarker(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldHintDarkerColor));
 
+  TextStyle get FavorRoomColor => this.copyWith(color: ColorUtil.FavorRoomColor);
   //--------- unformatted --------
 
   TextStyle get grey90 => this.copyWith(color: ColorUtil.grey90);
@@ -94,7 +95,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
 
-  TextStyle get greyAA => this.copyWith(color: ColorUtil.greyAA);
+  TextStyle get greyAA => this.copyWith(color: ColorUtil.ReplySuffixColor);
 
   TextStyle get greyA8 => this.copyWith(color: ColorUtil.greyA8);
 
@@ -114,13 +115,11 @@ extension TextStyleAttr on TextStyle {
       );
 
 
-  TextStyle get grey126 => this.copyWith(color: ColorUtil.grey126);
+  TextStyle get grey126 => this.copyWith(color: ColorUtil.courseGradientStopColor);
 
   TextStyle get roomFree => this.copyWith(color: ColorUtil.roomFreeColor);
 
   TextStyle get redD9 => this.copyWith(color: ColorUtil.redD9);
-
-  TextStyle get orange6B => this.copyWith(color: ColorUtil.orange6B);
 
   TextStyle infoColor(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor));
@@ -134,7 +133,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle oldListAction(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor));
 
-  TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.whiteb1b2Color);
+  TextStyle get whiteb1b2 => this.copyWith(color: ColorUtil.oldHintDarkestColor);
 
   TextStyle get grey6267 => this.copyWith(color: ColorUtil.grey6267Color);
 
@@ -146,8 +145,6 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle gpaHintColor(context) =>
       this.copyWith(color: ColorUtil.gpaHintColor);
-
-  TextStyle get grey4146 => this.copyWith(color: ColorUtil.grey4146Color);
 
   TextStyle mainTextColor(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor));

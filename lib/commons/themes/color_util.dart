@@ -71,8 +71,11 @@ class ColorUtil {
   static final courseGradientStopColor = Color.fromRGBO(255, 255, 255, 0.3);
   static final tagLabelColor = Color.fromRGBO(234, 234, 234, 1);
   static final gpaHintColor = Color(0xffcdcdd3);
+  static final FavorRoomColor =Color(0xFFFFBC6B);
   static final lightBorderColor = Color(0xFFEAEAEA);
   static final roomFreeColor = Color(0xFF5CB85C);
+  static final ReplySuffixColor = Color(0xFFAAAAAA);
+  static final oldHintDarkestColor = Color(0xffb1b2be);
 
   // 骨架屏幕渐变
   static final skeletonStartAColor = Color(0x12FFFFFF);
@@ -150,22 +153,15 @@ class ColorUtil {
   static final blackOpacity01 = Colors.black.withOpacity(0.1);
   static final blackOpacity006 = Colors.black.withOpacity(0.06);
   static final blackOpacity008 = Colors.black.withOpacity(0.08);
-  static final whiteb1b2Color = Color(0xffb1b2be);
-  static final grey4146Color = Color(0xff414650);
   static final grey6267Color = Color(0xff62677b);
   static final greyShadow64 = Color.fromARGB(64, 236, 237, 239);
-  static final greyAA = Color(0xFFAAAAAA);
   static final greyA8 = Color(0xFFA8A8A8);
   static final greyA6 = Color(0xFFA6A6A6);
-  static final grey126 = Color.fromARGB(255, 126, 126, 126);
   static final greyC8 = Color(0xFFC8C8C8);
   static final blue303C = Color(0xFF303C66);
   static final blue363C = Color(0xFF363C54);
-  static final black4E = Color(0xFF4E4E4E);
   static final redD9 = Color(0xFFD9534F);
-  static final orange6B = Color(0xFFFFBC6B);
-  static final greyB4AFColor = Color(0xFFB4AFAF);
-  static final greyF7F8Color = Color(0xFFF7F7F8);
+
 
   static final primaryGradient = LinearGradient(
     colors: [

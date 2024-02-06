@@ -131,7 +131,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
       child: Container(
         height: searchBarHeight,
         decoration: BoxDecoration(
-            color: ColorUtil.greyF7F8Color,
+            color: ColorUtil.secondaryBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(45.r))),
         child: Row(children: [
           SizedBox(width: 10.w),
@@ -307,7 +307,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                     },
                                     child: Card(
                                       elevation: 3,
-                                      shadowColor: ColorUtil.greyB4AFColor
+                                      shadowColor: ColorUtil.backgroundGradientEndColor
                                           .withOpacity(0.1),
                                       shape: RoundedRectangleBorder(
                                         borderRadius:

@@ -144,7 +144,7 @@ class _MailItemState extends State<MailItem> {
                   SizedBox(width: 10),
                   Text(
                     "twt",
-                    style: TextUtil.base.grey4146.sp(11),
+                    style: TextUtil.base.oldActionColor(context).sp(11),
                   ),
                   Spacer(),
                   Text(

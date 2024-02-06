@@ -41,7 +41,7 @@ class FavourRoomCard extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               room.name,
-              style: TextUtil.base.Swis.w400.orange6B.sp(10),
+              style: TextUtil.base.Swis.w400.FavorRoomColor.sp(10),
             ),
             SizedBox(height: 8.h),
             roomState,
