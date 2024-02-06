@@ -106,42 +106,45 @@ class ColorUtil {
   // 负数等级的color
   static final levelNegColor = Color.fromRGBO(85, 0, 9, 1.0);
 
+  // GPA 雷达图
+  static final gpaRadiationColor = Color.fromRGBO(158, 158, 138, 0.45);
+  static final gpaRadiationWaveColor = Color.fromRGBO(178, 178, 158, 0.2);
+  static final gpaInsideMaskColor = Color.fromRGBO(230, 230, 230, 0.25);
+
+  static final examAColor = Color.fromRGBO(114, 117, 136, 1);
+  static final examBColor = Color.fromRGBO(143, 146, 165, 1);
+  static final examCColor = Color.fromRGBO(122, 119, 138, 1);
+  static final examDColor = Color.fromRGBO(142, 122, 150, 1);
+  static final examEColor = Color.fromRGBO(130, 134, 161, 1);
+
+  // 精华帖子
+  static final elegantPostTagColor = Color.fromRGBO(232, 178, 27, 1.0);
+  static final elegantLongPostTagColor = Color.fromRGBO(236, 120, 57, 1.0);
+  static final elegantPostTagBColor = Color.fromRGBO(190, 163, 91, 1.0);
+  static final elegantPostTagCColor = Color.fromRGBO(157, 129, 113, 1.0);
+
+  // 活动帖子
+  static final activityPostTagColor = Color.fromRGBO(66, 161, 225, 1.0);
+  static final activityPostLongTagColor = Color.fromRGBO(57, 90, 236, 1.0);
+  static final activityPostBColor = Color.fromRGBO(124, 179, 216, 1.0);
+  static final activityPostTagCColor = Color.fromRGBO(72, 80, 117, 1.0);
+
+  // 置顶帖子
+  static final pinedPostTagAColor = Color.fromRGBO(223, 108, 171, 1.0);
+  static final pinedPostTagBColor = Color.fromRGBO(208, 104, 160, 1.0);
+  static final pinedPostTagCColor = Color.fromRGBO(134, 103, 111, 1.0);
+  static final pinedPostTagDColor = Color.fromRGBO(243, 16, 73, 1.0);
+
+  static final deletePostAColor = Color.fromRGBO(43, 16, 16, 1.0);
+  static final deletePostBColor = Color.fromRGBO(42, 28, 49, 1.0);
+
+  // this is for the schedule page
+  static final errorActionColor = Color.fromRGBO(217, 83, 79, 1);
+  static final scheduleOccupiedColor = Color.fromRGBO(255, 188, 107, 1);
+
   //
   //
-  // -----还没有处理的Q
-  static final grey172 = Color.fromRGBO(172, 174, 186, 1);
-  static final grey178 = Color.fromRGBO(178, 178, 158, 0.2);
-  static final grey90 = Color(0xFF909090);
-  static final grey89 = Color(0xff898989);
-  static final grey114 = Color.fromRGBO(114, 117, 136, 1);
-  static final grey143 = Color.fromRGBO(143, 146, 165, 1);
-  static final grey122 = Color.fromRGBO(122, 119, 138, 1);
-  static final grey142 = Color.fromRGBO(142, 122, 150, 1);
-  static final grey130 = Color.fromRGBO(130, 134, 161, 1);
-  static final grey230 = Color.fromRGBO(230, 230, 230, 0.25);
-  static final grey246 = Color.fromRGBO(246, 246, 246, 0.2);
-  static final grey246Opacity05 = Color.fromRGBO(246, 246, 246, 0.5);
-  static final blue98122 = Color.fromRGBO(98, 103, 122, 1.0);
-  static final blue98Opacity061 = Color.fromRGBO(98, 103, 124, 0.61);
-  static final blue105 = Color.fromRGBO(105, 109, 127, 1);
-  static final blue177 = Color.fromRGBO(177, 175, 227, 1.0);
-  static final yellow232 = Color.fromRGBO(232, 178, 27, 1.0);
-  static final orange236 = Color.fromRGBO(236, 120, 57, 1.0);
-  static final blue66 = Color.fromRGBO(66, 161, 225, 1.0);
-  static final blue57 = Color.fromRGBO(57, 90, 236, 1.0);
-  static final pink223 = Color.fromRGBO(223, 108, 171, 1.0);
-  static final pink208 = Color.fromRGBO(208, 104, 160, 1.0);
-  static final red134 = Color.fromRGBO(134, 103, 111, 1.0);
-  static final red213 = Color.fromRGBO(217, 83, 79, 1);
-  static final red243 = Color.fromRGBO(243, 16, 73, 1.0);
-  static final yellow158 = Color.fromRGBO(158, 158, 138, 0.45);
-  static final yellow190 = Color.fromRGBO(190, 163, 91, 1.0);
-  static final yellow255 = Color.fromRGBO(255, 188, 107, 1);
-  static final orange157 = Color.fromRGBO(157, 129, 113, 1.0);
-  static final blue124 = Color.fromRGBO(124, 179, 216, 1.0);
-  static final blue72 = Color.fromRGBO(72, 80, 117, 1.0);
-  static final red43 = Color.fromRGBO(43, 16, 16, 1.0);
-  static final red42 = Color.fromRGBO(42, 28, 49, 1.0);
+  // -----还没有处理的
 
   //
   // ------- divider --------

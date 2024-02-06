@@ -473,8 +473,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 ),
                               )),
                           Divider(
-                              color: WpyTheme.of(context).get(WpyColorKey
-                                  .primaryBackgroundColor)), // 添加分隔线
+                              color: WpyTheme.of(context).get(
+                                  WpyColorKey.primaryBackgroundColor)), // 添加分隔线
                           Padding(
                             padding: EdgeInsets.only(bottom: 5.h),
                             child: InkWell(
@@ -618,7 +618,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   children: [
                                     Text(
                                       _formatDate(post.detailedUploadTime),
-                                      style: TextUtil.base.normal.grey90.sp(8),
+                                      style: TextUtil.base.normal
+                                          .infoText(context)
+                                          .sp(8),
                                     ),
                                   ],
                                 ),
@@ -628,7 +630,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         ),
                         Text(
                           '#MP${post.id.toString().padLeft(6, '0')}',
-                          style: TextUtil.base.normal.grey90.sp(12),
+                          style: TextUtil.base.normal.infoText(context).sp(12),
                         ),
                       ],
                     ),
@@ -676,14 +678,14 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               SizedBox(width: 2.w),
                               Text(
                                 post.category + '  ',
-                                style: TextUtil.base.normal.grey90.sp(10),
+                                style: TextUtil.base.normal.infoText(context).sp(10),
                               ),
                             ],
                           ),
                         ),
                         Text(
                           '11445次浏览' + '  ',
-                          style: TextUtil.base.normal.grey90.sp(9),
+                          style: TextUtil.base.normal.infoText(context).sp(9),
                         )
                       ],
                     ),
@@ -692,7 +694,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       padding: EdgeInsets.all(7.r),
                       child: Text(
                         post.text,
-                        style: TextUtil.base.normal.infoText(context).sp(15).h(1.5),
+                        style: TextUtil.base.normal
+                            .infoText(context)
+                            .sp(15)
+                            .h(1.5),
                       ),
                     ),
                     SizedBox(height: 45.h),

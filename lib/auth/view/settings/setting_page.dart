@@ -120,7 +120,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.widgets_outlined,
-                      color: ColorUtil.blue98122, size: 20),
+                      color: ColorUtil.oldSecondaryActionColor, size: 20),
                   SizedBox(width: 12.w),
                   Expanded(child: Text('应用设置', style: mainTextStyle)),
                   arrow,
@@ -171,7 +171,8 @@ class _SettingPageState extends State<SettingPage> {
               },
               child: Row(
                 children: [
-                  Icon(Icons.update, color: ColorUtil.blue98122, size: 20),
+                  Icon(Icons.update,
+                      color: ColorUtil.oldSecondaryActionColor, size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(S.current.check_new, style: mainTextStyle),

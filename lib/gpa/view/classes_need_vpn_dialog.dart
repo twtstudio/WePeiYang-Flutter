@@ -38,7 +38,7 @@ class ClassesNeedVPNDialog extends Dialog {
                 '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
                 style: TextUtil.base.regular.noLine.sp(14).oldThirdAction(context)),
             SizedBox(height: 15),
-            Divider(height: 1, color: ColorUtil.grey172),
+            Divider(height: 1, color: ColorUtil.lightBorderColor),
             WButton(
               onPressed: () => Navigator.pop(context),
               child: Container(

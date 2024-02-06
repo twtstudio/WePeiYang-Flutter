@@ -41,7 +41,7 @@ class PrivacyDialog extends Dialog {
               ),
             ),
             SizedBox(height: 13),
-            Divider(height: 1, color: ColorUtil.grey172),
+            Divider(height: 1, color: ColorUtil.lightBorderColor),
             _detail(context),
           ],
         ),

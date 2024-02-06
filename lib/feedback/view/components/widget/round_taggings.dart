@@ -55,9 +55,9 @@ class _ETagWidgetState extends State<ETagWidget> {
   bool colorState = false;
   var timeDuration = Duration(milliseconds: 1900);
   Map<String, ETagUtil> tagUtils = {
-    'recommend': ETagUtil(ColorUtil.yellow232, ColorUtil.orange236, '精', '精华帖'),
-    'theme': ETagUtil(ColorUtil.blue66, ColorUtil.blue57, '活动', '活动帖'),
-    'top': ETagUtil(ColorUtil.pink223, ColorUtil.red243, '置顶', '置顶帖')
+    'recommend': ETagUtil(ColorUtil.elegantPostTagColor, ColorUtil.elegantLongPostTagColor, '精', '精华帖'),
+    'theme': ETagUtil(ColorUtil.activityPostTagColor, ColorUtil.activityPostLongTagColor, '活动', '活动帖'),
+    'top': ETagUtil(ColorUtil.pinedPostTagAColor, ColorUtil.pinedPostTagDColor, '置顶', '置顶帖')
   };
 
   @override

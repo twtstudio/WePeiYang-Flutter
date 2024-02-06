@@ -72,8 +72,8 @@ class _GPAPageState extends State<GPAPage> {
           child: Theme(
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data: Theme.of(context).copyWith(
-                secondaryHeaderColor:
-                    WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+                secondaryHeaderColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor)),
             child: ListView(
               children: [
                 RadarChartWidget(_gpaColors),
@@ -251,7 +251,7 @@ class _RadarChartPainter extends CustomPainter {
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
   final Paint _creditPaint = Paint()
-    ..color = ColorUtil.grey178
+    ..color = ColorUtil.gpaRadiationWaveColor
     ..style = PaintingStyle.fill;
 
   _drawCredit(Canvas canvas, Size size) {
@@ -280,7 +280,7 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _fillPaint = Paint()
-    ..color = ColorUtil.grey230
+    ..color = ColorUtil.gpaInsideMaskColor
     ..style = PaintingStyle.fill;
 
   _drawScoreFill(Canvas canvas) {
@@ -299,7 +299,7 @@ class _RadarChartPainter extends CustomPainter {
   }
 
   final Paint _linePaint = Paint()
-    ..color = ColorUtil.yellow158
+    ..color = ColorUtil.gpaRadiationColor
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.5;
 

@@ -288,7 +288,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
               ),
             ),
             Material(
-              color: ColorUtil.red213,
+              color: ColorUtil.errorActionColor,
               child: InkWell(
                 onTap: () {
                   _showDialog(context, '是否删除此课程?', ok: () {

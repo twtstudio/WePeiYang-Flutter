@@ -65,10 +65,9 @@ class _WeekDisplayWidget extends StatelessWidget {
           height: 28.h,
           width: _cardWidth,
           decoration: BoxDecoration(
-              color: deep
-                  ? WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor)
-                  : ColorUtil.grey246,
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.primaryBackgroundColor)
+                  .withOpacity(deep ? 1 : 0.25),
               borderRadius: BorderRadius.circular(5.r)),
           child: Center(
             child: Text(date,

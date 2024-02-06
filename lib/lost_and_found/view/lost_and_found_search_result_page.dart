@@ -100,9 +100,7 @@ class _LostAndFoundSearchResultPageState
   Widget build(BuildContext context) {
     if (context.read<LostAndFoundModel2>().lafSubStatus[type] ==
             LAFSubStatus.ready &&
-        context
-                .read<LostAndFoundModel2>()
-                .lafSubStatus[category] !=
+        context.read<LostAndFoundModel2>().lafSubStatus[category] !=
             LAFSubStatus.ready) {
       _onRefresh();
     }
@@ -206,8 +204,7 @@ class _LostAndFoundSearchResultPageState
                   itemBuilder: (BuildContext context, int index) => InkWell(
                       onTap: () {
                         Tuple2 tuple2 = Tuple2(false, postList[index].id);
-                        Navigator.pushNamed(
-                            context, LAFRouter.lafDetailPage,
+                        Navigator.pushNamed(context, LAFRouter.lafDetailPage,
                             arguments: tuple2);
                       },
                       child: Card(
@@ -229,17 +226,16 @@ class _LostAndFoundSearchResultPageState
                                         // 添加Padding组件
                                         padding: EdgeInsets.all(
                                             10.r), // 设置所有方向的内边距为15个像素
-                                        child: Text(
-                                            postList[index].text.length > 32
-                                                ? postList[index]
-                                                        .text
-                                                        .substring(0, 31) +
-                                                    '……'
-                                                : postList[index].text,
-                                            style: TextUtil.base.w400.grey89
+                                        child: Text(postList[index].text,
+                                            style: TextUtil.base.w400
+                                                .infoText(context)
                                                 .sp(14)
                                                 .h(1.1)
-                                                .NotoSansSC),
+                                                .NotoSansSC
+                                                .copyWith(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                )),
                                       ),
                                       elevation: 0,
                                       color: Color(0xfff8f8f8),
@@ -288,8 +284,10 @@ class _LostAndFoundSearchResultPageState
                                   start: 12.w, end: 12.w),
                               child: Text(
                                 postList[index].title,
-                                style:
-                                    TextUtil.base.w600.label(context).sp(15).NotoSansSC,
+                                style: TextUtil.base.w600
+                                    .label(context)
+                                    .sp(15)
+                                    .NotoSansSC,
                               ),
                             ),
                             Padding(
@@ -305,7 +303,8 @@ class _LostAndFoundSearchResultPageState
                                   Text(
                                     _timeAgo(
                                         postList[index].detailedUploadTime),
-                                    style: TextUtil.base.w400.grey89
+                                    style: TextUtil.base.w400
+                                        .infoText(context)
                                         .sp(10)
                                         .NotoSansSC,
                                   ),
@@ -317,7 +316,7 @@ class _LostAndFoundSearchResultPageState
                                           height: 16.0.h),
                                       Text(
                                         '${postList[index].hot.toString()}',
-                                        style: TextUtil.base.grey89,
+                                        style: TextUtil.base.infoText(context),
                                       ),
                                     ],
                                   ),

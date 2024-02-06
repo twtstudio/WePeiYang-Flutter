@@ -664,7 +664,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                                   .primaryAction(context))
                           : Text(yyyymmddtexts[widget.typeNotifier.value],
                               style:
-                                  TextUtil.base.NotoSansSC.w400.sp(14).grey89))
+                                  TextUtil.base.NotoSansSC.w400.sp(14).infoText(context)))
                 ]))));
   }
 }
@@ -720,7 +720,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         maxLines: 1,
         style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
         decoration: InputDecoration.collapsed(
-            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context),
             hintText:
                 isFocused ? "" : locationtexts[widget.typeNotifier.value]),
         onChanged: (text) {
@@ -812,7 +812,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         maxLines: 1,
         style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
         decoration: InputDecoration.collapsed(
-            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).grey89,
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context),
             hintText: isFocused ? "" : '请填写联系方式'),
         onChanged: (text) {
           contentCounter.value = '${text.characters.length}/11';

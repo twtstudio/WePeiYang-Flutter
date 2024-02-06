@@ -129,7 +129,7 @@ class _SearchPageState extends State<SearchPage> {
             child: Center(
               child: Text(
                 "暂无历史记录",
-                style: TextUtil.base.blue98Opacity061.normal.sp(16),
+                style: TextUtil.base.secondary(context).normal.sp(16),
               ),
             ),
           );

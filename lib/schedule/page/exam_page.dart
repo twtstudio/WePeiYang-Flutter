@@ -108,11 +108,11 @@ class _ExamPageState extends State<ExamPage> {
   }
 
   List<Color> get _scheduleColor => [
-        ColorUtil.grey114, // #727588
-        ColorUtil.grey143, // #8F92A5
-        ColorUtil.grey122, // #7A778A
-        ColorUtil.grey142, // #8E7A96
-        ColorUtil.grey130, // #8286A1
+        ColorUtil.examAColor, // #727588
+        ColorUtil.examBColor, // #8F92A5
+        ColorUtil.examCColor, // #7A778A
+        ColorUtil.examDColor, // #8E7A96
+        ColorUtil.examEColor, // #8286A1
       ];
 
   Widget examCard(BuildContext context, Exam exam, bool finished) {
