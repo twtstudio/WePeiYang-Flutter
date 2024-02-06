@@ -23,19 +23,19 @@ class FiftyTwoHzPage extends StatelessWidget {
         return !flag;
       },
       child: Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: AppBar(
             title: Text('52赫兹',
                 style:
                     TextUtil.base.bold.sp(16).customColor(ColorUtil.blue52hz)),
             elevation: 0,
             centerTitle: true,
-            backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             leading: Padding(
               padding: const EdgeInsets.only(left: 15),
               child: WButton(
                   child: Icon(Icons.arrow_back,
-                      color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                      color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),

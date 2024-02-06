@@ -330,7 +330,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     return Screenshot(
       controller: widget.screenshotController ?? ScreenshotController(),
       child: Container(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         child: widget.outer
             // outer 框架
             ? WButton(
@@ -346,7 +346,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 child: Container(
                   padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor),
+                      .get(WpyColorKey.primaryBackgroundColor),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -402,7 +402,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: Container(
           width: 350.w,
           height: 197.w,
-          color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+          color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
             width: 350.w,
@@ -584,7 +584,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     Container(
                                         decoration: BoxDecoration(
                                           color: WpyTheme.of(context)
-                                              .get(WpyThemeKeys
+                                              .get(WpyColorKey
                                                   .reverseBackgroundColor)
                                               .withOpacity(0.38),
                                           borderRadius: BorderRadius.only(
@@ -623,13 +623,13 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
             } else {
               return Icon(
                 Icons.refresh,
-                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
               );
             }
           }),
           color: snapshot.hasData
               ? ColorUtil.transparent
-              : WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+              : WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
         );
       },
     );

@@ -25,7 +25,7 @@ class TjuRebindDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: _TjuRebindWidget(),
       ),
     );
@@ -124,7 +124,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                       hintText: S.current.captcha,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -152,11 +152,11 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return WpyTheme.of(context)
-                        .get(WpyThemeKeys.oldActionRippleColor);
-                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+                        .get(WpyColorKey.oldActionRippleColor);
+                  return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
                 }),
                 backgroundColor: MaterialStateProperty.all(
-                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                    WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),

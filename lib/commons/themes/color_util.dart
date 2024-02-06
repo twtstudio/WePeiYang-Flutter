@@ -109,8 +109,6 @@ class ColorUtil {
   //
   //
   // -----还没有处理的Q
-  static final blackOpacityA64 = Color.fromARGB(64, 0, 0, 0);
-  static final blackOpacity022 = Color.fromRGBO(0, 0, 25, 0.22);
   static final grey172 = Color.fromRGBO(172, 174, 186, 1);
   static final grey178 = Color.fromRGBO(178, 178, 158, 0.2);
   static final grey90 = Color(0xFF909090);

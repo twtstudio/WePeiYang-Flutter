@@ -292,7 +292,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   Size(110.w, 40.h)),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryActionColor)),
+                                      .get(WpyColorKey.primaryActionColor)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -390,7 +390,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                   Size(110, 40)),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryActionColor)),
+                                      .get(WpyColorKey.primaryActionColor)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -473,7 +473,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 ),
                               )),
                           Divider(
-                              color: WpyTheme.of(context).get(WpyThemeKeys
+                              color: WpyTheme.of(context).get(WpyColorKey
                                   .primaryBackgroundColor)), // 添加分隔线
                           Padding(
                             padding: EdgeInsets.only(bottom: 5.h),
@@ -653,7 +653,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                           padding: EdgeInsets.all(4.r),
                           decoration: BoxDecoration(
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.secondaryBackgroundColor),
+                                .get(WpyColorKey.secondaryBackgroundColor),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Row(
@@ -663,7 +663,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 padding: EdgeInsets.all(2.r),
                                 decoration: BoxDecoration(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Text(
@@ -756,7 +756,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
                               color: WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryActionColor),
+                                  .get(WpyColorKey.primaryActionColor),
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: WButton(
@@ -777,13 +777,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               color: polished
                                   ? Colors.grey[200]
                                   : WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                               borderRadius: BorderRadius.circular(20.r),
                               border: polished
                                   ? null
                                   : Border.all(
                                       color: WpyTheme.of(context)
-                                          .get(WpyThemeKeys.primaryActionColor),
+                                          .get(WpyColorKey.primaryActionColor),
                                       width: 1.w,
                                     ),
                             ),
@@ -1003,13 +1003,13 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
             } else {
               return Icon(
                 Icons.refresh,
-                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
               );
             }
           }),
           color: snapshot.hasData
               ? Colors.transparent
-              : WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+              : WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
         );
       },
     );

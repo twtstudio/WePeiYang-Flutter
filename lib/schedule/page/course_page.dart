@@ -109,7 +109,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
             'assets/images/schedule/back.png',
             height: 18.r,
             width: 18.r,
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ),
         ),
       ),
@@ -229,7 +229,7 @@ class _TitleWidget extends StatelessWidget {
                       provider.shrink
                           ? 'assets/images/schedule/up.png'
                           : 'assets/images/schedule/down.png',
-                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                      color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
                       height: 18.r,
                       width: 18.r),
                 ));
@@ -275,7 +275,7 @@ class _HoursCounterWidget extends StatelessWidget {
                 width: totalWidth,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor)),
+                    color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor)),
               ),
               if (!leftWidth.isNaN) // Avoid No Class in a semester
                 Container(
@@ -286,8 +286,8 @@ class _HoursCounterWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.r),
                     gradient: LinearGradient(
                       colors: [
-                        WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
-                        WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
+                        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                        WpyTheme.of(context).get(WpyColorKey.backgroundGradientEndColor),
                       ],
                     ),
                   ),

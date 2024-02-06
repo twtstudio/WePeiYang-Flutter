@@ -27,11 +27,11 @@ class MapCalenderState extends State<MapCalendarPage> {
           toolbarHeight: 40,
           titleSpacing: 0,
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               CupertinoIcons.back,
-              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -60,14 +60,14 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   BoxDecoration cardDecoration(ctx) => BoxDecoration(
-        color: WpyTheme.of(ctx).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(ctx).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
             offset: Offset(0, 4),
             blurRadius: 8,
             color: WpyTheme.of(ctx)
-                .get(WpyThemeKeys.basicTextColor)
+                .get(WpyColorKey.basicTextColor)
                 .withOpacity(0.05),
           ),
         ],
@@ -110,7 +110,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
                                   WpyTheme.of(context).get(
-                                      WpyThemeKeys.primaryLightestActionColor),
+                                      WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/account/map_wei_jin.jpg')))),
@@ -211,7 +211,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
                                   WpyTheme.of(context).get(
-                                      WpyThemeKeys.primaryLightestActionColor),
+                                      WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
                                   'assets/images/calender/first.jpg')))),
@@ -255,7 +255,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                             WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryLightestActionColor),
+                                .get(WpyColorKey.primaryLightestActionColor),
                             BlendMode.screen),
                         image: AssetImage('assets/images/calender/second.jpg'),
                       ))),

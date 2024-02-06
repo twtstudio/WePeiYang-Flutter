@@ -26,7 +26,7 @@ class TimePickerWidget extends StatelessWidget {
       child: Container(
           width: 1.sw,
           height: 54.h + ScreenUtil().bottomBarHeight,
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
           child: SafeArea(
             child: Center(
               child: Text(
@@ -127,7 +127,7 @@ class _TableCalenderState extends State<_TableCalender>
       ),
       selectedDecoration: BoxDecoration(
         color: WpyTheme.of(context)
-            .get(WpyThemeKeys.primaryActionColor)
+            .get(WpyColorKey.primaryActionColor)
             .withOpacity(0.1),
         shape: BoxShape.circle,
       ),
@@ -135,7 +135,7 @@ class _TableCalenderState extends State<_TableCalender>
           TextUtil.base.PingFangSC.w400.primaryAction(context).sp(16),
       todayDecoration: BoxDecoration(
         border: Border.all(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
           width: 0.5.w,
         ),
         shape: BoxShape.circle,
@@ -254,10 +254,10 @@ class _TimeItem extends StatelessWidget {
         backgroundColor: MaterialStateProperty.all(
           isChecked
               ? WpyTheme.of(context)
-                  .get(WpyThemeKeys.primaryLightestActionColor)
+                  .get(WpyColorKey.primaryLightestActionColor)
                   .withOpacity(0.5)
               : WpyTheme.of(context)
-                  .get(WpyThemeKeys.primaryBackgroundColor)
+                  .get(WpyColorKey.primaryBackgroundColor)
                   .withOpacity(0.1),
         ),
         shape: MaterialStateProperty.all(
@@ -268,8 +268,8 @@ class _TimeItem extends StatelessWidget {
         side: MaterialStateProperty.all(
           BorderSide(
             color: isChecked
-                ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
-                : WpyTheme.of(context).get(WpyThemeKeys.unlabeledColor),
+                ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                : WpyTheme.of(context).get(WpyColorKey.unlabeledColor),
             width: 0.5.w,
           ),
         ),

@@ -67,14 +67,14 @@ class _WeekDisplayWidget extends StatelessWidget {
           decoration: BoxDecoration(
               color: deep
                   ? WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)
+                      .get(WpyColorKey.primaryBackgroundColor)
                   : ColorUtil.grey246,
               borderRadius: BorderRadius.circular(5.r)),
           child: Center(
             child: Text(date,
                 style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                    ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
-                    : WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor))),
+                    ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                    : WpyTheme.of(context).get(WpyColorKey.reverseTextColor))),
           ),
         );
       });
@@ -180,7 +180,7 @@ class _CourseDisplayWidget extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .get(WpyColorKey.primaryBackgroundColor)
                     .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),
@@ -198,7 +198,7 @@ class _CourseDisplayWidget extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .get(WpyColorKey.primaryBackgroundColor)
                     .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),

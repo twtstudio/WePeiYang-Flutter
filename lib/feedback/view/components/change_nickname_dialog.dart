@@ -32,7 +32,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
       titleTextStyle:
           TextUtil.base.w700.NotoSansSC.sp(20).h(1.4).primary(context),
       confirmButtonColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
       confirmFun: () {
         if (_textEditingController.text == "") {
           ToastProvider.error('昵称不能为空喵');
@@ -78,7 +78,7 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
               ),
               contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
               fillColor: WpyTheme.of(context)
-                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                  .get(WpyColorKey.secondaryBackgroundColor),
               filled: true,
               isDense: true,
             ),

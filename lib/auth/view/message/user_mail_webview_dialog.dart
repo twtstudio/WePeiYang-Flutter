@@ -21,7 +21,7 @@ class UserMailDialog extends Dialog {
           child: Container(
             height: 500,
             width: 300,
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             child: CustomWebView(url),
           ),
         ),

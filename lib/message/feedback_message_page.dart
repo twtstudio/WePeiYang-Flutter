@@ -100,7 +100,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
@@ -114,7 +114,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                 size: 20.w,
               ),
               onPressed: () {
@@ -161,7 +161,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                               Navigator.pop(context);
                             },
                             confirmButtonColor: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryTextButtonColor),
+                                .get(WpyColorKey.primaryTextButtonColor),
                           );
                         });
                   })
@@ -182,15 +182,15 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   physics: NeverScrollableScrollPhysics(),
                   controller: _tabController,
                   labelColor:
-                      WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                      WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                   labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
-                  unselectedLabelColor: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                  unselectedLabelColor: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                   unselectedLabelStyle:
                       TextUtil.base.label(context).w500.PingFangSC.sp(14),
                   indicator: CustomIndicator(
                       borderSide: BorderSide(
                           color: WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryActionColor),
+                              .get(WpyColorKey.primaryActionColor),
                           width: 2)),
                   tabs: tb,
                   onTap: (index) {
@@ -560,8 +560,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
         color: WpyTheme.of(context).get(widget.data.type == 0
-            ? WpyThemeKeys.secondaryBackgroundColor
-            : WpyThemeKeys.primaryBackgroundColor),
+            ? WpyColorKey.secondaryBackgroundColor
+            : WpyColorKey.primaryBackgroundColor),
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -602,7 +602,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -642,7 +642,7 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       child: Container(
         decoration: BoxDecoration(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -925,8 +925,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
             color: WpyTheme.of(context).get(widget.data.type == 0
-                ? WpyThemeKeys.secondaryBackgroundColor
-                : WpyThemeKeys.primaryBackgroundColor)),
+                ? WpyColorKey.secondaryBackgroundColor
+                : WpyColorKey.primaryBackgroundColor)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -964,7 +964,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -1045,7 +1045,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
       child: Container(
         decoration: BoxDecoration(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -1308,7 +1308,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(5),
-        color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       ),
       child: Padding(
         padding: EdgeInsets.all(10.w),
@@ -1365,7 +1365,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
       child: Container(
         decoration: BoxDecoration(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
@@ -1409,7 +1409,7 @@ class CustomIndicator extends Decoration {
               // 使用冒号初始化列表来设置默认值
               width: 2,
               color: WpyTheme.of(context!)
-                  .get(WpyThemeKeys.primaryBackgroundColor),
+                  .get(WpyColorKey.primaryBackgroundColor),
             );
 
   final bool left;

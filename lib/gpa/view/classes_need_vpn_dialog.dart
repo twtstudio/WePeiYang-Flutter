@@ -15,7 +15,7 @@ class ClassesNeedVPNDialog extends Dialog {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         padding: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+            borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -26,7 +26,7 @@ class ClassesNeedVPNDialog extends Dialog {
                 Icon(
                   Icons.notifications_none,
                   size: 23,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
                 ),
                 SizedBox(width: 3),
                 Text('通知', style: TextUtil.base.bold.noLine.sp(18).oldThirdAction(context))

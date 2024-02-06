@@ -49,7 +49,7 @@ class LakeDialogWidget extends Dialog {
               padding: EdgeInsets.all(28.w),
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
@@ -98,7 +98,7 @@ class LakeDialogWidget extends Dialog {
     return Builder(
         builder: (context) => Container(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                  .get(WpyColorKey.secondaryBackgroundColor),
             ));
   }
 
@@ -118,14 +118,14 @@ class LakeDialogWidget extends Dialog {
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
                       return WpyTheme.of(context)
-                          .get(WpyThemeKeys.oldSecondaryActionColor);
+                          .get(WpyColorKey.oldSecondaryActionColor);
                     return WpyTheme.of(context)
-                        .get(WpyThemeKeys.secondaryBackgroundColor);
+                        .get(WpyColorKey.secondaryBackgroundColor);
                   }),
                   backgroundColor: MaterialStateProperty.all(
                       cancelButtonColor ??
                           WpyTheme.of(context)
-                              .get(WpyThemeKeys.secondaryBackgroundColor)),
+                              .get(WpyColorKey.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
                 ),
@@ -146,7 +146,7 @@ class LakeDialogWidget extends Dialog {
                     BoxShadow(
                         blurRadius: 1.6,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.iconAnimationStartColor),
+                            .get(WpyColorKey.iconAnimationStartColor),
                         offset: Offset(-1, 3),
                         spreadRadius: 1),
                   ],
@@ -186,14 +186,14 @@ class LakeDialogWidget extends Dialog {
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
                         return WpyTheme.of(context)
-                            .get(WpyThemeKeys.oldSecondaryActionColor);
+                            .get(WpyColorKey.oldSecondaryActionColor);
                       return WpyTheme.of(context)
-                          .get(WpyThemeKeys.secondaryBackgroundColor);
+                          .get(WpyColorKey.secondaryBackgroundColor);
                     }),
                     backgroundColor: MaterialStateProperty.all(
                         confirmButtonColor ??
                             WpyTheme.of(context)
-                                .get(WpyThemeKeys.secondaryBackgroundColor)),
+                                .get(WpyColorKey.secondaryBackgroundColor)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
                   ),

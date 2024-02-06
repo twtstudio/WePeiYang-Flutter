@@ -152,11 +152,11 @@ class _CollectionPageState extends State<CollectionPage> {
       slivers: [
         SliverAppBar(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_rounded,
-              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
               size: 20.w,
             ),
             onPressed: () => Navigator.pop(context),
@@ -170,7 +170,7 @@ class _CollectionPageState extends State<CollectionPage> {
         SliverToBoxAdapter(
           child: Container(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                  .get(WpyColorKey.secondaryBackgroundColor),
               child: list),
         )
       ],
@@ -178,7 +178,7 @@ class _CollectionPageState extends State<CollectionPage> {
 
     return Container(
       //改背景色用
-      color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+      color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,

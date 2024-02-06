@@ -26,20 +26,20 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: AppBar(
           title: Text(S.current.message,
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
@@ -115,7 +115,7 @@ class _MailItemState extends State<MailItem> {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +138,7 @@ class _MailItemState extends State<MailItem> {
                     'assets/images/account/cloud.png',
                     width: 17,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+                        WpyTheme.of(context).get(WpyColorKey.basicTextColor),
                     fit: BoxFit.cover,
                   ),
                   SizedBox(width: 10),
@@ -170,18 +170,18 @@ class MailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: AppBar(
         title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
               child: Icon(Icons.arrow_back,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                   size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
@@ -304,7 +304,7 @@ class _TextMailContent extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(10),
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
               ),
               child: Column(
                 children: [
@@ -382,11 +382,11 @@ class _TextMailContent extends StatelessWidget {
                                         SimpleUrlPreview(
                                           url: url,
                                           bgColor: WpyTheme.of(context).get(
-                                              WpyThemeKeys
+                                              WpyColorKey
                                                   .primaryBackgroundColor),
                                           titleLines: 2,
                                           imageLoaderColor: WpyTheme.of(context)
-                                              .get(WpyThemeKeys
+                                              .get(WpyColorKey
                                                   .iconAnimationStartColor),
                                           previewHeight: 130,
                                           previewContainerPadding:
@@ -427,7 +427,7 @@ class _TextMailContent extends StatelessWidget {
                                                 'https://www.bilibili.com/')
                                         ? ColorUtil.biliPink
                                         : WpyTheme.of(context).get(
-                                            WpyThemeKeys.primaryActionColor),
+                                            WpyColorKey.primaryActionColor),
                                     cancelTextStyle: TextUtil.base.normal
                                         .primary(context)
                                         .NotoSansSC

@@ -20,7 +20,7 @@ class UserAvatarImage extends StatelessWidget {
     this.tempUrl = "",
     required BuildContext context,
   }) : this.iconColor = iconColor ??
-            WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+            WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
 
   @override
   Widget build(BuildContext context) {

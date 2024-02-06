@@ -47,14 +47,14 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.oldThirdActionColor),
+                        .get(WpyColorKey.oldThirdActionColor),
                     size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -79,7 +79,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     hintText: S.current.input_password1,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -108,7 +108,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                     hintText: S.current.input_password2,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(

@@ -14,13 +14,13 @@ class AboutTwtPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       appBar: AppBar(
           title: Text(S.current.about_twt,
               style: TextUtil.base.bold.sp(16).blue52hz),
           elevation: 0,
           centerTitle: true,
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(

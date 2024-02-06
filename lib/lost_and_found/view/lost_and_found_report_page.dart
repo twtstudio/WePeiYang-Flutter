@@ -13,7 +13,7 @@ class LostAndFoundReportPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           elevation: 0, // 取消阴影
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/back.png',
@@ -56,7 +56,7 @@ class LostAndFoundReportPage extends StatelessWidget {
                   width: 80.w,
                   height: 32.h,
                   decoration: BoxDecoration(
-                    color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                     borderRadius: BorderRadius.circular(30.r),
                   ),
                   child: Center(

@@ -155,7 +155,7 @@ class _NewPostPageState extends State<NewPostPage> {
         style: ButtonStyle(
           elevation: MaterialStateProperty.all(0),
           backgroundColor: MaterialStateProperty.all(
-              WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
+              WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
           shape: MaterialStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
@@ -178,7 +178,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
     return Scaffold(
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: appBar,
         body: Column(
           children: [
@@ -259,7 +259,7 @@ class _LakeSelectorState extends State<LakeSelector> {
           height: 60,
           decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(16)),
           child: Center(
             child: Text('点击刷新'),
@@ -309,10 +309,10 @@ class _LakeSelectorState extends State<LakeSelector> {
                                       decoration: BoxDecoration(
                                           color: type == tabList[index + 1].id
                                               ? WpyTheme.of(context).get(
-                                                  WpyThemeKeys
+                                                  WpyColorKey
                                                       .primaryActionColor)
                                               : WpyTheme.of(context).get(
-                                                  WpyThemeKeys
+                                                  WpyColorKey
                                                       .primaryBackgroundColor),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(16))),
@@ -346,7 +346,7 @@ class _LakeSelectorState extends State<LakeSelector> {
                   child: Padding(
                     padding: EdgeInsets.only(right: 15.w),
                     child: Icon(Icons.arrow_forward_ios_sharp,
-                        color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor), size: 10.h),
+                        color: WpyTheme.of(context).get(WpyColorKey.labelTextColor), size: 10.h),
                   ),
                 ),
               ),
@@ -387,7 +387,7 @@ class _departmentTagViewState extends State<departmentTagView> {
           return Container(
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(16),
               shape: BoxShape.rectangle,
             ),
@@ -429,7 +429,7 @@ class _CampusSelectorState extends State<CampusSelector> {
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
                 color:
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               ),
               SizedBox(width: 10),
               Text(
@@ -528,7 +528,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         inputFormatters: [
           CustomizedLengthTextInputFormatter(30),
         ],
-        cursorColor: WpyTheme.of(context).get(WpyThemeKeys.cursorColor),
+        cursorColor: WpyTheme.of(context).get(WpyColorKey.cursorColor),
         cursorHeight: 20,
       ),
     );
@@ -642,7 +642,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       pickerConfig: AssetPickerConfig(
           maxAssets: maxImage - context.read<NewPostProvider>().images.length,
           requestType: RequestType.image,
-          themeColor: WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
+          themeColor: WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -695,7 +695,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              border: Border.all(width: 1, color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary)),
+              border: Border.all(width: 1, color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary)),
               borderRadius: BorderRadius.all(Radius.circular(8))),
           child: ClipRRect(
             child: Image.file(
@@ -715,7 +715,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+              color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),
@@ -723,7 +723,7 @@ class _ImagesGridViewState extends State<ImagesGridView> {
               Icons.close,
               size: MediaQuery.of(context).size.width / 32,
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                  .get(WpyColorKey.secondaryBackgroundColor),
             ),
           ),
         ),

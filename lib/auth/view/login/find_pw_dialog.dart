@@ -21,7 +21,7 @@ class FindPwDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -47,7 +47,7 @@ class FindPwDialog extends Dialog {
                 padding: const EdgeInsets.fromLTRB(0, 15, 10, 0),
                 child: Icon(Icons.close,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 25),
               ),
             )

@@ -31,44 +31,44 @@ extension IconTypeExt on IconType {
   CircleColor circleColor(context) => [
         CircleColor(
             start:
-                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
-            end: WpyTheme.of(context).get(WpyThemeKeys.likeColor)),
+                WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyColorKey.likeColor)),
         CircleColor(
             start:
-                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
-            end: WpyTheme.of(context).get(WpyThemeKeys.likeColor)),
+                WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyColorKey.likeColor)),
         CircleColor(
             start:
-                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
-            end: WpyTheme.of(context).get(WpyThemeKeys.FavorColor)),
+                WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyColorKey.FavorColor)),
         CircleColor(
             start:
-                WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
-            end: WpyTheme.of(context).get(WpyThemeKeys.FavorColor)),
+                WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+            end: WpyTheme.of(context).get(WpyColorKey.FavorColor)),
       ][index];
 
   BubblesColor bubblesColor(context) => [
         BubblesColor(
-          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
+          dotPrimaryColor: WpyTheme.of(context).get(WpyColorKey.likeColor),
           dotSecondaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
+              WpyTheme.of(context).get(WpyColorKey.likeBubbleColor),
         ),
         BubblesColor(
-          dotPrimaryColor: WpyTheme.of(context).get(WpyThemeKeys.likeColor),
+          dotPrimaryColor: WpyTheme.of(context).get(WpyColorKey.likeColor),
           dotSecondaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.likeBubbleColor),
-        ),
-        BubblesColor(
-          dotPrimaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
-          dotSecondaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
+              WpyTheme.of(context).get(WpyColorKey.likeBubbleColor),
         ),
         BubblesColor(
           dotPrimaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+              WpyTheme.of(context).get(WpyColorKey.FavorBubbleStartColor),
           dotSecondaryColor:
-              WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleColor),
+              WpyTheme.of(context).get(WpyColorKey.FavorBubbleColor),
+        ),
+        BubblesColor(
+          dotPrimaryColor:
+              WpyTheme.of(context).get(WpyColorKey.FavorBubbleStartColor),
+          dotSecondaryColor:
+              WpyTheme.of(context).get(WpyColorKey.FavorBubbleColor),
         ),
       ][index];
 
@@ -200,13 +200,13 @@ class DislikeWidget extends StatelessWidget {
           // end的值是Colors.blue[200]
           circleColor: CircleColor(
               start: WpyTheme.of(context)
-                  .get(WpyThemeKeys.iconAnimationStartColor),
-              end: WpyTheme.of(context).get(WpyThemeKeys.dislikePrimary)),
+                  .get(WpyColorKey.iconAnimationStartColor),
+              end: WpyTheme.of(context).get(WpyColorKey.dislikePrimary)),
           bubblesColor: BubblesColor(
             dotPrimaryColor:
-                WpyTheme.of(context).get(WpyThemeKeys.dislikePrimary),
+                WpyTheme.of(context).get(WpyColorKey.dislikePrimary),
             dotSecondaryColor:
-                WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
           ),
           animationDuration: Duration(milliseconds: 600),
         );

@@ -57,7 +57,8 @@ Widget _PageTitleWidget(Room room, String areaName, BuildContext context) {
         child: Text(
           areaName,
           style: TextStyle(
-            color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor),
+            color: WpyTheme.of(context)
+                .get(WpyColorKey.primaryLightestActionColor),
             fontSize: 14.sp,
           ),
         ),
@@ -134,14 +135,14 @@ class _WeekDisplayWidget extends StatelessWidget {
 
     return Row(
       children: nextSevenDays.map((date) {
-        final backgroundColor = now.isSameDay(date)
-            ? Theme.of(context).coordinateChosenBackground
-            : Theme.of(context).coordinateBackground;
+        final backgroundColor = WpyTheme.of(context)
+            .get(WpyColorKey.primaryBackgroundColor)
+            .withOpacity(now.isSameDay(date) ? 1 : 0.2);
 
         final textColor = WpyTheme.of(context).get(
           now.isSameDay(date)
-              ? WpyThemeKeys.primaryActionColor
-              : WpyThemeKeys.infoTextColor,
+              ? WpyColorKey.primaryActionColor
+              : WpyColorKey.reverseTextColor,
         );
 
         return Container(

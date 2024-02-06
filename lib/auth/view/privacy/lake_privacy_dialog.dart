@@ -18,14 +18,14 @@ class LakePrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+    var textColor = WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(
           horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+          borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       child: Column(
         children: [
           Expanded(

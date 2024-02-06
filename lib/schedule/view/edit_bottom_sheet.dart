@@ -92,7 +92,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor = WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
+    var mainColor = WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -175,7 +175,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                     decoration: BoxDecoration(),
                     child: Icon(
                       Icons.check,
-                      color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                      color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                     ),
                   ),
                 )
@@ -245,7 +245,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor:WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                    .copyWith(secondaryHeaderColor:WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
                 child: ListView(
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(horizontal: 12.w),

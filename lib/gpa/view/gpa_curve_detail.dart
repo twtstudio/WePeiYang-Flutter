@@ -131,9 +131,9 @@ class GPACurve extends StatefulWidget {
 class _GPACurveState extends State<GPACurve>
     with SingleTickerProviderStateMixin {
   late final Color _popupCardPreview =
-      WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
+      WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
   late final Color _popupTextPreview =
-      WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+      WpyTheme.of(context).get(WpyColorKey.oldActionColor);
   static late Color _popupCardColor;
   static late Color _popupTextColor;
   static const double _canvasHeight = 120; // 用于控制曲线canvas的高度
@@ -316,7 +316,7 @@ class _GPAPopupPainter extends CustomPainter {
       {required this.isPreview, required BuildContext context})
       : _innerPaint = Paint()
           ..color = isPreview
-              ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+              ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
               : gpaColors[0]
           ..style = PaintingStyle.fill,
         _outerPaint = Paint()
@@ -354,13 +354,13 @@ class _GPACurvePainter extends CustomPainter {
       required BuildContext context})
       : _linePaint = Paint()
           ..color = isPreview
-              ? WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)
+              ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
               : gpaColors[3]
           ..style = PaintingStyle.stroke
           ..strokeWidth = 5.0,
         _pointPaint = Paint()
           ..color = isPreview
-              ? WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+              ? WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)
               : gpaColors[1]
           ..style = PaintingStyle.fill;
 

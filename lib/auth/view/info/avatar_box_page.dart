@@ -38,7 +38,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         title: Text(
           '更换头像框',
           style: TextUtil.base.label(context).sp(16),
@@ -49,7 +49,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
           child: WButton(
               child: Icon(Icons.arrow_back,
                   color:
-                      WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                      WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
                   size: 32),
               onPressed: () => Navigator.pop(context)),
         ),
@@ -71,7 +71,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                             child: UserAvatarImage(
                               size: 0.3.sw,
                               iconColor: WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryBackgroundColor),
+                                  .get(WpyColorKey.primaryBackgroundColor),
                               tempUrl: _valueNotifier.value,
                               context: context,
                             ),
@@ -222,7 +222,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           height: 40.h,
                           decoration: BoxDecoration(
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryActionColor),
+                                .get(WpyColorKey.primaryActionColor),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.r)),
                           ),
@@ -250,12 +250,12 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
       foregroundDecoration: canChange
           ? null
           : BoxDecoration(
-              color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+              color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
               backgroundBlendMode: BlendMode.saturation,
               borderRadius: BorderRadius.all(Radius.circular(10.r)),
             ),
       decoration: BoxDecoration(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.all(Radius.circular(10.r)),
         boxShadow: [
           choose == true
@@ -263,7 +263,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                   color: ColorUtil.avatarChosenColor, blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor),
+                      .get(WpyColorKey.primaryBackgroundColor),
                 ),
         ],
         image: DecorationImage(

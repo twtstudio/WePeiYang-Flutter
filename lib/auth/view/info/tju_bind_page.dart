@@ -90,12 +90,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
               overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
                 if (states.contains(MaterialState.pressed))
                   return WpyTheme.of(context)
-                      .get(WpyThemeKeys.oldActionRippleColor);
+                      .get(WpyColorKey.oldActionRippleColor);
                 return WpyTheme.of(context)
-                    .get(WpyThemeKeys.oldSecondaryActionColor);
+                    .get(WpyColorKey.oldSecondaryActionColor);
               }),
               backgroundColor: MaterialStateProperty.all(WpyTheme.of(context)
-                  .get(WpyThemeKeys.oldSecondaryActionColor)),
+                  .get(WpyColorKey.oldSecondaryActionColor)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
@@ -119,12 +119,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
               textInputAction: TextInputAction.next,
               focusNode: _accountFocus,
               cursorColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+                  WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
               decoration: InputDecoration(
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
                   filled: true,
-                  fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -146,17 +146,17 @@ class _TjuBindPageState extends State<TjuBindPage> {
                 return Theme(
                   data: Theme.of(context).copyWith(
                       primaryColor: WpyTheme.of(context)
-                          .get(WpyThemeKeys.oldActionColor)),
+                          .get(WpyColorKey.oldActionColor)),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
                     cursorColor: WpyTheme.of(context)
-                        .get(WpyThemeKeys.defaultActionColor),
+                        .get(WpyColorKey.defaultActionColor),
                     decoration: InputDecoration(
                       hintText: S.current.password,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -166,7 +166,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                         child: Icon(
                           value ? Icons.visibility_off : Icons.visibility,
                           color: WpyTheme.of(context)
-                              .get(WpyThemeKeys.defaultActionColor),
+                              .get(WpyColorKey.defaultActionColor),
                         ),
                         onPressed: () {
                           visNotifier.value = !visNotifier.value;
@@ -197,11 +197,11 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     MaterialStateProperty.resolveWith<Color>((states) {
                   if (states.contains(MaterialState.pressed))
                     return WpyTheme.of(context)
-                        .get(WpyThemeKeys.oldActionRippleColor);
-                  return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+                        .get(WpyColorKey.oldActionRippleColor);
+                  return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
                 }),
                 backgroundColor: MaterialStateProperty.all(
-                    WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                    WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
@@ -245,14 +245,14 @@ class _TjuBindPageState extends State<TjuBindPage> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),

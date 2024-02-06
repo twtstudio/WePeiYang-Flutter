@@ -307,7 +307,7 @@ class _PersonPageState extends State<PersonPage> {
     );
 
     return Container(
-      color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+      color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       child: SafeArea(
         child: (CommonPreferences.isSuper.value ||
                 CommonPreferences.isStuAdmin.value)
@@ -346,10 +346,10 @@ class _PersonPageState extends State<PersonPage> {
                         gradient: LinearGradient(
                           colors: [
                             WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                             ColorUtil.backgroundMaskColor,
                             WpyTheme.of(context)
-                                .get(WpyThemeKeys.backgroundGradientEndColor),
+                                .get(WpyColorKey.backgroundGradientEndColor),
                             ColorUtil.liteBackgroundMaskColor
                           ],
                           stops: [0, 0.4, 0.7, 1],

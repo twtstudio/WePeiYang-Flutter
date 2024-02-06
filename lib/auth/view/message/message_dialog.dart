@@ -19,7 +19,7 @@ class MessageDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             shape: BoxShape.rectangle,
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Center(child: Text(data)),
       ),
     );

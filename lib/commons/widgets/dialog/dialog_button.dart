@@ -25,18 +25,18 @@ class WbyDialogButton extends StatelessWidget {
 
   Color _buttonColor(context) {
     if (type == ButtonType.blue)
-      return WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
+      return WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
     else if (type == ButtonType.dark)
       return ColorUtil.grey6267Color;
     else
-      return WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
+      return WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
   }
 
   Color _textColor(context) {
     if (type == ButtonType.dark || type == ButtonType.blue)
-      return WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor);
+      return WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
     else
-      return WpyTheme.of(context).get(WpyThemeKeys.basicTextColor);
+      return WpyTheme.of(context).get(WpyColorKey.basicTextColor);
   }
 
   @override
@@ -58,7 +58,7 @@ class WbyDialogButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.basicTextColor)
+                  .get(WpyColorKey.basicTextColor)
                   .withOpacity(0.1),
               offset: Offset(0, 2),
               blurRadius: 20,

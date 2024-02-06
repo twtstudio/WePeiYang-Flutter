@@ -36,20 +36,20 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       elevation: MaterialStateProperty.all(1),
       overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
         if (states.contains(MaterialState.pressed))
-          return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
-        return WpyTheme.of(context).get(WpyThemeKeys.oldActionColor);
+          return WpyTheme.of(context).get(WpyColorKey.oldActionRippleColor);
+        return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
       }),
       backgroundColor: MaterialStateProperty.all(
-          WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+          WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
       shape: MaterialStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
       minimumSize: MaterialStateProperty.all(Size(80, 40)),
     );
     var appBar = AppBar(
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
-            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
@@ -98,7 +98,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)),
+                      .get(WpyColorKey.primaryBackgroundColor)),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                 child: Align(
@@ -135,7 +135,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(7)),
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)),
+                      .get(WpyColorKey.primaryBackgroundColor)),
               child: TextField(
                 minLines: 7,
                 maxLines: 15,

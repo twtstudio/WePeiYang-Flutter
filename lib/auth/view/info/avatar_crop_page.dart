@@ -32,7 +32,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
             maxAssets: 1,
             requestType: RequestType.image,
             themeColor:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)));
+                WpyTheme.of(context).get(WpyColorKey.primaryActionColor)));
     if (assets == null) return; // 取消选择图片的情况
     File? file = await assets[0].file;
     if (file == null) {
@@ -53,14 +53,14 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
           toolbarColor:
-              WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+              WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
           toolbarWidgetColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor:
-              WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+              WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
           statusBarColor:
-              WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+              WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
           backgroundColor: ColorUtil.oldSecondaryActionColor,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
@@ -99,16 +99,16 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       androidUiSettings: AndroidUiSettings(
           toolbarTitle: '裁剪',
           toolbarColor:
-              WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+              WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
           toolbarWidgetColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           activeControlsWidgetColor: ColorUtil.blue177,
           dimmedLayerColor:
-              WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+              WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
           statusBarColor:
-              WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+              WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor),
+              WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
@@ -165,7 +165,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       return CircleAvatar(
         radius: width / 2,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor),
+            WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
         backgroundImage: FileImage(file!),
         child: SizedBox(width: width, height: width),
       );
@@ -188,12 +188,12 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
             onPressed: () => Navigator.of(context).pop(),
             child: Icon(CupertinoIcons.back,
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor)),
+                    .get(WpyColorKey.primaryBackgroundColor)),
           ),
           elevation: 0,
         ),
         body: Container(
-          color: WpyTheme.of(context).get(WpyThemeKeys.reverseBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
           child: Column(
             children: [
               Spacer(),
@@ -202,7 +202,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               Divider(
                   height: 1.0,
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)),
+                      .get(WpyColorKey.primaryBackgroundColor)),
               SizedBox(height: 10),
               WButton(
                 onPressed: () {
@@ -218,7 +218,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               Divider(
                   height: 1.0,
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)),
+                      .get(WpyColorKey.primaryBackgroundColor)),
               SizedBox(height: 10),
               WButton(
                 onPressed: () => showActionButtons(context),

@@ -47,7 +47,7 @@ class _TabGridViewState extends State<TabGridView>
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -58,7 +58,7 @@ class _TabGridViewState extends State<TabGridView>
           end: Alignment.bottomCenter,
           colors: [
             ColorUtil.liteBackgroundMaskColor,
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ],
         ),
       ),

@@ -191,9 +191,9 @@ class TagShowWidget extends StatelessWidget {
                           ? ColorUtil.tagLabelColor
                           : type == 1
                               ? WpyTheme.of(context)
-                                  .get(WpyThemeKeys.defaultActionColor)
+                                  .get(WpyColorKey.defaultActionColor)
                               : WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryBackgroundColor),
+                                  .get(WpyColorKey.primaryBackgroundColor),
                     ),
                     child: SvgPicture.asset(
                       type == 0
@@ -237,11 +237,11 @@ class TextPod extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           color:
-              WpyTheme.of(context).get(WpyThemeKeys.backgroundGradientEndColor),
+              WpyTheme.of(context).get(WpyColorKey.backgroundGradientEndColor),
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.reverseBackgroundColor)
+                  .get(WpyColorKey.reverseBackgroundColor)
                   .withOpacity(0.38))),
       padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
       child: Text(text,

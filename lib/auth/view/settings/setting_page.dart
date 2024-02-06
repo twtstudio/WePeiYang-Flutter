@@ -47,7 +47,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     final arrow = Icon(Icons.arrow_forward_ios,
-        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+        color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
         size: 22);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle(context);
@@ -58,12 +58,12 @@ class _SettingPageState extends State<SettingPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                 size: 32),
             onPressed: () => Navigator.pop(context),
           ),
@@ -77,7 +77,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -103,7 +103,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -134,7 +134,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: InkWell(
@@ -162,7 +162,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -192,7 +192,7 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(

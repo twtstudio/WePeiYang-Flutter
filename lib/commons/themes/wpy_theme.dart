@@ -23,16 +23,16 @@ class WpyTheme extends InheritedWidget {
 
   Color? get getPrimary => themeData.data.primaryColor;
 
-  Color get(WpyThemeKeys key) {
+  Color get(WpyColorKey key) {
     return themeData.data.get(key) as Color;
   }
 
-  List<Color> getColorSet(WpyThemeKeys key) {
+  List<Color> getColorSet(WpyColorKey key) {
     return themeData.data.get(key) as List<Color>;
   }
 
-  Gradient getGradient(WpyThemeKeys key) {
-    return themeData.data.get(key) as Gradient;
+  Gradient getGradient(WpyColorSetKey key) {
+    return themeData.data.getColorSet(key) as Gradient;
   }
 }
 

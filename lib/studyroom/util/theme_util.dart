@@ -56,10 +56,6 @@ extension StudyRoomAreaPageColors on ThemeData {
 }
 
 extension StudyRoomRoomPageColors on ThemeData {
-  Color get coordinateBackground => Colors.white.withOpacity(0.2);
-
-  Color get coordinateChosenBackground => Colors.white;
-
   Color get roomTitle => StudyRoomPrimaryColor;
 
   Color get favorButtonUnfavor => StudyRoomPrimaryColor;

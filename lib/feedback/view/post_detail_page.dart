@@ -367,7 +367,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(WpyThemeKeys.primaryActionColor),
+                                        .get(WpyColorKey.primaryActionColor),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
@@ -380,7 +380,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context).get(
-                                        WpyThemeKeys.secondaryBackgroundColor),
+                                        WpyColorKey.secondaryBackgroundColor),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text('  只看楼主  ',
@@ -470,9 +470,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                       return Checkbox(
                                         activeColor: ColorUtil.blue105,
                                         focusColor: WpyTheme.of(context)
-                                            .get(WpyThemeKeys.oldHintColor),
+                                            .get(WpyColorKey.oldHintColor),
                                         hoverColor: WpyTheme.of(context).get(
-                                            WpyThemeKeys.oldSwitchBarColor),
+                                            WpyColorKey.oldSwitchBarColor),
                                         value: screenshotList.list
                                             .contains(data.id),
                                         onChanged: (value) {
@@ -532,7 +532,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                   return Screenshot(
                       child: Container(
                           color: WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryBackgroundColor),
+                              .get(WpyColorKey.primaryBackgroundColor),
                           child: contentList),
                       controller: selectedScreenshotController);
                 return Container(child: contentList);
@@ -562,13 +562,13 @@ class _PostDetailPageState extends State<PostDetailPage>
                   boxShadow: [
                     BoxShadow(
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.iconAnimationStartColor),
+                            .get(WpyColorKey.iconAnimationStartColor),
                         offset: Offset(0, 1),
                         blurRadius: 6,
                         spreadRadius: 0),
                   ],
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor),
+                      .get(WpyColorKey.primaryBackgroundColor),
                 ),
                 child: Column(
                   children: [
@@ -691,7 +691,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(18),
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .secondaryBackgroundColor),
                                       )),
                                 ),
@@ -729,7 +729,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
           width: 25,
-          color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+          color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
         ),
         onPressed: () {
           showCupertinoModalPopup(
@@ -876,7 +876,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     var manageButton = IconButton(
         icon: Icon(Icons.admin_panel_settings,
             size: 23,
-            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
         onPressed: () => _showManageDialog());
 
     var confirmScreenshot = IconButton(
@@ -889,7 +889,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           screenshotList.empty();
         },
         icon: Icon(Icons.add_a_photo_outlined,
-            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)));
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)));
 
     var cancelScreenshot = IconButton(
         onPressed: () {
@@ -897,17 +897,17 @@ class _PostDetailPageState extends State<PostDetailPage>
           screenshotSelecting.value = false;
         },
         icon: Icon(Icons.cancel_outlined,
-            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor)));
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)));
 
     var appBar = AppBar(
       toolbarHeight: 40,
       titleSpacing: 0,
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       leading: IconButton(
         icon: Icon(
           CupertinoIcons.back,
-          color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
         ),
         onPressed: () => Navigator.pop(context, widget.post),
       ),
@@ -958,7 +958,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       child: GestureDetector(
         child: Scaffold(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           appBar: appBar,
           body: body,
         ),
@@ -998,9 +998,9 @@ class _PostDetailPageState extends State<PostDetailPage>
               confirmText: "确认",
               gradient: LinearGradient(
                   colors: [
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                     WpyTheme.of(context)
-                        .get(WpyThemeKeys.primaryLightActionColor),
+                        .get(WpyColorKey.primaryLightActionColor),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -1090,7 +1090,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           ),
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
           fillColor:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           filled: true,
           isDense: true,
         ),
@@ -1208,7 +1208,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
           maxAssets: 1,
           requestType: RequestType.image,
           themeColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
@@ -1281,7 +1281,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                             border: Border.all(
                                 width: 1,
                                 color: WpyTheme.of(context)
-                                    .get(WpyThemeKeys.dislikeSecondary)),
+                                    .get(WpyColorKey.dislikeSecondary)),
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -1309,7 +1309,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           height: 20,
                           decoration: BoxDecoration(
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.dislikeSecondary),
+                                .get(WpyColorKey.dislikeSecondary),
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
                                 bottomRight: Radius.circular(8)),
@@ -1318,7 +1318,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                             Icons.close,
                             size: 14,
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.secondaryBackgroundColor),
+                                .get(WpyColorKey.secondaryBackgroundColor),
                           ),
                         ),
                       ),
@@ -1420,7 +1420,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       ),
     );
   }
@@ -1524,7 +1524,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                         height: 1.5,
                         width: double.infinity,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor)),
+                            .get(WpyColorKey.primaryBackgroundColor)),
                   ],
                 ),
               if (isSelected)

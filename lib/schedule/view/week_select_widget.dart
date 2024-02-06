@@ -73,7 +73,7 @@ class WeekSelectWidget extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(
           secondaryHeaderColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       child: Builder(
         builder: (context) {
           var shrink =
@@ -112,7 +112,7 @@ class WeekSelectWidget extends StatelessWidget {
             'WEEK ${i + 1}',
             style: TextUtil.base.Swis.w900.sp(10).customColor(
                 WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor)
+                    .get(WpyColorKey.primaryBackgroundColor)
                     .withOpacity((provider.selectedWeek == i + 1) ? 1.0 : 0.4)),
           );
         })
@@ -145,7 +145,7 @@ class _WeekSelectPainter extends CustomPainter {
 
   /// 白色cube，代表该点没课
   late final Paint _spacePaint = Paint()
-    ..color = WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+    ..color = WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)
     ..style = PaintingStyle.fill;
 
   @override

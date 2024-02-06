@@ -26,7 +26,7 @@ class UpdateHotfixFinishDialog extends StatelessWidget {
         Icon(
           Icons.error,
           size: 12,
-          color: WpyTheme.of(context).get(WpyThemeKeys.infoStatusColor),
+          color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor),
         ),
         SizedBox(width: 4),
         Text(

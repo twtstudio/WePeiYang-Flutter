@@ -162,7 +162,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       systemNavigationBarColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
     ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
@@ -183,9 +183,9 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
             decoration: BoxDecoration(
-                gradient: showSchedule
-                    ? ColorUtil.primaryGradient
-                    : ColorUtil.gradientPrimaryBackground)),
+                gradient: WpyTheme.of(context).getGradient(showSchedule
+                    ? WpyColorSetKey.primaryGradient
+                    : WpyColorSetKey.gradientPrimaryBackground))),
         SafeArea(
           bottom: false,
           child: Stack(
@@ -211,7 +211,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                             padding: EdgeInsets.only(top: 40.h),
                             decoration: BoxDecoration(
                                 color: WpyTheme.of(context)
-                                    .get(WpyThemeKeys.primaryBackgroundColor),
+                                    .get(WpyColorKey.primaryBackgroundColor),
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(40.r),
                                     topRight: Radius.circular(40.r))),
@@ -262,14 +262,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               controller: _tc,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+              labelColor: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
               unselectedLabelColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
+                  WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
               indicator: CustomIndicator(
                   left: true,
                   borderSide: BorderSide(
-                      color:
-                          WpyTheme.of(context).get(WpyThemeKeys.warningColor),
+                      color: WpyTheme.of(context).get(WpyColorKey.warningColor),
                       width: 4)),
               tabs: [
                 Align(
@@ -388,8 +387,8 @@ class SliverCardsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: bean.label == '地图·校历'
-                        ? WpyTheme.of(context).get(WpyThemeKeys.beanLightColor)
-                        : WpyTheme.of(context).get(WpyThemeKeys.beanDarkColor),
+                        ? WpyTheme.of(context).get(WpyColorKey.beanLightColor)
+                        : WpyTheme.of(context).get(WpyColorKey.beanDarkColor),
                   ),
                 ),
               ),
@@ -440,7 +439,7 @@ class WPYScrollBehavior extends ScrollBehavior {
       showLeading: false,
       showTrailing: false,
       axisDirection: AxisDirection.down,
-      color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+      color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
     );
   }
 

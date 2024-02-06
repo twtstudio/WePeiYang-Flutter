@@ -71,13 +71,13 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
                         borderRadius: BorderRadius.circular(1080.w),
                       ),
                       fillColor: WpyTheme.of(context)
-                          .get(WpyThemeKeys.secondaryBackgroundColor),
+                          .get(WpyColorKey.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 19.w,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.infoTextColor),
+                            .get(WpyColorKey.infoTextColor),
                       ),
                     ),
                     enabled: true,
@@ -99,7 +99,7 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
       children: [
         Container(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6.h)),
         SizedBox(height: 8.w),

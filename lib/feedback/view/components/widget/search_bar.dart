@@ -156,13 +156,13 @@ class _SearchBarState extends State<SearchBar>
                         borderRadius: BorderRadius.circular(1080),
                       ),
                       fillColor: WpyTheme.of(context)
-                          .get(WpyThemeKeys.secondaryBackgroundColor),
+                          .get(WpyColorKey.secondaryBackgroundColor),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.search,
                         size: 19,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.infoTextColor),
+                            .get(WpyColorKey.infoTextColor),
                       ),
                     ),
                     enabled: true,
@@ -230,7 +230,7 @@ class _SearchBarState extends State<SearchBar>
                       visualDensity: VisualDensity.compact,
                       backgroundColor: MaterialStateProperty.all(
                           WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryBackgroundColor)),
+                              .get(WpyColorKey.primaryBackgroundColor)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                       elevation: MaterialStateProperty.all(2),
@@ -243,7 +243,7 @@ class _SearchBarState extends State<SearchBar>
                         : Icon(Icons.clear,
                             size: 14,
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.defaultActionColor)),
+                                .get(WpyColorKey.defaultActionColor)),
                   ))
             ],
           )),
@@ -253,12 +253,12 @@ class _SearchBarState extends State<SearchBar>
       children: [
         Container(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
           color:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),
@@ -268,7 +268,7 @@ class _SearchBarState extends State<SearchBar>
                     margin: EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor),
+                            .get(WpyColorKey.primaryBackgroundColor),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(16),
                           bottomRight: Radius.circular(16),
@@ -276,7 +276,7 @@ class _SearchBarState extends State<SearchBar>
                         boxShadow: [
                           BoxShadow(
                               color: WpyTheme.of(context)
-                                  .get(WpyThemeKeys.iconAnimationStartColor),
+                                  .get(WpyColorKey.iconAnimationStartColor),
                               offset: Offset(0.0, 4.0), //阴影xy轴偏移量
                               blurRadius: 3.0, //阴影模糊程度
                               spreadRadius: 1.0 //阴影扩散程度

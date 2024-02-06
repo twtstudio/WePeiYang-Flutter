@@ -72,14 +72,19 @@ class WpyThemeData {
 }
 
 class WpyThemeDetail {
-  final Map<WpyThemeKeys, dynamic> details;
-  static final Map<WpyThemeKeys, dynamic> _defaultScheme =
-      light_scheme().data.details;
+  final Map<WpyColorKey, Color> colors;
+  final Map<WpyColorSetKey, dynamic> gradients;
+
+  static final _defaultScheme = light_scheme().data;
 
   // Use this to  calculate the icon's color
   Color? primaryColor;
 
-  WpyThemeDetail(this.details, {this.primaryColor});
+  WpyThemeDetail(
+    this.colors, {
+    this.primaryColor,
+    Map<WpyColorSetKey, dynamic>? gradient,
+  }) : this.gradients = gradient ?? {};
 
   Color shift(Color source, Color target) {
     final hsl = HSLColor.fromColor(source);
@@ -91,15 +96,21 @@ class WpyThemeDetail {
         .toColor();
   }
 
-  dynamic get(WpyThemeKeys key) {
-    final value = this.details[key] ?? _defaultScheme[key];
+  Color get(WpyColorKey key) {
+    final value = this.colors[key] ?? _defaultScheme.colors[key];
+    assert(value != null, 'Illegal Color key: $key');
+    return value!;
+  }
+
+  dynamic getColorSet(WpyColorSetKey key) {
+    final value = this.gradients[key] ?? _defaultScheme.gradients[key];
     assert(value != null, 'Illegal Color key: $key');
 
     return value;
   }
 }
 
-enum WpyThemeKeys {
+enum WpyColorKey {
   defaultActionColor,
   primaryBackgroundColor,
   secondaryBackgroundColor,
@@ -161,5 +172,17 @@ enum WpyThemeKeys {
   profileBackgroundColor,
 
   // Level
+
+  // ------- Gradients -------
+}
+
+enum WpyColorSetKey {
+  //level
   levelColors,
+
+  //gradients
+  primaryGradient,
+  backgroundGradient,
+  primaryGradientAllScreen,
+  gradientPrimaryBackground,
 }

@@ -82,7 +82,7 @@ class ToastProvider with AsyncTimer {
         return Container(
           padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
           decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.dangerousRed),
+            color: WpyTheme.of(context).get(WpyColorKey.dangerousRed),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -92,7 +92,7 @@ class ToastProvider with AsyncTimer {
                   builder: (context) => SvgPicture.asset(
                         'assets/svg_pics/lake_butt_icons/error_background.svg',
                         color:
-                            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
                         width: 15,
                       )),
               SizedBox(width: 10),
@@ -127,7 +127,7 @@ class ToastProvider with AsyncTimer {
         return Container(
           padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
           decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.infoStatusColor),
+            color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(

@@ -36,7 +36,7 @@ class AcidCheckDialog extends Dialog {
                 width: 0.7.sw,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

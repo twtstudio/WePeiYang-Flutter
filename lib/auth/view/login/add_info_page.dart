@@ -63,14 +63,14 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.oldThirdActionColor),
+                        .get(WpyColorKey.oldThirdActionColor),
                     size: 35),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -94,7 +94,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.email,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -121,7 +121,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -146,7 +146,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
-                        fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                        fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                         isCollapsed: true,
                         contentPadding:
                             const EdgeInsets.fromLTRB(15, 18, 0, 18),
@@ -202,13 +202,13 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                                       (states) {
                                 if (states.contains(MaterialState.pressed))
                                   return WpyTheme.of(context)
-                                      .get(WpyThemeKeys.oldActionRippleColor);
+                                      .get(WpyColorKey.oldActionRippleColor);
                                 return WpyTheme.of(context)
-                                    .get(WpyThemeKeys.oldActionColor);
+                                    .get(WpyColorKey.oldActionColor);
                               }),
                               backgroundColor: MaterialStateProperty.all(
                                   WpyTheme.of(context)
-                                      .get(WpyThemeKeys.oldActionColor)),
+                                      .get(WpyColorKey.oldActionColor)),
                               shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
@@ -232,12 +232,12 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                       MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
                       return WpyTheme.of(context)
-                          .get(WpyThemeKeys.oldActionRippleColor);
+                          .get(WpyColorKey.oldActionRippleColor);
                     return WpyTheme.of(context)
-                        .get(WpyThemeKeys.oldActionColor);
+                        .get(WpyColorKey.oldActionColor);
                   }),
                   backgroundColor: MaterialStateProperty.all(
-                      WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                      WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30))),
                 ),

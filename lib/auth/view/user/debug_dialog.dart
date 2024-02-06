@@ -18,7 +18,7 @@ class DebugDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

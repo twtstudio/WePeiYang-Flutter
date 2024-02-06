@@ -70,7 +70,7 @@ class TodayCoursesWidget extends StatelessWidget {
             width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
-              color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+              color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
               borderRadius: BorderRadius.circular(20.r),
               elevation: 0,
               child: InkWell(
@@ -81,7 +81,7 @@ class TodayCoursesWidget extends StatelessWidget {
                 },
                 borderRadius: BorderRadius.circular(20.r),
                 splashFactory: InkRipple.splashFactory,
-                splashColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+                splashColor: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
                 child: Padding(
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(
@@ -94,7 +94,7 @@ class TodayCoursesWidget extends StatelessWidget {
                             '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
                             style: TextUtil.base.bold.sp(14).customColor(
                                   WpyTheme.of(context).get(
-                                      WpyThemeKeys.backgroundGradientEndColor),
+                                      WpyColorKey.backgroundGradientEndColor),
                                 ),
                           ),
                           SizedBox(height: 4.h),

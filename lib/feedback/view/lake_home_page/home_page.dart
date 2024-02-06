@@ -147,14 +147,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
         decoration: BoxDecoration(
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+                WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
             borderRadius: BorderRadius.all(Radius.circular(15))),
         child: Row(children: [
           SizedBox(width: 14),
           Icon(
             Icons.search,
             size: 19,
-            color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor),
+            color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
           ),
           SizedBox(width: 12),
           Consumer<FbHotTagsProvider>(
@@ -224,16 +224,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
                           labelColor: WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryActionColor),
+                              .get(WpyColorKey.primaryActionColor),
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: WpyTheme.of(context)
-                              .get(WpyThemeKeys.labelTextColor),
+                              .get(WpyColorKey.labelTextColor),
                           unselectedLabelStyle:
                               TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryActionColor),
+                                      .get(WpyColorKey.primaryActionColor),
                                   width: 2)),
                           tabs: List<Widget>.generate(
                               tabList.length,
@@ -268,7 +268,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
     return Scaffold(
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       body: Stack(
         children: [
           Padding(
@@ -362,7 +362,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             : MediaQuery.of(context).padding.top -
                                 searchBarHeight),
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeOutCirc,
                 child: Column(children: [
@@ -384,7 +384,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           // 挡上面
           Container(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
@@ -536,7 +536,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
       width: double.infinity,
       decoration: BoxDecoration(
           color:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),
@@ -556,7 +556,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
               onEnd: _offstageTheBackground,
               child: Container(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.reverseBackgroundColor)
+                    .get(WpyColorKey.reverseBackgroundColor)
                     .withOpacity(0.45),
               ),
             )),

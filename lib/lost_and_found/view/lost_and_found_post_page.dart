@@ -240,13 +240,15 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             width: 86.w,
             decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
                 borderRadius: BorderRadius.circular(10.r),
                 boxShadow: [
                   BoxShadow(
                       offset: Offset(0, 3.r),
                       blurRadius: 6.r,
-                      color: ColorUtil.blackOpacityA64)
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.basicTextColor)
+                          .withOpacity(0.25))
                 ]),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -280,7 +282,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all(
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r)))),
             onPressed: () async {
@@ -336,13 +338,14 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             minLines: 1,
             maxLines: 10,
             decoration: InputDecoration.collapsed(
-                hintStyle: TextUtil.base.NotoSansSC.w700.sp(18).infoText(context),
+                hintStyle:
+                    TextUtil.base.NotoSansSC.w700.sp(18).infoText(context),
                 hintText: S.current.feedback_enter_title),
             onChanged: (text) {
               titleCounter.value = '${text.characters.length} / 30';
             },
             inputFormatters: [CustomizedLengthTextInputFormatter(30)],
-            cursorColor: WpyTheme.of(context).get(WpyThemeKeys.cursorColor),
+            cursorColor: WpyTheme.of(context).get(WpyColorKey.cursorColor),
             cursorHeight: 20));
 
     Widget textCounter = ValueListenableBuilder(
@@ -453,7 +456,7 @@ class _LostAndFoundImagesGridViewState
               context.read<NewLostAndFoundPostProvider>().images.length,
           requestType: RequestType.image,
           themeColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -535,7 +538,7 @@ class _LostAndFoundImagesGridViewState
                     Icons.close,
                     size: MediaQuery.of(context).size.width / 32,
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.secondaryBackgroundColor),
+                        .get(WpyColorKey.secondaryBackgroundColor),
                   ))))
     ]);
   }
@@ -630,7 +633,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16.r)),
         child: InkWell(
             onTap: () => _selectDate(context),
@@ -638,7 +641,8 @@ class _SelectDateFieldState extends State<SelectDateField> {
                 width: 195.w,
                 height: 36.h,
                 decoration: BoxDecoration(
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.oldSwitchBarColor),
                     borderRadius: BorderRadius.circular(16.r)),
                 child: Stack(children: [
                   Container(
@@ -745,7 +749,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16)),
         child: Stack(children: [
           Container(
@@ -836,7 +840,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         width: 195.w,
         height: 36.h,
         decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16.r)),
         child: Stack(children: [
           Container(

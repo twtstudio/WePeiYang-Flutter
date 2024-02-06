@@ -21,7 +21,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
     final arrow = Icon(Icons.arrow_forward_ios,
-        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+        color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
         size: 22);
     final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite(context);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
@@ -31,7 +31,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
@@ -48,7 +48,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             padding: EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -77,7 +77,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                 SizedBox(height: 8.h),
                 Container(
                     height: 1,
-                    color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -102,7 +102,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -125,7 +125,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -144,7 +144,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () {
@@ -169,7 +169,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Column(
@@ -196,7 +196,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Container(height: 1, color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)),
+                Container(height: 1, color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
                 SizedBox(height: 20.h),
                 WButton(
                   onPressed: () =>
@@ -227,7 +227,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(

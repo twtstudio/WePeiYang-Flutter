@@ -83,7 +83,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
               padding: EdgeInsets.only(top: 12.h, left: 12.h),
               child: Icon(
                 CupertinoIcons.back,
-                color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                 size: 27.r,
               ),
             ),
@@ -194,7 +194,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 shadowColor: ColorUtil.transparent,
                 elevation: 1,
                 backgroundColor: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
                 label: Text(list[list.length - index - 1],
                     style: TextUtil.base.normal.grey90.PingFangSC.sp(14)),
               ),
@@ -217,7 +217,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
     );
 
     return ColoredBox(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -225,7 +225,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
             Expanded(
                 child: ColoredBox(
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.primaryBackgroundColor),
+                        .get(WpyColorKey.primaryBackgroundColor),
                     child: searchHistory)),
           ],
         ));
@@ -238,7 +238,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
           return LakeDialogWidget(
               title: '清除记录',
               confirmButtonColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,
@@ -299,7 +299,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                           .currentCategory[widget.type]
                   ? ColorUtil.tagLabelColor
                   : WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor)),
+                      .get(WpyColorKey.primaryBackgroundColor)),
           child: Center(
             child: Text(widget.category,
                 style: widget.category ==

@@ -54,14 +54,14 @@ class WpyExamWidget extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 7.5.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(15.r),
               boxShadow: [
                 BoxShadow(
                   offset: Offset(0, 4),
                   blurRadius: 20,
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.basicTextColor)
+                      .get(WpyColorKey.basicTextColor)
                       .withOpacity(0.05),
                 )
               ],
@@ -73,7 +73,7 @@ class WpyExamWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.r),
                 splashFactory: InkRipple.splashFactory,
                 splashColor: WpyTheme.of(context)
-                    .get(WpyThemeKeys.secondaryBackgroundColor),
+                    .get(WpyColorKey.secondaryBackgroundColor),
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30.w),
                   child: Row(

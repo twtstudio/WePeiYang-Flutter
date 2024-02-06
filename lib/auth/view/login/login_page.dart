@@ -55,12 +55,12 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
-                        return WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+                          return WpyTheme.of(context).get(WpyColorKey.oldActionRippleColor);
+                        return WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
                       }),
                       //暂时把Mycolors.deepblue改成默认白色
                       backgroundColor:
-                          MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                          MaterialStateProperty.all(WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24))),
                     ),
@@ -82,11 +82,11 @@ class LoginHomeWidget extends StatelessWidget {
                       overlayColor:
                           MaterialStateProperty.resolveWith<Color>((states) {
                         if (states.contains(MaterialState.pressed))
-                          return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
-                        return WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+                          return WpyTheme.of(context).get(WpyColorKey.oldActionRippleColor);
+                        return WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
                       }),
                       backgroundColor:
-                          MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                          MaterialStateProperty.all(WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30))),
                     ),

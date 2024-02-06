@@ -18,7 +18,7 @@ void showCourseDialog(BuildContext context, List<Pair<Course, int>> pairs) =>
     showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+      barrierColor: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
       builder: (BuildContext context) => CourseDialog(pairs, context),
     );
 
@@ -59,7 +59,7 @@ class CourseDialog extends Dialog {
             : Theme(
                 data: Theme.of(context).copyWith(
                     secondaryHeaderColor: WpyTheme.of(context)
-                        .get(WpyThemeKeys.primaryBackgroundColor)),
+                        .get(WpyColorKey.primaryBackgroundColor)),
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 40.w),
@@ -93,7 +93,7 @@ class CourseDialog extends Dialog {
               offset: Offset(0, 4),
               blurRadius: 10,
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.basicTextColor)
+                  .get(WpyColorKey.basicTextColor)
                   .withOpacity(0.05),
             ),
             BoxShadow(

@@ -12,7 +12,7 @@ class FeedbackSummaryPage extends WbyWebView {
   FeedbackSummaryPage({Key? key, required BuildContext context})
       : super(
             page: "年度总结",
-            backgroundColor: WpyThemeKeys.primaryBackgroundColor,
+            backgroundColor: WpyColorKey.primaryBackgroundColor,
             fullPage: false,
             key: key);
 

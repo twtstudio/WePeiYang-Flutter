@@ -20,11 +20,11 @@ class ReportBasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140),
         child: Container(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Hero(
             tag: 'appbar',

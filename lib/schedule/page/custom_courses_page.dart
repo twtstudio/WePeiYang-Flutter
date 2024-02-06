@@ -54,7 +54,7 @@ class CustomCoursesPage extends StatelessWidget {
           body: Theme(
             data: Theme.of(context).copyWith(
                 secondaryHeaderColor: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor)),
+                    .get(WpyColorKey.primaryBackgroundColor)),
             child: ListView.builder(
               itemCount: customCourses.length,
               itemBuilder: (context, index) {
@@ -72,14 +72,14 @@ class CustomCoursesPage extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
       child: Container(
         decoration: BoxDecoration(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.basicTextColor)
+                  .get(WpyColorKey.basicTextColor)
                   .withOpacity(0.05),
             ),
           ],

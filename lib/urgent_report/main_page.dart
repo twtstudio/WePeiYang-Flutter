@@ -709,7 +709,7 @@ class _PickImageState extends State<PickImage> {
           maxAssets: 1,
           requestType: RequestType.image,
           themeColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor)),
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
@@ -977,11 +977,11 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             '选择地区',
             style: TextStyle(
                 fontSize: 13,
-                color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
+                color: WpyTheme.of(context).get(WpyColorKey.infoTextColor)),
           ),
           Icon(Icons.chevron_right,
               size: 20,
-              color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
+              color: WpyTheme.of(context).get(WpyColorKey.infoTextColor)),
         ],
       ),
     );
@@ -997,7 +997,7 @@ class _CurrentPlaceState extends State<CurrentPlace> {
             padding: const EdgeInsets.only(top: 15, right: 3),
             child: Icon(Icons.place,
                 size: 20,
-                color: WpyTheme.of(context).get(WpyThemeKeys.infoTextColor)),
+                color: WpyTheme.of(context).get(WpyColorKey.infoTextColor)),
           ),
           Column(
             mainAxisSize: MainAxisSize.max,
@@ -1118,7 +1118,7 @@ class StateItem extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(itemHeight / 2),
                 color:
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor))
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor))
             : BoxDecoration(
                 borderRadius: BorderRadius.circular(itemHeight / 2),
                 border: Border.all(color: Color(0XFF62677B), width: 1)),
@@ -1168,7 +1168,7 @@ class _ReportButtonState extends State<ReportButton> {
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(height / 2))),
                 backgroundColor: MaterialStateProperty.all(
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor)),
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
                 minimumSize: MaterialStateProperty.all(Size(width, height))),
           ),
         ],

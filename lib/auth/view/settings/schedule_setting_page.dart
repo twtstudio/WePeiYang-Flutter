@@ -87,14 +87,14 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -127,13 +127,13 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   height: 1,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
                 ),
                 _getNumberOfDaysCard(context, 1),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 15),
                   height: 1,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
                 ),
                 _getNumberOfDaysCard(context, 2),
               ],

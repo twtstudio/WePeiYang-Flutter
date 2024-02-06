@@ -83,7 +83,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
           itemCount: widget.args.urlListLength,
           backgroundDecoration: BoxDecoration(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.reverseBackgroundColor)),
+                  .get(WpyColorKey.reverseBackgroundColor)),
           pageController: PageController(
             initialPage: indexNow,
           ),
@@ -100,14 +100,14 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   child: Container(
                       decoration: BoxDecoration(
                           color: WpyTheme.of(context)
-                              .get(WpyThemeKeys.labelTextColor),
+                              .get(WpyColorKey.labelTextColor),
                           borderRadius:
                               BorderRadius.all(Radius.circular(14.r))),
                       padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                       child: Icon(
                         CupertinoIcons.back,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor),
+                            .get(WpyColorKey.primaryBackgroundColor),
                         size: 30.h,
                       )),
                   onPressed: () {
@@ -121,7 +121,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
             right: 10.w,
             child: Container(
               decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                   borderRadius: BorderRadius.all(Radius.circular(14.r))),
               padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
               child: Row(
@@ -131,7 +131,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                     child: Icon(
                       CupertinoIcons.square_arrow_down,
                       color: WpyTheme.of(context)
-                          .get(WpyThemeKeys.primaryBackgroundColor),
+                          .get(WpyColorKey.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {
@@ -143,7 +143,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                     child: Icon(
                       CupertinoIcons.share,
                       color: WpyTheme.of(context)
-                          .get(WpyThemeKeys.primaryBackgroundColor),
+                          .get(WpyColorKey.primaryBackgroundColor),
                       size: 30.h,
                     ),
                     onPressed: () {

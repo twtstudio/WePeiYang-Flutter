@@ -94,7 +94,7 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.only(top: 12, left: 12),
             child: Icon(
               CupertinoIcons.back,
-              color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
             ),
           ),
           onPressed: () => Navigator.pop(context),
@@ -185,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
                         TextUtil.base.normal.label(context).NotoSansSC.sp(16)),
                 deleteIcon: Icon(Icons.close,
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.secondaryTextColor),
+                        .get(WpyColorKey.secondaryTextColor),
                     size: 16),
                 onDeleted: () {
                   setState(() {
@@ -214,7 +214,7 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     return ColoredBox(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -222,7 +222,7 @@ class _SearchPageState extends State<SearchPage> {
             Expanded(
                 child: ColoredBox(
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.secondaryBackgroundColor),
+                        .get(WpyColorKey.secondaryBackgroundColor),
                     child: searchHistory)),
           ],
         ));
@@ -235,7 +235,7 @@ class _SearchPageState extends State<SearchPage> {
           return LakeDialogWidget(
               title: '清除记录',
               confirmButtonColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryTextButtonColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
               cancelText: S.current.feedback_cancel,

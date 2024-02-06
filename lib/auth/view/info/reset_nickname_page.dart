@@ -46,13 +46,13 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
           elevation: 0,
           centerTitle: true,
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -63,11 +63,11 @@ class _ResetNicknamePageState extends State<ResetNicknamePage> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.fromLTRB(0, 16, 0, 12),
               enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor))),
+                  borderSide: BorderSide(color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor))),
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
                       color: WpyTheme.of(context)
-                          .get(WpyThemeKeys.oldFurthActionColor),
+                          .get(WpyColorKey.oldFurthActionColor),
                       width: 2)),
               suffixIcon: IconButton(
                 onPressed: _reset,

@@ -52,9 +52,9 @@ class LevelUtil extends StatelessWidget {
     // Define colors for negative, default, and base text
     final Color negativeColor = ColorUtil.levelNegColor;
     final Color dislikeSecondaryColor =
-        WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary);
+        WpyTheme.of(context).get(WpyColorKey.dislikeSecondary);
     final Color basicTextColor =
-        WpyTheme.of(context).get(WpyThemeKeys.basicTextColor);
+        WpyTheme.of(context).get(WpyColorKey.basicTextColor);
 
     // Calculate alpha based on level
     int alphaValue = 175 + (parsedLevelInt % 10) * 8;
@@ -113,8 +113,8 @@ class LevelProgress extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)
+              WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)
             ],
             stops: [
               value,
@@ -126,7 +126,7 @@ class LevelProgress extends StatelessWidget {
             offset: Offset(0, 4),
             blurRadius: 10,
             color: WpyTheme.of(context)
-                .get(WpyThemeKeys.basicTextColor)
+                .get(WpyColorKey.basicTextColor)
                 .withOpacity(0.05),
           ),
         ],

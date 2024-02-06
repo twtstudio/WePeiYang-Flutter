@@ -145,7 +145,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor =WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor);
+    var mainColor =WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -175,10 +175,10 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Center(
             child: WButton(
               onPressed: () {
@@ -226,7 +226,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Expanded(
               child: Theme(
                 data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                    .copyWith(secondaryHeaderColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,

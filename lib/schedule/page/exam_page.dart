@@ -20,7 +20,7 @@ class ExamPage extends StatefulWidget {
 }
 
 class _ExamPageState extends State<ExamPage> {
-  get _color => WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+  get _color => WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _ExamPageState extends State<ExamPage> {
   Widget build(BuildContext context) {
     var appBar = AppBar(
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       elevation: 0,
       leading: WButton(
           child: Icon(Icons.arrow_back, color: _color, size: 32.r),
@@ -142,7 +142,7 @@ class _ExamPageState extends State<ExamPage> {
         child: Container(
           decoration: BoxDecoration(
             color: finished
-                ? WpyTheme.of(context).get(WpyThemeKeys.reverseTextColor)
+                ? WpyTheme.of(context).get(WpyColorKey.reverseTextColor)
                 : unfinishedColor,
           ),
           child: InkWell(
@@ -154,9 +154,9 @@ class _ExamPageState extends State<ExamPage> {
                 DefaultTextStyle(
                   style: TextStyle(
                       color: finished
-                          ? WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)
+                          ? WpyTheme.of(context).get(WpyColorKey.oldHintColor)
                           : WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryBackgroundColor)),
+                              .get(WpyColorKey.primaryBackgroundColor)),
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -178,9 +178,9 @@ class _ExamPageState extends State<ExamPage> {
                             Icon(Icons.location_on_outlined,
                                 size: 17.r,
                                 color: finished
-                                    ? WpyTheme.of(context).get(WpyThemeKeys.oldHintColor)
+                                    ? WpyTheme.of(context).get(WpyColorKey.oldHintColor)
                                     : WpyTheme.of(context).get(
-                                        WpyThemeKeys.primaryBackgroundColor)),
+                                        WpyColorKey.primaryBackgroundColor)),
                             SizedBox(width: 3.w),
                             Text('${exam.location}-$seat',
                                 overflow: TextOverflow.ellipsis,

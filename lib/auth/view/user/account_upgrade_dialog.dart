@@ -27,7 +27,7 @@ class AccountUpgradeDialog extends Dialog {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.primaryBackgroundColor)),
+                  .get(WpyColorKey.primaryBackgroundColor)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

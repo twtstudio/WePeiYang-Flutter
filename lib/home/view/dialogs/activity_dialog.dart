@@ -126,7 +126,7 @@ class ActivityDialog extends Dialog {
                         width: 50.w,
                         height: 100.w,
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.reverseTextColor),
+                            .get(WpyColorKey.reverseTextColor),
                       ),
                     ),
                   ))

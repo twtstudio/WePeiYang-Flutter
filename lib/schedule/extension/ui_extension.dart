@@ -65,7 +65,7 @@ class AnimatedActiveCourse extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           splashFactory: InkRipple.splashFactory,
           splashColor:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           child: _hide
               ? Container()
               : Padding(

@@ -297,7 +297,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           RatingBar.builder(
             itemBuilder: (context, index) => Icon(
               Icons.star,
-              color: WpyTheme.of(context).get(WpyThemeKeys.FavorColor),
+              color: WpyTheme.of(context).get(WpyColorKey.FavorColor),
             ),
             allowHalfRating: true,
             glow: false,
@@ -306,7 +306,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             itemSize: 16.w,
             ignoreGestures: true,
             unratedColor:
-                WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
+                WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
             onRatingUpdate: (_) {},
           ),
         ]),
@@ -320,7 +320,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         RatingBar.builder(
           itemBuilder: (context, index) => Icon(
             Icons.star,
-            color: WpyTheme.of(context).get(WpyThemeKeys.FavorColor),
+            color: WpyTheme.of(context).get(WpyColorKey.FavorColor),
           ),
           allowHalfRating: true,
           glow: false,
@@ -329,7 +329,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           itemSize: 16.w,
           ignoreGestures: true,
           unratedColor:
-              WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor),
+              WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
           onRatingUpdate: (_) {},
         ),
       ]);
@@ -437,7 +437,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         child: list,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
@@ -483,13 +483,13 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
       initialRating: _initialRating,
       minRating: 0,
       allowHalfRating: true,
-      unratedColor: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor),
+      unratedColor: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
       itemCount: 5,
       itemSize: 47.w,
       itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor),
+        color: WpyTheme.of(context).get(WpyColorKey.FavorBubbleStartColor),
       ),
       onRatingUpdate: (rating) {
         setState(() {

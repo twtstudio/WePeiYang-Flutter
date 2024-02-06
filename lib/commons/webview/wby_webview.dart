@@ -16,7 +16,7 @@ import '../widgets/w_button.dart';
 class WbyWebView extends StatefulWidget {
   final String page;
   final bool fullPage;
-  final WpyThemeKeys backgroundColor;
+  final WpyColorKey backgroundColor;
 
   const WbyWebView(
       {Key? key,
@@ -59,12 +59,12 @@ class WbyWebViewState extends State<WbyWebView> {
         toolbarHeight: 40,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: Padding(
           padding: const EdgeInsets.only(left: 15),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                 size: 32),
             onPressed: () => Navigator.pop(context),
           ),

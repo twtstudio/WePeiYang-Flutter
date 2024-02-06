@@ -14,7 +14,7 @@ class UserAgreementDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = WpyTheme.of(context).get(WpyThemeKeys.oldThirdActionColor);
+    var textColor = WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(
@@ -22,7 +22,7 @@ class UserAgreementDialog extends Dialog {
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       child: Column(
         children: [
           Expanded(

@@ -30,7 +30,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
     final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
     final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
     final arrow = Icon(Icons.arrow_forward_ios,
-        color: WpyTheme.of(context).get(WpyThemeKeys.oldListActionColor), size: 22);
+        color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor), size: 22);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
@@ -38,12 +38,12 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                 size: 32),
             onPressed: () => Navigator.pop(context),
           ),
@@ -63,7 +63,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -84,7 +84,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -106,9 +106,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     setState(() => CommonPreferences.showMap.value = value);
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
-                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -118,7 +118,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -141,9 +141,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                     context.read<GPANotifier>().hideGPA = !value;
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
-                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -242,7 +242,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -265,9 +265,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         CommonPreferences.useClassesBackend.value = value);
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
-                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -277,7 +277,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -302,9 +302,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         .nightMode = value;
                   },
                   activeColor: ColorUtil.blue105,
-                  inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                  activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
-                  inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveThumbColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  activeTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  inactiveTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                 ),
               ],
             ),
@@ -314,7 +314,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: WButton(
@@ -352,7 +352,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -390,9 +390,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       }
                     },
                     activeColor: ColorUtil.blue105,
-                    inactiveThumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                    activeTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
-                    inactiveTrackColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                    inactiveThumbColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                    activeTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                    inactiveTrackColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   );
                 }),
               ],
@@ -408,7 +408,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
             decoration: BoxDecoration(
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Row(
@@ -428,8 +428,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                 ),
                 Slider(
                   activeColor: ColorUtil.blue105,
-                  inactiveColor: WpyTheme.of(context).get(WpyThemeKeys.oldHintColor),
-                  thumbColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  inactiveColor: WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                  thumbColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   value:
                       context.watch<AnimationProvider>().speedIndex.toDouble(),
                   onChanged: (e) {

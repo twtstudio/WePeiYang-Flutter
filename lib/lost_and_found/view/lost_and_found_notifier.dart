@@ -180,7 +180,7 @@ class LAFWeKoDialog extends StatelessWidget {
           margin:  EdgeInsets.symmetric(horizontal: 30.w),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
-              color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
+              color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -218,11 +218,11 @@ class LAFWeKoDialog extends StatelessWidget {
                   overlayColor:
                   MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return WpyTheme.of(context).get(WpyThemeKeys.oldSecondaryActionColor);
-                    return WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor);
+                      return WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor);
+                    return WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
                   }),
                   backgroundColor:
-                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
+                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),

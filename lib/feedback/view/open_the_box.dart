@@ -54,13 +54,13 @@ class _OpenBoxState extends State<OpenBox> {
           elevation: 0,
           centerTitle: true,
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
@@ -89,7 +89,7 @@ class _OpenBoxState extends State<OpenBox> {
                 },
                 icon: Icon(
                   Icons.refresh,
-                  color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
                 )),
           ],
         ),

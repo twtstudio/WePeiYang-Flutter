@@ -62,13 +62,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           elevation: 0,
           centerTitle: true,
           backgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
                     color:
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
@@ -95,7 +95,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password3,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -129,7 +129,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password1,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -163,7 +163,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       hintText: S.current.input_password4,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -197,12 +197,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     overlayColor:
                         MaterialStateProperty.resolveWith<Color>((states) {
                       if (states.contains(MaterialState.pressed))
-                        return WpyTheme.of(context).get(WpyThemeKeys.oldActionRippleColor);
+                        return WpyTheme.of(context).get(WpyColorKey.oldActionRippleColor);
                       return WpyTheme.of(context)
-                          .get(WpyThemeKeys.oldActionColor);
+                          .get(WpyColorKey.oldActionColor);
                     }),
                     backgroundColor: MaterialStateProperty.all(
-                        WpyTheme.of(context).get(WpyThemeKeys.oldActionColor)),
+                        WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30))),
                   ),

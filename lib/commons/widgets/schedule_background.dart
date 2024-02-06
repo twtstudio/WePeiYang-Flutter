@@ -14,15 +14,15 @@ class ScheduleBackground extends StatelessWidget {
       child: CustomPaint(
         painter: ScheduleBackgroundPrinter(
           primaryActionColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
           primaryLightActionColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryLightActionColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor),
           primaryBackgroundColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           primaryLighterActionColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryLighterActionColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryLighterActionColor),
           primaryLightestActionColor:
-              WpyTheme.of(context).get(WpyThemeKeys.primaryLightestActionColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryLightestActionColor),
         ),
       ),
     );

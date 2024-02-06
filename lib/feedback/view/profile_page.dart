@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Icons.email_outlined,
                       size: 28,
                       color: WpyTheme.of(context)
-                          .get(WpyThemeKeys.reverseTextColor),
+                          .get(WpyColorKey.reverseTextColor),
                     ),
                   ),
                   SizedBox(width: 15),
@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 24,
                       height: 24,
                       color: WpyTheme.of(context)
-                          .get(WpyThemeKeys.reverseTextColor),
+                          .get(WpyColorKey.reverseTextColor),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -197,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.reverseTextColor),
+                                .get(WpyColorKey.reverseTextColor),
                           ),
                         ),
                       ),
@@ -213,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     topLeft: Radius.circular(20.r),
                     topRight: Radius.circular(20.r)),
                 color: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
               ),
               child: Column(
                 children: [
@@ -333,7 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: UserAvatarImage(
                 size: 0.3.sw,
                 iconColor: WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryBackgroundColor),
+                    .get(WpyColorKey.primaryBackgroundColor),
                 context: context,
               ),
             ),
@@ -349,8 +349,7 @@ class _ProfilePageState extends State<ProfilePage> {
           duration: Duration(milliseconds: 300),
           child: Container(
             key: ValueKey(_refreshController.isRefresh),
-            color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             child: postListShow,
           ),
         )
@@ -359,7 +358,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Container(
       //改背景色用
-      decoration: BoxDecoration(gradient: ColorUtil.backgroundGradient),
+      decoration: BoxDecoration(
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.backgroundGradient)),
       child: SafeArea(
         bottom: false,
         child: SmartRefresher(
@@ -369,11 +370,11 @@ class _ProfilePageState extends State<ProfilePage> {
           footer: ClassicFooter(
             textStyle: TextStyle(
                 color:
-                    WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor)),
+                    WpyTheme.of(context).get(WpyColorKey.secondaryTextColor)),
             idleText: '没有更多数据了:>',
             idleIcon: Icon(Icons.check,
                 color:
-                    WpyTheme.of(context).get(WpyThemeKeys.secondaryTextColor)),
+                    WpyTheme.of(context).get(WpyColorKey.secondaryTextColor)),
           ),
           enablePullDown: true,
           onRefresh: _onRefresh,
@@ -408,7 +409,7 @@ class CustomCard extends StatelessWidget {
         width: 113.w,
         height: 90.h,
         decoration: BoxDecoration(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(

@@ -106,7 +106,7 @@ class _LinkTextState extends State<LinkText> {
                 confirmButtonColor: checkBili(url)
                     ? ColorUtil.biliPink
                     : WpyTheme.of(context)
-                        .get(WpyThemeKeys.primaryTextButtonColor),
+                        .get(WpyColorKey.primaryTextButtonColor),
                 cancelTextStyle:
                     TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
                 confirmText: "继续",

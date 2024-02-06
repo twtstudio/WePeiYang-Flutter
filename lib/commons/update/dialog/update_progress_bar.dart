@@ -28,7 +28,7 @@ class GradientLinearProgressBar extends StatelessWidget {
       required BuildContext context,
       this.strokeCapRound = false})
       : backgroundColor =
-            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor);
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
       var valueEnd = Offset(value * size.width + _offset, _offset); //计算进度的长度
       Rect rect = Rect.fromPoints(start, valueEnd);
       p.shader = LinearGradient(colors: colors).createShader(rect);
-      p.color = WpyTheme.of(context).get(WpyThemeKeys.FavorBubbleStartColor);
+      p.color = WpyTheme.of(context).get(WpyColorKey.FavorBubbleStartColor);
       canvas.drawLine(start, valueEnd, p);
     }
   }

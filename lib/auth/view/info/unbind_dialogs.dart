@@ -37,7 +37,7 @@ class TjuUnbindDialog extends Dialog {
         margin: const EdgeInsets.symmetric(horizontal: 30),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +94,7 @@ class PhoneUnbindDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -150,7 +150,7 @@ class EmailUnbindDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -213,7 +213,7 @@ class LogoffDialog extends Dialog {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color:
-                WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

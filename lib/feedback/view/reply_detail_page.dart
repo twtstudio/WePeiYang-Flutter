@@ -172,7 +172,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
               Container(
                 width: WePeiYangApp.screenWidth - 30.w,
                 height: 1,
-                color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
               ),
               SizedBox(height: 6.h)
             ],
@@ -234,12 +234,12 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                       topRight: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
-                        color: WpyTheme.of(context).get(WpyThemeKeys.iconAnimationStartColor),
+                        color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
                   ],
-                  color: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor)),
+                  color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
               child: Column(
                 children: [
                   Offstage(
@@ -335,7 +335,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                           )),
                     ),
                   ),
@@ -399,10 +399,10 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
 
     var appBar = AppBar(
       titleSpacing: 0,
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
-            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],

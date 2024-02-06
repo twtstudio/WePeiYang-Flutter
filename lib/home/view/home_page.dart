@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/home.svg',
                 color: ColorUtil.unSelectedIcon,
               ),
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(0),
       ),
     );
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             : SvgPicture.asset(
                 'assets/svg_pics/lake_grey.svg',
               ),
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () {
           if (_currentIndex == 1) {
             feedbackKey.currentState?.listToTop();
@@ -174,17 +174,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'assets/svg_pics/my.svg',
                 color: ColorUtil.unSelectedIcon,
               ),
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         onPressed: () => _tabController.animateTo(2),
       ),
     );
 
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         boxShadow: [
           BoxShadow(
-              color: WpyTheme.of(context).get(WpyThemeKeys.dislikeSecondary),
+              color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
               spreadRadius: -1,
               blurRadius: 2)
         ],
@@ -202,10 +202,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       value: _tabController.index == 2
           ? SystemUiOverlayStyle.light.copyWith(
               systemNavigationBarColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor))
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor))
           : SystemUiOverlayStyle.dark.copyWith(
               systemNavigationBarColor: WpyTheme.of(context)
-                  .get(WpyThemeKeys.primaryBackgroundColor)),
+                  .get(WpyColorKey.primaryBackgroundColor)),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,

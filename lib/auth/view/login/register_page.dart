@@ -118,14 +118,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .NotoSansSC
                                       .reverse(context),
                                   cursorColor: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _userNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -133,7 +133,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -181,14 +181,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .NotoSansSC
                                       .reverse(context),
                                   cursorColor: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _nicknameFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -196,7 +196,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -244,14 +244,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .NotoSansSC
                                       .reverse(context),
                                   cursorColor: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _idNumFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -259,7 +259,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -307,14 +307,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                       .NotoSansSC
                                       .reverse(context),
                                   cursorColor: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
                                   focusNode: _emailFocus,
                                   decoration: InputDecoration(
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -322,7 +322,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyThemeKeys
+                                            WpyColorKey
                                                 .primaryBackgroundColor),
                                         width: 1.0,
                                       ),
@@ -353,7 +353,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
                                 color: WpyTheme.of(context)
-                                    .get(WpyThemeKeys.primaryBackgroundColor),
+                                    .get(WpyColorKey.primaryBackgroundColor),
                               ),
                               child: Center(
                                 child: Text("下一步",
@@ -487,21 +487,21 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                               .NotoSansSC
                               .reverse(context),
                           cursorColor: WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryBackgroundColor),
+                              .get(WpyColorKey.primaryBackgroundColor),
                           textInputAction: TextInputAction.next,
                           focusNode: _phoneFocus,
                           decoration: InputDecoration(
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: WpyTheme.of(context)
-                                    .get(WpyThemeKeys.primaryBackgroundColor),
+                                    .get(WpyColorKey.primaryBackgroundColor),
                                 width: 1.0,
                               ),
                             ),
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                 color: WpyTheme.of(context)
-                                    .get(WpyThemeKeys.primaryBackgroundColor),
+                                    .get(WpyColorKey.primaryBackgroundColor),
                                 width: 1.0,
                               ),
                             ),
@@ -542,7 +542,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -560,7 +560,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -578,7 +578,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -596,7 +596,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -614,7 +614,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -632,7 +632,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(
-                                            WpyThemeKeys.primaryBackgroundColor)
+                                            WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -675,7 +675,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                           ),
                           child: Center(
                             child: Text("下一步",
@@ -854,7 +854,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                           ),
                           child: TextField(
                             cursorColor: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
@@ -867,14 +867,14 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
@@ -919,7 +919,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                 .NotoSansSC
                                 .reverse(context),
                             cursorColor: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                             keyboardType: TextInputType.visiblePassword,
                             focusNode: _pw2Focus,
                             obscureText: true,
@@ -927,14 +927,14 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: WpyTheme.of(context)
-                                      .get(WpyThemeKeys.primaryBackgroundColor),
+                                      .get(WpyColorKey.primaryBackgroundColor),
                                   width: 1.0,
                                 ),
                               ),
@@ -971,14 +971,14 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                   (states) {
                             if (states.contains(MaterialState.pressed))
                               return WpyTheme.of(context)
-                                  .get(WpyThemeKeys.reverseBackgroundColor)
+                                  .get(WpyColorKey.reverseBackgroundColor)
                                   .withOpacity(0.1);
                             return WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor);
+                                .get(WpyColorKey.primaryBackgroundColor);
                           }),
                           backgroundColor: MaterialStateProperty.all(
                               WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryBackgroundColor)),
+                                  .get(WpyColorKey.primaryBackgroundColor)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),
@@ -998,7 +998,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                   MaterialTapTargetSize.shrinkWrap,
                               visualDensity: VisualDensity.compact,
                               activeColor: WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryActionColor),
+                                  .get(WpyColorKey.primaryActionColor),
                               onChanged: (_) {
                                 checkNotifier.value = !checkNotifier.value;
                               },

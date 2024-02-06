@@ -320,7 +320,7 @@ class AdCardWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.primaryBackgroundColor),
+                      .get(WpyColorKey.primaryBackgroundColor),
                 ),
                 width: 1.sw - 40.w,
                 height: (1.sw - 40.w) * 0.32,
@@ -395,7 +395,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                             borderRadius:
                                 BorderRadius.all(Radius.circular(100)),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryActionColor)
+                                .get(WpyColorKey.primaryActionColor)
                                 .withAlpha(12)),
                       );
                     ind--;
@@ -404,7 +404,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.dislikeSecondary),
+                                .get(WpyColorKey.dislikeSecondary),
                           ),
                           margin: EdgeInsets.symmetric(
                               horizontal: 20.w, vertical: 20.h),
@@ -419,7 +419,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.dislikeSecondary),
+                                .get(WpyColorKey.dislikeSecondary),
                           ),
                           margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                           height: 0.32 * WePeiYangApp.screenWidth);
@@ -430,7 +430,7 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           color: WpyTheme.of(context)
-                              .get(WpyThemeKeys.dislikeSecondary),
+                              .get(WpyColorKey.dislikeSecondary),
                         ),
                         margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
                         height: 160.h);
@@ -517,9 +517,9 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       elevation: 4,
       heroTag: 'error_btn',
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       foregroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+          WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
       onPressed: () {
         FeedbackService.getToken(
             forceRefresh: true,
@@ -593,7 +593,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
           color: WpyTheme.of(context)
-              .get(WpyThemeKeys.primaryActionColor)
+              .get(WpyColorKey.primaryActionColor)
               .withAlpha(12)),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

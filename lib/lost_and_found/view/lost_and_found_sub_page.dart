@@ -351,7 +351,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                     ),
                                                     elevation: 0,
                                                     color: WpyTheme.of(context)
-                                                        .get(WpyThemeKeys
+                                                        .get(WpyColorKey
                                                             .secondaryBackgroundColor),
                                                   )),
                                             )
@@ -524,10 +524,10 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
             color: widget.category ==
                     context.read<LAFoundModel>().currentCategory[widget.type]
                 ? WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryActionColor)
+                    .get(WpyColorKey.primaryActionColor)
                     .withOpacity(0.1)
                 : WpyTheme.of(context)
-                    .get(WpyThemeKeys.secondaryBackgroundColor),
+                    .get(WpyColorKey.secondaryBackgroundColor),
           ),
           child: Center(
             child: Text(widget.category,

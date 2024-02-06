@@ -141,7 +141,7 @@ class _NCommentCardState extends State<NCommentCard>
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.w,
-            color: WpyTheme.of(context).get(WpyThemeKeys.basicTextColor),
+            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
           ),
         ),
         onPressed: () {
@@ -817,7 +817,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   hintText: "评论置顶值，0-3000，0为取消置顶",
                   hintStyle: TextUtil.base.label(context).bold.w500.sp(14),
                   filled: true,
-                  fillColor: WpyTheme.of(context).get(WpyThemeKeys.oldSwitchBarColor),
+                  fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -836,7 +836,7 @@ class AdminPopUpState extends State<AdminPopUp> {
                   elevation: MaterialStateProperty.all(2),
                   backgroundColor: MaterialStateProperty.all(
                       WpyTheme.of(context)
-                          .get(WpyThemeKeys.secondaryBackgroundColor)),
+                          .get(WpyColorKey.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),

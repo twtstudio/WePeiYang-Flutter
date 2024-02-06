@@ -199,7 +199,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                   width: WePeiYangApp.screenWidth - 60,
                   height: 1,
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.iconAnimationStartColor))
+                      .get(WpyColorKey.iconAnimationStartColor))
             ],
           );
         },
@@ -244,13 +244,13 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                   boxShadow: [
                     BoxShadow(
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.iconAnimationStartColor),
+                            .get(WpyColorKey.iconAnimationStartColor),
                         offset: Offset(0, -1),
                         blurRadius: 2,
                         spreadRadius: 3),
                   ],
                   color: WpyTheme.of(context)
-                      .get(WpyThemeKeys.secondaryBackgroundColor)),
+                      .get(WpyColorKey.secondaryBackgroundColor)),
               child: Column(
                 children: [
                   Offstage(
@@ -296,7 +296,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(11),
                             color: WpyTheme.of(context)
-                                .get(WpyThemeKeys.primaryBackgroundColor),
+                                .get(WpyColorKey.primaryBackgroundColor),
                           )),
                     ),
                   ),
@@ -339,10 +339,10 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
 
     var appBar = AppBar(
       backgroundColor:
-          WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
-            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [menuButton],
@@ -370,7 +370,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       },
       child: Scaffold(
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: appBar,
         body: body,
       ),

@@ -78,9 +78,9 @@ class TimeFrameWidget extends StatelessWidget {
                   child: Icon(Icons.cancel,
                       color: canDelete
                           ? WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryActionColor)
+                              .get(WpyColorKey.primaryActionColor)
                           : WpyTheme.of(context)
-                              .get(WpyThemeKeys.primaryBackgroundColor)),
+                              .get(WpyColorKey.primaryBackgroundColor)),
                 ),
               ),
             ],
@@ -114,7 +114,7 @@ class TimeFrameWidget extends StatelessWidget {
                         context: context,
                         barrierDismissible: true,
                         barrierColor: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor)
+                            .get(WpyColorKey.primaryBackgroundColor)
                             .withOpacity(0.1),
                         builder: (_) => WeekPicker(
                             index,
@@ -159,7 +159,7 @@ class TimeFrameWidget extends StatelessWidget {
                         context: context,
                         barrierDismissible: true,
                         barrierColor: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor)
+                            .get(WpyColorKey.primaryBackgroundColor)
                             .withOpacity(0.1),
                         builder: (_) => UnitPicker(
                             index, top, pvd.arrangeList[index].unitList),
@@ -254,7 +254,7 @@ class InputWidget extends StatelessWidget {
               textAlign: TextAlign.end,
               style: TextUtil.base.PingFangSC.medium.label(context).sp(16),
               cursorColor:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextUtil.base.PingFangSC.medium.greyA8.sp(13),
@@ -280,7 +280,7 @@ class CardWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: [
             BoxShadow(
@@ -309,7 +309,7 @@ class CardWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5.h),
       padding: EdgeInsets.fromLTRB(12.r, 10.r, 12.r, 10.r),
       decoration: BoxDecoration(
-        color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
           BoxShadow(
@@ -387,7 +387,7 @@ class UnitPicker extends Dialog {
         height: 150.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Center(
@@ -537,7 +537,7 @@ class WeekPicker extends Dialog {
         height: 220.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
-          color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           borderRadius: BorderRadius.circular(15.r),
           elevation: 5,
           child: Column(
@@ -565,9 +565,9 @@ class WeekPicker extends Dialog {
                           elevation: 0,
                           backgroundColor: index == _weekTypes.indexOf(type)
                               ? WpyTheme.of(context)
-                                  .get(WpyThemeKeys.primaryActionColor)
+                                  .get(WpyColorKey.primaryActionColor)
                               : WpyTheme.of(context)
-                                  .get(WpyThemeKeys.secondaryBackgroundColor),
+                                  .get(WpyColorKey.secondaryBackgroundColor),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.r),
                           ),
@@ -577,9 +577,9 @@ class WeekPicker extends Dialog {
                                 .sp(12)
                                 .customColor(index == _weekTypes.indexOf(type)
                                     ? WpyTheme.of(context).get(
-                                        WpyThemeKeys.primaryBackgroundColor)
+                                        WpyColorKey.primaryBackgroundColor)
                                     : WpyTheme.of(context)
-                                        .get(WpyThemeKeys.infoTextColor))),
+                                        .get(WpyColorKey.infoTextColor))),
                       ),
                     );
                   })

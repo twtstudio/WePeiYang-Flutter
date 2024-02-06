@@ -73,7 +73,7 @@ class _GPAPageState extends State<GPAPage> {
             /// 修改scrollView滚动至头/尾时溢出的颜色
             data: Theme.of(context).copyWith(
                 secondaryHeaderColor:
-                    WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor)),
+                    WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
             child: ListView(
               children: [
                 RadarChartWidget(_gpaColors),
@@ -116,7 +116,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ),
         ),
       ),

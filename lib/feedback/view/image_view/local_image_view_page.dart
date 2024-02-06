@@ -70,7 +70,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
           itemCount: widget.args.uriListLength,
           backgroundDecoration: BoxDecoration(
               color: WpyTheme.of(context)
-                  .get(WpyThemeKeys.reverseBackgroundColor)),
+                  .get(WpyColorKey.reverseBackgroundColor)),
           pageController: PageController(
             initialPage: widget.args.indexNow,
           ),

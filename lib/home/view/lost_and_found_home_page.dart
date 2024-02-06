@@ -148,9 +148,9 @@ class LostAndFoundAppBar extends StatelessWidget
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                WpyTheme.of(context).get(WpyThemeKeys.primaryActionColor),
+                WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                 WpyTheme.of(context)
-                    .get(WpyThemeKeys.primaryLighterActionColor),
+                    .get(WpyColorKey.primaryLighterActionColor),
               ]),
         ),
         child: Stack(

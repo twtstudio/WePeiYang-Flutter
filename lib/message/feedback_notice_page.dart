@@ -32,7 +32,7 @@ class FeedbackNoticePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: WpyTheme.of(context).get(WpyThemeKeys.labelTextColor),
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -113,12 +113,12 @@ class FeedbackNoticePage extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color:
-                  WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               boxShadow: [
                 BoxShadow(
                     blurRadius: 5,
                     color: WpyTheme.of(context)
-                        .get(WpyThemeKeys.secondaryBackgroundColor),
+                        .get(WpyColorKey.secondaryBackgroundColor),
                     offset: Offset(0, 0),
                     spreadRadius: 3),
               ],
@@ -130,7 +130,7 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyThemeKeys.secondaryBackgroundColor),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: appBar,
       body: noticeCard,
     );

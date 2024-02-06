@@ -152,11 +152,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
         elevation: 0,
         centerTitle: true,
         backgroundColor:
-            WpyTheme.of(context).get(WpyThemeKeys.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: IconButton(
           icon: Icon(
             CupertinoIcons.back,
-            color: WpyTheme.of(context).get(WpyThemeKeys.defaultActionColor),
+            color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
           ),
           onPressed: () {
             Navigator.pop(context, true);
@@ -231,7 +231,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     if (index == 0) {
                       return Container(
                         color: WpyTheme.of(context)
-                            .get(WpyThemeKeys.primaryBackgroundColor),
+                            .get(WpyColorKey.primaryBackgroundColor),
                         child: Column(
                           children: [
                             const SizedBox(height: 10),
