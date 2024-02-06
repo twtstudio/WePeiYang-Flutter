@@ -126,6 +126,7 @@ class _NewPostPageState extends State<NewPostPage> {
 
   @override
   Widget build(BuildContext context) {
+
     final appBar = AppBar(
       title: Text(
         S.current.feedback_new_post,
@@ -173,6 +174,7 @@ class _NewPostPageState extends State<NewPostPage> {
       ),
     );
 
+
     return Scaffold(
         backgroundColor: ColorUtil.whiteFFColor,
         appBar: appBar,
@@ -192,9 +194,9 @@ class _NewPostPageState extends State<NewPostPage> {
                               : EdgeInsets.zero,
                           child: widget.args.isFollowing
                               ? Text('跟帖:',
-                                  style: TextUtil.base.NotoSansSC.w500
-                                      .sp(14)
-                                      .black2A)
+                              style: TextUtil.base.NotoSansSC.w500
+                                  .sp(14)
+                                  .black2A)
                               : LakeSelector()),
                       SizedBox(height: 30),
                       Column(
@@ -215,8 +217,8 @@ class _NewPostPageState extends State<NewPostPage> {
                       SizedBox(height: 22),
                       widget.args.isFollowing
                           ? Text('${widget.args.tagName}'.substring(3),
-                              style:
-                                  TextUtil.base.NotoSansSC.w500.sp(14).black2A)
+                          style:
+                          TextUtil.base.NotoSansSC.w500.sp(14).black2A)
                           : departmentTagView(context.read<NewPostProvider>().postTypeNotifier),
                     ],
                   ),

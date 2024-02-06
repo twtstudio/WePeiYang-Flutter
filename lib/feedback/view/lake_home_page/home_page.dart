@@ -13,6 +13,8 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/ui/page_switching_data.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
@@ -24,6 +26,7 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../home/view/web_views/festival_page.dart';
+import '../../rating_page/ui/page_switching_ui.dart';
 
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
@@ -138,48 +141,63 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       initializeRefresh = false;
     }
 
-    var searchBar = WButton(
-      onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
-      child: Container(
+    var searchBar = Container(
         height: searchBarHeight - 8,
-        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
-        decoration: BoxDecoration(
-            color: ColorUtil.backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: Row(children: [
-          SizedBox(width: 14),
-          Icon(
-            Icons.search,
-            size: 19,
-            color: ColorUtil.grey108,
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          Container(
+            width: 8,
           ),
-          SizedBox(width: 12),
-          Consumer<FbHotTagsProvider>(
-              builder: (_, data, __) => Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
-                        child: Text(
-                          data.recTag == null
-                              ? '搜索发现'
-                              : '#${data.recTag?.name}#',
-                          overflow: TextOverflow.ellipsis,
-                          style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
-                        ),
-                      ),
-                      Text(
-                        data.recTag == null ? '' : '  为你推荐',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
-                      ),
-                    ],
-                  )),
-          Spacer()
-        ]),
-      ),
-    );
+          WButton(
+            onPressed: () =>
+                Navigator.pushNamed(context, FeedbackRouter.search),
+            child: Container(
+              height: searchBarHeight - 8,
+              width: MediaQuery.of(context).size.width -
+                  (searchBarHeight - 8) - 60,
+              decoration: BoxDecoration(
+                  color: ColorUtil.backgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(15))),
+              child: Row(children: [
+                SizedBox(width: 10),
+                Icon(
+                  Icons.search,
+                  size: 19,
+                  color: ColorUtil.grey108,
+                ),
+                SizedBox(width: 10),
+                Consumer<FbHotTagsProvider>(
+                    builder: (_, data, __) => Row(
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxWidth: WePeiYangApp.screenWidth - 320),
+                              child: Text(
+                                data.recTag == null
+                                    ? '搜索发现'
+                                    : '#${data.recTag?.name}#',
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                              ),
+                            ),
+                            Text(
+                              data.recTag == null ? '' : '  为你推荐',
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  TextUtil.base.grey6C.NotoSansSC.w400.sp(15),
+                            ),
+                          ],
+                        )),
+              ]),
+            ),
+          ),
+          Container(
+            width: 4,
+          ),
+          PageSwitchingButton()
+        ]));
 
+    
     var expanded = Expanded(
       child: SizedBox(
         height: tabBarHeight - 6.h,
@@ -206,7 +224,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 ? Align(alignment: Alignment.center, child: Loading())
                 : status == LakePageStatus.idle
                     ? Builder(builder: (context) {
-                        return TabBar(
+                      //tab位置
+                        var tab = TabBar(
                           indicatorPadding: EdgeInsets.only(bottom: 2),
                           labelPadding: EdgeInsets.only(bottom: 3),
                           isScrollable: true,
@@ -216,22 +235,30 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
                           unselectedLabelColor: ColorUtil.black2AColor,
                           unselectedLabelStyle:
-                              TextUtil.base.w400.NotoSansSC.sp(18),
+                          TextUtil.base.w400.NotoSansSC.sp(18),
                           indicator: CustomIndicator(
                               borderSide: BorderSide(
                                   color: ColorUtil.blue2CColor, width: 2)),
                           tabs: List<Widget>.generate(
                               tabList.length,
-                              (index) => DaTab(
+                                  (index) => DaTab(
                                   text: tabList[index].shortname,
                                   withDropDownButton:
-                                      tabList[index].name == '校务专区')),
+                                  tabList[index].name == '校务专区')),
                           onTap: (index) {
                             if (tabList[index].id == 1) {
                               _onFeedbackTapped();
                             }
                           },
                         );
+
+                        var tabChanger = ValueListenableBuilder<String>(valueListenable: context.read<PageSwitchingData>().nowPageTypeString,
+                          builder: (BuildContext context, String nowPageTypeString, Widget? child){
+                            return (nowPageTypeString=="论坛")?tab:context.read<PageSwitchingData>().nowPageTabBarWidget.value;
+                        });
+
+                        return tabChanger;
+
                       })
                     : WButton(
                         onPressed: () => context
@@ -292,19 +319,36 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     });
                 }
                 int cacheNum = 0;
-                return tabs.length == 1
+
+                var main_page = tabs.length == 1
                     ? ListView(children: [SizedBox(height: 0.35.sh), Loading()])
                     : ExtendedTabBarView(
-                        cacheExtent: cacheNum,
-                        controller: context.read<LakeModel>().tabController,
-                        children: List<Widget>.generate(
-                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
-                          tabs.length,
-                          (i) => NSubPage(
-                            index: tabList[i].id,
-                          ),
-                        ),
+                  cacheExtent: cacheNum,
+                  controller: context.read<LakeModel>().tabController,
+                  children: List<Widget>.generate(
+                    // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                    tabs.length,
+                        (i) => NSubPage(
+                      index: tabList[i].id,
+                    ),
+                  ),
+                );
+
+                var pageChanger = ValueListenableBuilder<String>(
+                  valueListenable: context.read<PageSwitchingData>().nowPageTypeString,
+                  builder: (BuildContext context, String nowPageTypeString, Widget? child) {
+                    return (nowPageTypeString=="论坛")?main_page:
+                      ValueListenableBuilder<Widget>(
+                        valueListenable: context.read<PageSwitchingData>().nowPageWidget,
+                        builder: (BuildContext context, Widget nowPageWidget, Widget? child) {
+                          return nowPageWidget;
+                        }
                       );
+                  }
+                  );
+
+                return pageChanger;
+
               },
             ),
           ),
@@ -327,6 +371,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               visible: canSee,
             ),
           ),
+          
+          //搜索框与切换栏
           Selector<LakeModel, bool>(
               selector: (BuildContext context, LakeModel lakeModel) {
             return lakeModel.barExtended;
@@ -361,40 +407,53 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   )
                 ]));
           }),
+          
+          
           // 挡上面
           Container(
               color: ColorUtil.whiteFFColor,
               height: MediaQuery.of(context).padding.top < searchBarHeight
                   ? searchBarHeight
                   : MediaQuery.of(context).padding.top),
-          Positioned(
-            bottom: ScreenUtil().bottomBarHeight + 90.h,
-            right: 20.w,
-            child: Hero(
-              tag: "addNewPost",
-              child: InkWell(
-                  splashColor: ColorUtil.transparent,
-                  highlightColor: ColorUtil.transparent,
-                  child: Container(
-                    height: 72.r,
-                    width: 72.r,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/add_post.png"),
+
+          //悬浮按钮
+          ValueListenableBuilder<String>(
+            valueListenable: context.read<PageSwitchingData>().nowPageTypeString, // 用于控制按钮可见性的ValueNotifier
+            builder: (BuildContext context, String nowPageTypeString, Widget? child) {
+              return (nowPageTypeString=="论坛")
+                  ? Positioned(
+                bottom: ScreenUtil().bottomBarHeight + 90.h,
+                right: 20.w,
+                child: Hero(
+                  tag: "addNewPost",
+                  child: InkWell(
+                    splashColor: ColorUtil.transparent,
+                    highlightColor: ColorUtil.transparent,
+                    child: Container(
+                      height: 72.r,
+                      width: 72.r,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/add_post.png"),
+                        ),
                       ),
                     ),
+                    onTap: () {
+                      if (tabList.isNotEmpty) {
+                        initializeRefresh = true;
+                        context.read<NewPostProvider>().postTypeNotifier.value =
+                            tabList[1].id;
+                        Navigator.pushNamed(context, FeedbackRouter.newPost,
+                            arguments: NewPostArgs(false, '', 0, ''));
+                      }
+                    },
                   ),
-                  onTap: () {
-                    if (tabList.isNotEmpty) {
-                      initializeRefresh = true;
-                      context.read<NewPostProvider>().postTypeNotifier.value =
-                          tabList[1].id;
-                      Navigator.pushNamed(context, FeedbackRouter.newPost,
-                          arguments: NewPostArgs(false, '', 0, ''));
-                    }
-                  }),
-            ),
+                ),
+              ) : SizedBox(); // 如果不可见，返回一个空的小部件
+            },
           ),
+
+
           Consumer<FestivalProvider>(
               builder: (BuildContext context, fp, Widget? child) {
             if (fp.popUpIndex() != -1) {

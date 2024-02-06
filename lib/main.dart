@@ -238,6 +238,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
+    ///这是是声明provider的地方,很重要
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RemoteConfig()),
@@ -250,6 +251,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ...studyroomProviders,
         ...feedbackProviders,
         ...lostAndFoundProviders,
+
         ChangeNotifierProvider(
           create: (context) {
             var messageProvider = MessageProvider()..refreshFeedbackCount();
@@ -268,6 +270,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
             return messageProvider;
           },
         ),
+
         Provider.value(value: ReportDataModel()),
       ],
       child: Consumer<LocaleModel>(builder: (context, localModel, _) {
