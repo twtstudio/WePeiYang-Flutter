@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
@@ -19,7 +18,8 @@ class LevelUtil extends StatelessWidget {
       required this.style})
       : super(key: key);
 
-  static List<Color> colors = ColorUtil.levelColors;
+  List<Color> colors(context) =>
+      WpyTheme.of(context).getColorSet(WpyColorSetKey.levelColors);
 
   /*
 
@@ -33,7 +33,7 @@ class LevelUtil extends StatelessWidget {
       double.parse(level) >= 0
           ? colors[(double.parse(level) / 10).floor() % 10]
               .withAlpha(175 + (int.parse(level) % 10) * 8)
-          : ColorUtil.levelNegColor,
+          : WpyTheme.of(context).get(WpyColorKey.levelNegColor),
       double.parse(level) >= 0
           ? double.parse(level) >= 50
               ? colors[(double.parse(level) / 10).floor() % 10]
@@ -50,7 +50,8 @@ class LevelUtil extends StatelessWidget {
     int parsedLevelInt = parsedLevel.toInt();
 
     // Define colors for negative, default, and base text
-    final Color negativeColor = ColorUtil.levelNegColor;
+    final Color negativeColor =
+        WpyTheme.of(context).get(WpyColorKey.levelNegColor);
     final Color dislikeSecondaryColor =
         WpyTheme.of(context).get(WpyColorKey.dislikeSecondary);
     final Color basicTextColor =
@@ -63,7 +64,8 @@ class LevelUtil extends StatelessWidget {
 
     // Determine the color based on the level
     Color color = parsedLevel >= 0
-        ? colors[(parsedLevelInt / 10).floor() % 10].withAlpha(alphaValue)
+        ? colors(context)[(parsedLevelInt / 10).floor() % 10]
+            .withAlpha(alphaValue)
         : negativeColor;
 
     // Set the color array
@@ -108,7 +110,9 @@ class LevelProgress extends StatelessWidget {
       width: 100.w,
       height: 4.w,
       decoration: BoxDecoration(
-        border: Border.all(width: 0.8, color: ColorUtil.lightBorderColor),
+        border: Border.all(
+            width: 0.8,
+            color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

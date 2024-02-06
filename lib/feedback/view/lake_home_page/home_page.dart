@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -506,7 +505,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
                 radius: 30,
                 highlightColor: Colors.transparent,
                 child: Chip(
-                  backgroundColor: ColorUtil.tagLabelColor,
+                  backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                   label: Text(provider.departmentList[index].name,
                       style: TextUtil.base.normal
                           .label(context)

@@ -3,8 +3,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 
-import '../../../commons/themes/wpy_theme.dart';
-
 class NoticesPage extends WbyWebView {
   NoticesPage({Key? key, required BuildContext context})
       : super(

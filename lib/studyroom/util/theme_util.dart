@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 
 extension StudyRoomColorsExt on ThemeData {
   Color get baseBackgroundColor => StudyRoomBackgroundColor;

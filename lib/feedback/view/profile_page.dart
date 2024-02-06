@@ -16,7 +16,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/refresh_header.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
-import '../../commons/themes/color_util.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';

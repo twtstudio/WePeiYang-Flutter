@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/login/find_pw_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -22,9 +21,6 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
-import '../../commons/update/dialog/update_failure_dialog.dart';
-import '../../commons/update/dialog/widgets/today_check.dart';
-import '../../schedule/extension/ui_extension.dart';
 
 class HomePage extends StatefulWidget {
   final int? page;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -44,8 +43,8 @@ class AnimatedActiveCourse extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            ColorUtil.courseGradientStartColor,
-            ColorUtil.courseGradientStopColor,
+            WpyTheme.of(context).get(WpyColorKey.courseGradientStartColor),
+            WpyTheme.of(context).get(WpyColorKey.courseGradientStopColor),
           ],
         ),
         boxShadow: [

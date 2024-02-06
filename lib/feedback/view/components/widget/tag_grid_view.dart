@@ -1,7 +1,6 @@
 // @dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -57,7 +56,7 @@ class _TabGridViewState extends State<TabGridView>
           begin: Alignment(0, 0.75),
           end: Alignment.bottomCenter,
           colors: [
-            ColorUtil.liteBackgroundMaskColor,
+            WpyTheme.of(context).get(WpyColorKey.liteBackgroundMaskColor),
             WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ],
         ),
@@ -84,7 +83,7 @@ class _TabGridViewState extends State<TabGridView>
   }
 
   ActionChip _tagChip(bool chose, Department tag) => ActionChip(
-        backgroundColor: chose ? WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor) : ColorUtil.tagLabelColor,
+        backgroundColor: chose ? WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor) : WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
         label: Text(
           tag.name,
           style: chose

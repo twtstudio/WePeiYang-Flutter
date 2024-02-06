@@ -8,7 +8,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';

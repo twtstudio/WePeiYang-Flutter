@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -302,9 +301,6 @@ class _GPAPopupPainter extends CustomPainter {
   ///是否为外侧组件
   final bool isPre;
 
-  /// 在wpy_page显示的颜色
-  static final Color _outerPreview = ColorUtil.liteBackgroundMaskColor;
-
   static const _outerWidth = 4.0;
   static const _innerRadius = 5.0;
   static const _outerRadius = 7.0;
@@ -320,7 +316,9 @@ class _GPAPopupPainter extends CustomPainter {
               : gpaColors[0]
           ..style = PaintingStyle.fill,
         _outerPaint = Paint()
-          ..color = isPreview ? _outerPreview : gpaColors[1]
+          ..color = isPreview
+              ? WpyTheme.of(context).get(WpyColorKey.liteBackgroundMaskColor)
+              : gpaColors[1]
           ..style = PaintingStyle.stroke
           ..strokeWidth = _outerWidth;
 

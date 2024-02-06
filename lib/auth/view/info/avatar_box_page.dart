@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -260,7 +259,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
         boxShadow: [
           choose == true
               ? BoxShadow(
-                  color: ColorUtil.avatarChosenColor, blurRadius: 8, spreadRadius: 5)
+                  color: WpyTheme.of(context).get(WpyColorKey.avatarChosenColor), blurRadius: 8, spreadRadius: 5)
               : BoxShadow(
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor),

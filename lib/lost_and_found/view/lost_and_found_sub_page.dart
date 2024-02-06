@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:waterfall_flow/waterfall_flow.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -131,7 +130,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
       child: Container(
         height: searchBarHeight,
         decoration: BoxDecoration(
-            color: ColorUtil.secondaryBackgroundColor,
+            color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
             borderRadius: BorderRadius.all(Radius.circular(45.r))),
         child: Row(children: [
           SizedBox(width: 10.w),
@@ -307,7 +306,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                     },
                                     child: Card(
                                       elevation: 3,
-                                      shadowColor: ColorUtil.backgroundGradientEndColor
+                                      shadowColor: WpyTheme.of(context).get(WpyColorKey.backgroundGradientEndColor)
                                           .withOpacity(0.1),
                                       shape: RoundedRectangleBorder(
                                         borderRadius:

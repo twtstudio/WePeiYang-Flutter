@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -54,14 +53,29 @@ class ETagWidget extends StatefulWidget {
 class _ETagWidgetState extends State<ETagWidget> {
   bool colorState = false;
   var timeDuration = Duration(milliseconds: 1900);
-  Map<String, ETagUtil> tagUtils = {
-    'recommend': ETagUtil(ColorUtil.elegantPostTagColor, ColorUtil.elegantLongPostTagColor, '精', '精华帖'),
-    'theme': ETagUtil(ColorUtil.activityPostTagColor, ColorUtil.activityPostLongTagColor, '活动', '活动帖'),
-    'top': ETagUtil(ColorUtil.pinedPostTagAColor, ColorUtil.pinedPostTagDColor, '置顶', '置顶帖')
-  };
 
   @override
   Widget build(BuildContext context) {
+    Map<String, ETagUtil> tagUtils = {
+      'recommend': ETagUtil(
+        WpyTheme.of(context).get(WpyColorKey.elegantPostTagColor),
+        WpyTheme.of(context).get(WpyColorKey.elegantLongPostTagColor),
+        '精',
+        '精华帖',
+      ),
+      'theme': ETagUtil(
+        WpyTheme.of(context).get(WpyColorKey.activityPostTagColor),
+        WpyTheme.of(context).get(WpyColorKey.activityPostLongTagColor),
+        '活动',
+        '活动帖',
+      ),
+      'top': ETagUtil(
+        WpyTheme.of(context).get(WpyColorKey.pinedPostTagAColor),
+        WpyTheme.of(context).get(WpyColorKey.pinedPostTagDColor),
+        '置顶',
+        '置顶帖',
+      )
+    };
     return Container(
       padding: EdgeInsets.fromLTRB(3.5, 2, 3.5, 2),
       margin: EdgeInsets.only(right: 5),
@@ -188,7 +202,7 @@ class TagShowWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: type == 0
-                          ? ColorUtil.tagLabelColor
+                          ? WpyTheme.of(context).get(WpyColorKey.tagLabelColor)
                           : type == 1
                               ? WpyTheme.of(context)
                                   .get(WpyColorKey.defaultActionColor)

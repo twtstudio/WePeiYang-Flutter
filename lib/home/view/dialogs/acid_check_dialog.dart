@@ -13,6 +13,7 @@ import '../../../commons/themes/wpy_theme.dart';
 /// 核酸检测提醒弹窗
 class AcidCheckDialog extends Dialog {
   AcidCheckDialog(this.acidInfo, this._now);
+
   final ValueNotifier<DateTime> _now;
 
   final Future<NAcidInfo> acidInfo;
@@ -36,7 +37,8 @@ class AcidCheckDialog extends Dialog {
                 width: 0.7.sw,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.r),
-                  color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,22 +53,34 @@ class AcidCheckDialog extends Dialog {
                     SizedBox(height: 20.w),
                     Text(
                       '#${data.title}',
-                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(18),
+                      style: TextUtil.base.NotoSansSC
+                          .courseGradientStop(context)
+                          .normal
+                          .sp(18),
                     ),
                     SizedBox(height: 20.w),
                     Text(
                       '${data.content}',
-                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(16),
+                      style: TextUtil.base.NotoSansSC
+                          .courseGradientStop(context)
+                          .normal
+                          .sp(16),
                     ),
                     SizedBox(height: 10.w),
                     Text(
                       '${data.campus}校区',
-                      style: TextUtil.base.NotoSansSC.courseGradientStopColor.normal.sp(16),
+                      style: TextUtil.base.NotoSansSC
+                          .courseGradientStop(context)
+                          .normal
+                          .sp(16),
                     ),
                     SizedBox(height: 10.w),
                     Text(
                       '${DateFormat('HH:mm').format(start.toLocal())} - ${DateFormat('HH:mm').format(end.toLocal())}',
-                      style: TextUtil.base.PingFangSC.primaryAction(context).w500.sp(20),
+                      style: TextUtil.base.PingFangSC
+                          .primaryAction(context)
+                          .w500
+                          .sp(20),
                     ),
                     SizedBox(height: 10.w),
                     ValueListenableBuilder(
@@ -82,12 +96,16 @@ class AcidCheckDialog extends Dialog {
                           return time.isBefore(end)
                               ? Text(
                                   '距检测${before ? '开始' : '结束'}还有$hr时$min分',
-                                  style: TextUtil.base.PingFangSC.courseGradientStopColor.normal
+                                  style: TextUtil.base.PingFangSC
+                                      .courseGradientStop(context)
+                                      .normal
                                       .sp(16),
                                 )
                               : Text(
                                   '今日核酸已结束',
-                                  style: TextUtil.base.PingFangSC.courseGradientStopColor.normal
+                                  style: TextUtil.base.PingFangSC
+                                      .courseGradientStop(context)
+                                      .normal
                                       .sp(16),
                                 );
                         }),

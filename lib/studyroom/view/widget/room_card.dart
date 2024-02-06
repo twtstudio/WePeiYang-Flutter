@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 
@@ -22,13 +23,13 @@ class RoomStateText extends StatelessWidget {
         width: 6.w,
         height: 6.w,
         decoration: BoxDecoration(
-          color: ColorUtil.roomFreeColor,
+          color: WpyTheme.of(context).get(WpyColorKey.roomFreeColor),
           shape: BoxShape.circle,
         ),
       );
 
-      stateText =
-          Text('空闲', style: TextUtil.base.PingFangSC.w400.roomFree.sp(10));
+      stateText = Text('空闲',
+          style: TextUtil.base.PingFangSC.w400.roomFree(context).sp(10));
     } else {
       stateDot = Container(
         width: 6.w,
@@ -39,7 +40,8 @@ class RoomStateText extends StatelessWidget {
         ),
       );
 
-      stateText = Text('占用', style: TextUtil.base.PingFangSC.w400.roomOccupied.sp(10));
+      stateText = Text('占用',
+          style: TextUtil.base.PingFangSC.w400.roomOccupied(context).sp(10));
     }
 
     return Row(

@@ -38,8 +38,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
@@ -108,14 +107,14 @@ class _MailItemState extends State<MailItem> {
             boxShadow: [
               BoxShadow(
                   blurRadius: 5,
-                  color: ColorUtil.liteBackgroundMaskColor,
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.liteBackgroundMaskColor),
                   offset: Offset.zero,
                   spreadRadius: 3),
             ],
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10),
-            color:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,8 +136,7 @@ class _MailItemState extends State<MailItem> {
                   Image.asset(
                     'assets/images/account/cloud.png',
                     width: 17,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
                     fit: BoxFit.cover,
                   ),
                   SizedBox(width: 10),
@@ -149,7 +147,7 @@ class _MailItemState extends State<MailItem> {
                   Spacer(),
                   Text(
                     widget.data.time.replaceRange(10, 11, ' ').substring(0, 19),
-                    style: TextUtil.base.oldHintDarkest.sp(11),
+                    style: TextUtil.base.oldHintDarkest(context).sp(11),
                   )
                 ],
               )
@@ -297,7 +295,8 @@ class _TextMailContent extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                       blurRadius: 5,
-                      color: ColorUtil.liteBackgroundMaskColor,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.liteBackgroundMaskColor),
                       offset: Offset.zero,
                       spreadRadius: 3),
                 ],
@@ -421,13 +420,13 @@ class _TextMailContent extends StatelessWidget {
                                         .NotoSansSC
                                         .sp(16)
                                         .w600,
-                                    confirmButtonColor: url.startsWith(
-                                                'https://b23.tv/') ||
-                                            url.startsWith(
-                                                'https://www.bilibili.com/')
-                                        ? ColorUtil.biliPink
-                                        : WpyTheme.of(context).get(
-                                            WpyColorKey.primaryActionColor),
+                                    confirmButtonColor:
+                                        url.startsWith('https://b23.tv/') ||
+                                                url.startsWith(
+                                                    'https://www.bilibili.com/')
+                                            ? ColorUtil.biliPink
+                                            : WpyTheme.of(context).get(
+                                                WpyColorKey.primaryActionColor),
                                     cancelTextStyle: TextUtil.base.normal
                                         .primary(context)
                                         .NotoSansSC

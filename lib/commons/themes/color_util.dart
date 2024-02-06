@@ -71,7 +71,7 @@ class ColorUtil {
   static final courseGradientStopColor = Color.fromRGBO(255, 255, 255, 0.3);
   static final tagLabelColor = Color.fromRGBO(234, 234, 234, 1);
   static final gpaHintColor = Color(0xffcdcdd3);
-  static final FavorRoomColor =Color(0xFFFFBC6B);
+  static final FavorRoomColor = Color(0xFFFFBC6B);
   static final lightBorderColor = Color(0xFFEAEAEA);
   static final roomFreeColor = Color(0xFF5CB85C);
   static final roomOccupiedColor = Color(0xFFD9534F);
@@ -99,11 +99,8 @@ class ColorUtil {
 
   // 地图 校历 页面的蒙版
   static final beiyangCampusMaskColor = Color(0xFFFFF2F2);
-
   static final unSelectedIcon = Color.fromARGB(255, 144, 144, 144);
-
   static final backgroundMaskColor = Color(0xB3FFFFFF);
-
   static final liteBackgroundMaskColor = Colors.white10;
 
   static final blue52hz = Color.fromRGBO(36, 43, 69, 1);
@@ -116,6 +113,7 @@ class ColorUtil {
   static final gpaRadiationWaveColor = Color.fromRGBO(178, 178, 158, 0.2);
   static final gpaInsideMaskColor = Color.fromRGBO(230, 230, 230, 0.25);
 
+  // 考试页面的帖子们
   static final examAColor = Color.fromRGBO(114, 117, 136, 1);
   static final examBColor = Color.fromRGBO(143, 146, 165, 1);
   static final examCColor = Color.fromRGBO(122, 119, 138, 1);
@@ -146,52 +144,6 @@ class ColorUtil {
   // this is for the schedule page
   static final errorActionColor = Color.fromRGBO(217, 83, 79, 1);
   static final scheduleOccupiedColor = Color.fromRGBO(255, 188, 107, 1);
-
-  //
-  //
-  // -----还没有处理的
-
-
-
-  static final primaryGradient = LinearGradient(
-    colors: [
-      ColorUtil.primaryActionColor,
-      Color(0xFFA6CFFF),
-      // 用来挡下面圆角左右的空
-      ColorUtil.primaryBackgroundColor
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    // 在0.7停止同理
-    stops: [0, 0.53, 0.7],
-  );
-
-  static final backgroundGradient = LinearGradient(
-      colors: [
-        ColorUtil.primaryActionColor,
-        ColorUtil.primaryLightActionColor,
-        // 用来挡下面圆角左右的空
-        ColorUtil.primaryBackgroundColor
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      // 在0.7停止同理
-      stops: [0, 0.23, 0.4]);
-
-  static final primaryGradientAllScreen = LinearGradient(
-    colors: [
-      ColorUtil.primaryActionColor,
-      ColorUtil.primaryLightActionColor,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
-
-  static final gradientPrimaryBackground = LinearGradient(colors: [
-    ColorUtil.primaryBackgroundColor,
-    ColorUtil.primaryBackgroundColor,
-  ]);
-
   static final List<Color> progressBarGradient = [
     Color(0x2262677b),
     Color(0x8862677b),

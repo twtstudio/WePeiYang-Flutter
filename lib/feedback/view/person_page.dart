@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
@@ -347,10 +346,10 @@ class _PersonPageState extends State<PersonPage> {
                           colors: [
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor),
-                            ColorUtil.backgroundMaskColor,
+                            WpyTheme.of(context).get(WpyColorKey.backgroundMaskColor),
                             WpyTheme.of(context)
                                 .get(WpyColorKey.backgroundGradientEndColor),
-                            ColorUtil.liteBackgroundMaskColor
+                            WpyTheme.of(context).get(WpyColorKey.liteBackgroundMaskColor)
                           ],
                           stops: [0, 0.4, 0.7, 1],
                           begin: Alignment(0, -1),

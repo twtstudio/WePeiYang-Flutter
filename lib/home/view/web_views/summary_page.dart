@@ -6,8 +6,6 @@ import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../commons/themes/wpy_theme.dart';
-
 class FeedbackSummaryPage extends WbyWebView {
   FeedbackSummaryPage({Key? key, required BuildContext context})
       : super(

@@ -5,7 +5,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -363,7 +362,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
               children: [inputField, SizedBox(width: 3.w), textCounter]),
           Container(
               margin: EdgeInsets.only(top: 16.h),
-              color: ColorUtil.lightBorderColor,
+              color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
               height: 1.h)
         ]));
   }
@@ -415,7 +414,7 @@ class _LostAndFoundContentInputFieldState
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(300)],
-        cursorColor: ColorUtil.profileBackgroundColor);
+        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     Widget bottomTextCounter = ValueListenableBuilder(
         valueListenable: contentCounter,
@@ -743,7 +742,7 @@ class _InputLocationFieldState extends State<InputLocationField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(26)],
-        cursorColor: ColorUtil.profileBackgroundColor);
+        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
         width: 195.w,
@@ -834,7 +833,7 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(11)],
-        cursorColor: ColorUtil.profileBackgroundColor);
+        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
         width: 195.w,

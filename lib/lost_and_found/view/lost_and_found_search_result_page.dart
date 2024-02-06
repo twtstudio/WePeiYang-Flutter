@@ -4,7 +4,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
@@ -209,7 +210,9 @@ class _LostAndFoundSearchResultPageState
                       },
                       child: Card(
                         elevation: 3,
-                        shadowColor: ColorUtil.backgroundGradientEndColor.withOpacity(0.1),
+                        shadowColor: WpyTheme.of(context)
+                            .get(WpyColorKey.backgroundGradientEndColor)
+                            .withOpacity(0.1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           side: const BorderSide(

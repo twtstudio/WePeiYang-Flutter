@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
@@ -223,7 +222,11 @@ class _RadarChartState extends State<RadarChartWidget> {
       return SizedBox(
         height: 350,
         child: CustomPaint(
-          painter: _RadarChartPainter(_list, widget.gpaColors),
+          painter: _RadarChartPainter(
+            _list,
+            widget.gpaColors,
+            context: context,
+          ),
           size: Size(double.maxFinite, 160),
         ),
       );
@@ -233,8 +236,9 @@ class _RadarChartState extends State<RadarChartWidget> {
 class _RadarChartPainter extends CustomPainter {
   final List<GPACourse> courses;
   final List<Color> gpaColors;
+  final BuildContext context;
 
-  _RadarChartPainter(this.courses, this.gpaColors);
+  _RadarChartPainter(this.courses, this.gpaColors, {required this.context});
 
   /// 用这个控制雷达图大小,不能低于2
   static const double radarChartRatio = 2.15;
@@ -250,8 +254,8 @@ class _RadarChartPainter extends CustomPainter {
 
   double _count(double x) => pow(pow(x, 2) / 100, 2) / 10000;
 
-  final Paint _creditPaint = Paint()
-    ..color = ColorUtil.gpaRadiationWaveColor
+  late final Paint _creditPaint = Paint()
+    ..color = WpyTheme.of(context).get(WpyColorKey.gpaRadiationWaveColor)
     ..style = PaintingStyle.fill;
 
   _drawCredit(Canvas canvas, Size size) {
@@ -279,8 +283,8 @@ class _RadarChartPainter extends CustomPainter {
     canvas.drawPath(creditPath, _creditPaint);
   }
 
-  final Paint _fillPaint = Paint()
-    ..color = ColorUtil.gpaInsideMaskColor
+  late final Paint _fillPaint = Paint()
+    ..color = WpyTheme.of(context).get(WpyColorKey.gpaInsideMaskColor)
     ..style = PaintingStyle.fill;
 
   _drawScoreFill(Canvas canvas) {
@@ -298,8 +302,8 @@ class _RadarChartPainter extends CustomPainter {
     canvas.drawPath(fillPath, _fillPaint);
   }
 
-  final Paint _linePaint = Paint()
-    ..color = ColorUtil.gpaRadiationColor
+  late final Paint _linePaint = Paint()
+    ..color = WpyTheme.of(context).get(WpyColorKey.gpaRadiationColor)
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1.5;
 

@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -297,7 +296,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                       context
                           .read<LostAndFoundModel2>()
                           .currentCategory[widget.type]
-                  ? ColorUtil.tagLabelColor
+                  ? WpyTheme.of(context).get(WpyColorKey.tagLabelColor)
                   : WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor)),
           child: Center(

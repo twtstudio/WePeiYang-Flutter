@@ -1,7 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 class Loading extends StatefulWidget {
   final Color? dotOneColor;
@@ -23,12 +24,6 @@ class Loading extends StatefulWidget {
 
   @override
   _LoadingState createState() => _LoadingState();
-}
-
-extension LoadingDotsColors on ThemeData {
-  Color get dotOneColor => ColorUtil.blue38Color;
-  Color get dotTwoColor => ColorUtil.blue8DColor;
-  Color get dotThreeColor => ColorUtil.blue15Color;
 }
 
 class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
@@ -73,9 +68,12 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final dotOneColor = widget.dotOneColor ?? Theme.of(context).dotOneColor;
-    final dotTwoColor = widget.dotOneColor ?? Theme.of(context).dotTwoColor;
-    final dotThreeColor = widget.dotOneColor ?? Theme.of(context).dotThreeColor;
+    final dotOneColor =
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue38Color);
+    final dotTwoColor =
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue8DColor);
+    final dotThreeColor =
+        widget.dotOneColor ?? WpyTheme.of(context).get(WpyColorKey.blue15Color);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

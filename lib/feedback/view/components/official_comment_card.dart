@@ -6,7 +6,6 @@ import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -362,7 +361,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   padding: const EdgeInsets.all(0),
                   labelPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  backgroundColor: ColorUtil.tagLabelColor,
+                  backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                   label: Text('查看回复详情 >',
                       style: TextUtil.base.ProductSans.w400.sp(14).infoText(context)),
                 ),
@@ -441,7 +440,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
-                color: ColorUtil.backgroundMaskColor,
+                color: WpyTheme.of(context).get(WpyColorKey.backgroundMaskColor),
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],

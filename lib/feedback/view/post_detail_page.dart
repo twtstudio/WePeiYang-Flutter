@@ -13,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
@@ -1084,7 +1083,7 @@ class CommentInputFieldState extends State<CommentInputField> {
               data.replyTo == 0 ? '回复冒泡：' : '回复楼层：' + data.replyTo.toString(),
           suffix: Text(
             commentLengthIndicator,
-            style: TextUtil.base.w400.NotoSansSC.sp(14).greyAA,
+            style: TextUtil.base.w400.NotoSansSC.sp(14).replySuffix(context),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
@@ -1391,30 +1390,38 @@ class _ManagerPopUpState extends State<ManagerPopUp>
               AnimatedOption(
                 origin: originTag == 0,
                 id: widget.post.id,
-                color1: ColorUtil.pinedPostTagBColor,
-                color2: ColorUtil.pinedPostTagCColor,
+                color1:
+                    WpyTheme.of(context).get(WpyColorKey.pinedPostTagBColor),
+                color2:
+                    WpyTheme.of(context).get(WpyColorKey.pinedPostTagCColor),
                 title: originTag == 0 ? '× 已置顶' : '将此帖置顶',
                 action: 0,
               ),
               AnimatedOption(
                   origin: originTag == 1,
                   id: widget.post.id,
-                  color1: ColorUtil.elegantPostTagBColor,
-                  color2: ColorUtil.elegantPostTagCColor,
+                  color1: WpyTheme.of(context)
+                      .get(WpyColorKey.elegantPostTagBColor),
+                  color2: WpyTheme.of(context)
+                      .get(WpyColorKey.elegantPostTagCColor),
                   title: originTag == 1 ? '× 已加精' : '加入精华帖',
                   action: 1),
               AnimatedOption(
                   origin: originTag == 2,
                   id: widget.post.id,
-                  color1: ColorUtil.activityPostBColor,
-                  color2: ColorUtil.activityPostTagCColor,
+                  color1:
+                      WpyTheme.of(context).get(WpyColorKey.activityPostBColor),
+                  color2: WpyTheme.of(context)
+                      .get(WpyColorKey.activityPostTagCColor),
                   title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
                   action: 2),
               AnimatedOption(
                   origin: false,
                   id: widget.post.id,
-                  color1: ColorUtil.deletePostAColor,
-                  color2: ColorUtil.deletePostBColor,
+                  color1:
+                      WpyTheme.of(context).get(WpyColorKey.deletePostAColor),
+                  color2:
+                      WpyTheme.of(context).get(WpyColorKey.deletePostBColor),
                   title: '⚠ 删帖',
                   action: 100),
             ]),

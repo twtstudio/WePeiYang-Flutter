@@ -3,7 +3,6 @@ import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -288,7 +287,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
               ),
             ),
             Material(
-              color: ColorUtil.errorActionColor,
+              color: WpyTheme.of(context).get(WpyColorKey.errorActionColor),
               child: InkWell(
                 onTap: () {
                   _showDialog(context, '是否删除此课程?', ok: () {

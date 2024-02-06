@@ -82,6 +82,85 @@ final Map<WpyColorKey, Color> lightSchemeDetail = {
   WpyColorKey.FavorBubbleColor: Colors.amberAccent,
 
   WpyColorKey.profileBackgroundColor: Color.fromARGB(255, 67, 70, 80),
+
+  WpyColorKey.examRemain: Colors.white38,
+  WpyColorKey.courseGradientStartColor: Color.fromRGBO(255, 255, 255, 0.5),
+  WpyColorKey.courseGradientStopColor: Color.fromRGBO(255, 255, 255, 0.3),
+  WpyColorKey.tagLabelColor: Color.fromRGBO(234, 234, 234, 1),
+  WpyColorKey.gpaHintColor: Color(0xffcdcdd3),
+  WpyColorKey.favorRoomColor: Color(0xFFFFBC6B),
+  WpyColorKey.lightBorderColor: Color(0xFFEAEAEA),
+  WpyColorKey.roomFreeColor: Color(0xFF5CB85C),
+  WpyColorKey.roomOccupiedColor: Color(0xFFD9534F),
+  WpyColorKey.replySuffixColor: Color(0xFFAAAAAA),
+  WpyColorKey.oldHintDarkestColor: Color(0xffb1b2be),
+
+// 骨架屏幕渐变
+  WpyColorKey.skeletonStartAColor: Color(0x12FFFFFF),
+  WpyColorKey.skeletonStartBColor: Color(0x76FFFFFF),
+  WpyColorKey.skeletonEndAColor: Color(0x32FFFFFF),
+  WpyColorKey.skeletonEndBColor: Color(0x90FFFFFF),
+
+// 跳转BiliBili用的
+  WpyColorKey.biliPink: Color(0xFFF97198),
+  WpyColorKey.biliTextPink: Color(0xFFAE3B5E),
+
+//三个加载的点点
+
+  WpyColorKey.blue38Color: Color(0xFF3884DE),
+  WpyColorKey.blue15Color: Color(0xFF156ACE),
+  WpyColorKey.blue8DColor: Color(0xFF8DBBF1),
+
+//Avatar chosen pink
+  WpyColorKey.avatarChosenColor: Color(0xFFFFCCD1),
+
+// 地图 校历 页面的蒙版
+  WpyColorKey.beiyangCampusMaskColor: Color(0xFFFFF2F2),
+  WpyColorKey.unSelectedIcon: Color.fromARGB(255, 144, 144, 144),
+  WpyColorKey.backgroundMaskColor: Color(0xB3FFFFFF),
+  WpyColorKey.liteBackgroundMaskColor: Colors.white10,
+
+  WpyColorKey.blue52hz: Color.fromRGBO(36, 43, 69, 1),
+
+// 负数等级的color
+  WpyColorKey.levelNegColor: Color.fromRGBO(85, 0, 9, 1.0),
+
+// GPA 雷达图
+  WpyColorKey.gpaRadiationColor: Color.fromRGBO(158, 158, 138, 0.45),
+  WpyColorKey.gpaRadiationWaveColor: Color.fromRGBO(178, 178, 158, 0.2),
+  WpyColorKey.gpaInsideMaskColor: Color.fromRGBO(230, 230, 230, 0.25),
+
+// 考试页面的帖子们
+  WpyColorKey.examAColor: Color.fromRGBO(114, 117, 136, 1),
+  WpyColorKey.examBColor: Color.fromRGBO(143, 146, 165, 1),
+  WpyColorKey.examCColor: Color.fromRGBO(122, 119, 138, 1),
+  WpyColorKey.examDColor: Color.fromRGBO(142, 122, 150, 1),
+  WpyColorKey.examEColor: Color.fromRGBO(130, 134, 161, 1),
+
+// 精华帖子
+  WpyColorKey.elegantPostTagColor: Color.fromRGBO(232, 178, 27, 1.0),
+  WpyColorKey.elegantLongPostTagColor: Color.fromRGBO(236, 120, 57, 1.0),
+  WpyColorKey.elegantPostTagBColor: Color.fromRGBO(190, 163, 91, 1.0),
+  WpyColorKey.elegantPostTagCColor: Color.fromRGBO(157, 129, 113, 1.0),
+
+// 活动帖子
+  WpyColorKey.activityPostTagColor: Color.fromRGBO(66, 161, 225, 1.0),
+  WpyColorKey.activityPostLongTagColor: Color.fromRGBO(57, 90, 236, 1.0),
+  WpyColorKey.activityPostBColor: Color.fromRGBO(124, 179, 216, 1.0),
+  WpyColorKey.activityPostTagCColor: Color.fromRGBO(72, 80, 117, 1.0),
+
+// 置顶帖子
+  WpyColorKey.pinedPostTagAColor: Color.fromRGBO(223, 108, 171, 1.0),
+  WpyColorKey.pinedPostTagBColor: Color.fromRGBO(208, 104, 160, 1.0),
+  WpyColorKey.pinedPostTagCColor: Color.fromRGBO(134, 103, 111, 1.0),
+  WpyColorKey.pinedPostTagDColor: Color.fromRGBO(243, 16, 73, 1.0),
+
+  WpyColorKey.deletePostAColor: Color.fromRGBO(43, 16, 16, 1.0),
+  WpyColorKey.deletePostBColor: Color.fromRGBO(42, 28, 49, 1.0),
+
+// this is for the schedule page
+  WpyColorKey.errorActionColor: Color.fromRGBO(217, 83, 79, 1),
+  WpyColorKey.scheduleOccupiedColor: Color.fromRGBO(255, 188, 107, 1),
 };
 
 final colorSetsList = {

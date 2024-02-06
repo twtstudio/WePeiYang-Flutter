@@ -8,7 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -447,13 +446,13 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     end: Alignment.bottomCenter,
                     colors: [
                       if (isOpa)
-                        ColorUtil.skeletonStartAColor
+                        WpyTheme.of(context).get(WpyColorKey.skeletonStartAColor)
                       else
-                        ColorUtil.skeletonStartBColor,
+                        WpyTheme.of(context).get(WpyColorKey.skeletonStartBColor),
                       if (!isOpa)
-                        ColorUtil.skeletonEndAColor
+                        WpyTheme.of(context).get(WpyColorKey.skeletonEndAColor)
                       else
-                        ColorUtil.skeletonEndBColor,
+                        WpyTheme.of(context).get(WpyColorKey.skeletonEndBColor),
                     ],
                   ),
                 ),

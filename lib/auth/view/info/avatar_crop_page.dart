@@ -7,7 +7,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -62,7 +61,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-          backgroundColor: ColorUtil.oldSecondaryActionColor,
+          backgroundColor: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );

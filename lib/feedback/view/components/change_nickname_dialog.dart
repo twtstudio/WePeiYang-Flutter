@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
@@ -71,7 +70,8 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
               hintText: '请设置合理昵称捏',
               suffix: Text(
                 _commentLengthIndicator,
-                style: TextUtil.base.w400.NotoSansSC.sp(12).greyAA,
+                style:
+                    TextUtil.base.w400.NotoSansSC.sp(12).replySuffix(context),
               ),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,

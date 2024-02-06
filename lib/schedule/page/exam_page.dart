@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
-import '../../commons/themes/color_util.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
@@ -108,11 +107,11 @@ class _ExamPageState extends State<ExamPage> {
   }
 
   List<Color> get _scheduleColor => [
-        ColorUtil.examAColor, // #727588
-        ColorUtil.examBColor, // #8F92A5
-        ColorUtil.examCColor, // #7A778A
-        ColorUtil.examDColor, // #8E7A96
-        ColorUtil.examEColor, // #8286A1
+        WpyTheme.of(context).get(WpyColorKey.examAColor), // #727588
+        WpyTheme.of(context).get(WpyColorKey.examBColor), // #8F92A5
+        WpyTheme.of(context).get(WpyColorKey.examCColor), // #7A778A
+        WpyTheme.of(context).get(WpyColorKey.examDColor), // #8E7A96
+        WpyTheme.of(context).get(WpyColorKey.examEColor), // #8286A1
       ];
 
   Widget examCard(BuildContext context, Exam exam, bool finished) {

@@ -11,7 +11,6 @@ import 'package:we_pei_yang_flutter/auth/view/user/logout_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -120,7 +119,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.widgets_outlined,
-                      color: ColorUtil.oldSecondaryActionColor, size: 20),
+                      color: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor), size: 20),
                   SizedBox(width: 12.w),
                   Expanded(child: Text('应用设置', style: mainTextStyle)),
                   arrow,
@@ -172,7 +171,7 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Icon(Icons.update,
-                      color: ColorUtil.oldSecondaryActionColor, size: 20),
+                      color: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor), size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(S.current.check_new, style: mainTextStyle),

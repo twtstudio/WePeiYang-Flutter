@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
-import '../../commons/themes/color_util.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
@@ -87,7 +86,8 @@ class CourseDialog extends Dialog {
             alignment: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(15.r),
-          gradient: ColorUtil.primaryGradientAllScreen,
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
           boxShadow: [
             BoxShadow(
               offset: Offset(0, 4),
@@ -98,7 +98,8 @@ class CourseDialog extends Dialog {
             ),
             BoxShadow(
               blurRadius: 10,
-              color: ColorUtil.liteBackgroundMaskColor,
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.liteBackgroundMaskColor),
             ),
           ]),
       child: WButton(

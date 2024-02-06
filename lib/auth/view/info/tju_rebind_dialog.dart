@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -109,7 +108,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
           Padding(
             padding: EdgeInsets.only(top: 10),
             child: Text('请连接至校园网环境以获取数据，请检查网络',
-                style: TextUtil.base.regular.sp(10).roomOccupied),
+                style: TextUtil.base.regular.sp(10).roomOccupied(context)),
           ),
         SizedBox(height: 18),
         Row(

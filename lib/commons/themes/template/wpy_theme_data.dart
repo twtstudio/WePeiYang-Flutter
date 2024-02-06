@@ -170,10 +170,82 @@ enum WpyColorKey {
   FavorBubbleStartColor,
   FavorBubbleColor,
   profileBackgroundColor,
+  examRemain,
+  courseGradientStartColor,
+  courseGradientStopColor,
+  tagLabelColor,
+  gpaHintColor,
+  favorRoomColor,
+  lightBorderColor,
+  roomFreeColor,
+  roomOccupiedColor,
+  replySuffixColor,
+  oldHintDarkestColor,
 
-  // Level
+// 骨架屏幕渐变
+  skeletonStartAColor,
+  skeletonStartBColor,
+  skeletonEndAColor,
+  skeletonEndBColor,
 
-  // ------- Gradients -------
+// 跳转BiliBili用的
+  biliPink,
+  biliTextPink,
+
+//三个加载的点点
+
+  blue38Color,
+  blue15Color,
+  blue8DColor,
+
+//Avatar chosen pink
+  avatarChosenColor,
+
+// 地图 校历 页面的蒙版
+  beiyangCampusMaskColor,
+  unSelectedIcon,
+  backgroundMaskColor,
+  liteBackgroundMaskColor,
+  blue52hz,
+
+// 负数等级的color
+  levelNegColor,
+
+// GPA 雷达图
+  gpaRadiationColor,
+  gpaRadiationWaveColor,
+  gpaInsideMaskColor,
+
+// 考试页面的帖子们
+  examAColor,
+  examBColor,
+  examCColor,
+  examDColor,
+  examEColor,
+
+// 精华帖子
+  elegantPostTagColor,
+  elegantLongPostTagColor,
+  elegantPostTagBColor,
+  elegantPostTagCColor,
+
+// 活动帖子
+  activityPostTagColor,
+  activityPostLongTagColor,
+  activityPostBColor,
+  activityPostTagCColor,
+
+// 置顶帖子
+  pinedPostTagAColor,
+  pinedPostTagBColor,
+  pinedPostTagCColor,
+  pinedPostTagDColor,
+  deletePostAColor,
+  deletePostBColor,
+
+// this is for the schedule page
+  errorActionColor,
+  scheduleOccupiedColor,
 }
 
 enum WpyColorSetKey {

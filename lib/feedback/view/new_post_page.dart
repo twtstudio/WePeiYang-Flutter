@@ -6,7 +6,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -551,7 +550,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
           ),
           Container(
               margin: EdgeInsets.only(top: 16.h),
-              color: ColorUtil.lightBorderColor,
+              color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
               height: 1.h)
         ],
       ),
@@ -606,7 +605,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
       inputFormatters: [
         CustomizedLengthTextInputFormatter(1000),
       ],
-      cursorColor: ColorUtil.profileBackgroundColor,
+      cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor),
     );
 
     Widget bottomTextCounter = ValueListenableBuilder(

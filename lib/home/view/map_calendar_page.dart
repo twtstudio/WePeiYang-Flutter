@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 
-import '../../commons/themes/color_util.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
@@ -150,7 +149,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.center,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  ColorUtil.beiyangCampusMaskColor,
+                                  WpyTheme.of(context).get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
                               image: AssetImage(
                                   'assets/images/account/map_pei_yang.jpg')))),

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -88,7 +87,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
       body: Container(
         width: width,
         height: height,
-        decoration: BoxDecoration(gradient: ColorUtil.primaryGradientAllScreen),
+        decoration: BoxDecoration(
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

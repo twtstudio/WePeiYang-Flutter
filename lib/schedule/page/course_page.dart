@@ -18,7 +18,6 @@ import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
-import '../../commons/themes/color_util.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 

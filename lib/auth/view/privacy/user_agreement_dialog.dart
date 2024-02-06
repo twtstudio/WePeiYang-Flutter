@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -134,7 +133,7 @@ class UserAgreementDialog extends Dialog {
             ),
           ),
           SizedBox(height: 13),
-          Divider(height: 1, color: ColorUtil.lightBorderColor),
+          Divider(height: 1, color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
           _detail(context),
         ],
       ),

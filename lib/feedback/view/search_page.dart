@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -179,7 +178,7 @@ class _SearchPageState extends State<SearchPage> {
               },
               child: Chip(
                 elevation: 1,
-                backgroundColor: ColorUtil.tagLabelColor,
+                backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                 label: Text(list[list.length - index - 1],
                     style:
                         TextUtil.base.normal.label(context).NotoSansSC.sp(16)),

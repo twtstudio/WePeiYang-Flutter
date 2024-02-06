@@ -66,8 +66,9 @@ class _HotCardState extends State<HotCard> {
                     data.hotTagCardState == 1
                         ? Text(
                             '     loading...',
-                            style:
-                                TextUtil.base.w400.NotoSansSC.sp(18).infoText(context),
+                            style: TextUtil.base.w400.NotoSansSC
+                                .sp(18)
+                                .infoText(context),
                           )
                         : data.hotTagCardState == 2
                             ? Column(
@@ -130,8 +131,9 @@ class _HotCardState extends State<HotCard> {
                                         )))
                             : Text(
                                 '     加载失败',
-                                style:
-                                    TextUtil.base.w400.NotoSansSC.sp(18).roomOccupied,
+                                style: TextUtil.base.w400.NotoSansSC
+                                    .sp(18)
+                                    .roomOccupied(context),
                               ),
                   ],
                 ),

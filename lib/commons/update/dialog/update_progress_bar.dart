@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
-import '../../themes/color_util.dart';
-
 // https://blog.csdn.net/shving/article/details/111146673
 class GradientLinearProgressBar extends StatelessWidget {
   ///画笔的宽度，其实是进度条的高度

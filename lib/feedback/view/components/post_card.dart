@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -281,7 +280,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               padding: EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: ColorUtil.tagLabelColor),
+                  color: WpyTheme.of(context).get(WpyColorKey.tagLabelColor)),
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
@@ -370,7 +369,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
-                            color: ColorUtil.lightBorderColor, width: 1.h))),
+                            color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor), width: 1.h))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -564,7 +563,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     end: Alignment(0, 1),
                                     colors: [
                                       Colors.transparent,
-                                      ColorUtil.reverseBackgroundColor
+                                      WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor)
                                           .withOpacity(0.54),
                                     ],
                                   ),

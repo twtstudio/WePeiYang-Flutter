@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart'
     show AsyncTimer;
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
-import '../themes/color_util.dart';
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
 
@@ -169,7 +168,7 @@ class ToastProvider with AsyncTimer {
         return Container(
           padding: const EdgeInsets.fromLTRB(15, 12, 15, 12),
           decoration: BoxDecoration(
-            color: ColorUtil.roomFreeColor,
+            color: WpyTheme.of(context).get(WpyColorKey.roomFreeColor),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(

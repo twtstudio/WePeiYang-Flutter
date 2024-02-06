@@ -82,7 +82,9 @@ extension TextStyleAttr on TextStyle {
   TextStyle oldHintDarker(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldHintDarkerColor));
 
-  TextStyle get FavorRoomColor => this.copyWith(color: ColorUtil.FavorRoomColor);
+  TextStyle favorRoomColor(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.favorRoomColor));
+
   //--------- unformatted --------
 
   TextStyle get examRemain => this.copyWith(color: ColorUtil.examRemain);
@@ -92,8 +94,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle get biliPink => this.copyWith(color: ColorUtil.biliTextPink);
 
-
-  TextStyle get greyAA => this.copyWith(color: ColorUtil.ReplySuffixColor);
+  TextStyle replySuffix(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.replySuffixColor));
 
   TextStyle get whiteO60 => this.copyWith(color: Colors.white.withOpacity(0.6));
 
@@ -104,12 +106,14 @@ extension TextStyleAttr on TextStyle {
         color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
       );
 
+  TextStyle courseGradientStop(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyColorKey.courseGradientStopColor));
 
-  TextStyle get courseGradientStopColor => this.copyWith(color: ColorUtil.courseGradientStopColor);
+  TextStyle roomFree(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.roomFreeColor));
 
-  TextStyle get roomFree => this.copyWith(color: ColorUtil.roomFreeColor);
-
-  TextStyle get roomOccupied => this.copyWith(color: ColorUtil.roomOccupiedColor);
+  TextStyle roomOccupied(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.roomOccupiedColor));
 
   TextStyle infoColor(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoStatusColor));
@@ -121,13 +125,14 @@ extension TextStyleAttr on TextStyle {
   TextStyle oldListAction(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor));
 
-  TextStyle get oldHintDarkest => this.copyWith(color: ColorUtil.oldHintDarkestColor);
+  TextStyle oldHintDarkest(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyColorKey.oldHintDarkestColor));
 
   TextStyle oldListGroupTitle(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.oldListGroupTitleColor));
 
   TextStyle gpaHintColor(context) =>
-      this.copyWith(color: ColorUtil.gpaHintColor);
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.gpaHintColor));
 
   TextStyle mainTextColor(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor));

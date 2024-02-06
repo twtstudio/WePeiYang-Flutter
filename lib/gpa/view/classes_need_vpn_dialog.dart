@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
@@ -38,7 +37,7 @@ class ClassesNeedVPNDialog extends Dialog {
                 '故在校外访问微北洋课表、GPA功能也需登录VPN绑定办公网账号后使用。',
                 style: TextUtil.base.regular.noLine.sp(14).oldThirdAction(context)),
             SizedBox(height: 15),
-            Divider(height: 1, color: ColorUtil.lightBorderColor),
+            Divider(height: 1, color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
             WButton(
               onPressed: () => Navigator.pop(context),
               child: Container(

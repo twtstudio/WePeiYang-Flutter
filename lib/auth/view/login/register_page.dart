@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/themes/color_util.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -72,7 +71,8 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
       body: Container(
         height: 1.sh,
         decoration: BoxDecoration(
-          gradient: ColorUtil.primaryGradientAllScreen,
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
         ),
         child: Stack(
           children: [
@@ -125,16 +125,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
@@ -188,16 +186,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
@@ -251,16 +247,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
@@ -314,16 +308,14 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: WpyTheme.of(context).get(
-                                            WpyColorKey
-                                                .primaryBackgroundColor),
+                                            WpyColorKey.primaryBackgroundColor),
                                         width: 1.0,
                                       ),
                                     ),
@@ -446,7 +438,8 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: ColorUtil.primaryGradientAllScreen,
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
         ),
         child: Column(
           children: [
@@ -541,8 +534,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -559,8 +551,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -577,8 +568,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -595,8 +585,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -613,8 +602,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -631,8 +619,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
-                                        .get(
-                                            WpyColorKey.primaryBackgroundColor)
+                                        .get(WpyColorKey.primaryBackgroundColor)
                                         .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -814,7 +801,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
       resizeToAvoidBottomInset: false,
       body: Container(
         decoration: BoxDecoration(
-          gradient: ColorUtil.primaryGradientAllScreen,
+          gradient: WpyTheme.of(context)
+              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
         ),
         child: Column(
           children: [
