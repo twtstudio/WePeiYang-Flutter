@@ -155,7 +155,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle primaryAction(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor));
 
-  TextStyle get transParent => this.copyWith(color: ColorUtil.transparent);
+  TextStyle get transParent => this.copyWith(color: Colors.transparent);
 
   /// 字体
   TextStyle get Swis => this.copyWith(fontFamily: 'Swis');

@@ -179,8 +179,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
         actions: [
           if (lakeType != 0)
             InkWell(
-                splashColor: ColorUtil.transparent,
-                highlightColor: ColorUtil.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

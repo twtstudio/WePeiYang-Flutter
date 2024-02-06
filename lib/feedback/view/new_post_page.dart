@@ -136,8 +136,8 @@ class _NewPostPageState extends State<NewPostPage> {
       elevation: 0,
       leading: IconButton(
         padding: EdgeInsets.zero,
-        splashColor: ColorUtil.transparent,
-        highlightColor: ColorUtil.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         icon: Icon(
           Icons.keyboard_arrow_left,
           color: ColorUtil.grey6267Color,
@@ -145,7 +145,7 @@ class _NewPostPageState extends State<NewPostPage> {
         ),
         onPressed: () => Navigator.of(context).pop(),
       ),
-      backgroundColor: ColorUtil.transparent,
+      backgroundColor: Colors.transparent,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
@@ -331,8 +331,8 @@ class _LakeSelectorState extends State<LakeSelector> {
               Align(
                 alignment: Alignment.centerRight,
                 child: InkWell(
-                  highlightColor: ColorUtil.transparent,
-                  splashColor: ColorUtil.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   onTap: () {
                     controller.offset <= 100 * (tabList.length - 2)
                         ? controller.animateTo(controller.offset + 100,

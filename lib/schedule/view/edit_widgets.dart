@@ -292,7 +292,7 @@ class CardWidget extends StatelessWidget {
         ),
         // 这里如果用Ink，会导致这个组件在上滑被其他组件遮挡时仍然可见，很迷
         child: Material(
-          color: ColorUtil.transparent,
+          color: Colors.transparent,
           child: InkWell(
             onTap: onTap,
             splashFactory: InkRipple.splashFactory,
@@ -349,7 +349,7 @@ class UnitPicker extends Dialog {
             scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
-            selectionOverlay: Container(color: ColorUtil.transparent),
+            selectionOverlay: Container(color: Colors.transparent),
             itemExtent: 40,
             childCount: 12,
             onSelectedItemChanged: (row) {
@@ -482,7 +482,7 @@ class WeekPicker extends Dialog {
           scrollController: _weekdayController,
           diameterRatio: 1.5,
           squeeze: 1.45,
-          selectionOverlay: Container(color: ColorUtil.transparent),
+          selectionOverlay: Container(color: Colors.transparent),
           itemExtent: 40,
           childCount: 7,
           onSelectedItemChanged: (row) {
@@ -502,7 +502,7 @@ class WeekPicker extends Dialog {
             scrollController: _controllers[section],
             diameterRatio: 1.5,
             squeeze: 1.45,
-            selectionOverlay: Container(color: ColorUtil.transparent),
+            selectionOverlay: Container(color: Colors.transparent),
             itemExtent: 40,
             childCount: weekCount,
             onSelectedItemChanged: (row) {

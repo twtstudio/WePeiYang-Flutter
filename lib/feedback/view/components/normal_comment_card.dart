@@ -552,7 +552,7 @@ class _NCommentCardState extends State<NCommentCard>
                                 },
                                 child: Container(
                                     height: 68.h,
-                                    color: ColorUtil.transparent)))
+                                    color: Colors.transparent)))
                       ],
                     ),
         ));
@@ -716,7 +716,7 @@ class _NCommentCardState extends State<NCommentCard>
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(6.w, 0, 14.w, 6.h),
-                    color: ColorUtil.transparent,
+                    color: Colors.transparent,
                     child: mainBody,
                   ),
                   if (!widget.isSubFloor &&

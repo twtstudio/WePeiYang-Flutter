@@ -515,7 +515,7 @@ class CourseListWidget extends StatelessWidget {
                                 ),
                               ),
                               Card(
-                                color: ColorUtil.transparent,
+                                color: Colors.transparent,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)),

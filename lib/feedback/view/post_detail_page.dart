@@ -451,7 +451,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         )),
                     builder: (context, comment) {
                       return Container(
-                        color: ColorUtil.transparent,
+                        color: Colors.transparent,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -80,7 +80,7 @@ class _GradientLinearProgressPainter extends CustomPainter {
     //画笔终点坐标
     var end = Offset(size.width, _offset);
 
-    if (backgroundColor != ColorUtil.transparent) {
+    if (backgroundColor != Colors.transparent) {
       p.color = backgroundColor;
       canvas.drawLine(start, end, p);
     }

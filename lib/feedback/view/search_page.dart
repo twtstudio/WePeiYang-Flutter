@@ -148,8 +148,8 @@ class _SearchPageState extends State<SearchPage> {
                 0);
             return InkResponse(
               radius: 30,
-              highlightColor: ColorUtil.transparent,
-              splashColor: ColorUtil.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onTap: () {
                 if (searchArgument.keyword.startsWith('#MP') &&
                     RegExp(r'^-?[0-9]+')

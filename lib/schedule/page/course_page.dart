@@ -77,7 +77,7 @@ class _CoursePageState extends State<CoursePage> {
         // ),
         Scaffold(
           appBar: _CourseAppBar(),
-          backgroundColor: ColorUtil.transparent,
+          backgroundColor: Colors.transparent,
           body: ListView(
             physics: const BouncingScrollPhysics(),
             children: [
@@ -177,7 +177,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
     ];
 
     return AppBar(
-      backgroundColor: ColorUtil.transparent,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leading: leading,
       leadingWidth: 40.w,

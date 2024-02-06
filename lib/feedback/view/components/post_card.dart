@@ -82,7 +82,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.avatarBox.toString()),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
-              color: ColorUtil.transparent, // 没他就没有点击域
+              color: Colors.transparent, // 没他就没有点击域
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -518,7 +518,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                               padding:
                                   MaterialStateProperty.all(EdgeInsets.zero),
                               overlayColor: MaterialStateProperty.all(
-                                  ColorUtil.transparent)),
+                                  Colors.transparent)),
                           onPressed: () {
                             setState(() {
                               _picFullView = false;
@@ -628,7 +628,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
             }
           }),
           color: snapshot.hasData
-              ? ColorUtil.transparent
+              ? Colors.transparent
               : WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
         );
       },

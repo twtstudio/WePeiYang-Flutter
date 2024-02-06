@@ -24,7 +24,7 @@ class FeedbackNoticePage extends StatelessWidget {
       child: AppBar(
         titleSpacing: 0,
         leadingWidth: 25,
-        backgroundColor: ColorUtil.transparent,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title: Text('湖底通知',

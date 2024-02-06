@@ -26,10 +26,10 @@ class CustomCoursesPage extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         Scaffold(
-          backgroundColor: ColorUtil.transparent,
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: ColorUtil.transparent,
+            backgroundColor: Colors.transparent,
             leading: Center(
               child: WButton(
                 onPressed: () {
@@ -85,7 +85,7 @@ class CustomCoursesPage extends StatelessWidget {
           ],
         ),
         child: Material(
-          color: ColorUtil.transparent,
+          color: Colors.transparent,
           child: InkWell(
             onTap: () {
               context.read<EditProvider>().load(course);

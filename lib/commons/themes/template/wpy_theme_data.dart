@@ -66,16 +66,16 @@ class WpyThemeData {
     required this.data,
   });
 
-  factory WpyThemeData.light() => light_scheme();
+  factory WpyThemeData.light() => lightScheme();
 
-  factory WpyThemeData.dark() => light_scheme();
+  factory WpyThemeData.dark() => lightScheme();
 }
 
 class WpyThemeDetail {
   final Map<WpyColorKey, Color> colors;
   final Map<WpyColorSetKey, dynamic> gradients;
 
-  static final _defaultScheme = light_scheme().data;
+  static final _defaultScheme = lightScheme().data;
 
   // Use this to  calculate the icon's color
   Color? primaryColor;

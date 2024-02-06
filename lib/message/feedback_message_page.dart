@@ -106,7 +106,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           child: AppBar(
             titleSpacing: 0,
             leadingWidth: 50,
-            backgroundColor: ColorUtil.transparent,
+            backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
             title: Text('消息中心',
@@ -170,8 +170,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               preferredSize: Size.infinite,
               child: Theme(
                 data: ThemeData(
-                  splashColor: ColorUtil.transparent,
-                  highlightColor: ColorUtil.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                 ),
                 child: TabBar(
                   indicatorWeight: 0,

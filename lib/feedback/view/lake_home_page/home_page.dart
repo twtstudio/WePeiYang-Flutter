@@ -394,8 +394,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             child: Hero(
               tag: "addNewPost",
               child: InkWell(
-                  splashColor: ColorUtil.transparent,
-                  highlightColor: ColorUtil.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   child: Container(
                     height: 72.r,
                     width: 72.r,
@@ -504,7 +504,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
             children: List.generate(provider.departmentList.length, (index) {
               return InkResponse(
                 radius: 30,
-                highlightColor: ColorUtil.transparent,
+                highlightColor: Colors.transparent,
                 child: Chip(
                   backgroundColor: ColorUtil.tagLabelColor,
                   label: Text(provider.departmentList[index].name,

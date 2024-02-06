@@ -142,7 +142,10 @@ class ColorUtil {
   static final blue72 = Color.fromRGBO(72, 80, 117, 1.0);
   static final red43 = Color.fromRGBO(43, 16, 16, 1.0);
   static final red42 = Color.fromRGBO(42, 28, 49, 1.0);
-  static final transparent = Colors.transparent;
+
+  //
+  // ------- divider --------
+  //
   static final greyShade300 = Colors.grey[300];
   static final blackOpacity01 = Colors.black.withOpacity(0.1);
   static final blackOpacity006 = Colors.black.withOpacity(0.06);

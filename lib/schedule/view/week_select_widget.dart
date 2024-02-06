@@ -53,12 +53,12 @@ class WeekSelectWidget extends StatelessWidget {
                       height: _canvasHeight + 20.w,
                       width: _canvasWidth + 25.w,
                       child: Material(
-                        color: ColorUtil.transparent,
+                        color: Colors.transparent,
                         child: InkWell(
                           radius: 5000,
                           borderRadius: BorderRadius.circular(5.r),
                           splashColor: ColorUtil.grey246Opacity05,
-                          highlightColor: ColorUtil.transparent,
+                          highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
                         ),
                       ),

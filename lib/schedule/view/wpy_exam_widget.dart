@@ -67,7 +67,7 @@ class WpyExamWidget extends StatelessWidget {
               ],
             ),
             child: Material(
-              color: ColorUtil.transparent,
+              color: Colors.transparent,
               child: InkWell(
                 onTap: () => Navigator.pushNamed(context, ScheduleRouter.exam),
                 borderRadius: BorderRadius.circular(15.r),

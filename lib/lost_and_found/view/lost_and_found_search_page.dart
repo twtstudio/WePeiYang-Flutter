@@ -191,7 +191,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 });
               },
               child: Chip(
-                shadowColor: ColorUtil.transparent,
+                shadowColor: Colors.transparent,
                 elevation: 1,
                 backgroundColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor),

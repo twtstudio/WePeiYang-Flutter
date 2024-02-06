@@ -58,7 +58,7 @@ class AnimatedActiveCourse extends StatelessWidget {
         borderRadius: BorderRadius.circular(5),
       ),
       child: Material(
-        color: ColorUtil.transparent,
+        color: Colors.transparent,
         // color: generateColor(_pairs[0].first.name),
         child: InkWell(
           onTap: () => showCourseDialog(context, _pairs),

@@ -183,7 +183,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: ColorUtil.transparent,
+          backgroundColor: Colors.transparent,
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Icon(CupertinoIcons.back,
