@@ -84,7 +84,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(40)
                         .w700
-                        .reverse(context)),
+                        .bright(context)),
               ),
             ),
             Padding(
@@ -105,7 +105,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "学号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse(context),
+                                      .bright(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -116,7 +116,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse(context),
+                                      .bright(context),
                                   cursorColor: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
@@ -141,7 +141,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     hintStyle: TextUtil.base.normal
                                         .sp(14)
                                         .w400
-                                        .reverse(context),
+                                        .bright(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -166,7 +166,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: '昵称',
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse(context),
+                                      .bright(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -177,7 +177,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse(context),
+                                      .bright(context),
                                   cursorColor: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
@@ -202,7 +202,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     hintStyle: TextUtil.base.normal
                                         .sp(14)
                                         .w400
-                                        .reverse(context),
+                                        .bright(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -227,7 +227,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "身份证号",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse(context),
+                                      .bright(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -238,7 +238,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse(context),
+                                      .bright(context),
                                   cursorColor: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
@@ -263,7 +263,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     hintStyle: TextUtil.base.normal
                                         .sp(14)
                                         .w400
-                                        .reverse(context),
+                                        .bright(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -288,7 +288,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   text: "邮箱",
                                   style: TextUtil.base.normal.NotoSansSC.w400
                                       .sp(16)
-                                      .reverse(context),
+                                      .bright(context),
                                 ),
                               ),
                               ConstrainedBox(
@@ -299,7 +299,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                   style: TextUtil.base.normal.w400
                                       .sp(14)
                                       .NotoSansSC
-                                      .reverse(context),
+                                      .bright(context),
                                   cursorColor: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryBackgroundColor),
                                   textInputAction: TextInputAction.next,
@@ -324,7 +324,7 @@ class _RegisterPageOneState extends State<RegisterPageOne> {
                                     hintStyle: TextUtil.base.normal
                                         .sp(14)
                                         .w400
-                                        .reverse(context),
+                                        .bright(context),
                                     isCollapsed: true,
                                     contentPadding:
                                         const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -452,7 +452,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(40)
                         .w700
-                        .reverse(context)),
+                        .bright(context)),
               ])),
             ),
             SizedBox(height: 62),
@@ -468,7 +468,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         text: "手机号",
                         style: TextUtil.base.normal.NotoSansSC.w400
                             .sp(16)
-                            .reverse(context),
+                            .bright(context),
                       )),
                       ConstrainedBox(
                         constraints: BoxConstraints(
@@ -478,7 +478,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                           style: TextUtil.base.normal.w400
                               .sp(14)
                               .NotoSansSC
-                              .reverse(context),
+                              .bright(context),
                           cursorColor: WpyTheme.of(context)
                               .get(WpyColorKey.primaryBackgroundColor),
                           textInputAction: TextInputAction.next,
@@ -502,7 +502,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                             hintStyle: TextUtil.base.normal
                                 .sp(14)
                                 .w400
-                                .reverse(context),
+                                .bright(context),
                             isCollapsed: true,
                             contentPadding:
                                 const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -520,7 +520,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                         text: "验证码",
                         style: TextUtil.base.normal.NotoSansSC.w400
                             .sp(16)
-                            .reverse(context),
+                            .bright(context),
                       )),
                       SizedBox(height: 20),
                       Stack(
@@ -696,7 +696,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                             style: TextUtil
                                                 .base.normal.NotoSansSC.w400
                                                 .sp(14)
-                                                .reverse(context),
+                                                .bright(context),
                                           )));
                                     })
                                 : WButton(
@@ -706,7 +706,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                       style: TextUtil
                                           .base.normal.NotoSansSC.w400
                                           .sp(14)
-                                          .reverse(context),
+                                          .bright(context),
                                     ),
                                   ),
                             onPressed: () {},
@@ -815,7 +815,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(40)
                         .w700
-                        .reverse(context)),
+                        .bright(context)),
               ])),
             ),
             SizedBox(height: 62),
@@ -833,7 +833,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "设置密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .reverse(context),
+                                .bright(context),
                           ),
                         ),
                         ConstrainedBox(
@@ -846,7 +846,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .reverse(context),
+                                .bright(context),
                             keyboardType: TextInputType.visiblePassword,
                             textInputAction: TextInputAction.next,
                             focusNode: _pw1Focus,
@@ -870,7 +870,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               hintStyle: TextUtil.base.normal
                                   .sp(14)
                                   .w400
-                                  .reverse(context),
+                                  .bright(context),
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),
@@ -894,7 +894,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             text: "确认密码",
                             style: TextUtil.base.normal.NotoSansSC.w400
                                 .sp(16)
-                                .reverse(context),
+                                .bright(context),
                           ),
                         ),
                         ConstrainedBox(
@@ -905,7 +905,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                             style: TextUtil.base.normal.w400
                                 .sp(14)
                                 .NotoSansSC
-                                .reverse(context),
+                                .bright(context),
                             cursorColor: WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor),
                             keyboardType: TextInputType.visiblePassword,
@@ -930,7 +930,7 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               hintStyle: TextUtil.base.normal
                                   .sp(14)
                                   .w400
-                                  .reverse(context),
+                                  .bright(context),
                               isCollapsed: true,
                               contentPadding:
                                   const EdgeInsets.fromLTRB(0, 18, 0, 18),

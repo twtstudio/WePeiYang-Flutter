@@ -171,7 +171,7 @@ class _NewPostPageState extends State<NewPostPage> {
           }
         },
         child: Text(S.current.feedback_submit,
-            style: TextUtil.base.NotoSansSC.w500.sp(14).reverse(context)),
+            style: TextUtil.base.NotoSansSC.w500.sp(14).bright(context)),
       ),
     );
 

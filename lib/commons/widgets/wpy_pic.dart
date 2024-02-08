@@ -10,16 +10,18 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 /// 统一Button样式
 class WpyPic extends StatefulWidget {
-  WpyPic(this.imageUrl,
-      {Key? key,
-      this.width,
-      this.height,
-      this.fit = BoxFit.contain,
-      this.withHolder = false,
-      this.holderHeight = 40,
-      this.withCache = true,
-      this.alignment = Alignment.center})
-      : super(key: key);
+  WpyPic(
+    this.imageUrl, {
+    Key? key,
+    this.width,
+    this.height,
+    this.fit = BoxFit.contain,
+    this.withHolder = false,
+    this.holderHeight = 40,
+    this.withCache = true,
+    this.alignment = Alignment.center,
+    this.reduce = false,
+  }) : super(key: key);
 
   final String imageUrl;
   final double? width;
@@ -29,6 +31,7 @@ class WpyPic extends StatefulWidget {
   final bool withHolder;
   final bool withCache;
   final Alignment alignment;
+  final bool reduce;
 
   @override
   _WpyPicState createState() => _WpyPicState();
@@ -98,7 +101,7 @@ class _WpyPicState extends State<WpyPic> {
             : null,
       );
 
-      if (WpyTheme.of(context).brightness == Brightness.dark)
+      if (widget.reduce && WpyTheme.of(context).brightness == Brightness.dark)
         return ColorFiltered(
           colorFilter: ColorFilter.mode(
             Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度

@@ -189,8 +189,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Icon(CupertinoIcons.back,
-                color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor)),
+                color: WpyTheme.of(context).get(WpyColorKey.brightTextColor)),
           ),
           elevation: 0,
         ),

@@ -41,6 +41,8 @@ class MapCalenderState extends State<MapCalendarPage> {
           ),
           elevation: 0,
         ),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Padding(
@@ -149,7 +151,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                               alignment: Alignment.center,
                               fit: BoxFit.cover,
                               colorFilter: ColorFilter.mode(
-                                  WpyTheme.of(context).get(WpyColorKey.beiyangCampusMaskColor),
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
                               image: AssetImage(
                                   'assets/images/account/map_pei_yang.jpg')))),

@@ -83,8 +83,10 @@ class _NCommentCardState extends State<NCommentCard>
           title: '$quote评论',
           content: Text('您确定要$quote这条评论吗？'),
           cancelText: "取消",
-          confirmTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-          cancelTextStyle: TextUtil.base.normal.label(context).NotoSansSC.sp(16).w600,
+          confirmTextStyle:
+              TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+          cancelTextStyle:
+              TextUtil.base.normal.label(context).NotoSansSC.sp(16).w600,
           confirmText: quote == '摧毁' ? 'BOOM' : "确认",
           cancelFun: () {
             Navigator.of(context).pop();
@@ -147,170 +149,176 @@ class _NCommentCardState extends State<NCommentCard>
           showCupertinoModalPopup(
             context: context,
             builder: (context) {
-              return CupertinoActionSheet(
-                actions: <Widget>[
-                  if (hasAdmin)
-                    CupertinoActionSheetAction(
-                      onPressed: () {
-                        cleanTopFloor(widget.comment.id.toString())
-                            .then((_) => Navigator.pop(context));
-                      },
-                      child: Text(
-                        "恢复原评论状态（取消置顶）",
-                        style: TextUtil.base.normal.w400.NotoSansSC
-                            .primary(context)
-                            .sp(16),
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness: WpyTheme.of(context).brightness,
+                ),
+                child: CupertinoActionSheet(
+                  actions: <Widget>[
+                    if (hasAdmin)
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          cleanTopFloor(widget.comment.id.toString())
+                              .then((_) => Navigator.pop(context));
+                        },
+                        child: Text(
+                          "恢复原评论状态（取消置顶）",
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
                       ),
-                    ),
 
-                  if (hasAdmin)
-                    CupertinoActionSheetAction(
-                      onPressed: () {
-                        _showFloorUpDialog(widget.comment.id.toString())
-                            .then((value) => Navigator.pop(context));
-                      },
-                      child: Text(
-                        "评论置顶",
-                        style: TextUtil.base.normal.w400.NotoSansSC
-                            .primary(context)
-                            .sp(16),
+                    if (hasAdmin)
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          _showFloorUpDialog(widget.comment.id.toString())
+                              .then((value) => Navigator.pop(context));
+                        },
+                        child: Text(
+                          "评论置顶",
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
                       ),
-                    ),
 
-                  // 拉黑按钮
-                  if (Platform.isIOS && widget.showBlockButton)
+                    // 拉黑按钮
+                    if (Platform.isIOS && widget.showBlockButton)
+                      // 分享按钮
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          ToastProvider.success('拉黑用户成功');
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '拉黑',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
+                      ),
                     // 分享按钮
                     CupertinoActionSheetAction(
                       onPressed: () {
-                        ToastProvider.success('拉黑用户成功');
+                        String weCo =
+                            '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.comment.postId}\n【${widget.comment.content}】';
+                        ClipboardData data = ClipboardData(text: weCo);
+                        Clipboard.setData(data);
+                        CommonPreferences.feedbackLastWeCo.value =
+                            widget.ancestorUId.toString();
+                        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                        FeedbackService.postShare(
+                            id: widget.ancestorUId.toString(),
+                            type: 0,
+                            onSuccess: () {},
+                            onFailure: () {});
+                      },
+                      child: Text(
+                        '分享',
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
+                      ),
+                    ),
+
+                    CupertinoActionSheetAction(
+                      onPressed: () {
+                        ClipboardData data =
+                            ClipboardData(text: widget.comment.content);
+                        Clipboard.setData(data);
+                        ToastProvider.success('复制成功');
                         Navigator.pop(context);
                       },
                       child: Text(
-                        '拉黑',
+                        '复制',
                         style: TextUtil.base.normal.w400.NotoSansSC
                             .primary(context)
                             .sp(16),
                       ),
                     ),
-                  // 分享按钮
-                  CupertinoActionSheetAction(
-                    onPressed: () {
-                      String weCo =
-                          '我在微北洋发现了个有趣的问题评论，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.comment.postId}\n【${widget.comment.content}】';
-                      ClipboardData data = ClipboardData(text: weCo);
-                      Clipboard.setData(data);
-                      CommonPreferences.feedbackLastWeCo.value =
-                          widget.ancestorUId.toString();
-                      ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                      FeedbackService.postShare(
-                          id: widget.ancestorUId.toString(),
-                          type: 0,
-                          onSuccess: () {},
-                          onFailure: () {});
-                    },
-                    child: Text(
-                      '分享',
-                      style: TextUtil.base.normal.w400.NotoSansSC
-                          .primary(context)
-                          .sp(16),
-                    ),
-                  ),
-
-                  CupertinoActionSheetAction(
-                    onPressed: () {
-                      ClipboardData data =
-                          ClipboardData(text: widget.comment.content);
-                      Clipboard.setData(data);
-                      ToastProvider.success('复制成功');
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      '复制',
-                      style: TextUtil.base.normal.w400.NotoSansSC
-                          .primary(context)
-                          .sp(16),
-                    ),
-                  ),
-                  widget.comment.isOwner
-                      ? CupertinoActionSheetAction(
-                          onPressed: () async {
-                            bool? confirm =
-                                await _showDeleteConfirmDialog('删除');
-                            if (confirm ?? false) {
-                              FeedbackService.deleteFloor(
-                                id: widget.comment.id,
-                                onSuccess: () {
-                                  ToastProvider.success(
-                                      S.current.feedback_delete_success);
-                                  setState(() {
-                                    _isDeleted = true;
-                                  });
-                                },
-                                onFailure: (e) {
-                                  ToastProvider.error(e.error.toString());
-                                },
-                              );
-                            }
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            '删除',
-                            style: TextUtil.base.normal.w400.NotoSansSC
-                                .primary(context)
-                                .sp(16),
+                    widget.comment.isOwner
+                        ? CupertinoActionSheetAction(
+                            onPressed: () async {
+                              bool? confirm =
+                                  await _showDeleteConfirmDialog('删除');
+                              if (confirm ?? false) {
+                                FeedbackService.deleteFloor(
+                                  id: widget.comment.id,
+                                  onSuccess: () {
+                                    ToastProvider.success(
+                                        S.current.feedback_delete_success);
+                                    setState(() {
+                                      _isDeleted = true;
+                                    });
+                                  },
+                                  onFailure: (e) {
+                                    ToastProvider.error(e.error.toString());
+                                  },
+                                );
+                              }
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              '删除',
+                              style: TextUtil.base.normal.w400.NotoSansSC
+                                  .primary(context)
+                                  .sp(16),
+                            ),
+                          )
+                        : CupertinoActionSheetAction(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, FeedbackRouter.report,
+                                  arguments: ReportPageArgs(
+                                      widget.ancestorUId, false,
+                                      floorId: widget.comment.id));
+                            },
+                            child: Text(
+                              '举报',
+                              style: TextUtil.base.normal.w400.NotoSansSC
+                                  .primary(context)
+                                  .sp(16),
+                            ),
                           ),
-                        )
-                      : CupertinoActionSheetAction(
-                          onPressed: () {
-                            Navigator.pushNamed(context, FeedbackRouter.report,
-                                arguments: ReportPageArgs(
-                                    widget.ancestorUId, false,
-                                    floorId: widget.comment.id));
-                          },
-                          child: Text(
-                            '举报',
-                            style: TextUtil.base.normal.w400.NotoSansSC
-                                .primary(context)
-                                .sp(16),
-                          ),
+                    if (CommonPreferences.isSuper.value ||
+                        CommonPreferences.isStuAdmin.value)
+                      CupertinoActionSheetAction(
+                        onPressed: () async {
+                          bool? confirm = await _showDeleteConfirmDialog('摧毁');
+                          if (confirm ?? false) {
+                            FeedbackService.adminDeleteReply(
+                              floorId: widget.comment.id,
+                              onSuccess: () {
+                                ToastProvider.success(
+                                    S.current.feedback_delete_success);
+                                setState(() {
+                                  _isDeleted = true;
+                                });
+                              },
+                              onFailure: (e) {
+                                ToastProvider.error(e.error.toString());
+                              },
+                            );
+                          }
+                        },
+                        child: Text(
+                          '删评',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
                         ),
-                  if (CommonPreferences.isSuper.value ||
-                      CommonPreferences.isStuAdmin.value)
-                    CupertinoActionSheetAction(
-                      onPressed: () async {
-                        bool? confirm = await _showDeleteConfirmDialog('摧毁');
-                        if (confirm ?? false) {
-                          FeedbackService.adminDeleteReply(
-                            floorId: widget.comment.id,
-                            onSuccess: () {
-                              ToastProvider.success(
-                                  S.current.feedback_delete_success);
-                              setState(() {
-                                _isDeleted = true;
-                              });
-                            },
-                            onFailure: (e) {
-                              ToastProvider.error(e.error.toString());
-                            },
-                          );
-                        }
-                      },
-                      child: Text(
-                        '删评',
-                        style: TextUtil.base.normal.w400.NotoSansSC
-                            .primary(context)
-                            .sp(16),
                       ),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    // 取消按钮
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(
+                      '取消',
+                      style: TextUtil.base.normal.w400.NotoSansSC
+                          .primary(context)
+                          .sp(16),
                     ),
-                ],
-                cancelButton: CupertinoActionSheetAction(
-                  // 取消按钮
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC
-                        .primary(context)
-                        .sp(16),
                   ),
                 ),
               );
@@ -331,7 +339,8 @@ class _NCommentCardState extends State<NCommentCard>
                   widget.comment.nickname,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextUtil.base.w400.bold.NotoSansSC.sp(16).label(context),
+                  style:
+                      TextUtil.base.w400.bold.NotoSansSC.sp(16).label(context),
                 ),
               ),
               Padding(
@@ -380,7 +389,8 @@ class _NCommentCardState extends State<NCommentCard>
                             : widget.comment.replyToName.length > 8
                                 ? "${widget.comment.replyToName.substring(0, 7)}..."
                                 : widget.comment.replyToName,
-                        style: TextUtil.base.w700.NotoSansSC.sp(16).label(context),
+                        style:
+                            TextUtil.base.w700.NotoSansSC.sp(16).label(context),
                       ),
                     ),
                     SizedBox(width: 2)
@@ -416,7 +426,9 @@ class _NCommentCardState extends State<NCommentCard>
               if (widget.comment.value != 0)
                 Text(
                   "  置顶评论",
-                  style: TextUtil.base.w500.NotoSansSC.sp(10).primaryAction(context),
+                  style: TextUtil.base.w500.NotoSansSC
+                      .sp(10)
+                      .primaryAction(context),
                 ),
             ],
           ),
@@ -550,8 +562,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: 68.h,
-                                    color: Colors.transparent)))
+                                    height: 68.h, color: Colors.transparent)))
                       ],
                     ),
         ));
@@ -652,7 +663,9 @@ class _NCommentCardState extends State<NCommentCard>
                 : DateTime.now()
                     .difference(widget.comment.createAt!)
                     .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans.secondaryInfo(context).regular
+            style: TextUtil.base.ProductSans
+                .secondaryInfo(context)
+                .regular
                 .sp(12)
                 .space(letterSpacing: 0.6),
           ),
@@ -695,7 +708,11 @@ class _NCommentCardState extends State<NCommentCard>
                     children: [
                       Spacer(),
                       Text('收起',
-                          style: TextUtil.base.infoText(context).w800.NotoSansSC.sp(12)),
+                          style: TextUtil.base
+                              .infoText(context)
+                              .w800
+                              .NotoSansSC
+                              .sp(12)),
                     ],
                   ))
             else
@@ -805,7 +822,8 @@ class AdminPopUpState extends State<AdminPopUp> {
             SizedBox(height: 4),
             Center(
                 child: Text("评论置顶",
-                    style: TextUtil.base.NotoSansSC.w500.sp(16).label(context))),
+                    style:
+                        TextUtil.base.NotoSansSC.w500.sp(16).label(context))),
             SizedBox(
               height: 20,
             ),
@@ -816,7 +834,8 @@ class AdminPopUpState extends State<AdminPopUp> {
                   hintText: "评论置顶值，0-3000，0为取消置顶",
                   hintStyle: TextUtil.base.label(context).bold.w500.sp(14),
                   filled: true,
-                  fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  fillColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(

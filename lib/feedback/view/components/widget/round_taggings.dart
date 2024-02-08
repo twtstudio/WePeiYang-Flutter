@@ -342,6 +342,7 @@ class _ProfileImageWithDetailedPopupState
                   width: 60.w,
                   height: 60.w,
                   fit: BoxFit.contain,
+                  reduce: false,
                 ),
             ],
           ),

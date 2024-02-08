@@ -63,6 +63,8 @@ class _ExamPageState extends State<ExamPage> {
 
     return Scaffold(
       appBar: appBar,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Consumer<ExamProvider>(

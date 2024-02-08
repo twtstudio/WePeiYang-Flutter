@@ -346,10 +346,12 @@ class _PersonPageState extends State<PersonPage> {
                           colors: [
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor),
-                            WpyTheme.of(context).get(WpyColorKey.backgroundMaskColor),
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.backgroundMaskColor),
                             WpyTheme.of(context)
                                 .get(WpyColorKey.backgroundGradientEndColor),
-                            WpyTheme.of(context).get(WpyColorKey.liteBackgroundMaskColor)
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.liteBackgroundMaskColor)
                           ],
                           stops: [0, 0.4, 0.7, 1],
                           begin: Alignment(0, -1),

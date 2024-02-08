@@ -120,7 +120,7 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.beiyangCampusMaskColor: Color(0xFFFFF2F2),
   WpyColorKey.unSelectedIcon: Color.fromARGB(255, 144, 144, 144),
   WpyColorKey.backgroundMaskColor: Color(0xB3FFFFFF),
-  WpyColorKey.liteBackgroundMaskColor: Color(0x191919),
+  WpyColorKey.liteBackgroundMaskColor: Color(0xC8C8C8),
 
   WpyColorKey.blue52hz: Color.fromRGBO(36, 43, 69, 1),
 

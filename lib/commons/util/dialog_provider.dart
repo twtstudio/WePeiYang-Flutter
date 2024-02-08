@@ -159,7 +159,7 @@ class LakeDialogWidget extends Dialog {
                   child: Text(confirmText,
                       style: confirmTextStyle ??
                           TextUtil.base.normal
-                              .reverse(context)
+                              .bright(context)
                               .NotoSansSC
                               .sp(16)
                               .w400),

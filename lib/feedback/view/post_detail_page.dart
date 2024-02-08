@@ -846,12 +846,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                               FeedbackService.deletePost(
                                 id: widget.post.id,
                                 onSuccess: () {
-                                  final lake = context.read<LakeModel>();
-                                  lake
-                                      .lakeAreas[
-                                          lake.tabList[lake.currentTab].id]!
-                                      .refreshController
-                                      .requestRefresh();
+                                  // final lake = context.read<LakeModel>();
+                                  // lake
+                                  //     .lakeAreas[
+                                  //         lake.tabList[lake.currentTab].id]!
+                                  //     .refreshController
+                                  //     .requestRefresh();
                                   ToastProvider.success(
                                       S.current.feedback_delete_success);
                                   Navigator.of(context).popAndPushNamed(
@@ -870,15 +870,16 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 .primary(context)
                                 .sp(16),
                           )),
-                    CupertinoActionSheetAction(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        '收藏',
-                        style: TextUtil.base.normal.w400.NotoSansSC
-                            .primary(context)
-                            .sp(16),
-                      ),
-                    ),
+                    // TODO: 这个收藏并没有用 先注释了
+                    // CupertinoActionSheetAction(
+                    //   onPressed: () => Navigator.pop(context),
+                    //   child: Text(
+                    //     '收藏',
+                    //     style: TextUtil.base.normal.w400.NotoSansSC
+                    //         .primary(context)
+                    //         .sp(16),
+                    //   ),
+                    // ),
                   ],
                   cancelButton: CupertinoActionSheetAction(
                     // 取消按钮
@@ -1011,10 +1012,15 @@ class _PostDetailPageState extends State<PostDetailPage>
         builder: (context) {
           return LakeDialogWidget(
               title: '$quote冒泡',
-              content: Text('您确定要$quote这条冒泡吗？'),
+              content: Text(
+                '您确定要$quote这条冒泡吗？',
+                style: TextStyle(
+                    color:
+                        WpyTheme.of(context).get(WpyColorKey.basicTextColor)),
+              ),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.primary(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.infoText(context).NotoSansSC.sp(16).w600,
               confirmText: "确认",

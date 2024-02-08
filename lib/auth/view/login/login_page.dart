@@ -30,13 +30,13 @@ class LoginHomeWidget extends StatelessWidget {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(40)
                         .w700
-                        .reverse(context)),
+                        .bright(context)),
                 TextSpan(
                     text: "微北洋",
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(40)
                         .w400
-                        .reverse(context)),
+                        .bright(context)),
               ])),
             ),
             Spacer(
@@ -118,7 +118,7 @@ class LoginHomeWidget extends StatelessWidget {
                     style: TextUtil.base.normal.NotoSansSC
                         .sp(12)
                         .w400
-                        .reverse(context))),
+                        .bright(context))),
             Spacer(flex: 9),
           ],
         ),

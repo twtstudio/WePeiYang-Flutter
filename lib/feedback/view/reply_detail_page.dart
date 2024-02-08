@@ -383,6 +383,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       onPressed: () {
         showMenu(
           context: context,
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
 
           /// 左侧间隔1000是为了离左面尽可能远，从而使popupMenu贴近右侧屏幕
           /// MediaQuery...top + kToolbarHeight是状态栏 + AppBar的高度
@@ -392,8 +393,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                 value: '举报',
                 child: Text('举报',
                     style: TextUtil.base.regular
-                        .customColor(
-                            WpyTheme.of(context).get(WpyColorKey.cursorColor))
+                        .customColor(WpyTheme.of(context)
+                            .get(WpyColorKey.basicTextColor))
                         .sp(13))),
           ],
         ).then((value) {

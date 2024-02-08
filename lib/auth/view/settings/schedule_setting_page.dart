@@ -31,7 +31,10 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
     else
       return Padding(
         padding: const EdgeInsets.only(right: 22),
-        child: Icon(Icons.check),
+        child: Icon(
+          Icons.check,
+          color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+        ),
       );
   }
 

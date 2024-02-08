@@ -45,7 +45,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
       minimumSize: MaterialStateProperty.all(Size(80, 40)),
     );
     var appBar = AppBar(
-      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
             color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor)),
@@ -87,6 +88,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
 
     return Scaffold(
       appBar: appBar,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: Column(
         children: [
           Padding(
@@ -140,7 +143,10 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 maxLines: 15,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.done,
-                style: TextUtil.base.normal.customColor(WpyTheme.of(context).get(WpyColorKey.cursorColor)).sp(14),
+                style: TextUtil.base.normal
+                    .customColor(
+                        WpyTheme.of(context).get(WpyColorKey.basicTextColor))
+                    .sp(14),
                 decoration: InputDecoration.collapsed(
                   hintText: '请填写举报理由，如“色情暴力”“政治敏感”等',
                   hintStyle:
