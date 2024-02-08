@@ -61,7 +61,8 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
               WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
           statusBarColor:
               WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-          backgroundColor: WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true),
     );
@@ -212,20 +213,20 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
                 },
                 child: Text(
                   '更换头像框',
-                  style: TextUtil.base.reverse(context).sp(16),
+                  style: TextUtil.base.bright(context).sp(16),
                 ),
               ),
               SizedBox(height: 10),
               Divider(
-                  height: 1.0,
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor)),
+                height: 1.0,
+                color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
+              ),
               SizedBox(height: 10),
               WButton(
                 onPressed: () => showActionButtons(context),
                 child: Text(
                   '修改个人头像',
-                  style: TextUtil.base.reverse(context).sp(16),
+                  style: TextUtil.base.bright(context).sp(16),
                 ),
               ),
               SizedBox(height: 10),

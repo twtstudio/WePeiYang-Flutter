@@ -104,8 +104,9 @@ void main() async {
 
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.light));
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    ));
 
     /// 修改debugPrint
     debugPrint = (message, {wrapWidth}) => print(message);
@@ -166,6 +167,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
+
+    print("==> use dark mode: ${CommonPreferences.useDarkMode.value}");
+
+    if (CommonPreferences.useDarkMode.value) {
+      globalTheme.value = WpyThemeData.dark();
+    }
+
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
@@ -411,10 +419,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<GPANotifier>().readPref();
     context.read<ExamProvider>().readPref();
     context.read<CourseProvider>().readPref();
-
-    if (CommonPreferences.useDarkMode.value) {
-      globalTheme.value = WpyThemeData.dark();
-    }
 
     /// 如果登陆过，尝试刷新token
     if (CommonPreferences.isLogin.value &&

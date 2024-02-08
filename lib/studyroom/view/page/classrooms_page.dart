@@ -129,7 +129,7 @@ class _PathTitle extends StatelessWidget {
         Text(
           buildingName,
           style: TextUtil.base
-              .reverse(context)
+              .bright(context)
               .sp(20)
               .Swis
               .w400

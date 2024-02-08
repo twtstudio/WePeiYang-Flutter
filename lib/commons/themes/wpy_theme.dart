@@ -21,7 +21,7 @@ class WpyTheme extends InheritedWidget {
     return oldWidget.themeData.meta.themeId != themeData.meta.themeId;
   }
 
-  Color? get getPrimary => themeData.data.primaryColor;
+  Color? get primary => themeData.data.primaryColor;
 
   Color get(WpyColorKey key) {
     return themeData.data.get(key);
@@ -34,6 +34,8 @@ class WpyTheme extends InheritedWidget {
   Gradient getGradient(WpyColorSetKey key) {
     return themeData.data.getColorSet(key) as Gradient;
   }
+
+  Brightness get brightness => themeData.meta.brightness;
 }
 
 final globalTheme = ValueNotifier(WpyThemeData.light());

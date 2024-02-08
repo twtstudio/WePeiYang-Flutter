@@ -9,6 +9,7 @@ class DarkScheme extends WpyThemeData {
             themeId: "builtin_dark",
             name: "Dark Theme",
             description: "Built-in Dark Theme",
+            brightness: Brightness.dark,
           ),
           data: WpyThemeDetail(
             darkSchemeDetail,
@@ -18,50 +19,51 @@ class DarkScheme extends WpyThemeData {
 }
 
 final Map<WpyColorKey, Color> darkSchemeDetail = {
-  WpyColorKey.defaultActionColor: Color.fromARGB(255, 54, 60, 84),
+  WpyColorKey.defaultActionColor: Color.fromARGB(255, 143, 156, 206),
   WpyColorKey.primaryBackgroundColor: Color.fromARGB(255, 16, 16, 16),
   WpyColorKey.secondaryBackgroundColor: Color.fromARGB(255, 0, 0, 0),
   WpyColorKey.reverseBackgroundColor: Colors.black,
 
-  WpyColorKey.reverseTextColor: Color.fromARGB(255, 199, 199, 199),
+  WpyColorKey.reverseTextColor: Color.fromARGB(255, 66, 66, 66),
+  WpyColorKey.brightTextColor: Color(0xFFCACACA),
   WpyColorKey.basicTextColor: Color.fromARGB(255, 202, 202, 202),
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 154, 154, 154),
   WpyColorKey.labelTextColor: Color(0xFFC1C1C1),
   WpyColorKey.unlabeledColor: Color(0xFFC5C5C5),
   WpyColorKey.cursorColor: Color.fromARGB(255, 85, 112, 188),
-  WpyColorKey.infoTextColor: Color(0xFFB8B8B8),
+  WpyColorKey.infoTextColor: Color(0xFFAAAAAA),
   WpyColorKey.backgroundGradientEndColor: Colors.white54,
   WpyColorKey.secondaryInfoTextColor: Color(0xFF979797),
 
-  WpyColorKey.primaryActionColor: Color(0xFF233D59),
+  WpyColorKey.primaryActionColor: Color(0xFF52729B),
   WpyColorKey.primaryLightActionColor: Color(0xFF12233B),
-  WpyColorKey.primaryTextButtonColor: Color(0xFF15213B),
+  WpyColorKey.primaryTextButtonColor: Color(0xFF4B77D5),
 
   // the Main Action on main page
-  WpyColorKey.beanDarkColor: Color(0xFF306195),
-  WpyColorKey.beanLightColor: Color(0xFF7BA9E7),
+  WpyColorKey.beanDarkColor: Color(0xFF3687E5),
+  WpyColorKey.beanLightColor: Color(0xFF4B81C7),
 
 // schedule page background color
   WpyColorKey.primaryLighterActionColor: Color(0xFF183C50),
   WpyColorKey.primaryLightestActionColor: Color(0x7B647BB6),
 
 // --- The Color below shouldn't be customized ---
-  WpyColorKey.linkBlue: Color(0xFF182056),
-  WpyColorKey.dangerousRed: Color(0xFFC30000),
+  WpyColorKey.linkBlue: Color(0xFF5A69D2),
+  WpyColorKey.dangerousRed: Color(0xFF7E0303),
   WpyColorKey.warningColor: Color(0xFF9B7342),
   WpyColorKey.infoStatusColor: Color(0xffa37636),
 
 // bind classes pages
-  WpyColorKey.oldActionColor: Color.fromRGBO(107, 119, 169, 1.0),
-  WpyColorKey.oldSecondaryActionColor: Color.fromRGBO(116, 129, 157, 1.0),
+  WpyColorKey.oldActionColor: Color.fromRGBO(155, 166, 212, 1.0),
+  WpyColorKey.oldSecondaryActionColor: Color.fromRGBO(148, 167, 206, 1.0),
   WpyColorKey.oldThirdActionColor: Color.fromRGBO(163, 173, 207, 1.0),
   WpyColorKey.oldFurthActionColor: Color.fromRGBO(106, 120, 157, 1.0),
   WpyColorKey.oldActionRippleColor: Color.fromRGBO(144, 153, 208, 1.0),
 
 /* ----- this colors for setting pages ----- */
   WpyColorKey.oldSwitchBarColor: Color.fromRGBO(48, 48, 48, 1.0),
-  WpyColorKey.oldHintColor: Color.fromRGBO(78, 74, 74, 1.0),
-  WpyColorKey.oldHintDarkerColor: Color.fromRGBO(31, 31, 31, 1.0),
+  WpyColorKey.oldHintColor: Color.fromRGBO(194, 183, 183, 1.0),
+  WpyColorKey.oldHintDarkerColor: Color.fromRGBO(224, 220, 220, 1.0),
   WpyColorKey.oldListGroupTitleColor: Color.fromRGBO(83, 76, 76, 1.0),
   WpyColorKey.oldListActionColor: Colors.grey,
 

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -38,6 +39,14 @@ class _ActivityCardState extends State<ActivityCard> {
   @override
   Widget build(BuildContext context) {
     Widget card(BuildContext context, int index) {
+      final banner = FadeInImage.memoryNetwork(
+        placeholder: kTransparentImage,
+        fadeInDuration: Duration(milliseconds: 300),
+        image: context.read<FestivalProvider>().nonePopupList[index].image,
+        fit: BoxFit.cover,
+        width: widget.width,
+        height: widget.width * 0.32,
+      );
       return InkWell(
         onTap: () async {
           final url = context.read<FestivalProvider>().nonePopupList[index].url;
@@ -79,15 +88,16 @@ class _ActivityCardState extends State<ActivityCard> {
         },
         child: Stack(
           children: [
-            FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              fadeInDuration: Duration(milliseconds: 300),
-              image:
-                  context.read<FestivalProvider>().nonePopupList[index].image,
-              fit: BoxFit.cover,
-              width: widget.width,
-              height: widget.width * 0.32,
-            ),
+            if (WpyTheme.of(context).brightness == Brightness.dark)
+              ColorFiltered(
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度
+                  BlendMode.darken, // 使用darken混合模式来降低亮度
+                ),
+                child: banner,
+              )
+            else
+              banner,
             Positioned(
                 bottom: 4.w,
                 right: 4.w,

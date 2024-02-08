@@ -38,7 +38,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  late final Color? themePrimary = WpyTheme.of(context).getPrimary;
+  late final Color? themePrimary = WpyTheme.of(context).primary;
 
   late final List<CardBean> cards = [
     CardBean(
@@ -226,7 +226,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
                   style: showSchedule
-                      ? TextUtil.base.reverse(context).w400.sp(22)
+                      ? TextUtil.base.bright(context).w400.sp(22)
                       : TextUtil.base.primary(context).w400.sp(22),
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,

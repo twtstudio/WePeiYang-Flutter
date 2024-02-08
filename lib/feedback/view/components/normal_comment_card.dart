@@ -339,7 +339,7 @@ class _NCommentCardState extends State<NCommentCard>
                 child: LevelUtil(
                   width: 24,
                   height: 12,
-                  style: TextUtil.base.reverse(context).bold.sp(7),
+                  style: TextUtil.base.bright(context).bold.sp(7),
                   level: widget.comment.level.toString(),
                 ),
               ),

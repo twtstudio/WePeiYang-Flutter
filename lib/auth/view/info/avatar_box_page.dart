@@ -53,6 +53,9 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
               onPressed: () => Navigator.pop(context)),
         ),
       ),
+      backgroundColor: WpyTheme.of(context).get(
+        WpyColorKey.secondaryBackgroundColor,
+      ),
       body: Container(
         child: Column(
           children: [
@@ -81,7 +84,10 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                     alignment: Alignment(0, 0.8),
                     child: Text(
                       '点击下方头像框预览',
-                      style: TextUtil.base.w400.customColor(WpyTheme.of(context).get(WpyColorKey.oldHintColor)).sp(16),
+                      style: TextUtil.base.w400
+                          .customColor(WpyTheme.of(context)
+                              .get(WpyColorKey.oldHintColor))
+                          .sp(16),
                     ),
                   ),
                 ],
@@ -228,7 +234,7 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                           child: Center(
                             child: Text(
                               '立即装扮',
-                              style: TextUtil.base.reverse(context).w500.sp(16),
+                              style: TextUtil.base.bright(context).w500.sp(16),
                             ),
                           ),
                         ),
@@ -259,7 +265,10 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
         boxShadow: [
           choose == true
               ? BoxShadow(
-                  color: WpyTheme.of(context).get(WpyColorKey.avatarChosenColor), blurRadius: 8, spreadRadius: 5)
+                  color:
+                      WpyTheme.of(context).get(WpyColorKey.avatarChosenColor),
+                  blurRadius: 8,
+                  spreadRadius: 5)
               : BoxShadow(
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor),

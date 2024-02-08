@@ -119,15 +119,19 @@ class _TableCalenderState extends State<_TableCalender>
 
     final calenderStyle = CalendarStyle(
       outsideDaysVisible: true,
-      defaultTextStyle: TextUtil.base.PingFangSC.w400.label(context).sp(16),
+      defaultTextStyle: TextUtil.base.PingFangSC.w400.primary(context).sp(16),
       outsideTextStyle: TextStyle(
         fontSize: 16.sp,
-        color: Theme.of(context).calenderOutsideText,
+        color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+      ),
+      disabledTextStyle: TextStyle(
+        fontSize: 12.sp,
+        color: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
       ),
       selectedDecoration: BoxDecoration(
         color: WpyTheme.of(context)
             .get(WpyColorKey.primaryActionColor)
-            .withOpacity(0.1),
+            .withOpacity(0.5),
         shape: BoxShape.circle,
       ),
       selectedTextStyle:
@@ -141,7 +145,7 @@ class _TableCalenderState extends State<_TableCalender>
       ),
       todayTextStyle: TextStyle(
         fontSize: 16.sp,
-        color: Theme.of(context).calenderTodayText,
+        color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
       ),
     );
 

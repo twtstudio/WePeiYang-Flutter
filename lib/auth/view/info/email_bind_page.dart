@@ -31,7 +31,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
   }
 
   Widget _detail(BuildContext context) {
-    var hintStyle = TextUtil.base.regular.sp(13).oldHintWhite(context);
+    var hintStyle = TextUtil.base.regular.sp(13).oldHint(context);
     if (CommonPreferences.email.value != "")
       return Column(children: [
         SizedBox(height: 60),

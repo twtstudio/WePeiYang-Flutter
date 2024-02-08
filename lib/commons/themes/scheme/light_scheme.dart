@@ -9,6 +9,7 @@ class LightScheme extends WpyThemeData {
             themeId: "builtin_light",
             name: "Light Theme",
             description: "Built-in Light Theme",
+            brightness: Brightness.light,
           ),
           data: WpyThemeDetail(
             lightSchemeDetail,
@@ -24,6 +25,7 @@ final Map<WpyColorKey, Color> lightSchemeDetail = {
   WpyColorKey.reverseBackgroundColor: Colors.black,
 
   WpyColorKey.reverseTextColor: Colors.white,
+  WpyColorKey.brightTextColor: Colors.white,
   WpyColorKey.basicTextColor: Colors.black,
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 145, 145, 145),
   WpyColorKey.labelTextColor: Color(0xFF2A2A2A),

@@ -291,8 +291,11 @@ class _PostDetailPageState extends State<PostDetailPage>
         launchKey.currentState?.send(false);
         setState(() {});
       },
-      child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
-          width: 20),
+      child: SvgPicture.asset(
+        'assets/svg_pics/lake_butt_icons/send.svg',
+        width: 20,
+        color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+      ),
     );
     if (status == DetailPageStatus.loading) {
       body = ListView(
@@ -331,11 +334,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间正序',
                           style: order.value == 1
-                              ? TextUtil.base
-                                  .label(context)
-                                  .w700
-                                  .sp(14)
-                                  .primaryAction(context)
+                              ? TextUtil.base.w700.sp(14).primaryAction(context)
                               : TextUtil.base.label(context).w500.sp(14)),
                     ),
                     const SizedBox(width: 15),
@@ -345,11 +344,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                       },
                       child: Text('时间倒序',
                           style: order.value == 0
-                              ? TextUtil.base
-                                  .label(context)
-                                  .w700
-                                  .sp(14)
-                                  .primaryAction(context)
+                              ? TextUtil.base.w700.sp(14).primaryAction(context)
                               : TextUtil.base.label(context).w500.sp(14)),
                     ),
                     Spacer(),
@@ -473,6 +468,15 @@ class _PostDetailPageState extends State<PostDetailPage>
                                               .get(WpyColorKey.oldHintColor),
                                           hoverColor: WpyTheme.of(context).get(
                                               WpyColorKey.oldSwitchBarColor),
+                                          checkColor: WpyTheme.of(context).get(
+                                              WpyColorKey.reverseTextColor),
+                                          side: MaterialStateBorderSide
+                                              .resolveWith((_) => BorderSide(
+                                                    color: WpyTheme.of(context)
+                                                        .get(WpyColorKey
+                                                            .infoTextColor),
+                                                    width: 2,
+                                                  )),
                                           value: screenshotList.list
                                               .contains(data.id),
                                           onChanged: (value) {
@@ -492,9 +496,10 @@ class _PostDetailPageState extends State<PostDetailPage>
                     });
 
                 return SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    child: _commentBody);
+                  physics: NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  child: _commentBody,
+                );
               },
             );
           }
@@ -596,6 +601,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                   'assets/images/lake_butt_icons/image.png',
                                                   width: 24,
                                                   height: 24,
+                                                  color: WpyTheme.of(context)
+                                                      .get(WpyColorKey
+                                                          .basicTextColor),
                                                 ),
                                                 onPressed: () =>
                                                     imageSelectionKey
@@ -608,6 +616,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                   width: 24,
                                                   height: 24,
                                                   fit: BoxFit.contain,
+                                                  color: WpyTheme.of(context)
+                                                      .get(WpyColorKey
+                                                          .basicTextColor),
                                                 ),
                                                 onPressed: () =>
                                                     imageSelectionKey
@@ -619,6 +630,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                 width: 24,
                                                 height: 24,
                                                 fit: BoxFit.contain,
+                                                color: WpyTheme.of(context).get(
+                                                    WpyColorKey.basicTextColor),
                                               ),
                                               onPressed: () => launchKey
                                                   .currentState
@@ -629,6 +642,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                 width: 24,
                                                 height: 24,
                                                 fit: BoxFit.fitWidth,
+                                                color: WpyTheme.of(context).get(
+                                                    WpyColorKey.basicTextColor),
                                               ),
                                               onPressed: () {
                                                 if (launchKey
@@ -735,138 +750,145 @@ class _PostDetailPageState extends State<PostDetailPage>
           showCupertinoModalPopup(
             context: context,
             builder: (context) {
-              return CupertinoActionSheet(
-                actions: [
-                  // 拉黑按钮
-                  if (Platform.isIOS && _showBlockButton)
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness: WpyTheme.of(context).brightness,
+                ),
+                child: CupertinoActionSheet(
+                  actions: [
+                    // 拉黑按钮
+                    if (Platform.isIOS && _showBlockButton)
+                      // 分享按钮
+                      CupertinoActionSheetAction(
+                        onPressed: () {
+                          ToastProvider.success('拉黑用户成功');
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '拉黑',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
+                      ),
                     // 分享按钮
                     CupertinoActionSheetAction(
                       onPressed: () {
-                        ToastProvider.success('拉黑用户成功');
+                        if (!_refreshController.isLoading &&
+                            !_refreshController.isRefresh) {
+                          String weCo =
+                              '我在微北洋发现了个有趣的问题【${widget.post.title}】\n#MP${widget.post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.post.id}';
+                          ClipboardData data = ClipboardData(text: weCo);
+                          Clipboard.setData(data);
+                          CommonPreferences.feedbackLastWeCo.value =
+                              widget.post.id.toString();
+                          ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
+                          FeedbackService.postShare(
+                              id: widget.post.id.toString(),
+                              type: 0,
+                              onSuccess: () {},
+                              onFailure: () {});
+                        }
                         Navigator.pop(context);
                       },
                       child: Text(
-                        '拉黑',
+                        '分享',
                         style: TextUtil.base.normal.w400.NotoSansSC
                             .primary(context)
                             .sp(16),
                       ),
                     ),
-                  // 分享按钮
-                  CupertinoActionSheetAction(
-                    onPressed: () {
-                      if (!_refreshController.isLoading &&
-                          !_refreshController.isRefresh) {
-                        String weCo =
-                            '我在微北洋发现了个有趣的问题【${widget.post.title}】\n#MP${widget.post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.post.id}';
-                        ClipboardData data = ClipboardData(text: weCo);
-                        Clipboard.setData(data);
-                        CommonPreferences.feedbackLastWeCo.value =
-                            widget.post.id.toString();
-                        ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
-                        FeedbackService.postShare(
-                            id: widget.post.id.toString(),
-                            type: 0,
-                            onSuccess: () {},
-                            onFailure: () {});
-                      }
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      '分享',
-                      style: TextUtil.base.normal.w400.NotoSansSC
-                          .primary(context)
-                          .sp(16),
-                    ),
-                  ),
-                  CupertinoActionSheetAction(
-                    onPressed: () async {
-                      await takeScreenshot(screenshotController,
-                          "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      '截图分享',
-                      style: TextUtil.base.normal.w400.NotoSansSC
-                          .primary(context)
-                          .sp(16),
-                    ),
-                  ),
-                  CupertinoActionSheetAction(
-                    onPressed: () async {
-                      screenshotSelecting.value = true;
-                      ToastProvider.running("点击右上角保存或取消");
-                      Navigator.pop(context);
-                    },
-                    child: Text(
-                      '选择评论截图',
-                      style: TextUtil.base.normal.w400.NotoSansSC
-                          .primary(context)
-                          .sp(16),
-                    ),
-                  ),
-                  if (widget.post.isOwner == false)
                     CupertinoActionSheetAction(
-                        onPressed: () {
-                          Navigator.pushNamed(context, FeedbackRouter.report,
-                              arguments: ReportPageArgs(widget.post.id, true));
-                        },
-                        child: Text(
-                          '举报',
-                          style: TextUtil.base.normal.w400.NotoSansSC
-                              .primary(context)
-                              .sp(16),
-                        ))
-                  else
+                      onPressed: () async {
+                        await takeScreenshot(screenshotController,
+                            "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '截图分享',
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
+                      ),
+                    ),
                     CupertinoActionSheetAction(
-                        onPressed: () async {
-                          bool? confirm = await _showDeleteConfirmDialog('删除');
-                          if (confirm ?? false) {
-                            FeedbackService.deletePost(
-                              id: widget.post.id,
-                              onSuccess: () {
-                                final lake = context.read<LakeModel>();
-                                lake
-                                    .lakeAreas[
-                                        lake.tabList[lake.currentTab].id]!
-                                    .refreshController
-                                    .requestRefresh();
-                                ToastProvider.success(
-                                    S.current.feedback_delete_success);
-                                Navigator.of(context).popAndPushNamed(
-                                    FeedbackRouter.home,
-                                    arguments: 2);
-                              },
-                              onFailure: (e) {
-                                ToastProvider.error(e.error.toString());
-                              },
-                            );
-                          }
-                        },
-                        child: Text(
-                          '删除',
-                          style: TextUtil.base.normal.w400.NotoSansSC
-                              .primary(context)
-                              .sp(16),
-                        )),
-                  CupertinoActionSheetAction(
+                      onPressed: () async {
+                        screenshotSelecting.value = true;
+                        ToastProvider.running("点击右上角保存或取消");
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        '选择评论截图',
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
+                      ),
+                    ),
+                    if (widget.post.isOwner == false)
+                      CupertinoActionSheetAction(
+                          onPressed: () {
+                            Navigator.pushNamed(context, FeedbackRouter.report,
+                                arguments:
+                                    ReportPageArgs(widget.post.id, true));
+                          },
+                          child: Text(
+                            '举报',
+                            style: TextUtil.base.normal.w400.NotoSansSC
+                                .primary(context)
+                                .sp(16),
+                          ))
+                    else
+                      CupertinoActionSheetAction(
+                          onPressed: () async {
+                            bool? confirm =
+                                await _showDeleteConfirmDialog('删除');
+                            if (confirm ?? false) {
+                              FeedbackService.deletePost(
+                                id: widget.post.id,
+                                onSuccess: () {
+                                  final lake = context.read<LakeModel>();
+                                  lake
+                                      .lakeAreas[
+                                          lake.tabList[lake.currentTab].id]!
+                                      .refreshController
+                                      .requestRefresh();
+                                  ToastProvider.success(
+                                      S.current.feedback_delete_success);
+                                  Navigator.of(context).popAndPushNamed(
+                                      FeedbackRouter.home,
+                                      arguments: 2);
+                                },
+                                onFailure: (e) {
+                                  ToastProvider.error(e.error.toString());
+                                },
+                              );
+                            }
+                          },
+                          child: Text(
+                            '删除',
+                            style: TextUtil.base.normal.w400.NotoSansSC
+                                .primary(context)
+                                .sp(16),
+                          )),
+                    CupertinoActionSheetAction(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        '收藏',
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
+                      ),
+                    ),
+                  ],
+                  cancelButton: CupertinoActionSheetAction(
+                    // 取消按钮
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      '收藏',
+                      '取消',
                       style: TextUtil.base.normal.w400.NotoSansSC
                           .primary(context)
                           .sp(16),
                     ),
-                  ),
-                ],
-                cancelButton: CupertinoActionSheetAction(
-                  // 取消按钮
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    '取消',
-                    style: TextUtil.base.normal.w400.NotoSansSC
-                        .primary(context)
-                        .sp(16),
                   ),
                 ),
               );
@@ -1091,6 +1113,9 @@ class CommentInputFieldState extends State<CommentInputField> {
           contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
           fillColor:
               WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          hintStyle: TextStyle(
+            color: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
+          ),
           filled: true,
           isDense: true,
         ),
@@ -1104,7 +1129,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     });
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(8),
       child: inputField,
     );
   }

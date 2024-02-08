@@ -107,7 +107,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                         LevelUtil(
                           width: 24,
                           height: 12,
-                          style: TextUtil.base.reverse(context).bold.sp(7),
+                          style: TextUtil.base.bright(context).bold.sp(7),
                           level: post.level.toString(),
                         ),
                       ],
@@ -192,6 +192,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
+              color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
               width: 11.67.w),
           SizedBox(width: 3.w),
           Text(
@@ -369,7 +370,9 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
-                            color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor), width: 1.h))),
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.lightBorderColor),
+                            width: 1.h))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -563,7 +566,9 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     end: Alignment(0, 1),
                                     colors: [
                                       Colors.transparent,
-                                      WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor)
+                                      WpyTheme.of(context)
+                                          .get(WpyColorKey
+                                              .reverseBackgroundColor)
                                           .withOpacity(0.54),
                                     ],
                                   ),

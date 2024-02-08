@@ -17,7 +17,7 @@ class LanguageSettingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHint(context);
     final mainTextStyle = TextUtil.base.regular.sp(18).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(

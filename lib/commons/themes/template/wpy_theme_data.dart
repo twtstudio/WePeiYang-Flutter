@@ -30,6 +30,7 @@ class WpyThemeMetaData {
   final DateTime lastUpdatedDate;
   final String version;
   final WpyThemeType themeType;
+  final Brightness brightness;
 
   WpyThemeMetaData({
     required this.themeId,
@@ -40,6 +41,7 @@ class WpyThemeMetaData {
     required this.lastUpdatedDate,
     required this.version,
     required this.themeType,
+    required this.brightness,
   });
 
   factory WpyThemeMetaData.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,8 @@ class WpyThemeMetaData {
       lastUpdatedDate: DateTime.parse(json['lastUpdatedDate']),
       version: json['version'],
       themeType: WpyThemeType.fromJson(json['themeType']),
+      brightness:
+          json['brightness'] == "light" ? Brightness.light : Brightness.dark,
     );
   }
 }
@@ -117,6 +121,7 @@ enum WpyColorKey {
   secondaryBackgroundColor,
   reverseBackgroundColor,
   reverseTextColor,
+  brightTextColor,
   basicTextColor,
   secondaryTextColor,
   labelTextColor,

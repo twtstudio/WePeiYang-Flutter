@@ -65,14 +65,14 @@ class _WeekDisplayWidget extends StatelessWidget {
           width: _cardWidth,
           decoration: BoxDecoration(
               color: WpyTheme.of(context)
-                  .get(WpyColorKey.primaryBackgroundColor)
+                  .get(WpyColorKey.brightTextColor)
                   .withOpacity(deep ? 1 : 0.25),
               borderRadius: BorderRadius.circular(5.r)),
           child: Center(
             child: Text(date,
                 style: TextUtil.base.Swis.bold.sp(10).customColor(deep
                     ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
-                    : WpyTheme.of(context).get(WpyColorKey.reverseTextColor))),
+                    : WpyTheme.of(context).get(WpyColorKey.brightTextColor))),
           ),
         );
       });
@@ -178,13 +178,13 @@ class _CourseDisplayWidget extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor)
+                    .get(WpyColorKey.brightTextColor)
                     .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
               child: Text("LUNCH BREAK",
-                  style: TextUtil.base.w900.reverse(context).sp(10)),
+                  style: TextUtil.base.w900.bright(context).sp(10)),
             ),
           ),
           Positioned(
@@ -196,13 +196,13 @@ class _CourseDisplayWidget extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor)
+                    .get(WpyColorKey.brightTextColor)
                     .withOpacity(0.2),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               margin: EdgeInsets.symmetric(vertical: 5.h),
               child: Text("DINNER BREAK",
-                  style: TextUtil.base.w900.reverse(context).sp(10)),
+                  style: TextUtil.base.w900.bright(context).sp(10)),
             ),
           ),
         ],

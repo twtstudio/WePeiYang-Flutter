@@ -209,7 +209,7 @@ class _PersonPageState extends State<PersonPage> {
                 level: level ?? '',
                 width: 34,
                 height: 17,
-                style: TextUtil.base.reverse(context).bold.sp(9),
+                style: TextUtil.base.bright(context).bold.sp(9),
               ),
             ],
           )

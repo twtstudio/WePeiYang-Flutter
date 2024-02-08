@@ -215,6 +215,8 @@ class TagShowWidget extends StatelessWidget {
                           : type == 1
                               ? "assets/svg_pics/lake_butt_icons/flag.svg"
                               : "assets/svg_pics/lake_butt_icons/hashtag.svg",
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryActionColor),
                     ),
                   ),
                   SizedBox(width: type == 0 ? 0 : 2),

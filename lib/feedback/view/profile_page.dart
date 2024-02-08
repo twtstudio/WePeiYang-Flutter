@@ -132,8 +132,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Icon(
                       Icons.email_outlined,
                       size: 28,
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.reverseTextColor),
+                      color:
+                          WpyTheme.of(context).get(WpyColorKey.brightTextColor),
                     ),
                   ),
                   SizedBox(width: 15),
@@ -145,8 +145,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       'assets/images/setting.png',
                       width: 24,
                       height: 24,
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.reverseTextColor),
+                      color:
+                          WpyTheme.of(context).get(WpyColorKey.brightTextColor),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -171,14 +171,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextUtil.base.ProductSans
-                                  .reverse(context)
+                                  .bright(context)
                                   .w700
                                   .sp(20))),
                       SizedBox(width: 10.w),
                       LevelUtil(
                         width: 44,
                         height: 20,
-                        style: TextUtil.base.reverse(context).w100.sp(12),
+                        style: TextUtil.base.bright(context).w100.sp(12),
                         level: CommonPreferences.level.value.toString(),
                       ),
                       SizedBox(width: 5.w),
@@ -196,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
                             color: WpyTheme.of(context)
-                                .get(WpyColorKey.reverseTextColor),
+                                .get(WpyColorKey.brightTextColor),
                           ),
                         ),
                       ),
@@ -414,7 +414,9 @@ class CustomCard extends StatelessWidget {
             BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 8,
-              color: WpyTheme.of(context).get(WpyColorKey.basicTextColor).withOpacity(0.1),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.basicTextColor)
+                  .withOpacity(0.1),
             ),
           ],
         ),

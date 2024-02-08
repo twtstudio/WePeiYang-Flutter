@@ -115,7 +115,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.reverseTextColor),
+            color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
           ),
         ),
       ),
@@ -128,7 +128,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 40.w,
       title: Text(
           'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-          style: TextUtil.base.reverse(context).w900.sp(18)),
+          style: TextUtil.base.bright(context).w900.sp(18)),
       titleSpacing: 0,
       actions: [
         WButton(

@@ -75,7 +75,7 @@ extension TextStyleAttr on TextStyle {
   TextStyle infoText(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
 
-  TextStyle oldHintWhite(context) =>
+  TextStyle oldHint(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.oldHintColor));
 
   TextStyle oldHintDarker(context) => this.copyWith(
@@ -105,6 +105,10 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle primary(context) => this.copyWith(
         color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+      );
+
+  TextStyle bright(context) => this.copyWith(
+        color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
       );
 
   TextStyle courseGradientStop(context) => this.copyWith(

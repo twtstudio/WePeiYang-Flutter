@@ -183,7 +183,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       title: Text(
           'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-          style: TextUtil.base.reverse(context).w900.sp(18)),
+          style: TextUtil.base.bright(context).w900.sp(18)),
       titleSpacing: 0,
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
@@ -201,14 +201,14 @@ class _TitleWidget extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(15.w, 0, 15.w, 5.h),
       child: Row(
         children: [
-          Text('Schedule', style: TextUtil.base.w900.reverse(context).sp(18)),
+          Text('Schedule', style: TextUtil.base.w900.bright(context).sp(18)),
           Padding(
             padding: EdgeInsets.only(left: 8.w, top: 4.h),
             child: Builder(builder: (context) {
               var currentWeek =
                   context.select<CourseProvider, int>((p) => p.currentWeek);
               return Text('WEEK $currentWeek',
-                  style: TextUtil.base.Swis.bold.sp(12).reverse(context));
+                  style: TextUtil.base.Swis.bold.sp(12).bright(context));
             }),
           ),
           Builder(builder: (context) {

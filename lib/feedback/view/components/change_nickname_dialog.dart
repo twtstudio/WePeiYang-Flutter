@@ -68,6 +68,9 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             decoration: InputDecoration(
               counterText: '',
               hintText: '请设置合理昵称捏',
+              hintStyle: TextStyle(
+                color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+              ),
               suffix: Text(
                 _commentLengthIndicator,
                 style:

@@ -82,7 +82,7 @@ class _BuildingItem extends StatelessWidget {
       height: 54.h,
       child: ColoredIcon(
         StudyroomImages.building,
-        color: WpyTheme.of(context).getPrimary,
+        color: WpyTheme.of(context).primary,
       ),
     );
 

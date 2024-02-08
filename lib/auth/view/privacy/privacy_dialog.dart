@@ -15,7 +15,8 @@ class PrivacyDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    var textColor = WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor);
+    final textStyle =
+        TextStyle(color: WpyTheme.of(context).get(WpyColorKey.oldActionColor));
     return WillPopScope(
       onWillPop: () async => false,
       child: Container(
@@ -25,22 +26,46 @@ class PrivacyDialog extends Dialog {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color:  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+            color:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           children: [
             Expanded(
               child: DefaultTextStyle(
                 textAlign: TextAlign.start,
-                style: TextUtil.base.regular.sp(13).customColor(textColor),
-                child: Markdown(
-                  controller: ScrollController(),
-                  selectable: true,
-                  data: result,
+                style: TextUtil.base.regular.sp(13).primary(context),
+                child: Theme(
+                  data: ThemeData(
+                    textTheme: TextTheme(
+                      titleLarge: textStyle,
+                      titleMedium: textStyle,
+                      titleSmall: textStyle,
+                      bodyMedium: textStyle,
+                      bodyLarge: textStyle,
+                      bodySmall: textStyle,
+                      labelLarge: textStyle,
+                      labelMedium: textStyle,
+                      labelSmall: textStyle,
+                      headlineLarge: textStyle,
+                      headlineMedium: textStyle,
+                      headlineSmall: textStyle,
+                      displayLarge: textStyle,
+                      displayMedium: textStyle,
+                      displaySmall: textStyle,
+                    ),
+                  ),
+                  child: Markdown(
+                    controller: ScrollController(),
+                    selectable: true,
+                    data: result,
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 13),
-            Divider(height: 1, color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
+            Divider(
+                height: 1,
+                color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
             _detail(context),
           ],
         ),
@@ -56,9 +81,7 @@ class PrivacyDialog extends Dialog {
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
           child: Text('确定',
-              style: TextUtil.base.bold.noLine
-                  .sp(16)
-                  .oldThirdAction(context)),
+              style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
         ),
       );
     } else {
@@ -73,7 +96,8 @@ class PrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝', style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
+              child: Text('拒绝',
+                  style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
             ),
           ),
           WButton(
@@ -85,9 +109,8 @@ class PrivacyDialog extends Dialog {
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
               child: Text('同意',
-                  style: TextUtil.base.bold.noLine
-                      .sp(16)
-                      .oldThirdAction(context)),
+                  style:
+                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],

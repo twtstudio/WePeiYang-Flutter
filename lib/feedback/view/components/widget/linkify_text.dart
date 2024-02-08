@@ -28,25 +28,28 @@ class _LinkTextState extends State<LinkText> {
 
   @override
   Widget build(BuildContext context) {
-    return LinkifyText(widget.text,
-        maxLines: widget.maxLine,
-        linkTypes: [LinkType.url, LinkType.hashTag],
-        overflow: TextOverflow.ellipsis,
-        textStyle: widget.style.NotoSansSC.w400.sp(16),
-        linkStyle: widget.style.link(context).w500.sp(16), onTap: (link) async {
-      // 粗暴地解决了，但是肯定不是个长久之计
-      if (link.value!.startsWith('#MP') &&
-          RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
-        checkPostId(link.value!.substring(3));
-      } else if (link.type == LinkType.url) {
-        var url = link.value!.startsWith('http')
-            ? link.value!
-            : 'https://${link.value}';
-        checkUrl(url);
-      } else {
-        ToastProvider.error('无效的帖子编号！');
-      }
-    });
+    return LinkifyText(
+      widget.text,
+      maxLines: widget.maxLine,
+      linkTypes: [LinkType.url, LinkType.hashTag],
+      overflow: TextOverflow.ellipsis,
+      textStyle: widget.style.NotoSansSC.w400.sp(16),
+      linkStyle: widget.style.link(context).w500.sp(16),
+      onTap: (link) async {
+        // 粗暴地解决了，但是肯定不是个长久之计
+        if (link.value!.startsWith('#MP') &&
+            RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
+          checkPostId(link.value!.substring(3));
+        } else if (link.type == LinkType.url) {
+          var url = link.value!.startsWith('http')
+              ? link.value!
+              : 'https://${link.value}';
+          checkUrl(url);
+        } else {
+          ToastProvider.error('无效的帖子编号！');
+        }
+      },
+    );
   }
 
   checkPostId(String id) {
@@ -82,7 +85,12 @@ class _LinkTextState extends State<LinkText> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(' 你即将离开微北洋，去往：'),
+                    Text(
+                      ' 你即将离开微北洋，去往：',
+                      style: TextStyle(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.basicTextColor)),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(left: 6, bottom: 6),
                       child: Text(url,
@@ -96,15 +104,17 @@ class _LinkTextState extends State<LinkText> {
                                   .w600
                                   .h(1.6)),
                     ),
-                    Text(' 请注意您的账号和财产安全\n'),
+                    Text(
+                      ' 请注意您的账号和财产安全\n',
+                      style: TextStyle(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.basicTextColor)),
+                    ),
                   ],
                 ),
                 cancelText: "取消",
-                confirmTextStyle: TextUtil.base.normal
-                    .reverse(context)
-                    .NotoSansSC
-                    .sp(16)
-                    .w600,
+                confirmTextStyle:
+                    TextUtil.base.normal.bright(context).NotoSansSC.sp(16).w600,
                 confirmButtonColor: checkBili(url)
                     ? WpyTheme.of(context).get(WpyColorKey.biliPink)
                     : WpyTheme.of(context)

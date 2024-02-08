@@ -49,11 +49,11 @@ class _SettingPageState extends State<SettingPage> {
         color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
         size: 22);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
-    final hintTextStyle = TextUtil.base.bold.sp(12).oldListGroupTitle(context);
+    final hintTextStyle = TextUtil.base.bold.sp(12).oldHintDarkest(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.setting,
-            style: TextUtil.base.bold.sp(16).blue52hz(context)),
+            style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -87,6 +87,8 @@ class _SettingPageState extends State<SettingPage> {
               child: Row(
                 children: [
                   Image.asset('assets/images/modify_info_icon.png',
+                      color:
+                          WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                       width: 20.w),
                   SizedBox(width: 12.w),
                   Expanded(
@@ -208,7 +210,11 @@ class _SettingPageState extends State<SettingPage> {
                   builder: (BuildContext context) => LogoutDialog()),
               child: Row(
                 children: [
-                  Image.asset('assets/images/logout.png', width: 20.w),
+                  Image.asset(
+                    'assets/images/logout.png',
+                    width: 20.w,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                  ),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: Text(S.current.logout, style: mainTextStyle),

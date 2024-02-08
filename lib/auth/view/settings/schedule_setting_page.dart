@@ -45,7 +45,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   }
 
   Widget _getNumberOfDaysCard(BuildContext context, int index) {
-    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHint(context);
     final mainTextStyle =
         TextUtil.base.regular.sp(16.5).oldThirdAction(context);
     return InkWell(
@@ -92,11 +92,12 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
         children: [
           Container(
@@ -118,6 +119,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             elevation: 0,
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
             child: Column(

@@ -43,7 +43,7 @@ class StyClassRoomDetailPage extends StatelessWidget {
 Widget _PageTitleWidget(Room room, String areaName, BuildContext context) {
   final title = Text(
     room.name,
-    style: TextUtil.base.reverse(context).sp(20).Swis.w400,
+    style: TextUtil.base.bright(context).sp(20).Swis.w400,
   );
 
   return Row(
@@ -134,13 +134,13 @@ class _WeekDisplayWidget extends StatelessWidget {
     return Row(
       children: nextSevenDays.map((date) {
         final backgroundColor = WpyTheme.of(context)
-            .get(WpyColorKey.primaryBackgroundColor)
+            .get(WpyColorKey.brightTextColor)
             .withOpacity(now.isSameDay(date) ? 1 : 0.2);
 
         final textColor = WpyTheme.of(context).get(
           now.isSameDay(date)
               ? WpyColorKey.primaryActionColor
-              : WpyColorKey.reverseTextColor,
+              : WpyColorKey.brightTextColor,
         );
 
         return Container(
@@ -268,7 +268,9 @@ class _CourseDisplayWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6.w),
               shape: BoxShape.rectangle,
-              color: Colors.white.withOpacity(0.15),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.brightTextColor)
+                  .withOpacity(0.2),
             ),
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(horizontal: 9.w),
@@ -278,7 +280,7 @@ class _CourseDisplayWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).roomPlanItemText,
+                color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
               ),
             ),
           );
@@ -313,8 +315,8 @@ class _CourseDisplayWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.r),
             ),
             margin: EdgeInsets.symmetric(vertical: 5.h),
-            child: Text("NIGHT BREAK",
-                style: TextUtil.base.w900.reverse(context).sp(10)),
+            child: Text("DINNER BREAK",
+                style: TextUtil.base.w900.bright(context).sp(10)),
           )));
     }
 
@@ -333,7 +335,7 @@ class _CourseDisplayWidget extends StatelessWidget {
           child: list.isEmpty
               ? Text("全部空闲", style: TextUtil.base.w900.reverse(context).sp(16))
               : Text("LUNCH BREAK",
-                  style: TextUtil.base.w900.reverse(context).sp(10)),
+                  style: TextUtil.base.w900.bright(context).sp(10)),
         )));
     return list;
   }

@@ -172,6 +172,9 @@ class _SearchTagCardState extends State<SearchTagCard>
     var searchBar = TextField(
       controller: _controller,
       scrollPadding: EdgeInsets.zero,
+      style: TextStyle(
+        color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+      ),
       decoration: InputDecoration(
         icon: SvgPicture.asset(
           "assets/svg_pics/lake_butt_icons/hashtag.svg",
@@ -181,8 +184,7 @@ class _SearchTagCardState extends State<SearchTagCard>
               : WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
         ),
         labelStyle: TextUtil.base.label(context).NotoSansSC.w400.sp(16),
-        fillColor:
-            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        fillColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         hintStyle: TextUtil.base.secondaryInfo(context).NotoSansSC.w400.sp(16),
         hintText: '试着添加话题吧',
         contentPadding: const EdgeInsets.all(0),

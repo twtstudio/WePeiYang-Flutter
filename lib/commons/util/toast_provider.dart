@@ -90,8 +90,8 @@ class ToastProvider with AsyncTimer {
               Builder(
                   builder: (context) => SvgPicture.asset(
                         'assets/svg_pics/lake_butt_icons/error_background.svg',
-                        color:
-                            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.brightTextColor),
                         width: 15,
                       )),
               SizedBox(width: 10),
@@ -100,7 +100,7 @@ class ToastProvider with AsyncTimer {
                 child: Text(
                   msg,
                   style:
-                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                      TextUtil.base.NotoSansSC.regular.sp(14).bright(context),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -142,7 +142,7 @@ class ToastProvider with AsyncTimer {
                 child: Text(
                   msg,
                   style:
-                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                      TextUtil.base.NotoSansSC.regular.sp(14).bright(context),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -184,7 +184,7 @@ class ToastProvider with AsyncTimer {
                 child: Text(
                   msg,
                   style:
-                      TextUtil.base.NotoSansSC.regular.sp(14).reverse(context),
+                      TextUtil.base.NotoSansSC.regular.sp(14).bright(context),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

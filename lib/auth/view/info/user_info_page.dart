@@ -22,12 +22,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
     final arrow = Icon(Icons.arrow_forward_ios,
         color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
         size: 22);
-    final hintTextStyle = TextUtil.base.w600.sp(12).oldHintWhite(context);
+    final hintTextStyle = TextUtil.base.w600.sp(12).oldHint(context);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('个人信息更改', style: TextUtil.base.bold.sp(16).blue52hz(context)),
+        title: Text('个人信息更改',
+            style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -36,7 +36,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
           padding: EdgeInsets.only(left: 15.w),
           child: WButton(
             child: Icon(Icons.arrow_back,
-                color: WpyTheme.of(context).get(WpyColorKey.blue52hz),
+                color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                 size: 32),
             onPressed: () => Navigator.pop(context),
           ),

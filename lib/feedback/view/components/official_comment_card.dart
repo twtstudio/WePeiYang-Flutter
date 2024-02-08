@@ -361,9 +361,12 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                   padding: const EdgeInsets.all(0),
                   labelPadding:
                       EdgeInsets.symmetric(horizontal: 15, vertical: 0),
-                  backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
+                  backgroundColor:
+                      WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                   label: Text('查看回复详情 >',
-                      style: TextUtil.base.ProductSans.w400.sp(14).infoText(context)),
+                      style: TextUtil.base.ProductSans.w400
+                          .sp(14)
+                          .infoText(context)),
                 ),
               ),
             )
@@ -440,7 +443,9 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
           boxShadow: [
             BoxShadow(
                 blurRadius: 5,
-                color: WpyTheme.of(context).get(WpyColorKey.backgroundMaskColor),
+                color: WpyTheme.of(context)
+                    .get(WpyColorKey.basicTextColor)
+                    .withOpacity(0.2),
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],

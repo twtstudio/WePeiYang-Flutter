@@ -27,14 +27,15 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
   @override
   Widget build(BuildContext context) {
     final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
-    final hintTextStyle = TextUtil.base.regular.sp(12).oldHintWhite(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHint(context);
     final arrow = Icon(Icons.arrow_forward_ios,
         color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
         size: 22);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('应用设置', style: TextUtil.base.bold.sp(16).blue52hz(context)),
+        title: Text('应用设置',
+            style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:
@@ -180,10 +181,9 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   ),
                 ),
                 Switch(
-                  value: !CommonPreferences.useDarkMode.value,
+                  value: CommonPreferences.useDarkMode.value,
                   onChanged: (value) {
-                    setState(
-                        () => CommonPreferences.useDarkMode.value = !value);
+                    setState(() => CommonPreferences.useDarkMode.value = value);
                     globalTheme.value =
                         value ? WpyThemeData.dark() : WpyThemeData.light();
                   },

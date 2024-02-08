@@ -18,12 +18,19 @@ extension IconTypeExt on IconType {
         Image.asset('assets/images/lake_butt_icons/favorite_filled.png')
       ][index];
 
-  Image get iconOutlined => [
-        Image.asset('assets/images/lake_butt_icons/like_outlined.png'),
-        Image.asset('assets/images/lake_butt_icons/like_outlined.png'),
-        Image.asset('assets/images/lake_butt_icons/favorite_outlined.png'),
-        Image.asset('assets/images/lake_butt_icons/favorite_outlined.png')
-      ][index];
+  Image iconOutlined(context) {
+    final iconColor = WpyTheme.of(context).get(WpyColorKey.infoTextColor);
+    return [
+      Image.asset('assets/images/lake_butt_icons/like_outlined.png',
+          color: iconColor),
+      Image.asset('assets/images/lake_butt_icons/like_outlined.png',
+          color: iconColor),
+      Image.asset('assets/images/lake_butt_icons/favorite_outlined.png',
+          color: iconColor),
+      Image.asset('assets/images/lake_butt_icons/favorite_outlined.png',
+          color: iconColor)
+    ][index];
+  }
 
   double get size => [15.w, 22.w, 15.w, 22.w][index];
 
@@ -110,7 +117,7 @@ class _IconWidgetState extends State<IconWidget> {
               if (isLiked) {
                 return widget.iconType.iconFilled;
               } else {
-                return widget.iconType.iconOutlined;
+                return widget.iconType.iconOutlined(context);
               }
             },
             onTap: (value) async {
@@ -188,7 +195,8 @@ class DislikeWidget extends StatelessWidget {
                   'assets/images/lake_butt_icons/dislike_filled.png');
             } else {
               return Image.asset(
-                  'assets/images/lake_butt_icons/dislike_outlined.png');
+                  'assets/images/lake_butt_icons/dislike_outlined.png',
+                  color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
             }
           },
           onTap: (value) async {
@@ -198,8 +206,8 @@ class DislikeWidget extends StatelessWidget {
           isLiked: value,
           // end的值是Colors.blue[200]
           circleColor: CircleColor(
-              start: WpyTheme.of(context)
-                  .get(WpyColorKey.iconAnimationStartColor),
+              start:
+                  WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
               end: WpyTheme.of(context).get(WpyColorKey.dislikePrimary)),
           bubblesColor: BubblesColor(
             dotPrimaryColor:

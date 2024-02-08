@@ -110,7 +110,11 @@ class LakeDialogWidget extends Dialog {
                 onPressed: cancelFun,
                 child: Text(cancelText,
                     style: cancelTextStyle ??
-                        TextUtil.base.normal.infoText(context).NotoSansSC.sp(16).w600),
+                        TextUtil.base.normal
+                            .infoText(context)
+                            .NotoSansSC
+                            .sp(16)
+                            .w600),
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(3),
                   overlayColor:
@@ -174,7 +178,7 @@ class LakeDialogWidget extends Dialog {
                     confirmText,
                     style: confirmTextStyle ??
                         TextUtil.base.normal
-                            .reverse(context)
+                            .bright(context)
                             .NotoSansSC
                             .sp(16)
                             .w400,

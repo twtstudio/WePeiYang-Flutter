@@ -116,6 +116,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
             constraints: BoxConstraints(maxHeight: 55),
             child: TextField(
               textInputAction: TextInputAction.next,
+              style: TextStyle(
+                color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+              ),
               focusNode: _accountFocus,
               cursorColor:
                   WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
@@ -123,7 +126,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   hintText: S.current.tju_account,
                   hintStyle: hintStyle,
                   filled: true,
-                  fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  fillColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                   isCollapsed: true,
                   contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -144,8 +148,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
               builder: (context, bool value, _) {
                 return Theme(
                   data: Theme.of(context).copyWith(
-                      primaryColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldActionColor)),
+                      primaryColor:
+                          WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     focusNode: _passwordFocus,
@@ -155,7 +159,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       hintText: S.current.password,
                       hintStyle: hintStyle,
                       filled: true,
-                      fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                      fillColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.fromLTRB(15, 18, 0, 18),
                       border: OutlineInputBorder(
@@ -223,7 +228,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   checkNetWork(true);
                 },
                 child: Text('classes.tju.edu.cn',
-                    style: TextUtil.base.regular.label(context).underLine.sp(10)),
+                    style:
+                        TextUtil.base.regular.label(context).underLine.sp(10)),
               ),
             ],
           ),
@@ -250,12 +256,13 @@ class _TjuBindPageState extends State<TjuBindPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
           systemOverlayStyle: SystemUiOverlayStyle.dark),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -284,13 +291,26 @@ class _TjuBindPageState extends State<TjuBindPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/images/tju_work.png',
-                    height: 50, width: 50),
+                Image.asset(
+                  'assets/images/tju_work.png',
+                  height: 50,
+                  width: 50,
+                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                ),
                 SizedBox(width: 20),
-                Image.asset('assets/images/bind.png', height: 25, width: 25),
+                Image.asset(
+                  'assets/images/bind.png',
+                  height: 25,
+                  width: 25,
+                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                ),
                 SizedBox(width: 20),
-                Image.asset('assets/images/twt_round.png',
-                    height: 50, width: 50),
+                Image.asset(
+                  'assets/images/twt_round.png',
+                  height: 50,
+                  width: 50,
+                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                ),
               ],
             ),
             _detail(context)

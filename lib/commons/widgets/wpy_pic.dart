@@ -66,14 +66,15 @@ class _WpyPicState extends State<WpyPic> {
         placeholderBuilder: widget.withHolder ? (_) => Loading() : null,
       );
     } else {
-      return CachedNetworkImage(
+      final imageWidget = CachedNetworkImage(
         imageUrl: widget.imageUrl,
         width: widget.width,
         height: widget.height,
         fit: widget.fit,
         alignment: widget.alignment,
-        progressIndicatorBuilder:widget.withHolder ? (context, url, progress) {
-          return  Container(
+        progressIndicatorBuilder: widget.withHolder
+            ? (context, url, progress) {
+                return Container(
                   width: widget.width ?? widget.holderHeight,
                   height: widget.height ?? widget.holderHeight,
                   color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
@@ -82,10 +83,12 @@ class _WpyPicState extends State<WpyPic> {
                         width: widget.width == null ? 20 : widget.width! * 0.25,
                         height:
                             widget.width == null ? 20 : widget.width! * 0.25,
-                        child: CircularProgressIndicator(value: progress.progress)),
+                        child: CircularProgressIndicator(
+                            value: progress.progress)),
                   ),
-                ) ;
-        }: null,
+                );
+              }
+            : null,
         errorWidget: widget.withHolder
             ? (context, exception, stacktrace) {
                 Logger.reportError(exception, stacktrace);
@@ -93,7 +96,19 @@ class _WpyPicState extends State<WpyPic> {
                     style: TextUtil.base.infoText(context).w400.sp(12));
               }
             : null,
-      );}
+      );
+
+      if (WpyTheme.of(context).brightness == Brightness.dark)
+        return ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度
+            BlendMode.darken, // 使用darken混合模式来降低亮度
+          ),
+          child: imageWidget,
+        );
+      else
+        return imageWidget;
+    }
   }
 
   Widget get cachedNetwork => SizedBox(
