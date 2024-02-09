@@ -580,7 +580,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                     Text(
                                       '点击展开\n',
                                       style: TextUtil.base.w600
-                                          .reverse(context)
+                                          .bright(context)
                                           .sp(14)
                                           .h(0.6),
                                     ),
@@ -600,7 +600,7 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                                         child: Text(
                                           '长图模式',
                                           style: TextUtil.base.w300
-                                              .reverse(context)
+                                              .bright(context)
                                               .sp(12),
                                         ))
                                   ],

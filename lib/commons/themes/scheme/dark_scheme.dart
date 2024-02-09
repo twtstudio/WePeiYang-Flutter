@@ -31,8 +31,8 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.labelTextColor: Color(0xFFC1C1C1),
   WpyColorKey.unlabeledColor: Color(0xFFC5C5C5),
   WpyColorKey.cursorColor: Color.fromARGB(255, 85, 112, 188),
-  WpyColorKey.infoTextColor: Color(0xFFAAAAAA),
-  WpyColorKey.backgroundGradientEndColor: Colors.white54,
+  WpyColorKey.infoTextColor: Color(0xFFBBBBBB),
+  WpyColorKey.backgroundGradientEndColor: Color(0xF5D5D5D),
   WpyColorKey.secondaryInfoTextColor: Color(0xFF979797),
 
   WpyColorKey.primaryActionColor: Color(0xFF52729B),
@@ -86,8 +86,9 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.profileBackgroundColor: Color.fromARGB(255, 67, 70, 80),
 
   WpyColorKey.examRemain: Colors.white38,
-  WpyColorKey.courseGradientStartColor: Color.fromRGBO(0, 0, 0, 0.50),
-  WpyColorKey.courseGradientStopColor: Color.fromRGBO(79, 79, 79, 0.30),
+  WpyColorKey.courseGradientStartColor: Color.fromRGBO(209, 205, 205, 0.5),
+  WpyColorKey.courseGradientStopColor:
+      Color.fromRGBO(162, 159, 159, 0.30196078431372547),
   WpyColorKey.tagLabelColor: Color.fromRGBO(66, 66, 66, 1.0),
   WpyColorKey.gpaHintColor: Color(0xffcdcdd3),
   WpyColorKey.favorRoomColor: Color(0xFFFFBC6B),

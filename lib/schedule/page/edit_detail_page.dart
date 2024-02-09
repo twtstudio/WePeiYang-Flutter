@@ -120,7 +120,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 ),
               ),
               SizedBox(height: 25.h),
-              Text(text, style: TextUtil.base.PingFangSC.primary(context).medium.sp(15)),
+              Text(text,
+                  style:
+                      TextUtil.base.PingFangSC.primary(context).medium.sp(15)),
               SizedBox(height: 30.h),
               WbyDialogStandardTwoButton(
                 first: () {
@@ -144,7 +146,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var mainColor =WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
+    var mainColor = WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
 
     var timeFrameBuilder = Builder(
       builder: (BuildContext context) {
@@ -174,10 +176,12 @@ class _EditDetailPageState extends State<EditDetailPage> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Center(
             child: WButton(
               onPressed: () {
@@ -196,8 +200,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
           ),
           titleSpacing: 0,
           leadingWidth: 40.w,
-          title:
-              Text('课程详情', style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
+          title: Text('课程详情',
+              style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
           actions: [
             Center(
               child: Container(
@@ -212,7 +216,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
                     ),
                   ),
                   child: Text('保存',
-                      style: TextUtil.base.PingFangSC.bold.reverse(context).sp(12)),
+                      style:
+                          TextUtil.base.PingFangSC.bold.bright(context).sp(12)),
                 ),
               ),
             ),
@@ -224,8 +229,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
           children: [
             Expanded(
               child: Theme(
-                data: Theme.of(context)
-                    .copyWith(secondaryHeaderColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+                data: Theme.of(context).copyWith(
+                    secondaryHeaderColor: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor)),
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   controller: _scrollController,
@@ -306,7 +312,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
                           height: 18.r, width: 18.r),
                       SizedBox(width: 5.w),
                       Text('删除',
-                          style: TextUtil.base.PingFangSC.medium.reverse(context).sp(14)),
+                          style: TextUtil.base.PingFangSC.medium
+                              .bright(context)
+                              .sp(14)),
                     ],
                   ),
                 ),

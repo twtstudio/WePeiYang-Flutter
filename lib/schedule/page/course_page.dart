@@ -260,7 +260,7 @@ class _HoursCounterWidget extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 8.h),
               alignment: Alignment.centerLeft,
               child: Text("Total Class Hours: $totalHours",
-                  style: TextUtil.base.Swis.bold.reverse(context).sp(12))),
+                  style: TextUtil.base.Swis.bold.bright(context).sp(12))),
           Stack(
             alignment: Alignment.centerLeft,
             children: [
@@ -281,8 +281,7 @@ class _HoursCounterWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.r),
                     gradient: LinearGradient(
                       colors: [
-                        WpyTheme.of(context)
-                            .get(WpyColorKey.primaryBackgroundColor),
+                        WpyTheme.of(context).get(WpyColorKey.brightTextColor),
                         WpyTheme.of(context)
                             .get(WpyColorKey.backgroundGradientEndColor),
                       ],

@@ -307,6 +307,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                         theme: ThemeData(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
+                          brightness: WpyTheme.of(context).brightness,
                         ),
                         title: '微北洋',
                         navigatorKey: WePeiYangApp.navigatorState,

@@ -16,11 +16,11 @@ class AnimatedActiveCourse extends StatelessWidget {
 
   AnimatedActiveCourse(this._pairs, this._hide, this._warning);
 
-  _activeNameStyle(context) => TextUtil.base.reverse(context).bold.sp(11);
+  _activeNameStyle(context) => TextUtil.base.bright(context).bold.sp(11);
 
-  _activeTeacherStyle(context) => TextUtil.base.reverse(context).sp(8);
+  _activeTeacherStyle(context) => TextUtil.base.bright(context).sp(8);
 
-  _activeClassroomStyle(context) => TextUtil.base.reverse(context).sp(11);
+  _activeClassroomStyle(context) => TextUtil.base.bright(context).sp(11);
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +65,9 @@ class AnimatedActiveCourse extends StatelessWidget {
           onTap: () => showCourseDialog(context, _pairs),
           borderRadius: BorderRadius.circular(5),
           splashFactory: InkRipple.splashFactory,
-          splashColor:
-              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          splashColor: WpyTheme.of(context)
+              .get(WpyColorKey.brightTextColor)
+              .withOpacity(0.3),
           child: _hide
               ? Container()
               : Padding(

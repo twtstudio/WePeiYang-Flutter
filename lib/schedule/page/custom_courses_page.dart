@@ -25,7 +25,8 @@ class CustomCoursesPage extends StatelessWidget {
           fit: BoxFit.cover,
         ),
         Scaffold(
-          backgroundColor: Colors.transparent,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,

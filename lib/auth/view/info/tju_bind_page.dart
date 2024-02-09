@@ -155,6 +155,9 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     focusNode: _passwordFocus,
                     cursorColor: WpyTheme.of(context)
                         .get(WpyColorKey.defaultActionColor),
+                    style: TextStyle(
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.basicTextColor)),
                     decoration: InputDecoration(
                       hintText: S.current.password,
                       hintStyle: hintStyle,

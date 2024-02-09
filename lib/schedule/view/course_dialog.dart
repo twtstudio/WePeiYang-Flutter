@@ -25,15 +25,15 @@ class CourseDialog extends Dialog {
   final List<Pair<Course, int>> _pairs;
 
   CourseDialog(this._pairs, BuildContext context)
-      : _nameStyle = TextUtil.base.bold.reverse(context).noLine.sp(20),
-        _teacherStyle = TextUtil.base.regular.reverse(context).noLine.sp(12),
+      : _nameStyle = TextUtil.base.bold.bright(context).noLine.sp(20),
+        _teacherStyle = TextUtil.base.regular.bright(context).noLine.sp(12),
         _hintNameStyle = TextUtil.base.regular
-            .reverse(context)
+            .bright(context)
             .noLine
             .sp(10)
             .space(letterSpacing: 1),
         _hintValueStyle = TextUtil.base.Swis
-            .reverse(context)
+            .bright(context)
             .noLine
             .sp(9)
             .space(letterSpacing: 0.5);
