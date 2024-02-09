@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
@@ -395,14 +396,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               child: InkWell(
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
-                  child: Container(
-                    height: 72.r,
-                    width: 72.r,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/add_post.png"),
-                      ),
-                    ),
+                  child: ColoredIcon(
+                    'assets/images/add_post.png',
+                    width: 72.w,
+                    color: WpyTheme.of(context).primary,
                   ),
                   onTap: () {
                     if (tabList.isNotEmpty) {
@@ -505,7 +502,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
                 radius: 30,
                 highlightColor: Colors.transparent,
                 child: Chip(
-                  backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
+                  backgroundColor:
+                      WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                   label: Text(provider.departmentList[index].name,
                       style: TextUtil.base.normal
                           .label(context)
@@ -534,8 +532,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
     var _departmentSelectionContainer = Container(
       width: double.infinity,
       decoration: BoxDecoration(
-          color:
-              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(22),
               bottomRight: Radius.circular(22))),

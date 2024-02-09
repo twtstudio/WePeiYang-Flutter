@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
 class WpyTheme extends InheritedWidget {
@@ -23,6 +24,8 @@ class WpyTheme extends InheritedWidget {
 
   Color? get primary => themeData.data.primaryColor;
 
+  String get name => themeData.meta.name;
+
   Color get(WpyColorKey key) {
     return themeData.data.get(key);
   }
@@ -36,6 +39,14 @@ class WpyTheme extends InheritedWidget {
   }
 
   Brightness get brightness => themeData.meta.brightness;
+
+  static void init() {
+    final themeId = CommonPreferences.appThemeId.value;
+    final theme = WpyThemeData.themeList.firstWhere(
+        (element) => element.meta.themeId == themeId,
+        orElse: () => WpyThemeData.themeList[0]);
+    globalTheme.value = theme;
+  }
 }
 
-final globalTheme = ValueNotifier(WpyThemeData.light());
+final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);

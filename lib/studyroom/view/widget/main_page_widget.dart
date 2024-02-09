@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/studyroom_images.dart';
@@ -55,13 +57,17 @@ class MainPageStudyRoomWidget extends StatelessWidget {
           TextButton.icon(
             onPressed: () => context.read<CampusProvider>().next(),
             style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.only(left: 8.w))),
+                padding: MaterialStateProperty.all(EdgeInsets.only(left: 8.w)),
+                overlayColor: MaterialStateProperty.resolveWith((_) =>
+                    WpyTheme.of(context)
+                        .get(WpyColorKey.primaryLightestActionColor))),
             icon: Text(
               context.watch<CampusProvider>().name,
               style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
             ),
             label: SvgPicture.asset(
               StudyroomImages.direction,
+              color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               width: 10.w,
             ),
           ),

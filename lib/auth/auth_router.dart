@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 
 import 'view/message/user_mails_page.dart';
+import 'view/settings/theme_setting.dart';
 
 class AuthRouter {
   /// 登录部分
@@ -51,6 +52,7 @@ class AuthRouter {
   static String generalSetting = 'setting/general_setting';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
+  static String themeSetting = "setting/theme_setting";
 
   static String mailbox = "user/mailbox";
   static String aboutTwt = "user/about_twt";
@@ -92,5 +94,6 @@ class AuthRouter {
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),
     debug: (_) => DebugPage(),
+    themeSetting: (_) => ThemeSetting(),
   };
 }

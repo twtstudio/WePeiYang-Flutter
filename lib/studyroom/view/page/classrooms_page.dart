@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
-import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/room_card.dart';
 

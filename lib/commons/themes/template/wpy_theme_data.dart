@@ -1,6 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/scheme/dark_scheme.dart';
-import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
+import 'package:we_pei_yang_flutter/commons/themes/scheme/green_scheme.dart';
+import 'package:we_pei_yang_flutter/commons/themes/scheme/purple_scheme.dart';
+
+import '../scheme/dark_scheme.dart';
+import '../scheme/light_scheme.dart';
+import '../scheme/red_scheme.dart';
+
+class WpyThemeData {
+  final WpyThemeMetaData meta;
+  final WpyThemeDetail data;
+
+  WpyThemeData({
+    required this.meta,
+    required this.data,
+  });
+
+  static final List<WpyThemeData> themeList = [
+    LightScheme(),
+    DarkScheme(),
+    RedScheme(),
+    PurpleScheme(),
+    OrangeScheme(),
+  ];
+
+  factory WpyThemeData.light() => LightScheme();
+
+  factory WpyThemeData.dark() => DarkScheme();
+}
 
 enum WpyThemeType {
   Official,
@@ -31,6 +57,8 @@ class WpyThemeMetaData {
   final String version;
   final WpyThemeType themeType;
   final Brightness brightness;
+  final Color representativeColor;
+  final Color hintTextColor;
 
   WpyThemeMetaData({
     required this.themeId,
@@ -42,6 +70,8 @@ class WpyThemeMetaData {
     required this.version,
     required this.themeType,
     required this.brightness,
+    required this.representativeColor,
+    this.hintTextColor = const Color(0xFFeff4fa),
   });
 
   factory WpyThemeMetaData.fromJson(Map<String, dynamic> json) {
@@ -56,28 +86,15 @@ class WpyThemeMetaData {
       themeType: WpyThemeType.fromJson(json['themeType']),
       brightness:
           json['brightness'] == "light" ? Brightness.light : Brightness.dark,
+      representativeColor: Color(int.parse(json['representativeColor'])),
     );
   }
 }
 
-extension ColorAlgorithm on Color {}
-
-class WpyThemeData {
-  final WpyThemeMetaData meta;
-  final WpyThemeDetail data;
-
-  WpyThemeData({
-    required this.meta,
-    required this.data,
-  });
-
-  factory WpyThemeData.light() => LightScheme();
-
-  factory WpyThemeData.dark() => DarkScheme();
-}
+typedef ColorMapper = Color Function(Color);
 
 class WpyThemeDetail {
-  final Map<WpyColorKey, Color> colors;
+  final Map<WpyColorKey, dynamic> colors;
   final Map<WpyColorSetKey, dynamic> gradients;
 
   static final _defaultScheme = LightScheme().data;
@@ -104,6 +121,9 @@ class WpyThemeDetail {
   Color get(WpyColorKey key) {
     final value = this.colors[key] ?? _defaultScheme.colors[key];
     assert(value != null, 'Illegal Color key: $key');
+
+    if (value is ColorMapper) return value(_defaultScheme.colors[key]!);
+
     return value!;
   }
 

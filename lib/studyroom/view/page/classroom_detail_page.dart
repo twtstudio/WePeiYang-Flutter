@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_service.dart';
-import 'package:we_pei_yang_flutter/studyroom/util/theme_util.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/base_page.dart';
 
 /// 自习室 某个教室详情页

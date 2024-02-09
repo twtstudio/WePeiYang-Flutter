@@ -446,9 +446,11 @@ class _LoadingPageWidgetState extends State<LoadingPageWidget>
                     end: Alignment.bottomCenter,
                     colors: [
                       if (isOpa)
-                        WpyTheme.of(context).get(WpyColorKey.skeletonStartAColor)
+                        WpyTheme.of(context)
+                            .get(WpyColorKey.skeletonStartAColor)
                       else
-                        WpyTheme.of(context).get(WpyColorKey.skeletonStartBColor),
+                        WpyTheme.of(context)
+                            .get(WpyColorKey.skeletonStartBColor),
                       if (!isOpa)
                         WpyTheme.of(context).get(WpyColorKey.skeletonEndAColor)
                       else
@@ -517,8 +519,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       heroTag: 'error_btn',
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-      foregroundColor:
-          WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
+      foregroundColor: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
       onPressed: () {
         FeedbackService.getToken(
             forceRefresh: true,
@@ -608,6 +609,8 @@ class AnnouncementBannerWidget extends StatelessWidget {
                         SvgPicture.asset(
                           "assets/svg_pics/lake_butt_icons/la_ba.svg",
                           width: 20,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryActionColor),
                         ),
                         SizedBox(width: 6),
                         SizedBox(

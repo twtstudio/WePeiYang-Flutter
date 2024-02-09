@@ -13,7 +13,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/local/animation_provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 
@@ -102,6 +101,8 @@ void main() async {
       runApp(_entry);
     }
 
+    WpyTheme.init();
+
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.transparent,
@@ -168,11 +169,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
   void initState() {
     super.initState();
 
-    print("==> use dark mode: ${CommonPreferences.useDarkMode.value}");
-
-    if (CommonPreferences.useDarkMode.value) {
-      globalTheme.value = WpyThemeData.dark();
-    }
+    print("==> use dark mode: ${CommonPreferences.appThemeId.value}");
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -297,6 +294,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
               return WpyTheme(
                 themeData: globalTheme.value,
                 child: ScreenUtilInit(
+                    key: ValueKey(1),
                     designSize: const Size(390, 844),
                     useInheritedMediaQuery: true,
                     minTextAdapt: true,

@@ -124,6 +124,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               IconButton(
                   icon: Image.asset(
                       'assets/images/lake_butt_icons/check-square.png',
+                      color:
+                          WpyTheme.of(context).get(WpyColorKey.basicTextColor),
                       width: 15.w),
                   onPressed: () {
                     showDialog(
@@ -183,7 +185,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   labelColor:
                       WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                   labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
-                  unselectedLabelColor: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                  unselectedLabelColor:
+                      WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                   unselectedLabelStyle:
                       TextUtil.base.label(context).w500.PingFangSC.sp(14),
                   indicator: CustomIndicator(
@@ -601,7 +604,8 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -963,7 +967,8 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(5),
-            color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+            color:
+                WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           ),
           child: Padding(
             padding: EdgeInsets.all(10.w),
@@ -1407,8 +1412,8 @@ class CustomIndicator extends Decoration {
             BorderSide(
               // 使用冒号初始化列表来设置默认值
               width: 2,
-              color: WpyTheme.of(context!)
-                  .get(WpyColorKey.primaryBackgroundColor),
+              color:
+                  WpyTheme.of(context!).get(WpyColorKey.primaryBackgroundColor),
             );
 
   final bool left;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -124,6 +123,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ? ColoredIcon(
                 'assets/images/home.png',
                 width: 24.h,
+                color: WpyTheme.of(context).primary,
               )
             : ColoredIcon(
                 'assets/images/home_grey.png',
@@ -144,6 +144,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ? ColoredIcon(
                 'assets/images/lake.png',
                 width: 29.h,
+                color: WpyTheme.of(context).primary,
               )
             : ColoredIcon(
                 'assets/images/lake_grey.png',
@@ -171,6 +172,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ? ColoredIcon(
                 'assets/images/my.png',
                 width: 24.h,
+                color: WpyTheme.of(context).primary,
               )
             : ColoredIcon(
                 'assets/images/my_grey.png',

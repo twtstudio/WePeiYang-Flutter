@@ -150,6 +150,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       child: Padding(
         padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
         child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
+            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
             width: 20),
       ),
     );
@@ -243,7 +244,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                           spreadRadius: 3),
                     ],
                     color: WpyTheme.of(context)
-                        .get(WpyColorKey.secondaryBackgroundColor)),
+                        .get(WpyColorKey.primaryBackgroundColor)),
                 child: Column(
                   children: [
                     Offstage(
@@ -262,6 +263,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                       'assets/images/lake_butt_icons/image.png',
                                       width: 24,
                                       height: 24,
+                                      color: WpyTheme.of(context)
+                                          .get(WpyColorKey.basicTextColor),
                                     ),
                                     onPressed: () => imageSelectionKey
                                         .currentState
@@ -277,6 +280,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                         width: 24,
                                         height: 24,
                                         fit: BoxFit.contain,
+                                        color: WpyTheme.of(context)
+                                            .get(WpyColorKey.basicTextColor),
                                       ),
                                       onPressed: () => launchKey.currentState
                                           ?.getClipboardData()),
@@ -286,6 +291,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                       width: 24,
                                       height: 24,
                                       fit: BoxFit.fitWidth,
+                                      color: WpyTheme.of(context)
+                                          .get(WpyColorKey.basicTextColor),
                                     ),
                                     onPressed: () {
                                       if (launchKey
@@ -326,9 +333,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                                   .focusNode);
                         },
                         child: Container(
-                            height: 22,
+                            // height: 22.h,
                             margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            padding: EdgeInsets.all(8),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text('友善回复，真诚沟通',
@@ -339,7 +346,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(11),
                               color: WpyTheme.of(context)
-                                  .get(WpyColorKey.primaryBackgroundColor),
+                                  .get(WpyColorKey.secondaryBackgroundColor),
                             )),
                       ),
                     ),
@@ -412,7 +419,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       leading: IconButton(
         icon: Icon(Icons.arrow_back,
-            color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor)),
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [if (widget.args.isMessage) postButton, menuButton],

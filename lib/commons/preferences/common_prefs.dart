@@ -95,7 +95,7 @@ class CommonPreferences {
   static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）
-  static final useDarkMode = PrefsBean<bool>('useDarkMode', false);
+  static final appThemeId = PrefsBean<String>('appThemeId', 'builtin_light');
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');

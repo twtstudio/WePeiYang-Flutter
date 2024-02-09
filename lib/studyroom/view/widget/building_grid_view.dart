@@ -103,6 +103,7 @@ class _BuildingItem extends StatelessWidget {
             Container(
               height: 54.h,
               child: ColoredIcon(
+                key: ValueKey(building.name),
                 StudyroomImages.collectedBuilding,
                 color: Color.fromRGBO(126, 12, 110, 1),
               ),

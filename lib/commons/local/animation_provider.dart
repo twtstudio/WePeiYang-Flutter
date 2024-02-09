@@ -14,7 +14,7 @@ class AnimationProvider extends ChangeNotifier {
 
   double get speed => _speed;
 
-  int _speedIndex = 3;
+  int _speedIndex = 2;
 
   int get speedIndex => _speedIndex;
 
