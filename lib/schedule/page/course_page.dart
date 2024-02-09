@@ -108,7 +108,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
             'assets/images/schedule/back.png',
             height: 18.r,
             width: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+            color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
           ),
         ),
       ),

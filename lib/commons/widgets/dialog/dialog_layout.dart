@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 class WbyDialogLayout extends StatelessWidget {
   final Widget child;
@@ -18,7 +20,7 @@ class WbyDialogLayout extends StatelessWidget {
       width: size.dialogWidth,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size.dialogRadius),
-        color: Colors.white,
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       ),
       child: Padding(
         padding: EdgeInsets.only(
