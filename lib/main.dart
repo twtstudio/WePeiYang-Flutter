@@ -134,7 +134,6 @@ void main() async {
   }));
 }
 
-// TODO: put all message channels into a single file
 final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
@@ -169,8 +168,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
-
-    print("==> use dark mode: ${CommonPreferences.appThemeId.value}");
 
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -378,7 +375,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoLogin(context);
+      _appInitProcess(context);
     });
   }
 
@@ -397,7 +394,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     );
   }
 
-  void _autoLogin(BuildContext context) {
+  void _appInitProcess(BuildContext context) {
     /// 初始化友盟
     UmengCommonSdk.initCommon();
 

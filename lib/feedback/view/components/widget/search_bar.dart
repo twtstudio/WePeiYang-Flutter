@@ -160,8 +160,8 @@ class _SearchBarState extends State<SearchBar>
                       prefixIcon: Icon(
                         Icons.search,
                         size: 19,
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.infoTextColor),
+                        color:
+                            WpyTheme.of(context).get(WpyColorKey.infoTextColor),
                       ),
                     ),
                     enabled: true,
@@ -238,6 +238,8 @@ class _SearchBarState extends State<SearchBar>
                         ? SvgPicture.asset(
                             "assets/svg_pics/lake_butt_icons/hashtag.svg",
                             width: 12,
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.defaultActionColor),
                           )
                         : Icon(Icons.clear,
                             size: 14,
@@ -251,13 +253,11 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             child: searchInputField,
             padding: EdgeInsets.symmetric(vertical: 6)),
         ColoredBox(
-          color:
-              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           child: AnimatedSize(
             curve: Curves.easeOutCirc,
             duration: Duration(milliseconds: 400),

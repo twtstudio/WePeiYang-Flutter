@@ -112,7 +112,11 @@ class _SearchPageState extends State<SearchPage> {
             style: TextUtil.base.primaryAction(context).w600.sp(17),
           ),
           WButton(
-            child: Icon(Icons.delete, size: 16),
+            child: Icon(
+              Icons.delete,
+              size: 16,
+              color: WpyTheme.of(context).primary,
+            ),
             onPressed: showClearDialog,
           ),
         ],
@@ -178,7 +182,8 @@ class _SearchPageState extends State<SearchPage> {
               },
               child: Chip(
                 elevation: 1,
-                backgroundColor: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
+                backgroundColor:
+                    WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                 label: Text(list[list.length - index - 1],
                     style:
                         TextUtil.base.normal.label(context).NotoSansSC.sp(16)),

@@ -1020,7 +1020,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               ),
               cancelText: "取消",
               confirmTextStyle:
-                  TextUtil.base.normal.primary(context).NotoSansSC.sp(16).w400,
+                  TextUtil.base.normal.bright(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.infoText(context).NotoSansSC.sp(16).w600,
               confirmText: "确认",
