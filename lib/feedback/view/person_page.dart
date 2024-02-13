@@ -313,7 +313,7 @@ class _PersonPageState extends State<PersonPage> {
             ? SmartRefresher(
                 physics: BouncingScrollPhysics(),
                 controller: _refreshController,
-                header: RefreshHeader(),
+                header: RefreshHeader(context),
                 footer: ClassicFooter(
                   idleText: '没有更多数据了:>',
                   idleIcon: Icon(Icons.check),

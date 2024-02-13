@@ -65,6 +65,8 @@ class ChangeNicknameDialogState extends State<ChangeNicknameDialog> {
             focusNode: _focus,
             maxLength: 20,
             textInputAction: TextInputAction.newline,
+            cursorColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
             decoration: InputDecoration(
               counterText: '',
               hintText: '请设置合理昵称捏',

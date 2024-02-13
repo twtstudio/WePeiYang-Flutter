@@ -11,10 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
-import 'package:we_pei_yang_flutter/commons/local/animation_provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
-import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/network/message_service.dart';
@@ -24,9 +21,12 @@ import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
+import 'commons/font/font_loader.dart';
+import 'commons/local/animation_provider.dart';
 import 'commons/local/local_model.dart';
 import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
+import 'commons/themes/wpy_theme.dart';
 import 'commons/update/update_manager.dart';
 import 'commons/util/logger.dart';
 import 'commons/util/navigator_observers.dart';
@@ -44,6 +44,7 @@ import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
+import 'studyroom/model/studyroom_provider.dart';
 import 'urgent_report/report_server.dart';
 
 /// 应用入口
@@ -387,9 +388,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       color: Colors.white,
       padding: EdgeInsets.all(30),
       child: Center(
-        child: Image(
-            fit: BoxFit.contain,
-            image: AssetImage('assets/images/splash_screen.png')),
+        child: ColoredIcon(
+          'assets/images/splash_screen.png',
+          color: WpyTheme.of(context).primary,
+        ),
       ),
       constraints: BoxConstraints.expand(),
     );

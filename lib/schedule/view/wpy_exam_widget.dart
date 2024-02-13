@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -28,7 +29,10 @@ class WpyExamWidget extends StatelessWidget {
         child: provider.unfinished.length == 0
             ? Align(
                 alignment: Alignment.topCenter,
-                child: Image.asset("assets/images/schedule_empty.png"))
+                child: ColoredIcon(
+                  "assets/images/schedule_empty.png",
+                  color: WpyTheme.of(context).primary,
+                ))
             : Container(
                 height: 430.h,
                 alignment: Alignment.center,

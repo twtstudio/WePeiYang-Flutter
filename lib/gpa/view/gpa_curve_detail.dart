@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/gpa/model/color.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
@@ -18,7 +19,14 @@ class GPAPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var hideGPA = context.select<GPANotifier, bool>((p) => p.hideGPA);
-    if (hideGPA) return Image.asset("assets/images/schedule_empty.png");
+    if (hideGPA) {
+      return Center(
+          child: ColoredIcon(
+        "assets/images/schedule_empty.png",
+        color: WpyTheme.of(context).primary,
+      ));
+    }
+
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
     if (stats.isEmpty)
 
@@ -27,7 +35,10 @@ class GPAPreview extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),
         child: Column(
           children: [
-            Image.asset("assets/images/schedule_empty.png"),
+            ColoredIcon(
+              "assets/images/schedule_empty.png",
+              color: WpyTheme.of(context).primary,
+            ),
           ],
         ),
       );
@@ -209,7 +220,7 @@ class _GPACurveState extends State<GPACurve>
                             width: 80,
                             height: 75,
                             child: Column(
-                              children: <Widget>[
+                              children: [
                                 SizedBox(
                                   width: 80,
                                   height: 45,
@@ -231,10 +242,14 @@ class _GPACurveState extends State<GPACurve>
                                   ),
                                 ),
                                 CustomPaint(
-                                  painter: _GPAPopupPainter(widget._gpaColors,
-                                      points, _newTaped, widget.isPreview,
-                                      isPreview: widget.isPreview,
-                                      context: context),
+                                  painter: _GPAPopupPainter(
+                                    widget._gpaColors,
+                                    points,
+                                    _newTaped,
+                                    widget.isPreview,
+                                    isPreview: widget.isPreview,
+                                    context: context,
+                                  ),
                                   size: const Size(80, 30),
                                 ),
                               ],
@@ -344,6 +359,7 @@ class _GPACurvePainter extends CustomPainter {
 
   final Paint _linePaint;
   final Paint _pointPaint;
+  final Color shadow;
 
   _GPACurvePainter(List<Color> gpaColors,
       {required this.isPreview,
@@ -360,7 +376,8 @@ class _GPACurvePainter extends CustomPainter {
           ..color = isPreview
               ? WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)
               : gpaColors[1]
-          ..style = PaintingStyle.fill;
+          ..style = PaintingStyle.fill,
+        shadow = WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
 
   _drawLine(Canvas canvas, List<Point<double>> points) {
     var path = Path()
@@ -370,7 +387,7 @@ class _GPACurvePainter extends CustomPainter {
       ..moveTo(0, points[0].y)
       ..shadowThrough(points);
     canvas.drawPath(path, _linePaint);
-    canvas.drawShadow(shadowPath, Colors.blueAccent, 40, true);
+    canvas.drawShadow(shadowPath, shadow, 40, true);
   }
 
   /// 默认黑点半径为6.0，选中后为8.0

@@ -45,13 +45,38 @@ class _ColoredIconState extends State<ColoredIcon> {
     return ShaderMask(
       blendMode: BlendMode.dstIn,
       shaderCallback: (Rect bound) {
+        final realHeight = _image!.height;
+        final realWidth = _image!.width;
+        final imageRatio = realWidth / realHeight;
+        var height = bound.height;
+        var width = bound.width;
+        double dw = 0;
+        double dh = 0;
+        // Display Contain Mode
+        if (bound.width > bound.height * imageRatio) {
+          final newWidth = bound.height * imageRatio;
+          width = newWidth;
+          height = bound.height;
+          dw = bound.width - width;
+          dh = 0;
+        } else {
+          final newHeight = bound.width / imageRatio;
+          height = newHeight;
+          width = bound.width;
+          dw = 0;
+          dh = bound.height - height;
+        }
         Matrix4 matrix = Matrix4.identity()
-          ..scale(bound.height / _image!.height,
-              bound.width / _image!.width); // Scale to the same size
+          ..scale(width / realWidth, height / realHeight)
+          ..translate(dw, dh);
 
         return ImageShader(
-            _image!, TileMode.clamp, TileMode.clamp, matrix.storage,
-            filterQuality: FilterQuality.high);
+          _image!,
+          TileMode.clamp,
+          TileMode.clamp,
+          matrix.storage,
+          filterQuality: FilterQuality.low,
+        );
       },
       child: Builder(
         builder: (context) {

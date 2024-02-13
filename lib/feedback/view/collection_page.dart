@@ -136,7 +136,8 @@ class _CollectionPageState extends State<CollectionPage> {
                   return Container(
                       height: 200,
                       alignment: Alignment.center,
-                      child: Text("暂无收藏", style: TextUtil.base.oldThirdAction(context)));
+                      child: Text("暂无收藏",
+                          style: TextUtil.base.oldThirdAction(context)));
                 } else {
                   return Column(
                     children: [favLists, SizedBox(height: 20.w)],
@@ -181,7 +182,7 @@ class _CollectionPageState extends State<CollectionPage> {
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
         controller: _refreshController,
-        header: RefreshHeader(),
+        header: RefreshHeader(context),
         footer: ClassicFooter(
           idleText: '没有更多数据了:>',
           idleIcon: Icon(Icons.check),

@@ -365,7 +365,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController,
-          header: RefreshHeader(),
+          header: RefreshHeader(context),
           footer: ClassicFooter(
             textStyle: TextStyle(
                 color:

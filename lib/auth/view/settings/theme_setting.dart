@@ -75,8 +75,8 @@ class WpyThemeCard extends StatelessWidget {
     if (!selected) return BorderSide.none;
 
     return BorderSide(
-      color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-      width: 2,
+      color: Colors.blueAccent,
+      width: 6,
     );
   }
 
@@ -122,7 +122,7 @@ class WpyThemeCard extends StatelessWidget {
             Center(
               child: Icon(
                 Icons.check_circle,
-                color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                color: Colors.blueAccent,
                 size: 40.w,
               ),
             )

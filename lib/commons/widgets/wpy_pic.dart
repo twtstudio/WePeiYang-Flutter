@@ -87,7 +87,9 @@ class _WpyPicState extends State<WpyPic> {
                         height:
                             widget.width == null ? 20 : widget.width! * 0.25,
                         child: CircularProgressIndicator(
-                            value: progress.progress)),
+                          value: progress.progress,
+                          color: WpyTheme.of(context).primary,
+                        )),
                   ),
                 );
               }

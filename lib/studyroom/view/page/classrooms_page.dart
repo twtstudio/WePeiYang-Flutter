@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
@@ -68,11 +69,9 @@ class _FloorsView extends StatelessWidget {
           ),
           child: Container(
             decoration: BoxDecoration(
-                color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor),
-                image: DecorationImage(
-                    image: AssetImage('assets/images/studyroom_background.png'),
-                    fit: BoxFit.fill)),
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 36.h),
               child: ConstrainedBox(
@@ -178,8 +177,11 @@ class FloorWidget extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Row(
             children: [
-              Image.asset('assets/images/studyroom_icons/point.png',
-                  width: 6.w),
+              ColoredIcon(
+                'assets/images/studyroom_icons/point.png',
+                width: 6.w,
+                color: WpyTheme.of(context).primary,
+              ),
               SizedBox(width: 6.w),
               Text(
                 areaName,

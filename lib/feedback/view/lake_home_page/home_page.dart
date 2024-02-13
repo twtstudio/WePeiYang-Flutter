@@ -421,43 +421,48 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               return Positioned(
                 bottom: ScreenUtil().bottomBarHeight + 180.h,
                 right: 20.w + 6.r,
-                child: InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    child: Container(
-                      height: 60.r,
-                      width: 60.r,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(100.r)),
-                        image: DecorationImage(
-                            image: NetworkImage(picUrl), fit: BoxFit.cover),
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.all(Radius.circular(100.r)),
+                  child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Container(
+                        height: 60.r,
+                        width: 60.r,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(100.r)),
+                          image: DecorationImage(
+                              image: NetworkImage(picUrl), fit: BoxFit.cover),
+                        ),
                       ),
-                    ),
-                    onTap: () async {
-                      if (!url.isEmpty) {
-                        if (url.startsWith('browser:')) {
-                          final launchUrl = url
-                              .replaceAll('browser:', '')
-                              .replaceAll(
-                                  '<token>', '${CommonPreferences.token.value}')
-                              .replaceAll('<laketoken>',
-                                  '${CommonPreferences.lakeToken.value}');
-                          if (await canLaunchUrlString(launchUrl)) {
-                            launchUrlString(launchUrl,
-                                mode: LaunchMode.externalApplication);
-                          } else {
-                            ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
-                          }
-                        } else
-                          Navigator.pushNamed(context, FeedbackRouter.haitang,
-                              arguments: FestivalArgs(
-                                  url,
-                                  context
-                                      .read<FestivalProvider>()
-                                      .festivalList[index]
-                                      .title));
-                      }
-                    }),
+                      onTap: () async {
+                        if (!url.isEmpty) {
+                          if (url.startsWith('browser:')) {
+                            final launchUrl = url
+                                .replaceAll('browser:', '')
+                                .replaceAll('<token>',
+                                    '${CommonPreferences.token.value}')
+                                .replaceAll('<laketoken>',
+                                    '${CommonPreferences.lakeToken.value}');
+                            if (await canLaunchUrlString(launchUrl)) {
+                              launchUrlString(launchUrl,
+                                  mode: LaunchMode.externalApplication);
+                            } else {
+                              ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                            }
+                          } else
+                            Navigator.pushNamed(context, FeedbackRouter.haitang,
+                                arguments: FestivalArgs(
+                                    url,
+                                    context
+                                        .read<FestivalProvider>()
+                                        .festivalList[index]
+                                        .title));
+                        }
+                      }),
+                ),
               );
             } else
               return SizedBox();
