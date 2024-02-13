@@ -9,22 +9,22 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
-import 'package:we_pei_yang_flutter/home/view/dialogs/acid_check_dialog.dart';
-import 'package:we_pei_yang_flutter/home/view/dialogs/activity_dialog.dart';
-import 'package:we_pei_yang_flutter/home/view/map_calendar_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
 
-import '../../commons/themes/wpy_theme.dart';
-import '../../commons/widgets/colored_icon.dart';
-import '../../commons/widgets/w_button.dart';
+import 'dialogs/acid_check_dialog.dart';
+import 'dialogs/activity_dialog.dart';
+import 'map_calendar_page.dart';
 
 class WPYPage extends StatefulWidget {
   @override

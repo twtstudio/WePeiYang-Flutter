@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart' show Widget;
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:we_pei_yang_flutter/home/view/home_page.dart';
-import 'package:we_pei_yang_flutter/home/view/map_calendar_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/fifty_two_hz_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/notices_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/wiki_page.dart';
+import "package:flutter/src/widgets/basic.dart";
 
+import 'view/home_page.dart';
 import 'view/lost_and_found_home_page.dart';
+import 'view/map_calendar_page.dart';
+import 'view/web_views/fifty_two_hz_page.dart';
+import 'view/web_views/notices_page.dart';
+import 'view/web_views/wiki_page.dart';
 
 class HomeRouter {
   static String home = 'home/home';

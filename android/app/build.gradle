@@ -119,16 +119,19 @@ android {
 
             // https://itnext.io/flutter-1-17-no-more-flavors-no-more-ios-schemas-command-argument-that-solves-everything-8b145ed4285d
             // flutter 1.20 ~ 2.2 的读取方式
-            if (project.hasProperty('dart-defines')) {
-                // 如果是通过 package.ps1 打包的话就解析固定参数
-                def dartEnvironmentVariables = getDartDefines()
-                environment = dartEnvironmentVariables.ENVIRONMENT
-                if (environment == null) {
-                    environment = "RELEASE"
-                }
-            } else {
-                environment = "RELEASE"
-            }
+            // 2024-2-14 修复成了这样的  https://medium.com/@tatsu.ukraine/flutter-2-2-dart-defines-and-breaking-changes-here-we-go-again-ce40cfea74fd
+            // 绷不住了这玩意坏了好久了一直没人修
+            // 3.7 更新了从文件创建打包 可以直接在 build.gradle 里面使用这个变量 但是和之前的 --dart-define 完全不一样
+            // 但是如果使用这种方式的话 必须使用 --dart-define-from-file=xxx 来指定文件 文件里面写好配置 不能使用 --dart-define=xxx
+            // https://itnext.io/flutter-3-7-and-a-new-way-of-defining-compile-time-variables-f63db8a4f6e2
+
+            def dartEnvironmentVariables = getDartDefines()
+
+            environment = dartEnvironmentVariables.ENVIRONMENT ?
+                    dartEnvironmentVariables.ENVIRONMENT :
+                    "RELEASE"
+
+            println("You are packing in environment: " + environment)
 
             switch (environment) {
                 case "ONLINE_TEST":
@@ -157,6 +160,23 @@ android {
                     shrinkResources false
 
                     break
+                case "PREVIEW":
+                    // 个推 product
+                    manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    // 不输出调试信息
+                    buildConfigField("Boolean", "LOG_OUTPUT", "false")
+
+                    // 不覆盖正式版安装
+                    applicationIdSuffix ".preview"
+
+                    // 设置应用名称
+                    resValue("string", "label", "微北洋Preview")
+
+                    minifyEnabled true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    shrinkResources true // 删除无用资源
+                    break;
+
                 default:  // RELEASE
                     environment = "RELEASE"
                     // 个推 product
@@ -173,11 +193,16 @@ android {
                     break
             }
 
+            def versionCode = getDartDefines().VERSIONCODE != null ?
+                    getDartDefines().VERSIONCODE :
+                    "0"
 
             android.applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     // 更改输出的安装包的名字 如 4.2.1-RELEASE-app-arm64-v8a-release.apk
-                    output.outputFileName = environment + "-" + android.defaultConfig.versionName + "-" + output.outputFileName
+                    output.outputFileName = environment + "-" +
+                            android.defaultConfig.versionName + "+" + versionCode + "-" +
+                            output.outputFileName
 
                     // 谷歌规定 Google Play 多个安装包不能 versionCode一样
                     // 但是国内应用商店要求多个按爪给你包需要 versionCode一样
@@ -284,11 +309,15 @@ dependencies {
 }
 
 def getDartDefines() {
-    def arguments = URLDecoder.decode(project.property('dart-defines'))
-            .split(',')
-            .collectEntries { entry ->
-                def pair = entry.split('=')
-                [(pair.first()): pair.last()]
-            }
-    return arguments
+    if (project.hasProperty('dart-defines')) {
+        def arguments = project.property('dart-defines')
+                .split(',')
+                .collectEntries { entry ->
+                    def pair = new String(entry.decodeBase64(), 'UTF-8').split('=')
+                    [(pair.first()): pair.last()]
+                }
+
+        return arguments
+    }
+    return [:]
 }
