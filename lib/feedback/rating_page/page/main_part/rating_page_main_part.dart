@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/create_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/loading_dot.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
 
@@ -212,31 +213,6 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
 
                   Divider(),
 
-                  Container(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 20,
-                      ),
-                      Container(
-                        color: Colors.black,
-                        child: Text(
-                          ' 今日推送: ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold, // 设置文本为粗体
-                            fontSize: 4 * mm, // 设置文本字体大小
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  Container(
-                    height: 10,
-                  ),
                 ],
               );
 
@@ -268,11 +244,13 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
 
     Widget allInOne = Stack(
       children: [
+
         mainPage,
+        CreateButton(onPressed: () {}),
 
         (!dataIndexTree.isFinish())?
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
+          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 4.0),///整体模糊度
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(

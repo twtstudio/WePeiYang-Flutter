@@ -118,7 +118,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         第三层颜色块
         宽度:60mm
         高度:20mm
-        颜色:渐变透明白色
+        颜色:主题
         坐标:左0,上14mm
      ***************************************************************/
     double width4 = 60 * mm;
@@ -137,6 +137,30 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     widget4 = Positioned(bottom: 1 * mm, left: 0 * mm, child: widget4);
+
+    /***************************************************************
+        第四层颜色块
+        宽度:60mm
+        高度:20mm
+        颜色:主题
+        坐标:左0,上14mm
+     ***************************************************************/
+    double width5 = 60 * mm;
+    double height5 = 2 * mm;
+    Color color5 = Colors.black.withOpacity(0.4);
+
+    Widget widget5 = Container(
+      width: width5,
+      height: height5,
+      color: color5,
+    );
+
+    widget5 = ClipRRect(
+      borderRadius: radius,
+      child: widget5,
+    );
+
+    widget5 = Positioned(top: 0 * mm, left: 0 * mm, child: widget5);
 
     /***************************************************************
         标题文字区域
@@ -420,6 +444,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           widget2,
           widget3,
           widget4,
+          widget5,
           topicWidget,
           ratingCountWidget,
           nextPageButton,
