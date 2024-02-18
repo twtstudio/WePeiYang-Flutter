@@ -1,22 +1,43 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/loading_dot.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
 
-import '../../../commons/widgets/loading.dart';
-import '../../view/lake_home_page/normal_sub_page.dart';
+import '../../../../commons/widgets/loading.dart';
+import '../../../view/lake_home_page/normal_sub_page.dart';
+import '../../ui/tag_ui.dart';
 
 class RatingPageMainPart extends StatefulWidget {
+
+  DataIndex dataIndex;
+  RatingPageMainPart({required this.dataIndex});
+
   @override
   _RatingPageMainPartState createState() => _RatingPageMainPartState();
 }
 
 class _RatingPageMainPartState extends State<RatingPageMainPart> {
+
+  /***************************************************************
+      数据
+   ***************************************************************/
+  //索引
+  late DataIndexTree dataIndexTree;
+  //数据
+  late DataIndexLeaf dataIndexLeaf;
+  //排序方式
+  late String sortType;
+
+  /***************************************************************
+      变量与函数
+   ***************************************************************/
   RefreshController refreshController = RefreshController();
   ScrollController _scrollController = ScrollController();
 
@@ -31,15 +52,6 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     setState(() {});
   }
 
-  @override
-  void initState() {
-    context.read<RatingPageData>().nowSortType.addListener(() {
-      setState(() {});
-    });
-
-    super.initState();
-  }
-
   Color? getGradientColor(double value) {
     // 定义起始颜色和结束颜色
     Color startColor = Colors.blue;
@@ -49,8 +61,47 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     return Color.lerp(startColor, endColor, value);
   }
 
+  /***************************************************************
+      初始化
+
+      在加载一个页面之前,需要先获取当前页面当前分支下的数据索引
+   ***************************************************************/
+  @override
+  void initState() {
+    //初始化
+    context.read<RatingPageData>().buildDataIndex(widget.dataIndex);
+
+    sortType = context.read<RatingPageData>().nowSortType.value;
+    dataIndexTree = context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
+    dataIndexLeaf = context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
+
+    //debugOutput(context, dataIndexTree.loadingState.toString());
+
+    //当loadingState发生变化时刻,更新页面数据
+    dataIndexTree.UI.addListener(() {
+      setState(() {
+        //debugOutput(context, "数据更新");
+      });
+    });
+
+    context.read<RatingPageData>().nowSortType.addListener(() {
+      setState(() {
+        sortType = context.read<RatingPageData>().nowSortType.value;
+        context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
+        //debugOutput(context, dataIndexTree.loadingState.toString()+dataIndexTree.children.toString());
+      });
+    });
+
+
+    super.initState();
+  }
+
+  /***************************************************************
+      构建
+   ***************************************************************/
   @override
   Widget build(BuildContext context) {
+
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
@@ -101,6 +152,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     /***************************************************************
         主页面
      ***************************************************************/
+
     Widget mainPage = Container(
       child: SmartRefresher(
         physics: BouncingScrollPhysics(),
@@ -120,19 +172,26 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
         footer: ClassicFooter(
           idleText: '下拉以刷新',
           noDataText: '无数据',
-          loadingText: '',
+          loadingText: '终于写完了',
           failedText: '加载失败（；´д｀）ゞ',
         ),
         enablePullUp: true,
         onLoading: _fakeLoadData,
+
+        //列表视图
         child: ListView.builder(
+
           controller: _scrollController,
           itemCount:
-              context.read<RatingPageData>().dataLinkMap.value.length + 100,
+              145,
           itemBuilder: (BuildContext context, int index) {
+
+            /***************************************************************
+                顶部组件
+             ***************************************************************/
             if (index == 0) {
               index -= 1;
-              return Column(
+              Widget top = Column(
                 children: [
                   AnnouncementBannerWidget(),
 
@@ -149,55 +208,10 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                   //分割线
                   Divider(),
 
-                  Row(
-                    children: [
-                      Container(
-                        width: 20,
-                      ),
-                      Text(
-                        "热度 ",
-                        style: TextStyle(
-                          color: context
-                                      .read<RatingPageData>()
-                                      .nowSortType
-                                      .value ==
-                                  "热度"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text(
-                        "时间 ",
-                        style: TextStyle(
-                          color: context
-                              .read<RatingPageData>()
-                              .nowSortType
-                              .value ==
-                              "时间"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            "    (下拉以切换)",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold, // 设置字体为粗体
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
+                  TagUI(dataIndexTree: dataIndexTree),
 
-                    ],
-                  ),
                   Divider(),
+
                   Container(
                     height: 10,
                   ),
@@ -206,30 +220,46 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                       Container(
                         width: 20,
                       ),
-                      Text(
-                        '今日推送:',
-                        style: TextStyle(
-                          color: Colors.blue, // 设置文本颜色为黑色
-                          fontWeight: FontWeight.bold, // 设置文本粗体
-                          fontSize: 24.0, // 设置文本字体大小
+                      Container(
+                        color: Colors.black,
+                        child: Text(
+                          ' 今日推送: ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold, // 设置文本为粗体
+                            fontSize: 4 * mm, // 设置文本字体大小
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
 
                   Container(
-                    height: 4,
+                    height: 10,
                   ),
                 ],
               );
-            }
 
+              return top;
+            }
+            index-=1;
+
+            /***************************************************************
+                列表内组件
+             ***************************************************************/
             return Center(
                 child: ListTile(
-              title: RatingThemeBlock(
-                  index: index, color: getProgressColor(getProgress())!),
-              // 添加其他列表项的内容和样式
-            ));
+                  title: RatingThemeBlock(
+                      dataIndex:
+                      (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
+                        dataIndexTree.children[transSortType[sortType]]![index % dataIndexTree.children[transSortType[sortType]]!.length]
+                          : NullDataIndex,
+                      color: getProgressColor(getProgress())!,
+                  ),
+                  // 添加其他列表项的内容和样式
+                )
+            );
+
           },
         ),
       ),
@@ -239,9 +269,24 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     Widget allInOne = Stack(
       children: [
         mainPage,
+
+        (!dataIndexTree.isFinish())?
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 0),///背景透明
+                borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
+            ),
+            child: LoadingDots(),
+          ),
+        ):
+        Container(),
       ],
     );
 
     return allInOne;
+
   }
 }

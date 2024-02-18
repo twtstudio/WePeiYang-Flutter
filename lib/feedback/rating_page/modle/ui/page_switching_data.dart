@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import '../../ui/rating_page_tarbar_ui.dart';
-import '../../page/rating_page_main_part.dart';
+import '../../page/main_part/rating_page_main_part.dart';
 import '../../page/rating_page.dart';
 
 // 管理页面切换按钮中数据的类

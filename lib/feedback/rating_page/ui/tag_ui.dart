@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+
+class TagUI extends StatelessWidget {
+
+  final DataIndexTree dataIndexTree;
+  TagUI({required this.dataIndexTree});
+
+  @override
+  Widget build(BuildContext context) {
+
+    List<Widget> tagWidget = [];
+
+    //如果当前的tag在tagList之外,就设定为tagList的首项
+    if(!dataIndexTree.tagListChinese.contains(context.read<RatingPageData>().nowSortType.value)){
+      context.read<RatingPageData>().nowSortType.value = dataIndexTree.tagListChinese[0];
+    }
+
+    tagWidget.add(Container(width: 20,));
+
+    for(var tag in dataIndexTree.tagListChinese){
+
+      Widget a = ValueListenableBuilder<String>(
+        valueListenable: context.read<RatingPageData>().nowSortType,
+        builder: (context, value, child) {
+          return Text(
+            "$tag ",
+            style: TextStyle(
+              color: value == tag ? Colors.blue : Colors.grey,
+              fontWeight: FontWeight.bold, // 设置字体为粗体
+              fontSize: 20,
+            ),
+          );
+        },
+      );
+
+      a = InkWell(
+        onTap: () {
+          context.read<RatingPageData>().nowSortType.value = tag;
+        },
+        child: a,
+      );
+
+      tagWidget.add(a);
+    }
+
+    tagWidget.add(Column(
+      children: [
+        Text(
+          "    (下拉以切换)",
+          style: TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.bold, // 设置字体为粗体
+            fontSize: 10,
+          ),
+        ),
+      ],
+    ));
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        // 靠左边的组件
+        Row(
+          children: tagWidget,
+        ),
+
+        // 靠右边的组件
+        Row(
+          children: <Widget>[
+
+            InkWell(
+              onTap: () {
+                dataIndexTree.reset();
+              },
+              child: Icon(
+                Icons.downloading,
+                color: Colors.blue,
+              ),
+            ),
+
+            Container(width: 24,),
+          ],
+        ),
+      ],
+    );
+  }
+}

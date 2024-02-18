@@ -1,25 +1,29 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart';
 
+import '../page/main_part/theme_page.dart';
+
 //用来展现评分主题的方块组件
 class RatingThemeBlock extends StatefulWidget {
 
-  int index;
+  DataIndex dataIndex;
   Color color;
 
-  RatingThemeBlock({required this.index,required this.color});
+  RatingThemeBlock({required this.dataIndex, required this.color});
+
   @override
   _RatingThemeBlockState createState() => _RatingThemeBlockState();
 }
 
 class _RatingThemeBlockState extends State<RatingThemeBlock> {
-
   late Timer changingDataTimer;
+
   @override
   void initState() {
     super.initState();
@@ -33,9 +37,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
-    double mm = screenWidth*0.9/60;  //获取现实中1毫米的像素长度
+    double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
     var radius = BorderRadius.circular(8);
 
@@ -81,11 +84,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       child: widget2,
     );
 
-    widget2 = Positioned(
-        top: 0 * mm,
-        left: 0 * mm,
-        child: widget2
-    );
+    widget2 = Positioned(top: 0 * mm, left: 0 * mm, child: widget2);
 
     /***************************************************************
         第二层颜色块
@@ -110,9 +109,9 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     widget3 = Positioned(
-        top: 14 * mm,
-        left: 0 * mm,
-        child: widget3,
+      top: 14 * mm,
+      left: 0 * mm,
+      child: widget3,
     );
 
     /***************************************************************
@@ -137,12 +136,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       child: widget4,
     );
 
-    widget4 = Positioned(
-        bottom: 1 * mm,
-        left: 0 * mm,
-        child: widget4
-    );
-
+    widget4 = Positioned(bottom: 1 * mm, left: 0 * mm, child: widget4);
 
     /***************************************************************
         标题文字区域
@@ -156,7 +150,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     double topicHeight = 7 * mm;
 
     Widget topicWidget = Text(
-      '评分主题名称',
+      widget.dataIndex.dataId.toString(),
       style: TextStyle(
         fontWeight: FontWeight.bold, // 设置字体为粗体
         fontSize: 22, // 设置字体尽可能大
@@ -184,8 +178,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         字体:粗体
         坐标:左4mm,上9.5mm
      ***************************************************************/
-    double ratingCountWidth = 30*mm;
-    double ratingCountHeight = 2.5*mm;
+    double ratingCountWidth = 30 * mm;
+    double ratingCountHeight = 2.5 * mm;
 
     Widget ratingCountWidget;
 
@@ -210,7 +204,6 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       child: ratingCountWidget,
     );
 
-
     /***************************************************************
         进入按钮
         宽度:10mm
@@ -227,7 +220,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         return LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: [Colors.white.withOpacity(0.8), Colors.white.withOpacity(0.6)],
+          colors: [
+            Colors.white.withOpacity(0.8),
+            Colors.white.withOpacity(0.6)
+          ],
         ).createShader(bounds);
       },
       child: Text(
@@ -255,16 +251,15 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         坐标:左2mm,上15mm
      ***************************************************************/
 
-    Widget someOfObject(int index){
-
+    Widget someOfObject(int index) {
       /***************************************************************
           背景
        ***************************************************************/
 
       ///背景
       Widget background = Container(
-        width: 56*mm,
-        height: 10*mm,
+        width: 56 * mm,
+        height: 10 * mm,
         color: Color(0xFFF0F0F0),
       );
 
@@ -280,9 +275,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///图片组件
       Widget base64Image = Base64Image(
-          base64String: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==",
-          width: 7*mm,
-          height: 7*mm,
+        base64String:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==",
+        width: 7 * mm,
+        height: 7 * mm,
       );
 
       ///裁剪图片
@@ -292,8 +288,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       base64Image = Positioned(
-        top: 1.5*mm,
-        left: 1.5*mm,
+        top: 1.5 * mm,
+        left: 1.5 * mm,
         child: base64Image,
       );
 
@@ -312,8 +308,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       title = Positioned(
-        top: 1.5*mm,
-        left: 10*mm,
+        top: 1.5 * mm,
+        left: 10 * mm,
         child: title,
       );
 
@@ -321,8 +317,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           热评
        ***************************************************************/
 
-      double hotCommentWidth = 30*mm;
-      double hotCommentHeight = 2.5*mm;
+      double hotCommentWidth = 30 * mm;
+      double hotCommentHeight = 2.5 * mm;
 
       Widget hotComment;
 
@@ -339,7 +335,6 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
             ],
           ),
         ),
-
       );
 
       hotComment = Positioned(
@@ -363,8 +358,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       rating = Positioned(
-        top: 1*mm,
-        right: 2*mm,
+        top: 1 * mm,
+        right: 2 * mm,
         child: rating,
       );
 
@@ -374,7 +369,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///评分数量组件
       Widget ratingCount = Text(
-        "1999"+"评分",
+        "1999" + "评分",
         style: TextStyle(
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 12, // 设置字体
@@ -383,8 +378,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       ratingCount = Positioned(
-        bottom: 0.8*mm,
-        right: 1.5*mm,
+        bottom: 0.8 * mm,
+        right: 1.5 * mm,
         child: ratingCount,
       );
 
@@ -394,13 +389,18 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       Widget allInOne = Stack(
         children: [
-          background,base64Image,title,hotComment,rating,ratingCount
+          background,
+          base64Image,
+          title,
+          hotComment,
+          rating,
+          ratingCount
         ],
       );
 
       allInOne = Positioned(
-        top: 15*mm+(index-1)*11*mm,
-        left: 2*mm,
+        top: 15 * mm + (index - 1) * 11 * mm,
+        left: 2 * mm,
         child: allInOne,
       );
 
@@ -416,9 +416,16 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       height: 50 * mm,
       child: Stack(
         children: [
-          widget1,widget2,widget3,widget4,
-          topicWidget,ratingCountWidget,nextPageButton,
-          someOfObject(1),someOfObject(2),someOfObject(3),
+          widget1,
+          widget2,
+          widget3,
+          widget4,
+          topicWidget,
+          ratingCountWidget,
+          nextPageButton,
+          someOfObject(1),
+          someOfObject(2),
+          someOfObject(3),
         ],
       ),
     );
@@ -429,10 +436,25 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
     allInOne = Container(
       width: screenWidth,
-      height: 51* mm,
+      height: 53 * mm,
       child: Center(
         child: allInOne,
       ),
+    );
+
+    /***************************************************************
+        点击后跳转页面
+     ***************************************************************/
+
+    allInOne = InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => ThemePage(dataIndex: widget.dataIndex,color: widget.color,),
+              ));
+        },
+        child: allInOne
     );
 
     /***************************************************************
