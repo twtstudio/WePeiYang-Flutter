@@ -72,7 +72,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.nickname,
               post.level.toString(),
               post.id.toString(),
-              post.avatarBox.toString()),
+              post.avatarBox.toString()
+          ),
           Container(
               width: (WePeiYangApp.screenWidth - 24.w) / 2,
               color: ColorUtil.transparent, // 没他就没有点击域

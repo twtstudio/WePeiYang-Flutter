@@ -6,12 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
-import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_comment_block_ui.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/create_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_object_block_ui.dart';
 
 import '../../../../commons/widgets/loading.dart';
 import '../../../view/lake_home_page/normal_sub_page.dart';
+import '../../ui/rating_comment_block_ui.dart';
 
 class ObjectPage extends StatefulWidget {
 
@@ -72,7 +73,7 @@ class _ObjectPageState extends State<ObjectPage> {
       });
     });
 
-    context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).loadingState.addListener(() {
+    context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).UI.addListener(() {
       setState(() {
 
       });

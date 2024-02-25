@@ -46,10 +46,15 @@ class _CreateButtonState extends State<CreateButton> {
         child: FloatingActionButton(
           onPressed: widget.onPressed,
           elevation: 0,
-          backgroundColor: Colors.orange.withOpacity(0.4),
-          child: Icon(Icons.upload_file_outlined),
+          backgroundColor: Colors.black.withOpacity(0.8),
+          child: Icon(
+              Icons.create_outlined,
+              size: 6 * mm,
+          ),
         ),
       ),
     );
   }
 }
+
+

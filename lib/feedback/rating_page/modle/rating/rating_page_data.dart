@@ -9,9 +9,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/power_load.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/page/main_part/rating_page_main_part.dart';
 
 import 'package:http/http.dart' as http;
+
+import '../../../../commons/preferences/common_prefs.dart';
 
 ///2024.2.1
 
@@ -20,6 +24,7 @@ import 'package:http/http.dart' as http;
  ***************************************************************/
 const String ServerIP = "http://4l88qh58.dongtaiyuming.net";
 const List<String> dataTypeList = ["mainPage","theme","object","comment"];
+const bool isDebug = true;
 
 const transDataType = {
   "mainPage":"主页",
@@ -33,6 +38,10 @@ const transSortType = {
   "热度":"hot"
 };
 
+String getMPID() {
+  return CommonPreferences.lakeUid.value;
+}
+
 
 /***************************************************************
     DEBUG
@@ -42,11 +51,11 @@ void debugOutput(BuildContext context, String dialogText) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('测试弹窗(应在正式版移除)'),
+        title: Text('提示'),
         content: Text(dialogText),
         actions: <Widget>[
           TextButton(
-            child: Text('Close'),
+            child: Text('收到'),
             onPressed: () {
               Navigator.of(context).pop(); // Dismiss the dialog
             },
@@ -94,6 +103,9 @@ class DataIndexTree{
   List<String> tagList;
   List<String> tagListChinese = [];
 
+  bool stopFlag = false;
+  int loadingCount = 0;
+
   DataIndexTree({required this.myIndex,required this.tagList}){
     for(var tag in tagList){
       children[tag] = [];
@@ -109,7 +121,7 @@ class DataIndexTree{
       //这个bug找了三个小时,注意初始化!!!
       loadingState[tag] = ValueNotifier("null");
       loadingState[tag]!.addListener(() {
-        changeUI();
+        isFinish();
       });
       loading(tag);
     }
@@ -117,10 +129,26 @@ class DataIndexTree{
 
   //重置
   reset(){
+    stopFlag = false;
+    loadingCount = 0;
     for(var tag in tagList){
       loadingState[tag]!.value = "null";
       loading(tag);
     }
+    changeUI();
+  }
+
+  stop(){
+    stopFlag = true;
+  }
+
+  reTry(){
+    stopFlag = false;
+    loadingCount = 0;
+    for(var tag in tagList){
+      loading(tag);
+    }
+    changeUI();
   }
 
   //当前状态四种:未加载"null",网络错误"error",加载中"loading",加载完成"finish"
@@ -130,7 +158,7 @@ class DataIndexTree{
 
   //验证所有标签都加载完毕?
   bool isFinish(){
-    for(var tag in tagList){
+    for(String tag in tagList){
       if(loadingState[tag]!.value != "finish")return false;
     }
     changeUI();
@@ -146,11 +174,18 @@ class DataIndexTree{
    ***************************************************************/
   Future<void> loading(String tag) async {
 
-    if(loadingState[tag]!.value=="loading" || loadingState[tag]!.value=="finish")
+    //中断网络请求
+    loadingCount += 1;
+    if(loadingCount>2*tagList.length){
+      stop();
+    }
+    if(stopFlag)return;
+
+    if(loadingState[tag]!.value=="finish")
       return;
 
     ///网络请求
-    loadingState[tag]!.value = "loading";
+    if(loadingState[tag]!.value=="null")loadingState[tag]!.value = "loading";
 
     ///获得次级数据类型
     String childDataType = "";
@@ -178,12 +213,44 @@ class DataIndexTree{
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        ///成功请求
-        loadingState[tag]!.value = "finish";
 
         ///解析数据
         var jsonString = await response.stream.bytesToString();
-        List<dynamic> dataIdList = jsonDecode(jsonString);
+        dynamic jsonData;
+        try {
+          jsonData = jsonDecode(jsonString);
+        } catch (e) {
+          // JSON 解析出错，处理异常情况
+          print('JSON 解析出错: $e');
+          loadingState[tag]!.value = "error";
+          loading(tag);
+          return;
+        }
+
+        List<dynamic> dataIdList;
+        // 检查数据是否为 List 类型
+        if (jsonData is List) {
+          dataIdList = jsonData;
+
+          // 检查列表是否为空
+          if(dataIdList.isEmpty){
+            loadingState[tag]!.value = "error";
+            loading(tag);
+            return;
+          }
+
+          // 其他处理逻辑
+        } else {
+          // 如果数据不是列表，则进行相应的错误处理
+          print('数据不是列表类型');
+          loadingState[tag]!.value = "error";
+          loading(tag);
+          return;
+        }
+
+
+        ///成功请求
+        loadingState[tag]!.value = "finish";
         /*
         dataIdList:[1,2,3,4,5,6,7,8,9]
         ->
@@ -202,11 +269,13 @@ class DataIndexTree{
         ///失败请求
         loadingState[tag]!.value = "error";
         loading(tag);
+        return;
       }
     } catch (e) {
       ///网络错误
       loadingState[tag]!.value = "error";
       loading(tag);
+      return;
     }
   }
 }
@@ -214,61 +283,77 @@ class DataIndexTree{
 /***************************************************************
     数据缓存
  ***************************************************************/
-class DataIndexLeaf {
+class DataIndexLeaf with PowerLoad{
 
-  /***************************************************************
-      变量初始化
-   ***************************************************************/
-  DataIndex myIndex;
-  DataIndexLeaf({required this.myIndex});
-  //当前状态四种:未加载"null",网络错误"error",加载中"loading",加载完成"finish"
-  ValueNotifier<String> loadingState = ValueNotifier("null");
-  late String jsonString;
-
-  Map<String, dynamic> getMap() {
-    return json.decode(jsonString);
-  }
-
-  /***************************************************************
-      网络请求
-   ***************************************************************/
-  Future<void> loading() async {
-
-    if(loadingState.value=="loading" || loadingState.value=="finish")
-      return;
-
-    loadingState.value = "loading";
-    var headers = {
-      'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
-    };
-    var request = http.Request('POST',
-        Uri.parse(
-            '$ServerIP/rating/get?'
-            'dataType=${myIndex.dataType}'
-            '&dataId=${myIndex.dataId}'
-        )
+  //数据创建
+  create(String dataType,Map<String,String>data) async{
+    init("create", "$ServerIP/rating/create", {
+      "dataType":dataType,
+      "data":json.encode(data),
+    }, [
+      "succeed"
+    ]
     );
-    request.headers.addAll(headers);
-    try {
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        ///成功请求
-        loadingState.value = "finish";
-        jsonString = await response.stream.bytesToString();
-      } else {
-        ///失败请求
-        loadingState.value = "error";
-        loading();
-      }
-    } catch (e) {
-      ///网络错误
-      loadingState.value = "error";
-      loading();
-    }
-
+    await loading("create", false);
   }
+  //数据缓存
+  get(DataIndex myIndex) async {
 
+    List<String>keyL;
+    if(myIndex.dataType == "theme")keyL = [
+      "commentCount",
+      "updatedAt",
+      "themeDescribe",
+      "createdAt",
+      "themeName",
+      "themeCreator",
+      "themeId"
+    ];
+    else keyL = [];
+    init("get", "$ServerIP/rating/get", {
+      "dataType":myIndex.dataType,
+      "dataId":myIndex.dataId,
+    }, keyL
+    );
+    await loading("get", false);
+  }
+  //更新数据
+  update(DataIndex myIndex,Map<String,String>data) async{
+    init("update", "$ServerIP/rating/update", {
+      "dataType":myIndex.dataType,
+      "dataId":myIndex.dataId,
+      "data":json.encode(data),
+      "userId":myUserId,
+    }, [
+      "succeed"
+    ]
+    );
+    await loading("update", false);
+  }
+  //删除数据
+  delete(DataIndex myIndex) async{
+    init("delete", "$ServerIP/rating/delete", {
+      "dataType":myIndex.dataType,
+      "dataId":myIndex.dataId,
+      "userId":myUserId,
+    }, [
+      "succeed"
+    ]
+    );
+    await loading("delete", false);
+  }
+  //点赞
+  like(DataIndex myIndex) async{
+    init("like", "$ServerIP/rating/like", {
+      "dataType":myIndex.dataType,
+      "dataId":myIndex.dataId,
+      "userId":myUserId,
+    }, [
+      "succeed"
+    ]
+    );
+    await loading("like", false);
+  }
 }
 
 
@@ -295,7 +380,7 @@ mixin DataPart {
   //创建空对象
   buildDataIndex(DataIndex theIndex){
     dataIndexTreeMap.value[theIndex] = DataIndexTree(myIndex: theIndex,tagList: ["time","hot"]);
-    dataIndexLeafMap.value[theIndex] = DataIndexLeaf(myIndex: theIndex);
+    dataIndexLeafMap.value[theIndex] = DataIndexLeaf();
   }
 
   //返回监听器
@@ -325,28 +410,22 @@ mixin DataPart {
 
   //获取数据叶
   DataIndexLeaf getDataIndexLeaf(DataIndex theIndex){
-
+    
     //如果存在则返回已经存在的数据
     if(dataIndexLeafMap.value.containsKey(theIndex)){
-
-      String loadingState = dataIndexLeafMap.value[theIndex]!.loadingState.value;
-      //如果没加载则加载
-      if(loadingState == "null"){
-        dataIndexLeafMap.value[theIndex]!.loading();
-      }
-      //加载中
-      else if(loadingState == "error"){
-        return dataIndexLeafMap.value[theIndex]!;
-      }
-      else if(loadingState == "loading"){
-        return dataIndexLeafMap.value[theIndex]!;
-      }
-      else if(loadingState == "finish"){
-        return dataIndexLeafMap.value[theIndex]!;
-      }
+      
+      dataIndexLeafMap.value[theIndex]!.focus();
+      dataIndexLeafMap.value[theIndex]!.get(theIndex);
+      return dataIndexLeafMap.value[theIndex]!;
     }
 
-    else buildDataIndex(theIndex);
+    else {
+      buildDataIndex(theIndex);
+      //遍历dataleafmap
+      dataIndexLeafMap.value.forEach((key, value) {
+        value.release();
+      });
+    }
     return getDataIndexLeaf(theIndex);
   }
 

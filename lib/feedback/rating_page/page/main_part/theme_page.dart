@@ -70,8 +70,7 @@ class _ThemePageState extends State<ThemePage> {
       });
     });
 
-    //页面数据变化时,也更新数据
-    dataIndexLeaf.loadingState.addListener(() {
+    dataIndexLeaf.UI.addListener(() {
       setState(() {
         dataIndexLeaf = context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
       });

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/ui/page_switching_data.dart';
 
 import '../../../commons/util/text_util.dart';
@@ -19,6 +20,7 @@ class _PageSwitchingButtonState extends State<PageSwitchingButton> {
 
     context.read<PageSwitchingData>().init();
     context.read<RatingPageData>().init();
+    context.read<RatingUserData>().init();
 
     var a = ValueListenableBuilder<String>(
       valueListenable: context.read<PageSwitchingData>().nowButtonTextString,

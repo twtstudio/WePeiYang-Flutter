@@ -2,7 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../modle/rating/rating_page_data.dart';
+
 class LoadingDots extends StatefulWidget {
+  DataIndexTree dataIndexTree;
+
+  LoadingDots(this.dataIndexTree);
   @override
   _LoadingDotsState createState() => _LoadingDotsState();
 }
@@ -34,8 +39,10 @@ class _LoadingDotsState extends State<LoadingDots> {
 
   @override
   Widget build(BuildContext context) {
+
+
     // 更新Text组件以应用白色粗体字样式
-    return Container(
+    return (!widget.dataIndexTree.stopFlag)?Container(
       color: Colors.black,
       child: Row(
         mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
@@ -47,7 +54,7 @@ class _LoadingDotsState extends State<LoadingDots> {
           ),
           SizedBox(width: 5), // 在图标和文本之间添加一些间隔
           Text(
-            _loadingText,
+            _loadingText, // 更改文本为"加载中"
             style: TextStyle(
               color: Colors.white, // 文本颜色为白色
               fontWeight: FontWeight.bold, // 字体粗细为粗体
@@ -57,6 +64,36 @@ class _LoadingDotsState extends State<LoadingDots> {
           SizedBox(width: 5), // 在图标和文本之间添加一些间隔
         ],
       ),
+    ) :
+    GestureDetector(
+      onTap: () {
+        // 在这里添加你希望点击后执行的函数
+        widget.dataIndexTree.reTry();
+      },
+      child: Container(
+        color: Colors.red, // 将背景颜色改为红色
+        child: Row(
+          mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
+          children: [
+            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
+            Icon(
+              Icons.error, // 更改图标为error图标
+              color: Colors.white, // 设置图标颜色为白色
+            ),
+            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
+            Text(
+              "网络错误", // 更改文本为"网络错误"
+              style: TextStyle(
+                color: Colors.white, // 文本颜色为白色
+                fontWeight: FontWeight.bold, // 字体粗细为粗体
+                fontSize: 25,
+              ),
+            ),
+            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
+          ],
+        ),
+      ),
     );
+
   }
 }

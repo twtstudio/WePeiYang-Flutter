@@ -654,7 +654,8 @@ class _NCommentCardState extends State<NCommentCard>
           widget.comment.nickname,
           widget.comment.level.toString(),
           widget.comment.id.toString(),
-          widget.comment.avatarBox.toString()),
+          widget.comment.avatarBox.toString()
+      ),
       Expanded(
         child: Column(
           mainAxisSize: MainAxisSize.min,

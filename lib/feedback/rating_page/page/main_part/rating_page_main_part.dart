@@ -3,10 +3,13 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/create/create_theme.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/create_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/loading_dot.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
@@ -50,7 +53,18 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     });
     context.read<RatingPageData>().nowSortType.value =
         context.read<RatingPageData>().nowSortType.value == "热度" ? "时间" : "热度";
-    setState(() {});
+    dataIndexTree.reset();
+
+    void _writeToClipboard(String text) {
+      Clipboard.setData(ClipboardData(text: text))
+          .then((value) => print('Text copied to clipboard: $text'));
+    }
+
+    setState(() async {
+      //监听变量组件
+      //debugOutput(context, context.read<RatingUserData>().myUser.dataM.toString());
+      //_writeToClipboard(context.read<RatingUserData>().userMap[].dataM.toString());
+    });
   }
 
   Color? getGradientColor(double value) {
@@ -102,6 +116,8 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
+
+    //debugOutput(context, context.read<RatingUserData>().myUserImg.toString());
 
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
@@ -246,18 +262,24 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
       children: [
 
         mainPage,
-        CreateButton(onPressed: () {}),
+        CreateButton(onPressed: ()
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateTheme()),
+          );
+        }),
 
         (!dataIndexTree.isFinish())?
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 4.0),///整体模糊度
+          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
                 color: Color.fromRGBO(255, 255, 255, 0),///背景透明
                 borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
             ),
-            child: LoadingDots(),
+            child: LoadingDots(dataIndexTree),
           ),
         ):
         Container(),

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 
 class Base64Image extends StatelessWidget {
   final String base64String;
@@ -13,25 +14,30 @@ class Base64Image extends StatelessWidget {
   final double height;
 
   Base64Image(
-      {required this.base64String, required this.width, required this.height});
+      {required this.base64String, required this.width, required this.height,});
 
   @override
   Widget build(BuildContext context) {
-    Uint8List bytes = base64Decode(base64String.split(',')[1]);
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  ImagePreviewPage(base64String: base64String)),
-        );
-      },
-      child: Image.memory(
-        bytes,
-        width: width,
-        height: height,
-        fit: BoxFit.cover,
+
+    //return Text("12313");
+    //圆角,边框
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0), // 设置圆角半径
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ImagePreviewPage(base64String: base64String)),
+          );
+        },
+        child: Image.memory(
+          base64Decode(base64String),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -44,7 +50,7 @@ class ImagePreviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Uint8List bytes = base64Decode(base64String.split(',')[1]);
+    Uint8List bytes = base64Decode(base64String);
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(

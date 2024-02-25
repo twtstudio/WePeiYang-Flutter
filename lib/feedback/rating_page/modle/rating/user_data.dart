@@ -1,20 +1,110 @@
-import 'dart:ffi';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
+
+import 'power_load.dart';
+
+//连接微北洋论坛与评分页面数据的桥梁
+class User with PowerLoad{
+  //用户的id
+  String userId;
+  User({required this.userId});
+
+  //获取用户的数据
+  Future<void> get() async{
+    init(
+        "get",
+        "$ServerIP/user/get",
+        {
+          "id":userId,
+        },
+        ["userId","userName","userImg"]
+    );
+    loading("get", false);
+  }
+
+  //更新信息(一直执行,直到成功)
+  Future<void> add(String userName,String userImg) async{
+    init(
+        "add",
+        "$ServerIP/user/add",
+        {
+          "id":userId,
+          "name":userName,
+          "img":userImg,
+        },
+        ["output"]
+    );
+    loading("add", false);
+  }
+
+}
+
+late String myUserId;
+late String myUserName;
+late String myUserImg;
 
 //管理评分系统里用户的数据
 class RatingUserData extends ChangeNotifier{
-  //是否点赞过??(id到是否)
-  ValueNotifier<Map<String,Bool>>
-  isLiked
-  =ValueNotifier({});
-  //创建过哪些评分主题/对象/评论(索引形式)
-  ValueNotifier<List<String>>
-  userCreateLinkList
-  =ValueNotifier([]);
-  //对索引的解析
-  ValueNotifier<List<String>>
-  userCreateList
-  =ValueNotifier([]);
+  //存储本用户的信息
+
+  late User myUser;
+  bool isInit=false;
+
+  Map<String,User> userMap={};
+
+  Future<String> urlToBase64(String imageUrl) async {
+
+    if(imageUrl == "")return "";
+    final response = await http.get(Uri.parse(imageUrl));
+
+    if (response.statusCode == 200) {
+      final Uint8List bytes = response.bodyBytes;
+      final String base64Image = base64Encode(bytes);
+      return base64Image;
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
+  User getUser(String userId){
+    if(userMap[userId] == null){
+      //遍历全部的user,尝试回收内存
+      userMap.forEach((key, value) {
+        value.release();
+      });
+      userMap[userId] = User(userId: userId);
+      userMap[userId]!.get();
+      return userMap[userId]!;
+    }
+    else{
+      //不许回收
+      userMap[userId]!.focus();
+      return userMap[userId]!;
+    }
+  }
+
+  //初始化函数
+  init() async {
+    myUserId = CommonPreferences.lakeUid.value;
+    myUserName = CommonPreferences.lakeNickname.value;
+    myUserImg = await urlToBase64('https://qnhdpic.twt.edu.cn/download/origin/'+CommonPreferences.avatar.value);
+
+    //但凡有一个为空,两秒后重新获取
+    if(myUserId == "" || myUserName == "" || myUserImg == ""){
+      Future.delayed(Duration(seconds: 2), () async{
+        return init();
+      });
+    }
+    userMap[myUserId] = User(userId: myUserId);
+    userMap[myUserId]!.add(myUserName, myUserImg);
+    userMap[myUserId]!.get();
+    isInit = true;
+  }
 
 }
