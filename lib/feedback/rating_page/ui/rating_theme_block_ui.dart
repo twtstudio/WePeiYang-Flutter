@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'dart:math';
-
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,12 +7,15 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_pag
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart';
 
 import '../page/main_part/theme_page.dart';
+import 'loading_dot.dart';
 
-//用来展现评分主题的方块组件
+//用来展现评分主题的方块组件喵
 class RatingThemeBlock extends StatefulWidget {
 
-  DataIndex dataIndex;
-  Color color;
+  //根据dataId来获取子数据喵
+  final DataIndex dataIndex;
+
+  final Color color;
 
   RatingThemeBlock({required this.dataIndex, required this.color});
 
@@ -22,10 +24,28 @@ class RatingThemeBlock extends StatefulWidget {
 }
 
 class _RatingThemeBlockState extends State<RatingThemeBlock> {
+
   late Timer changingDataTimer;
+  ValueNotifier<bool> UI = ValueNotifier(false);
+
+  //首先是评分主题的标题喵
+  String themeName = "加载中";
+  //然后是三个最热门的评分对象的标题喵
+  List<String> hotObjectNameL = ["虚位以待", "虚位以待", "虚位以待"];
+  //然后是三个最热门的评分对象的图片喵
+  List<String> hotObjectImageL = [" ", " ", " "];
+  //然后是三个最热门的评分对象的评分喵
+  List<double> hotObjectRatingL = [4.0, 4.0, 4.0];
+  //然后是三个最热门的评分对象的评分数量喵
+  List<int> hotObjectCommentCountL = [0, 0, 0];
+
+  DataIndexLeaf myData(){
+    return context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
+  }
 
   @override
-  void initState() {
+  void initState(){
+    UI.addListener(() { setState(() {});});
     super.initState();
   }
 
@@ -35,8 +55,43 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     super.dispose();
   }
 
+  loadUI() async {
+
+    if(myData().isSucceed("get")){
+      themeName= myData().dataM["get"]!["themeName"];
+      for(var i=0;i<3;++i){
+        if(myData().dataM["get"]!.containsKey("object$i")
+        ){
+          hotObjectNameL[i]=
+          myData()
+              .dataM["get"]!["object$i"]["objectName"];
+          hotObjectImageL[i]=
+          myData()
+              .dataM["get"]!["object$i"]["objectImage"];
+          hotObjectRatingL[i]=
+          myData()
+              .dataM["get"]!["object$i"]["objectRating"];
+          hotObjectCommentCountL[i]=
+          myData()
+              .dataM["get"]!["object$i"]["commentCount"];
+
+          UI.value = !UI.value;
+        }
+      }
+    }
+    else{
+      //400毫秒后再执行
+      changingDataTimer = Timer(Duration(milliseconds: 400), () {
+        loadUI();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    loadUI();
+
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
@@ -174,10 +229,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     double topicHeight = 7 * mm;
 
     Widget topicWidget = Text(
-      widget.dataIndex.dataId.toString(),
+      "#"+ themeName + " >",
       style: TextStyle(
         fontWeight: FontWeight.bold, // 设置字体为粗体
-        fontSize: 22, // 设置字体尽可能大
+        fontSize: 4 * mm, // 设置字体尽可能大
         color: Colors.white,
       ),
     );
@@ -189,7 +244,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     topicWidget = Positioned(
-      top: 3 * mm,
+      top: 4 * mm,
       left: 2 * mm,
       child: topicWidget,
     );
@@ -223,7 +278,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     ratingCountWidget = Positioned(
-      top: 9.5 * mm,
+      top: 10.5 * mm,
       left: 2 * mm,
       child: ratingCountWidget,
     );
@@ -251,9 +306,9 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         ).createShader(bounds);
       },
       child: Text(
-        '进入>>>',
+        '',
         style: TextStyle(
-          fontSize: 20.0, // 设置字体大小
+          fontSize: 4*mm, // 设置字体大小
           fontWeight: FontWeight.bold, // 设置字体为粗体
           color: Colors.white,
         ),
@@ -299,8 +354,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///图片组件
       Widget base64Image = Base64Image(
-        base64String:
-            "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==",
+        base64String: hotObjectImageL[index],
         width: 7 * mm,
         height: 7 * mm,
       );
@@ -323,7 +377,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///标题组件
       Widget title = Text(
-        "评分对象标题",
+        hotObjectNameL[index],
         style: TextStyle(
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 18, // 设置字体
@@ -338,7 +392,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       /***************************************************************
-          热评
+          热评(被取缔)
        ***************************************************************/
 
       double hotCommentWidth = 30 * mm;
@@ -373,7 +427,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///评分组件
       Widget rating = Text(
-        "5.0",
+        //保留一位小数
+        (hotObjectCommentCountL[index] >= 5)?
+        hotObjectRatingL[index].toStringAsFixed(1):
+        "Null",
         style: TextStyle(
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 30, // 设置字体
@@ -392,8 +449,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
        ***************************************************************/
 
       ///评分数量组件
-      Widget ratingCount = Text(
-        "1999" + "评分",
+      Widget commentCount = Text(
+          (hotObjectCommentCountL[index] >= 5)?
+          hotObjectCommentCountL[index].toString() + "评分" :
+          "评分收集中",
         style: TextStyle(
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 12, // 设置字体
@@ -401,10 +460,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         ),
       );
 
-      ratingCount = Positioned(
+      commentCount = Positioned(
         bottom: 0.8 * mm,
         right: 1.5 * mm,
-        child: ratingCount,
+        child: commentCount,
       );
 
       /***************************************************************
@@ -418,12 +477,12 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           title,
           hotComment,
           rating,
-          ratingCount
+          commentCount
         ],
       );
 
       allInOne = Positioned(
-        top: 15 * mm + (index - 1) * 11 * mm,
+        top: 15 * mm + (index) * 11 * mm,
         left: 2 * mm,
         child: allInOne,
       );
@@ -448,9 +507,25 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           topicWidget,
           ratingCountWidget,
           nextPageButton,
+          someOfObject(0),
           someOfObject(1),
           someOfObject(2),
-          someOfObject(3),
+
+          (!myData().isSucceed("get"))?
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 0),///背景透明
+                  borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
+              ),
+              child: IndexLeafLoadingDots(
+                  myData()
+              ),
+            ),
+          ):
+          Container(),
         ],
       ),
     );

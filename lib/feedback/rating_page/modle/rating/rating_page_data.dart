@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/power_load.dart';
@@ -42,10 +43,20 @@ String getMPID() {
   return CommonPreferences.lakeUid.value;
 }
 
+String truncateString(String input, {int maxLength = 8}) {
+  if (input.length <= maxLength) {
+    return input;
+  } else {
+    return input.substring(0, maxLength) + "...";
+  }
+}
+
 
 /***************************************************************
     DEBUG
  ***************************************************************/
+
+//调试输出
 void debugOutput(BuildContext context, String dialogText) {
   showDialog(
     context: context,
@@ -66,6 +77,81 @@ void debugOutput(BuildContext context, String dialogText) {
   );
 }
 
+class LogData extends ValueNotifier<LogDataValue> {
+  LogData() : super(LogDataValue([], []));
+
+  void addLog(String log, Color color) {
+    value.logs.insert(0, log); // 添加到列表开始位置
+    value.colors.insert(0, color); // 保持颜色和日志同步
+    // 如果超过1000条日志，自动移除最早的条目
+    if (value.logs.length > 1000) {
+      value.logs.removeLast();
+      value.colors.removeLast();
+    }
+    notifyListeners(); // 通知监听者数据变更
+  }
+
+  void clear() {
+    value = LogDataValue([], []);
+  }
+}
+
+class LogDataValue {
+  List<String> logs;
+  List<Color> colors;
+
+  LogDataValue(this.logs, this.colors);
+}
+
+LogData logData = LogData();
+
+powerLog(String log, {Color color = Colors.black}) {
+  logData.addLog(log, color);
+  if (isDebug) {
+    print(log);
+  }
+}
+
+void powerDebug(BuildContext context) {
+  logData.clear();
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('日志系统'),
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.9, //屏幕宽度的90%
+          height: MediaQuery.of(context).size.width * 0.9, //屏幕高度的150%
+          child: ValueListenableBuilder<LogDataValue>(
+            valueListenable: logData,
+            builder: (context, value, child) {
+              return ListView.builder(
+                itemCount: value.logs.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: value.colors[index],
+                    child: ListTile(
+                      title: Text(value.logs[index],
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('收到'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
 /***************************************************************
     数据索引
@@ -229,17 +315,8 @@ class DataIndexTree{
 
         List<dynamic> dataIdList;
         // 检查数据是否为 List 类型
-        if (jsonData is List) {
+        if (jsonString.contains("[")) {
           dataIdList = jsonData;
-
-          // 检查列表是否为空
-          if(dataIdList.isEmpty){
-            loadingState[tag]!.value = "error";
-            loading(tag);
-            return;
-          }
-
-          // 其他处理逻辑
         } else {
           // 如果数据不是列表，则进行相应的错误处理
           print('数据不是列表类型');
@@ -294,7 +371,7 @@ class DataIndexLeaf with PowerLoad{
       "succeed"
     ]
     );
-    await loading("create", false);
+    await loading("create", true);
   }
   //数据缓存
   get(DataIndex myIndex) async {
@@ -315,7 +392,7 @@ class DataIndexLeaf with PowerLoad{
       "dataId":myIndex.dataId,
     }, keyL
     );
-    await loading("get", false);
+    await loading("get", true);
   }
   //更新数据
   update(DataIndex myIndex,Map<String,String>data) async{
@@ -328,7 +405,7 @@ class DataIndexLeaf with PowerLoad{
       "succeed"
     ]
     );
-    await loading("update", false);
+    await loading("update", true);
   }
   //删除数据
   delete(DataIndex myIndex) async{
@@ -340,7 +417,7 @@ class DataIndexLeaf with PowerLoad{
       "succeed"
     ]
     );
-    await loading("delete", false);
+    await loading("delete", true);
   }
   //点赞
   like(DataIndex myIndex) async{
@@ -352,7 +429,7 @@ class DataIndexLeaf with PowerLoad{
       "succeed"
     ]
     );
-    await loading("like", false);
+    await loading("like", true);
   }
 }
 
@@ -383,6 +460,7 @@ mixin DataPart {
     dataIndexLeafMap.value[theIndex] = DataIndexLeaf();
   }
 
+  /*
   //返回监听器
   getIndexTreeLoadingState(DataIndex theIndex){
     if(dataIndexLeafMap.value.containsKey(theIndex)){
@@ -399,6 +477,8 @@ mixin DataPart {
     else buildDataIndex(theIndex);
   }
 
+   */
+
   //获取索引树
   DataIndexTree getDataIndexTree(DataIndex theIndex){
 
@@ -410,18 +490,19 @@ mixin DataPart {
 
   //获取数据叶
   DataIndexLeaf getDataIndexLeaf(DataIndex theIndex){
-    
+
     //如果存在则返回已经存在的数据
     if(dataIndexLeafMap.value.containsKey(theIndex)){
-      
       dataIndexLeafMap.value[theIndex]!.focus();
+      if(dataIndexLeafMap.value[theIndex]!.isSucceed("get"))
+        return dataIndexLeafMap.value[theIndex]!;
       dataIndexLeafMap.value[theIndex]!.get(theIndex);
       return dataIndexLeafMap.value[theIndex]!;
     }
 
     else {
       buildDataIndex(theIndex);
-      //遍历dataleafmap
+      //遍历dataLeafMap
       dataIndexLeafMap.value.forEach((key, value) {
         value.release();
       });

@@ -70,12 +70,16 @@ mixin PowerLoad{
   }
   //是否加载成功
   bool isSucceed(String loadingCmd){
+    if(!loadingStateM.containsKey(loadingCmd))
+      return false;
     if(loadingStateM[loadingCmd]!.isSucceed())
       changeUI();
     return loadingStateM[loadingCmd]!.isSucceed();
   }
   //是否加载失败
   bool isError(String loadingCmd){
+    if(!loadingStateM.containsKey(loadingCmd))
+      return true;
     if(loadingStateM[loadingCmd]!.isError())
       changeUI();
     return loadingStateM[loadingCmd]!.isError();
@@ -125,6 +129,7 @@ mixin PowerLoad{
   }
   //错误处理
   error(String loadingCmd,bool autoStop) async {
+    powerLog("指令$loadingCmd加载失败");
     loadingStateM[loadingCmd]!.loadingState = "error";
     if(autoStop)
       await Future.delayed(Duration(microseconds: 144));
@@ -158,6 +163,7 @@ mixin PowerLoad{
       if(loadingStateM[loadingCmd]!.stopCount>=4)stop(loadingCmd);
     }
 
+    powerLog("初始化指令$loadingCmd");
     var headers = {
       'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
     };
@@ -166,20 +172,32 @@ mixin PowerLoad{
 
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    powerLog("打包完成,开始连接");
 
-    LL("[连接状态]"+response.statusCode.toString());
+    http.StreamedResponse response;
+    try{
+      response = await request.send();
+    }
+    catch(e){
+      powerLog(e.toString());
+      return error(loadingCmd,autoStop);
+    }
+
+
+    powerLog("连接状态${response.statusCode.toString()}");
 
     //成功
     if (response.statusCode == 200) {
       String json = await response.stream.bytesToString();
-      LL("[服务器返回]"+json);
+      powerLog("服务器返回$json");
       //解析json
       dataM[loadingCmd] = jsonDecode(json);
       //验证全部key是否存在
       for(var key in keyL[loadingCmd]!)
         if(!dataM[loadingCmd]!.containsKey(key))
           return error(loadingCmd,autoStop);
+      //成功
+      powerLog("指令$loadingCmd成功完成");
       return success(loadingCmd);
     }
     //寄了

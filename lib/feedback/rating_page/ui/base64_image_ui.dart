@@ -8,19 +8,68 @@ import 'package:path_provider/path_provider.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 
-class Base64Image extends StatelessWidget {
-  final String base64String;
+import 'dart:convert';
+import 'package:flutter/material.dart';
+// 假设 ImagePreviewPage 已经在其他地方定义好了
+
+class Base64Image extends StatefulWidget {
+  String base64String;
   final double width;
   final double height;
 
-  Base64Image(
-      {required this.base64String, required this.width, required this.height,});
+  Base64Image({
+    Key? key,
+    required this.base64String,
+    required this.width,
+    required this.height,
+  }) : super(key: key);
+
+  @override
+  _Base64ImageState createState() => _Base64ImageState();
+}
+
+class _Base64ImageState extends State<Base64Image> {
+
+  late Widget img;
+
+  loadImg(){
+    img = Image.memory(
+      base64Decode(widget.base64String),
+      width: widget.width,
+      height: widget.height,
+      fit: BoxFit.cover,
+    );
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    img = Container(
+      width: widget.width,
+      height: widget.height,
+      color: Colors.grey,
+    );
+
+    if (widget.base64String == " ") {
+      widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    //return Text("12313");
-    //圆角,边框
+    try{
+      loadImg();
+    }
+    catch(e){
+      widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
+      print(e);
+    }
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0), // 设置圆角半径
       child: InkWell(
@@ -28,20 +77,16 @@ class Base64Image extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ImagePreviewPage(base64String: base64String)),
+              builder: (context) => ImagePreviewPage(base64String: widget.base64String),
+            ),
           );
         },
-        child: Image.memory(
-          base64Decode(base64String),
-          width: width,
-          height: height,
-          fit: BoxFit.cover,
-        ),
+        child: img,
       ),
     );
   }
 }
+
 
 class ImagePreviewPage extends StatelessWidget {
   final String base64String;

@@ -294,25 +294,26 @@ class _CreateThemeState extends State<CreateTheme> {
       "themeDescribe": description(),
       "themeCreator": myUserId
     };
+    Map<int,DataIndexLeaf> objectLeafL = {};
 
+    for(int i = 0; i < 5; i++) {
+      objectLeafL[i] = DataIndexLeaf();
+    }
+
+    powerDebug(context);
     await themeLeaf.create("theme", themeData);
+    //等待两秒
     //debugOutput(context, themeLeaf.log.toString());
-
     // 构建评分对象数据
-    for (int i = 0; i < 1; i++) {
-      DataIndexLeaf objectLeaf = DataIndexLeaf();
-      Map<String, String> objectData = {
-        "themeId": objectLeaf.dataM['succeed']!.toString(),
+    for (int i = 0; i < 5; i++) {
+      objectLeafL[i]!.create("object", {
+        "themeId": themeLeaf.dataM['create']!['succeed']!.toString(),
         "objectName": objectName(i),
         "objectImage": objectImg(i),
         "objectDescribe": " ",
         "objectCreator": myUserId,
         "objectRating": "0.0",
-      };
-      objectLeaf.create("object", objectData);
-      //等待2s
-      await Future.delayed(Duration(seconds: 2));
-      debugOutput(context, objectLeaf.log.toString());
+      });
     }
 
   }

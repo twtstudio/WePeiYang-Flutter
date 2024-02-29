@@ -279,7 +279,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                 color: Color.fromRGBO(255, 255, 255, 0),///背景透明
                 borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
             ),
-            child: LoadingDots(dataIndexTree),
+            child: IndexTreeLoadingDots(dataIndexTree),
           ),
         ):
         Container(),
