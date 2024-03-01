@@ -87,8 +87,8 @@ class _EmailBindPageState extends State<EmailBindPage> {
                   hintText: S.current.email2,
                   hintStyle: hintStyle,
                   filled: true,
-                  fillColor:
-                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                  fillColor: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
@@ -140,8 +140,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
             padding: const EdgeInsets.only(left: 15),
             child: WButton(
                 child: Icon(Icons.arrow_back,
-                    color:
-                        WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),

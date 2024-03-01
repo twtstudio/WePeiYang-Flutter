@@ -1542,12 +1542,12 @@ class _AnimatedOptionState extends State<AnimatedOption>
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelStyle: TextUtil.base
-                            .reverse(context)
+                            .bright(context)
                             .NotoSansSC
                             .w400
                             .sp(16),
                         hintStyle: TextUtil.base
-                            .reverse(context)
+                            .bright(context)
                             .NotoSansSC
                             .w800
                             .sp(16),
@@ -1557,7 +1557,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      style: TextUtil.base.reverse(context).medium.sp(16),
+                      style: TextUtil.base.bright(context).medium.sp(16),
                     ),
                     Container(
                         height: 1.5,
