@@ -23,7 +23,7 @@ import '../../../../commons/preferences/common_prefs.dart';
 /***************************************************************
     服务器IP,与基本数据类型
  ***************************************************************/
-const String ServerIP = "http://4l88qh58.dongtaiyuming.net";
+const String ServerIP = "http://120.26.59.82:2077";
 const List<String> dataTypeList = ["mainPage","theme","object","comment"];
 const bool isDebug = true;
 
@@ -262,7 +262,7 @@ class DataIndexTree{
 
     //中断网络请求
     loadingCount += 1;
-    if(loadingCount>2*tagList.length){
+    if(loadingCount>8*tagList.length){
       stop();
     }
     if(stopFlag)return;
@@ -309,6 +309,8 @@ class DataIndexTree{
           // JSON 解析出错，处理异常情况
           print('JSON 解析出错: $e');
           loadingState[tag]!.value = "error";
+          //等待400毫秒
+          await Future.delayed(Duration(milliseconds: 400));
           loading(tag);
           return;
         }
@@ -321,6 +323,8 @@ class DataIndexTree{
           // 如果数据不是列表，则进行相应的错误处理
           print('数据不是列表类型');
           loadingState[tag]!.value = "error";
+          //等待400毫秒
+          await Future.delayed(Duration(milliseconds: 400));
           loading(tag);
           return;
         }
@@ -345,12 +349,16 @@ class DataIndexTree{
       } else {
         ///失败请求
         loadingState[tag]!.value = "error";
+        //等待400毫秒
+        await Future.delayed(Duration(milliseconds: 400));
         loading(tag);
         return;
       }
     } catch (e) {
       ///网络错误
       loadingState[tag]!.value = "error";
+      //等待400毫秒
+      await Future.delayed(Duration(milliseconds: 400));
       loading(tag);
       return;
     }
@@ -483,7 +491,10 @@ mixin DataPart {
   DataIndexTree getDataIndexTree(DataIndex theIndex){
 
     //如果存在则返回已经存在的数据
-    if(dataIndexTreeMap.value.containsKey(theIndex)) return dataIndexTreeMap.value[theIndex]!;
+    if(dataIndexTreeMap.value.containsKey(theIndex)){
+      dataIndexTreeMap.value[theIndex]!.loading("tag");
+      return dataIndexTreeMap.value[theIndex]!;
+    }
     else buildDataIndex(theIndex);
     return getDataIndexTree(theIndex);
   }

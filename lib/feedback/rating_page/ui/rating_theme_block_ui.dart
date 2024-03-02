@@ -39,10 +39,6 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
   //然后是三个最热门的评分对象的评分数量喵
   List<int> hotObjectCommentCountL = [0, 0, 0];
 
-  DataIndexLeaf myData(){
-    return context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
-  }
-
   @override
   void initState(){
     UI.addListener(() { setState(() {});});
@@ -57,22 +53,36 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
   loadUI() async {
 
-    if(myData().isSucceed("get")){
-      themeName= myData().dataM["get"]!["themeName"];
+    if(context
+        .read<RatingPageData>()
+        .getDataIndexLeaf(widget.dataIndex).isSucceed("get")){
+      themeName= context
+          .read<RatingPageData>()
+          .getDataIndexLeaf(widget.dataIndex).dataM["get"]!["themeName"];
       for(var i=0;i<3;++i){
-        if(myData().dataM["get"]!.containsKey("object$i")
+        if(context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex).dataM["get"]!.containsKey("object$i")
         ){
           hotObjectNameL[i]=
-          myData()
+          context
+              .read<RatingPageData>()
+              .getDataIndexLeaf(widget.dataIndex)
               .dataM["get"]!["object$i"]["objectName"];
           hotObjectImageL[i]=
-          myData()
+          context
+              .read<RatingPageData>()
+              .getDataIndexLeaf(widget.dataIndex)
               .dataM["get"]!["object$i"]["objectImage"];
           hotObjectRatingL[i]=
-          myData()
+          context
+              .read<RatingPageData>()
+              .getDataIndexLeaf(widget.dataIndex)
               .dataM["get"]!["object$i"]["objectRating"];
           hotObjectCommentCountL[i]=
-          myData()
+          context
+              .read<RatingPageData>()
+              .getDataIndexLeaf(widget.dataIndex)
               .dataM["get"]!["object$i"]["commentCount"];
 
           UI.value = !UI.value;
@@ -511,7 +521,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           someOfObject(1),
           someOfObject(2),
 
-          (!myData().isSucceed("get"))?
+          (!context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).isSucceed("get"))?
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
             child: Container(
@@ -521,7 +531,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
                   borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
               ),
               child: IndexLeafLoadingDots(
-                  myData()
+                  context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex)
               ),
             ),
           ):
