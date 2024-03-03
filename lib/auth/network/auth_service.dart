@@ -30,6 +30,7 @@ class AuthDio extends DioAbstract {
   InterceptorsWrapper? get errorInterceptor =>
       InterceptorsWrapper(onRequest: (options, handler) {
         options.headers['token'] = CommonPreferences.token.value;
+        print("token: " + CommonPreferences.token.value);
         return handler.next(options);
       }, onResponse: (response, handler) {
         var code = response.data['error_code'] ?? -1;
@@ -288,7 +289,10 @@ class AuthService with AsyncTimer {
         CommonPreferences.room.value = result['room'] ?? "";
         CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
-        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null ? [] : List<String>.from(result['upgradeNeed'].map((x) => json.encode(x)));
+        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null
+            ? []
+            : List<String>.from(
+                result['upgradeNeed'].map((x) => json.encode(x)));
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -344,7 +348,10 @@ class AuthService with AsyncTimer {
         CommonPreferences.room.value = result['room'] ?? "";
         CommonPreferences.bed.value = result['bed'] ?? "";
         CommonPreferences.isLogin.value = true;
-        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null ? [] : List<String>.from(result['upgradeNeed'].map((x) => json.encode(x)));
+        CommonPreferences.accountUpgrade.value = result['upgradeNeed'] == null
+            ? []
+            : List<String>.from(
+                result['upgradeNeed'].map((x) => json.encode(x)));
         onResult(result);
 
         /// 登录成功后尝试更新学期信息
@@ -542,17 +549,18 @@ class AuthService with AsyncTimer {
   }
 
   static Future<bool> accountUpgrade() async {
-      try {
-        var tmp = CommonPreferences.accountUpgrade.value;
-        var res = json.decode(tmp[0]);
-        var rsp = await authDio.put("upgrade",queryParameters: {"typeId": res['id']});
-        if(rsp.data['error_code'] == 0){
-          CommonPreferences.token.value = rsp.data['result'];
-          return true;
-        }
-        else return false;
-      } on DioException{
+    try {
+      var tmp = CommonPreferences.accountUpgrade.value;
+      var res = json.decode(tmp[0]);
+      var rsp =
+          await authDio.put("upgrade", queryParameters: {"typeId": res['id']});
+      if (rsp.data['error_code'] == 0) {
+        CommonPreferences.token.value = rsp.data['result'];
+        return true;
+      } else
         return false;
-      }
+    } on DioException {
+      return false;
+    }
   }
 }

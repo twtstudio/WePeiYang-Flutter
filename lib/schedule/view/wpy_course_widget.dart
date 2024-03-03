@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../commons/widgets/w_button.dart';
+import "package:we_pei_yang_flutter/schedule/extension/logic_extension.dart"
+    show isBeforeTermStart;
 
 class TodayCoursesWidget extends StatelessWidget {
   @override
@@ -29,6 +31,7 @@ class TodayCoursesWidget extends StatelessWidget {
       CourseProvider provider, bool nightMode) {
     /// 如果学期还没开始，则不显示
     if (isOneDayBeforeTermStart) return [];
+
     List<Pair<Course, int>> todayPairs = [];
     int today = DateTime.now().weekday;
     if (DateTime.now().hour < 21) nightMode = false;
@@ -36,11 +39,14 @@ class TodayCoursesWidget extends StatelessWidget {
     provider.totalCourses.forEach((course) {
       for (int i = 0; i < course.arrangeList.length; i++) {
         if (nightMode) {
-          flag = judgeActiveTomorrow(provider.currentWeek, today,
-              provider.weekCount, course.arrangeList[i]);
+          flag = judgeActiveTomorrow(
+              isBeforeTermStart ? 0 : provider.currentWeek,
+              today,
+              provider.weekCount,
+              course.arrangeList[i]);
         } else {
-          flag = judgeActiveInDay(provider.currentWeek, today,
-              provider.weekCount, course.arrangeList[i]);
+          flag = judgeActiveInDay(isBeforeTermStart ? 0 : provider.currentWeek,
+              today, provider.weekCount, course.arrangeList[i]);
         }
         if (flag) todayPairs.add(Pair(course, i));
       }
