@@ -1,16 +1,31 @@
 //评分主题页面下的组件
 //用于展示评分对象
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/create/create_comment.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_comment_block_ui.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/star_ui.dart';
 import '../../view/components/widget/icon_widget.dart';
 import '../page/main_part/object_page.dart';
 import '../page/main_part/theme_page.dart';
+import 'loading_dot.dart';
+
+class hotComment {
+  String creatorImg = " ";
+  String creatorName = "加载中";
+  double ratingValue = 5.0;
+  String commentContext = "加载中";
+  int likeCount = 0;
+
+  hotComment(this.creatorImg, this.creatorName, this.ratingValue,
+      this.commentContext, this.likeCount);
+}
 
 //用来展现评分主题的方块组件
 class RatingObjectBlock extends StatefulWidget {
@@ -23,21 +38,103 @@ class RatingObjectBlock extends StatefulWidget {
 }
 
 class _RatingObjectBlockState extends State<RatingObjectBlock> {
-  late Timer changingDataTimer;
 
   @override
   void initState() {
+    //loadUI();
+    UI.addListener(() { setState(() {});});
     super.initState();
   }
 
   @override
   void dispose() {
-    changingDataTimer.cancel();
     super.dispose();
+  }
+
+  /***************************************************************
+      变量
+   ***************************************************************/
+  //评分对象图片
+  String objectImageBase64 = " ";
+  String objectName = "加载中";
+  String objectDescribe = "加载中";
+  double objectRating = 0.0;
+  int commentCount = 0;
+
+  List<DataIndex> hotCommentIndexL = [NullDataIndex,NullDataIndex];
+
+  ValueNotifier<bool> UI = ValueNotifier<bool>(false);
+
+  //还是pvp大佬
+  loadUI() async {
+    bool stopFlag = true;
+    try {
+      //先加载叶片
+      if (context
+          .read<RatingPageData>()
+          .getDataIndexLeaf(widget.dataIndex)
+          .isSucceed("get")
+      ) {
+        objectImageBase64 = context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["objectImage"];
+        objectName = context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["objectName"];
+        objectDescribe = context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["objectDescribe"];
+        objectRating = context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["objectRating"];
+        commentCount = context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["commentCount"];
+        UI.value = !UI.value;
+      } else {
+        stopFlag = false;
+      }
+      //在加载索引,索引后加载子叶片
+      if(
+      context
+          .read<RatingPageData>()
+          .getDataIndexTree(widget.dataIndex)
+          .isFinish()
+      ){
+        hotCommentIndexL = context
+            .read<RatingPageData>()
+            .getDataIndexTree(widget.dataIndex)
+            .children['hot']!;
+        UI.value = !UI.value;
+
+      } else {
+        stopFlag = false;
+      }
+    } catch (e) {
+      powerLog(e.toString());
+      stopFlag = true;
+    }
+
+    if (!stopFlag) {
+      UI.value = !UI.value;
+      //等待200毫秒后
+      Timer(Duration(milliseconds: 200), () {
+        loadUI();
+      });
+    }
+    else{
+      UI.value = !UI.value;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    loadUI();
     /***************************************************************
         变量
      ***************************************************************/
@@ -52,7 +149,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
 
     Widget objectImage = Base64Image(
       base64String:
-          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==",
+          objectImageBase64,
       width: 15 * mm,
       height: 21 * mm,
     );
@@ -75,7 +172,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "评分对象名称",
+            objectName,
             style: TextStyle(
               fontSize: 3 * mm,
               fontWeight: FontWeight.bold,
@@ -85,8 +182,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             height: 3 * mm,
           ),
           Text(
-            "评分对象"
-            "简介...",
+            objectDescribe,
             style: TextStyle(
               fontSize: 2 * mm,
               color: Colors.grey,
@@ -107,26 +203,19 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
         //居中
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          RatingBar.builder(
-            initialRating: 3.5,
-            minRating: 1,
-            direction: Axis.horizontal,
-            allowHalfRating: true,
-            itemCount: 5,
-            itemSize: 4 * mm,
-            itemBuilder: (context, _) => Icon(
-              Icons.star,
-              color: Colors.lightBlue,
-            ),
+          StarUI(
+            rating: objectRating,
+            size: 4 * mm,
             onRatingUpdate: (rating) {
-              print(rating);
+              showCommentDialog(context, rating);
             },
           ),
           Container(
             height: 3 * mm,
           ),
           Text(
-            "5.0",
+            //转为double后保留一位小数点
+            objectRating.toStringAsFixed(1),
             style: TextStyle(
               fontSize: 5 * mm,
               color: Colors.blue,
@@ -137,7 +226,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             height: 1 * mm,
           ),
           Text(
-            "1999评分",
+            commentCount.toString()+"评分",
             style: TextStyle(
               fontSize: 2 * mm,
               color: Colors.grey,
@@ -172,12 +261,25 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
 
     topPart = Column(
       children: [
-        Divider(),
+        Container(
+          height: 1 * mm,
+          width: screenWidth,
+          color: Colors.grey.withOpacity(0.4),
+        ),
         topPart,
-        Divider(),
+        Container(
+          height: 1 * mm,
+        ),
+        Container(
+          height: 1 * mm,
+          width: screenWidth,
+          color: Colors.grey.withOpacity(0.4),
+        ),
+        Container(
+          height: 1 * mm,
+        ),
       ],
     );
-
 
     /***************************************************************
         热评标题与热评组件
@@ -205,8 +307,8 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           children: [
             topPart,
             hotCommentTitle,
-            RatingCommentBlock(index: 1),
-            RatingCommentBlock(index: 2),
+          RatingCommentBlock(dataIndex: hotCommentIndexL.isNotEmpty ? hotCommentIndexL[0] : NullDataIndex),
+          RatingCommentBlock(dataIndex: hotCommentIndexL.length > 1 ? hotCommentIndexL[1] : NullDataIndex),
           ],
         ));
 
@@ -230,10 +332,17 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => ObjectPage(dataIndex: widget.dataIndex,objectBlock: topPart,),
+                builder: (context) => ObjectPage(
+                  dataIndex: widget.dataIndex,
+                  objectBlock: topPart,
+                ),
               ));
         },
         child: allInOne);
+
+    allInOne = Container(
+      child: allInOne,
+    );
 
     /***************************************************************
         完成!

@@ -87,6 +87,12 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
           UI.value = !UI.value;
         }
+        else{
+          hotObjectNameL[i]="虚位以待~";
+          hotObjectImageL[i]=" ";
+          hotObjectRatingL[i]=4.0;
+          hotObjectCommentCountL[i]=0;
+        }
       }
     }
     else{

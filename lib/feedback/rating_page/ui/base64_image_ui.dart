@@ -67,7 +67,8 @@ class _Base64ImageState extends State<Base64Image> {
     }
     catch(e){
       widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
-      print(e);
+      //print(e);
+      build(context);
     }
 
     return ClipRRect(

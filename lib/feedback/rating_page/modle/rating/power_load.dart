@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
@@ -163,7 +164,7 @@ mixin PowerLoad{
       if(loadingStateM[loadingCmd]!.stopCount>=4)stop(loadingCmd);
     }
 
-    powerLog("初始化指令$loadingCmd");
+    powerLog("初始化指令$loadingCmd,url:${uriM[loadingCmd]},body:${bodyM[loadingCmd].toString().substring(0, min(40, bodyM[loadingCmd].toString().length))}");
     var headers = {
       'User-Agent': 'Apifox/1.0.0 (https://apifox.com)'
     };
@@ -189,7 +190,7 @@ mixin PowerLoad{
     //成功
     if (response.statusCode == 200) {
       String json = await response.stream.bytesToString();
-      powerLog("服务器返回$json");
+      powerLog("服务器返回${json.substring(0,min(40, json.length))}");
       //解析json
       dataM[loadingCmd] = jsonDecode(json);
       //验证全部key是否存在

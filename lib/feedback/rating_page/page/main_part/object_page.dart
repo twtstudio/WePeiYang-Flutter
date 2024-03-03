@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_pag
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/create_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_object_block_ui.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/tag_ui.dart';
 
 import '../../../../commons/widgets/loading.dart';
 import '../../../view/lake_home_page/normal_sub_page.dart';
@@ -30,10 +31,6 @@ class _ObjectPageState extends State<ObjectPage> {
       数据
    ***************************************************************/
 
-  //索引
-  late DataIndexTree dataIndexTree;
-  //数据
-  late DataIndexLeaf dataIndexLeaf;
   //排序方式
   late String sortType;
 
@@ -63,15 +60,6 @@ class _ObjectPageState extends State<ObjectPage> {
     context.read<RatingPageData>().buildDataIndex(widget.dataIndex);
 
     sortType = context.read<RatingPageData>().nowSortType.value;
-    dataIndexTree = context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
-    dataIndexLeaf = context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
-
-    //当loadingState发生变化时刻,更新页面数据
-    dataIndexTree.loadingState[sortType]!.addListener(() {
-      setState(() {
-
-      });
-    });
 
     context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).UI.addListener(() {
       setState(() {
@@ -218,7 +206,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
     Widget objectBlock = widget.objectBlock;
     objectBlock = Positioned(
-      top: 22*mm,
+      top: 26*mm,
       left: 0*mm,
       child: objectBlock,
     );
@@ -240,7 +228,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
     topPart = Container(
       width: screenWidth,
-      height: 50*mm,
+      height: 55*mm,
       child: topPart,
     );
 
@@ -275,9 +263,7 @@ class _ObjectPageState extends State<ObjectPage> {
         child: ListView.builder(
           controller: _scrollController,
           itemCount:
-          dataIndexTree.children[
-            context.read<RatingPageData>().nowSortType
-          ]!.length + 100,
+          144,
           itemBuilder: (BuildContext context, int index) {
 
             /***************************************************************
@@ -289,54 +275,10 @@ class _ObjectPageState extends State<ObjectPage> {
                 children: [
                   topPart,
                   //分割线
-                  Divider(),
-                  Row(
-                    children: [
-                      Container(
-                        width: 20,
-                      ),
-                      Text(
-                        "热度 ",
-                        style: TextStyle(
-                          color: context
-                              .read<RatingPageData>()
-                              .nowSortType
-                              .value ==
-                              "热度"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text(
-                        "时间 ",
-                        style: TextStyle(
-                          color: context
-                              .read<RatingPageData>()
-                              .nowSortType
-                              .value ==
-                              "时间"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            "    (下拉以切换)",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold, // 设置字体为粗体
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    ],
+                  TagUI(dataIndexTree:
+                  context
+                      .read<RatingPageData>()
+                      .getDataIndexTree(widget.dataIndex)
                   ),
                   Divider(),
                   //黑色粗体文本,全部评论
@@ -350,7 +292,7 @@ class _ObjectPageState extends State<ObjectPage> {
              ***************************************************************/
             return Center(
                 child: ListTile(
-                  title: RatingCommentBlock(index: index,),
+                  title: RatingCommentBlock(dataIndex: NullDataIndex,),
                   // 添加其他列表项的内容和样式
                 ));
           },

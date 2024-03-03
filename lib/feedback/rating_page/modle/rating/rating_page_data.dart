@@ -113,7 +113,6 @@ powerLog(String log, {Color color = Colors.black}) {
 }
 
 void powerDebug(BuildContext context) {
-  logData.clear();
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -317,7 +316,7 @@ class DataIndexTree{
 
         List<dynamic> dataIdList;
         // 检查数据是否为 List 类型
-        if (jsonString.contains("[")) {
+        if (jsonString.toString().contains("[")) {
           dataIdList = jsonData;
         } else {
           // 如果数据不是列表，则进行相应的错误处理
@@ -492,7 +491,6 @@ mixin DataPart {
 
     //如果存在则返回已经存在的数据
     if(dataIndexTreeMap.value.containsKey(theIndex)){
-      dataIndexTreeMap.value[theIndex]!.loading("tag");
       return dataIndexTreeMap.value[theIndex]!;
     }
     else buildDataIndex(theIndex);

@@ -16,7 +16,7 @@ class User with PowerLoad{
   User({required this.userId});
 
   //获取用户的数据
-  Future<void> get() async{
+  Future<void> get(String userId) async{
     init(
         "get",
         "$ServerIP/user/get",
@@ -73,20 +73,24 @@ class RatingUserData extends ChangeNotifier{
   }
 
   User getUser(String userId){
-    if(userMap[userId] == null){
-      //遍历全部的user,尝试回收内存
-      userMap.forEach((key, value) {
-        value.release();
-      });
-      userMap[userId] = User(userId: userId);
-      userMap[userId]!.get();
-      return userMap[userId]!;
-    }
-    else{
-      //不许回收
+
+    //如果存在则返回已经存在的数据
+    if(userMap.containsKey(userId)){
+      //powerLog("${userMap[userId]!.dataM.toString()}");
       userMap[userId]!.focus();
+      if(userMap[userId]!.isSucceed("get"))
+        return userMap[userId]!;
+
+      userMap[userId]!.get(userId);
       return userMap[userId]!;
     }
+
+    else {
+      userMap[userId] = User(userId: userId);
+      //遍历dataLeafMap
+      userMap[userId]!.get(userId);
+    }
+    return userMap[userId]!;
   }
 
   //初始化函数
@@ -103,7 +107,7 @@ class RatingUserData extends ChangeNotifier{
     }
     userMap[myUserId] = User(userId: myUserId);
     userMap[myUserId]!.add(myUserName, myUserImg);
-    userMap[myUserId]!.get();
+    userMap[myUserId]!.get(myUserId);
     isInit = true;
   }
 

@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_object_block_
 import '../../../../commons/widgets/loading.dart';
 import '../../../view/lake_home_page/normal_sub_page.dart';
 import '../../ui/loading_dot.dart';
+import '../../ui/tag_ui.dart';
 
 class ThemePage extends StatefulWidget {
   DataIndex dataIndex;
@@ -42,7 +43,7 @@ class _ThemePageState extends State<ThemePage> {
 
   String themeName = "名称加载中";
   String themeDescribe = "简介加载中";
-  String themeCreator = "55442";
+  ValueNotifier<String> themeCreator = ValueNotifier(" ");
   String createdAt = "2024-2-29";
   String updatedAt = "2024-2-29";
 
@@ -51,7 +52,6 @@ class _ThemePageState extends State<ThemePage> {
   String creatorName = "不知道";
 
   //当然还有数量
-  int objectCount = 1;
   List<DataIndex> objectIndexL = [NullDataIndex];
 
   //当数量为0时候,不能通过余除获得索引,此时应该返回
@@ -83,15 +83,15 @@ class _ThemePageState extends State<ThemePage> {
 
   bool lockLoad = false;
 
-  loadUI() {
+  loadUI() async {
+
     bool stopFlag = true;
     try {
       if (context
           .read<RatingPageData>()
           .getDataIndexLeaf(widget.dataIndex)
-          .isSucceed("get")) {
-        //判断值有没有变化
-
+          .isSucceed("get")
+      ) {
         themeName = context
             .read<RatingPageData>()
             .getDataIndexLeaf(widget.dataIndex)
@@ -100,7 +100,7 @@ class _ThemePageState extends State<ThemePage> {
             .read<RatingPageData>()
             .getDataIndexLeaf(widget.dataIndex)
             .dataM["get"]!["themeDescribe"];
-        themeCreator = context
+        themeCreator.value = context
             .read<RatingPageData>()
             .getDataIndexLeaf(widget.dataIndex)
             .dataM["get"]!["themeCreator"];
@@ -113,58 +113,41 @@ class _ThemePageState extends State<ThemePage> {
             .getDataIndexLeaf(widget.dataIndex)
             .dataM["get"]!["updatedAt"];
 
-        UI.value = !UI.value;
-
-        if (context
-            .read<RatingUserData>()
-            .getUser(themeCreator)
-            .isSucceed("get")) {
-          creatorImg = context
-              .read<RatingUserData>()
-              .getUser(themeCreator)
-              .dataM["get"]!["userImg"];
-          creatorName = context
-              .read<RatingUserData>()
-              .getUser(themeCreator)
-              .dataM["get"]!["userName"];
-
-          UI.value = !UI.value;
-        } else {
-          stopFlag = false;
-        }
       } else {
         stopFlag = false;
       }
 
       if (context
-          .read<RatingPageData>()
-          .getDataIndexTree(widget.dataIndex)
-          .isFinish()) {
-        objectCount = context
-            .read<RatingPageData>()
-            .getDataIndexTree(widget.dataIndex)
-            .children
-            .length;
-        objectIndexL = context
-            .read<RatingPageData>()
-            .getDataIndexTree(widget.dataIndex)
-            .children[sortType]!;
-
-        loadState = true;
+          .read<RatingUserData>()
+          .getUser(themeCreator.value)
+          .isSucceed("get")
+      ) {
+        powerLog("获取到了用户数据");
+        creatorImg = context
+            .read<RatingUserData>()
+            .getUser(themeCreator.value)
+            .dataM["get"]!["userImg"];
+        creatorName = context
+            .read<RatingUserData>()
+            .getUser(themeCreator.value)
+            .dataM["get"]!["userName"];
         UI.value = !UI.value;
+
       } else {
         stopFlag = false;
       }
+
     } catch (e) {
-      stopFlag = true;
+      stopFlag = false;
+      powerLog(e.toString());
     }
 
     if (!stopFlag) {
-      changingDataTimer = Timer(Duration(milliseconds: 400), () {
+      changingDataTimer = Timer(Duration(milliseconds: 200), () {
         loadUI();
       });
     } else {
-      lockLoad = true;
+      UI.value = !UI.value;
     }
   }
 
@@ -193,6 +176,7 @@ class _ThemePageState extends State<ThemePage> {
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
+
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
@@ -206,6 +190,10 @@ class _ThemePageState extends State<ThemePage> {
       } catch (e) {
         return 0.0;
       }
+    }
+
+    DataIndexTree dataIndexTree(){
+      return context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
     }
 
     /***************************************************************
@@ -278,14 +266,19 @@ class _ThemePageState extends State<ThemePage> {
       width: screenWidth,
       height: 5 * mm,
       child: Center(
-        child: Text(
-          "主题",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold, // 设置字体为粗体
-            fontSize: 22,
+        child: InkWell(
+          onTap: () {
+            powerDebug(context);
+          },
+          child: Text(
+            "主题",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold, // 设置字体为粗体
+              fontSize: 22,
+            ),
           ),
-        ),
+        )
       ),
     );
 
@@ -457,52 +450,11 @@ class _ThemePageState extends State<ThemePage> {
                   Container(
                     height: 1.5 * mm,
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 20,
-                      ),
-                      Text(
-                        "热度 ",
-                        style: TextStyle(
-                          color: context
-                                      .read<RatingPageData>()
-                                      .nowSortType
-                                      .value ==
-                                  "热度"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Text(
-                        "时间 ",
-                        style: TextStyle(
-                          color: context
-                                      .read<RatingPageData>()
-                                      .nowSortType
-                                      .value ==
-                                  "时间"
-                              ? Colors.blue
-                              : Colors.grey,
-                          fontWeight: FontWeight.bold, // 设置字体为粗体
-                          fontSize: 20,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            "    (下拉以切换)",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold, // 设置字体为粗体
-                              fontSize: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  TagUI(
+                    dataIndexTree:
+                    context
+                        .read<RatingPageData>()
+                        .getDataIndexTree(widget.dataIndex),
                   ),
                   Divider(),
                 ],
@@ -515,11 +467,11 @@ class _ThemePageState extends State<ThemePage> {
 
             return Center(
                 child: ListTile(
-              title: RatingObjectBlock(
-                dataIndex: (objectCount == 0)
-                    ? NullDataIndex
-                    : objectIndexL[getIndex(objectIndexL.length)],
-              ),
+                title: RatingObjectBlock(
+                  dataIndex: (dataIndexTree().children[transSortType[sortType]]!.length!=0)?
+                  dataIndexTree().children[transSortType[sortType]]![index % dataIndexTree().children[transSortType[sortType]]!.length]
+                      : NullDataIndex,
+                ),
               // 添加其他列表项的内容和样式
             ));
           },
