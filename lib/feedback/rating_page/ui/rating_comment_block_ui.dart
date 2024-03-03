@@ -115,10 +115,9 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
               LikeButton(),
             ],
           ),
-          Align(
-            alignment: Alignment.centerRight,
+          Center(
             child: Container(
-              width: screenWidth * 0.8,
+              width: screenWidth * 0.7,
               child: Text(
                 commentContext,
                 style: TextStyle(
@@ -128,12 +127,13 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
               ),
             ),
           ),
+
           Container(
             height: (widget.dataIndex == NullDataIndex) ? 2 * mm : 0,
           ),
           Center(
             child: Container(
-              color: Colors.blue.withOpacity(0.4),
+              color: Colors.grey.withOpacity(0.4),
               width: screenWidth*0.8,
               height: 0.5 * mm,
             )

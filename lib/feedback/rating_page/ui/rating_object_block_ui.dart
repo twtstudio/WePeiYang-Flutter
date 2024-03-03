@@ -207,7 +207,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             rating: objectRating,
             size: 4 * mm,
             onRatingUpdate: (rating) {
-              showCommentDialog(context, rating);
+              showCommentDialog(context, rating, widget.dataIndex);
             },
           ),
           Container(
