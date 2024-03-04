@@ -217,10 +217,6 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                       Container(
                         height: 1*mm,
                       ),
-                      AdCardWidget(),
-                      Container(
-                        height: 1*mm,
-                      ),
                       //分割线
                       Divider(),
                       TagUI(dataIndexTree: dataIndexTree),
