@@ -191,7 +191,7 @@ class _ObjectPageState extends State<ObjectPage> {
       child: Center(
         child: Text(
           "评分",
-          style: TextStyle(
+          style: TextStyle(fontFamily: "NotoSansHans",
             color: Colors.black,
             fontWeight: FontWeight.bold, // 设置字体为粗体
             fontSize: 22,
@@ -228,14 +228,14 @@ class _ObjectPageState extends State<ObjectPage> {
             children: [
               Text(
                 "创建者名称",
-                style: TextStyle(
+                style: TextStyle(fontFamily: "NotoSansHans",
                   color: Colors.black,
                   fontSize: 3 * mm, // 设置文本字体大小
                 ),
               ),
               Text(
                 "创建时间",
-                style: TextStyle(
+                style: TextStyle(fontFamily: "NotoSansHans",
                   color: Colors.grey,
                   fontSize: 2.5 * mm, // 设置文本字体大小
                 ),

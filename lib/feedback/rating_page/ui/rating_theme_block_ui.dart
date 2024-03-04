@@ -243,8 +243,9 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     double topicHeight = 7 * mm;
 
     Widget topicWidget = Text(
-      "#"+ themeName + " >",
+      themeName + " >",
       style: TextStyle(
+        fontFamily: "NotoSansHans",
         fontWeight: FontWeight.bold, // 设置字体为粗体
         fontSize: 4 * mm, // 设置字体尽可能大
         color: Colors.white,
@@ -322,6 +323,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       child: Text(
         '',
         style: TextStyle(
+          fontFamily: "NotoSansHans",
           fontSize: 4*mm, // 设置字体大小
           fontWeight: FontWeight.bold, // 设置字体为粗体
           color: Colors.white,
@@ -393,9 +395,10 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       Widget title = Text(
         hotObjectNameL[index],
         style: TextStyle(
+          fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 18, // 设置字体
-          color: Colors.black,
+          color: Colors.black.withOpacity(0.8),
         ),
       );
 
@@ -446,6 +449,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         hotObjectRatingL[index].toStringAsFixed(1):
         "Null",
         style: TextStyle(
+          fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 30, // 设置字体
           color: widget.color,
@@ -453,7 +457,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       rating = Positioned(
-        top: 1 * mm,
+        top: 0.8 * mm,
         right: 2 * mm,
         child: rating,
       );
@@ -468,6 +472,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           hotObjectCommentCountL[index].toString() + "评分" :
           "评分收集中",
         style: TextStyle(
+          fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 12, // 设置字体
           color: Colors.grey,

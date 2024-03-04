@@ -299,7 +299,7 @@ class _ThemePageState extends State<ThemePage> {
           },
           child: Text(
             "主题",
-            style: TextStyle(
+            style: TextStyle(fontFamily: "NotoSansHans",
               color: Colors.black,
               fontWeight: FontWeight.bold, // 设置字体为粗体
               fontSize: 22,
@@ -324,7 +324,7 @@ class _ThemePageState extends State<ThemePage> {
       height: 6 * mm,
       child: Text(
         themeName,
-        style: TextStyle(
+        style: TextStyle(fontFamily: "NotoSansHans",
           color: Colors.white, // 设置文本颜色为黑色
           fontWeight: FontWeight.bold, // 设置文本粗体
           fontSize: 26.0, // 设置文本字体大小
@@ -347,7 +347,7 @@ class _ThemePageState extends State<ThemePage> {
       height: 7 * mm,
       child: Text(
         themeDescribe,
-        style: TextStyle(
+        style: TextStyle(fontFamily: "NotoSansHans",
           color: Colors.white,
           fontSize: 12.0, // 设置文本字体大小
         ),
@@ -385,7 +385,7 @@ class _ThemePageState extends State<ThemePage> {
               ),
               Text(
                 creatorName,
-                style: TextStyle(
+                style: TextStyle(fontFamily: "NotoSansHans",
                   color: Colors.white,
                   fontSize: 16.0, // 设置文本字体大小
                 ),
@@ -395,7 +395,7 @@ class _ThemePageState extends State<ThemePage> {
               ),
               Text(
                 createdAt,
-                style: TextStyle(
+                style: TextStyle(fontFamily: "NotoSansHans",
                   color: Colors.white,
                   fontSize: 16.0, // 设置文本字体大小
                 ),

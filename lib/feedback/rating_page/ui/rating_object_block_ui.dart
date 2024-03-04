@@ -176,6 +176,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           Text(
             objectName,
             style: TextStyle(
+              fontFamily: "NotoSansHans",
               fontSize: 3 * mm,
               fontWeight: FontWeight.bold,
             ),
@@ -185,7 +186,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           ),
           Text(
             objectDescribe,
-            style: TextStyle(
+            style: TextStyle(fontFamily: "NotoSansHans",
               fontSize: 2 * mm,
               color: Colors.grey,
             ),
@@ -218,7 +219,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           Text(
             //转为double后保留一位小数点
             objectRating.toStringAsFixed(1),
-            style: TextStyle(
+            style: TextStyle(fontFamily: "NotoSansHans",
               fontSize: 5 * mm,
               color: Colors.blue,
               fontWeight: FontWeight.bold,
@@ -230,6 +231,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           Text(
             commentCount.toString()+"评分",
             style: TextStyle(
+              fontFamily: "NotoSansHans",
               fontSize: 2 * mm,
               color: Colors.grey,
             ),
@@ -293,6 +295,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
         child: Text(
           "热评",
           style: TextStyle(
+            fontFamily: "NotoSansHans",
             fontSize: 4 * mm,
             fontWeight: FontWeight.bold,
             color: Colors.grey,

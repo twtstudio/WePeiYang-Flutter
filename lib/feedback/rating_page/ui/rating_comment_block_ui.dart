@@ -80,9 +80,10 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
                 children: [
                   Text(
                     userName,
-                    style: TextStyle(
+                    style: TextStyle(fontFamily: "NotoSansHans",
                       fontSize: 3 * mm,
                       fontWeight: FontWeight.bold,
+                      color: Colors.grey,
                     ),
                   ),
                   Container(
@@ -120,7 +121,7 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
               width: screenWidth * 0.7,
               child: Text(
                 commentContext,
-                style: TextStyle(
+                style: TextStyle(fontFamily: "NotoSansHans",
                   fontSize: 3 * mm,
                   color: Colors.black,
                 ),

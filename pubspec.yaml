@@ -127,6 +127,16 @@ flutter:
     - privacy/
 
   fonts:
+    - family: NotoSansHans
+      fonts:
+        - asset: assets/fonts/zh/NotoSansHans-Regular.otf
+        - asset: assets/fonts/zh/NotoSansHans-Medium.otf
+        - asset: assets/fonts/zh/NotoSansHans-Black.otf
+
+    - family: PingFangSC
+      fonts:
+        - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf
+
     - family: Fourche
       fonts:
         - asset: assets/fonts/en/SFFourcheBoldItalic.ttf
