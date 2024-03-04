@@ -100,8 +100,9 @@ class TodayCoursesWidget extends StatelessWidget {
                           Text(
                             '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
                             style: TextUtil.base.bold.sp(14).customColor(
-                                  WpyTheme.of(context).get(
-                                      WpyColorKey.backgroundGradientEndColor),
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.brightTextColor)
+                                      .withOpacity(0.5),
                                 ),
                           ),
                           SizedBox(height: 4.h),
