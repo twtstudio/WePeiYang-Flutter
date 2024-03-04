@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keframe/keframe.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/create/create_comment.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/create_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
@@ -13,14 +17,17 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/ui/tag_ui.dart';
 
 import '../../../../commons/widgets/loading.dart';
 import '../../../view/lake_home_page/normal_sub_page.dart';
+import '../../ui/loading_dot.dart';
 import '../../ui/rating_comment_block_ui.dart';
+import '../../ui/rotation_route.dart';
 
 class ObjectPage extends StatefulWidget {
 
   DataIndex dataIndex;
   Widget objectBlock;
 
-  ObjectPage({required this.dataIndex,required this.objectBlock});
+  ObjectPage({required this.dataIndex, required this.objectBlock});
+
   @override
   _ObjectPageState createState() => _ObjectPageState();
 }
@@ -46,28 +53,52 @@ class _ObjectPageState extends State<ObjectPage> {
     await Future.delayed(Duration(microseconds: 2000), () {
       refreshController.refreshCompleted();
     });
-    context.read<RatingPageData>().nowSortType.value =
-    context.read<RatingPageData>().nowSortType.value == "热度" ? "时间" : "热度";
+    context
+        .read<RatingPageData>()
+        .nowSortType
+        .value =
+    context
+        .read<RatingPageData>()
+        .nowSortType
+        .value == "热度" ? "时间" : "热度";
     setState(() {});
   }
 
   /***************************************************************
       生命周期
    ***************************************************************/
+
+  Map<String, List<DataIndex>> commentIndexM = {'hot': [], 'time': []};
+
+  myIndexTree() =>
+      context
+          .read<RatingPageData>()
+          .getDataIndexTree(widget.dataIndex);
+
+  loadUI() async {
+    if (myIndexTree().isFinish()) {
+      commentIndexM = myIndexTree().children;
+      setState(() {
+      });
+    }
+    else{
+      return Timer(Duration(milliseconds: 200), () {
+        loadUI();
+      });
+    }
+  }
+
   @override
   void initState() {
-    //初始化
-    context.read<RatingPageData>().buildDataIndex(widget.dataIndex);
-
-    sortType = context.read<RatingPageData>().nowSortType.value;
-
-    context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).UI.addListener(() {
-      setState(() {
-
-      });
-    });
-
-    context.read<RatingPageData>().nowSortType.addListener(() {
+    loadUI();
+    sortType = context
+        .read<RatingPageData>()
+        .nowSortType
+        .value;
+    context
+        .read<RatingPageData>()
+        .nowSortType
+        .addListener(() {
       setState(() {
 
       });
@@ -75,15 +106,35 @@ class _ObjectPageState extends State<ObjectPage> {
     super.initState();
   }
 
+  bool _animationCompleted = false;
   /***************************************************************
       构建
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+
+    var route = ModalRoute.of(context);
+    if (route != null && !_animationCompleted) {
+      void handler(status) {
+        if (status == AnimationStatus.completed) {
+          route.animation?.removeStatusListener(handler);
+          setState(() {
+            _animationCompleted = true;
+          });
+        }
+      }
+      route.animation?.addStatusListener(handler);
+    }
+
+    double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
-    context.read<RatingPageData>().refreshController = refreshController;
+    context
+        .read<RatingPageData>()
+        .refreshController = refreshController;
 
     double getProgress() {
       try {
@@ -114,8 +165,8 @@ class _ObjectPageState extends State<ObjectPage> {
      ***************************************************************/
 
     Widget backButton = Container(
-      width: 4*mm,
-      height: 4*mm,
+      width: 4 * mm,
+      height: 4 * mm,
       child: IconButton(
         icon: Icon(Icons.arrow_back_ios),
         onPressed: () {
@@ -125,8 +176,8 @@ class _ObjectPageState extends State<ObjectPage> {
     );
 
     backButton = Positioned(
-      top:8*mm,
-      left:4*mm,
+      top: 8 * mm,
+      left: 4 * mm,
       child: backButton,
     );
 
@@ -136,7 +187,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
     Widget title = Container(
       width: screenWidth,
-      height: 5*mm,
+      height: 5 * mm,
       child: Center(
         child: Text(
           "评分",
@@ -150,7 +201,7 @@ class _ObjectPageState extends State<ObjectPage> {
     );
 
     title = Positioned(
-      top: 8*mm,
+      top: 8 * mm,
       left: 0,
       child: title,
     );
@@ -163,13 +214,14 @@ class _ObjectPageState extends State<ObjectPage> {
       child: Row(
         children: [
           Container(
-            width: 8*mm,
-            height: 8*mm,
+            width: 8 * mm,
+            height: 8 * mm,
             child: CircleAvatar(
-              backgroundImage: AssetImage("assets/images/feedback/rating_page/creator.jpg"),
+              backgroundImage: AssetImage(
+                  "assets/images/feedback/rating_page/creator.jpg"),
             ),
           ),
-          Container(width: 2*mm,),
+          Container(width: 2 * mm,),
           Column(
             //靠左对齐
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,14 +230,14 @@ class _ObjectPageState extends State<ObjectPage> {
                 "创建者名称",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 3*mm, // 设置文本字体大小
+                  fontSize: 3 * mm, // 设置文本字体大小
                 ),
               ),
               Text(
                 "创建时间",
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 2.5*mm, // 设置文本字体大小
+                  fontSize: 2.5 * mm, // 设置文本字体大小
                 ),
               ),
             ],
@@ -195,8 +247,8 @@ class _ObjectPageState extends State<ObjectPage> {
     );
 
     creatorInfo = Positioned(
-      top: 16*mm,
-      left: 4*mm,
+      top: 16 * mm,
+      left: 4 * mm,
       child: creatorInfo,
     );
 
@@ -206,8 +258,8 @@ class _ObjectPageState extends State<ObjectPage> {
 
     Widget objectBlock = widget.objectBlock;
     objectBlock = Positioned(
-      top: 26*mm,
-      left: 0*mm,
+      top: 26 * mm,
+      left: 0 * mm,
       child: objectBlock,
     );
 
@@ -228,7 +280,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
     topPart = Container(
       width: screenWidth,
-      height: 55*mm,
+      height: 55 * mm,
       child: topPart,
     );
 
@@ -237,73 +289,113 @@ class _ObjectPageState extends State<ObjectPage> {
      ***************************************************************/
 
     Widget mainPage = Container(
-      child: SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: refreshController,
-        header: ClassicHeader(
-          height: 5.h,
-          completeDuration: Duration(milliseconds: 300),
-          idleText: '下拉以刷新推送方式',
-          releaseText: '下拉以刷新推送方式',
-          refreshingText: "刷新中",
-          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-          failedText: '刷新失败（；´д｀）ゞ',
-        ),
-        cacheExtent: 11,
-        enablePullDown: true,
-        onRefresh: _fakeLoadData,
-        footer: ClassicFooter(
-          idleText: '下拉以刷新',
-          noDataText: '无数据',
-          loadingText: '终于写完了',
-          failedText: '加载失败（；´д｀）ゞ',
-        ),
-        enablePullUp: true,
-        onLoading: _fakeLoadData,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount:
-          144,
-          itemBuilder: (BuildContext context, int index) {
-
-            /***************************************************************
-                顶部组件
-             ***************************************************************/
-            if (index == 0) {
-              index -= 1;
-              return Column(
-                children: [
-                  topPart,
-                  //分割线
-                  TagUI(dataIndexTree:
-                  context
-                      .read<RatingPageData>()
-                      .getDataIndexTree(widget.dataIndex)
-                  ),
-                  Divider(),
-                  //黑色粗体文本,全部评论
-
-                ],
-              );
-            }
-
-            /***************************************************************
-                列表内组件
-             ***************************************************************/
-            return Center(
-                child: ListTile(
-                  title: RatingCommentBlock(dataIndex: NullDataIndex,),
-                  // 添加其他列表项的内容和样式
-                ));
-          },
-        ),
-      ),
       color: Colors.white,
+      child: SizeCacheWidget(
+          child: SmartRefresher(
+            physics: BouncingScrollPhysics(),
+            controller: refreshController,
+            header: ClassicHeader(
+              height: 5.h,
+              completeDuration: Duration(milliseconds: 300),
+              idleText: '下拉以刷新推送方式',
+              releaseText: '下拉以刷新推送方式',
+              refreshingText: "刷新中",
+              completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+              failedText: '刷新失败（；´д｀）ゞ',
+            ),
+            cacheExtent: 11,
+            enablePullDown: true,
+            onRefresh: _fakeLoadData,
+            footer: ClassicFooter(
+              idleText: '下拉以刷新',
+              noDataText: '无数据',
+              loadingText: '终于写完了',
+              failedText: '加载失败（；´д｀）ゞ',
+            ),
+            enablePullUp: true,
+            onLoading: _fakeLoadData,
+            child: ListView.builder(
+              controller: _scrollController,
+              cacheExtent: 400,
+              itemCount:
+              145,
+              itemBuilder: (BuildContext context, int index) {
+
+                /***************************************************************
+                    顶部组件
+                 ***************************************************************/
+                if (index == 0) {
+                  index -= 1;
+                  return Column(
+                    children: [
+                      topPart,
+                      //分割线
+                      TagUI(dataIndexTree:
+                      context
+                          .read<RatingPageData>()
+                          .getDataIndexTree(widget.dataIndex)
+                      ),
+                      Divider(),
+                    ],
+                  );
+                }
+                /***************************************************************
+                    列表内组件
+                 ***************************************************************/
+                return FrameSeparateWidget(
+                    index: index,
+                    placeHolder: Container(
+                      color: Colors.white,
+                      height: 30*mm,
+                    ),
+                    child: Center(
+                        child: ListTile(
+                          title: RatingCommentBlock(
+                            dataIndex: (
+                                commentIndexM[transSortType[sortType]!]!.length==0)
+                                ?NullDataIndex
+                                :commentIndexM[transSortType[sortType]!]![index % commentIndexM[transSortType[sortType]!]!.length],),
+                        )
+                    )
+                );
+              },
+            ),
+          )
+      ),
     );
 
     Widget allInOne = Stack(
       children: [
         mainPage,
+        CreateButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                RotationRoute(page: CreateComment())
+            );
+          },
+        ),
+        (myIndexTree().isFinish()&&_animationCompleted)
+            ? Container()
+            : BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+
+          ///整体模糊度
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Color.fromRGBO(255, 255, 255, 0),
+
+                ///背景透明
+                borderRadius: BorderRadius.all(Radius.circular(1.2))
+
+              ///圆角
+            ),
+            child: IndexTreeLoadingDots(context
+                .read<RatingPageData>()
+                .getDataIndexTree(widget.dataIndex)),
+          ),
+        ),
       ],
     );
 

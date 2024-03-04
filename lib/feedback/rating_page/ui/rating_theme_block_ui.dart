@@ -105,9 +105,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
   @override
   Widget build(BuildContext context) {
-
     loadUI();
-
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
@@ -142,7 +140,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
      ***************************************************************/
     double width2 = 60 * mm;
     double height2 = 20 * mm;
-    Color color2 = widget.color.withOpacity(0.8);
+    Color color2 = widget.color.withOpacity(0.6);
 
     Widget widget2 = Container(
       width: width2,
@@ -217,7 +215,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         坐标:左0,上14mm
      ***************************************************************/
     double width5 = 60 * mm;
-    double height5 = 2 * mm;
+    double height5 = 1.5 * mm;
     Color color5 = Colors.black.withOpacity(0.4);
 
     Widget widget5 = Container(
@@ -424,7 +422,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
             begin: Alignment.centerLeft, // 渐变的起始位置
             end: Alignment.centerRight, // 渐变的结束位置
             colors: [
-              widget.color.withOpacity(0.6), // 渐变的起始颜色（白色）
+              widget.color.withOpacity(0.4), // 渐变的起始颜色（白色）
               Color(0xFFF4F4F4), // 渐变的结束颜色（透明）
             ],
           ),

@@ -30,8 +30,9 @@ class hotComment {
 //用来展现评分主题的方块组件
 class RatingObjectBlock extends StatefulWidget {
   DataIndex dataIndex;
+  ScrollController scrollController;
 
-  RatingObjectBlock({required this.dataIndex});
+  RatingObjectBlock({required this.dataIndex, required this.scrollController});
 
   @override
   _RatingObjectBlockState createState() => _RatingObjectBlockState();
@@ -41,9 +42,14 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
 
   @override
   void initState() {
-    //loadUI();
-    UI.addListener(() { setState(() {});});
+    UI.addListener(() {
+      setState(() {});
+    });
     super.initState();
+  }
+
+  bool isScroll() {
+    return widget.scrollController.position.isScrollingNotifier.value;
   }
 
   @override
@@ -66,7 +72,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
   ValueNotifier<bool> UI = ValueNotifier<bool>(false);
 
   //还是pvp大佬
-  loadUI() async {
+  Future<void> loadUI() async {
     bool stopFlag = true;
     try {
       //先加载叶片
@@ -95,7 +101,6 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             .read<RatingPageData>()
             .getDataIndexLeaf(widget.dataIndex)
             .dataM["get"]!["commentCount"];
-        UI.value = !UI.value;
       } else {
         stopFlag = false;
       }
@@ -110,18 +115,15 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             .read<RatingPageData>()
             .getDataIndexTree(widget.dataIndex)
             .children['hot']!;
-        UI.value = !UI.value;
-
       } else {
         stopFlag = false;
       }
     } catch (e) {
-      powerLog(e.toString());
+      //powerLog(e.toString());
       stopFlag = true;
     }
 
     if (!stopFlag) {
-      UI.value = !UI.value;
       //等待200毫秒后
       Timer(Duration(milliseconds: 200), () {
         loadUI();
@@ -262,7 +264,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
     topPart = Column(
       children: [
         Container(
-          height: 1 * mm,
+          height: 0.5 * mm,
           width: screenWidth,
           color: Colors.grey.withOpacity(0.4),
         ),
@@ -271,7 +273,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           height: 1 * mm,
         ),
         Container(
-          height: 1 * mm,
+          height: 0.5 * mm,
           width: screenWidth,
           color: Colors.grey.withOpacity(0.4),
         ),
@@ -293,6 +295,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
           style: TextStyle(
             fontSize: 4 * mm,
             fontWeight: FontWeight.bold,
+            color: Colors.grey,
           ),
         ));
 

@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keframe/keframe.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/create/create_theme.dart';
@@ -16,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_u
 
 import '../../../../commons/widgets/loading.dart';
 import '../../../view/lake_home_page/normal_sub_page.dart';
+import '../../ui/rotation_route.dart';
 import '../../ui/tag_ui.dart';
 
 class RatingPageMainPart extends StatefulWidget {
@@ -171,89 +173,103 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
      ***************************************************************/
 
     Widget mainPage = Container(
-      child: SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: refreshController,
-        header: ClassicHeader(
-          height: 5.h,
-          completeDuration: Duration(milliseconds: 300),
-          idleText: '下拉以刷新推送方式',
-          releaseText: '下拉以刷新推送方式',
-          refreshingText: "刷新中",
-          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-          failedText: '刷新失败（；´д｀）ゞ',
-        ),
-        cacheExtent: 11,
-        enablePullDown: true,
-        onRefresh: _fakeLoadData,
-        footer: ClassicFooter(
-          idleText: '下拉以刷新',
-          noDataText: '无数据',
-          loadingText: '终于写完了',
-          failedText: '加载失败（；´д｀）ゞ',
-        ),
-        enablePullUp: true,
-        onLoading: _fakeLoadData,
+      child: SizeCacheWidget(
+        child: SmartRefresher(
+            physics: BouncingScrollPhysics(),
+            controller: refreshController,
+            header: ClassicHeader(
+              height: 5.h,
+              completeDuration: Duration(milliseconds: 300),
+              idleText: '下拉以刷新推送方式',
+              releaseText: '下拉以刷新推送方式',
+              refreshingText: "刷新中",
+              completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+              failedText: '刷新失败（；´д｀）ゞ',
+            ),
+            cacheExtent: 11,
+            enablePullDown: true,
+            onRefresh: _fakeLoadData,
+            footer: ClassicFooter(
+              idleText: '下拉以刷新',
+              noDataText: '无数据',
+              loadingText: '终于写完了',
+              failedText: '加载失败（；´д｀）ゞ',
+            ),
+            enablePullUp: true,
+            onLoading: _fakeLoadData,
 
-        //列表视图
-        child: ListView.builder(
-
-          controller: _scrollController,
-          itemCount:
+            //列表视图
+            child: ListView.builder(
+              cacheExtent: 400,
+              controller: _scrollController,
+              itemCount:
               145,
-          itemBuilder: (BuildContext context, int index) {
+              itemBuilder: (BuildContext context, int index) {
 
-            /***************************************************************
-                顶部组件
-             ***************************************************************/
-            if (index == 0) {
-              index -= 1;
-              Widget top = Column(
-                children: [
-                  AnnouncementBannerWidget(),
+                /***************************************************************
+                    顶部组件
+                 ***************************************************************/
+                if (index == 0) {
+                  index -= 1;
+                  Widget top = Column(
+                    children: [
+                      AnnouncementBannerWidget(),
+                      Container(
+                        height: 1*mm,
+                      ),
+                      AdCardWidget(),
+                      Container(
+                        height: 1*mm,
+                      ),
+                      //分割线
+                      Divider(),
+                      TagUI(dataIndexTree: dataIndexTree),
+                      Divider(),
+                    ],
+                  );
+                  return top;
+                }
+                index-=1;
 
-                  Container(
-                    height: 10,
+                /***************************************************************
+                    列表内组件
+                 ***************************************************************/
+                return FrameSeparateWidget(
+                  index: index,
+                  placeHolder: Container(
+                    color: getProgressColor(getProgress())!.withOpacity(0.4),
+                    height: 50 * mm,
                   ),
-
-                  AdCardWidget(),
-
-                  Container(
-                    height: 10,
+                  child: Center(
+                      child: ListTile(
+                        title: RatingThemeBlock(
+                          dataIndex:
+                          (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
+                          dataIndexTree.children[transSortType[sortType]]![index % dataIndexTree.children[transSortType[sortType]]!.length]
+                              : NullDataIndex,
+                          color: getProgressColor(getProgress())!,
+                        ),
+                        // 添加其他列表项的内容和样式
+                      )
                   ),
+                );
 
-                  //分割线
-                  Divider(),
-
-                  TagUI(dataIndexTree: dataIndexTree),
-
-                  Divider(),
-
-                ],
-              );
-
-              return top;
-            }
-            index-=1;
-
-            /***************************************************************
-                列表内组件
-             ***************************************************************/
-            return Center(
-                child: ListTile(
-                  title: RatingThemeBlock(
-                      dataIndex:
-                      (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
+                return Center(
+                    child: ListTile(
+                      title: RatingThemeBlock(
+                        dataIndex:
+                        (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
                         dataIndexTree.children[transSortType[sortType]]![index % dataIndexTree.children[transSortType[sortType]]!.length]
-                          : NullDataIndex,
-                      color: getProgressColor(getProgress())!,
-                  ),
-                  // 添加其他列表项的内容和样式
-                )
-            );
+                            : NullDataIndex,
+                        color: getProgressColor(getProgress())!,
+                      ),
+                      // 添加其他列表项的内容和样式
+                    )
+                );
 
-          },
-        ),
+              },
+            )
+        )
       ),
       color: Colors.white,
     );
@@ -266,7 +282,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
         {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateTheme()),
+            RotationRoute(page: CreateTheme()),
           );
         }),
 

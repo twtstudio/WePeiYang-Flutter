@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,29 +31,34 @@ class Base64Image extends StatefulWidget {
 
 class _Base64ImageState extends State<Base64Image> {
 
-  late Widget img;
+  noThing()=>Container(
+    width: widget.width,
+    height: widget.height,
+    color: Colors.grey.withOpacity(0.5),
+  );
 
-  loadImg(){
-    img = Image.memory(
-      base64Decode(widget.base64String),
-      width: widget.width,
-      height: widget.height,
-      fit: BoxFit.cover,
-    );
-    setState(() {
+  Future<Widget> decodeImageInBackground() async {
+    try{
 
-    });
+      // 在UI线程中创建图像
+      Image image = Image.memory(
+        await base64Decode(widget.base64String),
+        fit: BoxFit.cover,
+        width: widget.width,
+        height: widget.height,
+      );
+
+      return image;
+    }
+    catch(e){
+      widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
+      return noThing();
+    }
   }
 
   @override
   void initState() {
     super.initState();
-
-    img = Container(
-      width: widget.width,
-      height: widget.height,
-      color: Colors.grey,
-    );
 
     if (widget.base64String == " ") {
       widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
@@ -61,28 +67,36 @@ class _Base64ImageState extends State<Base64Image> {
 
   @override
   Widget build(BuildContext context) {
-
-    try{
-      loadImg();
-    }
-    catch(e){
-      widget.base64String = "iVBORw0KGgoAAAANSUhEUgAAAMwAAADACAMAAAB/Pny7AAAAA1BMVEWFhYWbov8QAAAAPUlEQVR4nO3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvgyZwAABCrx9CgAAAABJRU5ErkJggg==";
-      //print(e);
-      build(context);
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8.0), // 设置圆角半径
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ImagePreviewPage(base64String: widget.base64String),
-            ),
-          );
+    return Opacity(
+      opacity: 1.0,
+      child: FutureBuilder<Widget>(
+        future: decodeImageInBackground(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // 如果异步任务仍在进行中，显示加载指示器
+            return noThing();
+          } else if (snapshot.hasError) {
+            // 如果异步任务出错，显示错误信息
+            return Text('Error: ${snapshot.error}');
+          } else {
+            // 如果异步任务已完成，显示图像
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ImagePreviewPage(
+                      base64String: widget.base64String,
+                    ),
+                  ),
+                );
+              },
+              child: FadeInImageWidget(
+                child: snapshot.data!,
+              )
+            );
+          }
         },
-        child: img,
       ),
     );
   }
@@ -137,6 +151,44 @@ class ImagePreviewPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+
+class FadeInImageWidget extends StatefulWidget {
+  final Widget child;
+  final Duration duration;
+
+  const FadeInImageWidget({
+    required this.child,
+    this.duration = const Duration(milliseconds: 500),
+  });
+
+  @override
+  _FadeInImageWidgetState createState() => _FadeInImageWidgetState();
+}
+
+class _FadeInImageWidgetState extends State<FadeInImageWidget> {
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // 设置一个延时以便动画在组件构建完成后开始
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _opacity = 1.0;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: widget.duration,
+      opacity: _opacity,
+      child: widget.child,
     );
   }
 }

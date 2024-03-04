@@ -29,6 +29,8 @@ dependencies:
   cached_network_image: ^3.2.3
   card_swiper: ^2.0.1
 
+  keframe: ^2.0.2
+
   dio: ^5.3.2
   dio_smart_retry: ^5.0.0
   dio_cookie_caching_handler:

@@ -19,7 +19,6 @@ class RatingCommentBlock extends StatefulWidget {
 class _RatingCommentBlockState extends State<RatingCommentBlock> {
   @override
   void initState() {
-    loadUI();
     super.initState();
   }
 
@@ -41,6 +40,7 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
 
   @override
   Widget build(BuildContext context) {
+    loadUI();
     /***************************************************************
         变量
      ***************************************************************/
@@ -133,9 +133,9 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
           ),
           Center(
             child: Container(
-              color: Colors.grey.withOpacity(0.4),
+              color: Colors.grey.withOpacity(0.2),
               width: screenWidth*0.8,
-              height: 0.5 * mm,
+              height: 0.4 * mm,
             )
           ),
         ],
