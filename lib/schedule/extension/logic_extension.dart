@@ -58,7 +58,10 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
                 if (course.arrangeList[j].weekList[0] ==
                     course.arrangeList[k].weekList[m]) {
                   if (course.arrangeList[k].unitList.last + 1 ==
-                      course.arrangeList[j].unitList.first) {
+                          course.arrangeList[j].unitList.first &&
+                      // 2024.03.04 修正误合并的问题，确保合并的课程在同一天
+                      course.arrangeList[k].weekday ==
+                          (course.arrangeList[j].weekday)) {
                     next = true;
                     break;
                   }
