@@ -74,7 +74,7 @@ double get _cardStep => 6.w;
 
 double get _schedulePadding => 11.67.w;
 
-double get _dateTabHeight => 28.27.w;
+double get _dateTabHeight => 35.27.w; //28.27.w;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class _ClassTableWidget extends StatelessWidget {
@@ -118,6 +118,8 @@ class _ClassTableWidget extends StatelessWidget {
 class _WeekDisplayWidget extends StatelessWidget {
   final double cardWidth;
 
+  static const weekMapper = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
   const _WeekDisplayWidget(
     this.cardWidth, {
     Key? key,
@@ -150,13 +152,26 @@ class _WeekDisplayWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.w),
           ),
           alignment: Alignment.center,
-          child: Text(
-            '${date.month}/${date.day}',
-            style: TextStyle(
-              color: textColor,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${date.month}/${date.day}',
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                "${weekMapper[date.weekday - 1]}",
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         );
       }).toList(),
@@ -231,17 +246,19 @@ class _CourseDisplayWidget extends StatelessWidget {
     int dayCount,
   ) {
     List<Widget> list = [];
-    var d = 1;
+    var d = 0;
     var middleStep = 40.h;
     var now = DateTime.now();
     bool showNightBreak = false;
-    for (var date = DateTime(now.year, now.month, now.day), i = 1;
-        i <= 7;
-        i++, date = date.add(Duration(days: 1))) {
+    for (var date = DateTime(now.year, now.month, now.day), ii = 1;
+        ii <= 7;
+        ii++, date = date.add(Duration(days: 1))) {
       var index = 1;
 
       final dayPlan = plan[date];
+      print("==>$date $dayPlan");
       print(date.toString());
+      d++;
       if (dayPlan == null) continue;
       // dayPlan.removeAt(4);
       // dayPlan.removeAt(6);
@@ -294,7 +311,6 @@ class _CourseDisplayWidget extends StatelessWidget {
           list.add(planItem);
         }
       }
-      d++;
     }
 
     if (showNightBreak) {
