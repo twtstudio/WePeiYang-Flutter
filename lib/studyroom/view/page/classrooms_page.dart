@@ -54,6 +54,7 @@ class _FloorsView extends StatelessWidget {
     final _date = context.watch<TimeProvider>().date;
     initRooms(_session, _date);
     return ListView(
+      physics:BouncingScrollPhysics(),
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(0, 20.h, 0, 50.h),

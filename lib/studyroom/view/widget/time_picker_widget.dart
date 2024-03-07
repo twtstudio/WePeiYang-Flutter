@@ -267,6 +267,10 @@ class _TimeItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.w),
           ),
         ),
+        overlayColor: WpyTheme.of(context).primary == null
+            ? null
+            : MaterialStateColor.resolveWith(
+                (states) => WpyTheme.of(context).primary!.withOpacity(0.1)),
         side: MaterialStateProperty.all(
           BorderSide(
             color: isChecked

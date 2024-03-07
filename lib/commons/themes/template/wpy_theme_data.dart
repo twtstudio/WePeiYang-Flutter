@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/themes/scheme/green_scheme.dart';
+import 'package:we_pei_yang_flutter/commons/themes/scheme/orange_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/purple_scheme.dart';
 
 import '../scheme/dark_scheme.dart';
+import '../scheme/green_scheme.dart';
 import '../scheme/light_scheme.dart';
 import '../scheme/red_scheme.dart';
 
@@ -21,6 +22,7 @@ class WpyThemeData {
     RedScheme(),
     PurpleScheme(),
     OrangeScheme(),
+    GreenScheme(),
   ];
 
   factory WpyThemeData.light() => LightScheme();

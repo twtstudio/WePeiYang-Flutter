@@ -300,6 +300,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                     builder: ((context, child) {
                       return MaterialApp(
                         debugShowCheckedModeBanner: false,
+                        color: WpyTheme.of(context).primary,
                         theme: ThemeData(
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
