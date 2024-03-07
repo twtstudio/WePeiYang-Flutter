@@ -52,3 +52,4 @@ app.*.map.json
 ios/Podfile.lock
 ios/build/
 dev.keystore
+.fvmrc
