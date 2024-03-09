@@ -6,23 +6,21 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-
 import '../ui/base64_image_ui.dart';
+import 'create_page_fun.dart';
 
 final ImagePicker _picker = ImagePicker();
 
 class CreateTheme extends StatefulWidget {
   @override
-  _CreateThemeState createState() => _CreateThemeState();
+  CreateThemeState createState() => CreateThemeState();
 }
 
-class _CreateThemeState extends State<CreateTheme> {
+class CreateThemeState extends State<CreateTheme> {
   //这个是标题哦
   final TextEditingController _titleController = TextEditingController();
-
   //这个是描述哦
   final TextEditingController _descriptionController = TextEditingController();
-
   //这个是评分对象名称哦,共五个
   final List<TextEditingController> _objectNameController =
       List.generate(10, (index) => TextEditingController());
@@ -43,34 +41,31 @@ class _CreateThemeState extends State<CreateTheme> {
   String objectImg(int index) => objectImgList[index]!;
 
   //验证数据有没有填写完整
-  bool isDataComplete() {
+  (String,Color) isDataComplete() {
+    //判断评分主题里有没有重名的
+    for (int i = 0; i < 5; i++) {
+      for (int j = i + 1; j < 5; j++) {
+        if (objectName(i) == objectName(j)) {
+          return ("对象重名了",Colors.red);
+        }
+      }
+    }
     if (title().isEmpty || title().length > 10) {
-      return false;
+      return ("标题长度不对",Colors.red);
     }
     if (description().isEmpty || description().length > 40) {
-      return false;
+      return ("描述长度不对",Colors.red);
     }
     for (int i = 0; i < 5; i++) {
       if (objectName(i).isEmpty || objectName(i).length > 10) {
-        return false;
+        return ("对象名称不对劲",Colors.red);
       }
       if (!objectImgList.containsKey(i)) {
-        return false;
+        return ("好像图片没选全",Colors.red);
       }
     }
-    return true;
-  }
-
-  String fileToBase64(File file) {
-    // 检查文件是否存在
-    if (!file.existsSync()) {
-      throw ArgumentError('文件不存在: ${file.path}');
-    }
-    // 将图片文件读取为字节列表
-    List<int> imageBytes = file.readAsBytesSync();
-    // 将字节列表转换为Base64编码
-    String base64Image = base64Encode(imageBytes);
-    return base64Image;
+    //createTheme(context);
+    return ("正在发送",Colors.black);
   }
 
   // 异步函数来选择图片
@@ -122,6 +117,7 @@ class _CreateThemeState extends State<CreateTheme> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
+
       body: Container(
           color: Colors.white,
           child: ListView(children: [
@@ -196,19 +192,13 @@ class _CreateThemeState extends State<CreateTheme> {
                 FloatingActionButton(
                   onPressed: () => {
                     ScaffoldMessenger.of(context).showSnackBar(
-                        (isDataComplete())?
                         SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Text('发送中'),
-                          duration: Duration(seconds: 3), // 设置显示时间
-                        ):
-                        SnackBar(
-                          backgroundColor: Colors.red,
-                          content: Text('数据不完整或有误'),
+                          backgroundColor: isDataComplete().$2,
+                          content: Text(isDataComplete().$1),
                           duration: Duration(seconds: 3), // 设置显示时间
                         )
                     ),
-                    (isDataComplete())?createTheme(context):null,
+                    (isDataComplete().$2==Colors.black)?createTheme(context):null,
                   },
                   child: Icon(
                     size: 6 * mm,
@@ -284,8 +274,13 @@ class _CreateThemeState extends State<CreateTheme> {
     );
   }
 
+  /*************************************
+   * 创建模块
+   * 包含如下参数
+   * 1.数据类型
+   * 2.数据
+   *************************************/
   createTheme(BuildContext context) async {
-
     //首先构造theme
     DataIndexLeaf themeLeaf = DataIndexLeaf();
     // 构建主题数据
@@ -300,22 +295,43 @@ class _CreateThemeState extends State<CreateTheme> {
       objectLeafL[i] = DataIndexLeaf();
     }
 
-    powerDebug(context);
-    await themeLeaf.create("theme", themeData);
-    //等待两秒
-    //debugOutput(context, themeLeaf.log.toString());
-    // 构建评分对象数据
-    for (int i = 0; i < 5; i++) {
-      objectLeafL[i]!.create("object", {
-        "themeId": themeLeaf.dataM['create']!['succeed']!.toString(),
-        "objectName": objectName(i),
-        "objectImage": objectImg(i),
-        "objectDescribe": " ",
-        "objectCreator": myUserId,
-        "objectRating": "0.0",
-      });
+    try{
+      //powerDebug(context);
+      await themeLeaf.create("theme", themeData);
+      assert(themeLeaf.isSucceed("create"));
+      // 构建评分对象数据
+      for (int i = 0; i < 5; i++) {
+        await objectLeafL[i]!.create("object", {
+          "themeId": themeLeaf.dataM['create']!['succeed']!.toString(),
+          "objectName": objectName(i),
+          "objectImage": objectImg(i),
+          "objectDescribe": " ",
+          "objectCreator": myUserId,
+          "objectRating": "0.0",
+        });
+        assert(objectLeafL[i]!.isSucceed("create"));
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('发送成功'),
+          duration: Duration(seconds: 2), // 设置显示时间
+        )
+      );
     }
+    catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('网络错误'),
+            duration: Duration(seconds: 2), // 设置显示时间
+          )
+      );
+    }
+
+
 
   }
 }
+
 

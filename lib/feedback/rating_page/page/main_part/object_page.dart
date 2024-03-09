@@ -371,7 +371,7 @@ class _ObjectPageState extends State<ObjectPage> {
           onPressed: () {
             Navigator.push(
                 context,
-                RotationRoute(page: CreateComment())
+                RotationRoute(page: CreateComment(dataIndex: widget.dataIndex,ratingValue: 0.0,))
             );
           },
         ),

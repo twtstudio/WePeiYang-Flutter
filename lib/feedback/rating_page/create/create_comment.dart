@@ -2,17 +2,29 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/loading_dot.dart';
 
 import '../modle/rating/rating_page_data.dart';
 import '../ui/base64_image_ui.dart';
 import '../ui/star_ui.dart';
 
-void showCommentDialog(
-    BuildContext context, double rating, DataIndex dataIndex) {
-  String comment = ''; // 用于保存输入的评论内容
 
+
+/************************
+ * 用于创建评论
+ * English: Used to create comments
+ ************************/
+void showCommentDialog(
+    BuildContext context,
+    double rating,
+    DataIndex dataIndex
+    ) {
+
+  String comment = ''; // 用于保存输入的评论内容
   double screenWidth = MediaQuery.of(context).size.width;
   double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
@@ -21,6 +33,7 @@ void showCommentDialog(
   }
 
   createComment(BuildContext context) async {
+    //_print(context, "发送中", Colors.blue);
     //首先构造叶片
     DataIndexLeaf commentLeaf = DataIndexLeaf();
     //构造评论数据
@@ -75,6 +88,13 @@ void showCommentDialog(
                   ),
                 ),
               ),
+              Center(
+                child: IndexLeafCreateDots(
+                    context
+                        .read<RatingPageData>()
+                        .getDataIndexLeaf(dataIndex),
+                ),
+              )
             ],
           ),
         ),
@@ -106,313 +126,233 @@ void showCommentDialog(
 
 
 
-final ImagePicker _picker = ImagePicker();
-
 class CreateComment extends StatefulWidget {
+  final DataIndex dataIndex;
+  double ratingValue;
+  CreateComment({required this.dataIndex,required this.ratingValue});
   @override
-  _CreateCommentState createState() => _CreateCommentState();
+  State<StatefulWidget> createState() {
+    return _CreateCommentState();
+  }
 }
 
 class _CreateCommentState extends State<CreateComment> {
-  //这个是标题哦
-  final TextEditingController _titleController = TextEditingController();
 
-  //这个是描述哦
-  final TextEditingController _descriptionController = TextEditingController();
+  /************************
+   * 初始化数据
+   * English: Initialize data
+   ************************/
+  //评分对象名称~
+  final TextEditingController commentContent = TextEditingController();
+  String objectImageBase64 = " ";
 
-  //这个是评分对象名称哦,共五个
-  final List<TextEditingController> _objectNameController =
-  List.generate(10, (index) => TextEditingController());
-
-  //这个是评分对象图片哦,共五个
-  final Map<int, String> objectImgList = {};
-
-  //获取标题
-  String title() => _titleController.text;
-
-  //获取描述
-  String description() => _descriptionController.text;
-
-  //获取评分对象名称
-  String objectName(int index) => _objectNameController[index].text;
-
-  //获取评分对象图片base64形式
-  String objectImg(int index) => objectImgList[index]!;
-
-  //验证数据有没有填写完整
-  bool isDataComplete() {
-    if (title().isEmpty || title().length > 10) {
-      return false;
-    }
-    if (description().isEmpty || description().length > 40) {
-      return false;
-    }
-    for (int i = 0; i < 5; i++) {
-      if (objectName(i).isEmpty || objectName(i).length > 10) {
-        return false;
-      }
-      if (!objectImgList.containsKey(i)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  String fileToBase64(File file) {
-    // 检查文件是否存在
-    if (!file.existsSync()) {
-      throw ArgumentError('文件不存在: ${file.path}');
-    }
-    // 将图片文件读取为字节列表
-    List<int> imageBytes = file.readAsBytesSync();
-    // 将字节列表转换为Base64编码
-    String base64Image = base64Encode(imageBytes);
-    return base64Image;
-  }
-
-  // 异步函数来选择图片
-  Future<void> selectImage(int index) async {
-    // 从图库中选择图片
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      setState(() {
-        File file = File(image.path);
-        int fileSizeInBytes = file.lengthSync();
-        double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-        // 检查文件大小是否大于4MB
-        if (fileSizeInMB > 4) {
-          debugOutput(context, "图片大小不应超过4MB(2024年2月)");
-          return;
-        }
-        List<int> fileBytes = file.readAsBytesSync();
-        // 对文件内容进行Base64编码
-        String base64String = base64Encode(fileBytes);
-        objectImgList[index] = base64String;
-      });
-    } else {
-      // 用户可能取消了图片选择
-      print('No image selected.');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  /************************
+   * 获取相对长度
+   ************************/
+  double _getMM(BuildContext context){
     double screenWidth = MediaQuery.of(context).size.width;
-    double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
+    return screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          color: Colors.black,
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          '创建评分主题',
-          style: TextStyle(
-              fontSize: 3 * mm,
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
+  /************************
+   * 顶部的UI~,显示当前页面的信息
+   * 退回键,等等
+   * English: Top UI~, display the information of the current page
+   ************************/
+  PreferredSizeWidget _topUI(BuildContext context) {
+    double mm = _getMM(context);
+    return AppBar(
+      leading: IconButton(
+        color: Colors.black,
+        icon: Icon(Icons.arrow_back),
+        onPressed: () => Navigator.pop(context),
       ),
-      body: Container(
-          color: Colors.white,
-          child: ListView(children: [
-            Column(
-              children: [
-                SizedBox(height: 3 * mm),
-                Container(
-                  width: screenWidth,
-                  height: 1 * mm,
-                  color:Colors.black.withOpacity(0.8),
-                ),
-                SizedBox(height: 3 * mm),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: TextField(
-                    controller: _titleController,
-                    decoration: InputDecoration(
-                      hintText: "输入评分标题(最多10字)",
-                      hintStyle:
-                      TextStyle(fontSize: 4 * mm, color: Colors.black,fontWeight: FontWeight.bold),
-                      border: UnderlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 4 * mm),
-                Row(
-                  children: [
-                    SizedBox(width: 4 * mm),
-                    Expanded(
-                      child: TextField(
-                        controller: _descriptionController,
-                        maxLines: null, // 允许输入多行
-                        decoration: InputDecoration(
-                          hintText: "输入简介(最多40字)",
-                          hintStyle:
-                          TextStyle(fontSize: 3 * mm, color: Colors.black),
-                          border: UnderlineInputBorder(), // 无边框
-                        ),
-                        style: TextStyle(fontSize: 2 * mm, color: Colors.black),
-                      ),
-                    ),
-                    Text(
-                      "${_descriptionController.text.length}/40",
-                      style: TextStyle(
-                        fontSize: 2 * mm,
-                        color: _descriptionController.text.length > 40
-                            ? Colors.red
-                            : Colors.black,
-                      ),
-                    ),
-                    SizedBox(width: 4 * mm),
-                  ],
-                ),
-                SizedBox(height: 4 * mm),
-                Container(
-                  width: screenWidth,
-                  height: 1 * mm,
-                  color:Colors.black.withOpacity(0.8),
-                ),
-                SizedBox(height: 2 * mm),
-                ...List.generate(5, (index) => buildItemWidget(mm, index))
-                    .toList(),
-                SizedBox(height: 3 * mm),
-                Container(
-                  width: screenWidth,
-                  height: 1 * mm,
-                  color:Colors.black.withOpacity(0.8),
-                ),
-                SizedBox(height: 3 * mm),
-                //提交
-                FloatingActionButton(
-                  onPressed: () => {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        (isDataComplete())?
-                        SnackBar(
-                          backgroundColor: Colors.green,
-                          content: Text('发送中'),
-                          duration: Duration(seconds: 3), // 设置显示时间
-                        ):
-                        SnackBar(
-                          backgroundColor: Colors.red,
-                          content: Text('数据不完整或有误'),
-                          duration: Duration(seconds: 3), // 设置显示时间
-                        )
-                    ),
-                    (isDataComplete())?createComment(context):null,
-                  },
-                  child: Icon(
-                    size: 6 * mm,
-                    Icons.create_outlined,
-                    color: Colors.white,
-                  ),
-                  backgroundColor: Colors.black.withOpacity(0.8),
-                  elevation: 0,
-                ),
-
-
-              ],
-            ),
-          ])),
+      title: Text(
+        '创建评论',
+        style: TextStyle(
+            fontSize: 3 * mm,
+            color: Colors.black,
+            fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 0,
     );
   }
 
-  //图片选择器
-  Widget buildItemWidget(double mm, int index) {
-    return Container(
-        height: 11 * mm,
-        width: MediaQuery.of(context).size.width - 8 * mm,
-        child: Column(
-            children:[
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await selectImage(index);
-                      setState(() {});
-                    },
-                    child: objectImgList.containsKey(index)
-                        ? Container(
-                      width: 10 * mm,
-                      height: 10 * mm,
-                      decoration: BoxDecoration(
-                        color: Colors.white, // 容器的背景颜色
-                        borderRadius: BorderRadius.circular(8), // 圆角半径
-                        border: Border.all(
-                          color: Colors.black, // 边框颜色
-                          width: 0.1*mm, // 边框宽度
-                        ),
-                      ),
-                      child: IgnorePointer(
-                          ignoring: true, // 设置为 true 即可让子组件不可触摸
-                          child: Base64Image(
-                            base64String: objectImg(index),
-                            width: 10 * mm,
-                            height: 10 * mm,
-                          )
-                      ),
-                    )
-                        : Icon(
-                      Icons.photo,
-                      size: 10 * mm,
-                      color: Colors.black.withOpacity(0.8),
-                    ),
-                  ),
-                  Container(width: 4 * mm),
-                  Expanded(
-                    child:  TextField(
-                      controller: _objectNameController[index],
-                      decoration: InputDecoration(
-                        hintText: '输入对象名称(最多10字)',
-                        hintStyle: TextStyle(fontSize: 3 * mm, color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ]
+  /************************
+   * 用于弹出提示
+   * English: Used to pop up prompts
+   ************************/
+  _print(BuildContext context,String message,Color color){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: color,
+          content: Text(message),
+          duration: Duration(seconds: 2), // 设置显示时间
         )
     );
   }
 
-  createComment(BuildContext context) async {
+  /************************
+   * 装饰条
+   * English: Decorative strip
+   ************************/
+  Widget _decorativeStrip(BuildContext context) {
+    double mm = _getMM(context);
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 1 * mm,
+      color: Colors.black.withOpacity(0.8),
+    );
+  }
 
-    //首先构造Comment
-    DataIndexLeaf CommentLeaf = DataIndexLeaf();
-    // 构建主题数据
-    Map<String, String> CommentData = {
-      "CommentName": title(),
-      "CommentDescribe": description(),
-      "CommentCreator": myUserId
+  /************************
+   * 数据的验证
+   * English: Data verification
+   ************************/
+  (String,Color) _checkData(){
+    if(commentContent.text.length < 1){
+      return ("评论内容不能为空",Colors.red);
+    }
+    if(commentContent.text.length > 100){
+      return ("评论内容过长",Colors.red);
+    }
+    if(widget.ratingValue>5 || widget.ratingValue<0){
+      return ("评分不合法",Colors.red);
+    }
+    return ("上传中",Colors.blue);
+  }
+
+  /************************
+   * 评分条
+   * English: Rating bar
+   ************************/
+  Widget _ratingBar(BuildContext context) {
+    double mm = _getMM(context);
+    return Container(
+      height: 10 * mm,
+      child: RatingBar.builder(
+        initialRating: widget.ratingValue,
+        minRating: 1,
+        direction: Axis.horizontal,
+        allowHalfRating: true,
+        itemCount: 5,
+        itemSize: 6 * mm,
+        itemBuilder: (context, _) =>
+            Icon(
+              Icons.star,
+              color: Colors.lightBlue,
+            ),
+        onRatingUpdate: (rating) {
+          widget.ratingValue = rating;
+        },
+      ),
+    );
+  }
+
+  /************************
+   * 输入框
+   * English: Upload button
+   ************************/
+  Widget _inputBox(BuildContext context) {
+    double mm = _getMM(context);
+    return Center(
+      child: Container(
+        height: 20 * mm,
+        width: MediaQuery.of(context).size.width * 0.9,
+        child: TextField(
+          maxLines: null, // 设置为null以允许输入多行文本
+          controller: commentContent,
+          decoration: InputDecoration(
+            hintText: "输入评论",
+            hintStyle:
+            TextStyle(fontSize: 4 * mm,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+            border: UnderlineInputBorder(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /************************
+   * 用于上传数据~
+   * English: Used to upload data~
+   ************************/
+  _createComment(BuildContext context) async {
+    //首先构造叶片
+    DataIndexLeaf commentLeaf = DataIndexLeaf();
+    //构造评论数据
+    Map<String, String> commentData = {
+      'objectId': widget.dataIndex.dataId,
+      'commentCreator': myUserId,
+      'commentContent': commentContent.text,
+      'ratingValue': widget.ratingValue.toString(),
     };
-    Map<int,DataIndexLeaf> objectLeafL = {};
-
-    for(int i = 0; i < 5; i++) {
-      objectLeafL[i] = DataIndexLeaf();
+    //发送评论
+    try{
+      await commentLeaf.create('comment', commentData);
+      assert(commentLeaf.isSucceed("create"));
+      _print(context, "发送成功", Colors.green);
     }
-
-    powerDebug(context);
-    await CommentLeaf.create("Comment", CommentData);
-    //等待两秒
-    //debugOutput(context, CommentLeaf.log.toString());
-    // 构建评分对象数据
-    for (int i = 0; i < 5; i++) {
-      objectLeafL[i]!.create("object", {
-        "CommentId": CommentLeaf.dataM['create']!['succeed']!.toString(),
-        "objectName": objectName(i),
-        "objectImage": objectImg(i),
-        "objectDescribe": " ",
-        "objectCreator": myUserId,
-        "objectRating": "0.0",
-      });
+    catch(e) {
+      _print(context, "网络错误", Colors.red); // 设置显示时间
     }
+  }
 
+  /************************
+   * 上传按钮
+   * English: `Upload` button
+   ************************/
+  Widget _uploadButton(BuildContext context) {
+    double mm = _getMM(context);
+    return FloatingActionButton(
+      onPressed: () =>
+      {
+        _print(
+            context,
+            _checkData().$1,
+            _checkData().$2
+        ),
+        if(_checkData().$1 == "上传中")
+          _createComment(context)
+      },
+      child: Icon(
+        size: 6 * mm,
+        Icons.create_outlined,
+        color: Colors.white,
+      ),
+      backgroundColor: Colors.black.withOpacity(0.8),
+      elevation: 0,
+    );
+  }
+
+  /************************
+   * 主体UI
+   * English: Main UI
+   ************************/
+  @override
+  Widget build(BuildContext context) {
+    double mm = _getMM(context);
+    return Scaffold(
+      appBar: _topUI(context),
+      body: Column(
+        children: [
+          _decorativeStrip(context),
+          Container(height: 4 * mm),
+          _ratingBar(context),
+          Container(height: 4 * mm),
+          _decorativeStrip(context),
+          Container(height: 4 * mm),
+          _inputBox(context),
+          Container(height: 4 * mm),
+          _decorativeStrip(context),
+          Container(height: 4 * mm),
+          _uploadButton(context)
+        ],
+      ),
+    );
   }
 }
-

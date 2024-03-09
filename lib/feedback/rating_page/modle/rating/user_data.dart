@@ -10,10 +10,10 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_pag
 import 'power_load.dart';
 
 //连接微北洋论坛与评分页面数据的桥梁
-class User with PowerLoad{
+class RatingPageUser with PowerLoad{
   //用户的id
   String userId;
-  User({required this.userId});
+  RatingPageUser({required this.userId});
 
   //获取用户的数据
   Future<void> get(String userId) async{
@@ -53,10 +53,10 @@ late String myUserImg;
 class RatingUserData extends ChangeNotifier{
   //存储本用户的信息
 
-  late User myUser;
+  late RatingPageUser myUser;
   bool isInit=false;
 
-  Map<String,User> userMap={};
+  Map<String,RatingPageUser> userMap={};
 
   Future<String> urlToBase64(String imageUrl) async {
 
@@ -72,7 +72,7 @@ class RatingUserData extends ChangeNotifier{
     }
   }
 
-  User getUser(String userId){
+  RatingPageUser getUser(String userId){
 
     //如果存在则返回已经存在的数据
     if(userMap.containsKey(userId)){
@@ -86,7 +86,7 @@ class RatingUserData extends ChangeNotifier{
     }
 
     else {
-      userMap[userId] = User(userId: userId);
+      userMap[userId] = RatingPageUser(userId: userId);
       //遍历dataLeafMap
       userMap[userId]!.get(userId);
     }
@@ -105,7 +105,7 @@ class RatingUserData extends ChangeNotifier{
         return init();
       });
     }
-    userMap[myUserId] = User(userId: myUserId);
+    userMap[myUserId] = RatingPageUser(userId: myUserId);
     userMap[myUserId]!.add(myUserName, myUserImg);
     userMap[myUserId]!.get(myUserId);
     isInit = true;

@@ -250,19 +250,6 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                   ),
                 );
 
-                return Center(
-                    child: ListTile(
-                      title: RatingThemeBlock(
-                        dataIndex:
-                        (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
-                        dataIndexTree.children[transSortType[sortType]]![index % dataIndexTree.children[transSortType[sortType]]!.length]
-                            : NullDataIndex,
-                        color: getProgressColor(getProgress())!,
-                      ),
-                      // 添加其他列表项的内容和样式
-                    )
-                );
-
               },
             )
         )
@@ -282,7 +269,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
           );
         }),
 
-        (!dataIndexTree.isFinish())?
+        (!context.read<RatingPageData>().getDataIndexTree(widget.dataIndex).isFinish())?
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
           child: Container(

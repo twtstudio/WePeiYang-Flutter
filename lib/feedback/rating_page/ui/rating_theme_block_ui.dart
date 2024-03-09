@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,91 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart
 
 import '../page/main_part/theme_page.dart';
 import 'loading_dot.dart';
+
+
+// Helper function to convert RGB to HSL
+List<double> rgbToHsl(int r, int g, int b) {
+  double red = r / 255;
+  double green = g / 255;
+  double blue = b / 255;
+
+  double max_ = max(max(red, green), blue);
+  double min_ = min(min(red, green), blue);
+
+  double hue, saturation, lightness = (max_ + min_) / 2;
+
+  if (max_ == min_) {
+    hue = saturation = 0;
+  } else {
+    double d = max_ - min_;
+    saturation = lightness > 0.5 ? d / (2 - max_ - min_) : d / (max_ + min_);
+
+    if (max_ == red) {
+      hue = (green - blue) / d + (green < blue ? 6 : 0);
+    } else if (max_ == green) {
+      hue = (blue - red) / d + 2;
+    } else {
+      hue = (red - green) / d + 4;
+    }
+
+    hue *= 60;
+  }
+
+  return [hue, saturation, lightness];
+}
+
+// Helper function to convert HSL to RGB
+Color hslToColor(double hue, double saturation, double lightness) {
+  double c = (1 - (2 * lightness - 1).abs()) * saturation;
+  double x = c * (1 - (((hue / 60) % 2) - 1).abs());
+  double m = lightness - c / 2;
+
+  double red, green, blue;
+  if (hue >= 0 && hue < 60) {
+    red = c;
+    green = x;
+    blue = 0;
+  } else if (hue >= 60 && hue < 120) {
+    red = x;
+    green = c;
+    blue = 0;
+  } else if (hue >= 120 && hue < 180) {
+    red = 0;
+    green = c;
+    blue = x;
+  } else if (hue >= 180 && hue < 240) {
+    red = 0;
+    green = x;
+    blue = c;
+  } else if (hue >= 240 && hue < 300) {
+    red = x;
+    green = 0;
+    blue = c;
+  } else {
+    red = c;
+    green = 0;
+    blue = x;
+  }
+
+  int r = ((red + m) * 255).round();
+  int g = ((green + m) * 255).round();
+  int b = ((blue + m) * 255).round();
+
+  return Color.fromARGB(255, r, g, b);
+}
+
+Color getInverseColor(Color baseColor) {
+  // Convert RGB to HSL
+  List<double> hsl = rgbToHsl(baseColor.red, baseColor.green, baseColor.blue);
+
+  // Calculate analogous color by varying hue
+  double hueOffset = (hsl[0] + 30) % 360;
+
+  // Convert hue back to RGB
+  Color bestColor = hslToColor(hueOffset, hsl[1], hsl[2]);
+
+  return bestColor;
+}
 
 //用来展现评分主题的方块组件喵
 class RatingThemeBlock extends StatefulWidget {
@@ -38,6 +124,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
   List<double> hotObjectRatingL = [4.0, 4.0, 4.0];
   //然后是三个最热门的评分对象的评分数量喵
   List<int> hotObjectCommentCountL = [0, 0, 0];
+  //创建时间
+  String createAt = "2024-3-13 zhk";
 
   @override
   void initState(){
@@ -52,13 +140,21 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
   }
 
   loadUI() async {
-
     if(context
         .read<RatingPageData>()
         .getDataIndexLeaf(widget.dataIndex).isSucceed("get")){
       themeName= context
           .read<RatingPageData>()
           .getDataIndexLeaf(widget.dataIndex).dataM["get"]!["themeName"];
+      try{
+        createAt=
+        context
+            .read<RatingPageData>()
+            .getDataIndexLeaf(widget.dataIndex)
+            .dataM["get"]!["createdAt"];
+      }
+      catch(e){
+      }
       for(var i=0;i<3;++i){
         if(context
             .read<RatingPageData>()
@@ -84,8 +180,6 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
               .read<RatingPageData>()
               .getDataIndexLeaf(widget.dataIndex)
               .dataM["get"]!["object$i"]["commentCount"];
-
-          UI.value = !UI.value;
         }
         else{
           hotObjectNameL[i]="虚位以待~";
@@ -94,9 +188,11 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           hotObjectCommentCountL[i]=0;
         }
       }
+      UI.value = !UI.value;
     }
     else{
       //400毫秒后再执行
+      //UI.value = !UI.value;
       changingDataTimer = Timer(Duration(milliseconds: 400), () {
         loadUI();
       });
@@ -109,7 +205,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     double screenWidth = MediaQuery.of(context).size.width;
     double mm = screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
 
-    var radius = BorderRadius.circular(8);
+    var radius = BorderRadius.circular(4);
 
     /***************************************************************
         背景
@@ -118,8 +214,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         颜色:白
      ***************************************************************/
     double width1 = 60 * mm; // 宽度为屏幕宽度
-    double height1 = 49 * mm; // 高度为屏幕宽度
-    Color color1 = widget.color.withOpacity(0.1);
+    double height1 = 54.5 * mm; // 高度为屏幕宽度
+    Color color1 = widget.color.withOpacity(0.10);
 
     Widget widget1 = Container(
       width: width1,
@@ -248,7 +344,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         fontFamily: "NotoSansHans",
         fontWeight: FontWeight.bold, // 设置字体为粗体
         fontSize: 4 * mm, // 设置字体尽可能大
-        color: Colors.black.withOpacity(0.8),
+        color: Colors.black,
       ),
     );
 
@@ -259,9 +355,33 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     topicWidget = Positioned(
-      top: 3.5 * mm,
+      top: 3 * mm,
       left: 2 * mm,
       child: topicWidget,
+    );
+
+    /***************************************************************
+        装饰图标
+     ***************************************************************/
+    Widget iconWidget = Row(
+      children: [
+        Icon(
+          Icons.keyboard_double_arrow_right_rounded,
+          color: widget.color.withOpacity(0.4),
+          size: 6 * mm,
+        ),
+        Icon(
+          Icons.keyboard_double_arrow_right_rounded,
+          color: widget.color.withOpacity(0.4),
+          size: 6 * mm,
+        ),
+      ],
+    );
+
+    iconWidget = Positioned(
+      top: 5 * mm,
+      right: 3 * mm,
+      child: iconWidget,
     );
 
     /***************************************************************
@@ -273,27 +393,31 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         坐标:左4mm,上9.5mm
      ***************************************************************/
     double ratingCountWidth = 30 * mm;
-    double ratingCountHeight = 2.5 * mm;
+    double ratingCountHeight = 3.5 * mm;
 
     Widget ratingCountWidget;
 
     ratingCountWidget = Container(
-      width: ratingCountWidth,
-      height: ratingCountHeight,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft, // 渐变的起始位置
-          end: Alignment.centerRight, // 渐变的结束位置
-          colors: [
-            widget.color.withOpacity(0.2), // 渐变的起始颜色（白色）
-            widget.color.withOpacity(0), // 渐变的结束颜色（透明）
-          ],
+      color: Colors.white.withOpacity(0.8),
+      child: Text(
+        " "+createAt+" ",
+        style: TextStyle(
+          fontFamily: "NotoSansHans",
+          fontWeight: FontWeight.bold,
+          fontSize: 2.7 * mm, // 设置字体
+          color: Colors.black.withOpacity(0.8),
         ),
       ),
     );
+    
+    //圆角
+    ratingCountWidget = ClipRRect(
+      borderRadius: radius,
+      child: ratingCountWidget,
+    );
 
     ratingCountWidget = Positioned(
-      top: 10.5 * mm,
+      top: 9.4 * mm,
       left: 2 * mm,
       child: ratingCountWidget,
     );
@@ -354,7 +478,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       ///背景
       Widget background = Container(
         width: 56 * mm,
-        height: 10 * mm,
+        height: 11.5 * mm,
         color: Colors.white,
       );
 
@@ -371,8 +495,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       ///图片组件
       Widget base64Image = Base64Image(
         base64String: hotObjectImageL[index],
-        width: 7 * mm,
-        height: 7 * mm,
+        width: 9 * mm,
+        height: 9 * mm,
       );
 
       ///裁剪图片
@@ -382,8 +506,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       base64Image = Positioned(
-        top: 1.5 * mm,
-        left: 1.5 * mm,
+        top: 1.25 * mm,
+        left: 1.25 * mm,
         child: base64Image,
       );
 
@@ -397,14 +521,14 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         style: TextStyle(
           fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
-          fontSize: 18, // 设置字体
-          color: widget.color.withOpacity(0.8),
+          fontSize: 3.5*mm,
+          color: Colors.black,
         ),
       );
 
       title = Positioned(
-        top: 1.5 * mm,
-        left: 10 * mm,
+        top: 2 * mm,
+        left: 11.5 * mm,
         child: title,
       );
 
@@ -413,28 +537,19 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
        ***************************************************************/
 
       double hotCommentWidth = 30 * mm;
-      double hotCommentHeight = 2.5 * mm;
+      double hotCommentHeight = 2 * mm;
 
       Widget hotComment;
 
       hotComment = Container(
         width: hotCommentWidth,
         height: hotCommentHeight,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft, // 渐变的起始位置
-            end: Alignment.centerRight, // 渐变的结束位置
-            colors: [
-              widget.color.withOpacity(0.2), // 渐变的起始颜色（白色）
-              widget.color.withOpacity(0), // 渐变的结束颜色（透明）
-            ],
-          ),
-        ),
+        color: widget.color.withOpacity(0.1),
       );
 
       hotComment = Positioned(
-        bottom: 1 * mm,
-        left: 10 * mm,
+        bottom: 1.25 * mm,
+        left: 11.5 * mm,
         child: hotComment,
       );
 
@@ -447,12 +562,12 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         //保留一位小数
         (hotObjectCommentCountL[index] >= 5)?
         hotObjectRatingL[index].toStringAsFixed(1):
-        "Null",
+        "--",
         style: TextStyle(
           fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
-          fontSize: 30, // 设置字体
-          color: widget.color.withOpacity(0.6),
+          fontSize: 5*mm, // 设置字体
+          color: getInverseColor(widget.color).withOpacity(0.6),
         ),
       );
 
@@ -474,13 +589,13 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         style: TextStyle(
           fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
-          fontSize: 12, // 设置字体
+          fontSize: 2*mm, // 设置字体
           color: Colors.grey,
         ),
       );
 
       commentCount = Positioned(
-        bottom: 0.8 * mm,
+        bottom: 1 * mm,
         right: 1.5 * mm,
         child: commentCount,
       );
@@ -501,7 +616,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       );
 
       allInOne = Positioned(
-        top: 15 * mm + (index) * 11 * mm,
+        top: 15 * mm + (index) * 12.5 * mm + ((index>0)?0.5*mm*(index):0),
         left: 2 * mm,
         child: allInOne,
       );
@@ -515,7 +630,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
     Widget allInOne = Container(
       width: 60 * mm,
-      height: 50 * mm,
+      height: 55.8 * mm,
       child: Stack(
         children: [
           widget1,
@@ -524,6 +639,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           //widget4,
           //widget5,
           topicWidget,
+          iconWidget,
           ratingCountWidget,
           nextPageButton,
           someOfObject(0),
@@ -555,7 +671,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
     allInOne = Container(
       width: screenWidth,
-      height: 51 * mm,
+      height: 55.8 * mm,
       child: Center(
         child: allInOne,
       ),

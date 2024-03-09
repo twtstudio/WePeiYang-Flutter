@@ -128,7 +128,7 @@ class _ThemePageState extends State<ThemePage> {
           .getUser(themeCreator.value)
           .isSucceed("get")
       ) {
-        powerLog("获取到了用户数据");
+        //powerLog("获取到了用户数据");
         creatorImg = context
             .read<RatingUserData>()
             .getUser(themeCreator.value)
@@ -174,6 +174,12 @@ class _ThemePageState extends State<ThemePage> {
     UI.addListener(() {
       setState(() {});
     });
+
+    context
+        .read<RatingPageData>()
+        .getDataIndexTree(widget.dataIndex)
+        .UI
+        .addListener((){setState((){});});
 
     //排序方式变化时,也更新数据
     context.read<RatingPageData>().nowSortType.addListener(() {
@@ -526,7 +532,7 @@ class _ThemePageState extends State<ThemePage> {
           onPressed: () {
             Navigator.push(
               context,
-              RotationRoute(page: CreateObject()),
+              RotationRoute(page: CreateObject(themeIndex: widget.dataIndex,)),
             );
           },
         ),

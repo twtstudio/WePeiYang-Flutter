@@ -77,6 +77,13 @@ void debugOutput(BuildContext context, String dialogText) {
   );
 }
 
+class LogDataValue {
+  final List<String> logs;
+  final List<Color> colors;
+
+  LogDataValue(this.logs, this.colors);
+}
+
 class LogData extends ValueNotifier<LogDataValue> {
   LogData() : super(LogDataValue([], []));
 
@@ -84,7 +91,7 @@ class LogData extends ValueNotifier<LogDataValue> {
     value.logs.insert(0, log); // 添加到列表开始位置
     value.colors.insert(0, color); // 保持颜色和日志同步
     // 如果超过1000条日志，自动移除最早的条目
-    if (value.logs.length > 1000) {
+    if (value.logs.length > 100) {
       value.logs.removeLast();
       value.colors.removeLast();
     }
@@ -96,14 +103,11 @@ class LogData extends ValueNotifier<LogDataValue> {
   }
 }
 
-class LogDataValue {
-  List<String> logs;
-  List<Color> colors;
-
-  LogDataValue(this.logs, this.colors);
-}
-
 LogData logData = LogData();
+
+String getFirstLog(){
+  return logData.value.logs[0]??" ";
+}
 
 powerLog(String log, {Color color = Colors.black}) {
   logData.addLog(log, color);
@@ -446,6 +450,8 @@ class DataIndexLeaf with PowerLoad{
  ***************************************************************/
 
 mixin DataPart {
+
+
 
   /***************************************************************
       数据存储相关参数

@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/create/create_comment.d
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_comment_block_ui.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rotation_route.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/star_ui.dart';
 import '../../view/components/widget/icon_widget.dart';
 import '../page/main_part/object_page.dart';
@@ -210,7 +211,15 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             rating: objectRating,
             size: 4 * mm,
             onRatingUpdate: (rating) {
-              showCommentDialog(context, rating, widget.dataIndex);
+              Navigator.push(
+                context,
+                RotationRoute(
+                    page: CreateComment(
+                      dataIndex: widget.dataIndex,
+                      ratingValue: rating,
+                    )
+                ),
+              );
             },
           ),
           Container(
