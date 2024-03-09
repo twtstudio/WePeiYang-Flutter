@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -11,6 +12,7 @@ import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
+import '../view/edit_bottom_sheet.dart';
 
 class CustomCoursesPage extends StatelessWidget {
   @override
@@ -38,11 +40,8 @@ class CustomCoursesPage extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.fromLTRB(10.w, 9.h, 8.w, 8.h),
-                  child: Image.asset(
-                    'assets/images/schedule/back.png',
-                    height: 20.r,
-                    width: 20.r,
-                  ),
+                  child: ColoredIcon('assets/images/schedule/back.png',
+                  color: WpyTheme.of(context).primary,),
                 ),
               ),
             ),
@@ -50,6 +49,30 @@ class CustomCoursesPage extends StatelessWidget {
             leadingWidth: 40.w,
             title: Text('我的自定义课程',
                 style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
+            actions: [
+              WButton(
+                onPressed:() {
+                  var pvd = context.read<EditProvider>();
+                  pvd.init();
+                  showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+                    ),
+                    isDismissible: true,
+                    enableDrag: false,
+                    isScrollControlled: true,
+                    builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),
+                  );
+                } ,
+                child: Container(
+                  margin: EdgeInsets.only(right: 15.w),
+                  width: 24.r,height: 24.r,
+                  child: ColoredIcon("assets/images/schedule/add2.png",
+                      color:WpyTheme.of(context).primary),
+                ),
+              )
+            ],
           ),
           body: Theme(
             data: Theme.of(context).copyWith(
