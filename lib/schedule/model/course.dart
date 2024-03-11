@@ -75,6 +75,11 @@ class Course {
         'arrangeList': arrangeList.map((e) => e.toJson()).toList(),
         'type': type
       };
+
+  @override
+  String toString() {
+    return 'Course{name: $name, classId: $classId, courseId: $courseId, credit: $credit, campus: $campus, weeks: $weeks, teacherList: $teacherList, arrangeList: $arrangeList, type: $type, index: $index}';
+  }
 }
 
 /// [weekday], [weekList], [unitList]均从1开始数，例如[weekDay] == 1代表周一
@@ -87,6 +92,7 @@ class Arrange {
   List<String> teacherList = []; // 讲这节课的所有老师，带职称
   /// 以下属性不需要缓存，临时存储
   int showMode = 0; // 0->正常, 1->“漂浮”显示, 2->不显示内容
+  bool isExperiment = false; // 是否是实验课
 
   /// 爬课表用，构造后需要补上location属性
   Arrange.spider(
@@ -95,22 +101,62 @@ class Arrange {
   /// 自定义课表用
   Arrange.empty();
 
+  Arrange({
+    required this.name,
+    required this.location,
+    required this.weekday,
+    required this.weekList,
+    required this.unitList,
+    required this.teacherList,
+    required this.showMode,
+    required this.isExperiment,
+  });
+
+  Arrange copyWith({
+    String? name,
+    String? location,
+    int? weekday,
+    List<int>? weekList,
+    List<int>? unitList,
+    List<String>? teacherList,
+    int? showMode,
+    bool? isExperiment,
+  }) {
+    return Arrange(
+      name: name ?? this.name,
+      location: location ?? this.location,
+      weekday: weekday ?? this.weekday,
+      weekList: weekList ?? this.weekList,
+      unitList: unitList ?? this.unitList,
+      teacherList: teacherList ?? this.teacherList,
+      showMode: showMode ?? this.showMode,
+      isExperiment: isExperiment ?? this.isExperiment,
+    );
+  }
+
   Arrange.fromJson(Map<String, dynamic> map)
       : location = map['location'],
         weekday = map['weekday'],
         weekList = List<int>.from(map['weekList']),
         unitList = List<int>.from(map['unitList']),
         teacherList = []
-          ..addAll((map['teacherList'] as List).map((e) => e.toString()));
+          ..addAll((map['teacherList'] as List).map((e) => e.toString())),
+        name = map.containsKey('name') ? map['name'] : null,
+        isExperiment =
+            map.containsKey('isExperiment') ? map['isExperiment'] : false;
 
   Map<String, dynamic> toJson() => {
         'location': location,
         'weekday': weekday,
         'weekList': weekList,
         'unitList': unitList,
-        'teacherList': teacherList
+        'teacherList': teacherList,
+        'name': name,
+        'isExperiment': isExperiment,
       };
 
   @override
-  String toString() => toJson().toString();
+  String toString() {
+    return 'Arrange{name: $name, location: $location, weekday: $weekday, weekList: $weekList, unitList: $unitList, teacherList: $teacherList, showMode: $showMode}';
+  }
 }

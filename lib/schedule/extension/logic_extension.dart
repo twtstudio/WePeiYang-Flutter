@@ -46,6 +46,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
       if (judgeActiveInWeek(
           provider.selectedWeek, provider.weekCount, course.arrangeList[j])) {
         pairList.add(Pair<Course, int>(course, j));
+
         //对于特殊课程做了合并
         for (int j = 0; j < course.arrangeList.length; j++) {
           if (course.arrangeList[j].weekList.length == 1) {

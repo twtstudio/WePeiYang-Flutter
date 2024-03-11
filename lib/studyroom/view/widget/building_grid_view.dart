@@ -54,6 +54,7 @@ class BuildingGrid extends StatelessWidget {
         crossAxisCount: 5,
         childAspectRatio: 0.7,
       ),
+      physics: list.length <= 15 ? NeverScrollableScrollPhysics() : null,
       itemCount: list.length,
       itemBuilder: (context, index) {
         return Align(

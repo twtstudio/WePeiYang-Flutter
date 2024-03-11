@@ -16,19 +16,29 @@ class GreenScheme extends WpyThemeData {
           data: WpyThemeDetail(
             greenSchemeDetail,
             gradient: colorSetsList,
-            primaryColor: greenMapper(greenPrimaryColor),
+            primaryColor: primaryMapper(greenPrimaryColor),
           ),
         );
 }
 
 const greenPrimaryColor = Color(0xFF39C5BB);
 
+ColorMapper primaryMapper = (Color source) {
+  HSLColor hsl = HSLColor.fromColor(source);
+  HSLColor targetHsl = HSLColor.fromColor(greenPrimaryColor);
+  return hsl
+      .withHue(targetHsl.hue)
+      .withLightness((hsl.lightness - 0.05).clamp(0, 1))
+      .withSaturation((hsl.saturation - 0.20).clamp(0, 1))
+      .toColor();
+};
+
 ColorMapper greenMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
   HSLColor targetHsl = HSLColor.fromColor(greenPrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
-      .withLightness((hsl.lightness-0.05 ).clamp(0, 1))
+      .withLightness((hsl.lightness - 0.05).clamp(0, 1))
       .withSaturation((hsl.saturation - 0.30).clamp(0, 1))
       .toColor();
 };

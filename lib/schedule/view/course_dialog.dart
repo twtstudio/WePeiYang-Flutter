@@ -72,7 +72,10 @@ class CourseDialog extends Dialog {
 
   Widget _getSingleCard(BuildContext context, Pair<Course, int> pair) {
     var teacher = '';
-    pair.first.teacherList.forEach((str) {
+    final _teachers = pair.arrange.isExperiment
+        ? pair.arrange.teacherList
+        : pair.first.teacherList;
+    _teachers.forEach((str) {
       if (teacher != '') teacher += ', ';
       teacher += str;
     });
@@ -111,7 +114,11 @@ class CourseDialog extends Dialog {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pair.first.name, style: _nameStyle),
+                  Text(
+                      pair.arrange.isExperiment
+                          ? pair.arrange.name!
+                          : pair.first.name,
+                      style: _nameStyle),
                   SizedBox(height: 12.h),
                   Text(teacher, style: _teacherStyle),
                   Spacer(),

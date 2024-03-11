@@ -589,7 +589,6 @@ class CourseListWidget extends StatelessWidget {
                     .select<GPANotifier, String>((p) => p.sortType)
                     .toUpperCase();
                 return Builder(builder: (context) {
-                  print("==>${_gpaColors[2]}");
                   return RichText(
                     text: TextSpan(
                       text: 'ORDERED\tBY\t',

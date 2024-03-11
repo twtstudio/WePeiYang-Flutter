@@ -83,7 +83,10 @@ class _CoursePageState extends State<CoursePage> {
               _TitleWidget(),
               WeekSelectWidget(),
               Column(
-                children: [CourseDetailWidget(), _HoursCounterWidget()],
+                children: [
+                  CourseDetailWidget(),
+                  _HoursCounterWidget(),
+                ],
               ),
             ],
           ),
@@ -221,13 +224,14 @@ class _TitleWidget extends StatelessWidget {
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.fromLTRB(8.w, 5.h, 8.w, 0),
                   child: Image.asset(
-                      provider.shrink
-                          ? 'assets/images/schedule/up.png'
-                          : 'assets/images/schedule/down.png',
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.primaryBackgroundColor),
-                      height: 18.r,
-                      width: 18.r),
+                    provider.shrink
+                        ? 'assets/images/schedule/up.png'
+                        : 'assets/images/schedule/down.png',
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+                    height: 18.r,
+                    width: 18.r,
+                  ),
                 ));
           })
         ],
@@ -245,7 +249,6 @@ class _HoursCounterWidget extends StatelessWidget {
     int currentHours = getCurrentHours(
         provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
     int totalHours = getTotalHours(provider.schoolCourses);
-    print("==> totalHours $totalHours");
     double totalWidth = 1.sw - 2 * 15.w;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;

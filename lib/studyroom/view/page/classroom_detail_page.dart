@@ -256,7 +256,6 @@ class _CourseDisplayWidget extends StatelessWidget {
       var index = 1;
 
       final dayPlan = plan[date];
-      print("==>$date $dayPlan");
       print(date.toString());
       d++;
       if (dayPlan == null) continue;

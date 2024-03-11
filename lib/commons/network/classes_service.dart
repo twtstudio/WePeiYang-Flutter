@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/network/experiment_service.dart';
 
 class _SpiderDio extends DioAbstract {
   @override
@@ -77,6 +78,10 @@ class ClassesService {
           mtx.release();
         },
       );
+
+      await mtx.acquire();
+      ExperimentService.refreshExperiment(courseProvider)
+          .whenComplete(() => mtx.release());
     });
   }
 
@@ -84,7 +89,7 @@ class ClassesService {
   static Future<bool> check() async {
     try {
       var response = await spiderDio.get('http://classes.tju.edu.cn');
-      if(response.data.toString().contains('只允许校内访问')) return false;
+      if (response.data.toString().contains('只允许校内访问')) return false;
       return true;
     } catch (_) {
       return false;
@@ -148,10 +153,8 @@ class ClassesService {
       ),
     );
 
-    if ((res.statusCode == 302)||
-        res.data.toString().contains(
-            "var remind_strong_pwd = 'true'"))
-      return;
+    if ((res.statusCode == 302) ||
+        res.data.toString().contains("var remind_strong_pwd = 'true'")) return;
 
     ToastProvider.error('检查办公网账号密码是否正确');
     throw WpyDioException(error: '检查账号密码正确');

@@ -69,6 +69,15 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 同步被实验课Merge之后的课表
+  void updateSchoolCourses(List<Course> courses) {
+    _schoolCourses = courses;
+    notifyListeners();
+    _widgetChannel.invokeMethod("refreshScheduleWidget");
+    CommonPreferences.courseData.value =
+        json.encode(CourseTable(_schoolCourses, _customCourses));
+  }
+
   int get selectedWeek => _selectedWeek;
 
   /// 静默重置选中周

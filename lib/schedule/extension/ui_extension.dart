@@ -75,7 +75,12 @@ class AnimatedActiveCourse extends StatelessWidget {
                   child: Column(
                     children: [
                       Spacer(),
-                      Text(formatText(_pairs[0].first.name),
+                      Text(
+                          formatText(
+                            !_pairs[0].arrange.isExperiment
+                                ? _pairs[0].first.name
+                                : _pairs[0].arrange.name!,
+                          ),
                           style: _activeNameStyle(context),
                           textAlign: TextAlign.center),
                       SizedBox(height: 2),

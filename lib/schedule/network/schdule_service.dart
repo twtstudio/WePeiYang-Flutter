@@ -118,14 +118,14 @@ class ScheduleService {
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
     // 获取课表
     res = await ClassesService.spiderDio.post(
-        'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
-        data: {
-          "ignoreHead": "1",
-          "setting.kind": "std",
-          "startWeek": "",
-          "semester.id": semesterId,
-          "ids": ids
-        },
+      'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
+      data: {
+        "ignoreHead": "1",
+        "setting.kind": "std",
+        "startWeek": "",
+        "semester.id": semesterId,
+        "ids": ids
+      },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     return _parseCourseHTML(res.data.toString());
@@ -134,7 +134,8 @@ class ScheduleService {
   /// 解析请求到的html课程数据
   static List<Course> _parseCourseHTML(String data) {
     /// 判断会话是否过期
-    if (data.contains("本次会话已经被过期")) throw WpyDioException(error: "办公网绑定失效，请重新绑定");
+    if (data.contains("本次会话已经被过期"))
+      throw WpyDioException(error: "办公网绑定失效，请重新绑定");
 
     try {
       /// 先整理出所有的arrange对象
@@ -215,6 +216,7 @@ class ScheduleService {
           /// 不能用courseName.contains(arrange.courseName)来判断，否则就会把"机器学习"和"机器学习综合实践"这样的课算在一起
           if (courseName != arrange.name &&
               !_judgeSubtitle(courseName, arrange.name!)) return;
+          print("draw $arrange");
 
           /// 有些个别课没有教室信息，此时roomList.length = 2
           if (roomList.length > roomIndex) {
@@ -252,8 +254,8 @@ class ScheduleService {
       {required OnResult<List<Exam>> onResult,
       required OnFailure onFailure}) async {
     try {
-      var response = await ClassesService.spiderDio.get(
-          "http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
+      var response = await ClassesService.spiderDio
+          .get("http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
       if (response.data.toString().contains('统一认证系统')) {
         throw WpyDioException(error: "办公网绑定失效，请重新绑定");
       }
@@ -278,7 +280,8 @@ class ScheduleService {
       });
       onResult(exams);
     } catch (e) {
-      onFailure(e is DioException ? e : WpyDioException(error: '解析考表数据出错，请重新尝试'));
+      onFailure(
+          e is DioException ? e : WpyDioException(error: '解析考表数据出错，请重新尝试'));
     }
   }
 }

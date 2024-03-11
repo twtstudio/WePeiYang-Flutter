@@ -109,7 +109,9 @@ class TodayCoursesWidget extends StatelessWidget {
                           SizedBox(
                             width: 1.sw - 125.w - 50.r,
                             child: Text(
-                              todayPairs[i].first.name,
+                              todayPairs[i].arrange.isExperiment
+                                  ? "[实验] ${todayPairs[i].arrange.name!}"
+                                  : todayPairs[i].first.name,
                               style: TextUtil.base.PingFangSC
                                   .bright(context)
                                   .bold
