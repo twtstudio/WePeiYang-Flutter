@@ -116,7 +116,8 @@ class CourseDialog extends Dialog {
                 children: [
                   Text(
                       pair.arrange.isExperiment
-                          ? pair.arrange.name!
+                          ? "${pair.first.name}\n"
+                              "${pair.arrange.name!}"
                           : pair.first.name,
                       style: _nameStyle),
                   SizedBox(height: 12.h),

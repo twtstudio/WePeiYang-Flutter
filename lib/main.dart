@@ -372,6 +372,8 @@ class StartUpWidget extends StatefulWidget {
 }
 
 class _StartUpWidgetState extends State<StartUpWidget> {
+  late var _isFoolDay = now.month == 4 && now.day == 1;
+
   @override
   void initState() {
     super.initState();
@@ -379,7 +381,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       _appInitProcess(context);
     });
   }
+
   var now = DateTime.now().toLocal();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -387,8 +391,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       padding: EdgeInsets.all(30),
       child: Center(
         child: ColoredIcon(
-          (now.month==4&&now.day==1)?'assets/images/nk_splash_screen.png':'assets/images/splash_screen.png',
-          color: WpyTheme.of(context).primary,
+          _isFoolDay
+              ? 'assets/images/nk_splash_screen.png'
+              : 'assets/images/splash_screen.png',
+          color: _isFoolDay ? Color(0xFF7E0C6E) : WpyTheme.of(context).primary,
         ),
       ),
       constraints: BoxConstraints.expand(),
@@ -422,7 +428,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     /// 如果登陆过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
-      Future.delayed((now.month==4&&now.day==1)?Duration(seconds: 1):Duration(milliseconds: 500)).then(
+      Future.delayed(
+              _isFoolDay ? Duration(seconds: 1) : Duration(milliseconds: 0))
+          .then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             Navigator.pushNamedAndRemoveUntil(

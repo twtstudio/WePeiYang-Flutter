@@ -167,7 +167,7 @@ class ExperimentService {
       if (headerReg.hasMatch(rawRow)) continue;
 
       RegExp itemReg = RegExp(r'<td[^>]*>[\s\S]*?</td>');
-      RegExp formatReg = RegExp(r'<[^>]*>|&nbsp;|\s+');
+      RegExp formatReg = RegExp(r'<[^>]*>|&nbsp;|\s+|（新）');
 
       final items = itemReg
           .allMatches(rawRow) // 匹配每一行
