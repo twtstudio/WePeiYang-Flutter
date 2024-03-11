@@ -379,7 +379,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       _appInitProcess(context);
     });
   }
-
+  var now = DateTime.now().toLocal();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -387,7 +387,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       padding: EdgeInsets.all(30),
       child: Center(
         child: ColoredIcon(
-          'assets/images/splash_screen.png',
+          (now.month==4&&now.day==1)?'assets/images/nk_splash_screen.png':'assets/images/splash_screen.png',
           color: WpyTheme.of(context).primary,
         ),
       ),
@@ -422,7 +422,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     /// 如果登陆过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
-      Future.delayed(const Duration(milliseconds: 500)).then(
+      Future.delayed((now.month==4&&now.day==1)?Duration(seconds: 1):Duration(milliseconds: 500)).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             Navigator.pushNamedAndRemoveUntil(
