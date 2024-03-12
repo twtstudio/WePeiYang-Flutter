@@ -394,8 +394,8 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     "pku.png",
     "sjtu.png",
     "thu.png",
-    "tju.png"
-        "tongji.png",
+    "tju.png",
+    "tongji.png",
     "whu.png",
     "zju.png",
   ];
