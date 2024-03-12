@@ -23,7 +23,7 @@ object FlutterSharePreference {
     /**
      * 天外天登录token
      */
-    val authToken: String
+    val authToken: String?
         get() = flutterSharedPreferences?.getString(authTokenKey, null).also {
             LogUtil.d(TAG, "authToken : $it")
         }

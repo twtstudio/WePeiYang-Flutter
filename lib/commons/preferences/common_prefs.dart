@@ -92,10 +92,12 @@ class CommonPreferences {
   static final hideExam = PrefsBean<bool>('hideExam'); // 首页不显示考表
   static final showMap = PrefsBean<bool>('showMap', false); // 首页不显示考表
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
-  static final skinNow = PrefsBean<int>('skinNow', 0); // 当前皮肤编号
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）
   static final appThemeId = PrefsBean<String>('appThemeId', 'builtin_light');
+  static final appDarkThemeId = PrefsBean<String>('appDarkThemeId', 'builtin_dark');
+  /// 0 light 1 dark 2 auto
+  static final usingDarkTheme = PrefsBean<int>('usingDarkTheme', 0);
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');

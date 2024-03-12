@@ -7,7 +7,7 @@ class DarkScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_dark",
-            name: "深色主题",
+            name: "北洋黑",
             description: "深色模式, 适合在夜间使用",
             brightness: Brightness.dark,
             representativeColor: Color(0xFF1f1f1f),

@@ -9,6 +9,7 @@ class BuiltInThemeMetaData extends WpyThemeMetaData {
     required super.description,
     required Brightness brightness,
     required super.representativeColor,
+    super.darkThemeId,
     super.hintTextColor,
   }) : super(
           author: "TWT Studio",

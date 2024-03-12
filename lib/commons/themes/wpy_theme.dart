@@ -26,6 +26,8 @@ class WpyTheme extends InheritedWidget {
 
   String get name => themeData.meta.name;
 
+  String get darkThemeId => themeData.meta.darkThemeId;
+
   Color get(WpyColorKey key) {
     return themeData.data.get(key);
   }
@@ -42,11 +44,13 @@ class WpyTheme extends InheritedWidget {
 
   static void init() {
     final themeId = CommonPreferences.appThemeId.value;
-    final theme = WpyThemeData.themeList.firstWhere(
-        (element) => element.meta.themeId == themeId,
-        orElse: () => WpyThemeData.themeList[0]);
+    final darkThemeId = CommonPreferences.appDarkThemeId.value;
+    final brightness = CommonPreferences.usingDarkTheme.value;
+    final theme = WpyThemeData.brightThemeList.firstWhere((element) {
+      return element.meta.themeId == (brightness == 0 ? themeId : darkThemeId);
+    }, orElse: () => WpyThemeData.brightThemeList[0]);
     globalTheme.value = theme;
   }
 }
 
-final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);
+final globalTheme = ValueNotifier(WpyThemeData.brightThemeList[0]);

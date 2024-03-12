@@ -16,6 +16,15 @@ class WpyThemeData {
     required this.data,
   });
 
+  static final List<WpyThemeData> brightThemeList = [
+    LightScheme(),
+    // DarkScheme(),
+    RedScheme(),
+    PurpleScheme(),
+    OrangeScheme(),
+    GreenScheme(),
+  ];
+
   static final List<WpyThemeData> themeList = [
     LightScheme(),
     DarkScheme(),
@@ -59,6 +68,7 @@ class WpyThemeMetaData {
   final String version;
   final WpyThemeType themeType;
   final Brightness brightness;
+  final String darkThemeId;
   final Color representativeColor;
   final Color hintTextColor;
 
@@ -73,6 +83,7 @@ class WpyThemeMetaData {
     required this.themeType,
     required this.brightness,
     required this.representativeColor,
+    this.darkThemeId = "builtin_dark",
     this.hintTextColor = const Color(0xFFeff4fa),
   });
 
@@ -88,6 +99,7 @@ class WpyThemeMetaData {
       themeType: WpyThemeType.fromJson(json['themeType']),
       brightness:
           json['brightness'] == "light" ? Brightness.light : Brightness.dark,
+      darkThemeId: json['darkThemeId'] ?? "builtin_dark",
       representativeColor: Color(int.parse(json['representativeColor'])),
     );
   }

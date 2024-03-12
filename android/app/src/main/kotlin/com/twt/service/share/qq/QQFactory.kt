@@ -51,7 +51,7 @@ class QQFactory(
                 appName = "微北洋",
                 type = QQShare.SHARE_TO_QQ_TYPE_IMAGE,
             ).let { data ->
-                WbySharePlugin.log("share data: $data")
+                WbySharePlugin.log("share data: $data");
                 shareToQQ(data)
             }
         }

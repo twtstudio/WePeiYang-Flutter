@@ -7,10 +7,11 @@ class LightScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_light",
-            name: "默认主题",
+            name: "北洋蓝",
             description: "默认的微北洋浅色主题, 适合日常使用",
             brightness: Brightness.light,
-            representativeColor: Color(0xFFeff4fa),
+            darkThemeId: "builtin_dark",
+            representativeColor: Color(0xFF2C7EDF),
           ),
           data: WpyThemeDetail(
             lightSchemeDetail,
