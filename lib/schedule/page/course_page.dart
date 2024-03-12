@@ -73,7 +73,7 @@ class _CoursePageState extends State<CoursePage> {
 
   Future<void> takeScreenshot() async {
     ToastProvider.running("生成截图中");
-    screenshotController.captureAsUiImage().then((image) async {
+    screenshotController.captureAsUiImage(pixelRatio: 4.0).then((image) async {
       await screenshotController
           .captureFromLongWidget(Container(
         width: image?.width.toDouble(),

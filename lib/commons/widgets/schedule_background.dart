@@ -104,6 +104,17 @@ class ScheduleBackgroundPrinter extends CustomPainter {
       ),
       blurPaint,
     );
+
+    blurPaint.color = primaryActionColor.withOpacity(0.3);
+    canvas.drawOval(
+      Rect.fromLTWH(
+        size.width * -0.4,
+        size.height * 0.6,
+        size.width * 1.32,
+        size.width * 1.32,
+      ),
+      blurPaint,
+    );
   }
 
   double convertRadiusToSigma(double radius) => radius / 4;

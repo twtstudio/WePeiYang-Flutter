@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/foundation.dart'
@@ -384,6 +385,22 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   var now = DateTime.now().toLocal();
 
+  static final splashBase = "assets/images/fool_splash";
+  static final splashes = [
+    "cqu.png",
+    "hit.png",
+    "mit.png",
+    "nku.png",
+    "pku.png",
+    "sjtu.png",
+    "thu.png",
+    "tju.png"
+        "tongji.png",
+    "whu.png",
+    "zju.png",
+  ];
+  final splashIndex = Random().nextInt(splashes.length);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -392,9 +409,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       child: Center(
         child: ColoredIcon(
           _isFoolDay
-              ? 'assets/images/nk_splash_screen.png'
+              ? '$splashBase/${splashes[splashIndex]}'
               : 'assets/images/splash_screen.png',
-          color: _isFoolDay ? Color(0xFF7E0C6E) : WpyTheme.of(context).primary,
+          color: _isFoolDay ? null : WpyTheme.of(context).primary,
         ),
       ),
       constraints: BoxConstraints.expand(),
@@ -429,8 +446,10 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
       Future.delayed(
-              _isFoolDay ? Duration(seconds: 2) : Duration(milliseconds: 0))
-          .then(
+        _isFoolDay
+            ? Duration(seconds: 2) // fool splash screen time control
+            : Duration(milliseconds: 0),
+      ).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             Navigator.pushNamedAndRemoveUntil(
