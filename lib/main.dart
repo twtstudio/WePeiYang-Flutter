@@ -429,7 +429,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
       Future.delayed(
-              _isFoolDay ? Duration(seconds: 1) : Duration(milliseconds: 0))
+              _isFoolDay ? Duration(seconds: 2) : Duration(milliseconds: 0))
           .then(
         (_) => AuthService.getInfo(
           onSuccess: () {

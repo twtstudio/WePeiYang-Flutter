@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -12,13 +17,13 @@ import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
-import 'package:we_pei_yang_flutter/schedule/view/edit_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
+import 'dart:ui' as ui;
 import '../../commons/themes/wpy_theme.dart';
+import '../../commons/util/toast_provider.dart';
 import '../../commons/widgets/w_button.dart';
 
 /// 课表总页面
@@ -63,6 +68,53 @@ class _CoursePageState extends State<CoursePage> {
     });
   }
 
+  ///生成当前显示页面课程表截图
+  ScreenshotController screenshotController = ScreenshotController();
+
+  Future<void> takeScreenshot() async {
+    ToastProvider.running("生成截图中");
+    screenshotController.captureAsUiImage().then((image) async {
+      await screenshotController
+          .captureFromLongWidget(Container(
+        width: image?.width.toDouble(),
+        height: image?.height.toDouble(),
+        child: Stack(
+          children: [
+            Container(
+              width: image?.width.toDouble(),
+              height: image?.height.toDouble(),
+              child: CustomPaint(
+                painter: ScheduleBackgroundPrinter(
+                  primaryActionColor:
+                      WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                  primaryLightActionColor: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryLightActionColor),
+                  primaryBackgroundColor: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  primaryLighterActionColor: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryLighterActionColor),
+                  primaryLightestActionColor: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryLightestActionColor),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10.r),
+              child: CustomPaint(
+                painter: CustomImagePainter(image!),
+              ),
+            )
+          ],
+        ),
+      ))
+          .then((value) async {
+        final fullpath = await saveImageToPath(value);
+        GallerySaver.saveImage(fullpath!, albumName: "微北洋");
+        ToastProvider.success("图片保存成功");
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -75,20 +127,27 @@ class _CoursePageState extends State<CoursePage> {
         //   fit: BoxFit.cover,
         // ),
         Scaffold(
-          appBar: _CourseAppBar(),
+          appBar: _CourseAppBar(
+            takeScreenshot: takeScreenshot,
+          ),
           backgroundColor: Colors.transparent,
-          body: ListView(
+          body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
-            children: [
-              _TitleWidget(),
-              WeekSelectWidget(),
-              Column(
+            child: Screenshot(
+              controller: screenshotController,
+              child: Column(
                 children: [
-                  CourseDetailWidget(),
-                  _HoursCounterWidget(),
+                  _TitleWidget(),
+                  WeekSelectWidget(),
+                  Column(
+                    children: [
+                      CourseDetailWidget(),
+                      _HoursCounterWidget(),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ],
@@ -98,6 +157,10 @@ class _CoursePageState extends State<CoursePage> {
 
 /// 课表页默认AppBar
 class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Function() takeScreenshot;
+
+  _CourseAppBar({required this.takeScreenshot});
+
   @override
   Widget build(BuildContext context) {
     var leading = Align(
@@ -151,25 +214,12 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       WButton(
-        onPressed: () {
-          var pvd = context.read<EditProvider>();
-          pvd.init();
-          showModalBottomSheet(
-            context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-            ),
-            isDismissible: true,
-            enableDrag: false,
-            isScrollControlled: true,
-            builder: (context) => EditBottomSheet(pvd.nameSave, pvd.creditSave),
-          );
-        },
+        onPressed: () => takeScreenshot(),
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.all(10.r),
           child: Image.asset(
-            'assets/images/schedule/add.png',
+            'assets/images/schedule/screenshot.png',
             height: 20.r,
             width: 20.r,
           ),
@@ -297,5 +347,33 @@ class _HoursCounterWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class CustomImagePainter extends CustomPainter {
+  final ui.Image image;
+
+  CustomImagePainter(this.image);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint();
+    canvas.drawImage(image, Offset.zero, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) =>
+      this != oldDelegate;
+}
+
+Future<String?> saveImageToPath(Uint8List imageData) async {
+  try {
+    final directory = await getTemporaryDirectory();
+    final file = File(
+        "${directory.path}/schedule_${DateTime.now().millisecondsSinceEpoch}.png");
+    await file.writeAsBytes(imageData);
+    return file.path;
+  } catch (e) {
+    return null;
   }
 }

@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 
 import '../../commons/themes/wpy_theme.dart';
+import '../../commons/widgets/colored_icon.dart';
 import '../../commons/widgets/w_button.dart';
 
 class EditDetailPageArgs {
@@ -113,11 +114,13 @@ class _EditDetailPageState extends State<EditDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: Image.asset(
-                  'assets/images/schedule/notify.png',
-                  height: 30.h,
-                  width: 30.w,
-                ),
+                child: Container(
+                    width: 30.w,
+                    height: 30.h,
+                    child: ColoredIcon(
+                      'assets/images/schedule/notify.png',
+                      color: WpyTheme.of(context).primary,
+                    )),
               ),
               SizedBox(height: 25.h),
               Text(text,
@@ -190,10 +193,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
               child: Container(
                 decoration: BoxDecoration(),
                 padding: EdgeInsets.fromLTRB(10.w, 9.h, 8.w, 8.h),
-                child: Image.asset(
+                child: ColoredIcon(
                   'assets/images/schedule/back.png',
-                  height: 20.r,
-                  width: 20.r,
+                  color: WpyTheme.of(context).primary,
                 ),
               ),
             ),
