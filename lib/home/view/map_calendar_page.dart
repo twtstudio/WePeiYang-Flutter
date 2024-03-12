@@ -242,7 +242,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                   arguments: LocalImageViewPageArgs([], [
                     'assets/images/calender/first.jpg',
                     'assets/images/calender/second.jpg'
-                  ], 2, 0),
+                  ], 2, 1),
                 );
               },
               child: Stack(
