@@ -207,8 +207,6 @@ class _PersonPageState extends State<PersonPage> {
                       TextUtil.base.ProductSans.infoText(context).w400.sp(14)),
               LevelUtil(
                 level: level ?? '',
-                width: 34,
-                height: 17,
                 style: TextUtil.base.bright(context).bold.sp(9),
               ),
             ],
@@ -328,34 +326,38 @@ class _PersonPageState extends State<PersonPage> {
                 children: [
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: WpyPic(
-                      avatar == ""
-                          ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
-                          : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                      width: 1.sw,
-                      height: 1.sw,
-                      fit: BoxFit.contain,
+                      child: WpyPic(
+                        avatar == ""
+                            ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
+                            : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                        width: 1.sw,
+                        height: 1.sw,
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                      ),
                     ),
-                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 1.sw,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.primaryBackgroundColor),
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.backgroundMaskColor),
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.backgroundGradientEndColor),
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.liteBackgroundMaskColor)
-                          ],
-                          stops: [0, 0.4, 0.7, 1],
-                          begin: Alignment(0, -1),
-                          end: Alignment(0, 1),
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        height: 1.sw,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.primaryBackgroundColor),
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.backgroundMaskColor),
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.backgroundGradientEndColor),
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.liteBackgroundMaskColor)
+                            ],
+                            stops: [0, 0.4, 0.7, 1],
+                            begin: Alignment(0, -1),
+                            end: Alignment(0, 1),
+                          ),
                         ),
                       ),
                     ),

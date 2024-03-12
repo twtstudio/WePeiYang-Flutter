@@ -4,21 +4,25 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tab.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
+import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 
 import '../../../commons/preferences/common_prefs.dart';
@@ -45,7 +49,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   /// 42.h
   double get searchBarHeight => 42.h;
 
-  /// 50.h
+  /// 46.h
   double get tabBarHeight => 46.h;
 
   late final FbDepartmentsProvider _departmentsProvider;
@@ -82,25 +86,22 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             .read<LakeModel>()
             .lakeAreas[context
                 .read<LakeModel>()
-                .tabList[context.read<LakeModel>().tabController.index]
+                .tabList[context.read<LakeModel>().currentTab]
                 .id]!
             .controller
             .offset >
-        1500) {
+        1500.h) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]!
+          .lakeAreas[context.read<LakeModel>().currentTabId]!
           .controller
-          .jumpTo(1500);
+          .jumpTo(1500.h);
     }
     context
         .read<LakeModel>()
-        .lakeAreas[context
-            .read<LakeModel>()
-            .tabList[context.read<LakeModel>().tabController.index]
-            .id]!
+        .lakeAreas[context.read<LakeModel>().currentTabId]!
         .controller
-        .animateTo(-85,
+        .animateTo(-85.h,
             duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
@@ -126,6 +127,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
+    SplitUtil.needHorizontalView = 1.sw > 1.sh;
+    SplitUtil.w = 1.sw > 1.sh ? 0.5.w : 1.w;
+    SplitUtil.sw = 1.sw > 1.sh ? 0.5.sw : 1.sw;
+    SplitUtil.toolbarWidth = Platform.isWindows ? 1.sw > 1.sh ? 25 : 50 : 0;
+
     final status = context.select((LakeModel model) => model.mainStatus);
     final tabList = context.select((LakeModel model) => model.tabList);
 
@@ -134,7 +140,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           .read<LakeModel>()
           .lakeAreas[context.read<LakeModel>().tabController.index]!
           .controller
-          .animateTo(-85,
+          .animateTo(-85.h,
               duration: Duration(milliseconds: 1000),
               curve: Curves.easeOutCirc);
       initializeRefresh = false;
@@ -143,26 +149,25 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     var searchBar = WButton(
       onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
-        height: searchBarHeight - 8,
-        margin: EdgeInsets.fromLTRB(15, 8, 15, 0),
+        height: searchBarHeight - 8.h,
+        margin: EdgeInsets.fromLTRB(15.h, 8.h, 15.h, 0),
         decoration: BoxDecoration(
             color:
                 WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-            borderRadius: BorderRadius.all(Radius.circular(15))),
+            borderRadius: BorderRadius.all(Radius.circular(15.h))),
         child: Row(children: [
-          SizedBox(width: 14),
+          SizedBox(width: 14.h),
           Icon(
             Icons.search,
             size: 19,
             color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
           ),
-          SizedBox(width: 12),
+          SizedBox(width: 12.h),
           Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(
                     children: [
                       ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
+                        constraints: BoxConstraints(maxWidth: 1.sw - 260),
                         child: Text(
                           data.recTag == null
                               ? '搜索发现'
@@ -218,8 +223,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 : status == LakePageStatus.idle
                     ? Builder(builder: (context) {
                         return TabBar(
-                          indicatorPadding: EdgeInsets.only(bottom: 2),
-                          labelPadding: EdgeInsets.only(bottom: 3),
+                          indicatorPadding: EdgeInsets.only(bottom: 2.h),
+                          labelPadding: EdgeInsets.only(bottom: 3.h),
                           isScrollable: true,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
@@ -234,7 +239,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               borderSide: BorderSide(
                                   color: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryActionColor),
-                                  width: 2)),
+                                  width: 2.h)),
                           tabs: List<Widget>.generate(
                               tabList.length,
                               (index) => DaTab(
@@ -269,15 +274,19 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return Scaffold(
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-      body: Stack(
+      body: Row(
+          children: [
+      Expanded(
+      child: Stack(
         children: [
           Padding(
             padding: EdgeInsets.only(
-                // 因为上面的空要藏住搜索框
+              // 因为上面的空要藏住搜索框
                 top: MediaQuery.of(context).padding.top < searchBarHeight
                     ? searchBarHeight + tabBarHeight
-                    : MediaQuery.of(context).padding.top + searchBarHeight,
-                bottom: 70.h - 18),
+                    : MediaQuery.of(context).padding.top +
+                    searchBarHeight,
+                bottom: Platform.isWindows ? 0 : 52.h),
             child: Selector<LakeModel, List<WPYTab>>(
               selector: (BuildContext context, LakeModel lakeModel) {
                 return lakeModel.tabList;
@@ -337,8 +346,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     tabBarHeight -
                     4),
             child: Visibility(
-              child: WButton(
-                  onPressed: () {
+              child: InkWell(
+                  onTap: () {
                     if (canSee) _onFeedbackTapped();
                   },
                   child: FbTagsWrap(key: fbKey)),
@@ -398,7 +407,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                   highlightColor: Colors.transparent,
                   child: ColoredIcon(
                     'assets/images/add_post.png',
-                    width: 72.w,
+                    width: 72.r,
                     color: WpyTheme.of(context).primary,
                   ),
                   onTap: () {
@@ -469,7 +478,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
           }),
         ],
       ),
-    );
+    ),if (SplitUtil.needHorizontalView)
+    Expanded(
+    child: Selector<LakeModel, ChangeablePost>(
+    selector: (BuildContext context, LakeModel lakeModel) {
+    return lakeModel.horizontalViewingPost;
+    }, shouldRebuild: (ChangeablePost pre, ChangeablePost aft) {
+    return pre.changeId != aft.changeId;
+    }, builder: (_, cPost, __) {
+    return cPost.post.isNull
+    ? WpyPic("assets/images/schedule_empty.png")
+        : PostDetailPage(cPost.post, split: true, changeId: cPost.changeId);
+    }))]));
   }
 }
 
@@ -499,7 +519,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
     var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          padding: EdgeInsets.fromLTRB(12.h, 0, 12.h, 8.h),
           child: Wrap(
             spacing: 6,
             children: List.generate(provider.departmentList.length, (index) {
@@ -539,8 +559,8 @@ class FbTagsWrapState extends State<FbTagsWrap>
       decoration: BoxDecoration(
           color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(22),
-              bottomRight: Radius.circular(22))),
+              bottomLeft: Radius.circular(22.h),
+              bottomRight: Radius.circular(22.h))),
       child: AnimatedSize(
         curve: Curves.easeOutCirc,
         duration: Duration(milliseconds: 400),

@@ -71,6 +71,23 @@ void main() async {
     /// 初始化友盟 TODO: fix this or remove this
     await UmengCommonSdk.initCommon();
 
+    /// 设置桌面端窗口适配, 依赖为 window_manager
+    if (Platform.isWindows) {
+      await windowManager.ensureInitialized();
+
+      WindowOptions windowOptions = WindowOptions(
+        minimumSize: Size(640, 400),
+        center: true,
+        backgroundColor: Colors.transparent,
+        skipTaskbar: false,
+        titleBarStyle: TitleBarStyle.normal,
+      );
+      windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
+    }
+
     /// 初始化sharedPreference
     await CommonPreferences.init();
 

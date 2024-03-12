@@ -83,6 +83,7 @@ extension IconTypeExt on IconType {
 
 class IconWidget extends StatefulWidget {
   final int count;
+  final double size;
   final bool isLike;
   final WithCountNotifierCallback onLikePressed;
   final IconType iconType;
@@ -91,7 +92,7 @@ class IconWidget extends StatefulWidget {
   final ValueNotifier<bool> isLikedNotifier;
 
   IconWidget(this.iconType,
-      {required this.count, required this.isLike, required this.onLikePressed})
+      {required this.count, required this.isLike, required this.onLikePressed, required this.size})
       : countNotifier = ValueNotifier(count),
         isLikedNotifier = ValueNotifier(isLike);
 
@@ -102,49 +103,43 @@ class IconWidget extends StatefulWidget {
 class _IconWidgetState extends State<IconWidget> {
   @override
   Widget build(BuildContext context) {
-    var likeButton = ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: 11.67.w,
-        minHeight: 11.67.w,
-      ),
-      child: ValueListenableBuilder(
-        valueListenable: widget.isLikedNotifier,
-        builder: (_, bool value, __) {
-          return LikeButton(
-            size: widget.iconType.size,
-            likeCountPadding: EdgeInsets.only(right: 5.17.w),
-            likeBuilder: (bool isLiked) {
-              if (isLiked) {
-                return widget.iconType.iconFilled;
-              } else {
-                return widget.iconType.iconOutlined(context);
-              }
-            },
-            onTap: (value) async {
+    var likeButton = ValueListenableBuilder(
+      valueListenable: widget.isLikedNotifier,
+      builder: (_, bool value, __) {
+        return LikeButton(
+          size: widget.size,
+          likeCountPadding: EdgeInsets.only(right: 5.17.r),
+          likeBuilder: (bool isLiked) {
+            if (isLiked) {
+              return widget.iconType.iconFilled;
+            } else {
+              return widget.iconType.iconOutlined(context);
+            }
+          },
+          onTap: (value) async {
+            if (value) {
+              widget.countNotifier.value--;
+            } else {
+              widget.countNotifier.value++;
+            }
+            widget.onLikePressed(value, widget.countNotifier.value, () {
+              widget.isLikedNotifier.value = !value;
+            }, () {
               if (value) {
-                widget.countNotifier.value--;
-              } else {
                 widget.countNotifier.value++;
+              } else {
+                widget.countNotifier.value--;
               }
-              widget.onLikePressed(value, widget.countNotifier.value, () {
-                widget.isLikedNotifier.value = !value;
-              }, () {
-                if (value) {
-                  widget.countNotifier.value++;
-                } else {
-                  widget.countNotifier.value--;
-                }
-                setState(() {});
-              });
-              return !value;
-            },
-            isLiked: value,
-            circleColor: widget.iconType.circleColor(context),
-            bubblesColor: widget.iconType.bubblesColor(context),
-            animationDuration: Duration(milliseconds: 600),
-          );
-        },
-      ),
+              setState(() {});
+            });
+            return !value;
+          },
+          isLiked: value,
+          circleColor: widget.iconType.circleColor(context),
+          bubblesColor: widget.iconType.bubblesColor(context),
+          animationDuration: Duration(milliseconds: 600),
+        );
+      },
     );
 
     var likeCount = ValueListenableBuilder(

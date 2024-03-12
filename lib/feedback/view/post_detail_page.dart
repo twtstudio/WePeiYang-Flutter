@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -45,8 +46,12 @@ enum DetailPageStatus {
 // ignore: must_be_immutable
 class PostDetailPage extends StatefulWidget {
   Post post;
+  int? changeId;
 
-  PostDetailPage(this.post);
+  double get searchBarHeight => 42.h;
+  bool? split = false;
+
+  PostDetailPage(this.post, {this.split, this.changeId});
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
@@ -71,6 +76,8 @@ class _PostDetailPageState extends State<PostDetailPage>
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
 
+  int preChangeId = 0;
+
   ///判断管理员权限
   bool get hasAdmin =>
       CommonPreferences.isSchAdmin.value ||
@@ -80,8 +87,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   void initState() {
     super.initState();
-    context.read<NewFloorProvider>().inputFieldEnabled = false;
-    context.read<NewFloorProvider>().replyTo = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       /// 如果是从通知栏点进来的
       if (widget.post.fromNotify) {
@@ -106,11 +111,18 @@ class _PostDetailPageState extends State<PostDetailPage>
         status = DetailPageStatus.idle;
       }
     });
-    _getIOSShowBlock();
     order.addListener(() {
       _refreshController.requestRefresh();
       CommonPreferences.feedbackFloorSortType.value = order.value;
     });
+    _getIOSShowBlock();
+    initWhileChangingPost();
+  }
+
+  void initWhileChangingPost() {
+    context.read<NewFloorProvider>().inputFieldEnabled = false;
+    context.read<NewFloorProvider>().replyTo = 0;
+    _onRefresh();
   }
 
   /// iOS显示拉黑按钮
@@ -293,10 +305,17 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: SvgPicture.asset(
         'assets/svg_pics/lake_butt_icons/send.svg',
-        width: 20,
+        width: SplitUtil.w * 10,
         color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
       ),
     );
+
+    if (preChangeId != (widget.changeId ?? preChangeId)) {
+      initWhileChangingPost();
+      print("pre: $preChangeId, change: ${widget.changeId}");
+      preChangeId = widget.changeId!;
+    }
+
     if (status == DetailPageStatus.loading) {
       body = ListView(
         children: [
@@ -305,7 +324,7 @@ class _PostDetailPageState extends State<PostDetailPage>
             outer: false,
           ),
           SizedBox(
-            height: 120,
+            height: SplitUtil.h * 120,
             child: Center(child: Loading()),
           )
         ],
@@ -324,12 +343,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                     screenshotController: screenshotController,
                     expandAll: screenshotting.value,
                   ),
-                const SizedBox(height: 10),
+                const SizedBox(height: SplitUtil.h * 10),
                 Row(
                   children: [
-                    const SizedBox(width: 15),
-                    WButton(
-                      onPressed: () {
+                    SizedBox(width: SplitUtil.w * 15),
+                    GestureDetector(
+                      onTap: () {
                         order.value = 1;
                       },
                       child: Text('时间正序',
@@ -337,9 +356,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                               ? TextUtil.base.w700.sp(14).primaryAction(context)
                               : TextUtil.base.label(context).w500.sp(14)),
                     ),
-                    const SizedBox(width: 15),
-                    WButton(
-                      onPressed: () {
+                    SizedBox(width: SplitUtil.w * 15),
+                    GestureDetector(
+                      onTap: () {
                         order.value = 0;
                       },
                       child: Text('时间倒序',
@@ -358,11 +377,11 @@ class _PostDetailPageState extends State<PostDetailPage>
                           },
                           child: value == 1
                               ? Container(
-                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
+                                  padding: EdgeInsets.fromLTRB(0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryActionColor),
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: Text('  只看楼主  ',
                                       style: TextUtil.base
@@ -371,11 +390,11 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           .sp(14)),
                                 )
                               : Container(
-                                  padding: EdgeInsets.fromLTRB(0, 2, 0, 1),
+                                  padding: EdgeInsets.fromLTRB(0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context).get(
                                         WpyColorKey.secondaryBackgroundColor),
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: Text('  只看楼主  ',
                                       style: TextUtil.base
@@ -562,8 +581,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                 margin: EdgeInsets.only(top: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                      topLeft: Radius.circular(24.r),
+                      topRight: Radius.circular(24.r)),
                   boxShadow: [
                     BoxShadow(
                         color: WpyTheme.of(context)
@@ -591,19 +610,19 @@ class _PostDetailPageState extends State<PostDetailPage>
                                       inputField,
                                       ImageSelectAndView(
                                           key: imageSelectionKey),
-                                      SizedBox(height: 4),
+                                      SizedBox(height: SplitUtil.h * 4),
                                       Row(
                                         children: [
-                                          SizedBox(width: 4),
+                                          SizedBox(width: SplitUtil.h * 4),
                                           if (value.images.length == 0)
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/image.png',
-                                                  width: 24,
-                                                  height: 24,
+                                                  width: SplitUtil.w * 24,
+                                                  height: SplitUtil.w * 24,
                                                   color: WpyTheme.of(context)
                                                       .get(WpyColorKey
-                                                          .basicTextColor),
+                                                      .basicTextColor),
                                                 ),
                                                 onPressed: () =>
                                                     imageSelectionKey
@@ -613,8 +632,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                             IconButton(
                                                 icon: Image.asset(
                                                   'assets/images/lake_butt_icons/camera.png',
-                                                  width: 24,
-                                                  height: 24,
+                                                  width: SplitUtil.w * 24,
+                                                  height: SplitUtil.w * 24,
                                                   fit: BoxFit.contain,
                                                   color: WpyTheme.of(context)
                                                       .get(WpyColorKey
@@ -627,8 +646,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/paste.png',
-                                                width: 24,
-                                                height: 24,
+                                                width: SplitUtil.w * 24,
+                                                height: SplitUtil.w * 24,
                                                 fit: BoxFit.contain,
                                                 color: WpyTheme.of(context).get(
                                                     WpyColorKey.basicTextColor),
@@ -639,8 +658,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/x.png',
-                                                width: 24,
-                                                height: 24,
+                                                width: SplitUtil.w * 24,
+                                                height: SplitUtil.w * 24,
                                                 fit: BoxFit.fitWidth,
                                                 color: WpyTheme.of(context).get(
                                                     WpyColorKey.basicTextColor),
@@ -666,16 +685,16 @@ class _PostDetailPageState extends State<PostDetailPage>
                                               }),
                                           Spacer(),
                                           checkButton,
-                                          SizedBox(width: 16),
+                                          SizedBox(width: SplitUtil.w * 16),
                                         ],
                                       ),
-                                      SizedBox(height: 10)
+                                      SizedBox(height: SplitUtil.h * 10)
                                     ],
                                   )),
                               Offstage(
                                 offstage: value.inputFieldEnabled,
-                                child: WButton(
-                                  onPressed: () {
+                                child: InkWell(
+                                  onTap: () {
                                     context
                                         .read<NewFloorProvider>()
                                         .inputFieldEnabled = true;
@@ -684,11 +703,11 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         .requestFocus(value.focusNode);
                                   },
                                   child: Container(
-                                      height: 36,
+                                      height: SplitUtil.h * 36,
                                       margin:
-                                          EdgeInsets.fromLTRB(16, 13, 0, 13),
+                                          EdgeInsets.fromLTRB(SplitUtil.w * 8, SplitUtil.h * 13, 0, SplitUtil.h * 13),
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8),
+                                          EdgeInsets.symmetric(horizontal: SplitUtil.w * 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: widget.post.type == 1
@@ -704,11 +723,10 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18),
+                                        borderRadius: BorderRadius.circular(18.r),
                                         color: WpyTheme.of(context).get(
                                             WpyColorKey
-                                                .secondaryBackgroundColor),
-                                      )),
+                                                .secondaryBackgroundColor),                                      )),
                                 ),
                               ),
                             ],
@@ -730,7 +748,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           Column(
             children: [
               Expanded(child: mainList),
-              SizedBox(height: 60),
+              SizedBox(height: SplitUtil.h * 60),
             ],
           ),
           bottomInput
@@ -743,7 +761,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     var menuButton = IconButton(
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-          width: 25,
+          width: SplitUtil.w * 25,
           color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
         ),
         onPressed: () {
@@ -898,7 +916,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         });
     var manageButton = IconButton(
         icon: Icon(Icons.admin_panel_settings,
-            size: 23,
+            size: SplitUtil.w * 23,
             color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
         onPressed: () => _showManageDialog());
 
@@ -923,16 +941,18 @@ class _PostDetailPageState extends State<PostDetailPage>
             color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)));
 
     var appBar = AppBar(
-      toolbarHeight: 40,
+      toolbarHeight: SplitUtil.h * 40,
       titleSpacing: 0,
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       leading: IconButton(
         icon: Icon(
-          CupertinoIcons.back,
+          (widget.split ?? false) ? CupertinoIcons.clear : CupertinoIcons.back,
           color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
         ),
-        onPressed: () => Navigator.pop(context, widget.post),
+        onPressed: () => (widget.split ?? false)
+            ? context.read<LakeModel>().clearAndSetSplitPost(Post.empty())
+            : Navigator.pop(context, widget.post),
       ),
       actions: [
         if (hasAdmin) manageButton,
@@ -979,11 +999,19 @@ class _PostDetailPageState extends State<PostDetailPage>
         return true;
       },
       child: GestureDetector(
-        child: Scaffold(
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          appBar: appBar,
-          body: body,
+        child: Padding(
+          padding: widget.split ?? false
+              ? EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top <
+                          widget.searchBarHeight
+                      ? widget.searchBarHeight
+                      : MediaQuery.of(context).padding.top)
+              : EdgeInsets.zero,
+          child: Scaffold(
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            appBar: appBar,
+            body: body,
+          ),
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {
           if (details.delta.dx > 20) {
@@ -1116,7 +1144,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
-          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+          contentPadding: EdgeInsets.symmetric(vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 20),
           fillColor:
               WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           hintStyle: TextStyle(
@@ -1135,7 +1163,7 @@ class CommentInputFieldState extends State<CommentInputField> {
     });
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(vertical: SplitUtil.h * 8),
       child: inputField,
     );
   }
@@ -1285,13 +1313,13 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: BoxConstraints(maxWidth: SplitUtil.w * 400),
       child: Consumer<NewFloorProvider>(
         builder: (_, data, __) => data.images.isEmpty
             ? SizedBox()
             : SizedBox(
-                height: 80,
-                width: 100,
+                height: SplitUtil.w * 80,
+                width: SplitUtil.w * 100,
                 child: Stack(
                   children: [
                     Align(
@@ -1304,8 +1332,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                               LocalImageViewPageArgs(data.images, [], 1, 0),
                         ),
                         child: Container(
-                          height: 80,
-                          width: 82,
+                          height: SplitUtil.w * 80,
+                          width: SplitUtil.w * 80,
                           margin: EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
@@ -1336,8 +1364,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           }
                         },
                         child: Container(
-                          width: 20,
-                          height: 20,
+                          width: SplitUtil.w * 20,
+                          height: SplitUtil.w * 20,
                           decoration: BoxDecoration(
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.dislikeSecondary),
@@ -1347,7 +1375,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           ),
                           child: Icon(
                             Icons.close,
-                            size: 14,
+                            size: SplitUtil.w * 14,
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.secondaryBackgroundColor),
                           ),

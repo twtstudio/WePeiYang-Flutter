@@ -7,15 +7,9 @@ import '../themes/wpy_theme.dart';
 class LevelUtil extends StatelessWidget {
   final String level;
   final TextStyle style;
-  final double width;
-  final double height;
+  final bool? big;
 
-  LevelUtil(
-      {Key? key,
-      required this.level,
-      required this.width,
-      required this.height,
-      required this.style})
+  LevelUtil({Key? key, required this.level, required this.style, this.big})
       : super(key: key);
 
   List<Color> colors(context) =>
@@ -79,13 +73,27 @@ class LevelUtil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width.w,
-      height: height.h,
+      width: SplitUtil.w * ((this.big ?? false) ? SplitUtil.w * 40 : SplitUtil.w * 26),
+      height: SplitUtil.h * ((this.big ?? false) ? SplitUtil.w * 18 : SplitUtil.w * 12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: getColorBasedOnLevel(context),
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: double.parse(level) == 0
+                  ? [Colors.black26, Colors.black26]
+                  : [
+                double.parse(level) >= 0
+                    ? colors[(double.parse(level) / 10).floor() % 10]
+                    .withAlpha(175 + (int.parse(level) % 10) * 8)
+                    : Color.fromRGBO(85, 0, 9, 1.0),
+                double.parse(level) >= 0
+                    ? double.parse(level) >= 50
+                    ? colors[(double.parse(level) / 10).floor() % 10]
+                    .withAlpha(190)
+                    : colors[(double.parse(level) / 10).floor() % 10]
+                    .withAlpha(175 + (int.parse(level) % 10) * 8)
+                    : Color.fromRGBO(0, 0, 0, 1.0),
+              ],
             stops: [0.5, 0.8]),
         borderRadius: BorderRadius.circular(20),
       ),

@@ -30,6 +30,14 @@ class GPAPreview extends StatelessWidget {
     var stats = context.select<GPANotifier, List<GPAStat>>((p) => p.gpaStats);
     if (stats.isEmpty)
 
+          ///去掉周围padding的懒方法
+          GestureDetector(
+        onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
+        child: Container(
+          width: 1.sw - 60.w,
+          height: 300.h,
+          child: ColoredIcon("assets/images/schedule_empty.png",               color: WpyTheme.of(context).primary,
+          ),
       ///去掉周围padding的懒方法
       return WButton(
         onPressed: () => Navigator.pushNamed(context, GPARouter.gpa),

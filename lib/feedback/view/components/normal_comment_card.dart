@@ -19,6 +19,8 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/color_util.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
@@ -138,10 +140,10 @@ class _NCommentCardState extends State<NCommentCard>
     _picFullView = widget.expandAll || _picFullView;
     var commentMenuButton = WButton(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w, 4.w, 8.w, 12.w),
+          padding: EdgeInsets.fromLTRB(SplitUtil.w * 12, 0, 0, 0),
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-            width: 18.w,
+            width: 18.r,
             color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
           ),
         ),
@@ -334,7 +336,8 @@ class _NCommentCardState extends State<NCommentCard>
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 0.37.sw),
+                constraints: BoxConstraints(
+                    maxWidth: (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
                 child: Text(
                   widget.comment.nickname,
                   maxLines: 1,
@@ -344,10 +347,8 @@ class _NCommentCardState extends State<NCommentCard>
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 3),
+                padding: EdgeInsets.only(left: SplitUtil.w * 4),
                 child: LevelUtil(
-                  width: 24,
-                  height: 12,
                   style: TextUtil.base.bright(context).bold.sp(7),
                   level: widget.comment.level.toString(),
                 ),
@@ -378,11 +379,13 @@ class _NCommentCardState extends State<NCommentCard>
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(width: 2),
-                    Icon(Icons.play_arrow, size: 10),
-                    SizedBox(width: 2),
+                    SizedBox(width: SplitUtil.w * 2),
+                    Icon(Icons.play_arrow, size: SplitUtil.w * 6),
+                    SizedBox(width: SplitUtil.w * 2),
                     ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 0.37.sw),
+                      constraints: BoxConstraints(
+                          maxWidth:
+                              (SplitUtil.sw - SplitUtil.toolbarWidth) * 0.37),
                       child: Text(
                         widget.comment.replyToName.isEmpty
                             ? ""
@@ -433,7 +436,7 @@ class _NCommentCardState extends State<NCommentCard>
             ],
           ),
         ),
-        SizedBox(width: 22.w),
+        commentMenuButton
       ],
     );
 
@@ -483,7 +486,7 @@ class _NCommentCardState extends State<NCommentCard>
                             child: WpyPic(
                               picBaseUrl + 'origin/' + widget.comment.imageUrl,
                               withHolder: true,
-                              holderHeight: 64.h,
+                              holderHeight: SplitUtil.w * 64,
                             ),
                           ),
                         )
@@ -494,8 +497,8 @@ class _NCommentCardState extends State<NCommentCard>
                                     BorderRadius.all(Radius.circular(4)),
                                 child: WpyPic(
                                   '${picBaseUrl}thumb/${widget.comment.imageUrl}',
-                                  width: 70.w,
-                                  height: 68.h,
+                                  width: SplitUtil.w * 68,
+                                  height: SplitUtil.w * 68,
                                   fit: BoxFit.cover,
                                   withHolder: true,
                                 )),
@@ -513,12 +516,12 @@ class _NCommentCardState extends State<NCommentCard>
                         );
                       },
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxHeight: WePeiYangApp.screenWidth * 2),
+                        constraints:
+                            BoxConstraints(maxHeight: SplitUtil.sh * 2),
                         child: WpyPic(
                           '${picBaseUrl}origin/${widget.comment.imageUrl}',
                           withHolder: true,
-                          holderHeight: 64.h,
+                          holderHeight: SplitUtil.w * 64,
                         ),
                       ),
                     )
@@ -535,8 +538,8 @@ class _NCommentCardState extends State<NCommentCard>
                                   BorderRadius.all(Radius.circular(4)),
                               child: WpyPic(
                                 '${picBaseUrl}thumb/${widget.comment.imageUrl}',
-                                width: 70.w,
-                                height: 68.h,
+                                width: SplitUtil.w * 68,
+                                height: SplitUtil.w * 68,
                                 fit: BoxFit.cover,
                                 withHolder: true,
                               )),
@@ -562,7 +565,8 @@ class _NCommentCardState extends State<NCommentCard>
                                   }
                                 },
                                 child: Container(
-                                    height: 68.h, color: Colors.transparent)))
+                                    height: SplitUtil.w * 68,
+                                    color: Colors.transparent)))
                       ],
                     ),
         ));
@@ -600,8 +604,9 @@ class _NCommentCardState extends State<NCommentCard>
       );
     }
 
-    var likeWidget = IconWidget(IconType.like, count: widget.comment.likeCount,
-        onLikePressed: (isLiked, count, success, failure) async {
+    var likeWidget = IconWidget(IconType.like,
+        count: widget.comment.likeCount,
+        size: 15.r, onLikePressed: (isLiked, count, success, failure) async {
       await FeedbackService.commentHitLike(
         id: widget.comment.id,
         isLike: widget.comment.isLike,
@@ -622,7 +627,7 @@ class _NCommentCardState extends State<NCommentCard>
     }, isLike: widget.comment.isLike);
 
     var dislikeWidget = DislikeWidget(
-      size: 15.w,
+      size: 15.r,
       isDislike: widget.comment.isDis,
       onDislikePressed: (dislikeNotifier) async {
         await FeedbackService.commentHitDislike(
@@ -650,25 +655,22 @@ class _NCommentCardState extends State<NCommentCard>
       children: [
         ...likeAndDislikeWidget,
         Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 4.0, bottom: 1.0),
-          child: Text(
-            DateTime.now().difference(widget.comment.createAt!).inHours >= 11
-                ? widget.comment.createAt!
-                    .toLocal()
-                    .toIso8601String()
-                    .replaceRange(10, 11, ' ')
-                    .replaceAllMapped('-', (_) => '/')
-                    .substring(2, 19)
-                : DateTime.now()
-                    .difference(widget.comment.createAt!)
-                    .dayHourMinuteSecondFormatted(),
-            style: TextUtil.base.ProductSans
-                .secondaryInfo(context)
-                .regular
-                .sp(12)
-                .space(letterSpacing: 0.6),
-          ),
+        Text(
+          DateTime.now().difference(widget.comment.createAt!).inHours >= 11
+              ? widget.comment.createAt!
+                  .toLocal()
+                  .toIso8601String()
+                  .replaceRange(10, 11, ' ')
+                  .replaceAllMapped('-', (_) => '/')
+                  .substring(2, 19)
+              : DateTime.now()
+                  .difference(widget.comment.createAt!)
+                  .dayHourMinuteSecondFormatted(),
+          style: TextUtil.base.ProductSans
+              .secondaryInfo(context)
+              .regular
+              .sp(12)
+              .space(letterSpacing: 0.6),
         ),
       ],
     );
@@ -689,9 +691,9 @@ class _NCommentCardState extends State<NCommentCard>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 9.h),
+            SizedBox(height: SplitUtil.h * 9),
             topWidget,
-            SizedBox(height: 4.h),
+            SizedBox(height: SplitUtil.h * 4),
             commentContent,
             if (widget.comment.imageUrl != '') commentImage,
             if (_picFullView == true && widget.comment.imageUrl != '')
@@ -716,12 +718,13 @@ class _NCommentCardState extends State<NCommentCard>
                     ],
                   ))
             else
-              SizedBox(height: 8.h),
+              SizedBox(height: SplitUtil.h * 8),
             bottomWidget,
-            SizedBox(height: 4.h)
+            SizedBox(height: SplitUtil.h * 4)
           ],
         ),
-      )
+      ),
+      SizedBox(width: SplitUtil.w * 16)
     ]);
 
     return _isDeleted
@@ -731,7 +734,7 @@ class _NCommentCardState extends State<NCommentCard>
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.fromLTRB(6.w, 0, 14.w, 6.h),
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 6),
                     color: Colors.transparent,
                     child: mainBody,
                   ),
@@ -745,8 +748,8 @@ class _NCommentCardState extends State<NCommentCard>
                           children: [
                             subFloor,
                             if (widget.comment.subFloorCnt > 0)
-                              WButton(
-                                onPressed: () {
+                              InkWell(
+                                onTap: () {
                                   Navigator.pushNamed(
                                     context,
                                     FeedbackRouter.commentDetail,
@@ -772,7 +775,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   ],
                                 ),
                               ),
-                            SizedBox(height: 12.h)
+                            SizedBox(height: SplitUtil.h * 12)
                           ],
                         )),
                 ],
@@ -812,20 +815,21 @@ class AdminPopUpState extends State<AdminPopUp> {
   Widget build(BuildContext context) {
     return Dialog(
         child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),
+      padding: EdgeInsets.symmetric(
+          horizontal: SplitUtil.w * 8, vertical: SplitUtil.h * 8),
+      margin: EdgeInsets.all(SplitUtil.sw * 0.1),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SizedBox(height: 4),
+            SizedBox(height: SplitUtil.h * 4),
             Center(
                 child: Text("评论置顶",
                     style:
                         TextUtil.base.NotoSansSC.w500.sp(16).label(context))),
             SizedBox(
-              height: 20,
+              height: SplitUtil.h * 20,
             ),
             TextField(
               controller: tc,
@@ -839,11 +843,11 @@ class AdminPopUpState extends State<AdminPopUp> {
                   isCollapsed: true,
                   contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       borderSide: BorderSide.none)),
             ),
             SizedBox(
-              height: 20,
+              height: SplitUtil.h * 20,
             ),
             Center(
               child: ElevatedButton(

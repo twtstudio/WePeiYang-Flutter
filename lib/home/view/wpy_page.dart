@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -182,8 +183,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
             decoration: BoxDecoration(
-                gradient: WpyTheme.of(context).getGradient(showSchedule
-                    ? WpyColorSetKey.primaryGradient
+                gradient: WpyTheme.of(context).getGradient(    showSchedule && !Platform.isWindows
+    ? WpyColorSetKey.primaryGradient
                     : WpyColorSetKey.gradientPrimaryBackground))),
         SafeArea(
           bottom: false,
@@ -225,7 +226,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
                 margin: EdgeInsets.only(left: 30.w, top: 10.h),
                 alignment: Alignment.centerLeft,
                 child: AnimatedDefaultTextStyle(
-                  style: showSchedule
+                  style: showSchedule && !Platform.isWindows
                       ? TextUtil.base.bright(context).w400.sp(22)
                       : TextUtil.base.primary(context).w400.sp(22),
                   duration: const Duration(milliseconds: 300),

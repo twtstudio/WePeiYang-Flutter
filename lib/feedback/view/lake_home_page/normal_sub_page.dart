@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -37,6 +38,8 @@ class NSubPage extends StatefulWidget {
 class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   int index;
   double _previousOffset = 0;
+
+  bool get needHorizontalView => 1.sw > 1.sh;
 
   NSubPageState(this.index);
 

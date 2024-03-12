@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
@@ -290,8 +291,8 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
 
   static WidgetBuilder defaultPlaceholderBuilder =
       (BuildContext ctx) => SizedBox(
-            width: 24,
-            height: 24,
+            width: 24.h,
+            height: 24.h,
             child: FittedBox(fit: BoxFit.fitWidth, child: Loading()),
           );
 
@@ -318,29 +319,29 @@ class _ProfileImageWithDetailedPopupState
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
-          width: 60.w,
-          height: 60.w,
+          width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+          height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
           child: Stack(
             alignment: Alignment.center,
             children: [
               SizedBox(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.w)),
+                  borderRadius: BorderRadius.all(Radius.circular(SplitUtil.w * 18)),
                   child: WpyPic(
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: 32.w,
-                    height: 32.w,
+                    width: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
+                    height: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              if (widget.avatarBox != '' && widget.avatarBox != 'Error')
+              if (widget.avatarBox != '' && widget.avatarBox != 'Error' && widget.avatarBox.length > 5)
                 WpyPic(
                   widget.avatarBox,
-                  width: 60.w,
-                  height: 60.w,
+                  width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+                  height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
                   fit: BoxFit.contain,
                   reduce: false,
                 ),

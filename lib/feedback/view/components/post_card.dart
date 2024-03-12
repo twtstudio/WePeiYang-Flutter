@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
@@ -67,8 +68,11 @@ class _PostCardNormalState extends State<PostCardNormal> {
   Widget build(BuildContext context) {
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: 60.w,
+        height: SplitUtil.w * 32 > SplitUtil.h * 56
+            ? SplitUtil.w * 32
+            : SplitUtil.h * 56,
         child: Row(children: [
+          SizedBox(width: SplitUtil.w * 2),
           ProfileImageWithDetailedPopup(
               post.id,
               true,
@@ -79,52 +83,52 @@ class _PostCardNormalState extends State<PostCardNormal> {
               post.level.toString(),
               post.id.toString(),
               post.avatarBox.toString()),
-          Container(
-              width: (WePeiYangApp.screenWidth - 24.w) / 2,
-              color: Colors.transparent, // 没他就没有点击域
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 14.h),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth:
-                                (WePeiYangApp.screenWidth - 24.w) / 2 - 40.w,
+          Expanded(
+            child: Container(
+                color: Colors.transparent, // 没他就没有点击域
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: (SplitUtil.sw - SplitUtil.w * 24) / 2 -
+                                  SplitUtil.w * 16,
+                            ),
+                            child: Text(
+                              post.nickname == '' ? '没名字的微友' : post.nickname,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextUtil.base.w400.NotoSansSC
+                                  .sp(16)
+                                  .primary(context),
+                            ),
                           ),
-                          child: Text(
-                            post.nickname == '' ? '没名字的微友' : post.nickname,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextUtil.base.w400.NotoSansSC
-                                .sp(16)
-                                .primary(context),
+                          SizedBox(width: SplitUtil.w * 4),
+                          LevelUtil(
+                            style: TextUtil.base.bright(context).bold.sp(7),
+                            level: post.level.toString(),
                           ),
-                        ),
-                        SizedBox(width: 4.w),
-                        LevelUtil(
-                          width: 24,
-                          height: 12,
-                          style: TextUtil.base.bright(context).bold.sp(7),
-                          level: post.level.toString(),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      DateFormat('yyyy-MM-dd HH:mm:ss')
-                          .format(post.createAt!.toLocal()),
-                      textAlign: TextAlign.left,
-                      style: TextUtil.base
-                          .secondary(context)
-                          .normal
-                          .ProductSans
-                          .sp(10),
-                    )
-                  ])),
-          Spacer(),
+                        ],
+                      ),
+                      SizedBox(height: SplitUtil.h * 4),
+                      Text(
+                        DateFormat('yyyy-MM-dd HH:mm:ss')
+                            .format(post.createAt!.toLocal()),
+                        textAlign: TextAlign.left,
+                        style: TextUtil.base
+                            .secondary(context)
+                            .normal
+                            .ProductSans
+                            .sp(10),
+                      )
+                    ])),
+          ),
+          // Spacer(),
           if (post.type == 1) SolveOrNotWidget(post.solved),
           if (post.type != 1)
             GestureDetector(
@@ -139,6 +143,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 style: TextUtil.base.w400.infoText(context).NotoSansSC.sp(12),
               ),
             ),
+          SizedBox(width: SplitUtil.w * 16)
         ]));
 
     /// 标题eTag
@@ -157,7 +162,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     /// 帖子内容
     var content = Padding(
-        padding: EdgeInsets.only(top: 6.h),
+        padding: EdgeInsets.only(top: SplitUtil.h * 6),
         child: widget.outer
             ? Text(post.content,
                 maxLines: 2,
@@ -193,8 +198,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
         children: [
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
               color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
-              width: 11.67.w),
-          SizedBox(width: 3.w),
+              width: 11.67.r),
+          SizedBox(width: 3.r),
           Text(
             post.commentCount.toString() + '   ',
             style:
@@ -202,6 +207,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           ),
           IconWidget(
             IconType.like,
+            size: 15.r,
             count: post.likeCount,
             onLikePressed: (isLike, likeCount, success, failure) async {
               await FeedbackService.postHitLike(
@@ -225,7 +231,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
             isLike: post.isLike,
           ),
           DislikeWidget(
-            size: 15.w,
+            size: 15.r,
             isDislike: widget.post.isDis,
             onDislikePressed: (dislikeNotifier) async {
               await FeedbackService.postHitDislike(
@@ -264,13 +270,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
           if (post.tag != null)
             TagShowWidget(
                 post.tag!.name,
-                (WePeiYangApp.screenWidth - 24.w) / 2 -
-                    (post.campus > 0 ? 100.w : 60.w),
+                (SplitUtil.sw - SplitUtil.w * 24) / 2 -
+                    (post.campus > 0 ? SplitUtil.w * 100 : SplitUtil.w * 60),
                 post.type,
                 post.tag!.id,
                 0,
                 post.type),
-          if (post.tag != null) SizedBox(width: 8),
+          if (post.tag != null) SizedBox(width: SplitUtil.w * 8),
           TagShowWidget(getTypeName(post.type), 100, 0, 0, post.type, 0),
           if (post.campus != 0)
             Container(
@@ -285,7 +291,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
-          if (post.campus != 0) SizedBox(width: 2),
+          if (post.campus != 0) SizedBox(width: SplitUtil.w * 2),
           if (post.campus != 0)
             ConstrainedBox(
               constraints: BoxConstraints(),
@@ -314,13 +320,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
     List<Widget> head = [
       avatarAndSolve,
       Padding(
-        padding: EdgeInsets.only(left: 14.w),
+        padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 16),
         child: eTagAndTitle,
       ),
       if (post.content.isNotEmpty)
         Padding(
-            padding: EdgeInsets.only(left: 14.w), child: content), // 行数的区别在内部判断
-      SizedBox(height: 10.h)
+            padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 16),
+            child: content),
+      // 行数的区别在内部判断
+      SizedBox(height: SplitUtil.h * 10)
     ];
 
     /////////////////////////////////////////////////////////
@@ -333,18 +341,22 @@ class _PostCardNormalState extends State<PostCardNormal> {
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         child: widget.outer
             // outer 框架
-            ? WButton(
-                onPressed: () {
-                  FeedbackService.visitPost(
-                      id: widget.post.id, onFailure: (_) {});
-                  Navigator.pushNamed(
-                    context,
-                    FeedbackRouter.detail,
-                    arguments: post,
-                  );
+            ? GestureDetector(
+                onTap: () {
+                  if (SplitUtil.needHorizontalView) {
+                    context.read<LakeModel>().clearAndSetSplitPost(post);
+                  } else {
+                    FeedbackService.visitPost(
+                        id: widget.post.id, onFailure: (_) {});
+                    Navigator.pushNamed(
+                      context,
+                      FeedbackRouter.detail,
+                      arguments: post,
+                    );
+                  }
                 },
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(8.w, 0, 20.w, 8.h),
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor),
                   child: Column(
@@ -353,10 +365,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       ...head,
                       if (post.imageUrls.isNotEmpty)
                         Padding(
-                            padding: EdgeInsets.only(left: 12.w, bottom: 8.h),
+                            padding: EdgeInsets.only(
+                                left: SplitUtil.w * 16,
+                                right: SplitUtil.w * 16,
+                                bottom: SplitUtil.h * 8),
                             child: outerImages),
                       Padding(
-                        padding: EdgeInsets.only(left: 16.w),
+                        padding: EdgeInsets.only(left: SplitUtil.w * 10),
                         child: likeUnlikeVisit,
                       )
                     ],
@@ -366,7 +381,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
             // inner 框架
             : Container(
-                padding: EdgeInsets.fromLTRB(10.w, 0, 20.w, 8.h),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
                 decoration: BoxDecoration(
                     border: Border(
                         bottom: BorderSide(
@@ -379,12 +394,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
                     ...head,
                     if (post.imageUrls.isNotEmpty)
                       Padding(
-                        padding:
-                            EdgeInsets.only(top: 4.h, left: 12.w, bottom: 14.h),
+                        padding: EdgeInsets.only(
+                            left: SplitUtil.w * 16,
+                            right: SplitUtil.w * 16,
+                            bottom: SplitUtil.h * 10),
                         child: innerImages,
                       ),
                     Padding(
-                      padding: EdgeInsets.only(left: 8.w),
+                      padding: EdgeInsets.only(left: SplitUtil.w * 8),
                       child: tagCampusVisit,
                     ),
                   ],
@@ -402,8 +419,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
     return ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(8.r)),
         child: Container(
-          width: 350.w,
-          height: 197.w,
+          width: SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth,
+          height: SplitUtil.w * 150,
           color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
           child: WpyPic(
             picBaseUrl + 'origin/' + post.imageUrls[0],
@@ -430,9 +447,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
               child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                   fit: BoxFit.cover,
-                  width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                  width: ((SplitUtil.sw -
+                              SplitUtil.w * 20 -
+                              SplitUtil.toolbarWidth) -
+                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                       post.imageUrls.length,
-                  height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                  height: ((SplitUtil.sw -
+                              SplitUtil.w * 20 -
+                              SplitUtil.toolbarWidth) -
+                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                       post.imageUrls.length,
                   withHolder: true),
             ),
@@ -448,9 +471,15 @@ class _PostCardNormalState extends State<PostCardNormal> {
             borderRadius: BorderRadius.all(Radius.circular(8.r)),
             child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
                 fit: BoxFit.cover,
-                width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                width: ((SplitUtil.sw -
+                            SplitUtil.w * 20 -
+                            SplitUtil.toolbarWidth) -
+                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                     post.imageUrls.length,
-                height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
+                height: ((SplitUtil.sw -
+                            SplitUtil.w * 20 -
+                            SplitUtil.toolbarWidth) -
+                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
                     post.imageUrls.length,
                 withHolder: true),
           ),
@@ -495,145 +524,128 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
       future: completer.future,
       builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
         return Container(
-          width: 350.w,
-          child: Builder(builder: (context) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.height / snapshot.data!.width > 2.0) {
-                if (_picFullView) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                        child: WButton(
-                            onPressed: () => Navigator.pushNamed(
-                                  context,
-                                  FeedbackRouter.imageView,
-                                  arguments: ImageViewPageArgs(
-                                      [widget.imageUrl], 1, 0, true),
-                                ),
-                            child: image),
-                      ),
-                      TextButton(
-                          style: ButtonStyle(
-                              alignment: Alignment.topRight,
-                              padding:
-                                  MaterialStateProperty.all(EdgeInsets.zero),
-                              overlayColor: MaterialStateProperty.all(
-                                  Colors.transparent)),
-                          onPressed: () {
-                            setState(() {
-                              _picFullView = false;
-                            });
-                          },
-                          child: Text('收起',
-                              style: TextUtil.base
-                                  .textButtonPrimary(context)
-                                  .w600
-                                  .NotoSansSC
-                                  .sp(14))),
-                    ],
-                  );
-                } else {
-                  return SizedBox(
-                      height: WePeiYangApp.screenWidth * 1.2,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                        child: Stack(children: [
-                          WButton(
-                              onPressed: () => Navigator.pushNamed(
-                                    context,
-                                    FeedbackRouter.imageView,
-                                    arguments: ImageViewPageArgs(
-                                        [widget.imageUrl], 1, 0, true),
-                                  ),
-                              child: image),
-                          Positioned(top: 8, left: 8, child: TextPod('长图')),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: WButton(
-                              onPressed: () {
-                                setState(() {
-                                  _picFullView = true;
-                                });
-                              },
-                              child: Container(
-                                height: 60,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment(0, -0.7),
-                                    end: Alignment(0, 1),
-                                    colors: [
-                                      Colors.transparent,
-                                      WpyTheme.of(context)
-                                          .get(WpyColorKey
-                                              .reverseBackgroundColor)
-                                          .withOpacity(0.54),
-                                    ],
-                                  ),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    SizedBox(width: 10),
-                                    Text(
-                                      '点击展开\n',
-                                      style: TextUtil.base.w600
-                                          .bright(context)
-                                          .sp(14)
-                                          .h(0.6),
-                                    ),
-                                    Spacer(),
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          color: WpyTheme.of(context)
-                                              .get(WpyColorKey
-                                                  .reverseBackgroundColor)
-                                              .withOpacity(0.38),
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(16),
-                                          ),
+          child: snapshot.hasData
+              ? snapshot.data!.height / snapshot.data!.width > 2.0
+                  ? _picFullView
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                              ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12.r)),
+                                child: GestureDetector(
+                                    onTap: () => Navigator.pushNamed(
+                                          context,
+                                          FeedbackRouter.imageView,
+                                          arguments: ImageViewPageArgs(
+                                              [widget.imageUrl], 1, 0, true),
                                         ),
-                                        padding:
-                                            EdgeInsets.fromLTRB(12, 4, 10, 6),
-                                        child: Text(
-                                          '长图模式',
-                                          style: TextUtil.base.w300
-                                              .bright(context)
-                                              .sp(12),
-                                        ))
-                                  ],
-                                ),
+                                    child: image),
                               ),
-                            ),
-                          )
-                        ]),
-                      ));
-                }
-              } else {
-                return ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                  child: WButton(
-                      onPressed: () => Navigator.pushNamed(
-                            context,
-                            FeedbackRouter.imageView,
-                            arguments: ImageViewPageArgs(
-                                [widget.imageUrl], 1, 0, false),
-                          ),
-                      child: image),
-                );
-              }
-            } else {
-              return Icon(
-                Icons.refresh,
-                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-              );
-            }
-          }),
-          color: snapshot.hasData
-              ? Colors.transparent
-              : WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+                              TextButton(
+                                  style: ButtonStyle(
+                                      alignment: Alignment.topRight,
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero),
+                                      overlayColor: MaterialStateProperty.all(
+                                          Colors.transparent)),
+                                  onPressed: () {
+                                    setState(() {
+                                      _picFullView = false;
+                                    });
+                                  },
+                                  child: Text('收起',
+                                      style: TextUtil.base
+                                          .textButtonPrimary(context)
+                                          .w600
+                                          .NotoSansSC
+                                          .sp(14)))
+                            ])
+                      : SizedBox(
+                          height: WePeiYangApp.screenWidth * 1.2,
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.r)),
+                            child: Stack(children: [
+                              GestureDetector(
+                                  onTap: () => Navigator.pushNamed(
+                                        context,
+                                        FeedbackRouter.imageView,
+                                        arguments: ImageViewPageArgs(
+                                            [widget.imageUrl], 1, 0, true),
+                                      ),
+                                  child: image),
+                              Positioned(top: 8, left: 8, child: TextPod('长图')),
+                              Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _picFullView = true;
+                                        });
+                                      },
+                                      child: Container(
+                                          height: 60,
+                                          width: double.infinity,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment(0, -0.7),
+                                              end: Alignment(0, 1),
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.black54,
+                                              ],
+                                            ),
+                                          ),
+                                          child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  '点击展开\n',
+                                                  style: TextUtil.base.w600
+                                                      .bright(context)
+                                                      .sp(14)
+                                                      .h(0.6),
+                                                ),
+                                                Spacer(),
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.black38,
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        16))),
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            12, 4, 10, 6),
+                                                    child: Text(
+                                                      '长图模式',
+                                                      style: TextUtil.base.w300
+                                                          .bright(context)
+                                                          .sp(12),
+                                                    ))
+                                              ]))))
+                            ]),
+                          ))
+                  : ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12.r)),
+                      child: GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                                context,
+                                FeedbackRouter.imageView,
+                                arguments: ImageViewPageArgs(
+                                    [widget.imageUrl], 1, 0, false),
+                              ),
+                          child: image),
+                    )
+              : Icon(
+                  Icons.refresh,
+                  color: Colors.black54,
+                ),
+          color: snapshot.hasData ? Colors.transparent : Colors.black12,
         );
       },
     );
@@ -654,10 +666,11 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: 10),
+        SizedBox(width: SplitUtil.w * 10),
         IconWidget(
           IconType.bottomLike,
           count: widget.post.likeCount,
+          size: 22.r,
           onLikePressed: (isLike, likeCount, success, failure) async {
             await FeedbackService.postHitLike(
               id: widget.post.id,
@@ -682,6 +695,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
         IconWidget(
           IconType.bottomFav,
           count: widget.post.favCount,
+          size: 22.r,
           onLikePressed: (isFav, favCount, success, failure) async {
             await FeedbackService.postHitFavorite(
               id: widget.post.id,
@@ -700,7 +714,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
           isLike: widget.post.isFav,
         ),
         DislikeWidget(
-          size: 22.w,
+          size: 22.r,
           isDislike: widget.post.isDis,
           onDislikePressed: (dislikeNotifier) async {
             await FeedbackService.postHitDislike(
@@ -720,7 +734,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
             );
           },
         ),
-        SizedBox(width: 10)
+        SizedBox(width: SplitUtil.w * 10)
       ],
     );
   }
