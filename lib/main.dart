@@ -400,7 +400,9 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     "whu.png",
     "zju.png",
   ];
-  final splashIndex = Random().nextInt(splashes.length);
+  late final splashIndex =
+      "${CommonPreferences.userNumber.value}${now.hour}".hashCode %
+          splashes.length;
 
   @override
   Widget build(BuildContext context) {
