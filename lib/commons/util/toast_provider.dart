@@ -55,7 +55,7 @@ class ToastProvider with AsyncTimer {
   /// ```
   static void custom({
     required Widget child,
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 1),
     PositionedToastBuilder? positionedToastBuilder,
   }) {
     if (positionedToastBuilder != null) {

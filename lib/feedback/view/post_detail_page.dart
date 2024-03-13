@@ -1391,14 +1391,18 @@ class _ManagerPopUpState extends State<ManagerPopUp>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        context
-            .read<LakeModel>()
-            .lakeAreas[context
-                .read<LakeModel>()
-                .tabList[context.read<LakeModel>().currentTab]
-                .id]
-            ?.refreshController
-            .requestRefresh();
+        try {
+          context
+              .read<LakeModel>()
+              .lakeAreas[context
+                  .read<LakeModel>()
+                  .tabList[context.read<LakeModel>().currentTab]
+                  .id]
+              ?.refreshController
+              .requestRefresh();
+        } catch (e) {
+          //TODO:FIX: Try not to call requestRefresh() before build,please call after the ui was rendered
+        }
         return true;
       },
       child: Container(

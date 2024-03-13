@@ -70,6 +70,7 @@ class _UserMailListState extends State<UserMailList> {
       return Center(child: Text("waiting"));
     }
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: _messages!.mails.length,
       itemBuilder: (_, i) {
         return MailItem(data: _messages!.mails[i]);
@@ -169,7 +170,8 @@ class MailPage extends StatelessWidget {
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: AppBar(
-        title: Text('通知', style: TextUtil.base.regular.sp(16).blue52hz(context)),
+        title:
+            Text('通知', style: TextUtil.base.regular.sp(16).blue52hz(context)),
         elevation: 0,
         centerTitle: true,
         backgroundColor:

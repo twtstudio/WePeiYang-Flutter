@@ -56,6 +56,7 @@ class PrivacyDialog extends Dialog {
                   ),
                   child: Markdown(
                     controller: ScrollController(),
+                    physics: BouncingScrollPhysics(),
                     selectable: true,
                     data: result,
                   ),
