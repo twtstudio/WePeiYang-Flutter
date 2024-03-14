@@ -108,8 +108,8 @@ class _CoursePageState extends State<CoursePage> {
         ),
       ))
           .then((value) async {
-        final fullpath = await saveImageToPath(value);
-        GallerySaver.saveImage(fullpath!, albumName: "微北洋");
+        final fullPath = await saveImageToPath(value);
+        GallerySaver.saveImage(fullPath!, albumName: "微北洋");
         ToastProvider.success("图片保存成功");
       });
     });
@@ -218,10 +218,12 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Container(
           decoration: BoxDecoration(),
           padding: EdgeInsets.all(10.r),
-          child: Image.asset(
-            'assets/images/schedule/screenshot.png',
-            height: 20.r,
-            width: 20.r,
+          child: Icon(
+            Icons.camera_alt_rounded,
+            size: 20.r,
+            color: WpyTheme.of(context)
+                .get(WpyColorKey.brightTextColor)
+                .withOpacity(0.7),
           ),
         ),
       ),

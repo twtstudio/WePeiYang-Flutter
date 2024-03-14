@@ -12,6 +12,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -435,18 +436,24 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     "whu.png",
     "zju.png",
   ];
-  final splashIndex = Random().nextInt(splashes.length);
+  late final splashIndex =
+      "${CommonPreferences.userNumber.value}${now.hour}".hashCode %
+          splashes.length;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: WpyTheme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white,
       padding: EdgeInsets.all(30),
       child: Center(
         child: ColoredIcon(
           _isFoolDay
               ? '$splashBase/${splashes[splashIndex]}'
-              : 'assets/images/splash_screen.png',
+              : WpyTheme.of(context).brightness == Brightness.dark
+                  ? 'assets/images/splash_screen_dark.png'
+                  : 'assets/images/splash_screen.png',
           color: _isFoolDay ? null : WpyTheme.of(context).primary,
         ),
       ),

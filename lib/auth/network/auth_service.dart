@@ -148,6 +148,7 @@ class AuthService with AsyncTimer {
       {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnInfo', () async {
       try {
+        // TODO: 这个是坏的
         await authDio.post("user/phone/msg",
             data: {"phone": phone},
             options: Options(contentType: Headers.formUrlEncodedContentType));

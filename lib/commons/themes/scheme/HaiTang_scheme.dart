@@ -3,30 +3,29 @@ import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
-class PurpleScheme extends WpyThemeData {
-  PurpleScheme()
+class HaiTangScheme extends WpyThemeData {
+  HaiTangScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_purple_theme",
-            name: "北洋紫",
-            description: "默认 紫 主题",
+            themeId: "builtin_HaiTang_theme",
+            name: "粉色是虚伪!",
+            description: "默认 粉色 主题",
             brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xFF921AFF),
+            representativeColor: Color(0xFFD983AE),
           ),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
-            primaryColor: purpleMapper(purplePrimaryColor),
+            primaryColor: HaiTangMapper(HaiTangPrimaryColor),
           ),
         );
 }
 
-const purplePrimaryColor = Color(0xFFB15BFF);
+const HaiTangPrimaryColor = Color(0xFFD983AE);
 
-ColorMapper purpleMapper = (Color source) {
+ColorMapper HaiTangMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
-  HSLColor targetHsl = HSLColor.fromColor(purplePrimaryColor);
+  HSLColor targetHsl = HSLColor.fromColor(HaiTangPrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
       .withLightness((hsl.lightness - 0.05).clamp(0, 1))
@@ -35,7 +34,7 @@ ColorMapper purpleMapper = (Color source) {
 };
 
 final Map<WpyColorKey, dynamic> redSchemeDetail = {
-  WpyColorKey.defaultActionColor: purpleMapper,
+  WpyColorKey.defaultActionColor: HaiTangMapper,
   WpyColorKey.primaryBackgroundColor: Colors.white,
   WpyColorKey.secondaryBackgroundColor: Color.fromARGB(255, 248, 248, 248),
   WpyColorKey.reverseBackgroundColor: Colors.black,
@@ -46,22 +45,22 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 145, 145, 145),
   WpyColorKey.labelTextColor: Color(0xFF2A2A2A),
   WpyColorKey.unlabeledColor: Color(0xFF979797),
-  WpyColorKey.cursorColor: purpleMapper,
+  WpyColorKey.cursorColor: HaiTangMapper,
   WpyColorKey.infoTextColor: Color(0xFF4E4E4E),
   WpyColorKey.backgroundGradientEndColor: Colors.white54,
   WpyColorKey.secondaryInfoTextColor: Color(0xFF979797),
 
-  WpyColorKey.primaryActionColor: purpleMapper,
-  WpyColorKey.primaryLightActionColor: purpleMapper,
-  WpyColorKey.primaryTextButtonColor: purpleMapper,
+  WpyColorKey.primaryActionColor: HaiTangMapper,
+  WpyColorKey.primaryLightActionColor: HaiTangMapper,
+  WpyColorKey.primaryTextButtonColor: HaiTangMapper,
 
   // the Main Action on main page
-  WpyColorKey.beanDarkColor: purpleMapper,
-  WpyColorKey.beanLightColor: purpleMapper,
+  WpyColorKey.beanDarkColor: HaiTangMapper,
+  WpyColorKey.beanLightColor: HaiTangMapper,
 
 // schedule page background color
-  WpyColorKey.primaryLighterActionColor: purpleMapper,
-  WpyColorKey.primaryLightestActionColor: purpleMapper,
+  WpyColorKey.primaryLighterActionColor: HaiTangMapper,
+  WpyColorKey.primaryLightestActionColor: HaiTangMapper,
 
 // --- The Color below shouldn't be customized ---
   WpyColorKey.linkBlue: Color(0xFF222F80),
@@ -70,11 +69,11 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.infoStatusColor: Color(0xfff0ad4e),
 
 // bind classes pages
-  WpyColorKey.oldActionColor: purpleMapper,
-  WpyColorKey.oldSecondaryActionColor: purpleMapper,
-  WpyColorKey.oldThirdActionColor: purpleMapper,
-  WpyColorKey.oldFurthActionColor: purpleMapper,
-  WpyColorKey.oldActionRippleColor: purpleMapper,
+  WpyColorKey.oldActionColor: HaiTangMapper,
+  WpyColorKey.oldSecondaryActionColor: HaiTangMapper,
+  WpyColorKey.oldThirdActionColor: HaiTangMapper,
+  WpyColorKey.oldFurthActionColor: HaiTangMapper,
+  WpyColorKey.oldActionRippleColor: HaiTangMapper,
 
 /* ----- this colors for setting pages ----- */
   WpyColorKey.oldSwitchBarColor: Color.fromRGBO(240, 241, 242, 1),
@@ -125,17 +124,17 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
 
 //三个加载的点点
 
-  WpyColorKey.loadPointA: purpleMapper,
-  WpyColorKey.loadPointB: purpleMapper,
-  WpyColorKey.loadPointC: purpleMapper,
+  WpyColorKey.loadPointA: HaiTangMapper,
+  WpyColorKey.loadPointB: HaiTangMapper,
+  WpyColorKey.loadPointC: HaiTangMapper,
 
 //Avatar chosen pink
   WpyColorKey.avatarChosenColor: Color(0xFFFFCCD1),
 
 // 地图 校历 页面的蒙版
-  WpyColorKey.beiyangCampusMaskColor: purpleMapper,
-  WpyColorKey.unSelectedIcon: purpleMapper,
-  WpyColorKey.backgroundMaskColor: purpleMapper,
+  WpyColorKey.beiyangCampusMaskColor: HaiTangMapper,
+  WpyColorKey.unSelectedIcon: HaiTangMapper,
+  WpyColorKey.backgroundMaskColor: HaiTangMapper,
   WpyColorKey.liteBackgroundMaskColor: Colors.white10,
 
   WpyColorKey.blue52hz: Color.fromRGBO(36, 43, 69, 1),
@@ -200,8 +199,8 @@ final colorSetsList = {
 
   WpyColorSetKey.primaryGradient: LinearGradient(
     colors: [
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
       lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
@@ -213,8 +212,8 @@ final colorSetsList = {
 
   WpyColorSetKey.backgroundGradient: LinearGradient(
     colors: [
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
       lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
@@ -226,8 +225,8 @@ final colorSetsList = {
 
   WpyColorSetKey.primaryGradientAllScreen: LinearGradient(
     colors: [
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      purpleMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

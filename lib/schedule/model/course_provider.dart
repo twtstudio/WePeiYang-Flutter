@@ -107,7 +107,8 @@ class CourseProvider with ChangeNotifier {
   void refreshCourseByBackend(BuildContext context) async {
     ToastProvider.running("刷新数据中……");
     try {
-      if (CommonPreferences.useClassesBackend.value) {
+      // 後端爬蟲沒了 天天出問題 暫時關閉 一方之後可能要用先這樣臨時處理
+      if (CommonPreferences.useClassesBackend.value && false) {
         var data = await ClassesBackendService.getClasses();
         if (data == null) throw WpyDioException(error: '云端获取课表失败');
         _schoolCourses = data.item1;

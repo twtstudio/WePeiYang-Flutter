@@ -1,0 +1,80 @@
+name: Flutter AutoPackage Process
+
+on:
+  push:
+    branches:
+      - "flutter3.10"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.10.0'
+
+    # Extract version from pubspec.yaml
+    - name: Extract version from pubspec.yaml
+      run: |
+        VERSION=$(grep 'version:' pubspec.yaml | sed 's/version: //')
+        echo "VERSION_NAME=${VERSION%+*}" >> $GITHUB_ENV
+        echo "VERSION_CODE=${VERSION#*+}" >> $GITHUB_ENV
+        
+    - name: Prepare build version
+      run: echo "BUILD_VERSION=${VERSION_NAME}_$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    # Decode keystore
+    - name: Decode keystore
+      run: |
+        echo "${{ secrets.KEYSTORE }}" | base64 --decode > /tmp/keystore.keystore
+    
+    # Create key.properties
+    - name: Create key.properties
+      run: |
+        echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/local.properties
+        echo "keyAlias=${{ secrets.ALIAS }}" >> android/local.properties
+        echo "jksPath=/tmp/keystore.keystore" >> android/local.properties
+
+    # Build APK
+    - name: Build APK
+      run: |
+        flutter build apk --release \
+        --dart-define=ENVIRONMENT=PREVIEW \
+        --dart-define=VERSION=$BUILD_VERSION \
+        --dart-define=VERSIONCODE=$VERSION_CODE \
+        --target-platform android-arm,android-arm64 \
+        --split-per-abi
+
+    # Identify APKs and set paths
+    - name: Identify APKs and set paths
+      id: set_apk_paths
+      run: |
+        ARM64_V8A_APK_PATH=$(echo build/app/outputs/apk/release/*-arm64-v8a-release.apk)
+        ARMEABI_V7A_APK_PATH=$(echo build/app/outputs/apk/release/*-armeabi-v7a-release.apk)
+        echo "arm64_v8a_apk_path=${ARM64_V8A_APK_PATH}" >> $GITHUB_ENV
+        echo "armeabi_v7a_apk_path=${ARMEABI_V7A_APK_PATH}" >> $GITHUB_ENV
+
+    # Upload APKs with version and git commit hash in name
+    - name: Upload ARM64-v8a APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-arm64-v8a.apk
+        path: ${{ env.arm64_v8a_apk_path }}
+
+    - name: Upload ARMv7a APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-armeabi-v7a.ap
+        path: ${{ env.armeabi_v7a_apk_path }}
+

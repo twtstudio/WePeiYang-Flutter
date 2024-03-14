@@ -40,17 +40,17 @@ class ClassPeriod {
 
 class SessionIndexUtil {
   static final List<ClassPeriod> periods = [
-    ClassPeriod.fromString("8:00-9:15"),
+    ClassPeriod.fromString("7:00-9:15", displayStart: "8:30"),
     ClassPeriod.fromString("9:16-10:05", displayStart: "9:25"),
     ClassPeriod.fromString("10:06-11:10", displayStart: "10:25"),
     ClassPeriod.fromString("11:11-12:00", displayStart: "11:25"),
     //
-    ClassPeriod.fromString("13:30-14:15"),
+    ClassPeriod.fromString("12:01-14:15", displayStart: "13:30"),
     ClassPeriod.fromString("14:16-15:05", displayStart: "14:25"),
     ClassPeriod.fromString("15:06-16:10", displayStart: "15:25"),
     ClassPeriod.fromString("16:11-17:00", displayStart: "16:25"),
     //
-    ClassPeriod.fromString("18:30-19:15"),
+    ClassPeriod.fromString("17:01-19:15", displayStart: "18:30"),
     ClassPeriod.fromString("19:16-20:05", displayStart: "19:25"),
     ClassPeriod.fromString("20:06-20:55", displayStart: "20:25"),
     ClassPeriod.fromString("20:56-21:45", displayStart: "21:00"),

@@ -15,7 +15,7 @@ class GPANotifier with ChangeNotifier {
   List<GPAStat> _gpaStats = [];
 
   List<GPAStat> get gpaStats => _gpaStats;
-  
+
   /// 外部更新gpa总数据时调用
   set gpaStats(List<GPAStat> newList) {
     _gpaStats = newList;
@@ -126,7 +126,8 @@ class GPANotifier with ChangeNotifier {
   void refreshGPABackend(BuildContext context) async {
     ToastProvider.running("刷新数据中……");
     try {
-      if (CommonPreferences.useClassesBackend.value) {
+      // 後端爬蟲沒了 天天出問題 暫時關閉 一方之後可能要用先這樣臨時處理
+      if (CommonPreferences.useClassesBackend.value && false) {
         var data = await ClassesBackendService.getClasses();
         if (data == null) throw WpyDioException(error: '云端获取GPA数据失败');
         _gpaStats = data.item3.stats;
@@ -134,7 +135,8 @@ class GPANotifier with ChangeNotifier {
         notifyListeners();
       } else {
         bool _canConnectToClasses = await ClassesService.check();
-        if(!_canConnectToClasses) ToastProvider.error('请连接校园网或连接VPN!');
+        if (!_canConnectToClasses)
+          ToastProvider.error('请连接校园网或连接VPN!');
         else {
           await ClassesService.getClasses(context);
         }

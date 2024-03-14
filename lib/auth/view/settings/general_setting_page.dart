@@ -54,6 +54,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
+        physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [
           SizedBox(height: 15.h),
@@ -319,45 +320,45 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
             alignment: Alignment.centerLeft,
             child: Text(S.current.schedule, style: titleTextStyle),
           ),
-          SizedBox(height: 10.h),
-          Container(
-            padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-            decoration: BoxDecoration(
-              color:
-                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('智能云端服务（BETA）', style: mainTextStyle),
-                      SizedBox(height: 3.h),
-                      Text('获取课表、GPA、考表无需输入图形验证码', style: hintTextStyle)
-                    ],
-                  ),
-                ),
-                Switch(
-                  value: CommonPreferences.useClassesBackend.value,
-                  onChanged: (value) {
-                    setState(() =>
-                        CommonPreferences.useClassesBackend.value = value);
-                  },
-                  activeColor: WpyTheme.of(context)
-                      .get(WpyColorKey.oldSecondaryActionColor),
-                  inactiveThumbColor:
-                      WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                  activeTrackColor:
-                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-                  inactiveTrackColor:
-                      WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-                ),
-              ],
-            ),
-          ),
+          // SizedBox(height: 10.h),
+          // // Container(
+          // //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+          // //   decoration: BoxDecoration(
+          // //     color:
+          // //         WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          // //     borderRadius: BorderRadius.circular(12.r),
+          // //   ),
+          // //   child: Row(
+          // //     children: [
+          // //       Expanded(
+          // //         child: Column(
+          // //           mainAxisAlignment: MainAxisAlignment.center,
+          // //           crossAxisAlignment: CrossAxisAlignment.start,
+          // //           children: [
+          // //             Text('智能云端服务（BETA）', style: mainTextStyle),
+          // //             SizedBox(height: 3.h),
+          // //             Text('获取课表、GPA、考表无需输入图形验证码', style: hintTextStyle)
+          // //           ],
+          // //         ),
+          // //       ),
+          // //       Switch(
+          // //         value: CommonPreferences.useClassesBackend.value,
+          // //         onChanged: (value) {
+          // //           setState(() =>
+          // //               CommonPreferences.useClassesBackend.value = value);
+          // //         },
+          // //         activeColor: WpyTheme.of(context)
+          // //             .get(WpyColorKey.oldSecondaryActionColor),
+          // //         inactiveThumbColor:
+          // //             WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+          // //         activeTrackColor:
+          // //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          // //         inactiveTrackColor:
+          // //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          // //       ),
+          // //     ],
+          // //   ),
+          // // ),
           SizedBox(height: 10.h),
           Container(
             padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),

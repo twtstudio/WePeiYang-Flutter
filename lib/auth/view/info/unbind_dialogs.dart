@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -191,70 +192,78 @@ class EmailUnbindDialog extends Dialog {
 
 class LogoffDialog extends Dialog {
   void _logoff() {
-    AuthService.logoff(onSuccess: () {
-      ToastProvider.success("注销账号成功");
-      UmengCommonSdk.onProfileSignOff();
-      CommonPreferences.clearAllPrefs();
-      Navigator.pushNamedAndRemoveUntil(
-          WePeiYangApp.navigatorState.currentContext!,
-          AuthRouter.login,
-          (route) => false);
-    }, onFailure: (e) {
-      ToastProvider.error(e.error.toString());
-    });
+    // AuthService.logoff(onSuccess: () {
+    //   ToastProvider.success("注销账号成功");
+    //   UmengCommonSdk.onProfileSignOff();
+    //   CommonPreferences.clearAllPrefs();
+    //   Navigator.pushNamedAndRemoveUntil(
+    //       WePeiYangApp.navigatorState.currentContext!,
+    //       AuthRouter.login,
+    //       (route) => false);
+    // }, onFailure: (e) {
+    //   ToastProvider.error(e.error.toString());
+    // });
+    // TODO: 太危险了 请去网页
+    Clipboard.setData(ClipboardData(text: "https://i.twt.edu.cn"));
+    ToastProvider.success("网页已经复制到剪贴板");
   }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        height: 160,
-        margin: const EdgeInsets.symmetric(horizontal: 30),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text('警告',
-                  textAlign: TextAlign.center,
-                  style:
-                      TextUtil.base.bold.noLine.sp(18).dangerousRed(context)),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text('注销账号后，账号数据将清空不能再找回，是否确认注销账号？',
-                  textAlign: TextAlign.center,
-                  style: TextUtil.base.noLine.sp(16).dangerousRed(context)),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                WButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel,
-                        style:
-                            TextUtil.base.w400.primaryAction(context).sp(15)),
+      child: Wrap(children: [
+        Container(
+          // height: 160,
+
+          margin: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text('警告',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextUtil.base.bold.noLine.sp(18).dangerousRed(context)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                child: Text(
+                    '注销账号后，账号数据将清空不能再找回，该操作属于危险操作\n请前往https://i.twt.edu.cn 处理',
+                    textAlign: TextAlign.center,
+                    style: TextUtil.base.noLine.sp(16).dangerousRed(context)),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  WButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      child: Text(S.current.cancel,
+                          style:
+                              TextUtil.base.w400.primaryAction(context).sp(15)),
+                    ),
                   ),
-                ),
-                SizedBox(width: 30),
-                WButton(
-                  onPressed: _logoff,
-                  child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok,
-                        style: TextUtil.base.w400.label(context).sp(15)),
-                  ),
-                )
-              ],
-            ),
-          ],
+                  SizedBox(width: 30),
+                  WButton(
+                    onPressed: _logoff,
+                    child: Container(
+                      margin: const EdgeInsets.all(10),
+                      child: Text("复制到剪贴板",
+                          style: TextUtil.base.w400.label(context).sp(15)),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 }
