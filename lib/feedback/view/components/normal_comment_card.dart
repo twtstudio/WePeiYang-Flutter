@@ -222,7 +222,28 @@ class _NCommentCardState extends State<NCommentCard>
                             .sp(16),
                       ),
                     ),
-
+                    CupertinoActionSheetAction(
+                      onPressed: (){
+                        Navigator.pop(context);
+                        if (Provider.of<NewFloorProvider>(context, listen: false)
+                            .inputFieldEnabled) {
+                          context.read<NewFloorProvider>().clearAndClose();
+                        } else {
+                          Provider.of<NewFloorProvider>(context, listen: false)
+                              .inputFieldOpenAndReplyTo(widget.comment.id);
+                          //TODO:自动弹出键盘会无法获取焦点（？
+                          // FocusScope.of(context).requestFocus(
+                          //     Provider.of<NewFloorProvider>(context, listen: false)
+                          //         .focusNode);
+                        }
+                      },
+                      child: Text(
+                        '回复',
+                        style: TextUtil.base.normal.w400.NotoSansSC
+                            .primary(context)
+                            .sp(16),
+                      ),
+                    ),
                     CupertinoActionSheetAction(
                       onPressed: () {
                         ClipboardData data =
