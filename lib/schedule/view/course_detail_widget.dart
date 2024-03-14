@@ -83,7 +83,7 @@ class _CourseDisplayWidget extends StatelessWidget {
   static double _singleCourseHeight = 65.h;
 
   /// "午休"提示栏的高度
-  static double _middleStep = 40.h;
+  static double _middleStep =35.h;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +158,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         positionedList.addAll(tempList.reversed);
 
         return SizedBox(
-          height: (_singleCourseHeight + verStep) * verNum + _middleStep * 2,
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep * 1,
           child: Stack(
             children: [
               child!,

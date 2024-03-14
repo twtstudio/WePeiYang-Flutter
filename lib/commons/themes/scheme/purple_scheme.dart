@@ -8,10 +8,10 @@ class PurpleScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_purple_theme",
-            name: "基佬紫",
+            name: "紫色是神秘!",
             description: "默认 紫 主题",
             brightness: Brightness.light,
-            representativeColor: Color(0xff53259c),
+            representativeColor: Color(0xFF921AFF),
           ),
           data: WpyThemeDetail(
             redSchemeDetail,
@@ -21,15 +21,15 @@ class PurpleScheme extends WpyThemeData {
         );
 }
 
-const purplePrimaryColor = Color(0xFF6218DE);
+const purplePrimaryColor = Color(0xFFB15BFF);
 
 ColorMapper purpleMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
   HSLColor targetHsl = HSLColor.fromColor(purplePrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
-      .withLightness((hsl.lightness - 0.3).clamp(0, 1))
-      .withSaturation((hsl.saturation - 0.2).clamp(0, 1))
+      .withLightness((hsl.lightness - 0.05).clamp(0, 1))
+      .withSaturation((hsl.saturation - 0.3).clamp(0, 1))
       .toColor();
 };
 

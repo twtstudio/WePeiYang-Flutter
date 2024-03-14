@@ -3,48 +3,38 @@ import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
-class GreenScheme extends WpyThemeData {
-  GreenScheme()
+class yellowScheme extends WpyThemeData {
+  yellowScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_green_theme",
-            name: "MikuMikuMi!",
+            themeId: "builtin_yellow_theme",
+            name: "黄色是警告!",
             description: "默认 红 主题",
             brightness: Brightness.light,
-            representativeColor: Color(0xFF39C5BB),
+            representativeColor: Color(0xfff7cf3f),
           ),
           data: WpyThemeDetail(
-            greenSchemeDetail,
+            redSchemeDetail,
             gradient: colorSetsList,
-            primaryColor: primaryMapper(greenPrimaryColor),
+            primaryColor: yellowMapper(yellowPrimaryColor),
           ),
         );
 }
 
-const greenPrimaryColor = Color(0xFF39C5BB);
+const yellowPrimaryColor = Color(0xFFf7cf3f);
 
-ColorMapper primaryMapper = (Color source) {
+ColorMapper yellowMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
-  HSLColor targetHsl = HSLColor.fromColor(greenPrimaryColor);
+  HSLColor targetHsl = HSLColor.fromColor(yellowPrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
       .withLightness((hsl.lightness - 0.05).clamp(0, 1))
-      .withSaturation((hsl.saturation - 0.20).clamp(0, 1))
+      .withSaturation((hsl.saturation - 0.3).clamp(0, 1))
       .toColor();
 };
 
-ColorMapper greenMapper = (Color source) {
-  HSLColor hsl = HSLColor.fromColor(source);
-  HSLColor targetHsl = HSLColor.fromColor(greenPrimaryColor);
-  return hsl
-      .withHue(targetHsl.hue)
-      .withLightness((hsl.lightness - 0.05).clamp(0, 1))
-      .withSaturation((hsl.saturation - 0.30).clamp(0, 1))
-      .toColor();
-};
-
-final Map<WpyColorKey, dynamic> greenSchemeDetail = {
-  WpyColorKey.defaultActionColor: greenMapper,
+final Map<WpyColorKey, dynamic> redSchemeDetail = {
+  WpyColorKey.defaultActionColor: yellowMapper,
   WpyColorKey.primaryBackgroundColor: Colors.white,
   WpyColorKey.secondaryBackgroundColor: Color.fromARGB(255, 248, 248, 248),
   WpyColorKey.reverseBackgroundColor: Colors.black,
@@ -55,22 +45,22 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 145, 145, 145),
   WpyColorKey.labelTextColor: Color(0xFF2A2A2A),
   WpyColorKey.unlabeledColor: Color(0xFF979797),
-  WpyColorKey.cursorColor: greenMapper,
+  WpyColorKey.cursorColor: yellowMapper,
   WpyColorKey.infoTextColor: Color(0xFF4E4E4E),
   WpyColorKey.backgroundGradientEndColor: Colors.white54,
   WpyColorKey.secondaryInfoTextColor: Color(0xFF979797),
 
-  WpyColorKey.primaryActionColor: greenMapper,
-  WpyColorKey.primaryLightActionColor: greenMapper,
-  WpyColorKey.primaryTextButtonColor: greenMapper,
+  WpyColorKey.primaryActionColor: yellowMapper,
+  WpyColorKey.primaryLightActionColor: yellowMapper,
+  WpyColorKey.primaryTextButtonColor: yellowMapper,
 
   // the Main Action on main page
-  WpyColorKey.beanDarkColor: greenMapper,
-  WpyColorKey.beanLightColor: greenMapper,
+  WpyColorKey.beanDarkColor: yellowMapper,
+  WpyColorKey.beanLightColor: yellowMapper,
 
 // schedule page background color
-  WpyColorKey.primaryLighterActionColor: greenMapper,
-  WpyColorKey.primaryLightestActionColor: greenMapper,
+  WpyColorKey.primaryLighterActionColor: yellowMapper,
+  WpyColorKey.primaryLightestActionColor: yellowMapper,
 
 // --- The Color below shouldn't be customized ---
   WpyColorKey.linkBlue: Color(0xFF222F80),
@@ -79,11 +69,11 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
   WpyColorKey.infoStatusColor: Color(0xfff0ad4e),
 
 // bind classes pages
-  WpyColorKey.oldActionColor: greenMapper,
-  WpyColorKey.oldSecondaryActionColor: greenMapper,
-  WpyColorKey.oldThirdActionColor: greenMapper,
-  WpyColorKey.oldFurthActionColor: greenMapper,
-  WpyColorKey.oldActionRippleColor: greenMapper,
+  WpyColorKey.oldActionColor: yellowMapper,
+  WpyColorKey.oldSecondaryActionColor: yellowMapper,
+  WpyColorKey.oldThirdActionColor: yellowMapper,
+  WpyColorKey.oldFurthActionColor: yellowMapper,
+  WpyColorKey.oldActionRippleColor: yellowMapper,
 
 /* ----- this colors for setting pages ----- */
   WpyColorKey.oldSwitchBarColor: Color.fromRGBO(240, 241, 242, 1),
@@ -134,17 +124,17 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
 
 //三个加载的点点
 
-  WpyColorKey.loadPointA: greenMapper,
-  WpyColorKey.loadPointB: greenMapper,
-  WpyColorKey.loadPointC: greenMapper,
+  WpyColorKey.loadPointA: yellowMapper,
+  WpyColorKey.loadPointB: yellowMapper,
+  WpyColorKey.loadPointC: yellowMapper,
 
 //Avatar chosen pink
   WpyColorKey.avatarChosenColor: Color(0xFFFFCCD1),
 
 // 地图 校历 页面的蒙版
-  WpyColorKey.beiyangCampusMaskColor: greenMapper,
-  WpyColorKey.unSelectedIcon: greenMapper,
-  WpyColorKey.backgroundMaskColor: greenMapper,
+  WpyColorKey.beiyangCampusMaskColor: yellowMapper,
+  WpyColorKey.unSelectedIcon: yellowMapper,
+  WpyColorKey.backgroundMaskColor: yellowMapper,
   WpyColorKey.liteBackgroundMaskColor: Colors.white10,
 
   WpyColorKey.blue52hz: Color.fromRGBO(36, 43, 69, 1),
@@ -209,8 +199,8 @@ final colorSetsList = {
 
   WpyColorSetKey.primaryGradient: LinearGradient(
     colors: [
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
       lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
@@ -222,8 +212,8 @@ final colorSetsList = {
 
   WpyColorSetKey.backgroundGradient: LinearGradient(
     colors: [
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
       lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
@@ -235,8 +225,8 @@ final colorSetsList = {
 
   WpyColorSetKey.primaryGradientAllScreen: LinearGradient(
     colors: [
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
-      greenMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
