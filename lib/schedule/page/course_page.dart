@@ -220,7 +220,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: EdgeInsets.all(10.r),
           child: Icon(
             Icons.camera_alt_rounded,
-            size: 22.r,
+            size: 20.r,
             color: WpyTheme.of(context)
                 .get(WpyColorKey.brightTextColor)
                 .withOpacity(0.7),
