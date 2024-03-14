@@ -3,13 +3,18 @@
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/twtstudio/WePeiYang-Flutter?color=green)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/twtstudio/WePeiYang-Flutter?color=blue)
 ![GitHub Repo stars](https://img.shields.io/github/stars/twtstudio/WePeiYang-Flutter?logo=star&color=yellow)
-
+ 
 
 ## 项目背景
 
 微北洋是由天津大学天外天工作室(移动组)开发运维的校园APP，面向天津大学全体师生，集课表查询、自习室查询、校园公告，GPA查询、失物招领为一体,是每个天大学子都在用的校园掌中宝。
 
 天津大学天外天工作室主页：[微北洋主页](https://mobile.twt.edu.cn/wpy/index.html)（仅限校园网访问）
+
+## 安装 (Installation)
+
+- **正式版**: [官网下载(需要校园网)](https://mobile.twt.edu.cn/wpy/index.html)  
+- **Preview 通道**:  请访问[Github Action](https://github.com/twtstudio/WePeiYang-Flutter/actions), 找到最新Build, 选择Summary中的Artifact下载
 
 ## 主要功能列表
 
