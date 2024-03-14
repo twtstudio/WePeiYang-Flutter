@@ -25,6 +25,17 @@ class _ThemeSettingState extends State<ThemeSetting>
     super.initState();
   }
 
+  shift() {
+    globalTheme.value = shiftTheme;
+    if (globalTheme.value.meta.brightness == Brightness.dark) {
+      CommonPreferences.appDarkThemeId.clear();
+      CommonPreferences.usingDarkTheme.value = 1;
+    } else {
+      CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
+      CommonPreferences.usingDarkTheme.value = 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     shiftTheme = WpyThemeData.themeList.firstWhere((element) {
@@ -33,7 +44,6 @@ class _ThemeSettingState extends State<ThemeSetting>
               ? globalTheme.value.meta.darkThemeId
               : CommonPreferences.appThemeId.value);
     }, orElse: () => WpyThemeData.brightThemeList[0]);
-
     Widget gridView = GridView(
       //解决无限高度问题
       shrinkWrap: true,
@@ -47,6 +57,7 @@ class _ThemeSettingState extends State<ThemeSetting>
           GestureDetector(
             onTap: () {
               globalTheme.value = theme;
+              CommonPreferences.usingDarkTheme.value = 0;
               CommonPreferences.appThemeId.value = theme.meta.themeId;
             },
             child: WpyThemeCard(
@@ -187,20 +198,17 @@ class _ThemeSettingState extends State<ThemeSetting>
       ),
     );
 
+    double y = 0;
+    bool canMove = true;
+
     Widget layout = Stack(
       children: [
         InkWell(
-          onTap: () {
-            globalTheme.value = shiftTheme;
-            CommonPreferences.appDarkThemeId.value =
-                shiftTheme.meta.darkThemeId;
-            CommonPreferences.usingDarkTheme.value =
-                CommonPreferences.usingDarkTheme.value == 1 ? 0 : 1;
-          },
+          onTap: () => shift(),
           child: Opacity(
             opacity: globalTheme.value.meta.brightness == Brightness.light
                 ? 0.9
-                : 0.3,
+                : 0.5,
             child: Container(
               height: 0.74.sw,
               width: 1.sw - 10.w,
@@ -263,70 +271,87 @@ class _ThemeSettingState extends State<ThemeSetting>
             ),
           ),
         ),
-        AnimatedContainer(
-          clipBehavior: Clip.hardEdge,
-          margin: EdgeInsets.fromLTRB(
-              5.w,
-              globalTheme.value.meta.brightness == Brightness.light
-                  ? 5.w
-                  : 0.14.sw + 5.w,
-              5.w,
-              5.w),
+        GestureDetector(
+          onPanStart: (e) => y = e.globalPosition.dy,
+          onPanDown: (e) {
+            if (canMove) {
+              if (e.globalPosition.dy - y > 10.w) {
+                canMove = false;
+                shift();
+              } else if (y - e.globalPosition.dy > 10.w) {
+                canMove = false;
+                shift();
+              }
+            }
+          },
+          child: AnimatedContainer(
+            onEnd: () {
+              canMove = true;
+            },
+            clipBehavior: Clip.hardEdge,
+            margin: EdgeInsets.fromLTRB(
+                5.w,
+                globalTheme.value.meta.brightness == Brightness.light
+                    ? 5.w
+                    : 0.14.sw + 5.w,
+                5.w,
+                5.w),
 
-          // 这个删了会报错
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.w),
-              topRight: Radius.circular(10.w),
+            // 这个删了会报错
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10.w),
+                topRight: Radius.circular(10.w),
+              ),
             ),
-          ),
 
-          height: 0.6.sw,
-          width: 1.sw - 10.w,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeInCubic,
-          child: Stack(
-            children: [
-              ScheduleBackground(),
-              Column(
-                children: [
-                  Container(
-                    height: 60.h,
-                    margin:
-                        EdgeInsets.only(left: 30.w, top: 10.h, bottom: 14.h),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextUtil.base.bright(context).w400.sp(22),
+            height: 0.6.sw,
+            width: 1.sw - 10.w,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInCubic,
+            child: Stack(
+              children: [
+                ScheduleBackground(),
+                Column(
+                  children: [
+                    Container(
+                      height: 60.h,
+                      margin:
+                          EdgeInsets.only(left: 30.w, top: 10.h, bottom: 14.h),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextUtil.base.bright(context).w400.sp(22),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      width: 1.sw,
-                      decoration: BoxDecoration(
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.primaryBackgroundColor),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30.w),
-                          topRight: Radius.circular(30.w),
+                    Expanded(
+                      child: Container(
+                        width: 1.sw,
+                        decoration: BoxDecoration(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryBackgroundColor),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.w),
+                            topRight: Radius.circular(30.w),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Spacer(),
+                            Row(
+                              children: [exampleCard, exampleCard2],
+                            )
+                          ],
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Spacer(),
-                          Row(
-                            children: [exampleCard, exampleCard2],
-                          )
-                        ],
-                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ],

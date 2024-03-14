@@ -46,11 +46,11 @@ class WpyTheme extends InheritedWidget {
     final themeId = CommonPreferences.appThemeId.value;
     final darkThemeId = CommonPreferences.appDarkThemeId.value;
     final brightness = CommonPreferences.usingDarkTheme.value;
-    final theme = WpyThemeData.brightThemeList.firstWhere((element) {
+    final theme = WpyThemeData.themeList.firstWhere((element) {
       return element.meta.themeId == (brightness == 0 ? themeId : darkThemeId);
-    }, orElse: () => WpyThemeData.brightThemeList[0]);
+    }, orElse: () => WpyThemeData.themeList[0]);
     globalTheme.value = theme;
   }
 }
 
-final globalTheme = ValueNotifier(WpyThemeData.brightThemeList[0]);
+final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);
