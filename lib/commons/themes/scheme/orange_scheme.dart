@@ -8,10 +8,10 @@ class OrangeScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_orange_theme",
-            name: "火热橙",
+            name: "橙色是愤怒!",
             description: "默认 火热橙 主题",
             brightness: Brightness.light,
-            representativeColor: Colors.orange,
+            representativeColor: Color(0xffFF8037),
           ),
           data: WpyThemeDetail(
             redSchemeDetail,
@@ -21,15 +21,15 @@ class OrangeScheme extends WpyThemeData {
         );
 }
 
-const orangePrimaryColor = Colors.orange;
+const orangePrimaryColor = Color(0xffFF8037);
 
 ColorMapper orangeMapper = (Color source) {
   HSLColor sourceHsl = HSLColor.fromColor(source);
   HSLColor targetHsl = HSLColor.fromColor(orangePrimaryColor);
   return sourceHsl
       .withHue(targetHsl.hue)
-      .withLightness((sourceHsl.lightness - 0.1).clamp(0, 1))
-      .withSaturation((sourceHsl.saturation - 0.1).clamp(0, 1))
+      .withLightness((sourceHsl.lightness - 0.05).clamp(0, 1))
+      .withSaturation((sourceHsl.saturation - 0.3).clamp(0, 1))
       .toColor();
 };
 
