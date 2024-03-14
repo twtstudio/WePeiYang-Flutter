@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -19,6 +21,7 @@ class ThemeSetting extends StatefulWidget {
 class _ThemeSettingState extends State<ThemeSetting>
     with SingleTickerProviderStateMixin {
   late WpyThemeData shiftTheme;
+  bool canMove = true;
 
   @override
   void initState() {
@@ -26,11 +29,21 @@ class _ThemeSettingState extends State<ThemeSetting>
   }
 
   shift() {
-    globalTheme.value = shiftTheme;
+    shiftDark();
+    shiftLight();
+  }
+
+  shiftDark() {
     if (globalTheme.value.meta.brightness == Brightness.dark) {
+      globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.clear();
       CommonPreferences.usingDarkTheme.value = 1;
-    } else {
+    }
+  }
+
+  shiftLight() {
+    if (globalTheme.value.meta.brightness == Brightness.light) {
+      globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
       CommonPreferences.usingDarkTheme.value = 0;
     }
@@ -198,9 +211,6 @@ class _ThemeSettingState extends State<ThemeSetting>
       ),
     );
 
-    double y = 0;
-    bool canMove = true;
-
     Widget layout = Stack(
       children: [
         InkWell(
@@ -272,15 +282,16 @@ class _ThemeSettingState extends State<ThemeSetting>
           ),
         ),
         GestureDetector(
-          onPanStart: (e) => y = e.globalPosition.dy,
-          onPanDown: (e) {
-            if (canMove) {
-              if (e.globalPosition.dy - y > 10.w) {
-                canMove = false;
-                shift();
-              } else if (y - e.globalPosition.dy > 10.w) {
-                canMove = false;
-                shift();
+          onVerticalDragEnd: (e) {
+            if (canMove = true) {
+              if (e.velocity.pixelsPerSecond.distance > 10.w) {
+                if (e.velocity.pixelsPerSecond.direction < pi / 2) {
+                  canMove = false;
+                  shiftDark();
+                } else {
+                  canMove = false;
+                  shiftLight();
+                }
               }
             }
           },

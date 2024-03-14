@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/orange_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/purple_scheme.dart';
 
-import '../scheme/HaiTang_scheme.dart';
+import '../scheme/haitang_scheme.dart';
 import '../scheme/dark_scheme.dart';
 import '../scheme/green_scheme.dart';
 import '../scheme/light_scheme.dart';
@@ -25,6 +25,8 @@ class WpyThemeData {
     PurpleScheme(),
     OrangeScheme(),
     GreenScheme(),
+    HaiTangScheme(),
+    YellowScheme(),
   ];
 
   static final List<WpyThemeData> themeList = [
@@ -35,7 +37,7 @@ class WpyThemeData {
     OrangeScheme(),
     GreenScheme(),
     HaiTangScheme(),
-    yellowScheme(),
+    YellowScheme(),
   ];
 
   factory WpyThemeData.light() => LightScheme();

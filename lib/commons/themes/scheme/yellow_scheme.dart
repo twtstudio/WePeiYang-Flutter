@@ -3,12 +3,12 @@ import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
-class yellowScheme extends WpyThemeData {
-  yellowScheme()
+class YellowScheme extends WpyThemeData {
+  YellowScheme()
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_yellow_theme",
-            name: "黄色是警告!",
+            name: "北洋黄",
             description: "默认 红 主题",
             brightness: Brightness.light,
             representativeColor: Color(0xfff7cf3f),
