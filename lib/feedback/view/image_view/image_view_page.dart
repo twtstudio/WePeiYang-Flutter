@@ -81,8 +81,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
           scrollDirection: Axis.horizontal,
           itemCount: widget.args.urlListLength,
           backgroundDecoration: BoxDecoration(
-              color: WpyTheme.of(context)
-                  .get(WpyColorKey.reverseBackgroundColor)),
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor)),
           pageController: PageController(
             initialPage: indexNow,
           ),
@@ -99,10 +99,12 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   child: Container(
                       decoration: BoxDecoration(
                           color: WpyTheme.of(context)
-                              .get(WpyColorKey.labelTextColor),
+                              .get(WpyColorKey.labelTextColor)
+                              .withOpacity(0.8),
                           borderRadius:
                               BorderRadius.all(Radius.circular(14.r))),
-                      padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
+                      // 这里设置不一样是因为 返回图标的中心靠右 往左稍微拉一点
+                      padding: EdgeInsets.fromLTRB(12.w, 10.w, 14.w, 10.w),
                       child: Icon(
                         CupertinoIcons.back,
                         color: WpyTheme.of(context)
@@ -120,7 +122,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
             right: 10.w,
             child: Container(
               decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.labelTextColor)
+                      .withOpacity(0.7),
                   borderRadius: BorderRadius.all(Radius.circular(14.r))),
               padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
               child: Row(

@@ -223,9 +223,10 @@ class _NCommentCardState extends State<NCommentCard>
                       ),
                     ),
                     CupertinoActionSheetAction(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context);
-                        if (Provider.of<NewFloorProvider>(context, listen: false)
+                        if (Provider.of<NewFloorProvider>(context,
+                                listen: false)
                             .inputFieldEnabled) {
                           context.read<NewFloorProvider>().clearAndClose();
                         } else {
@@ -800,7 +801,7 @@ class _NCommentCardState extends State<NCommentCard>
                         )),
                 ],
               ),
-              Positioned(right: 8.w, child: commentMenuButton)
+              // Positioned(right: 8.w, child: commentMenuButton)
             ],
           );
   }

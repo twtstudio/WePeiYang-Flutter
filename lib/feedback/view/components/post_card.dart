@@ -184,12 +184,13 @@ class _PostCardNormalState extends State<PostCardNormal> {
               ));
 
     /// 图片
-    var outerImages =
-        post.imageUrls.length == 1 ? outerSingleImage : outerMultipleImage;
+    var outerImages = post.imageUrls.length == 1
+        ? outerSingleImage
+        : multiImage(tapPreview: false);
 
     var innerImages = post.imageUrls.length == 1
         ? InnerSingleImageWidget(post.imageUrls[0])
-        : innerMultipleImage;
+        : multiImage();
 
     /// 评论点赞点踩浏览量
     var likeUnlikeVisit = Row(
@@ -339,74 +340,75 @@ class _PostCardNormalState extends State<PostCardNormal> {
       controller: widget.screenshotController ?? ScreenshotController(),
       child: Container(
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        child: widget.outer
-            // outer 框架
-            ? GestureDetector(
-                onTap: () {
-                  if (SplitUtil.needHorizontalView) {
-                    context.read<LakeModel>().clearAndSetSplitPost(post);
-                  } else {
-                    FeedbackService.visitPost(
-                        id: widget.post.id, onFailure: (_) {});
-                    Navigator.pushNamed(
-                      context,
-                      FeedbackRouter.detail,
-                      arguments: post,
-                    );
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...head,
-                      if (post.imageUrls.isNotEmpty)
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left: SplitUtil.w * 16,
-                                right: SplitUtil.w * 16,
-                                bottom: SplitUtil.h * 8),
-                            child: outerImages),
-                      Padding(
-                        padding: EdgeInsets.only(left: SplitUtil.w * 10),
-                        child: likeUnlikeVisit,
-                      )
-                    ],
-                  ),
-                ),
-              )
-
-            // inner 框架
-            : Container(
+        child: Builder(builder: (context) {
+          if (widget.outer) {
+            return GestureDetector(
+              onTap: () {
+                if (SplitUtil.needHorizontalView) {
+                  context.read<LakeModel>().clearAndSetSplitPost(post);
+                } else {
+                  FeedbackService.visitPost(
+                      id: widget.post.id, onFailure: (_) {});
+                  Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.detail,
+                    arguments: post,
+                  );
+                }
+              },
+              child: Container(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.lightBorderColor),
-                            width: 1.h))),
+                color: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ...head,
                     if (post.imageUrls.isNotEmpty)
                       Padding(
-                        padding: EdgeInsets.only(
-                            left: SplitUtil.w * 16,
-                            right: SplitUtil.w * 16,
-                            bottom: SplitUtil.h * 10),
-                        child: innerImages,
-                      ),
+                          padding: EdgeInsets.only(
+                              left: SplitUtil.w * 16,
+                              right: SplitUtil.w * 16,
+                              bottom: SplitUtil.h * 8),
+                          child: outerImages),
                     Padding(
-                      padding: EdgeInsets.only(left: SplitUtil.w * 8),
-                      child: tagCampusVisit,
-                    ),
+                      padding: EdgeInsets.only(left: SplitUtil.w * 10),
+                      child: likeUnlikeVisit,
+                    )
                   ],
                 ),
               ),
+            );
+          } else {
+            return Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, SplitUtil.h * 8),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.lightBorderColor),
+                          width: 1.h))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...head,
+                  if (post.imageUrls.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: SplitUtil.w * 16,
+                          right: SplitUtil.w * 16,
+                          bottom: SplitUtil.h * 10),
+                      child: innerImages,
+                    ),
+                  Padding(
+                    padding: EdgeInsets.only(left: SplitUtil.w * 8),
+                    child: tagCampusVisit,
+                  ),
+                ],
+              ),
+            );
+          }
+        }),
       ),
     );
 
@@ -415,76 +417,59 @@ class _PostCardNormalState extends State<PostCardNormal> {
     /////////////////////////////////////////////////////////
   }
 
-  Widget get outerSingleImage {
-    return ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(8.r)),
-        child: Container(
-          width: SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth,
-          height: SplitUtil.w * 150,
-          color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
-          child: WpyPic(
-            picBaseUrl + 'origin/' + post.imageUrls[0],
-            width: 350.w,
-            height: 197.w,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
-        ));
-  }
-
-  Widget get innerMultipleImage => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(
-          post.imageUrls.length,
-          (index) => WButton(
-            onPressed: () => Navigator.pushNamed(
-              context,
-              FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs(
-                  post.imageUrls, post.imageUrls.length, index, false),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(8.r)),
-              child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
-                  fit: BoxFit.cover,
-                  width: ((SplitUtil.sw -
-                              SplitUtil.w * 20 -
-                              SplitUtil.toolbarWidth) -
-                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
-                      post.imageUrls.length,
-                  height: ((SplitUtil.sw -
-                              SplitUtil.w * 20 -
-                              SplitUtil.toolbarWidth) -
-                          (post.imageUrls.length - 1) * SplitUtil.w * 6) /
-                      post.imageUrls.length,
-                  withHolder: true),
-            ),
-          ),
+  Widget get outerSingleImage => ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(8.r)),
+      child: Container(
+        width: SplitUtil.sw - SplitUtil.w * 20 - SplitUtil.toolbarWidth,
+        height: SplitUtil.w * 150,
+        color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+        child: WpyPic(
+          picBaseUrl + 'origin/' + post.imageUrls[0],
+          width: 350.w,
+          height: 197.w,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
         ),
-      );
+      ));
 
-  Widget get outerMultipleImage => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(
-          post.imageUrls.length,
-          (index) => ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8.r)),
-            child: WpyPic(picBaseUrl + 'thumb/' + post.imageUrls[index],
-                fit: BoxFit.cover,
-                width: ((SplitUtil.sw -
-                            SplitUtil.w * 20 -
-                            SplitUtil.toolbarWidth) -
-                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
-                    post.imageUrls.length,
-                height: ((SplitUtil.sw -
-                            SplitUtil.w * 20 -
-                            SplitUtil.toolbarWidth) -
-                        (post.imageUrls.length - 1) * SplitUtil.w * 6) /
-                    post.imageUrls.length,
-                withHolder: true),
+  Widget multiImage({bool tapPreview = true}) =>
+      LayoutBuilder(builder: (context, layout) {
+        double padding = 4.w;
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(
+            post.imageUrls.length,
+            (index) => Padding(
+              padding: EdgeInsets.all(padding),
+              child: IgnorePointer(
+                ignoring: !tapPreview,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      FeedbackRouter.imageView,
+                      arguments: ImageViewPageArgs(
+                          post.imageUrls, post.imageUrls.length, index, false),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                    child: WpyPic(
+                      picBaseUrl + 'thumb/' + post.imageUrls[index],
+                      fit: BoxFit.cover,
+                      width:
+                          layout.maxWidth / post.imageUrls.length - padding * 2,
+                      height:
+                          layout.maxWidth / post.imageUrls.length - padding * 2,
+                      withHolder: true,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
-        ),
-      );
+        );
+      });
 }
 
 class InnerSingleImageWidget extends StatefulWidget {

@@ -122,17 +122,19 @@ class _PostDetailPageState extends State<PostDetailPage>
   void initWhileChangingPost() {
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
-    _onRefresh();
+    _onRefresh(isInitial: true);
   }
 
   /// iOS显示拉黑按钮
   bool _showBlockButton = false;
 
-  _onRefresh() {
+  _onRefresh({
+    bool isInitial = false,
+  }) {
     currentPage = 1;
     _refreshController.resetNoData();
     setState(() {
-      _showPostCard = false;
+      _showPostCard = isInitial;
     });
     _commentList.clear();
     _initPostAndComments(
@@ -377,7 +379,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                           },
                           child: value == 1
                               ? Container(
-                                  padding: EdgeInsets.fromLTRB(0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
+                                  padding: EdgeInsets.fromLTRB(
+                                      0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryActionColor),
@@ -390,7 +393,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           .sp(14)),
                                 )
                               : Container(
-                                  padding: EdgeInsets.fromLTRB(0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
+                                  padding: EdgeInsets.fromLTRB(
+                                      0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context).get(
                                         WpyColorKey.secondaryBackgroundColor),
@@ -622,7 +626,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                   height: SplitUtil.w * 24,
                                                   color: WpyTheme.of(context)
                                                       .get(WpyColorKey
-                                                      .basicTextColor),
+                                                          .basicTextColor),
                                                 ),
                                                 onPressed: () =>
                                                     imageSelectionKey
@@ -704,10 +708,13 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   },
                                   child: Container(
                                       height: SplitUtil.h * 36,
-                                      margin:
-                                          EdgeInsets.fromLTRB(SplitUtil.w * 8, SplitUtil.h * 13, 0, SplitUtil.h * 13),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: SplitUtil.w * 8),
+                                      margin: EdgeInsets.fromLTRB(
+                                          SplitUtil.w * 8,
+                                          SplitUtil.h * 13,
+                                          0,
+                                          SplitUtil.h * 13),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: SplitUtil.w * 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: widget.post.type == 1
@@ -723,10 +730,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                     .sp(12)),
                                       ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(18.r),
+                                        borderRadius:
+                                            BorderRadius.circular(18.r),
                                         color: WpyTheme.of(context).get(
                                             WpyColorKey
-                                                .secondaryBackgroundColor),                                      )),
+                                                .secondaryBackgroundColor),
+                                      )),
                                 ),
                               ),
                             ],
@@ -1008,7 +1017,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                       : MediaQuery.of(context).padding.top)
               : EdgeInsets.zero,
           child: Scaffold(
-            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             appBar: appBar,
             body: body,
           ),
@@ -1144,7 +1154,8 @@ class CommentInputFieldState extends State<CommentInputField> {
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
-          contentPadding: EdgeInsets.symmetric(vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 20),
+          contentPadding: EdgeInsets.symmetric(
+              vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 20),
           fillColor:
               WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           hintStyle: TextStyle(
