@@ -95,9 +95,12 @@ class CommonPreferences {
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）
   static final appThemeId = PrefsBean<String>('appThemeId', 'builtin_light');
-  static final appDarkThemeId = PrefsBean<String>('appDarkThemeId', 'builtin_dark');
+  static final appDarkThemeId =
+      PrefsBean<String>('appDarkThemeId', 'builtin_dark');
+
   /// 0 light 1 dark 2 auto
   static final usingDarkTheme = PrefsBean<int>('usingDarkTheme', 0);
+  static final fastJumpOrder = PrefsBean<String>('fastJumpOrder', "[]");
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');

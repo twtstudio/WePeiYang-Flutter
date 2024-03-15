@@ -230,7 +230,40 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               ),
             ),
           ),
-
+          SizedBox(height: 10.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+            decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: WButton(
+              onPressed: () {
+                CommonPreferences.fastJumpOrder.value = "[]";
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('重置导航栏顺序', style: mainTextStyle),
+                        SizedBox(height: 3.h),
+                        Text("恢复默认导航栏", style: hintTextStyle)
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.restore,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldListActionColor),
+                      size: 22),
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
           // SizedBox(height: 10.h),
           // Container(
           //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -183,9 +184,10 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
             duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
             decoration: BoxDecoration(
-                gradient: WpyTheme.of(context).getGradient(    showSchedule && !Platform.isWindows
-    ? WpyColorSetKey.primaryGradient
-                    : WpyColorSetKey.gradientPrimaryBackground))),
+                gradient: WpyTheme.of(context).getGradient(
+                    showSchedule && !Platform.isWindows
+                        ? WpyColorSetKey.primaryGradient
+                        : WpyColorSetKey.gradientPrimaryBackground))),
         SafeArea(
           bottom: false,
           child: Stack(
@@ -323,39 +325,65 @@ class SliverCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget cardList = ListView.builder(
-      controller: controller,
+    //reorder cards based on common preferences
+    List<int> cardOrder =
+        List.from(json.decode(CommonPreferences.fastJumpOrder.value));
+
+    final ordered_cards = cardOrder.length != 0
+        ? List.generate(cards.length, (index) => cards[cardOrder[index]])
+        : cards;
+
+    Widget cardList = ReorderableListView.builder(
+      proxyDecorator: (Widget child, int index, Animation<double> animation) {
+        return child;
+      },
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.only(left: 16.h),
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
-      itemCount: cards.length,
+      itemCount: ordered_cards.length,
       itemBuilder: (context, i) {
-        if (cards[i].label == '北洋维基') {
+        if (ordered_cards[i].label == '北洋维基') {
           return WButton(
+            key: ValueKey(ordered_cards[i].route),
             onPressed: () async {
-              if (await canLaunchUrl(Uri.parse(cards[i].route))) {
-                await launchUrl(Uri.parse(cards[i].route),
+              if (await canLaunchUrl(Uri.parse(ordered_cards[i].route))) {
+                await launchUrl(Uri.parse(ordered_cards[i].route),
                     mode: LaunchMode.externalApplication);
               } else {
                 ToastProvider.error('请检查网络状态');
               }
             },
-            child: generateCard(context, cards[i]),
+            child: generateCard(context, ordered_cards[i]),
           );
         } else {
           return WButton(
+            key: ValueKey(ordered_cards[i].route),
             onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
-              if (cards[i].route == "") {
+              if (ordered_cards[i].route == "") {
                 ToastProvider.error('开发中 敬请期待！');
               } else {
-                Navigator.pushNamed(context, cards[i].route);
+                Navigator.pushNamed(context, ordered_cards[i].route);
               }
             },
-            child: generateCard(context, cards[i]),
+            child: generateCard(context, ordered_cards[i]),
           );
         }
+      },
+      onReorder: (int oldIndex, int newIndex) {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        final CardBean item = ordered_cards.removeAt(oldIndex);
+        ordered_cards.insert(newIndex, item);
+
+        // 1 2 3 4 5 -> 1 2 5 4 3
+        if (cardOrder.length == 0)
+          cardOrder = List.generate(cards.length, (i) => i);
+        final temp = cardOrder.removeAt(oldIndex);
+        cardOrder.insert(newIndex, temp);
+        CommonPreferences.fastJumpOrder.value = json.encode(cardOrder);
       },
     );
 
