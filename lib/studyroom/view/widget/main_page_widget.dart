@@ -67,7 +67,9 @@ class MainPageStudyRoomWidget extends StatelessWidget {
             ),
             label: SvgPicture.asset(
               StudyroomImages.direction,
-              color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+              colorFilter: ColorFilter.mode(
+                  WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                  BlendMode.srcIn),
               width: 10.w,
             ),
           ),

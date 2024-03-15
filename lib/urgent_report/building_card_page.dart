@@ -140,7 +140,10 @@ class _NucPassportPageState extends State<NucPassportPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: SvgPicture.asset('assets/svg_pics/half_black.svg',
-                        color: Colors.white, width: 30.w, fit: BoxFit.fitWidth),
+                        colorFilter:
+                            ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        width: 30.w,
+                        fit: BoxFit.fitWidth),
                   ),
                 )),
             SafeArea(

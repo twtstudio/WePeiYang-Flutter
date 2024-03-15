@@ -90,8 +90,10 @@ class ToastProvider with AsyncTimer {
               Builder(
                   builder: (context) => SvgPicture.asset(
                         'assets/svg_pics/lake_butt_icons/error_background.svg',
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.brightTextColor),
+                        colorFilter: ColorFilter.mode(
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.brightTextColor),
+                            BlendMode.srcIn),
                         width: 15,
                       )),
               SizedBox(width: 10),

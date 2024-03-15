@@ -194,8 +194,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: SvgPicture.asset(
                             'assets/svg_pics/lake_butt_icons/edit.svg',
                             width: 18.w,
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.brightTextColor),
+                            colorFilter: ColorFilter.mode(
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.brightTextColor),
+                                BlendMode.srcIn),
                           ),
                         ),
                       ),

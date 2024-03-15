@@ -204,7 +204,9 @@ class _PostCardNormalState extends State<PostCardNormal> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset("assets/svg_pics/lake_butt_icons/comment.svg",
-              color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+              colorFilter: ColorFilter.mode(
+                  WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+                  BlendMode.srcIn),
               width: 11.67.r),
           SizedBox(width: 3.r),
           Text(

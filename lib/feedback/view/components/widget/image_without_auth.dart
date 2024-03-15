@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:ui' as ui show instantiateImageCodec, Codec;
+// import 'dart:io';
+// import 'dart:ui' as ui show instantiateImageCodec, Codec;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -27,28 +27,28 @@ class NetworkImageSSL extends ImageProvider<NetworkImageSSL> {
   //       codec: _loadAsync(key), scale: key.scale);
   // }
 
-  static final HttpClient _httpClient = new HttpClient()
-    ..badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => true);
+  // static final HttpClient _httpClient = new HttpClient()
+  //   ..badCertificateCallback =
+  //       ((X509Certificate cert, String host, int port) => true);
 
-  Future<ui.Codec> _loadAsync(NetworkImageSSL key) async {
-    assert(key == this);
-
-    final Uri resolved = Uri.base.resolve(key.url);
-    final HttpClientRequest request = await _httpClient.getUrl(resolved);
-    headers?.forEach((String name, String value) {
-      request.headers.add(name, value);
-    });
-    final HttpClientResponse response = await request.close();
-    if (response.statusCode != HttpStatus.ok)
-      throw new Exception('HTTP请求失败，状态码: ${response.statusCode}, $resolved');
-
-    final Uint8List bytes = await consolidateHttpClientResponseBytes(response);
-    if (bytes.lengthInBytes == 0)
-      throw new Exception('NetworkImageSSL是一个空文件: $resolved');
-
-    return await ui.instantiateImageCodec(bytes);
-  }
+  // Future<ui.Codec> _loadAsync(NetworkImageSSL key) async {
+  //   assert(key == this);
+  //
+  //   final Uri resolved = Uri.base.resolve(key.url);
+  //   final HttpClientRequest request = await _httpClient.getUrl(resolved);
+  //   headers?.forEach((String name, String value) {
+  //     request.headers.add(name, value);
+  //   });
+  //   final HttpClientResponse response = await request.close();
+  //   if (response.statusCode != HttpStatus.ok)
+  //     throw new Exception('HTTP请求失败，状态码: ${response.statusCode}, $resolved');
+  //
+  //   final Uint8List bytes = await consolidateHttpClientResponseBytes(response);
+  //   if (bytes.lengthInBytes == 0)
+  //     throw new Exception('NetworkImageSSL是一个空文件: $resolved');
+  //
+  //   return await ui.instantiateImageCodec(bytes);
+  // }
 
   @override
   bool operator ==(dynamic other) {

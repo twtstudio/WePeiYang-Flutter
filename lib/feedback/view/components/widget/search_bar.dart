@@ -238,8 +238,10 @@ class _SearchBarState extends State<SearchBar>
                         ? SvgPicture.asset(
                             "assets/svg_pics/lake_butt_icons/hashtag.svg",
                             width: 12,
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.defaultActionColor),
+                            colorFilter: ColorFilter.mode(
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.defaultActionColor),
+                                BlendMode.srcIn),
                           )
                         : Icon(Icons.clear,
                             size: 14,

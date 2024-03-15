@@ -251,7 +251,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       children: [
                         Text('重置导航栏顺序', style: mainTextStyle),
                         SizedBox(height: 3.h),
-                        Text("恢复默认导航栏", style: hintTextStyle)
+                        Text("长按拖拽可排序 点击重置", style: hintTextStyle)
                       ],
                     ),
                   ),

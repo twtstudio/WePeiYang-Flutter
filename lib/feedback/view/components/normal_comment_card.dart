@@ -143,7 +143,9 @@ class _NCommentCardState extends State<NCommentCard>
           child: SvgPicture.asset(
             'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
             width: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+            colorFilter: ColorFilter.mode(
+                WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+                BlendMode.srcIn),
           ),
         ),
         onPressed: () {

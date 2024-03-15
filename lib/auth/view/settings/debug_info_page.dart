@@ -35,15 +35,15 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
       final iosDeviceInfo = await deviceInfo.iosInfo;
-      deviceModel = iosDeviceInfo.model ?? 'Unknown model';
-      osVersion = iosDeviceInfo.systemVersion ?? 'Unknown version';
+      deviceModel = iosDeviceInfo.model;
+      osVersion = iosDeviceInfo.systemVersion;
       osType = "iOS";
       _iosDeviceInfo = iosDeviceInfo;
     } else {
       final androidDeviceInfo = await deviceInfo.androidInfo;
       androidDeviceInfo.display;
-      deviceModel = androidDeviceInfo.model ?? 'Unknown model';
-      osVersion = androidDeviceInfo.version.release ?? 'Unknown version';
+      deviceModel = androidDeviceInfo.model;
+      osVersion = androidDeviceInfo.version.release;
       osType = "Android";
       _androidDeviceInfo = androidDeviceInfo;
     }

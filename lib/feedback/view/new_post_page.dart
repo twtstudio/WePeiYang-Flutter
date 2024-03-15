@@ -429,7 +429,9 @@ class _CampusSelectorState extends State<CampusSelector> {
               SvgPicture.asset(
                 "assets/svg_pics/lake_butt_icons/map.svg",
                 width: 16,
-                color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                colorFilter: ColorFilter.mode(
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                    BlendMode.srcIn),
               ),
               SizedBox(width: 10),
               Text(

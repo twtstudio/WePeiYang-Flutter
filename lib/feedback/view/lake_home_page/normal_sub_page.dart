@@ -614,7 +614,7 @@ class AnnouncementBannerWidget extends StatelessWidget {
                           colorFilter: ColorFilter.mode(
                               WpyTheme.of(context)
                                   .get(WpyColorKey.primaryActionColor),
-                              BlendMode.color),
+                              BlendMode.srcIn),
                         ),
                         SizedBox(width: 6),
                         SizedBox(

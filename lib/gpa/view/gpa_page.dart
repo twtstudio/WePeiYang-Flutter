@@ -115,7 +115,9 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
             "assets/svg_pics/lake_butt_icons/back.svg",
             width: 18.r,
             height: 18.r,
-            color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
+            colorFilter: ColorFilter.mode(
+                WpyTheme.of(context).get(WpyColorKey.brightTextColor),
+                BlendMode.srcIn),
           ),
         ),
       ),
@@ -134,7 +136,7 @@ class GPAAppBar extends StatelessWidget implements PreferredSizeWidget {
         WButton(
           child: SvgPicture.asset(
             "assets/svg_pics/lake_butt_icons/refreash.svg",
-            color: gpaColors[1],
+            colorFilter: ColorFilter.mode(gpaColors[1], BlendMode.srcIn),
             width: 28.w,
             height: 28.h,
           ),

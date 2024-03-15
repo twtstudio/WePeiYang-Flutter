@@ -285,38 +285,36 @@ class _PostDetailPageState extends State<PostDetailPage>
     // Widget? widget,
   ) async {
     ToastProvider.running("生成截图中");
-    ui.Image? image=await _controller.captureAsUiImage(pixelRatio: 4.0);
+    ui.Image? image = await _controller.captureAsUiImage(pixelRatio: 4.0);
     double? photoWidth = image?.width.toDouble();
     print(photoWidth);
-    await _controller.captureFromLongWidget(
-        Column(
-          children: [
-            Container(
-              width: photoWidth,
-              height: image?.height.toDouble(),
-              child: CustomPaint(
-
-                painter: CustomImagePainter(image!),
-              ),
-            ),
-            Container(
-              width: photoWidth,
-              height: photoWidth! * 1220 / 5892,
-              child: Image.asset(
-                WpyTheme.of(context).brightness == Brightness.dark
-                    ? "assets/images/bottom_bar_black.png"
-                    : "assets/images/bottom_bar_white.png",
-                fit: BoxFit.fitWidth,
-              ),
-            )
-          ],
-        )).then((value) async {
+    await _controller
+        .captureFromLongWidget(Column(
+      children: [
+        Container(
+          width: photoWidth,
+          height: image?.height.toDouble(),
+          child: CustomPaint(
+            painter: CustomImagePainter(image!),
+          ),
+        ),
+        Container(
+          width: photoWidth,
+          height: photoWidth! * 1220 / 5892,
+          child: Image.asset(
+            WpyTheme.of(context).brightness == Brightness.dark
+                ? "assets/images/bottom_bar_black.png"
+                : "assets/images/bottom_bar_white.png",
+            fit: BoxFit.fitWidth,
+          ),
+        )
+      ],
+    ))
+        .then((value) async {
       final fullPath = await saveImageToPath(value);
       GallerySaver.saveImage(fullPath!, albumName: "微北洋");
       ToastProvider.success("图片保存成功");
-    }
-    );
-
+    });
   }
 
   @override
@@ -333,7 +331,9 @@ class _PostDetailPageState extends State<PostDetailPage>
       child: SvgPicture.asset(
         'assets/svg_pics/lake_butt_icons/send.svg',
         width: SplitUtil.w * 10,
-        color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+        colorFilter: ColorFilter.mode(
+            WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+            BlendMode.srcIn),
       ),
     );
 
@@ -797,7 +797,9 @@ class _PostDetailPageState extends State<PostDetailPage>
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
           width: SplitUtil.w * 25,
-          color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+          colorFilter: ColorFilter.mode(
+              WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+              BlendMode.srcIn),
         ),
         onPressed: () {
           showCupertinoModalPopup(

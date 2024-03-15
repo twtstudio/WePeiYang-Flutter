@@ -179,9 +179,11 @@ class _SearchTagCardState extends State<SearchTagCard>
         icon: SvgPicture.asset(
           "assets/svg_pics/lake_butt_icons/hashtag.svg",
           width: 14,
-          color: _controller.text == ''
-              ? WpyTheme.of(context).get(WpyColorKey.unlabeledColor)
-              : WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
+          colorFilter: ColorFilter.mode(
+              _controller.text == ''
+                  ? WpyTheme.of(context).get(WpyColorKey.unlabeledColor)
+                  : WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
+              BlendMode.srcIn),
         ),
         labelStyle: TextUtil.base.label(context).NotoSansSC.w400.sp(16),
         fillColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),

@@ -150,7 +150,9 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       child: Padding(
         padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
         child: SvgPicture.asset('assets/svg_pics/lake_butt_icons/send.svg',
-            color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+            colorFilter: ColorFilter.mode(
+                WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+                BlendMode.srcIn),
             width: 20),
       ),
     );
