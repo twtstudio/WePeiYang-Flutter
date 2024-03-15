@@ -57,7 +57,10 @@ dependencies:
   intl: ^0.18.0
 
   like_button: ^2.0.3
-  linkfy_text: ^1.1.5
+  linkfy_text:
+    git:
+      url: https://github.com/Iamstanlee/linkfy_text.git
+      ref: 679a9194df2565527ccaaeca9c673d93261ddf5a
 
   mutex: ^3.0.0
 
