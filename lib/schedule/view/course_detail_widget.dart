@@ -44,14 +44,16 @@ class _WeekDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var selectedWeek =
-        context.select<CourseProvider, int>((p) => p.selectedWeek);
+    context.select<CourseProvider, int>((p) => p.selectedWeek);
     List<String> dates = getWeekDayString(
         CommonPreferences.termStart.value, selectedWeek, _dayNumber);
     var now = DateTime.now();
     var month = now.month.toString();
     var day = now.day.toString();
     var nowDate =
-        "${month.length < 2 ? '0' + month : month}/${day.length < 2 ? '0' + day : day}";
+        "${month.length < 2 ? '0' + month : month}/${day.length < 2
+        ? '0' + day
+        : day}";
     return Row(
       children: dates.map((date) => _getCard(date, nowDate == date)).toList(),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,7 +61,8 @@ class _WeekDisplayWidget extends StatelessWidget {
   }
 
   /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(String date, bool deep) => Builder(builder: (context) {
+  Widget _getCard(String date, bool deep) =>
+      Builder(builder: (context) {
         return Container(
           height: 28.h,
           width: _cardWidth,
@@ -83,7 +86,7 @@ class _CourseDisplayWidget extends StatelessWidget {
   static double _singleCourseHeight = 65.h;
 
   /// "午休"提示栏的高度
-  static double _middleStep =35.h;
+  static double _middleStep = 40.h;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +161,7 @@ class _CourseDisplayWidget extends StatelessWidget {
         positionedList.addAll(tempList.reversed);
 
         return SizedBox(
-          height: (_singleCourseHeight + verStep) * verNum + _middleStep * 1,
+          height: (_singleCourseHeight + verStep) * verNum + _middleStep * 2,
           child: Stack(
             children: [
               child!,
