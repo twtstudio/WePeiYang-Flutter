@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
@@ -33,6 +34,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../commons/themes/template/wpy_theme_data.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
+import '../../schedule/page/course_page.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'lake_home_page/lake_notifier.dart';
@@ -281,17 +283,42 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Future<void> takeScreenshot(
     ScreenshotController _controller,
-    String name,
+    // String name,
     // Widget? widget,
   ) async {
     ToastProvider.running("生成截图中");
-    final dir = StorageUtil.tempDir.path;
-    final fullPath = path.join(dir, name);
-    await _controller.captureAndSave(dir,
-        fileName: name, delay: Duration(seconds: 1));
-    await GallerySaver.saveImage(fullPath, albumName: "微北洋");
-    await File(fullPath).delete();
-    ToastProvider.success("图片保存成功");
+    ui.Image? image=await _controller.captureAsUiImage(pixelRatio: 4.0);
+    double? photoWidth = image?.width.toDouble();
+    print(photoWidth);
+    await _controller.captureFromLongWidget(
+        Column(
+          children: [
+            Container(
+              width: photoWidth,
+              height: image?.height.toDouble(),
+              child: CustomPaint(
+
+                painter: CustomImagePainter(image!),
+              ),
+            ),
+            Container(
+              width: photoWidth,
+              height: photoWidth! * 1220 / 5892,
+              child: Image.asset(
+                WpyTheme.of(context).brightness == Brightness.dark
+                    ? "assets/images/bottom_bar_black.png"
+                    : "assets/images/bottom_bar_white.png",
+                fit: BoxFit.fitWidth,
+              ),
+            )
+          ],
+        )).then((value) async {
+      final fullPath = await saveImageToPath(value);
+      GallerySaver.saveImage(fullPath!, albumName: "微北洋");
+      ToastProvider.success("图片保存成功");
+    }
+    );
+
   }
 
   @override
@@ -828,8 +855,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     ),
                     CupertinoActionSheetAction(
                       onPressed: () async {
-                        await takeScreenshot(screenshotController,
-                            "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
+                        await takeScreenshot(screenshotController);
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -934,8 +960,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         onPressed: () async {
           screenshotSelecting.value = false;
           screenshotting.value = true;
-          await takeScreenshot(selectedScreenshotController,
-              "wpy_post_${widget.post.id}_${DateTime.now().millisecondsSinceEpoch}.png");
+          await takeScreenshot(selectedScreenshotController);
           screenshotting.value = false;
           screenshotList.empty();
         },
