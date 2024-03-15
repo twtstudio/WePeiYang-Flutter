@@ -141,6 +141,7 @@ class _PersonPageState extends State<PersonPage> {
       (index) {
         Widget post = PostCardNormal(
           _postList[index],
+          avatarClickable: false,
         );
         return post;
       },
@@ -303,29 +304,45 @@ class _PersonPageState extends State<PersonPage> {
       ],
     );
 
-    return Container(
-      color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-      child: SafeArea(
-        child: (CommonPreferences.isSuper.value ||
-                CommonPreferences.isStuAdmin.value)
-            ? SmartRefresher(
-                physics: BouncingScrollPhysics(),
-                controller: _refreshController,
-                header: RefreshHeader(context),
-                footer: ClassicFooter(
-                  idleText: '没有更多数据了:>',
-                  idleIcon: Icon(Icons.check),
-                ),
-                enablePullDown: true,
-                onRefresh: _onRefresh,
-                enablePullUp: true,
-                onLoading: _onLoading,
-                child: body,
-              )
-            : Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('个人主页'),
+        centerTitle: true,
+        titleTextStyle: TextUtil.base.w600.NotoSansSC.sp(16).primary(context),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        shadowColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Container(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        child: SafeArea(
+          child: (CommonPreferences.isSuper.value ||
+                  CommonPreferences.isStuAdmin.value)
+              ? SmartRefresher(
+                  physics: BouncingScrollPhysics(),
+                  controller: _refreshController,
+                  header: RefreshHeader(context),
+                  footer: ClassicFooter(
+                    idleText: '没有更多数据了:>',
+                    idleIcon: Icon(Icons.check),
+                  ),
+                  enablePullDown: true,
+                  onRefresh: _onRefresh,
+                  enablePullUp: true,
+                  onLoading: _onLoading,
+                  child: body,
+                )
+              : Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
                       child: WpyPic(
                         avatar == ""
                             ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
@@ -336,35 +353,36 @@ class _PersonPageState extends State<PersonPage> {
                         alignment: Alignment.topCenter,
                       ),
                     ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        height: 1.sw,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.primaryBackgroundColor),
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.backgroundMaskColor),
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.backgroundGradientEndColor),
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.liteBackgroundMaskColor)
-                            ],
-                            stops: [0, 0.4, 0.7, 1],
-                            begin: Alignment(0, -1),
-                            end: Alignment(0, 1),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          height: 1.sw,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.primaryBackgroundColor),
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.backgroundMaskColor),
+                                WpyTheme.of(context).get(
+                                    WpyColorKey.backgroundGradientEndColor),
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.liteBackgroundMaskColor)
+                              ],
+                              stops: [0, 0.4, 0.7, 1],
+                              begin: Alignment(0, -1),
+                              end: Alignment(0, 1),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SingleChildScrollView(child: appBar),
-                ],
-              ),
+                    SingleChildScrollView(child: appBar),
+                  ],
+                ),
+        ),
       ),
     );
   }

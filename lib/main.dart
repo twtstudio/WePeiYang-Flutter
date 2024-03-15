@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/foundation.dart'
@@ -12,11 +11,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/network/message_service.dart';
@@ -48,7 +46,6 @@ import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
-import 'studyroom/model/studyroom_provider.dart';
 import 'urgent_report/report_server.dart';
 
 /// 应用入口

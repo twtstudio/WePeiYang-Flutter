@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/orange_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/scheme/purple_scheme.dart';
 
-import '../scheme/haitang_scheme.dart';
 import '../scheme/dark_scheme.dart';
 import '../scheme/green_scheme.dart';
+import '../scheme/haitang_scheme.dart';
 import '../scheme/light_scheme.dart';
 import '../scheme/red_scheme.dart';
 import '../scheme/yellow_scheme.dart';

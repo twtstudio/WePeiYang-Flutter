@@ -10,8 +10,6 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../commons/widgets/w_button.dart';
-import "package:we_pei_yang_flutter/schedule/extension/logic_extension.dart"
-    show isBeforeTermStart;
 
 class TodayCoursesWidget extends StatelessWidget {
   @override

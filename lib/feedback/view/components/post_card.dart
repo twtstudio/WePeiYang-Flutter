@@ -26,7 +26,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
-import '../../../commons/widgets/w_button.dart';
 
 class PostCardNormal extends StatefulWidget {
   /// 标准 PostCard
@@ -34,10 +33,14 @@ class PostCardNormal extends StatefulWidget {
   /// 包括论坛首页展示的 (outer = true / null) 和 详情页展示的 (outer = false)
 
   PostCardNormal(this.post,
-      {this.outer = true, this.screenshotController, this.expandAll = false});
+      {this.outer = true,
+      this.screenshotController,
+      this.expandAll = false,
+      this.avatarClickable = true});
 
   final bool expandAll;
   final Post post;
+  final bool avatarClickable;
 
   final ScreenshotController? screenshotController;
 
@@ -73,16 +76,19 @@ class _PostCardNormalState extends State<PostCardNormal> {
             : SplitUtil.h * 56,
         child: Row(children: [
           SizedBox(width: SplitUtil.w * 2),
-          ProfileImageWithDetailedPopup(
-              post.id,
-              true,
-              post.type,
-              post.avatar,
-              post.uid,
-              post.nickname,
-              post.level.toString(),
-              post.id.toString(),
-              post.avatarBox.toString()),
+          IgnorePointer(
+            ignoring: !widget.avatarClickable,
+            child: ProfileImageWithDetailedPopup(
+                post.id,
+                true,
+                post.type,
+                post.avatar,
+                post.uid,
+                post.nickname,
+                post.level.toString(),
+                post.id.toString(),
+                post.avatarBox.toString()),
+          ),
           Expanded(
             child: Container(
                 color: Colors.transparent, // 没他就没有点击域
@@ -372,7 +378,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                               bottom: SplitUtil.h * 8),
                           child: outerImages),
                     Padding(
-                      padding: EdgeInsets.only(left: SplitUtil.w * 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: SplitUtil.w * 10),
                       child: likeUnlikeVisit,
                     )
                   ],

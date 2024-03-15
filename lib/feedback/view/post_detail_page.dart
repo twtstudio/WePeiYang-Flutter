@@ -753,6 +753,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         ],
       );
       body = Stack(
+        key: ValueKey("loaded"),
         children: [
           Column(
             children: [
@@ -1020,7 +1021,20 @@ class _PostDetailPageState extends State<PostDetailPage>
             backgroundColor:
                 WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             appBar: appBar,
-            body: body,
+            body: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                if (child.key != ValueKey("loaded")) {
+                  return child;
+                } else {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                }
+              },
+              child: body,
+            ),
           ),
         ),
         onHorizontalDragUpdate: (DragUpdateDetails details) {

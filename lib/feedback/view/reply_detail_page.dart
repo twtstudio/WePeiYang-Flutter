@@ -155,6 +155,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ),
     );
     Widget mainList1 = ListView.builder(
+      key: ValueKey(floors != null ? floors!.length : 0),
       itemCount: floors != null ? floors!.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
         if (index == 0) {
@@ -209,7 +210,10 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           onRefresh: _onRefresh,
           enablePullUp: true,
           onLoading: _onLoading,
-          child: mainList1,
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
+            child: mainList1,
+          ),
         ),
         onNotification: (ScrollNotification scrollInfo) =>
             _onScrollNotification(scrollInfo),

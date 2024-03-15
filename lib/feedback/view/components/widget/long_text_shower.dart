@@ -88,12 +88,19 @@ class _ExpandableTextState extends State<ExpandableText> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(expand ? '收起' : '全文',
-                          style: TextUtil.base.textButtonPrimary(context).w400.NotoSansSC
+                          style: TextUtil.base
+                              .textButtonPrimary(context)
+                              .w400
+                              .NotoSansSC
                               .sp(16)),
                       SizedBox(width: 6),
                       if (!expand)
                         Text('共${text.length}字',
-                            style: TextUtil.base.infoText(context).w400.NotoSansSC.sp(15))
+                            style: TextUtil.base
+                                .infoText(context)
+                                .w400
+                                .NotoSansSC
+                                .sp(15))
                     ],
                   ),
                 ),

@@ -14,7 +14,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 class ActivityCard extends StatefulWidget {
   final double width;

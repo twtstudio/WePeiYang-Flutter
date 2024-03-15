@@ -22,8 +22,7 @@ class LinkText extends StatefulWidget {
 
 class _LinkTextState extends State<LinkText> {
   bool checkBili(String url) {
-    return url.startsWith('https://b23.tv/') ||
-        url.startsWith('https://www.bilibili.com/');
+    return url.contains('b23.tv') || url.contains('bilibili.com');
   }
 
   @override
