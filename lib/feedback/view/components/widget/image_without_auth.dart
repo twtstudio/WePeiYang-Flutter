@@ -21,11 +21,11 @@ class NetworkImageSSL extends ImageProvider<NetworkImageSSL> {
     return new SynchronousFuture<NetworkImageSSL>(this);
   }
 
-  @override
-  ImageStreamCompleter load(NetworkImageSSL key, DecoderCallback decode) {
-    return MultiFrameImageStreamCompleter(
-        codec: _loadAsync(key), scale: key.scale);
-  }
+  // @override
+  // ImageStreamCompleter load(NetworkImageSSL key, DecoderCallback decode) {
+  //   return MultiFrameImageStreamCompleter(
+  //       codec: _loadAsync(key), scale: key.scale);
+  // }
 
   static final HttpClient _httpClient = new HttpClient()
     ..badCertificateCallback =

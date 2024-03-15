@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -154,7 +153,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
             WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         leading: IconButton(
           icon: Icon(
-            CupertinoIcons.back,
+            Icons.arrow_back_ios_new,
             color: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
           ),
           onPressed: () {

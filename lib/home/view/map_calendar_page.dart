@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -29,7 +28,7 @@ class MapCalenderState extends State<MapCalendarPage> {
               WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
-              CupertinoIcons.back,
+              Icons.arrow_back_ios_new,
               color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
             ),
             onPressed: () => Navigator.pop(context),

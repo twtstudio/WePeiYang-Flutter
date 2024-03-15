@@ -26,7 +26,6 @@ import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
-import '../../../commons/widgets/w_button.dart';
 
 class PostCardNormal extends StatefulWidget {
   /// 标准 PostCard

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
@@ -92,7 +91,7 @@ class _SearchPageState extends State<SearchPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: 12, left: 12),
             child: Icon(
-              CupertinoIcons.back,
+              Icons.arrow_back_ios_new,
               color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
             ),
           ),

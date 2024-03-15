@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -188,7 +187,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           backgroundColor: Colors.transparent,
           leading: WButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Icon(CupertinoIcons.back,
+            child: Icon(Icons.arrow_back_ios_new,
                 color: WpyTheme.of(context).get(WpyColorKey.brightTextColor)),
           ),
           elevation: 0,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +29,7 @@ class FeedbackNoticePage extends StatelessWidget {
             style: TextUtil.base.label(context).w500.NotoSansSC.sp(18)),
         leading: IconButton(
           icon: Icon(
-            CupertinoIcons.back,
+            Icons.arrow_back_ios_new,
             color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
           ),
           onPressed: () {
@@ -129,7 +128,8 @@ class FeedbackNoticePage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: appBar,
       body: noticeCard,
     );

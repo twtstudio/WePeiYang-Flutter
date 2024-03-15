@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -19,7 +18,8 @@ class ReportBasePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(140),
         child: Container(
@@ -43,7 +43,8 @@ class ReportBasePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(CupertinoIcons.back, size: 25, color: Colors.white),
+                icon: Icon(Icons.arrow_back_ios_new,
+                    size: 25, color: Colors.white),
               ),
               backgroundColor: Colors.transparent,
               actions: [action],

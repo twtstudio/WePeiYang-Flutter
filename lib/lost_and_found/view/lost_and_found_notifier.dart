@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_size_getter/image_size_getter.dart';
-import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -18,6 +17,8 @@ import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_servic
 
 import '../../commons/themes/wpy_theme.dart';
 
+// import 'package:image_size_getter_http_input/image_size_getter_http_input.dart';
+
 class LAFoundModel with ChangeNotifier {
   Map<String, List<LostAndFoundPost>> postList = {'失物招领': [], '寻物启事': []};
 
@@ -27,35 +28,34 @@ class LAFoundModel with ChangeNotifier {
   };
 
   Map<String, RefreshController> refreshController = {
-    '失物招领' : RefreshController(),
-    '寻物启事' : RefreshController(),
+    '失物招领': RefreshController(),
+    '寻物启事': RefreshController(),
   };
 
   Map<String, String> currentCategory = {
-    '失物招领' : '全部',
-    '寻物启事' : '全部',
+    '失物招领': '全部',
+    '寻物启事': '全部',
   };
 
-  clearByType(type){
+  clearByType(type) {
     postList[type]?.clear();
     lafSubStatus[type] = LAFSubStatus.unload;
   }
 
   Map<String, bool> searchAndTagVisibility = {
-    '失物招领' : true,
-    '寻物启事' : true,
+    '失物招领': true,
+    '寻物启事': true,
   };
 
   Map<String, Size> _imageSizeCache = {};
 
-
-  Future<void> getNext({
-    required String type,
-    required OnSuccess success,
-    required OnFailure failure,
-    required String category,
-    String? keyword,
-    int? num }) async{
+  Future<void> getNext(
+      {required String type,
+      required OnSuccess success,
+      required OnFailure failure,
+      required String category,
+      String? keyword,
+      int? num}) async {
     await LostAndFoundService.getLostAndFoundPosts(
       type: type,
       keyword: keyword,
@@ -67,46 +67,47 @@ class LAFoundModel with ChangeNotifier {
           ToastProvider.running('没有更多内容了');
         } else {
           for (LostAndFoundPost item in list) {
-            if(item.coverPhotoPath != null){
-                if(_imageSizeCache[item.coverPhotoPath] != null)
-                  item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
-                else{
-                  final httpInput =
-                    await HttpInput.createHttpInput(item.coverPhotoPath!);
-                item.coverPhotoSize =
-                    await ImageSizeGetter.getSizeAsync(httpInput);
-                cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
-              }
+            if (item.coverPhotoPath != null) {
+              if (_imageSizeCache[item.coverPhotoPath] != null)
+                item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
+              else {
+                // TODO: 这里有问题 这个包http依赖太老了
+                //   final httpInput =
+                //     await HttpInput.createHttpInput(item.coverPhotoPath!);
+                // item.coverPhotoSize =
+                //     await ImageSizeGetter.getSizeAsync(httpInput);
+                // cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
               }
             }
           }
-          postList[type]?.addAll(list);
+        }
+        postList[type]?.addAll(list);
 
-          success();
-          notifyListeners();
-        },
-        onFailure: (e){
-          failure(e);
-        },
-        history: postList[type]!.isEmpty? '0' :  postList[type]!.map((e) => e.id).toList().join(','),
+        success();
+        notifyListeners();
+      },
+      onFailure: (e) {
+        failure(e);
+      },
+      history: postList[type]!.isEmpty
+          ? '0'
+          : postList[type]!.map((e) => e.id).toList().join(','),
     );
   }
 
-  void resetCategory({
-    required String type,
-    required String category}){
+  void resetCategory({required String type, required String category}) {
     currentCategory[type] = category;
     notifyListeners();
   }
 
-  void setSearchAndTagVisibility(bool isVisible, String type){
+  void setSearchAndTagVisibility(bool isVisible, String type) {
     searchAndTagVisibility[type] = isVisible;
     notifyListeners();
   }
 
   void getClipboardWeKoContents(BuildContext context) async {
     ClipboardData? clipboardData =
-    await Clipboard.getData(Clipboard.kTextPlain);
+        await Clipboard.getData(Clipboard.kTextPlain);
     if (clipboardData != null &&
         clipboardData.text != null &&
         clipboardData.text!.trim() != '') {
@@ -125,21 +126,21 @@ class LAFoundModel with ChangeNotifier {
                     onCancel: () => Navigator.pop(context, true),
                   );
                 },
-                ).then((confirm) {
-                  Tuple2 tuple = Tuple2(int.parse(id), post.type == '失物招领' ? true : false);
-                  if (confirm != null && confirm) {
-                    Navigator.pushNamed(
-                      context, LAFRouter.lafDetailPage,
+              ).then((confirm) {
+                Tuple2 tuple =
+                    Tuple2(int.parse(id), post.type == '失物招领' ? true : false);
+                if (confirm != null && confirm) {
+                  Navigator.pushNamed(context, LAFRouter.lafDetailPage,
                       arguments: tuple);
-                    CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
-                  } else {
-                    CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
-                  }
-                });
-              },
-              onFailure: (e) {
-                ToastProvider.error(e.error.toString());
+                  CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
+                } else {
+                  CommonPreferences.feedbackLastLostAndFoundWeCo.value = id;
+                }
               });
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
       }
     }
   }
@@ -151,12 +152,7 @@ class LAFoundModel with ChangeNotifier {
   }
 }
 
-enum LAFSubStatus{
-  loading,
-  unload,
-  ready,
-  error
-}
+enum LAFSubStatus { loading, unload, ready, error }
 
 class LAFWeKoDialog extends StatelessWidget {
   final LostAndFoundPost post;
@@ -165,9 +161,9 @@ class LAFWeKoDialog extends StatelessWidget {
 
   LAFWeKoDialog(
       {Key? key,
-        required this.post,
-        required this.onConfirm,
-        required this.onCancel})
+      required this.post,
+      required this.onConfirm,
+      required this.onCancel})
       : super(key: key);
 
   @override
@@ -177,10 +173,11 @@ class LAFWeKoDialog extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          margin:  EdgeInsets.symmetric(horizontal: 30.w),
+          margin: EdgeInsets.symmetric(horizontal: 30.w),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
-              color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.secondaryBackgroundColor)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -188,7 +185,8 @@ class LAFWeKoDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 50.w),
                 child: Text('有人给你分享了微口令!',
-                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC),
+                    style:
+                        TextUtil.base.label(context).regular.sp(16).NotoSansSC),
               ),
               Padding(
                 padding: EdgeInsets.all(20.r),
@@ -206,7 +204,8 @@ class LAFWeKoDialog extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 10.h),
                 child: Text(
                   post.text,
-                  style: TextUtil.base.infoText(context).regular.sp(14).NotoSansSC,
+                  style:
+                      TextUtil.base.infoText(context).regular.sp(14).NotoSansSC,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -216,13 +215,16 @@ class LAFWeKoDialog extends StatelessWidget {
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(3),
                   overlayColor:
-                  MaterialStateProperty.resolveWith<Color>((states) {
+                      MaterialStateProperty.resolveWith<Color>((states) {
                     if (states.contains(MaterialState.pressed))
-                      return WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor);
-                    return WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+                      return WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor);
+                    return WpyTheme.of(context)
+                        .get(WpyColorKey.secondaryBackgroundColor);
                   }),
-                  backgroundColor:
-                  MaterialStateProperty.all(WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
+                  backgroundColor: MaterialStateProperty.all(
+                      WpyTheme.of(context)
+                          .get(WpyColorKey.secondaryBackgroundColor)),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),
@@ -230,7 +232,8 @@ class LAFWeKoDialog extends StatelessWidget {
                   margin: EdgeInsets.all(7.r),
                   child: Text(
                     '查看详情',
-                    style: TextUtil.base.label(context).regular.sp(16).NotoSansSC,
+                    style:
+                        TextUtil.base.label(context).regular.sp(16).NotoSansSC,
                   ),
                 ),
               ),
@@ -242,6 +245,3 @@ class LAFWeKoDialog extends StatelessWidget {
     );
   }
 }
-
-
-

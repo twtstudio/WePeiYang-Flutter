@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +80,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
             child: Padding(
               padding: EdgeInsets.only(top: 12.h, left: 12.h),
               child: Icon(
-                CupertinoIcons.back,
+                Icons.arrow_back_ios_new,
                 color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                 size: 27.r,
               ),

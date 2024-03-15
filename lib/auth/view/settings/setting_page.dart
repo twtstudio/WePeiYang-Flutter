@@ -170,8 +170,11 @@ class _SettingPageState extends State<SettingPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: WButton(
-              onPressed: () {
+            child: GestureDetector(
+              onLongPress: () {
+                Navigator.pushNamed(context, AuthRouter.debugInfo);
+              },
+              onTap: () {
                 context.read<UpdateManager>().checkUpdate(auto: false);
               },
               child: Row(

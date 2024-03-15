@@ -1,5 +1,4 @@
 import 'package:cross_file/cross_file.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -106,7 +105,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                       // 这里设置不一样是因为 返回图标的中心靠右 往左稍微拉一点
                       padding: EdgeInsets.fromLTRB(12.w, 10.w, 14.w, 10.w),
                       child: Icon(
-                        CupertinoIcons.back,
+                        Icons.arrow_back_ios_new,
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.primaryBackgroundColor),
                         size: 30.h,
@@ -132,7 +131,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 children: [
                   WButton(
                     child: Icon(
-                      CupertinoIcons.square_arrow_down,
+                      Icons.file_download_outlined,
                       color: WpyTheme.of(context)
                           .get(WpyColorKey.primaryBackgroundColor),
                       size: 30.h,
@@ -144,7 +143,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                   SizedBox(width: 30.w),
                   WButton(
                     child: Icon(
-                      CupertinoIcons.share,
+                      Icons.share_outlined,
                       color: WpyTheme.of(context)
                           .get(WpyColorKey.primaryBackgroundColor),
                       size: 30.h,

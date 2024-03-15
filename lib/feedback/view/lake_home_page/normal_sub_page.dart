@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -612,12 +611,13 @@ class AnnouncementBannerWidget extends StatelessWidget {
                         SvgPicture.asset(
                           "assets/svg_pics/lake_butt_icons/la_ba.svg",
                           width: 20,
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.primaryActionColor),
+                          colorFilter: ColorFilter.mode(
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.primaryActionColor),
+                              BlendMode.color),
                         ),
                         SizedBox(width: 6),
                         SizedBox(
-                            height: 20,
                             width: WePeiYangApp.screenWidth - 83,
                             child: context
                                         .read<NoticeProvider>()

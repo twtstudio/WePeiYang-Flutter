@@ -38,17 +38,23 @@ dependencies:
   extended_image: ^8.0.1
 
   flutter_displaymode: ^0.6.0
-  flutter_html: ^2.0.0
+  flutter_html:
+    git:
+      url: https://github.com/Sub6Resources/flutter_html.git
+      ref: 79ec194fa6690e5caba58f5eca04e6748394bb6b
   flutter_markdown: ^0.6.9+1
   flutter_rating_bar: ^4.0.0
   flutter_native_image: ^0.0.6+1
   flutter_screenutil: ^5.7.0
   flutter_smart_dialog: ^3.3.5
-  flutter_svg: ^0.22.0
+  flutter_svg: ^2.0.10
 
   fluttertoast: ^8.0.8
 
-  gallery_saver: ^2.3.2
+  gallery_saver:
+    git:
+      url: https://github.com/steven12138/gallery_saver_deps.git
+
 
   http_parser: ^4.0.0
 
@@ -64,7 +70,7 @@ dependencies:
 
   mutex: ^3.0.0
 
-  optimized_cached_image: ^3.0.1
+  #  optimized_cached_image: ^3.0.1
 
   path_provider: 2.0.4
   permission_handler: ^9.2.0
@@ -77,8 +83,10 @@ dependencies:
   screenshot: ^2.1.0 # generate comment image
   share_plus: ^4.0.10+1
   shared_preferences: ^2.0.7
-  simple_html_css: ^3.0.1
-  simple_url_preview_v2: ^4.0.2
+  simple_html_css: ^4.0.0
+  simple_url_preview_v2:
+    git:
+      url: https://github.com/steven12138/flutter-simple-url-preview_deps.git
   flutter_link_previewer: ^3.2.1
 
   table_calendar: ^3.0.7
@@ -93,11 +101,14 @@ dependencies:
   waterfall_flow: ^3.0.2
 
   image_size_getter: ^2.1.2
-  image_size_getter_http_input: ^2.0.0
+  #  image_size_getter_http_input: ^2.0.0
   flutter_staggered_grid_view: ^0.4.0
 
   # 用于图片加载占位符
   transparent_image: ^2.0.1
+
+  package_info_plus: ^4.2.0
+  device_info_plus: ^9.1.2
 
 
 dev_dependencies:
@@ -113,6 +124,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/images/
     - assets/images/calender/
     - assets/images/account/

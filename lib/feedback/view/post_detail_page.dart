@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +9,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
-import 'dart:ui' as ui;
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
@@ -982,7 +980,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       leading: IconButton(
         icon: Icon(
-          (widget.split ?? false) ? CupertinoIcons.clear : CupertinoIcons.back,
+          (widget.split ?? false) ? Icons.clear : Icons.arrow_back,
           color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
         ),
         onPressed: () => (widget.split ?? false)
