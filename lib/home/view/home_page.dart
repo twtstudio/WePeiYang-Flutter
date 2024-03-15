@@ -117,70 +117,82 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     var homePage = SizedBox(
       height: 70.h,
       width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 0
-            ? ColoredIcon(
-                'assets/images/home.png',
-                width: 24.h,
-                color: WpyTheme.of(context).primary,
-              )
-            : ColoredIcon(
-                'assets/images/home_grey.png',
-                width: 24.h,
-                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon,)
-              ),
-        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        onPressed: () => _tabController.animateTo(0),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: IconButton(
+          key: ValueKey(_currentIndex == 0),
+          splashRadius: 1,
+          icon: _currentIndex == 0
+              ? ColoredIcon(
+                  'assets/images/home.png',
+                  width: 24.h,
+                  color: WpyTheme.of(context).primary,
+                )
+              : ColoredIcon(
+                  'assets/images/home_grey.png',
+                  width: 24.h,
+                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon,)
+                ),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          onPressed: () => _tabController.animateTo(0),
+        ),
       ),
     );
 
     var feedbackPage = SizedBox(
       height: 70.h,
       width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 1
-            ? ColoredIcon(
-                'assets/images/lake.png',
-                width: 29.h,
-                color: WpyTheme.of(context).primary,
-              )
-            : ColoredIcon(
-                'assets/images/lake_grey.png',
-                width: 29.h,
-                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-              ),
-        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        onPressed: () {
-          if (_currentIndex == 1) {
-            feedbackKey.currentState?.listToTop();
-            // 获取剪切板微口令
-            context.read<LakeModel>().getClipboardWeKoContents(context);
-          } else
-            _tabController.animateTo(1);
-        },
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: IconButton(
+          key: ValueKey(_currentIndex == 1),
+          splashRadius: 1,
+          icon: _currentIndex == 1
+              ? ColoredIcon(
+                  'assets/images/lake.png',
+                  width: 29.h,
+                  color: WpyTheme.of(context).primary,
+                )
+              : ColoredIcon(
+                  'assets/images/lake_grey.png',
+                  width: 29.h,
+                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+                ),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          onPressed: () {
+            if (_currentIndex == 1) {
+              feedbackKey.currentState?.listToTop();
+              // 获取剪切板微口令
+              context.read<LakeModel>().getClipboardWeKoContents(context);
+            } else
+              _tabController.animateTo(1);
+          },
+        ),
       ),
     );
 
     var selfPage = SizedBox(
       height: 70.h,
       width: width,
-      child: IconButton(
-        splashRadius: 1,
-        icon: _currentIndex == 2
-            ? ColoredIcon(
-                'assets/images/my.png',
-                width: 24.h,
-                color: WpyTheme.of(context).primary,
-              )
-            : ColoredIcon(
-                'assets/images/my_grey.png',
-                width: 24.h,
-                //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-              ),
-        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        onPressed: () => _tabController.animateTo(2),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: IconButton(
+          key: ValueKey(_currentIndex == 2),
+          splashRadius: 1,
+          icon: _currentIndex == 2
+              ? ColoredIcon(
+                  'assets/images/my.png',
+                  width: 24.h,
+                  color: WpyTheme.of(context).primary,
+                )
+              : ColoredIcon(
+                  'assets/images/my_grey.png',
+                  width: 24.h,
+                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+                ),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          onPressed: () => _tabController.animateTo(2),
+        ),
       ),
     );
 

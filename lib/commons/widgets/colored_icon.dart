@@ -19,6 +19,8 @@ class ColoredIcon extends StatefulWidget {
 class _ColoredIconState extends State<ColoredIcon> {
   ui.Image? _image = null;
 
+  static final _cache = <String, ui.Image>{};
+
   Future<void> loadImageFromAssets(String assetPath) async {
     final ByteData data = await rootBundle.load(assetPath);
     final List<int> bytes = data.buffer.asUint8List();
@@ -26,12 +28,16 @@ class _ColoredIconState extends State<ColoredIcon> {
         await ui.instantiateImageCodec(Uint8List.fromList(bytes));
     final ui.FrameInfo fi = await codec.getNextFrame();
     setState(() => _image = fi.image);
+    _cache[assetPath] = fi.image;
   }
 
   @override
   void initState() {
     super.initState();
-    loadImageFromAssets(widget.path);
+    if (_cache.containsKey(widget.path)) {
+      _image = _cache[widget.path];
+    } else
+      loadImageFromAssets(widget.path);
   }
 
   @override

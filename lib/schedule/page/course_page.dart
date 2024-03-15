@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +21,7 @@ import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 import 'package:we_pei_yang_flutter/schedule/view/week_select_widget.dart';
 
+import 'dart:ui' as ui;
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/util/toast_provider.dart';
 import '../../commons/widgets/w_button.dart';

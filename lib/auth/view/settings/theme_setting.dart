@@ -360,7 +360,17 @@ class _ThemeSettingState extends State<ThemeSetting>
                       ),
                     ),
                   ],
-                )
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0.001.sw,
+                  child: Icon(
+                    Icons.drag_handle,
+                    color: Colors.black.withOpacity(0.3),
+                    size: 35.w,
+                  ),
+                ),
               ],
             ),
           ),
