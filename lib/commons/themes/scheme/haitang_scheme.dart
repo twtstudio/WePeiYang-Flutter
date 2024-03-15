@@ -6,26 +6,27 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 class HaiTangScheme extends WpyThemeData {
   HaiTangScheme()
       : super(
-          meta: BuiltInThemeMetaData(
-            themeId: "builtin_HaiTang_theme",
-            name: "北洋粉",
-            description: "默认 粉色 主题",
-            brightness: Brightness.light,
-            representativeColor: Color(0xFFD983AE),
-          ),
-          data: WpyThemeDetail(
-            redSchemeDetail,
-            gradient: colorSetsList,
-            primaryColor: HaiTangMapper(HaiTangPrimaryColor),
-          ),
-        );
+    meta: BuiltInThemeMetaData(
+      themeId: "builtin_HaiTang_theme",
+      name: "北洋粉",
+      description: "默认 粉色 主题",
+      brightness: Brightness.light,
+      representativeColor: Color(0xFFD983AE),
+    ),
+    data: WpyThemeDetail(
+      redSchemeDetail,
+      gradient: colorSetsList,
+      primaryColor: haiTangThemeColor,
+    ),
+  );
 }
 
-const HaiTangPrimaryColor = Color(0xFFD983AE);
+const haiTangPrimaryColor = Color(0xFFD983AE);
+const haiTangThemeColor = Color(0xFFFA62B1);
 
 ColorMapper HaiTangMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
-  HSLColor targetHsl = HSLColor.fromColor(HaiTangPrimaryColor);
+  HSLColor targetHsl = HSLColor.fromColor(haiTangPrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
       .withLightness((hsl.lightness - 0.05).clamp(0, 1))
