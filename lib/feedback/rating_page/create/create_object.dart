@@ -51,9 +51,14 @@ class CreateObjectState extends State<CreateObject> {
         File file = File(image.path);
         int fileSizeInBytes = file.lengthSync();
         double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-        // 检查文件大小是否大于4MB
-        if (fileSizeInMB > 4) {
-          debugOutput(context, "图片大小不应超过4MB(2024年2月)");
+        // 检查文件大小是否大于2MB
+        if (fileSizeInMB > 2) {
+
+          debugOutput(context, utf8.decode(
+              base64.decode(
+                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP55qE5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CLOmdnuW4uOaKseatiSjmnaXoh6rlvq7ljJfmtIvor4TliIbmnb/lnZfkuLvopoHlvIDlj5HogIUtLeS6keWcqOaxkCk="
+              )
+          ));
           return;
         }
         List<int> fileBytes = file.readAsBytesSync();
@@ -275,6 +280,7 @@ class CreateObjectState extends State<CreateObject> {
         );
         assert(objectLeaf.isSucceed("create"));
         _print(context, "发送成功", Colors.green);
+
       }
       catch(e){
         _print(context, "发送失败", Colors.red);

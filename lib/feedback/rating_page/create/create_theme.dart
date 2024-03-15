@@ -78,9 +78,13 @@ class CreateThemeState extends State<CreateTheme> {
         File file = File(image.path);
         int fileSizeInBytes = file.lengthSync();
         double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-        // 检查文件大小是否大于4MB
-        if (fileSizeInMB > 4) {
-          debugOutput(context, "图片大小不应超过4MB(2024年2月)");
+        // 检查文件大小是否大于2MB
+        if (fileSizeInMB > 2) {
+          debugOutput(context, utf8.decode(
+              base64.decode(
+                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP55qE5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CLOmdnuW4uOaKseatiSjmnaXoh6rlvq7ljJfmtIvor4TliIbmnb/lnZfkuLvopoHlvIDlj5HogIUtLeS6keWcqOaxkCk="
+              )
+          ));
           return;
         }
         List<int> fileBytes = file.readAsBytesSync();
@@ -295,12 +299,38 @@ class CreateThemeState extends State<CreateTheme> {
       objectLeafL[i] = DataIndexLeaf();
     }
 
+    int i=0;
     try{
-      //powerDebug(context);
-      await themeLeaf.create("theme", themeData);
-      assert(themeLeaf.isSucceed("create"));
+      try{
+        //powerDebug(context);
+        await themeLeaf.create("theme", themeData);
+        assert(themeLeaf.isSucceed("create"));
+      }
+      catch (e1){
+        try{
+          assert(themeLeaf.dataM["create"]!["error"]!=null);
+        }
+        catch(e2){
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text("创建主题失败:"+e1.toString()),
+                duration: Duration(seconds: 2), // 设置显示时间
+              )
+          );
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text("创建主题失败:"+themeLeaf.dataM["create"]!["error"]),
+              duration: Duration(seconds: 2), // 设置显示时间
+            )
+        );
+      }
+
       // 构建评分对象数据
-      for (int i = 0; i < 5; i++) {
+
+      for (i = 0; i < 5; i++) {
         await objectLeafL[i]!.create("object", {
           "themeId": themeLeaf.dataM['create']!['succeed']!.toString(),
           "objectName": objectName(i),
@@ -323,7 +353,7 @@ class CreateThemeState extends State<CreateTheme> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            content: Text('网络错误'),
+            content: Text("网络错误:"+e.toString()+objectLeafL[i]!.dataM['create']!.toString().substring(0,40)),
             duration: Duration(seconds: 2), // 设置显示时间
           )
       );

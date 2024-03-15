@@ -121,7 +121,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
       }
     } catch (e) {
       //powerLog(e.toString());
-      stopFlag = true;
+      stopFlag = false;
     }
 
     if (!stopFlag) {
@@ -294,6 +294,21 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
       ],
     );
 
+    topPart = InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => ObjectPage(
+                dataIndex: widget.dataIndex,
+                objectBlock: topPart,
+              ),
+            ));
+      },
+      child: topPart,
+    );
+
+
     /***************************************************************
         热评标题与热评组件
      ***************************************************************/
@@ -341,19 +356,6 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
     /***************************************************************
         点击后跳转页面
      ***************************************************************/
-
-    allInOne = InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => ObjectPage(
-                  dataIndex: widget.dataIndex,
-                  objectBlock: topPart,
-                ),
-              ));
-        },
-        child: allInOne);
 
     allInOne = Container(
       child: allInOne,

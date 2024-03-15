@@ -411,7 +411,7 @@ class DataIndexLeaf with PowerLoad{
       "dataType":myIndex.dataType,
       "dataId":myIndex.dataId,
       "data":json.encode(data),
-      "userId":myUserId,
+      "user":myUserId,
     }, [
       "succeed"
     ]
@@ -423,19 +423,20 @@ class DataIndexLeaf with PowerLoad{
     init("delete", "$ServerIP/rating/delete", {
       "dataType":myIndex.dataType,
       "dataId":myIndex.dataId,
-      "userId":myUserId,
+      "user":myUserId,
     }, [
       "succeed"
     ]
     );
     await loading("delete", true);
   }
-  //点赞
-  like(DataIndex myIndex) async{
+  //点赞(like是string类型!!!)
+  like(DataIndex myIndex,String like) async{
     init("like", "$ServerIP/rating/like", {
       "dataType":myIndex.dataType,
       "dataId":myIndex.dataId,
-      "userId":myUserId,
+      "user":myUserId,
+      "like":like
     }, [
       "succeed"
     ]

@@ -560,7 +560,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       ///评分组件
       Widget rating = Text(
         //保留一位小数
-        (hotObjectCommentCountL[index] >= 5)?
+        (hotObjectCommentCountL[index] >= 2)?
         hotObjectRatingL[index].toStringAsFixed(1):
         "--",
         style: TextStyle(
@@ -583,7 +583,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
       ///评分数量组件
       Widget commentCount = Text(
-          (hotObjectCommentCountL[index] >= 5)?
+          (hotObjectCommentCountL[index] >= 2)?
           hotObjectCommentCountL[index].toString() + "评分" :
           "评分收集中",
         style: TextStyle(

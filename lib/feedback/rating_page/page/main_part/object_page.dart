@@ -77,6 +77,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
   loadUI() async {
     if (myIndexTree().isFinish()) {
+      //debugOutput(context, myIndexTree().children.toString());
       commentIndexM = myIndexTree().children;
       setState(() {
       });
@@ -90,7 +91,6 @@ class _ObjectPageState extends State<ObjectPage> {
 
   @override
   void initState() {
-    loadUI();
     sortType = context
         .read<RatingPageData>()
         .nowSortType
@@ -112,7 +112,7 @@ class _ObjectPageState extends State<ObjectPage> {
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
-
+    loadUI();
     var route = ModalRoute.of(context);
     if (route != null && !_animationCompleted) {
       void handler(status) {
@@ -190,7 +190,7 @@ class _ObjectPageState extends State<ObjectPage> {
       height: 5 * mm,
       child: Center(
         child: Text(
-          "评分",
+          widget.dataIndex.dataId.toString(),
           style: TextStyle(fontFamily: "NotoSansHans",
             color: Colors.black,
             fontWeight: FontWeight.bold, // 设置字体为粗体
