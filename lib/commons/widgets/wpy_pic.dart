@@ -96,7 +96,7 @@ class _WpyPicState extends State<WpyPic> {
             : null,
         errorWidget: widget.withHolder
             ? (context, exception, stacktrace) {
-                Logger.reportError(exception, stacktrace);
+                Logger.reportError(exception, stacktrace as StackTrace);
                 return Text('💔[图片加载失败]',
                     style: TextUtil.base.infoText(context).w400.sp(12));
               }

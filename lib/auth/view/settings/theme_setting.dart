@@ -29,23 +29,23 @@ class _ThemeSettingState extends State<ThemeSetting>
   }
 
   shift() {
-    shiftDark();
-    shiftLight();
+    shiftToLight();
+    shiftToDark();
   }
 
-  shiftDark() {
+  shiftToLight() {
     if (globalTheme.value.meta.brightness == Brightness.dark) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.clear();
-      CommonPreferences.usingDarkTheme.value = 1;
+      CommonPreferences.usingDarkTheme.value = 0;
     }
   }
 
-  shiftLight() {
+  shiftToDark() {
     if (globalTheme.value.meta.brightness == Brightness.light) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
-      CommonPreferences.usingDarkTheme.value = 0;
+      CommonPreferences.usingDarkTheme.value = 1;
     }
   }
 
@@ -287,10 +287,10 @@ class _ThemeSettingState extends State<ThemeSetting>
               if (e.velocity.pixelsPerSecond.distance > 10.w) {
                 if (e.velocity.pixelsPerSecond.direction < pi / 2) {
                   canMove = false;
-                  shiftDark();
+                  shiftToLight();
                 } else {
                   canMove = false;
-                  shiftLight();
+                  shiftToDark();
                 }
               }
             }
