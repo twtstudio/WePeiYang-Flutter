@@ -27,6 +27,18 @@ abstract class DioAbstract {
         validateStatus: (status) => status! < 400);
 
     _dio = Dio(options);
+    // 不要删除！！！！
+    // 配置 fiddler 代理
+    // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.findProxy = (uri) {
+    //     //proxy all request to localhost:8888
+    //     return 'PROXY 127.0.0.1:8888';
+    //   };
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) => true;
+    //   return client;
+    // };
     _dio.interceptors.addAll([
       NetCheckInterceptor(),
       LogInterceptor(requestBody: true),
@@ -42,19 +54,6 @@ abstract class DioAbstract {
       errorInterceptor ?? ErrorInterceptor()
     ]);
   }
-
-// 不要删除！！！！
-// 配置 fiddler 代理
-// (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-//     (HttpClient client) {
-//   client.findProxy = (uri) {
-//     //proxy all request to localhost:8888
-//     return 'PROXY 192.168.1.104:8888';
-//   };
-//   client.badCertificateCallback =
-//       (X509Certificate cert, String host, int port) => true;
-//   return client;
-// };
 }
 
 extension DioRequests on DioAbstract {
