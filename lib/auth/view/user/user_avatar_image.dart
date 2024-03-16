@@ -54,7 +54,7 @@ class UserAvatarImage extends StatelessWidget {
                     height: avatarBoxUrl == "" ? size : 0.54 * size,
                   ),
                 ),
-          if (avatarBoxUrl != "")
+          if (avatarBoxUrl != "Error")
             FadeInImage.memoryNetwork(
               placeholder: kTransparentImage,
               image: avatarBoxUrl,
