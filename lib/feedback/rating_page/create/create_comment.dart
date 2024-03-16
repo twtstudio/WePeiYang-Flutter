@@ -325,10 +325,10 @@ class _CreateCommentState extends State<CreateComment> {
       },
       child: Icon(
         size: 6 * mm,
-        Icons.create_outlined,
+        Icons.upload,
         color: Colors.white,
       ),
-      backgroundColor: Colors.black.withOpacity(0.8),
+      backgroundColor: Colors.blue.withOpacity(0.8),
       elevation: 0,
     );
   }

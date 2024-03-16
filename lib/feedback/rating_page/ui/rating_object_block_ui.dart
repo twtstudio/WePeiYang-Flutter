@@ -24,6 +24,7 @@ class hotComment {
   String commentContext = "加载中";
   int likeCount = 0;
 
+
   hotComment(this.creatorImg, this.creatorName, this.ratingValue,
       this.commentContext, this.likeCount);
 }
@@ -32,8 +33,9 @@ class hotComment {
 class RatingObjectBlock extends StatefulWidget {
   DataIndex dataIndex;
   ScrollController scrollController;
+  Color color;
 
-  RatingObjectBlock({required this.dataIndex, required this.scrollController});
+  RatingObjectBlock({required this.dataIndex, required this.scrollController, required this.color});
 
   @override
   _RatingObjectBlockState createState() => _RatingObjectBlockState();
@@ -277,16 +279,16 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
         Container(
           height: 0.5 * mm,
           width: screenWidth,
-          color: Colors.grey.withOpacity(0.4),
+          color: Colors.black.withOpacity(0.2),
         ),
         topPart,
         Container(
           height: 1 * mm,
         ),
         Container(
-          height: 0.5 * mm,
+          height: 0.4 * mm,
           width: screenWidth,
-          color: Colors.grey.withOpacity(0.4),
+          color: Colors.grey.withOpacity(0.1),
         ),
         Container(
           height: 1 * mm,
@@ -302,6 +304,7 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
               builder: (context) => ObjectPage(
                 dataIndex: widget.dataIndex,
                 objectBlock: topPart,
+                color: widget.color,
               ),
             ));
       },

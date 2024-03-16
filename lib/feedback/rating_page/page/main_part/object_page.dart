@@ -25,8 +25,9 @@ class ObjectPage extends StatefulWidget {
 
   DataIndex dataIndex;
   Widget objectBlock;
+  Color color;
 
-  ObjectPage({required this.dataIndex, required this.objectBlock});
+  ObjectPage({required this.dataIndex, required this.objectBlock, required this.color});
 
   @override
   _ObjectPageState createState() => _ObjectPageState();
@@ -61,6 +62,10 @@ class _ObjectPageState extends State<ObjectPage> {
         .read<RatingPageData>()
         .nowSortType
         .value == "热度" ? "时间" : "热度";
+    context
+        .read<RatingPageData>()
+        .getDataIndexTree(widget.dataIndex)
+        .reset();
     setState(() {});
   }
 
@@ -100,8 +105,14 @@ class _ObjectPageState extends State<ObjectPage> {
         .nowSortType
         .addListener(() {
       setState(() {
-
       });
+    context
+        .read<RatingPageData>()
+        .getDataIndexTree(widget.dataIndex)
+        .UI.addListener(() {
+          setState(() {
+          });
+        });
     });
     super.initState();
   }
@@ -264,6 +275,70 @@ class _ObjectPageState extends State<ObjectPage> {
     );
 
     /***************************************************************
+        底部的按钮,用于创建评分对象
+     ***************************************************************/
+
+    Widget bottomButton = Container(
+        height: 8*mm,
+        width: screenWidth,
+        color: Colors.white,
+
+        child: Column(
+          children: [
+            Container(
+              height: 0.2*mm,
+              color: Colors.grey.withOpacity(0.2),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 2*mm),
+              child: Container(
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.cake_outlined,
+                          color: widget.color,
+                          size: 4*mm,
+                        ),
+                        Container(
+                          width: 1.5*mm,
+                        ),
+                        Text(
+                          "创建评论",
+                          style: TextStyle(
+                            fontFamily: "NotoSansHans",
+                            color: widget.color,
+                            fontWeight: FontWeight.bold, // 设置字体为粗体
+                            fontSize: 3*mm, // 设置文本字体大小
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+              ),
+            ),
+          ],
+        )
+    );
+
+    bottomButton = InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          RotationRoute(page: CreateComment(dataIndex: widget.dataIndex, ratingValue: 0,)),
+        );
+      },
+      child: bottomButton,
+    );
+
+    bottomButton = Positioned(
+      bottom: 0,
+      left: 0,
+      child: bottomButton,
+    );
+
+    /***************************************************************
         顶部组件合并
      ***************************************************************/
 
@@ -367,14 +442,7 @@ class _ObjectPageState extends State<ObjectPage> {
     Widget allInOne = Stack(
       children: [
         mainPage,
-        CreateButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                RotationRoute(page: CreateComment(dataIndex: widget.dataIndex,ratingValue: 0.0,))
-            );
-          },
-        ),
+        bottomButton,
         (myIndexTree().isFinish()&&_animationCompleted)
             ? Container()
             : BackdropFilter(

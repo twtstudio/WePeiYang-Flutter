@@ -111,9 +111,9 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
         likeId = getLikeId(
             myLeaf().dataM["get"]!['likeId']
         );
-        likeCount = int.parse(
+        likeCount =
             myLeaf().dataM["get"]!['likeCount']
-        );
+        ;
       }
       catch(e){
         throw(e);
@@ -163,57 +163,75 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              userImage,
-              Container(
-                width: 2 * mm,
-              ),
-              Column(
+          Center(
+            child: Container(
+              width: 0.9*screenWidth,
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    userName,
-                    style: TextStyle(fontFamily: "NotoSansHans",
-                      fontSize: 3 * mm,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),
+                  userImage,
+                  Container(
+                    width: 2 * mm,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            userName,
+                            style: TextStyle(fontFamily: "NotoSansHans",
+                              fontSize: 3 * mm,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Container(
+                            width: 2 * mm,
+                          ),
+                          Text(
+                            updateAt,
+                            style: TextStyle(fontFamily: "NotoSansHans",
+                              fontSize: 2 * mm,
+                              color: Colors.grey,
+                            ),
+                          )
+                        ],
+                      ),
+                      Container(
+                        height: 1 * mm,
+                      ),
+                      // 确保RatingBar.builder在这里能正常工作，或者根据需要替换为相似的Widget
+                      RatingBar.builder(
+                        initialRating: ratingValue,
+                        minRating: 1,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemSize: 3 * mm,
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Colors.lightBlue,
+                        ),
+                        onRatingUpdate: (rating) {
+                          print(rating);
+                        },
+                      ),
+                      Container(
+                        height: 2 * mm,
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  LikeButton(
+                    dataIndex: widget.dataIndex,
                   ),
                   Container(
-                    height: 1 * mm,
-                  ),
-                  // 确保RatingBar.builder在这里能正常工作，或者根据需要替换为相似的Widget
-                  RatingBar.builder(
-                    initialRating: ratingValue,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemSize: 3 * mm,
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.lightBlue,
-                    ),
-                    onRatingUpdate: (rating) {
-                      print(rating);
-                    },
-                  ),
-                  Container(
-                    height: 2 * mm,
+                    width: 4 * mm,
                   ),
                 ],
               ),
-              Container(
-                width: 2 * mm,
-              ),
-              LikeButton(
-                dataIndex: widget.dataIndex,
-                likeId: likeId,
-                likeCount: likeCount,
-              ),
-            ],
+            ),
           ),
           Center(
             child: Container(
@@ -233,7 +251,7 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
           ),
           Center(
             child: Container(
-              color: Colors.grey.withOpacity(0.2),
+              color: Colors.grey.withOpacity(0.05),
               width: screenWidth*0.8,
               height: 0.4 * mm,
             )

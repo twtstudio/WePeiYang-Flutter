@@ -326,16 +326,34 @@ class _ThemePageState extends State<ThemePage> {
      ***************************************************************/
 
     Widget themeNameWidget = Container(
-      width: 40 * mm,
+      width: 0.85*screenWidth,
       height: 6 * mm,
-      child: Text(
-        themeName,
-        style: TextStyle(fontFamily: "NotoSansHans",
-          color: Colors.white, // 设置文本颜色为黑色
-          fontWeight: FontWeight.bold, // 设置文本粗体
-          fontSize: 26.0, // 设置文本字体大小
-        ),
-      ),
+      child: Row(
+        children: [
+          Text(
+            themeName,
+            style: TextStyle(fontFamily: "NotoSansHans",
+              color: Colors.white, // 设置文本颜色为黑色
+              fontWeight: FontWeight.bold, // 设置文本粗体
+              fontSize: 26.0, // 设置文本字体大小
+            ),
+          ),
+          Spacer(),
+          Icon(
+            Icons.delete,
+            color: Colors.black.withOpacity(0.4),
+            size: 4 * mm,
+          ),
+          Container(
+            width: 2 * mm,
+          ),
+          Icon(
+            Icons.create,
+            color: Colors.black.withOpacity(0.4),
+            size: 4 * mm,
+          ),
+        ],
+      )
     );
 
     themeNameWidget = Positioned(
@@ -441,6 +459,70 @@ class _ThemePageState extends State<ThemePage> {
     );
 
     /***************************************************************
+        底部的按钮,用于创建评分对象
+     ***************************************************************/
+
+    Widget bottomButton = Container(
+      height: 8*mm,
+      width: screenWidth,
+      color: Colors.white,
+
+      child: Column(
+        children: [
+          Container(
+            height: 0.2*mm,
+            color: Colors.grey.withOpacity(0.2),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 2*mm),
+            child: Container(
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.cake_outlined,
+                      color: widget.color,
+                      size: 4*mm,
+                    ),
+                    Container(
+                      width: 1.5*mm,
+                    ),
+                    Text(
+                      "创建评分对象",
+                      style: TextStyle(
+                        fontFamily: "NotoSansHans",
+                        color: widget.color,
+                        fontWeight: FontWeight.bold, // 设置字体为粗体
+                        fontSize: 3*mm, // 设置文本字体大小
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ),
+          ),
+        ],
+      )
+    );
+
+    bottomButton = InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          RotationRoute(page: CreateObject(themeIndex: widget.dataIndex,)),
+        );
+      },
+      child: bottomButton,
+    );
+
+    bottomButton = Positioned(
+      bottom: 0,
+      left: 0,
+      child: bottomButton,
+    );
+
+    /***************************************************************
         主页面
      ***************************************************************/
 
@@ -513,6 +595,7 @@ class _ThemePageState extends State<ThemePage> {
                         dataIndexTree().children[transSortType[sortType]]![index % dataIndexTree().children[transSortType[sortType]]!.length]
                             : NullDataIndex,
                         scrollController: _scrollController,
+                        color: widget.color,
                       ),
                       // 添加其他列表项的内容和样式
                     )
@@ -528,14 +611,7 @@ class _ThemePageState extends State<ThemePage> {
     Widget allInOne = Stack(
       children: [
         mainPage,
-        CreateButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              RotationRoute(page: CreateObject(themeIndex: widget.dataIndex,)),
-            );
-          },
-        ),
+        bottomButton,
         (_animationCompleted &&
             context
             .read<RatingPageData>()

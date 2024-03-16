@@ -140,9 +140,11 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
   }
 
   loadUI() async {
+
     if(context
         .read<RatingPageData>()
         .getDataIndexLeaf(widget.dataIndex).isSucceed("get")){
+
       themeName= context
           .read<RatingPageData>()
           .getDataIndexLeaf(widget.dataIndex).dataM["get"]!["themeName"];

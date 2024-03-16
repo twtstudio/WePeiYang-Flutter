@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/page/main_part/rating_p
 import 'package:http/http.dart' as http;
 
 import '../../../../commons/preferences/common_prefs.dart';
+import '../../ui/power_print.dart';
 
 ///2024.2.1
 
@@ -443,6 +444,18 @@ class DataIndexLeaf with PowerLoad{
     );
     await loading("like", true);
   }
+
+  //获取最新时间
+  getTime(DataIndex myIndex) async{
+    init("time", "$ServerIP/rating/time", {
+      "dataType":myIndex.dataType,
+      "dataId":myIndex.dataId,
+    }, [
+      "time"
+    ]
+    );
+    await loading("time", true);
+  }
 }
 
 
@@ -452,17 +465,18 @@ class DataIndexLeaf with PowerLoad{
 
 mixin DataPart {
 
-
-
   /***************************************************************
       数据存储相关参数
    ***************************************************************/
 
   //数据树
-  ValueNotifier<Map<DataIndex, DataIndexTree>> dataIndexTreeMap = ValueNotifier({});
+  Map<DataIndex, DataIndexTree> dataIndexTreeM = {};
 
   //数据组
-  ValueNotifier<Map<DataIndex, DataIndexLeaf>> dataIndexLeafMap = ValueNotifier({});
+  Map<DataIndex, DataIndexLeaf> dataIndexLeafM = {};
+
+  //UI输出
+  PowerPrint powerPrint = PowerPrint();
 
   DataIndex getDataIndex(String dataType,String dataId){
     return DataIndex(dataType, dataId);
@@ -470,23 +484,23 @@ mixin DataPart {
 
   //创建空对象
   buildDataIndex(DataIndex theIndex){
-    dataIndexTreeMap.value[theIndex] = DataIndexTree(myIndex: theIndex,tagList: ["time","hot"]);
-    dataIndexLeafMap.value[theIndex] = DataIndexLeaf();
+    dataIndexTreeM[theIndex] = DataIndexTree(myIndex: theIndex,tagList: ["time","hot"]);
+    dataIndexLeafM[theIndex] = DataIndexLeaf();
   }
 
   /*
   //返回监听器
   getIndexTreeLoadingState(DataIndex theIndex){
-    if(dataIndexLeafMap.value.containsKey(theIndex)){
-      return dataIndexLeafMap.value[theIndex]!;
+    if(dataIndexLeafMap.containsKey(theIndex)){
+      return dataIndexLeafMap[theIndex]!;
     }
     else buildDataIndex(theIndex);
   }
 
   //返回监听器
   getIndexLeafLoadingState(DataIndex theIndex){
-    if(dataIndexLeafMap.value.containsKey(theIndex)){
-      return dataIndexLeafMap.value[theIndex]!;
+    if(dataIndexLeafMap.containsKey(theIndex)){
+      return dataIndexLeafMap[theIndex]!;
     }
     else buildDataIndex(theIndex);
   }
@@ -495,10 +509,9 @@ mixin DataPart {
 
   //获取索引树
   DataIndexTree getDataIndexTree(DataIndex theIndex){
-
     //如果存在则返回已经存在的数据
-    if(dataIndexTreeMap.value.containsKey(theIndex)){
-      return dataIndexTreeMap.value[theIndex]!;
+    if(dataIndexTreeM.containsKey(theIndex)){
+      return dataIndexTreeM[theIndex]!;
     }
     else buildDataIndex(theIndex);
     return getDataIndexTree(theIndex);
@@ -506,24 +519,53 @@ mixin DataPart {
 
   //获取数据叶
   DataIndexLeaf getDataIndexLeaf(DataIndex theIndex){
-
     //如果存在则返回已经存在的数据
-    if(dataIndexLeafMap.value.containsKey(theIndex)){
-      dataIndexLeafMap.value[theIndex]!.focus();
-      if(dataIndexLeafMap.value[theIndex]!.isSucceed("get"))
-        return dataIndexLeafMap.value[theIndex]!;
-      dataIndexLeafMap.value[theIndex]!.get(theIndex);
-      return dataIndexLeafMap.value[theIndex]!;
+    if(dataIndexLeafM.containsKey(theIndex)){
+
+      dataIndexLeafM[theIndex]!.focus();
+
+      if(dataIndexLeafM[theIndex]!.isSucceed("get"))
+        return dataIndexLeafM[theIndex]!;
+
+      dataIndexLeafM[theIndex]!.get(theIndex);
+      return dataIndexLeafM[theIndex]!;
     }
 
     else {
       buildDataIndex(theIndex);
       //遍历dataLeafMap
-      dataIndexLeafMap.value.forEach((key, value) {
+      dataIndexLeafM.forEach((key, value) {
         value.release();
       });
     }
     return getDataIndexLeaf(theIndex);
+  }
+
+  //比较本地与云端的数据叶信息,并同步,当然是异步操作,失败后可以不显示,因为保持数据最新不是必要选项
+  Future<void> make_dataIndexLeaf_greatAgain(
+      DataIndex theIndex
+      ) async
+  {
+    try{
+      DataIndexLeaf myLeaf = DataIndexLeaf();
+      String createAt
+        = dataIndexLeafM[theIndex]!
+            .dataM['get']!["createdAt"];
+      try{
+        await myLeaf.getTime(theIndex);
+        String time = myLeaf.dataM['time']!["time"];
+        if(time!=createAt){
+          await myLeaf.get(theIndex);
+          dataIndexLeafM[theIndex] = myLeaf;
+        }
+      }
+      catch(e){
+        return;
+      }
+    }
+    catch(e) {
+      return;
+    }
   }
 
 }
