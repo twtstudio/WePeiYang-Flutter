@@ -330,7 +330,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: SvgPicture.asset(
         'assets/svg_pics/lake_butt_icons/send.svg',
-        width: SplitUtil.w * 10,
+        width: SplitUtil.w * 20,
         colorFilter: ColorFilter.mode(
             WpyTheme.of(context).get(WpyColorKey.basicTextColor),
             BlendMode.srcIn),
@@ -960,6 +960,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         onPressed: () async {
           screenshotSelecting.value = false;
           screenshotting.value = true;
+          //TODO:等待图片加载完成
+          await Future.delayed(Duration(milliseconds: 888));
           await takeScreenshot(selectedScreenshotController);
           screenshotting.value = false;
           screenshotList.empty();
