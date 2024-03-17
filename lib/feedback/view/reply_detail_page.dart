@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/fade_appear_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -133,8 +134,11 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
   @override
   void dispose() {
     _refreshController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
+
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +161,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       ),
     );
     Widget mainList1 = ListView.builder(
+      controller: _scrollController,
       key: ValueKey(floors != null ? floors!.length : 0),
       itemCount: floors != null ? floors!.length + 1 : 0 + 1,
       itemBuilder: (context, index) {
@@ -187,14 +192,17 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
         var data = floors![index];
         return Column(
           children: [
-            NCommentCard(
-              comment: data,
-              uid: widget.args.uid,
-              ancestorName: widget.args.floor.nickname,
-              ancestorUId: widget.args.floor.id,
-              commentFloor: index + 1,
-              isSubFloor: true,
-              isFullView: true,
+            AnimatedAppear(
+              duration: Duration(milliseconds: 300),
+              child: NCommentCard(
+                comment: data,
+                uid: widget.args.uid,
+                ancestorName: widget.args.floor.nickname,
+                ancestorUId: widget.args.floor.id,
+                commentFloor: index + 1,
+                isSubFloor: true,
+                isFullView: true,
+              ),
             ),
           ],
         );
@@ -212,10 +220,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
           onRefresh: _onRefresh,
           enablePullUp: true,
           onLoading: _onLoading,
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            child: mainList1,
-          ),
+          child: mainList1,
         ),
         onNotification: (ScrollNotification scrollInfo) =>
             _onScrollNotification(scrollInfo),
