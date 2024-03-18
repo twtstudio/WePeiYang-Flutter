@@ -33,6 +33,15 @@ struct PeiYang_LiteBundle: WidgetBundle {
     }
 }
 
+extension WidgetConfiguration {
+    func disableContentMarginsIfNeeded() -> some WidgetConfiguration {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return self.contentMarginsDisabled()
+        } else {
+            return self
+        }
+    }
+}
 
 struct WhiteColorWidget: Widget {
 
@@ -43,6 +52,7 @@ struct WhiteColorWidget: Widget {
         .configurationDisplayName("课表信息-白")
         .description("快速查看今明课表信息。")
         .supportedFamilies([.systemSmall])
+        .disableContentMarginsIfNeeded()
     }
 }
 
@@ -54,6 +64,7 @@ struct BlueColorWidget: Widget {
         .configurationDisplayName("课表信息-蓝")
         .description("快速查看今明课表信息。")
         .supportedFamilies([.systemSmall])
+        .disableContentMarginsIfNeeded()
     }
 }
 

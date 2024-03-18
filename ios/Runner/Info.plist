@@ -47,7 +47,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>我们将使用您的相机权限以获取照片，照片可用于帖子展示，否则您可以使用相册选取</string>
+	<string>我们将使用您的相机权限以获取照片，照片仅用于帖子展示，否则您可以使用相册选取</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>同意以允许网络请求</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -57,7 +57,7 @@
 	<key>NSNetworkVolumesUsageDescription</key>
 	<string>同意以允许网络请求</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>我们将使用您的相册权限以获取照片，如果不愿意您将无法上传图片</string>
+	<string>我们将使用您的相册权限以获取照片，照片仅用于帖子展示，如果不愿意您将无法上传图片</string>
 	<key>NSSiriUsageDescription</key>
 	<string>允许使用Siri以询问课表考表等</string>
 	<key>NSUserActivityTypes</key>

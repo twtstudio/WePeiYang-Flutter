@@ -8,6 +8,18 @@
 import SwiftUI
 import WidgetKit
 
+extension View {
+    func widgetBackground(backgroundView: some View) -> some View {
+        // 如果是 iOS 17，则使用 containerBackground
+        if #available(iOSApplicationExtension 17.0, *) {
+            return containerBackground(for: .widget) {
+                backgroundView
+            }
+        } else {
+            return background(backgroundView)
+        }
+    }
+}
 
 struct SmallView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -135,6 +147,7 @@ struct SmallView: View {
             if isPlaceHolder {
                 Image(theme == .white ? "small-snapshot-white" : "small-snapshot-blue")
                     .resizable()
+                    .widgetBackground(backgroundView: bgView(theme: theme, colorScheme: colorScheme))
             } else {
                 VStack(alignment: .leading) {
                     HStack(alignment: .top) {
@@ -164,10 +177,11 @@ struct SmallView: View {
                     }
 //                    .border(Color.green)
                     Spacer()
-                    
                 }
+                .padding(16)
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .top)  //使VStack占据父视图所有高度
-                .background(bgView(theme: theme, colorScheme: colorScheme))
+                .widgetBackground(backgroundView: bgView(theme: theme, colorScheme: colorScheme))
+//                .background(bgView(theme: theme, colorScheme: colorScheme))
                 .onAppear {
                     if let version = Int(String(UIDevice.current.systemVersion.prefix(2))) {
                         self.majorVersion = version
@@ -175,7 +189,6 @@ struct SmallView: View {
                     store.reloadData()
                     courses = WidgetCourseManager.getCourses(courseTable: courseTable)
                 }
-                .padding(majorVersion >= 17 ? 0 : 15)
             }
         }
     }
