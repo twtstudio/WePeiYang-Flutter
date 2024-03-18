@@ -549,7 +549,13 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       Text('动画速度', style: mainTextStyle),
                       SizedBox(height: 3.h),
                       Text(
-                          '动画时间倍数${context.watch<AnimationProvider>().speed.toStringAsFixed(1)}',
+                          '速度: ${[
+                            "极快",
+                            "较快",
+                            "正常",
+                            "较慢",
+                            "极慢"
+                          ][context.watch<AnimationProvider>().speedIndex]}',
                           style: hintTextStyle)
                     ],
                   ),
@@ -565,14 +571,14 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       context.watch<AnimationProvider>().speedIndex.toDouble(),
                   onChanged: (e) {
                     final v = e.toInt();
-                    const speed = <double>[0.1, 0.5, 1, 1.5, 2, 5, 7, 9];
+                    const speed = <double>[0.1, 0.5, 1, 1.5, 2];
                     context.read<AnimationProvider>().speed = speed[v];
                     context.read<AnimationProvider>().speedIndex = v;
                     timeDilation = speed[v];
                   },
                   min: 0,
-                  max: 7,
-                  divisions: 7,
+                  max: 4,
+                  divisions: 4,
                 ),
               ],
             ),

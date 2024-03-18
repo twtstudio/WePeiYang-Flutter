@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -8,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
+import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -187,21 +191,26 @@ class EmailUnbindDialog extends Dialog {
 }
 
 class LogoffDialog extends Dialog {
+  final textController = TextEditingController();
+
   void _logoff() {
-    // AuthService.logoff(onSuccess: () {
-    //   ToastProvider.success("注销账号成功");
-    //   UmengCommonSdk.onProfileSignOff();
-    //   CommonPreferences.clearAllPrefs();
-    //   Navigator.pushNamedAndRemoveUntil(
-    //       WePeiYangApp.navigatorState.currentContext!,
-    //       AuthRouter.login,
-    //       (route) => false);
-    // }, onFailure: (e) {
-    //   ToastProvider.error(e.error.toString());
-    // });
-    // TODO: 太危险了 请去网页
-    Clipboard.setData(ClipboardData(text: "https://i.twt.edu.cn"));
-    ToastProvider.success("网页已经复制到剪贴板");
+    if (textController.text != "我确认进行账号注销") {
+      ToastProvider.error("输入错误");
+      return;
+    }
+    AuthService.logoff(onSuccess: () {
+      ToastProvider.success("注销账号成功");
+      UmengCommonSdk.onProfileSignOff();
+      CommonPreferences.clearAllPrefs();
+      Navigator.pushNamedAndRemoveUntil(
+          WePeiYangApp.navigatorState.currentContext!,
+          AuthRouter.login,
+          (route) => false);
+    }, onFailure: (e) {
+      ToastProvider.error(e.error.toString());
+    });
+    // Clipboard.setData(ClipboardData(text: "https://i.twt.edu.cn"));
+    // ToastProvider.success("网页已经复制到剪贴板");
   }
 
   @override
@@ -228,21 +237,75 @@ class LogoffDialog extends Dialog {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                child: Text(
-                    '注销账号后，账号数据将清空不能再找回，该操作属于危险操作\n请前往https://i.twt.edu.cn 处理',
+                child: Text('注销账号后\n账号数据将清空且不能够再次找回\n党建，理论答题也会一并注销',
                     textAlign: TextAlign.center,
                     style: TextUtil.base.noLine.sp(16).dangerousRed(context)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                child: Column(
+                  children: [
+                    // Text('请在下方输入框输入\n我确认进行账号注销\n确认注销',
+                    //     textAlign: TextAlign.center,
+                    //     style: TextUtil.base.noLine.sp(16)),
+                    Text('请在下方输入框输入',
+                        textAlign: TextAlign.center,
+                        style: TextUtil.base.noLine.sp(16)),
+                    Text('我确认进行账号注销',
+                        textAlign: TextAlign.center,
+                        style: TextUtil.base.noLine
+                            .sp(16)
+                            .bold
+                            .dangerousRed(context)),
+                    Text('确认注销',
+                        textAlign: TextAlign.center,
+                        style: TextUtil.base.noLine.sp(16)),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                child: TextField(
+                  controller: textController,
+                  decoration: InputDecoration(
+                    hintText: "请输入：我确认进行账号注销",
+                    hintStyle: TextUtil.base.noLine.sp(16),
+                    isDense: true,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.oldActionColor)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.oldActionColor)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.oldActionColor)),
+                    ),
+                  ),
+                  cursorColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   WButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      ToastProvider.unFocusAllAndHideKeyboard(context);
+                      Navigator.pop(context);
+                    },
                     child: Container(
                       margin: const EdgeInsets.all(10),
                       child: Text(S.current.cancel,
-                          style:
-                              TextUtil.base.w400.primaryAction(context).sp(15)),
+                          style: TextUtil.base.w400
+                              .primaryAction(context)
+                              .sp(15)
+                              .bold),
                     ),
                   ),
                   SizedBox(width: 30),
@@ -250,7 +313,7 @@ class LogoffDialog extends Dialog {
                     onPressed: _logoff,
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      child: Text("复制到剪贴板",
+                      child: Text("确认注销",
                           style: TextUtil.base.w400.label(context).sp(15)),
                     ),
                   )

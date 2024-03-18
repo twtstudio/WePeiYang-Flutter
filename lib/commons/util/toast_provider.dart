@@ -53,6 +53,18 @@ class ToastProvider with AsyncTimer {
   ///   },
   /// );
   /// ```
+  ///
+  static void unFocusAllAndHideKeyboard(BuildContext context) {
+    // 获取当前的FocusScope节点
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    // 如果当前有焦点，则取消焦点并关闭键盘
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      // 这将关闭键盘并取消焦点
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+
   static void custom({
     required Widget child,
     Duration duration = const Duration(seconds: 1),
@@ -60,13 +72,19 @@ class ToastProvider with AsyncTimer {
   }) {
     if (positionedToastBuilder != null) {
       _fToast.showToast(
-        child: child,
+        child: Builder(builder: (context) {
+          unFocusAllAndHideKeyboard(context);
+          return child;
+        }),
         toastDuration: duration,
         positionedToastBuilder: positionedToastBuilder,
       );
     } else {
       _fToast.showToast(
-        child: child,
+        child: Builder(builder: (context) {
+          unFocusAllAndHideKeyboard(context);
+          return child;
+        }),
         toastDuration: duration,
         gravity: ToastGravity.BOTTOM,
       );
