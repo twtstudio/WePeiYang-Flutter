@@ -189,7 +189,7 @@ class _CreateCommentState extends State<CreateComment> {
         SnackBar(
           backgroundColor: color,
           content: Text(message),
-          duration: Duration(seconds: 2), // 设置显示时间
+          duration: Duration(seconds: 1), // 设置显示时间
         )
     );
   }
@@ -297,12 +297,9 @@ class _CreateCommentState extends State<CreateComment> {
       assert(commentLeaf.isSucceed("create"));
       _print(context, "发送成功", Colors.green);
 
-      context.read<RatingPageData>()
-          .getDataIndexLeaf(widget.dataIndex)
-          .retry("get");
     }
     catch(e) {
-      _print(context, "网络错误", Colors.red); // 设置显示时间
+      _print(context, "网络错误:"+commentLeaf.dataM["create"].toString(), Colors.red); // 设置显示时间
     }
   }
 

@@ -217,12 +217,23 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
      ***************************************************************/
     double width1 = 60 * mm; // 宽度为屏幕宽度
     double height1 = 54.5 * mm; // 高度为屏幕宽度
-    Color color1 = widget.color.withOpacity(0.10);
+    Color color1 = widget.color.withOpacity(0.05);
 
     Widget widget1 = Container(
       width: width1,
       height: height1,
       color: color1,
+    );
+
+    widget1 = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4), // 圆角半径为 10
+        border: Border.all(
+          color: widget.color, // 设置描边颜色及透明度
+          width: 0.02*mm, // 设置描边宽度
+        ),
+      ),
+      child: widget1, // 添加原始内容
     );
 
     widget1 = ClipRRect(
@@ -236,21 +247,17 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         高度:20mm
         颜色:蓝色
      ***************************************************************/
-    double width2 = 60 * mm;
-    double height2 = 20 * mm;
-    Color color2 = widget.color.withOpacity(0.8);
+    double width2 = 1 * mm;
+    double height2 = 54.5 * mm;
+
+    //自上而下的渐变
+    Color color2 = widget.color.withOpacity(0.2);
 
     Widget widget2 = Container(
       width: width2,
       height: height2,
       color: color2,
     );
-
-    widget2 = ClipRRect(
-      borderRadius: radius,
-      child: widget2,
-    );
-
     widget2 = Positioned(top: 0 * mm, left: 0 * mm, child: widget2);
 
     /***************************************************************
@@ -260,24 +267,19 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         颜色:渐变透明白色
         坐标:左0,上14mm
      ***************************************************************/
-    double width3 = 60 * mm;
-    double height3 = 6 * mm;
+    double width3 = 1 * mm;
+    double height3 = 54.5 * mm;
+    Color color3 = Colors.black.withOpacity(0.1);
 
     Widget widget3 = Container(
       width: width3,
       height: height3,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white.withOpacity(0.1), Colors.white], // 渐变透明白色
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      color: color3,
     );
 
     widget3 = Positioned(
-      top: 14 * mm,
-      left: 0 * mm,
+      top: 0 * mm,
+      right: 0 * mm,
       child: widget3,
     );
 
@@ -290,7 +292,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
      ***************************************************************/
     double width4 = 60 * mm;
     double height4 = 1 * mm;
-    Color color4 = widget.color.withOpacity(0.1);
+    Color color4 = Colors.black.withOpacity(0.1);
 
     Widget widget4 = Container(
       width: width4,
@@ -313,8 +315,8 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
         坐标:左0,上14mm
      ***************************************************************/
     double width5 = 60 * mm;
-    double height5 = 0 * mm;
-    Color color5 = Colors.black.withOpacity(0.5);
+    double height5 = 0.4 * mm;
+    Color color5 = widget.color.withOpacity(0.2);
 
     Widget widget5 = Container(
       width: width5,
@@ -340,14 +342,36 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     double topicWidth = 40 * mm;
     double topicHeight = 7 * mm;
 
-    Widget topicWidget = Text(
-      themeName + " >",
-      style: TextStyle(
-        fontFamily: "NotoSansHans",
-        fontWeight: FontWeight.bold, // 设置字体为粗体
-        fontSize: 4 * mm, // 设置字体尽可能大
-        color: Colors.black,
-      ),
+    Widget topicWidget = Row(
+      children: [
+
+        Text(
+          "#",
+          style: TextStyle(
+            fontWeight: FontWeight.bold, // 设置字体为粗体
+            fontSize: 5 * mm, // 设置字体
+            color: Colors.black,
+          ),
+        ),
+        Text(
+          themeName.replaceAll(" ", ""),
+          style: TextStyle(
+            fontFamily: "NotoSansHans",
+            fontWeight: FontWeight.bold, // 设置字体为粗体
+            fontSize: 4 * mm, // 设置字体
+            color: Colors.black,
+          ),
+        ),
+
+        Text(
+          " >",
+          style: TextStyle(
+            fontWeight: FontWeight.bold, // 设置字体为粗体
+            fontSize: 4 * mm, // 设置字体
+            color: Colors.black,
+          ),
+        ),
+      ],
     );
 
     topicWidget = Container(
@@ -357,7 +381,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     );
 
     topicWidget = Positioned(
-      top: 3 * mm,
+      top: 2.7 * mm,
       left: 2 * mm,
       child: topicWidget,
     );
@@ -400,18 +424,17 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
     Widget ratingCountWidget;
 
     ratingCountWidget = Container(
-      color: Colors.white.withOpacity(0.8),
       child: Text(
-        " "+createAt+" ",
+        "创建于 "+createAt,
         style: TextStyle(
           fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold,
           fontSize: 2.7 * mm, // 设置字体
-          color: Colors.black.withOpacity(0.8),
+          color: Colors.grey,
         ),
       ),
     );
-    
+
     //圆角
     ratingCountWidget = ClipRRect(
       borderRadius: radius,
@@ -481,7 +504,14 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       Widget background = Container(
         width: 56 * mm,
         height: 11.5 * mm,
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: widget.color, // 设置描边颜色及透明度
+            width: 0.02*mm, // 设置描边宽度
+          ),
+        ),
       );
 
       //裁剪
@@ -546,7 +576,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
       hotComment = Container(
         width: hotCommentWidth,
         height: hotCommentHeight,
-        color: widget.color.withOpacity(0.1),
+        color: widget.color.withOpacity(0.10),
       );
 
       hotComment = Positioned(
@@ -569,7 +599,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           fontFamily: "NotoSansHans",
           fontWeight: FontWeight.bold, // 设置字体为粗体
           fontSize: 5*mm, // 设置字体
-          color: getInverseColor(widget.color).withOpacity(0.6),
+          color: widget.color.withOpacity(0.8),
         ),
       );
 
@@ -641,9 +671,9 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           //widget4,
           //widget5,
           topicWidget,
-          iconWidget,
+          //iconWidget,
           ratingCountWidget,
-          nextPageButton,
+          //nextPageButton,
           someOfObject(0),
           someOfObject(1),
           someOfObject(2),

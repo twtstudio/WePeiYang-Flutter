@@ -56,7 +56,7 @@ class CreateObjectState extends State<CreateObject> {
 
           debugOutput(context, utf8.decode(
               base64.decode(
-                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP55qE5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CLOmdnuW4uOaKseatiSjmnaXoh6rlvq7ljJfmtIvor4TliIbmnb/lnZfkuLvopoHlvIDlj5HogIUtLeS6keWcqOaxkCk="
+                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnlvojlpJrmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CX19fX0J5IOmdnuepuuabsuWlhw=="
               )
           ));
           return;
@@ -297,7 +297,7 @@ class CreateObjectState extends State<CreateObject> {
           SnackBar(
             backgroundColor: color,
             content: Text(message),
-            duration: Duration(seconds: 2), // 设置显示时间
+            duration: Duration(seconds: 1), // 设置显示时间
           )
       );
     }

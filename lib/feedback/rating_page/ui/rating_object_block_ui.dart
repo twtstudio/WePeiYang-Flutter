@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/feedback/rating_page/ui/star_ui.dart';
 import '../../view/components/widget/icon_widget.dart';
 import '../page/main_part/object_page.dart';
 import '../page/main_part/theme_page.dart';
+import 'delete_button.dart';
 import 'loading_dot.dart';
 
 class hotComment {
@@ -225,24 +226,25 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
             },
           ),
           Container(
-            height: 3 * mm,
+            height: 2.5 * mm,
           ),
           Text(
             //转为double后保留一位小数点
             objectRating.toStringAsFixed(1),
             style: TextStyle(fontFamily: "NotoSansHans",
-              fontSize: 5 * mm,
+              fontSize:  5* mm,
               color: Colors.blue,
               fontWeight: FontWeight.bold,
             ),
           ),
           Container(
-            height: 1 * mm,
+            height:2.5 * mm,
           ),
           Text(
             commentCount.toString()+"评分",
             style: TextStyle(
               fontFamily: "NotoSansHans",
+              fontWeight: FontWeight.bold,
               fontSize: 2 * mm,
               color: Colors.grey,
             ),
@@ -277,9 +279,9 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
     topPart = Column(
       children: [
         Container(
-          height: 0.5 * mm,
+          height: 0.6 * mm,
           width: screenWidth,
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.grey.withOpacity(0.1),
         ),
         topPart,
         Container(
@@ -320,10 +322,10 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
         width: 10 * mm,
         height: 5 * mm,
         child: Text(
-          "热评",
+          "评论 "+commentCount.toString(),
           style: TextStyle(
             fontFamily: "NotoSansHans",
-            fontSize: 4 * mm,
+            fontSize: 3 * mm,
             fontWeight: FontWeight.bold,
             color: Colors.grey,
           ),
@@ -361,6 +363,35 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
      ***************************************************************/
 
     allInOne = Container(
+      child: allInOne,
+      color: Colors.white,
+    );
+
+    allInOne = GestureDetector(
+      onLongPressStart: (details) {
+        showMenu(
+          context: context,
+          position: RelativeRect.fromLTRB(
+            details.globalPosition.dx,
+            details.globalPosition.dy,
+            details.globalPosition.dx,
+            details.globalPosition.dy,
+          ),
+          items: <PopupMenuEntry>[
+            PopupMenuItem(
+              child: Row(
+                children: [
+                  DeleteButton(
+                    dataIndex: widget.dataIndex,
+                  ),
+                  Text("删除对象~",style: TextStyle(color:Colors.grey, fontFamily: "NotoSansHans",fontWeight: FontWeight.bold),),
+                ],
+              ),
+              value: 1,
+            ),
+          ],
+        );
+      },
       child: allInOne,
     );
 

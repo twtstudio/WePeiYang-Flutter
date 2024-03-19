@@ -219,6 +219,7 @@ class DataIndexTree{
 
   //重置
   reset(){
+    UI.value = !UI.value;
     stopFlag = false;
     loadingCount = 0;
     for(var tag in tagList){
@@ -387,7 +388,7 @@ class DataIndexLeaf with PowerLoad{
   }
   //数据缓存
   get(DataIndex myIndex) async {
-
+    if(myIndex == NullDataIndex)return;
     List<String>keyL;
     if(myIndex.dataType == "theme")keyL = [
       "commentCount",
@@ -433,6 +434,7 @@ class DataIndexLeaf with PowerLoad{
   }
   //点赞(like是string类型!!!)
   like(DataIndex myIndex,String like) async{
+    if(myIndex == NullDataIndex)return;
     init("like", "$ServerIP/rating/like", {
       "dataType":myIndex.dataType,
       "dataId":myIndex.dataId,
@@ -447,6 +449,7 @@ class DataIndexLeaf with PowerLoad{
 
   //获取最新时间
   getTime(DataIndex myIndex) async{
+    if(myIndex == NullDataIndex)return;
     init("time", "$ServerIP/rating/time", {
       "dataType":myIndex.dataType,
       "dataId":myIndex.dataId,

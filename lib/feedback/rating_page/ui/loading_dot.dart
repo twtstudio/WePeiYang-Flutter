@@ -118,7 +118,7 @@ class _IndexLeafLoadingDotsState extends State<IndexLeafLoadingDots> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       setState(() {
         _dotCount++;
         if (_dotCount > 3) {
@@ -211,7 +211,7 @@ class _IndexLeafCreateDotsState extends State<IndexLeafCreateDots> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
       setState(() {
         _dotCount++;
         if (_dotCount > 3) {

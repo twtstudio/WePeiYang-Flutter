@@ -133,6 +133,10 @@ flutter:
         - asset: assets/fonts/zh/NotoSansHans-Medium.otf
         - asset: assets/fonts/zh/NotoSansHans-Black.otf
 
+    - family: Pixel
+      fonts:
+        - asset: assets/fonts/zh/Uranus_Pixel_11Px.ttf
+
     - family: PingFangSC
       fonts:
         - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf

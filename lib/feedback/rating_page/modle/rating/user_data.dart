@@ -25,7 +25,7 @@ class RatingPageUser with PowerLoad{
         },
         ["userId","userName","userImg"]
     );
-    loading("get", false);
+    loading("get", true);
   }
 
   //更新信息(一直执行,直到成功)

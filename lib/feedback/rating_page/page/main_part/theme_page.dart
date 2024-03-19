@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/color_util.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/rating_page_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/base64_image_ui.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/delete_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_theme_block_ui.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/rating_object_block_ui.dart';
 
@@ -57,9 +58,6 @@ class _ThemePageState extends State<ThemePage> {
   String creatorImg = " ";
   String creatorName = "不知道";
 
-  //当然还有数量
-  List<DataIndex> objectIndexL = [NullDataIndex];
-
   //当数量为0时候,不能通过余除获得索引,此时应该返回
 
   /***************************************************************
@@ -78,6 +76,10 @@ class _ThemePageState extends State<ThemePage> {
         (context.read<RatingPageData>().nowSortType.value == "热度")
             ? "时间"
             : "热度";
+    context
+        .read<RatingPageData>()
+        .getDataIndexTree(widget.dataIndex)
+        .reset();
     setState(() {});
   }
 
@@ -339,18 +341,9 @@ class _ThemePageState extends State<ThemePage> {
             ),
           ),
           Spacer(),
-          Icon(
-            Icons.delete,
-            color: Colors.black.withOpacity(0.4),
-            size: 4 * mm,
-          ),
+          DeleteButton(dataIndex: widget.dataIndex),
           Container(
             width: 2 * mm,
-          ),
-          Icon(
-            Icons.create,
-            color: Colors.black.withOpacity(0.4),
-            size: 4 * mm,
           ),
         ],
       )

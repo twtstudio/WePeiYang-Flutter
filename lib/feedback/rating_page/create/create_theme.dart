@@ -82,7 +82,7 @@ class CreateThemeState extends State<CreateTheme> {
         if (fileSizeInMB > 2) {
           debugOutput(context, utf8.decode(
               base64.decode(
-                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP55qE5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CLOmdnuW4uOaKseatiSjmnaXoh6rlvq7ljJfmtIvor4TliIbmnb/lnZfkuLvopoHlvIDlj5HogIUtLeS6keWcqOaxkCk="
+                  "57uE5Lu25Lit5ZCr5pyJ5aSn6YeP5Zu+54mHLOWmguaenOWbvueJh+i/h+WkpyzlsLHkvJrmtarotLnlvojlpJrmtYHph48s5Zug5q2k5Zu+54mH5aSn5bCP5LiN5bqU6LaF6L+HMk1CX19fX0J5IOmdnuepuuabsuWlhw=="
               )
           ));
           return;
@@ -199,7 +199,7 @@ class CreateThemeState extends State<CreateTheme> {
                         SnackBar(
                           backgroundColor: isDataComplete().$2,
                           content: Text(isDataComplete().$1),
-                          duration: Duration(seconds: 3), // 设置显示时间
+                          duration: Duration(seconds: 1), // 设置显示时间
                         )
                     ),
                     (isDataComplete().$2==Colors.black)?createTheme(context):null,
@@ -315,7 +315,7 @@ class CreateThemeState extends State<CreateTheme> {
               SnackBar(
                 backgroundColor: Colors.red,
                 content: Text("创建主题失败:"+e1.toString()),
-                duration: Duration(seconds: 2), // 设置显示时间
+                duration: Duration(seconds: 1), // 设置显示时间
               )
           );
         }
@@ -323,7 +323,7 @@ class CreateThemeState extends State<CreateTheme> {
             SnackBar(
               backgroundColor: Colors.red,
               content: Text("创建主题失败:"+themeLeaf.dataM["create"]!["error"]),
-              duration: Duration(seconds: 2), // 设置显示时间
+              duration: Duration(seconds: 1), // 设置显示时间
             )
         );
       }

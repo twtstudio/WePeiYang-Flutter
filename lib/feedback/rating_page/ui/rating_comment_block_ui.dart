@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/modle/rating/user_data.dart';
+import 'package:we_pei_yang_flutter/feedback/rating_page/ui/delete_button.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/ui/like_ui.dart';
 
 import '../modle/rating/rating_page_data.dart';
@@ -264,16 +265,51 @@ class _RatingCommentBlockState extends State<RatingCommentBlock> {
         合并
      ***************************************************************/
 
-    return Column(
-      children: [
-        Container(
-          height: 2 * mm,
-        ),
-        body,
-        Container(
-          height: 2 * mm,
-        ),
-      ],
+    Widget allInOne = Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          Container(
+            height: 2 * mm,
+          ),
+          body,
+          Container(
+            height: 2 * mm,
+          ),
+        ],
+      ),
     );
+
+    allInOne = GestureDetector(
+      onLongPressStart: (details) {
+        showMenu(
+          context: context,
+          position: RelativeRect.fromLTRB(
+            details.globalPosition.dx,
+            details.globalPosition.dy,
+            details.globalPosition.dx,
+            details.globalPosition.dy,
+          ),
+          items: <PopupMenuEntry>[
+            PopupMenuItem(
+              child: Row(
+                children: [
+                  DeleteButton(
+                    dataIndex: widget.dataIndex,
+                  ),
+                  Text("删除评论~",style: TextStyle(color:Colors.grey, fontFamily: "NotoSansHans",fontWeight: FontWeight.bold),),
+                ],
+              ),
+              value: 1,
+            ),
+          ],
+        );
+      },
+      child: allInOne,
+    );
+
+    return allInOne;
+
+
   }
 }

@@ -47,14 +47,7 @@ class TagUI extends StatelessWidget {
 
     tagWidget.add(Column(
       children: [
-        Text(
-          "    (下拉以切换)",
-          style: TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.bold, // 设置字体为粗体
-            fontSize: 10,
-          ),
-        ),
+
       ],
     ));
 

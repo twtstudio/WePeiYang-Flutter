@@ -213,7 +213,9 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                   index -= 1;
                   Widget top = Column(
                     children: [
-                      AnnouncementBannerWidget(),
+                      Container(
+                        height: 5*mm,
+                      ),
                       Container(
                         height: 1*mm,
                       ),
