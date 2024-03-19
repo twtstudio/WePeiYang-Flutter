@@ -483,12 +483,15 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.network(
-          '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
-          width: 30,
-          height: 30,
-          fit: BoxFit.cover,
-          placeholderBuilder: defaultPlaceholderBuilder,
+        ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(100)),
+          child: SvgPicture.network(
+            '${EnvConfig.QNHD}avatar/beam/20/${widget.data.floor.nickname}',
+            width: 30,
+            height: 30,
+            fit: BoxFit.cover,
+            placeholderBuilder: defaultPlaceholderBuilder,
+          ),
         ),
         SizedBox(width: 6.w),
         Column(
