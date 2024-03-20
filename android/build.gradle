@@ -5,6 +5,11 @@ buildscript {
         maven { url 'https://repo1.maven.org/maven2/' }
         // 配置HMS Core SDK的Maven仓地址。
         maven { url 'https://developer.huawei.com/repo/' }
+
+        // 荣耀
+        maven {
+            url 'https://developer.hihonor.com/repo/'
+        }
     }
 
     dependencies {
@@ -19,6 +24,7 @@ allprojects {
     repositories {
         google()
         // 个推 Maven仓库
+
         maven {
             url "https://mvn.getui.com/nexus/content/repositories/releases/"
         }
@@ -34,6 +40,11 @@ allprojects {
         }
         // 配置HMS Core SDK的Maven仓地址。
         maven { url 'https://developer.huawei.com/repo/' }
+
+        // 荣耀
+        maven {
+            url 'https://developer.hihonor.com/repo/'
+        }
     }
 }
 

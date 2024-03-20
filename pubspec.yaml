@@ -26,7 +26,7 @@ dependencies:
   badges: ^3.1.1
 
   connectivity_plus: ^2.3.7
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.1
   card_swiper: ^2.0.1
 
   dio: ^5.3.2
@@ -95,7 +95,7 @@ dependencies:
   uuid: ^3.0.6
 
   webview_flutter: ^2.0.13
-  wechat_assets_picker: ^8.5.0
+  wechat_assets_picker: ^9.0.2
   window_manager: ^0.3.8
 
   waterfall_flow: ^3.0.2
