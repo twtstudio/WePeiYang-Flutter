@@ -17,8 +17,8 @@ class PrivacyDialog extends Dialog {
   Widget build(BuildContext context) {
     final textStyle =
         TextStyle(color: WpyTheme.of(context).get(WpyColorKey.oldActionColor));
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(

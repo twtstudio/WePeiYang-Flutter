@@ -310,11 +310,6 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
                       Text(MediaQuery.of(context).devicePixelRatio.toString()),
                 ),
                 ListTile(
-                  title: Text('Text Scale Factor'),
-                  subtitle:
-                      Text(MediaQuery.of(context).textScaleFactor.toString()),
-                ),
-                ListTile(
                   title: Text('Platform Brightness'),
                   subtitle: Text(
                       MediaQuery.of(context).platformBrightness.toString()),

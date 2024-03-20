@@ -306,10 +306,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
         break;
     }
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         Navigator.pop(context, true);
-        return true;
       },
       child: GestureDetector(
         child: Scaffold(

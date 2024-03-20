@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -337,10 +338,21 @@ class WePeiYangAppState extends State<WePeiYangApp>
                         debugShowCheckedModeBanner: false,
                         color: WpyTheme.of(context).primary,
                         theme: ThemeData(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          brightness: WpyTheme.of(context).brightness,
-                        ),
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            brightness: WpyTheme.of(context).brightness,
+                            primaryColor: WpyTheme.of(context).primary,
+                            useMaterial3: true,
+                            switchTheme: SwitchThemeData(
+                              thumbColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context).primary),
+                              trackColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context).primary),
+                              trackOutlineWidth: MaterialStateProperty.all(1),
+                              trackOutlineColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.oldHintColor)),
+                            )),
                         title: '微北洋',
                         navigatorKey: WePeiYangApp.navigatorState,
                         onGenerateRoute: RouterManager.create,

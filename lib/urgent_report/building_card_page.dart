@@ -97,15 +97,15 @@ class _NucPassportPageState extends State<NucPassportPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) async {
         try {
           LocalSetting.changeBrightness(-1);
           LocalSetting.changeSecurity(false);
         } catch (e) {
           ToastProvider.error('亮度调节失败');
         }
-        return true;
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 4000),

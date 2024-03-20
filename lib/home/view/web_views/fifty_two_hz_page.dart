@@ -15,11 +15,15 @@ class FiftyTwoHzPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
         var flag = await _controller?.canGoBack() ?? false;
-        if (flag) _controller!.goBack();
-        return !flag;
+        if (flag)
+          _controller!.goBack();
+        else
+          Navigator.pop(context);
       },
       child: Scaffold(
         backgroundColor:

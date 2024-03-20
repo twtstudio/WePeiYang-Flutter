@@ -203,11 +203,10 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
       },
     );
 
-    return WillPopScope(
-      onWillPop: () async {
-        // 退出前暂存编辑内容
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
         context.read<EditProvider>().save(name, credit);
-        return true;
       },
       child: Container(
         height: 647.h,

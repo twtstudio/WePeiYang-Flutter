@@ -323,7 +323,11 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
             PopupMenuItem<String>(
               value: '举报',
               child: Center(
-                child: Text('举报', style: TextUtil.base.regular.customColor(WpyTheme.of(context).get(WpyColorKey.cursorColor)).sp(13)),
+                child: Text('举报',
+                    style: TextUtil.base.regular
+                        .customColor(
+                            WpyTheme.of(context).get(WpyColorKey.cursorColor))
+                        .sp(13)),
               ),
             ),
           ],
@@ -361,12 +365,17 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       elevation: 0,
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) async {
         context.read<NewFloorProvider>().clearAndClose();
         Navigator.pop(context);
-        return true;
       },
+      canPop: true,
+      // onWillPop: () async {
+      //   context.read<NewFloorProvider>().clearAndClose();
+      //   Navigator.pop(context);
+      //   return true;
+      // },
       child: Scaffold(
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),

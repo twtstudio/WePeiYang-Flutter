@@ -168,15 +168,16 @@ class _EditDetailPageState extends State<EditDetailPage> {
       },
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         _showDialog(context, '是否保存修改内容?', ok: () {
           var check = _check(context);
           if (check) _saveAndQuit(context);
         }, cancel: () {
           Navigator.pop(context);
         });
-        return false;
       },
       child: Scaffold(
         backgroundColor:
@@ -207,8 +208,6 @@ class _EditDetailPageState extends State<EditDetailPage> {
           actions: [
             Center(
               child: Container(
-                height: 35.h,
-                width: 60.w,
                 child: ElevatedButton(
                   onPressed: () => _saveAndQuit(context),
                   style: ElevatedButton.styleFrom(

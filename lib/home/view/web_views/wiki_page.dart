@@ -14,11 +14,14 @@ class WikiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        var flag = await _controller?.canGoBack() ?? false;
-        if (flag) _controller!.goBack();
-        return !flag;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (await _controller?.canGoBack() ?? false)
+          _controller!.goBack();
+        else
+          Navigator.pop(context);
       },
       child: Scaffold(
         backgroundColor:

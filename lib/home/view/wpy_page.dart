@@ -262,6 +262,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
           child: TabBar(
               controller: _tc,
+              dividerHeight: 0,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
               labelColor: WpyTheme.of(context).get(WpyColorKey.basicTextColor),

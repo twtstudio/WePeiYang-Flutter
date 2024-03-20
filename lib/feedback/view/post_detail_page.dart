@@ -1030,10 +1030,11 @@ class _PostDetailPageState extends State<PostDetailPage>
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         Navigator.pop(context, widget.post);
-        return true;
       },
       child: GestureDetector(
         child: Padding(
@@ -1469,8 +1470,9 @@ class _ManagerPopUpState extends State<ManagerPopUp>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         try {
           context
               .read<LakeModel>()
@@ -1480,11 +1482,25 @@ class _ManagerPopUpState extends State<ManagerPopUp>
                   .id]
               ?.refreshController
               .requestRefresh();
-        } catch (e) {
-          //TODO:FIX: Try not to call requestRefresh() before build,please call after the ui was rendered
-        }
-        return true;
+        } catch (e) {}
+        Navigator.pop(context);
       },
+      canPop: false,
+      // onWillPop: () async {
+      //   try {
+      //     context
+      //         .read<LakeModel>()
+      //         .lakeAreas[context
+      //             .read<LakeModel>()
+      //             .tabList[context.read<LakeModel>().currentTab]
+      //             .id]
+      //         ?.refreshController
+      //         .requestRefresh();
+      //   } catch (e) {
+      //     //TODO:FIX: Try not to call requestRefresh() before build,please call after the ui was rendered
+      //   }
+      //   return true;
+      // },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),

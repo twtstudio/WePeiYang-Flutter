@@ -18,8 +18,8 @@ class AccountUpgradeDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
     final _hintStyle = TextUtil.base.bold.noLine.sp(15).oldThirdAction(context);
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: Center(
         child: Container(
           height: 120,

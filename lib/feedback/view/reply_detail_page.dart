@@ -452,12 +452,18 @@ class _ReplyDetailPageState extends State<ReplyDetailPage>
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (didPop) {
+        if (didPop) return;
         context.read<NewFloorProvider>().clearAndClose();
         Navigator.pop(context);
-        return true;
       },
+      canPop: true,
+      // onWillPop: () async {
+      //   context.read<NewFloorProvider>().clearAndClose();
+      //   Navigator.pop(context);
+      //   return true;
+      // },
       child: GestureDetector(
         child: Scaffold(
             appBar: appBar,

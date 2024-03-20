@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:flutter/services.dart'
+    show SystemNavigator, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -226,8 +227,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,
-        body: WillPopScope(
-          onWillPop: () async {
+        body: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) {
+            if (didPop) return;
             if (_tabController.index == 0) {
               if (_lastPressedAt == null ||
                   DateTime.now().difference(_lastPressedAt!) >
@@ -235,16 +238,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 //两次点击间隔超过1秒则重新计时
                 _lastPressedAt = DateTime.now();
                 ToastProvider.running('再按一次退出程序');
-                return false;
+              } else {
+                SystemNavigator.pop();
               }
             } else if (context.read<LakeModel>().currentTab != 0) {
               context.read<LakeModel>().tabController.animateTo(0);
-              return false;
             } else {
               _tabController.animateTo(0);
-              return false;
             }
-            return true;
           },
           child: TabBarView(
             controller: _tabController,
