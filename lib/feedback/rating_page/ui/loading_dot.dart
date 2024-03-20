@@ -1,15 +1,17 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/feedback/rating_page/page/rating_page.dart';
 
 import '../modle/rating/power_load.dart';
 import '../modle/rating/rating_page_data.dart';
 
 class IndexTreeLoadingDots extends StatefulWidget {
-  DataIndexTree dataIndexTree;
+  DataIndex dataIndex;
 
-  IndexTreeLoadingDots(this.dataIndexTree);
+  IndexTreeLoadingDots(this.dataIndex);
   @override
   _IndexTreeLoadingDotsState createState() => _IndexTreeLoadingDotsState();
 }
@@ -22,7 +24,7 @@ class _IndexTreeLoadingDotsState extends State<IndexTreeLoadingDots> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 500), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       setState(() {
         _dotCount++;
         if (_dotCount > 3) {
@@ -42,9 +44,22 @@ class _IndexTreeLoadingDotsState extends State<IndexTreeLoadingDots> {
   @override
   Widget build(BuildContext context) {
 
-    // 更新Text组件以应用白色粗体字样式
-    return (!widget.dataIndexTree.stopFlag)?Container(
-      color: Colors.black,
+    dataIndexTree() => context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
+
+    /************************
+     * 获取相对长度
+     ************************/
+    double _getMM(){
+      double screenWidth = MediaQuery.of(context).size.width;
+      return screenWidth * 0.9 / 60; //获取现实中1毫米的像素长度
+    }
+    double mm = _getMM();
+
+    Widget dot = (!dataIndexTree().stopFlag)?Container(
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(4), // 设置圆角半径
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
         children: [
@@ -69,10 +84,13 @@ class _IndexTreeLoadingDotsState extends State<IndexTreeLoadingDots> {
     GestureDetector(
       onTap: () {
         // 在这里添加你希望点击后执行的函数
-        widget.dataIndexTree.reTry();
+        dataIndexTree().reTry();
       },
       child: Container(
-        color: Colors.red, // 将背景颜色改为红色
+        decoration: BoxDecoration(
+          color: Colors.pinkAccent,
+          borderRadius: BorderRadius.circular(4), // 设置圆角半径
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
           children: [
@@ -96,6 +114,21 @@ class _IndexTreeLoadingDotsState extends State<IndexTreeLoadingDots> {
       ),
     );
 
+    // 更新Text组件以应用白色粗体字样式
+    return (!dataIndexTree().isFinish())?
+    BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(255, 255, 255, 0),///背景透明
+            borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
+        ),
+        child: dot,
+      ),
+    ):
+    Container();
+
   }
 }
 
@@ -103,9 +136,9 @@ class _IndexTreeLoadingDotsState extends State<IndexTreeLoadingDots> {
 ///数据叶加载动画
 
 class IndexLeafLoadingDots extends StatefulWidget {
-  DataIndexLeaf dataIndexLeaf;
+  DataIndex dataIndex;
 
-  IndexLeafLoadingDots(this.dataIndexLeaf);
+  IndexLeafLoadingDots(this.dataIndex);
   @override
   _IndexLeafLoadingDotsState createState() => _IndexLeafLoadingDotsState();
 }
@@ -118,7 +151,7 @@ class _IndexLeafLoadingDotsState extends State<IndexLeafLoadingDots> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 100), (timer) {
       setState(() {
         _dotCount++;
         if (_dotCount > 3) {
@@ -138,9 +171,13 @@ class _IndexLeafLoadingDotsState extends State<IndexLeafLoadingDots> {
   @override
   Widget build(BuildContext context) {
 
-    // 更新Text组件以应用白色粗体字样式
-    return (!widget.dataIndexLeaf.isError("get"))?Container(
-      color: Colors.black,
+    dataIndexLeaf() => context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
+
+    Widget dot = (!dataIndexLeaf().isError("get"))?Container(
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(4), // 设置圆角半径
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
         children: [
@@ -165,10 +202,13 @@ class _IndexLeafLoadingDotsState extends State<IndexLeafLoadingDots> {
     GestureDetector(
       onTap: () {
         // 在这里添加你希望点击后执行的函数
-        widget.dataIndexLeaf.retry("get");
+        dataIndexLeaf().retry("get");
       },
       child: Container(
-        color: Colors.red, // 将背景颜色改为红色
+        decoration: BoxDecoration(
+          color: Colors.pinkAccent,
+          borderRadius: BorderRadius.circular(4), // 设置圆角半径
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
           children: [
@@ -191,125 +231,23 @@ class _IndexLeafLoadingDotsState extends State<IndexLeafLoadingDots> {
         ),
       ),
     );
-  }
-}
-
-
-class IndexLeafCreateDots extends StatefulWidget {
-  final DataIndexLeaf dataIndexLeaf;
-
-  IndexLeafCreateDots(this.dataIndexLeaf);
-  @override
-  _IndexLeafCreateDotsState createState() => _IndexLeafCreateDotsState();
-}
-
-class _IndexLeafCreateDotsState extends State<IndexLeafCreateDots> {
-  String _loadingText = '上传中';
-  int _dotCount = 1;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer.periodic(Duration(milliseconds: 200), (timer) {
-      setState(() {
-        _dotCount++;
-        if (_dotCount > 3) {
-          _dotCount = 1;
-        }
-        _loadingText = '上传中' + '.' * _dotCount;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return
-      (widget.dataIndexLeaf.isError("create"))?
-    GestureDetector(
-      onTap: () {
-        // 在这里添加你希望点击后执行的函数
-        widget.dataIndexLeaf.retry("create");
-      },
+    // 更新Text组件以应用白色粗体字样式
+    return (!dataIndexLeaf().isSucceed("get"))?
+    BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
       child: Container(
-        color: Colors.red, // 将背景颜色改为红色
-        child: Row(
-          mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
-          children: [
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Icon(
-              Icons.error, // 更改图标为error图标
-              color: Colors.white, // 设置图标颜色为白色
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Text(
-              "上传失败", // 更改文本为"网络错误"
-              style: TextStyle(
-                color: Colors.white, // 文本颜色为白色
-                fontWeight: FontWeight.bold, // 字体粗细为粗体
-                fontSize: 25,
-              ),
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-          ],
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Color.fromRGBO(255, 255, 255, 0),///背景透明
+            borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
         ),
+        child: dot,
       ),
     ):
-      (widget.dataIndexLeaf.isSucceed("create"))?
-      Container(
-        color: Colors.green,
-        child: Row(
-          mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
-          children: [
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Icon(
-              Icons.downloading, // 使用内置的wifi图标
-              color: Colors.white, // 设置图标颜色为白色
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Text(
-              "加载 完了",
-              style: TextStyle(
-                color: Colors.white, // 文本颜色为白色
-                fontWeight: FontWeight.bold, // 字体粗细为粗体
-                fontSize: 25,
-              ),
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-          ],
-        ),
-      ):
-      Container(
-        color: Colors.black,
-        child: Row(
-          mainAxisSize: MainAxisSize.min, // 使Row占用的空间仅足够包含子组件
-          children: [
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Icon(
-              Icons.downloading, // 使用内置的wifi图标
-              color: Colors.white, // 设置图标颜色为白色
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-            Text(
-              _loadingText, // 更改文本为"加载中"
-              style: TextStyle(
-                color: Colors.white, // 文本颜色为白色
-                fontWeight: FontWeight.bold, // 字体粗细为粗体
-                fontSize: 25,
-              ),
-            ),
-            SizedBox(width: 5), // 在图标和文本之间添加一些间隔
-          ],
-        ),
-      );
+    Container();
   }
 }
+
+
 
 

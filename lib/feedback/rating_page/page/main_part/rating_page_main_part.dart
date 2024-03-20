@@ -34,20 +34,14 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
   /***************************************************************
       数据
    ***************************************************************/
-  //索引
-  late DataIndexTree dataIndexTree;
-  //数据
-  late DataIndexLeaf dataIndexLeaf;
-  //排序方式
-  late String sortType;
 
+  late String sortType;
+  DataIndexTree dataIndexTree() => context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
   /***************************************************************
       变量与函数
    ***************************************************************/
   RefreshController refreshController = RefreshController();
   ScrollController _scrollController = ScrollController();
-
-  late Timer changingDataTimer;
 
   Future<void> _fakeLoadData() async {
     await Future.delayed(Duration(microseconds: 2000), () {
@@ -55,7 +49,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
     });
     context.read<RatingPageData>().nowSortType.value =
         context.read<RatingPageData>().nowSortType.value == "热度" ? "时间" : "热度";
-    dataIndexTree.reset();
+    dataIndexTree().reset();
 
     void _writeToClipboard(String text) {
       Clipboard.setData(ClipboardData(text: text))
@@ -86,31 +80,30 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
   @override
   void initState() {
     //初始化
-    context.read<RatingPageData>().buildDataIndex(widget.dataIndex);
-
     sortType = context.read<RatingPageData>().nowSortType.value;
-    dataIndexTree = context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
-    dataIndexLeaf = context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex);
-
-    //debugOutput(context, dataIndexTree.loadingState.toString());
-
+    //debugOutput(context, dataIndexTree().loadingState.toString());
     //当loadingState发生变化时刻,更新页面数据
-    dataIndexTree.UI.addListener(() {
+    dataIndexTree().UI.addListener(() {
       setState(() {
         //debugOutput(context, "数据更新");
       });
     });
-
     context.read<RatingPageData>().nowSortType.addListener(() {
       setState(() {
         sortType = context.read<RatingPageData>().nowSortType.value;
-        context.read<RatingPageData>().getDataIndexTree(widget.dataIndex);
-        //debugOutput(context, dataIndexTree.loadingState.toString()+dataIndexTree.children.toString());
+        //debugOutput(context, dataIndexTree().loadingState.toString()+dataIndexTree().children.toString());
       });
     });
-
-
     super.initState();
+  }
+
+  /***************************************************************
+      销毁
+   ***************************************************************/
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   /***************************************************************
@@ -118,7 +111,6 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
-
     //debugOutput(context, context.read<RatingUserData>().myUserImg.toString());
 
     double screenWidth = MediaQuery.of(context).size.width;
@@ -214,15 +206,12 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                   Widget top = Column(
                     children: [
                       Container(
-                        height: 5*mm,
+                        height: 7*mm,
                       ),
+                      TagUI(dataIndexTree: dataIndexTree()),
                       Container(
                         height: 1*mm,
                       ),
-                      //分割线
-                      Divider(),
-                      TagUI(dataIndexTree: dataIndexTree),
-                      Divider(),
                     ],
                   );
                   return top;
@@ -242,8 +231,8 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
                       child: ListTile(
                         title: RatingThemeBlock(
                           dataIndex:
-                          (dataIndexTree.children[transSortType[sortType]]!.length!=0)?
-                          dataIndexTree.children[transSortType[sortType]]![index % dataIndexTree.children[transSortType[sortType]]!.length]
+                          (dataIndexTree().children[transSortType[sortType]]!.length!=0)?
+                          dataIndexTree().children[transSortType[sortType]]![index % dataIndexTree().children[transSortType[sortType]]!.length]
                               : NullDataIndex,
                           color: getProgressColor(getProgress())!,
                         ),
@@ -271,19 +260,7 @@ class _RatingPageMainPartState extends State<RatingPageMainPart> {
           );
         }),
 
-        (!context.read<RatingPageData>().getDataIndexTree(widget.dataIndex).isFinish())?
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 0),///背景透明
-                borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
-            ),
-            child: IndexTreeLoadingDots(dataIndexTree),
-          ),
-        ):
-        Container(),
+        IndexTreeLoadingDots(widget.dataIndex)
       ],
     );
 

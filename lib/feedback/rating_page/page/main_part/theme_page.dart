@@ -566,7 +566,6 @@ class _ThemePageState extends State<ThemePage> {
                           .read<RatingPageData>()
                           .getDataIndexTree(widget.dataIndex),
                     ),
-                    Divider(),
                   ],
                 );
               }
@@ -606,31 +605,29 @@ class _ThemePageState extends State<ThemePage> {
         mainPage,
         bottomButton,
         (_animationCompleted &&
-            context
+        context
             .read<RatingPageData>()
-            .getDataIndexTree(widget.dataIndex)
-            .isFinish()
+        .getDataIndexTree(widget.dataIndex)
+        .isFinish()
+    )
+    ? Container()
+        : BackdropFilter(
+    filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+
+    ///整体模糊度
+    child: Container(
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+    color: Color.fromRGBO(255, 255, 255, 0),
+
+    ///背景透明
+    borderRadius: BorderRadius.all(Radius.circular(1.2))
+
+    ///圆角
+    ),
+    child: IndexTreeLoadingDots(widget.dataIndex),
+    ),
         )
-            ? Container()
-            : BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-
-                ///整体模糊度
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(255, 255, 255, 0),
-
-                      ///背景透明
-                      borderRadius: BorderRadius.all(Radius.circular(1.2))
-
-                      ///圆角
-                      ),
-                  child: IndexTreeLoadingDots(context
-                      .read<RatingPageData>()
-                      .getDataIndexTree(widget.dataIndex)),
-                ),
-          ),
       ],
     );
 

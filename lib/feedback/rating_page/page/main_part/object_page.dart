@@ -82,6 +82,9 @@ class _ObjectPageState extends State<ObjectPage> {
 
   loadUI() async {
     if (myIndexTree().isFinish()) {
+
+      if(myIndexTree().isFinish())
+        _timer.cancel();
       //debugOutput(context, myIndexTree().children.toString());
       commentIndexM = myIndexTree().children;
       setState(() {
@@ -96,6 +99,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
   @override
   void initState() {
+
     sortType = context
         .read<RatingPageData>()
         .nowSortType
@@ -111,6 +115,8 @@ class _ObjectPageState extends State<ObjectPage> {
         .getDataIndexTree(widget.dataIndex)
         .UI.addListener(() {
           setState(() {
+            if(myIndexTree().isFinish())
+              _timer.cancel();
           });
         });
     });
@@ -118,11 +124,20 @@ class _ObjectPageState extends State<ObjectPage> {
   }
 
   bool _animationCompleted = false;
+  Timer _timer= Timer.periodic(Duration(microseconds: 100), (timer) {
+  });
   /***************************************************************
       构建
    ***************************************************************/
   @override
   Widget build(BuildContext context) {
+    _timer = Timer.periodic(Duration(microseconds: 100), (timer) {
+      setState(() {
+      });
+    });
+    if(myIndexTree().isFinish())
+      _timer.cancel();
+
     loadUI();
     var route = ModalRoute.of(context);
     if (route != null && !_animationCompleted) {
@@ -459,9 +474,7 @@ class _ObjectPageState extends State<ObjectPage> {
 
               ///圆角
             ),
-            child: IndexTreeLoadingDots(context
-                .read<RatingPageData>()
-                .getDataIndexTree(widget.dataIndex)),
+            child: IndexTreeLoadingDots(widget.dataIndex),
           ),
         ),
       ],

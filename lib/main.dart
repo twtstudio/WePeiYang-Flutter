@@ -35,6 +35,9 @@ import 'commons/util/toast_provider.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/feedback_service.dart';
 import 'feedback/network/post.dart';
+import 'feedback/rating_page/modle/rating/rating_page_data.dart';
+import 'feedback/rating_page/modle/rating/user_data.dart';
+import 'feedback/rating_page/modle/ui/page_switching_data.dart';
 import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lost_and_found/module/lost_and_found_providers.dart';
@@ -235,6 +238,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   Widget build(BuildContext context) {
+
     ///这是是声明provider的地方,很重要
     return MultiProvider(
       providers: [
@@ -348,6 +352,12 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   @override
   void initState() {
     super.initState();
+
+    context.read<PageSwitchingData>().init();
+    context.read<RatingPageData>().init();
+    context.read<RatingUserData>().init();
+    context.read<RatingPageData>().getDataIndexTree(DataIndex("mainPage", "1895"));
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _autoLogin(context);
     });

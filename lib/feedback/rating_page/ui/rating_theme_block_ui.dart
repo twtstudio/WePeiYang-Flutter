@@ -135,7 +135,9 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
 
   @override
   void dispose() {
-    changingDataTimer.cancel();
+    //取消监听
+    UI.dispose();
+
     super.dispose();
   }
 
@@ -678,21 +680,7 @@ class _RatingThemeBlockState extends State<RatingThemeBlock> {
           someOfObject(1),
           someOfObject(2),
 
-          (!context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex).isSucceed("get"))?
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 2.0,sigmaY: 2.0),///整体模糊度
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 0),///背景透明
-                  borderRadius: BorderRadius.all(Radius.circular(1.2))///圆角
-              ),
-              child: IndexLeafLoadingDots(
-                  context.read<RatingPageData>().getDataIndexLeaf(widget.dataIndex)
-              ),
-            ),
-          ):
-          Container(),
+          IndexLeafLoadingDots(widget.dataIndex),
         ],
       ),
     );

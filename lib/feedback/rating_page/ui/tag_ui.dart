@@ -17,7 +17,7 @@ class TagUI extends StatelessWidget {
       context.read<RatingPageData>().nowSortType.value = dataIndexTree.tagListChinese[0];
     }
 
-    tagWidget.add(Container(width: 20,));
+    tagWidget.add(Container(width: 16,));
 
     for(var tag in dataIndexTree.tagListChinese){
 
@@ -27,9 +27,10 @@ class TagUI extends StatelessWidget {
           return Text(
             "$tag ",
             style: TextStyle(
-              color: value == tag ? Colors.blue : Colors.grey,
+              fontFamily: "NotoSansSC",
+              color: value == tag ? Colors.grey : Colors.grey.withOpacity(0.6),
               fontWeight: FontWeight.bold, // 设置字体为粗体
-              fontSize: 20,
+              fontSize: 18,
             ),
           );
         },
@@ -69,7 +70,7 @@ class TagUI extends StatelessWidget {
               },
               child: Icon(
                 Icons.downloading,
-                color: Colors.blue,
+                color: Colors.grey,
               ),
             ),
 

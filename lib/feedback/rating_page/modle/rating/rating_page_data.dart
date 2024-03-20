@@ -601,7 +601,7 @@ mixin UIPart {
     "敬请期待": Loading(),
   });
 
-  ValueNotifier<Widget> nowPageWidget = ValueNotifier(RatingPageMainPart(dataIndex: DataIndex("mainPage","1"),));
+  ValueNotifier<Widget> nowPageWidget = ValueNotifier(RatingPageMainPart(dataIndex: DataIndex("mainPage","1895"),));
 
   /***************************************************************
       数据排序相关参数

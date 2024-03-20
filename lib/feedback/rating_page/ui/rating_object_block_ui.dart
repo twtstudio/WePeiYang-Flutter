@@ -66,8 +66,8 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
    ***************************************************************/
   //评分对象图片
   String objectImageBase64 = " ";
-  String objectName = "加载中";
-  String objectDescribe = "加载中";
+  String objectName = "虚位以待~";
+  String objectDescribe = "虚位以待~";
   double objectRating = 0.0;
   int commentCount = 0;
 
@@ -300,6 +300,9 @@ class _RatingObjectBlockState extends State<RatingObjectBlock> {
 
     topPart = InkWell(
       onTap: () {
+        if(objectName=="虚位以待~"){
+          return;
+        }
         Navigator.push(
             context,
             CupertinoPageRoute(

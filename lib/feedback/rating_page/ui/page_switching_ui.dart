@@ -18,10 +18,6 @@ class _PageSwitchingButtonState extends State<PageSwitchingButton> {
   @override
   Widget build(BuildContext context) {
 
-    context.read<PageSwitchingData>().init();
-    context.read<RatingPageData>().init();
-    context.read<RatingUserData>().init();
-
     var a = ValueListenableBuilder<String>(
       valueListenable: context.read<PageSwitchingData>().nowButtonTextString,
       builder: (BuildContext context, String nowButtonText, Widget? child) {
