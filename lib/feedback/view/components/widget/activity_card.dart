@@ -85,13 +85,9 @@ class _ActivityCardState extends State<ActivityCard> {
               arguments: FestivalArgs(url,
                   context.read<FestivalProvider>().nonePopupList[index].title),
             );
-            Navigator.pushNamed(context, FeedbackRouter.haitang,
-                arguments: FestivalArgs(
-                    url,
-                    context
-                        .read<FestivalProvider>()
-                        .nonePopupList[index]
-                        .title));
+          Navigator.pushNamed(context, FeedbackRouter.haitang,
+              arguments: FestivalArgs(url,
+                  context.read<FestivalProvider>().nonePopupList[index].title));
         },
         child: Stack(
           children: [
@@ -154,7 +150,14 @@ class _ActivityCardState extends State<ActivityCard> {
                                       .length ==
                                   0
                               ? SizedBox()
-                              : card(context, index);
+                              : card(
+                                  context,
+                                  context
+                                          .read<FestivalProvider>()
+                                          .nonePopupList
+                                          .length -
+                                      1 -
+                                      index);
                         },
                         fade: 0.3,
                         viewportFraction: 1,
