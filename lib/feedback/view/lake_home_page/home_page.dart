@@ -87,7 +87,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         .controller;
     if (!currentTabController.hasClients) {
       await Future.delayed(Duration(milliseconds: 100));
-      if (!currentTabController.hasClients) return; 
+      if (!currentTabController.hasClients) return;
     }
     if (currentTabController.offset > 1500.h) {
       currentTabController.jumpTo(1500.h);
