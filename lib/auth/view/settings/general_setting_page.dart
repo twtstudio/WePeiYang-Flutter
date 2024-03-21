@@ -54,7 +54,6 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: ListView(
-        physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [
           SizedBox(height: 15.h),

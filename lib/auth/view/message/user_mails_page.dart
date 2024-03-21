@@ -70,7 +70,6 @@ class _UserMailListState extends State<UserMailList> {
       return Center(child: Text("waiting"));
     }
     return ListView.builder(
-      physics: BouncingScrollPhysics(),
       itemCount: _messages!.mails.length,
       itemBuilder: (_, i) {
         return MailItem(data: _messages!.mails[i]);
@@ -276,7 +275,6 @@ class _TextMailContent extends StatelessWidget {
         Expanded(
           child: Markdown(
             shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
             padding: EdgeInsets.zero,
             data: data.content,
           ),

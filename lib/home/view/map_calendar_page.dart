@@ -43,7 +43,6 @@ class MapCalenderState extends State<MapCalendarPage> {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
             child: Padding(
               padding: EdgeInsets.only(top: 16.h),
               child: MapAndCalender(),
@@ -87,7 +86,6 @@ class MapAndCalenderState extends State<MapAndCalender> {
         height: 126.h,
         child: ListView(
           scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
             WButton(
@@ -186,7 +184,6 @@ class MapAndCalenderState extends State<MapAndCalender> {
         height: 126.h,
         child: ListView(
           scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 16.h),
           children: [
             WButton(

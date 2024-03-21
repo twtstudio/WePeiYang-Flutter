@@ -44,7 +44,6 @@ class WpyExamWidget extends StatelessWidget {
       height: 430.h,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
-        physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(top: 35.r),
         itemCount: provider.unscheduled.length,
         itemBuilder: (context, i) {

@@ -24,14 +24,15 @@ class LakePrivacyDialog extends Dialog {
           horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10), color:  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+          borderRadius: BorderRadius.circular(10),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
       child: Column(
         children: [
           Expanded(
             child: DefaultTextStyle(
               textAlign: TextAlign.start,
               style: TextUtil.base.regular.sp(13).customColor(textColor),
-              child: ListView(physics: BouncingScrollPhysics(), children: [
+              child: ListView(children: [
                 Container(
                     alignment: Alignment.topCenter,
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
@@ -261,7 +262,9 @@ class LakePrivacyDialog extends Dialog {
             ),
           ),
           SizedBox(height: 13),
-          Divider(height: 1, color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
+          Divider(
+              height: 1,
+              color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
           _detail(context),
         ],
       ),
@@ -291,7 +294,8 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('拒绝', style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
+              child: Text('拒绝',
+                  style: TextUtil.base.bold.unlabeled(context).noLine.sp(16)),
             ),
           ),
           WButton(
@@ -302,7 +306,9 @@ class LakePrivacyDialog extends Dialog {
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
               padding: const EdgeInsets.all(16),
-              child: Text('同意', style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
+              child: Text('同意',
+                  style:
+                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],

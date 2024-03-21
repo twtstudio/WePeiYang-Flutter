@@ -61,7 +61,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
                         : event.cumulativeBytesLoaded /
                             event.expectedTotalBytes!,
                   ))),
-          scrollPhysics: const BouncingScrollPhysics(),
           builder: (BuildContext context, int index) {
             return PhotoViewGalleryPageOptions(
               basePosition: widget.args.isLongPic

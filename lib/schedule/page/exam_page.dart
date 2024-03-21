@@ -90,7 +90,6 @@ class _ExamPageState extends State<ExamPage> {
                     .map((e) => examCard(context, e, true))
                     .toList();
             return ListView(
-              physics: BouncingScrollPhysics(),
               children: [
                 SizedBox(height: 10.h),
                 Text('未完成',

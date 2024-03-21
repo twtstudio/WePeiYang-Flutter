@@ -49,7 +49,6 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
                         : event.cumulativeBytesLoaded /
                             event.expectedTotalBytes!,
                   ))),
-          scrollPhysics: const BouncingScrollPhysics(),
           builder: (BuildContext context, int index) {
             late ImageProvider image;
             if (widget.args.uriList.isNotEmpty) {

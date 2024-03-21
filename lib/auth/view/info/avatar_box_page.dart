@@ -154,7 +154,6 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                     Container(
                       height: 300.h,
                       child: GridView.builder(
-                          physics: BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
                           itemCount: avatarList.length,
                           padding: EdgeInsets.symmetric(horizontal: 20.w),

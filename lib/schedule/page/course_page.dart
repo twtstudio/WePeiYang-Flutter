@@ -76,33 +76,33 @@ class _CoursePageState extends State<CoursePage> {
     screenshotController.captureAsUiImage(pixelRatio: 4.0).then((image) async {
       await screenshotController
           .captureFromLongWidget(Stack(
-            children: [
-              Container(
-                width: image?.width.toDouble(),
-                height: image?.height.toDouble(),
-                child: CustomPaint(
-                  painter: ScheduleBackgroundPrinter(
-                    primaryActionColor:
-                        WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-                    primaryLightActionColor: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryLightActionColor),
-                    primaryBackgroundColor: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    primaryLighterActionColor: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryLighterActionColor),
-                    primaryLightestActionColor: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryLightestActionColor),
-                  ),
-                ),
+        children: [
+          Container(
+            width: image?.width.toDouble(),
+            height: image?.height.toDouble(),
+            child: CustomPaint(
+              painter: ScheduleBackgroundPrinter(
+                primaryActionColor:
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                primaryLightActionColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryLightActionColor),
+                primaryBackgroundColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor),
+                primaryLighterActionColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryLighterActionColor),
+                primaryLightestActionColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryLightestActionColor),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10.r),
-                child: CustomPaint(
-                  painter: CustomImagePainter(image!),
-                ),
-              )
-            ],
-          ))
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10.r),
+            child: CustomPaint(
+              painter: CustomImagePainter(image!),
+            ),
+          )
+        ],
+      ))
           .then((value) async {
         final fullPath = await saveImageToPath(value);
         GallerySaver.saveImage(fullPath!, albumName: "微北洋");
@@ -128,7 +128,6 @@ class _CoursePageState extends State<CoursePage> {
           ),
           backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
             child: Screenshot(
               controller: screenshotController,
               child: Column(

@@ -63,7 +63,6 @@ class _TabGridViewState extends State<TabGridView>
       ),
       child: ListView(
         shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
         children: [SizedBox(height: 12), tagsWrap, SizedBox(height: 14)],
       ),
     );

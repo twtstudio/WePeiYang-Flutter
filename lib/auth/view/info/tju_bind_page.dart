@@ -267,7 +267,6 @@ class _TjuBindPageState extends State<TjuBindPage> {
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             Row(

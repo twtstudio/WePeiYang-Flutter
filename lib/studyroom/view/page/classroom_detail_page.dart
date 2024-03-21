@@ -32,7 +32,6 @@ class StyClassRoomDetailPage extends StatelessWidget {
     return StudyroomBasePage(
       showTimeButton: false,
       body: ListView(
-        physics: const BouncingScrollPhysics(),
         children: [pageTitle, table],
       ),
     );

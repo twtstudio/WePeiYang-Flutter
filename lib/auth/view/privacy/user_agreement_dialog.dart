@@ -28,7 +28,7 @@ class UserAgreementDialog extends Dialog {
             child: DefaultTextStyle(
               textAlign: TextAlign.start,
               style: TextUtil.base.regular.sp(13).customColor(textColor),
-              child: ListView(physics: BouncingScrollPhysics(), children: [
+              child: ListView(children: [
                 Container(
                     alignment: Alignment.topCenter,
                     margin: const EdgeInsets.only(top: 20, bottom: 18),
@@ -133,7 +133,9 @@ class UserAgreementDialog extends Dialog {
             ),
           ),
           SizedBox(height: 13),
-          Divider(height: 1, color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
+          Divider(
+              height: 1,
+              color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
           _detail(context),
         ],
       ),

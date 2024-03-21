@@ -26,7 +26,6 @@ class MainPageStudyRoomWidget extends StatelessWidget {
   //     favors.sort((a, b) => a.name.compareTo(b.name));
   //
   //     return SingleChildScrollView(
-  //       physics: BouncingScrollPhysics(),
   //       scrollDirection: Axis.horizontal,
   //       child: Row(
   //           mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -381,7 +381,6 @@ class _LikeMessagesListState extends State<LikeMessagesList>
       );
     } else {
       child = ListView.builder(
-        physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
           return LikeMessageItem(
             key: Key(items.length.toString()),
@@ -744,7 +743,6 @@ class _FloorMessagesListState extends State<FloorMessagesList>
       );
     } else {
       child = ListView.builder(
-        physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
           return FloorMessageItem(
             data: items[i],
@@ -1157,7 +1155,6 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
       );
     } else {
       child = ListView.builder(
-        physics: BouncingScrollPhysics(),
         itemBuilder: (c, i) {
           return ReplyMessageItem(
             data: items[i],

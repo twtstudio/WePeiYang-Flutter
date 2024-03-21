@@ -201,7 +201,6 @@ class _TableClassTimesState extends State<_TableClassTimes> {
     Widget tableClassTimes = SizedBox(
       height: 220.h,
       child: GridView.count(
-        physics: BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
         crossAxisCount: 2,
         childAspectRatio: 2.6,

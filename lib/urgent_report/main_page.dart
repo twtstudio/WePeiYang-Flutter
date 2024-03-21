@@ -181,7 +181,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
       case _Page.report:
         body = Center(
             child: ListView(
-          physics: BouncingScrollPhysics(),
           children: [
             TodayTemp(),
             Row(
@@ -241,7 +240,6 @@ class _ReportMainPageState extends State<ReportMainPage> {
                 return ListView.builder(
                   itemExtent: 150,
                   itemCount: list.length,
-                  physics: BouncingScrollPhysics(),
                   itemBuilder: (_, index) {
                     return _ReportListItem(data: list[index]);
                   },
