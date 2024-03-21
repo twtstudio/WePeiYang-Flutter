@@ -25,80 +25,84 @@ dependencies:
 
   badges: ^3.1.1
 
-  connectivity_plus: ^2.3.7
+  connectivity_plus: ^6.0.1
   cached_network_image: ^3.3.1
-  card_swiper: ^2.0.1
+  card_swiper: ^3.0.1
 
-  dio: ^5.3.2
-  dio_smart_retry: ^5.0.0
+  dio: ^5.4.1
+  dio_smart_retry: ^6.0.0
   dio_cookie_caching_handler:
     path: ./lib/commons/network/dio_cookie_cached_handler
 
   extended_tabs: ^4.1.0
-  extended_image: ^8.0.1
+  extended_image:
+    git:
+      url: https://github.com/steven12138/extended_image.git
 
   flutter_displaymode: ^0.6.0
   flutter_html:
     git:
       url: https://github.com/Sub6Resources/flutter_html.git
       ref: 79ec194fa6690e5caba58f5eca04e6748394bb6b
-  flutter_markdown: ^0.6.9+1
-  flutter_rating_bar: ^4.0.0
+  flutter_markdown: ^0.6.22
+  flutter_rating_bar: ^4.0.1
   flutter_native_image: ^0.0.6+1
-  flutter_screenutil: ^5.7.0
-  flutter_smart_dialog: ^3.3.5
+  flutter_screenutil: ^5.9.0
+  flutter_smart_dialog: ^4.9.6
   flutter_svg: ^2.0.10
 
-  fluttertoast: ^8.0.8
+  fluttertoast: ^8.2.4
 
   gallery_saver:
     git:
       url: https://github.com/steven12138/gallery_saver_deps.git
 
 
-  http_parser: ^4.0.0
+  http_parser: ^4.0.2
 
   image_cropper: ^1.5.0
-  image_picker: ^0.8.4+1
-  intl: ^0.18.0
+  image_picker: ^1.0.7
+  intl: ^0.18.1
 
-  like_button: ^2.0.3
+  like_button: ^2.0.5
   linkfy_text:
     git:
       url: https://github.com/Iamstanlee/linkfy_text.git
       ref: 679a9194df2565527ccaaeca9c673d93261ddf5a
 
-  mutex: ^3.0.0
+  mutex: ^3.1.0
 
   #  optimized_cached_image: ^3.0.1
 
-  path_provider: 2.0.4
-  permission_handler: ^9.2.0
+  path_provider: ^2.1.2
+  permission_handler: ^11.3.0
   photo_view: ^0.14.0
-  provider: ^6.0.1
+  provider: ^6.1.2
   pull_to_refresh: ^2.0.0
 
-  retry: ^3.1.0
+  retry: ^3.1.2
 
   screenshot: ^2.1.0 # generate comment image
-  share_plus: ^4.0.10+1
-  shared_preferences: ^2.0.7
+  share_plus: ^8.0.2
+  shared_preferences: ^2.2.2
   simple_html_css: ^4.0.0
   simple_url_preview_v2:
     git:
       url: https://github.com/steven12138/flutter-simple-url-preview_deps.git
-  flutter_link_previewer: ^3.2.1
+  flutter_link_previewer: ^3.2.2
 
-  table_calendar: ^3.0.7
+  table_calendar: ^3.0.9
 
-  url_launcher: ^6.1.5
-  uuid: ^3.0.6
+  url_launcher: ^6.2.5
+  uuid: ^4.3.3
 
-  webview_flutter: ^2.0.13
-  wechat_assets_picker: ^9.0.2
+  webview_flutter: ^2.0.13 # TODO: update the new webview package
+  wechat_assets_picker:
+    git:
+      url: https://github.com/steven12138/flutter_wechat_assets_picker.git
   window_manager: ^0.3.8
 
-  waterfall_flow: ^3.0.2
+  waterfall_flow: ^3.0.3
 
   image_size_getter: ^2.1.2
   #  image_size_getter_http_input: ^2.0.0
@@ -107,7 +111,7 @@ dependencies:
   # 用于图片加载占位符
   transparent_image: ^2.0.1
 
-  package_info_plus: ^4.2.0
+  package_info_plus: ^6.0.0
   device_info_plus: ^9.1.2
 
 

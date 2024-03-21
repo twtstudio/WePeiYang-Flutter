@@ -126,6 +126,16 @@
             </intent-filter>
         </activity>
 
+        <!--        图片裁剪    -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            tools:replace="android:theme"
+            />
+        <activity android:name="com.android.camera.CropImage"/>
+
+
         <!--    QQ sdk必备Activity -->
         <activity
             android:name="com.tencent.connect.common.AssistActivity"

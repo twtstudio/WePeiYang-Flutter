@@ -104,8 +104,8 @@ class _EditDetailPageState extends State<EditDetailPage> {
   void _showDialog(BuildContext context, String text,
       {VoidCallback? ok, VoidCallback? cancel}) {
     SmartDialog.show(
-      clickBgDismissTemp: false,
-      widget: WbyDialogLayout(
+      clickMaskDismiss: false,
+      builder: (context) => WbyDialogLayout(
         bottomPadding: true,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.w),

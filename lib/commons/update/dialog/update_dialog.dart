@@ -29,10 +29,12 @@ extension UpdateDialogExt on UpdateDialog {
   void show() {
     // 显示这个dialog
     SmartDialog.show(
-      clickBgDismissTemp: false,
+      clickMaskDismiss: false,
       backDismiss: false,
       tag: tag,
-      widget: dialog,
+      builder: (BuildContext context) {
+        return dialog;
+      },
     );
 
     // 清除其他dialog

@@ -45,26 +45,28 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       }
     }
     File? croppedFile = await ImageCropper().cropImage(
-      sourcePath: file.path,
-      cropStyle: CropStyle.circle,
-      aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-      androidUiSettings: AndroidUiSettings(
-          toolbarTitle: '裁剪',
-          toolbarColor:
-              WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
-          toolbarWidgetColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          activeControlsWidgetColor:
-              WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
-          dimmedLayerColor:
-              WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
-          statusBarColor:
-              WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: true),
-    );
+        sourcePath: file.path,
+        cropStyle: CropStyle.circle,
+        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: '裁剪',
+            toolbarColor:
+                WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
+            toolbarWidgetColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            activeControlsWidgetColor:
+                WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
+            dimmedLayerColor:
+                WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
+            statusBarColor:
+                WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          title: '裁剪',
+        ));
     if (croppedFile == null) return; // 取消裁剪图片的情况
     List<File> update = [croppedFile];
     // 弹出sheet
@@ -93,26 +95,28 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
     if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
     File? croppedFile = await ImageCropper().cropImage(
-      sourcePath: image.path,
-      cropStyle: CropStyle.circle,
-      aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-      androidUiSettings: AndroidUiSettings(
-          toolbarTitle: '裁剪',
-          toolbarColor:
-              WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
-          toolbarWidgetColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          activeControlsWidgetColor:
-              WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
-          dimmedLayerColor:
-              WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
-          statusBarColor:
-              WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-          initAspectRatio: CropAspectRatioPreset.square,
-          lockAspectRatio: true),
-    );
+        sourcePath: image.path,
+        cropStyle: CropStyle.circle,
+        aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: '裁剪',
+            toolbarColor:
+                WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
+            toolbarWidgetColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            activeControlsWidgetColor:
+                WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
+            dimmedLayerColor:
+                WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
+            statusBarColor:
+                WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          title: '裁剪',
+        ));
     if (croppedFile == null) return; // 取消裁剪图片的情况
     List<File> update = [croppedFile];
     FeedbackService.postPic(

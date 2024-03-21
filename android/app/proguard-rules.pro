@@ -57,6 +57,14 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
+-dontwarn com.yalantis.ucrop.**
+-keep class com.yalantis.ucrop.** { *; }
+-keep interface com.yalantis.ucrop.** { *; }
+-keep class androidx.appcompat.** { *; }
+-keepclassmembers class * {
+   public <init> (com.yalantis.ucrop.**);
+}
+
 # 据个推客服说，不用管这个
 ## 华为
 #-keep class com.huawei.hianalytics.**{*;}
