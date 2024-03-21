@@ -218,11 +218,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 : status == LakePageStatus.idle
                     ? Builder(builder: (context) {
                         return TabBar(
-                          dividerHeight: 0,
+                          // dividerHeight: 0,
                           indicatorPadding: EdgeInsets.only(bottom: 2.h),
                           labelPadding: EdgeInsets.only(bottom: 3.h),
                           isScrollable: true,
-                          tabAlignment: TabAlignment.center,
+                          // tabAlignment: TabAlignment.center,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
                           labelColor: WpyTheme.of(context)
