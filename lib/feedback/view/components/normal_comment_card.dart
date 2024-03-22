@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -463,9 +464,14 @@ class _NCommentCardState extends State<NCommentCard>
       ],
     );
 
-    var commentContent = widget.comment.content == ''
-        ? SizedBox()
-        : CommentCardGestureDetector(
+    Widget commentContent;
+    if (widget.comment.content == '') {
+      commentContent = SizedBox();
+    } else {
+      // Row + Expanded 来把这里扩展开 不知道有没有更好的办法
+      commentContent = Row(children: [
+        Expanded(
+          child: CommentCardGestureDetector(
             isOfficial: false,
             id: widget.comment.id,
             copy: widget.comment.content,
@@ -479,7 +485,10 @@ class _NCommentCardState extends State<NCommentCard>
               isHTML: false,
               replyTo: widget.comment.replyToName,
             ),
-          );
+          ),
+        ),
+      ]);
+    }
 
     var commentImage = Padding(
         padding: EdgeInsets.symmetric(vertical: 10),

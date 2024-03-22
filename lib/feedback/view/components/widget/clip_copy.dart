@@ -23,20 +23,18 @@ class CommentCardGestureDetector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: isOfficial
-          ? null
-          : () {
-              if (Provider.of<NewFloorProvider>(context, listen: false)
-                  .inputFieldEnabled) {
-                context.read<NewFloorProvider>().clearAndClose();
-              } else {
-                Provider.of<NewFloorProvider>(context, listen: false)
-                    .inputFieldOpenAndReplyTo(id);
-                FocusScope.of(context).requestFocus(
-                    Provider.of<NewFloorProvider>(context, listen: false)
-                        .focusNode);
-              }
-            },
+      onTap: () {
+        if (isOfficial) return;
+        if (Provider.of<NewFloorProvider>(context, listen: false)
+            .inputFieldEnabled) {
+          context.read<NewFloorProvider>().clearAndClose();
+        } else {
+          Provider.of<NewFloorProvider>(context, listen: false)
+              .inputFieldOpenAndReplyTo(id);
+          FocusScope.of(context).requestFocus(
+              Provider.of<NewFloorProvider>(context, listen: false).focusNode);
+        }
+      },
       onLongPress: () {
         ClipboardData data = ClipboardData(text: copy);
         Clipboard.setData(data);
