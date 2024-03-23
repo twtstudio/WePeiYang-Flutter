@@ -26,12 +26,30 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.huawei.agconnect'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-Properties pro = new Properties()
-pro.load(project.rootProject.file('local.properties').newDataInputStream())
+Properties props = new Properties()
+props.load(project.rootProject.file('local.properties').newDataInputStream())
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+// List of common system properties to print
+List<String> systemProperties = [
+        "Java Version: ${System.properties['java.version']}",
+        "Java Runtime Environment Version: ${System.properties['java.runtime.version']}",
+        "Java Home: ${System.properties['java.home']}",
+        "Operating System Name: ${System.properties['os.name']}",
+        "Operating System Version: ${System.properties['os.version']}",
+        "Operating System Architecture: ${System.properties['os.arch']}",
+        "User Working Directory: ${System.properties['user.dir']}",
+        "User Home Directory: ${System.properties['user.home']}",
+        "File Separator: ${System.properties['file.separator']}",
+        "Path Separator: ${System.properties['path.separator']}"
+]
+
+// Print the system properties inside a box with a title
+printTitledBox("BuildInfo", systemProperties)
+
 
 android {
     compileSdkVersion 34
@@ -78,10 +96,10 @@ android {
             v1SigningEnabled true
             v2SigningEnabled true
             try {
-                storeFile file(pro.getProperty('jksPath'))
-                storePassword pro.getProperty('storePassword')
-                keyAlias pro.getProperty('keyAlias')
-                keyPassword pro.getProperty('storePassword')
+                storeFile file(props.getProperty('jksPath'))
+                storePassword props.getProperty('storePassword')
+                keyAlias props.getProperty('keyAlias')
+                keyPassword props.getProperty('storePassword')
             } catch (ex) {
                 println "You are running without keystore, please configure your keystore in local.properties when packaging."
 //                ex.printStackTrace()
@@ -320,4 +338,25 @@ def getDartDefines() {
         return arguments
     }
     return [:]
+}
+
+// Function to print a titled box around provided content in Groovy, with left-aligned text
+def printTitledBox(String title, List<String> content) {
+    int maxContentLength = content.collect { it.length() }.max() ?: 0
+    int titleLength = title.length()
+    int boxWidth = Math.max(maxContentLength, titleLength) + 4 // Add padding for aesthetics
+    String topBorder = '+' + '-'.multiply(boxWidth) + '+'
+    String emptyLine = '|' + ' '.multiply(boxWidth) + '|'
+
+    println topBorder
+    // Left-align the title with the same padding as content
+    println "| ${title}" + ' '.multiply(boxWidth - titleLength - 1) + '|'
+    println emptyLine
+
+    content.each { line ->
+        println "| ${line}" + ' '.multiply(boxWidth - line.length() - 1) + '|'
+    }
+
+    println emptyLine
+    println topBorder
 }
