@@ -451,23 +451,49 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: WpyTheme.of(context).brightness == Brightness.dark
-          ? Colors.black
-          : Colors.white,
+    bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
+
+    // 根据当前主题和日期选择背景颜色
+    Color backgroundColor =
+        isDarkMode && !_isFoolDay ? Colors.black : Colors.white;
+
+    // 根据条件选择图标路径
+    String iconPath = _isFoolDay
+        ? '$splashBase/${splashes[splashIndex]}'
+        : isDarkMode
+            ? 'assets/images/splash_screen_dark.png'
+            : 'assets/images/splash_screen.png';
+
+    // 根据条件选择图标颜色
+    Color? iconColor = _isFoolDay
+        ? null // 愚人节 使用图片自带颜色
+        : WpyTheme.of(context).primary; // 适配主题
+
+    // 构建splash界面
+    final splash = Container(
+      color: backgroundColor,
       padding: EdgeInsets.all(30),
+      constraints: BoxConstraints.expand(),
       child: Center(
         child: ColoredIcon(
-          _isFoolDay
-              ? '$splashBase/${splashes[splashIndex]}'
-              : WpyTheme.of(context).brightness == Brightness.dark
-                  ? 'assets/images/splash_screen_dark.png'
-                  : 'assets/images/splash_screen.png',
-          color: _isFoolDay ? null : WpyTheme.of(context).primary,
+          iconPath,
+          color: iconColor,
         ),
       ),
-      constraints: BoxConstraints.expand(),
     );
+
+    // 对于愚人节和深色主题，调整屏幕亮度
+    if (_isFoolDay && isDarkMode) {
+      return ColorFiltered(
+        child: splash,
+        colorFilter: ColorFilter.mode(
+          Colors.black.withOpacity(0.2), // 控制降低亮度的程度
+          BlendMode.darken, // 使用darken混合模式降低亮度
+        ),
+      );
+    }
+    // 否则直接splash screen
+    return splash;
   }
 
   void _appInitProcess(BuildContext context) {
