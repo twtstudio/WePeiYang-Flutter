@@ -80,20 +80,31 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   bool get wantKeepAlive => true;
 
-  void listToTop() async {
-    final currentTabController = context
+  void listToTop() {
+    if (context
+            .read<LakeModel>()
+            .lakeAreas[context
+                .read<LakeModel>()
+                .tabList[context.read<LakeModel>().tabController.index]
+                .id]!
+            .controller
+            .offset >
+        1500) {
+      context
+          .read<LakeModel>()
+          .lakeAreas[context.read<LakeModel>().tabController.index]!
+          .controller
+          .jumpTo(1500);
+    }
+    context
         .read<LakeModel>()
-        .lakeAreas[context.read<LakeModel>().currentTabId]!
-        .controller;
-    if (!currentTabController.hasClients) {
-      await Future.delayed(Duration(milliseconds: 100));
-      if (!currentTabController.hasClients) return;
-    }
-    if (currentTabController.offset > 1500.h) {
-      currentTabController.jumpTo(1500.h);
-    }
-    currentTabController.animateTo(-85.h,
-        duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
+        .lakeAreas[context
+            .read<LakeModel>()
+            .tabList[context.read<LakeModel>().tabController.index]
+            .id]!
+        .controller
+        .animateTo(-85,
+            duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
   _onFeedbackTapped() {
@@ -118,7 +129,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    SplitUtil.needHorizontalView = 1.sw > 1.sh;
+SplitUtil.needHorizontalView = 1.sw > 1.sh;
     SplitUtil.w = 1.sw > 1.sh ? 0.5.w : 1.w;
     SplitUtil.sw = 1.sw > 1.sh ? 0.5.sw : 1.sw;
     SplitUtil.toolbarWidth = Platform.isWindows
@@ -218,11 +229,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 : status == LakePageStatus.idle
                     ? Builder(builder: (context) {
                         return TabBar(
-                          dividerHeight: 0,
+                          // dividerHeight: 0,
                           indicatorPadding: EdgeInsets.only(bottom: 2.h),
                           labelPadding: EdgeInsets.only(bottom: 3.h),
                           isScrollable: true,
-                          tabAlignment: TabAlignment.center,
+// tabAlignment: TabAlignment.center,
                           physics: BouncingScrollPhysics(),
                           controller: context.read<LakeModel>().tabController,
                           labelColor: WpyTheme.of(context)
@@ -269,223 +280,223 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     return Scaffold(
-        backgroundColor:
-            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        body: Row(children: [
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      body: Row(children: [
           Expanded(
             child: Stack(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                      // 因为上面的空要藏住搜索框
-                      top: MediaQuery.of(context).padding.top < searchBarHeight
-                          ? searchBarHeight + tabBarHeight
-                          : MediaQuery.of(context).padding.top +
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+                // 因为上面的空要藏住搜索框
+                top: MediaQuery.of(context).padding.top < searchBarHeight
+                    ? searchBarHeight + tabBarHeight
+                    : MediaQuery.of(context).padding.top +
                               searchBarHeight,
-                      bottom: Platform.isWindows ? 0 : 52.h),
-                  child: Selector<LakeModel, List<WPYTab>>(
-                    selector: (BuildContext context, LakeModel lakeModel) {
-                      return lakeModel.tabList;
-                    },
-                    builder: (_, tabs, __) {
-                      if (!context.read<LakeModel>().tabControllerLoaded) {
-                        context.read<LakeModel>().tabController = TabController(
-                            length: tabs.length,
-                            vsync: this,
-                            initialIndex: min(max(0, tabs.length - 1), 1))
-                          ..addListener(() {
-                            if (context
-                                    .read<LakeModel>()
-                                    .tabController
-                                    .index
-                                    .toDouble() ==
-                                context
-                                    .read<LakeModel>()
-                                    .tabController
-                                    .animation!
-                                    .value) {
-                              WPYTab tab =
-                                  context.read<LakeModel>().lakeAreas[1]!.tab;
-                              if (context
+                bottom: Platform.isWindows ? 0 : 52.h),
+            child: Selector<LakeModel, List<WPYTab>>(
+              selector: (BuildContext context, LakeModel lakeModel) {
+                return lakeModel.tabList;
+              },
+              builder: (_, tabs, __) {
+                if (!context.read<LakeModel>().tabControllerLoaded) {
+                  context.read<LakeModel>().tabController = TabController(
+                      length: tabs.length,
+                      vsync: this,
+                      initialIndex: min(max(0, tabs.length - 1), 1))
+                    ..addListener(() {
+                      if (context
+                              .read<LakeModel>()
+                              .tabController
+                              .index
+                              .toDouble() ==
+                          context
+                              .read<LakeModel>()
+                              .tabController
+                              .animation!
+                              .value) {
+                        WPYTab tab =
+                            context.read<LakeModel>().lakeAreas[1]!.tab;
+                        if (context
                                           .read<LakeModel>()
                                           .tabController
                                           .index !=
-                                      tabList.indexOf(tab) &&
-                                  canSee) _onFeedbackTapped();
-                              context.read<LakeModel>().currentTab =
-                                  context.read<LakeModel>().tabController.index;
-                              context.read<LakeModel>().onFeedbackOpen();
-                            }
-                          });
+                                tabList.indexOf(tab) &&
+                            canSee) _onFeedbackTapped();
+                        context.read<LakeModel>().currentTab =
+                            context.read<LakeModel>().tabController.index;
+                        context.read<LakeModel>().onFeedbackOpen();
                       }
-                      int cacheNum = 0;
-                      return tabs.length == 1
-                          ? ListView(
+                    });
+                }
+                int cacheNum = 0;
+                return tabs.length == 1
+                    ? ListView(
                               children: [SizedBox(height: 0.35.sh), Loading()])
-                          : ExtendedTabBarView(
-                              cacheExtent: cacheNum,
-                              controller:
+                    : ExtendedTabBarView(
+                        cacheExtent: cacheNum,
+                        controller:
                                   context.read<LakeModel>().tabController,
-                              children: List<Widget>.generate(
-                                // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
-                                tabs.length,
-                                (i) => NSubPage(
-                                  index: tabList[i].id,
-                                ),
-                              ),
-                            );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      // 因为上面的空要藏住搜索框
-                      top: (MediaQuery.of(context).padding.top < searchBarHeight
-                              ? searchBarHeight + tabBarHeight
-                              : MediaQuery.of(context).padding.top +
-                                  searchBarHeight) +
-                          tabBarHeight -
-                          4),
-                  child: Visibility(
-                    child: InkWell(
-                        onTap: () {
-                          if (canSee) _onFeedbackTapped();
-                        },
-                        child: FbTagsWrap(key: fbKey)),
-                    maintainState: true,
-                    visible: canSee,
-                  ),
-                ),
-                Selector<LakeModel, bool>(
-                    selector: (BuildContext context, LakeModel lakeModel) {
-                  return lakeModel.barExtended;
-                }, builder: (_, barExtended, __) {
-                  return AnimatedContainer(
-                      height: searchBarHeight + tabBarHeight,
-                      margin: EdgeInsets.only(
-                          top: barExtended
-                              ? MediaQuery.of(context).padding.top <
-                                      searchBarHeight
-                                  ? searchBarHeight
-                                  : MediaQuery.of(context).padding.top
-                              : MediaQuery.of(context).padding.top <
-                                      searchBarHeight
-                                  ? 0
-                                  : MediaQuery.of(context).padding.top -
-                                      searchBarHeight),
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.primaryBackgroundColor),
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeOutCirc,
-                      child: Column(children: [
-                        searchBar,
-                        SizedBox(
-                          height: tabBarHeight,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              SizedBox(width: 4),
-                              expanded,
-                              SizedBox(width: 4)
-                            ],
+                        children: List<Widget>.generate(
+                          // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
+                          tabs.length,
+                          (i) => NSubPage(
+                            index: tabList[i].id,
                           ),
-                        )
-                      ]));
-                }),
-                // 挡上面
-                Container(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    height: MediaQuery.of(context).padding.top < searchBarHeight
-                        ? searchBarHeight
-                        : MediaQuery.of(context).padding.top),
-                Positioned(
-                  bottom: ScreenUtil().bottomBarHeight + 90.h,
-                  right: 20.w,
-                  child: Hero(
-                    tag: "addNewPost",
-                    child: InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: ColoredIcon(
-                          'assets/images/add_post.png',
-                          width: 72.r,
-                          color: WpyTheme.of(context).primary,
                         ),
+                      );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+                // 因为上面的空要藏住搜索框
+                top: (MediaQuery.of(context).padding.top < searchBarHeight
+                        ? searchBarHeight + tabBarHeight
+                        : MediaQuery.of(context).padding.top +
+                            searchBarHeight) +
+                    tabBarHeight -
+                    4),
+            child: Visibility(
+              child: InkWell(
                         onTap: () {
-                          if (tabList.isNotEmpty) {
-                            initializeRefresh = true;
-                            context
+                    if (canSee) _onFeedbackTapped();
+                  },
+                  child: FbTagsWrap(key: fbKey)),
+              maintainState: true,
+              visible: canSee,
+            ),
+          ),
+          Selector<LakeModel, bool>(
+              selector: (BuildContext context, LakeModel lakeModel) {
+            return lakeModel.barExtended;
+          }, builder: (_, barExtended, __) {
+            return AnimatedContainer(
+                height: searchBarHeight + tabBarHeight,
+                margin: EdgeInsets.only(
+                    top: barExtended
+                        ? MediaQuery.of(context).padding.top <
+                                      searchBarHeight
+                            ? searchBarHeight
+                            : MediaQuery.of(context).padding.top
+                        : MediaQuery.of(context).padding.top <
+                                      searchBarHeight
+                            ? 0
+                            : MediaQuery.of(context).padding.top -
+                                searchBarHeight),
+                color: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor),
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeOutCirc,
+                child: Column(children: [
+                  searchBar,
+                  SizedBox(
+                    height: tabBarHeight,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        SizedBox(width: 4),
+                        expanded,
+                        SizedBox(width: 4)
+                      ],
+                    ),
+                  )
+                ]));
+          }),
+          // 挡上面
+          Container(
+              color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+              height: MediaQuery.of(context).padding.top < searchBarHeight
+                  ? searchBarHeight
+                  : MediaQuery.of(context).padding.top),
+          Positioned(
+            bottom: ScreenUtil().bottomBarHeight + 90.h,
+            right: 20.w,
+            child: Hero(
+              tag: "addNewPost",
+              child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: ColoredIcon(
+                    'assets/images/add_post.png',
+                    width: 72.r,
+                    color: WpyTheme.of(context).primary,
+                  ),
+                  onTap: () {
+                    if (tabList.isNotEmpty) {
+                      initializeRefresh = true;
+                      context
                                 .read<NewPostProvider>()
                                 .postTypeNotifier
                                 .value = tabList[1].id;
-                            Navigator.pushNamed(context, FeedbackRouter.newPost,
-                                arguments: NewPostArgs(false, '', 0, ''));
-                          }
-                        }),
-                  ),
-                ),
-                Consumer<FestivalProvider>(
-                    builder: (BuildContext context, fp, Widget? child) {
-                  if (fp.popUpIndex() != -1) {
-                    int index = fp.popUpIndex();
-                    final url = fp.festivalList[index].url;
-                    final picUrl = fp.festivalList[index].image;
-                    return Positioned(
-                      bottom: ScreenUtil().bottomBarHeight + 180.h,
-                      right: 20.w + 6.r,
-                      child: Material(
-                        elevation: 5,
-                        borderRadius: BorderRadius.all(Radius.circular(100.r)),
-                        child: InkWell(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            child: Container(
-                              height: 60.r,
-                              width: 60.r,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(100.r)),
-                                image: DecorationImage(
-                                    image: NetworkImage(picUrl),
-                                    fit: BoxFit.cover),
-                              ),
-                            ),
-                            onTap: () async {
-                              if (!url.isEmpty) {
-                                if (url.startsWith('browser:')) {
-                                  final launchUrl = url
-                                      .replaceAll('browser:', '')
-                                      .replaceAll('<token>',
-                                          '${CommonPreferences.token.value}')
-                                      .replaceAll('<laketoken>',
-                                          '${CommonPreferences.lakeToken.value}');
-                                  if (await canLaunchUrlString(launchUrl)) {
-                                    launchUrlString(launchUrl,
-                                        mode: LaunchMode.externalApplication);
-                                  } else {
-                                    ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
-                                  }
-                                } else
-                                  Navigator.pushNamed(
-                                      context, FeedbackRouter.haitang,
-                                      arguments: FestivalArgs(
-                                          url,
-                                          context
-                                              .read<FestivalProvider>()
-                                              .festivalList[index]
-                                              .title));
-                              }
-                            }),
-                      ),
-                    );
-                  } else
-                    return SizedBox();
-                }),
-              ],
+                      Navigator.pushNamed(context, FeedbackRouter.newPost,
+                          arguments: NewPostArgs(false, '', 0, ''));
+                    }
+                  }),
             ),
           ),
+          Consumer<FestivalProvider>(
+              builder: (BuildContext context, fp, Widget? child) {
+            if (fp.popUpIndex() != -1) {
+              int index = fp.popUpIndex();
+              final url = fp.festivalList[index].url;
+              final picUrl = fp.festivalList[index].image;
+              return Positioned(
+                bottom: ScreenUtil().bottomBarHeight + 180.h,
+                right: 20.w + 6.r,
+                child: Material(
+                  elevation: 5,
+                  borderRadius: BorderRadius.all(Radius.circular(100.r)),
+                  child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: Container(
+                        height: 60.r,
+                        width: 60.r,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(100.r)),
+                          image: DecorationImage(
+                              image: NetworkImage(picUrl),
+                                    fit: BoxFit.cover),
+                        ),
+                      ),
+                      onTap: () async {
+                        if (!url.isEmpty) {
+                          if (url.startsWith('browser:')) {
+                            final launchUrl = url
+                                .replaceAll('browser:', '')
+                                .replaceAll('<token>',
+                                    '${CommonPreferences.token.value}')
+                                .replaceAll('<laketoken>',
+                                    '${CommonPreferences.lakeToken.value}');
+                            if (await canLaunchUrlString(launchUrl)) {
+                              launchUrlString(launchUrl,
+                                  mode: LaunchMode.externalApplication);
+                            } else {
+                              ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                            }
+                          } else
+                            Navigator.pushNamed(
+                                      context, FeedbackRouter.haitang,
+                                arguments: FestivalArgs(
+                                    url,
+                                    context
+                                        .read<FestivalProvider>()
+                                        .festivalList[index]
+                                        .title));
+                        }
+                      }),
+                ),
+              );
+            } else
+              return SizedBox();
+          }),
+        ],
+      ),
+    ),
           if (SplitUtil.needHorizontalView)
             Expanded(
                 child: Selector<LakeModel, ChangeablePost>(
