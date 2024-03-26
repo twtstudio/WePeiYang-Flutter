@@ -193,3 +193,20 @@ struct SmallView: View {
         }
     }
 }
+
+
+struct MyWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(
+            kind: "com.example.smallview",
+            provider: CourseTimelineProvider()
+        ) { entry in
+            SmallView(entry: DataEntry(date: Date()), theme: WColorTheme.blue)
+        }
+        .configurationDisplayName("SmallView Widget")
+        .description("This is an example widget.")
+    }
+}
+struct MyWidget_Previews: PreviewProvider {
+    static var previews: some View {
+        SmallView(entry: DataEntry(date: Date()), theme: WColorTheme.blue) .previewContext(WidgetPreviewContext(family: .systemSmall)) } }

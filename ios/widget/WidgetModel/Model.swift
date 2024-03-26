@@ -235,8 +235,8 @@ struct CourseTable: Codable, Storable {
     
     /// 明天周数
     var tomorrowWeek: Int {
-        // 如果是周日(1)就是week+1
-        currentDay == 1 ? currentWeek + 1 : currentWeek
+        // 如果是周日(7)就是week+1
+        currentDay == 7 ? currentWeek + 1 : currentWeek
     }
     
     /// 明天星期几
