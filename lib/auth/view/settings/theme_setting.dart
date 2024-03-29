@@ -49,6 +49,14 @@ class _ThemeSettingState extends State<ThemeSetting>
     }
   }
 
+  autoFollowSys() {
+    if (MediaQuery.platformBrightnessOf(context) == Brightness.dark) {
+      shiftToDark();
+    } else {
+      shiftToLight();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     shiftTheme = WpyThemeData.themeList.firstWhere((element) {
@@ -289,8 +297,13 @@ class _ThemeSettingState extends State<ThemeSetting>
                   canMove = false;
                   shiftToLight();
                 } else {
-                  canMove = false;
-                  shiftToDark();
+                  if (CommonPreferences.notFollowSys.value) {
+                    canMove = false;
+                    shiftToDark();
+                  } else {
+                    canMove = false;
+                    autoFollowSys();
+                  }
                 }
               }
             }
@@ -378,6 +391,46 @@ class _ThemeSettingState extends State<ThemeSetting>
       ],
     );
 
+    Widget autoDarkThemeSelect = Container(
+      padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+      decoration: BoxDecoration(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认开启')],
+            ),
+          ),
+          Switch(
+            value: !CommonPreferences.notFollowSys.value,
+            onChanged: (value) {
+              setState(() {
+                CommonPreferences.notFollowSys.value = !value;
+                if (!CommonPreferences.notFollowSys.value == true) {
+                  CommonPreferences.usingDarkTheme.value = 2;
+                } else {
+                  CommonPreferences.usingDarkTheme.value = 0;
+                }
+              });
+            },
+            activeColor:
+                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+            inactiveThumbColor:
+                WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+            activeTrackColor:
+                WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+            inactiveTrackColor:
+                WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
         appBar: AppBar(
           title: Text("主题设置",
@@ -399,7 +452,7 @@ class _ThemeSettingState extends State<ThemeSetting>
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: ListView(
-          children: [layout, gridView],
+          children: [layout, autoDarkThemeSelect, gridView],
         ));
   }
 }
@@ -430,6 +483,7 @@ class WpyThemeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(10.w);
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
