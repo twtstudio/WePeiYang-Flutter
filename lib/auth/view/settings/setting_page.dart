@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/privacy/user_agreement_dialog.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_dialog.dart';
@@ -18,6 +19,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
+import '../../../commons/util/dialog_provider.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class SettingPage extends StatefulWidget {
@@ -255,6 +257,61 @@ class _SettingPageState extends State<SettingPage> {
                 ),
               ),
             ],
+          ),
+          SizedBox(height: 10.h),
+          WButton(
+            onPressed: () =>  showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return LakeDialogWidget(
+                      title: '天外天工作室提示您',
+                      titleTextStyle: TextUtil.base.normal
+                          .infoText(context)
+                          .NotoSansSC
+                          .sp(22)
+                          .w600,
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            ' 你即将离开微北洋，去往：',
+                            style: TextStyle(
+                                color: WpyTheme.of(context)
+                                    .get(WpyColorKey.basicTextColor)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 6, bottom: 6),
+                            child: Text("https://beian.miit.gov.cn",
+                                style: TextUtil.base.NotoSansSC
+                                    .link(context)
+                                    .w600
+                                    .h(1.6)),
+                          ),
+                        ],
+                      ),
+                      cancelText: "取消",
+                      confirmTextStyle:
+                      TextUtil.base.normal.bright(context).NotoSansSC.sp(16).w600,
+                      confirmButtonColor: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryTextButtonColor),
+                      cancelTextStyle:
+                      TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+                      confirmText: "继续",
+                      cancelFun: () {
+                        Navigator.pop(context);
+                      },
+                      confirmFun: () async {
+                        await launchUrl(Uri.parse("https://beian.miit.gov.cn"),
+                            mode: LaunchMode.externalApplication);
+                        Navigator.pop(context);
+                      });
+                }),
+            child: Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(),
+              child: Text('津ICP备05004358号-18A', style: hintTextStyle),
+            ),
           ),
         ],
       ),
