@@ -8,21 +8,23 @@ class ScheduleBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: double.infinity,
-      width: double.infinity,
-      child: CustomPaint(
-        painter: ScheduleBackgroundPrinter(
-          primaryActionColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-          primaryLightActionColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor),
-          primaryBackgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          primaryLighterActionColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryLighterActionColor),
-          primaryLightestActionColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryLightestActionColor),
+    return ClipRect(
+      child: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: CustomPaint(
+          painter: ScheduleBackgroundPrinter(
+            primaryActionColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+            primaryLightActionColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor),
+            primaryBackgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            primaryLighterActionColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryLighterActionColor),
+            primaryLightestActionColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryLightestActionColor),
+          ),
         ),
       ),
     );
