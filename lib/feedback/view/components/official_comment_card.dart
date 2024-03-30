@@ -445,7 +445,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
                 blurRadius: 5,
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.basicTextColor)
-                    .withOpacity(0.2),
+                    .withOpacity(0.1),
                 offset: Offset(0, 0),
                 spreadRadius: 3),
           ],

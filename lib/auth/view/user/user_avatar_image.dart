@@ -55,12 +55,25 @@ class UserAvatarImage extends StatelessWidget {
                   ),
                 ),
           if (avatarBoxUrl != "Error")
-            FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              image: avatarBoxUrl,
-              width: size,
-              height: size,
-              fit: BoxFit.contain,
+            Builder(
+              builder: (context) {
+                print("==> $avatarBoxUrl");
+                return FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: avatarBoxUrl,
+                  width: size,
+                  height: size,
+                  fit: BoxFit.contain,
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.memory(
+                      kTransparentImage,
+                      width: size,
+                      height: size,
+                      fit: BoxFit.contain,
+                    );
+                  },
+                );
+              },
             )
         ],
       ),
