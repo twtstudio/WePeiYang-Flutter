@@ -8,7 +8,7 @@ class RedScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_red_theme",
-            name: "北洋红",
+            name: "夕阳红",
             description: "默认 红 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",

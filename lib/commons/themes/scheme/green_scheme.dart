@@ -8,7 +8,7 @@ class GreenScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_green_theme",
-            name: "北洋青",
+            name: "初音青",
             description: "默认 绿 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",

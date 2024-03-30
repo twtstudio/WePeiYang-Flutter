@@ -8,7 +8,7 @@ class HaiTangScheme extends WpyThemeData {
       : super(
     meta: BuiltInThemeMetaData(
       themeId: "builtin_HaiTang_theme",
-      name: "北洋粉",
+      name: "海棠粉",
       description: "默认 粉色 主题",
       brightness: Brightness.light,
       representativeColor: Color(0xFFD983AE),

@@ -8,11 +8,11 @@ class OrangeScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_orange_theme",
-            name: "北洋橙",
+            name: "高雅金",
             description: "默认 火热橙 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
-            representativeColor: Color(0xffFF8037),
+            representativeColor: Color(0xffe0ae57),
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

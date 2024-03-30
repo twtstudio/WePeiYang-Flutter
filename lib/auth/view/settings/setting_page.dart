@@ -258,7 +258,7 @@ class _SettingPageState extends State<SettingPage> {
               ),
             ],
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 3.h),
           WButton(
             onPressed: () =>  showDialog(
                 context: context,

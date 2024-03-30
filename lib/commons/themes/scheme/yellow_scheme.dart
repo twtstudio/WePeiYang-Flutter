@@ -8,10 +8,10 @@ class YellowScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_yellow_theme",
-            name: "北洋黄",
+            name: "镜音黄",
             description: "默认 红 主题",
             brightness: Brightness.light,
-            representativeColor: Color(0xfff7cf3f),
+            representativeColor: Color(0xffffe211),
           ),
           data: WpyThemeDetail(
             redSchemeDetail,
@@ -21,15 +21,15 @@ class YellowScheme extends WpyThemeData {
         );
 }
 
-const yellowPrimaryColor = Color(0xFFf7cf3f);
+const yellowPrimaryColor = Color(0xffffe211);
 
 ColorMapper yellowMapper = (Color source) {
   HSLColor hsl = HSLColor.fromColor(source);
   HSLColor targetHsl = HSLColor.fromColor(yellowPrimaryColor);
   return hsl
       .withHue(targetHsl.hue)
-      .withLightness((hsl.lightness - 0.05).clamp(0, 1))
-      .withSaturation((hsl.saturation - 0.3).clamp(0, 1))
+      .withLightness((hsl.lightness - 0.15).clamp(0, 1))
+      .withSaturation((hsl.saturation - 0.25).clamp(0, 1))
       .toColor();
 };
 

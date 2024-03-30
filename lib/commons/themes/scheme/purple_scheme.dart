@@ -8,7 +8,7 @@ class PurpleScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_purple_theme",
-            name: "北洋紫",
+            name: "曼巴紫",
             description: "默认 紫 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
