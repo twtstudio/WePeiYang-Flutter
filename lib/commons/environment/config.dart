@@ -33,13 +33,13 @@ class EnvConfig {
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSION = String.fromEnvironment(
     "VERSION",
-    defaultValue : "4.4.0 BETA",
+    defaultValue: "4.4.0 BETA 2",
   );
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSIONCODE = int.fromEnvironment(
     "VERSIONCODE",
-    defaultValue : 140,
+    defaultValue: 140,
   );
 
   /// 青年湖底域名 "https://www.zrzz.site:7013/" (DEFAULT) 或 "https://qnhd.twt.edu.cn/"

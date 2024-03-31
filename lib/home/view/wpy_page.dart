@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
@@ -54,14 +56,18 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'Schedule',
         ScheduleRouter.course),
     CardBean(
-        ColoredIcon(
-          'assets/svg_pics/lake_butt_icons/lost_and_found.png',
-          width: 21.w,
-          color: themePrimary,
-        ),
-        '失物招领',
-        'Lost-\nFound',
-        HomeRouter.laf),
+        Icon(
+            // newspaper
+            Icons.article_rounded,
+            size: 24,
+            color: (themePrimary?.withOpacity(0.7) ??
+                (WpyTheme.of(context).brightness == Brightness.light
+                        ? Color(0xFF81BAFE)
+                        : Colors.white)
+                    .withOpacity(0.7))),
+        '新闻网',
+        'News',
+        HomeRouter.news),
     CardBean(
         ColoredIcon(
           'assets/images/schedule/add.png',
@@ -163,10 +169,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      systemNavigationBarColor:
-          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-    ));
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
           showSchedule == true)

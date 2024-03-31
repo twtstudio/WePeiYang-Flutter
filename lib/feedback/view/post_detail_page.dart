@@ -777,17 +777,19 @@ class _PostDetailPageState extends State<PostDetailPage>
           }),
         ],
       );
-      body = Stack(
-        key: ValueKey("loaded"),
-        children: [
-          Column(
-            children: [
-              Expanded(child: mainList),
-              SizedBox(height: SplitUtil.h * 60),
-            ],
-          ),
-          bottomInput
-        ],
+      body = SafeArea(
+        child: Stack(
+          key: ValueKey("loaded"),
+          children: [
+            Column(
+              children: [
+                Expanded(child: mainList),
+                SizedBox(height: SplitUtil.h * 60),
+              ],
+            ),
+            bottomInput
+          ],
+        ),
       );
     } else {
       body = Center(child: Text("error!"));

@@ -217,13 +217,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: _tabController.index == 2
-          ? SystemUiOverlayStyle.light.copyWith(
+      value: (() {
+        if (_tabController.index == 1) {
+          if (WpyTheme.of(context).brightness == Brightness.light)
+            return SystemUiOverlayStyle.dark.copyWith(
+                systemNavigationBarColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor));
+          else
+            return SystemUiOverlayStyle.light.copyWith(
+                systemNavigationBarColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor));
+        } else if (_tabController.index == 2) {
+          return SystemUiOverlayStyle.light.copyWith(
               systemNavigationBarColor:
-                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor))
-          : SystemUiOverlayStyle.dark.copyWith(
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor));
+        } else {
+          return SystemUiOverlayStyle.dark.copyWith(
               systemNavigationBarColor:
-                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor));
+        }
+      })(),
       child: Scaffold(
         extendBody: true,
         bottomNavigationBar: bottomNavigationBar,
