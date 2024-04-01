@@ -149,6 +149,19 @@ class _SettingPageState extends State<SettingPage> {
                 if (EnvConfig.isTest) {
                   Navigator.pushNamed(context, TestRouter.mainPage);
                 }
+                //show about dialog
+                else {
+                  showAboutDialog(
+                    context: context,
+                    applicationName: "微北洋",
+                    applicationVersion:
+                        "${EnvConfig.VERSION}+${EnvConfig.VERSIONCODE}",
+                    applicationIcon: Image.asset(
+                      'assets/images/logo.png',
+                      width: 50.w,
+                    ),
+                  );
+                }
               },
               onTap: () => Navigator.pushNamed(context, AuthRouter.aboutTwt),
               child: Row(
@@ -172,7 +185,7 @@ class _SettingPageState extends State<SettingPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: GestureDetector(
+            child: InkWell(
               onLongPress: () {
                 Navigator.pushNamed(context, AuthRouter.debugInfo);
               },
@@ -260,7 +273,7 @@ class _SettingPageState extends State<SettingPage> {
           ),
           SizedBox(height: 3.h),
           WButton(
-            onPressed: () =>  showDialog(
+            onPressed: () => showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return LakeDialogWidget(
@@ -291,12 +304,18 @@ class _SettingPageState extends State<SettingPage> {
                         ],
                       ),
                       cancelText: "取消",
-                      confirmTextStyle:
-                      TextUtil.base.normal.bright(context).NotoSansSC.sp(16).w600,
+                      confirmTextStyle: TextUtil.base.normal
+                          .bright(context)
+                          .NotoSansSC
+                          .sp(16)
+                          .w600,
                       confirmButtonColor: WpyTheme.of(context)
                           .get(WpyColorKey.primaryTextButtonColor),
-                      cancelTextStyle:
-                      TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+                      cancelTextStyle: TextUtil.base.normal
+                          .label(context)
+                          .NotoSansSC
+                          .sp(16)
+                          .w400,
                       confirmText: "继续",
                       cancelFun: () {
                         Navigator.pop(context);

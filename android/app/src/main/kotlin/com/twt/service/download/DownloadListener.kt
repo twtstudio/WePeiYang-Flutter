@@ -3,6 +3,7 @@ package com.twt.service.download
 import android.app.DownloadManager
 import com.twt.service.common.LogUtil
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 
 class DownloadListener(val plugin: WbyDownloadPlugin) {
     /**
@@ -56,7 +57,16 @@ class DownloadListener(val plugin: WbyDownloadPlugin) {
         if (messageList.containsKey(task.id)) {
             WbyDownloadPlugin.log("messageList has task, taskId: ${task.id}")
         } else {
-            WbyDownloadPlugin.log("updateStatus taskId: ${task.id}")
+            WbyDownloadPlugin.log("updateStatus taskId: ${task.id}, status: $status, progress: $progress, reason: $reason")
+            if (status == DownloadManager.STATUS_FAILED) {
+                LogUtil.e(
+                    WbyDownloadPlugin.TAG,
+                    Exception(
+                        "download failed, delete temporary file: ${task.temporaryPath()}"
+                    )
+                )
+                File(task.temporaryPath()).takeIf { it.exists() }?.delete()
+            }
             val report = task.baseData()
             report["status"] = status
             report["progress"] = progress

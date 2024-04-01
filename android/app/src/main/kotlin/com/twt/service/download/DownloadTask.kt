@@ -62,11 +62,15 @@ data class DownloadTask(
  * 临时文件相对地址
  */
 fun DownloadTask.temporaryPath(): String {
-    return "$path.temporary"
+    return "$path.temp"
 }
 
 fun DownloadTask.temporarySubPath(): String {
-    return temporaryPath().split(Environment.DIRECTORY_DOWNLOADS + File.separator).last()
+    return temporaryPath().split("downloads" + File.separator).last()
+}
+
+fun DownloadTask.subPath(): String {
+    return path.split("downloads" + File.separator).last()
 }
 
 fun DownloadTask.baseData(): MutableMap<String, Any> {

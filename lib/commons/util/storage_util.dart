@@ -16,10 +16,12 @@ class StorageUtil {
 
   static Future<void> init() async {
     downloadDir = Platform.isAndroid
-        ? (await getExternalStorageDirectories(
-                type: StorageDirectory.downloads))!
-            .first
+        ? (await getDownloadsDirectory() ??
+            (await getExternalStorageDirectories(
+                    type: StorageDirectory.downloads))!
+                .first)
         : await getApplicationDocumentsDirectory();
+    print("==> temp download dir ${downloadDir.path}");
     filesDir = await getApplicationSupportDirectory();
     tempDir = await getTemporaryDirectory();
     photoDir = Platform.isAndroid

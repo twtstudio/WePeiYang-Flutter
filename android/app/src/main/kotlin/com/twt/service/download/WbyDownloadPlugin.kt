@@ -134,9 +134,13 @@ class WbyDownloadPlugin : WbyPlugin() {
                     log(it.temporarySubPath())
                     setDestinationInExternalFilesDir(
                         context,
-                        Environment.DIRECTORY_DOWNLOADS,
+                        "downloads",
                         it.temporarySubPath(),
                     )
+
+                    println("download file info: ${it.url} ${it.fileName} ${it.showNotification} ${it.title} ${it.description}")
+                    println("download path info: ${it.path} ${it.temporarySubPath()} ${it.temporaryPath()}")
+
                     if (it.showNotification) {
                         setTitle(it.title)
                         setDescription(it.description)
@@ -235,6 +239,24 @@ class WbyDownloadPlugin : WbyPlugin() {
                 if (status == DownloadManager.STATUS_SUCCESSFUL) {
                     val from = File(task.temporaryPath())
                     val to = File(task.path)
+
+                    log("Moving File, from: ${from.absolutePath}, to: ${to.absolutePath}")
+                    if (!from.exists()) {
+                        listener.updateStatus(
+                            task,
+                            DownloadManager.STATUS_FAILED,
+                            progress,
+                            "temporary file not exists"
+                        )
+                    }
+                    if (to.exists()) {
+                        listener.updateStatus(
+                            task,
+                            DownloadManager.STATUS_FAILED,
+                            progress,
+                            "file already exists"
+                        )
+                    }
                     if (!from.renameTo(to)) {
                         listener.updateStatus(
                             task,
