@@ -3,7 +3,7 @@ name: Flutter AutoPackage Process
 on:
   push:
     branches:
-      - "flutter3.10"
+      - "flutter3.19"
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
 
     - uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'
+        flutter-version: '3.19.4'
 
     # Extract version from pubspec.yaml
     - name: Extract version from pubspec.yaml
