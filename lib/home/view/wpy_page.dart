@@ -20,7 +20,6 @@ import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
@@ -122,7 +121,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    FeedbackService.getToken();
     super.initState();
     _tc = TabController(length: 3, vsync: this);
     if (CommonPreferences.firstPrivacy.value == true) {

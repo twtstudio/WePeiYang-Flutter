@@ -4,6 +4,7 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -43,6 +44,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
     else {
       AuthService.addInfo(phone, code, email,
           onSuccess: () {
+            // 第一次登录成功后載入使用者資料
+            FeedbackService.getToken(forceRefresh: true);
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },
@@ -93,7 +96,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.email,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                    fillColor:
+                        WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -120,7 +124,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     hintText: S.current.phone,
                     hintStyle: _hintStyle,
                     filled: true,
-                    fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                    fillColor:
+                        WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     isCollapsed: true,
                     contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
                     border: OutlineInputBorder(
@@ -145,7 +150,8 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                         hintText: S.current.text_captcha,
                         hintStyle: _hintStyle,
                         filled: true,
-                        fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                        fillColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSwitchBarColor),
                         isCollapsed: true,
                         contentPadding:
                             const EdgeInsets.fromLTRB(15, 18, 0, 18),
@@ -178,9 +184,11 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                                 style: ButtonStyle(
                                   elevation: MaterialStateProperty.all(5),
                                   overlayColor: MaterialStateProperty.all(
-                                      WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                                      WpyTheme.of(context)
+                                          .get(WpyColorKey.oldHintColor)),
                                   backgroundColor: MaterialStateProperty.all(
-                                      WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+                                      WpyTheme.of(context)
+                                          .get(WpyColorKey.oldHintColor)),
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -232,8 +240,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                     if (states.contains(MaterialState.pressed))
                       return WpyTheme.of(context)
                           .get(WpyColorKey.oldActionRippleColor);
-                    return WpyTheme.of(context)
-                        .get(WpyColorKey.oldActionColor);
+                    return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
                   }),
                   backgroundColor: MaterialStateProperty.all(
                       WpyTheme.of(context).get(WpyColorKey.oldActionColor)),

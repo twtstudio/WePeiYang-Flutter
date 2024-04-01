@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 
@@ -35,6 +36,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               if (result['telephone'] == null || result['email'] == null) {
                 Navigator.pushNamed(context, AuthRouter.addInfo);
               } else {
+                // 第一次登陸的時候載入使用者資料
+                // TODO: 這個方法和和新增資訊頁面的方法很醜陋，需要重構
+                // TODO: 應該統一管理token 而不是想到重新整理一下就重新請求
+                FeedbackService.getToken(forceRefresh: true);
                 Navigator.pushNamedAndRemoveUntil(
                     context, HomeRouter.home, (route) => false);
               }
@@ -54,6 +59,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
               if (result['telephone'] == null || result['email'] == null) {
                 Navigator.pushNamed(context, AuthRouter.addInfo);
               } else {
+                // 第一次登陸的時候載入使用者資料
+                FeedbackService.getToken(forceRefresh: true);
+
                 Navigator.pushNamedAndRemoveUntil(
                     context, HomeRouter.home, (route) => false);
               }
