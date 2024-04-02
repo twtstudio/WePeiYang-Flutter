@@ -49,14 +49,6 @@ class _ThemeSettingState extends State<ThemeSetting>
     }
   }
 
-  autoFollowSys() {
-    if (MediaQuery.platformBrightnessOf(context) == Brightness.dark) {
-      shiftToDark();
-    } else {
-      shiftToLight();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     shiftTheme = WpyThemeData.themeList.firstWhere((element) {
@@ -302,7 +294,6 @@ class _ThemeSettingState extends State<ThemeSetting>
                     shiftToDark();
                   } else {
                     canMove = false;
-                    autoFollowSys();
                   }
                 }
               }
@@ -403,7 +394,7 @@ class _ThemeSettingState extends State<ThemeSetting>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认开启')],
+              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认关闭')],
             ),
           ),
           Switch(
@@ -412,9 +403,14 @@ class _ThemeSettingState extends State<ThemeSetting>
               setState(() {
                 CommonPreferences.notFollowSys.value = !value;
                 if (!CommonPreferences.notFollowSys.value == true) {
-                  CommonPreferences.usingDarkTheme.value = 2;
+                  if (MediaQuery.platformBrightnessOf(context) ==
+                      Brightness.dark) {
+                    shiftToDark();
+                  } else {
+                    shiftToLight();
+                  }
                 } else {
-                  CommonPreferences.usingDarkTheme.value = 0;
+                  shiftToLight();
                 }
               });
             },

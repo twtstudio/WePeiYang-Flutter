@@ -223,7 +223,27 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    WpyThemeData shiftTheme;
+    shiftTheme = WpyThemeData.themeList.firstWhere((element) {
+      return element.meta.themeId ==
+          (globalTheme.value.meta.brightness == Brightness.light
+              ? globalTheme.value.meta.darkThemeId
+              : CommonPreferences.appThemeId.value);
+    }, orElse: () => WpyThemeData.brightThemeList[0]);
     if (state == AppLifecycleState.resumed) {
+      if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+        if (globalTheme.value.meta.brightness == Brightness.light) {
+          globalTheme.value = shiftTheme;
+          CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
+          CommonPreferences.usingDarkTheme.value = 1;
+        }
+      } else {
+        if (globalTheme.value.meta.brightness == Brightness.dark) {
+          globalTheme.value = shiftTheme;
+          CommonPreferences.appDarkThemeId.clear();
+          CommonPreferences.usingDarkTheme.value = 0;
+        }
+      }
       checkEventList();
     }
   }
