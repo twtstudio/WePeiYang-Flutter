@@ -394,7 +394,7 @@ class _ThemeSettingState extends State<ThemeSetting>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认关闭')],
+              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认开启')],
             ),
           ),
           Switch(
