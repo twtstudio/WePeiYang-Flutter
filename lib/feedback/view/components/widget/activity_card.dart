@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
@@ -72,7 +73,7 @@ class _ActivityCardState extends State<ActivityCard> {
                 .replaceAll('browser:', '')
                 .replaceAll('<token>', '${CommonPreferences.token.value}')
                 .replaceAll(
-                    '<laketoken>', '${CommonPreferences.lakeToken.value}');
+                    '<laketoken>', '${await FeedbackService.refreshToken()}');
             if (await canLaunchUrlString(launchUrl)) {
               launchUrlString(launchUrl, mode: LaunchMode.externalApplication);
             } else {

@@ -15,7 +15,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      CommonPreferences.lakeToken.value,
+      await FeedbackService.lakeToken,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -240,7 +240,7 @@ class LakeModel extends ChangeNotifier {
         notifyListeners();
       },
       onFailure: (e) {
-        FeedbackService.getToken();
+        FeedbackService.refreshToken();
         failure.call(e);
       },
     );
@@ -248,29 +248,23 @@ class LakeModel extends ChangeNotifier {
 
   checkTokenAndGetTabList(FbDepartmentsProvider provider,
       {OnSuccess? success}) async {
-    await FeedbackService.getToken(
-      onResult: (token) {
-        provider.initDepartments();
-        initTabList();
-        success?.call();
-      },
-      onFailure: (e) {
-        ToastProvider.error('获取分区失败');
-        notifyListeners();
-      },
-    );
+    try {
+      provider.initDepartments();
+      initTabList();
+      success?.call();
+    } catch (e) {
+      ToastProvider.error('获取分区失败');
+      notifyListeners();
+    }
   }
 
   checkTokenAndInitPostList(int index) async {
-    await FeedbackService.getToken(
-      onResult: (_) {
-        initPostList(index);
-      },
-      onFailure: (e) {
-        ToastProvider.error('获取分区失败');
-        notifyListeners();
-      },
-    );
+    try {
+      initPostList(index);
+    } catch (e) {
+      ToastProvider.error('获取分区失败');
+      notifyListeners();
+    }
   }
 
   Future<void> initPostList(int index,

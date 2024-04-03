@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class NoticesPage extends WbyWebView {
   NoticesPage({Key? key, required BuildContext context})
@@ -21,7 +21,7 @@ class _NoticesPageState extends WbyWebViewState {
   @override
   Future<String> getInitialUrl(BuildContext context) async {
     ///测试qpi，正式为
-    return 'https://qnhd.twt.edu.cn/message/#/?type=department&token=${CommonPreferences.lakeToken.value}';
+    return 'https://qnhd.twt.edu.cn/message/#/?type=department&token=${await FeedbackService.lakeToken()}';
     // return 'pamaforce.xyz:12000/#/?type=department&token=${CommonPreferences().lakeToken.value}';
   }
 }

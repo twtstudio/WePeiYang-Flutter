@@ -45,7 +45,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       AuthService.addInfo(phone, code, email,
           onSuccess: () {
             // 第一次登录成功后載入使用者資料
-            FeedbackService.getToken(forceRefresh: true);
+            FeedbackService.refreshToken();
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },

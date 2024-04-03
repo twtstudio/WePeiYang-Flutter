@@ -471,7 +471,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                                       .replaceAll('<token>',
                                           '${CommonPreferences.token.value}')
                                       .replaceAll('<laketoken>',
-                                          '${CommonPreferences.lakeToken.value}');
+                                          '${await FeedbackService.refreshToken()}');
                                   if (await canLaunchUrlString(launchUrl)) {
                                     launchUrlString(launchUrl,
                                         mode: LaunchMode.externalApplication);

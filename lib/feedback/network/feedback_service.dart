@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http_parser/http_parser.dart';
@@ -14,10 +15,62 @@ class FeedbackDio extends DioAbstract {
 
   //String baseUrl = 'http://8.141.166.181:7013/api/v1/f/';
 
+  static bool checkTokenLocal() {
+    String token = CommonPreferences.lakeToken.value;
+    if (token == "") return false;
+
+    String payloadString = token.split('.')[1];
+    final payload = json.decode(utf8.decode(base64.decode(payloadString)));
+    int exp = payload['exp'];
+    if (DateTime.fromMillisecondsSinceEpoch(exp * 1000).isAfter(
+      DateTime.now().subtract(Duration(minutes: 5)),
+    ))
+      return true;
+    else
+      return false;
+  }
+
+  static Future<String> get lakeToken async {
+    if (checkTokenLocal()) return CommonPreferences.lakeToken.value;
+    return refreshToken();
+  }
+
+  static Future<String> refreshToken() async {
+    print("==> refreshing new lake token");
+    print(StackTrace.current);
+    try {
+      final response = await feedbackDio.get('auth/token', queryParameters: {
+        'token': CommonPreferences.token.value,
+      });
+      if (response.data['data'] != null &&
+          response.data['data']['token'] != null) {
+        CommonPreferences.lakeToken.value = response.data['data']['token'];
+        CommonPreferences.lakeUid.value =
+            response.data['data']['uid'].toString();
+        if (response.data['data']['user'] != null) {
+          CommonPreferences.isSuper.value =
+              response.data['data']['user']['is_super'];
+          CommonPreferences.isSchAdmin.value =
+              response.data['data']['user']['is_sch_admin'];
+          CommonPreferences.isStuAdmin.value =
+              response.data['data']['user']['is_stu_admin'];
+          CommonPreferences.isUser.value =
+              response.data['data']['user']['is_user'];
+          CommonPreferences.avatarBoxMyUrl.value =
+              response.data['data']['user']['avatar_frame'];
+        }
+        return response.data['data']['token'];
+      }
+      throw WpyDioException(error: '刷新湖底token失败');
+    } on DioException catch (e) {
+      throw e;
+    }
+  }
+
   @override
   List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.lakeToken.value;
+    InterceptorsWrapper(onRequest: (options, handler) async {
+      options.headers['token'] = (await lakeToken);
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response.data['code'] ?? 0;
@@ -49,8 +102,8 @@ class FeedbackPicPostDio extends DioAbstract {
 
   @override
   List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.lakeToken.value;
+    InterceptorsWrapper(onRequest: (options, handler) async {
+      options.headers['token'] = (await FeedbackDio.lakeToken);
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response.data['code'] ?? 0;
@@ -71,8 +124,8 @@ class FeedbackAdminPostDio extends DioAbstract {
 
   @override
   List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.lakeToken.value;
+    InterceptorsWrapper(onRequest: (options, handler) async {
+      options.headers['token'] = (await FeedbackDio.lakeToken);
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response.data['code'] ?? 0;
@@ -92,45 +145,49 @@ final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
-  static getToken(
-      {OnResult<String>? onResult,
-      OnFailure? onFailure,
-      bool forceRefresh = false}) async {
-    try {
-      var response;
-      if (CommonPreferences.lakeToken.value != "" && !forceRefresh) {
-        response =
-            await feedbackDio.get('auth/${CommonPreferences.lakeToken.value}');
-      } else {
-        response = await feedbackDio.get('auth/token', queryParameters: {
-          'token': CommonPreferences.token.value,
-        });
-      }
-      if (response.data['data'] != null &&
-          response.data['data']['token'] != null) {
-        CommonPreferences.lakeToken.value = response.data['data']['token'];
-        CommonPreferences.lakeUid.value =
-            response.data['data']['uid'].toString();
-        if (response.data['data']['user'] != null) {
-          CommonPreferences.isSuper.value =
-              response.data['data']['user']['is_super'];
-          CommonPreferences.isSchAdmin.value =
-              response.data['data']['user']['is_sch_admin'];
-          CommonPreferences.isStuAdmin.value =
-              response.data['data']['user']['is_stu_admin'];
-          CommonPreferences.isUser.value =
-              response.data['data']['user']['is_user'];
-          CommonPreferences.avatarBoxMyUrl.value =
-              response.data['data']['user']['avatar_frame'];
-        }
-        if (onResult != null) onResult(response.data['data']['token']);
-      }
-    } on DioException catch (e) {
-      if (!forceRefresh) {
-        getToken(forceRefresh: true);
-      } else if (onFailure != null) onFailure(e);
-    }
-  }
+  static get lakeToken => FeedbackDio.lakeToken;
+
+  static refreshToken() => FeedbackDio.refreshToken();
+
+  // static getToken(
+  //     {OnResult<String>? onResult,
+  //     OnFailure? onFailure,
+  //     bool forceRefresh = false}) async {
+  //   try {
+  //     var response;
+  //     if (CommonPreferences.lakeToken.value != "" && !forceRefresh) {
+  //       response =
+  //           await feedbackDio.get('auth/${CommonPreferences.lakeToken.value}');
+  //     } else {
+  //       response = await feedbackDio.get('auth/token', queryParameters: {
+  //         'token': CommonPreferences.token.value,
+  //       });
+  //     }
+  //     if (response.data['data'] != null &&
+  //         response.data['data']['token'] != null) {
+  //       CommonPreferences.lakeToken.value = response.data['data']['token'];
+  //       CommonPreferences.lakeUid.value =
+  //           response.data['data']['uid'].toString();
+  //       if (response.data['data']['user'] != null) {
+  //         CommonPreferences.isSuper.value =
+  //             response.data['data']['user']['is_super'];
+  //         CommonPreferences.isSchAdmin.value =
+  //             response.data['data']['user']['is_sch_admin'];
+  //         CommonPreferences.isStuAdmin.value =
+  //             response.data['data']['user']['is_stu_admin'];
+  //         CommonPreferences.isUser.value =
+  //             response.data['data']['user']['is_user'];
+  //         CommonPreferences.avatarBoxMyUrl.value =
+  //             response.data['data']['user']['avatar_frame'];
+  //       }
+  //       if (onResult != null) onResult(response.data['data']['token']);
+  //     }
+  //   } on DioException catch (e) {
+  //     if (!forceRefresh) {
+  //       getToken(forceRefresh: true);
+  //     } else if (onFailure != null) onFailure(e);
+  //   }
+  // }
 
   static getTokenByPw(
     String user,
@@ -744,7 +801,7 @@ class FeedbackService with AsyncTimer {
         await feedbackDio.post(isLiked ? 'answer/dislike' : 'answer/like',
             formData: FormData.fromMap({
               'id': '$id',
-              'token': CommonPreferences.lakeToken.value,
+              'token': await FeedbackService.lakeToken,
             }));
         onSuccess.call();
       } on DioException catch (e) {

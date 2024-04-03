@@ -20,7 +20,7 @@ class CommonPreferences {
   static final email = PrefsBean<String>('email');
   static final account = PrefsBean<String>('account');
   static final password = PrefsBean<String>('password');
-  static final realName = PrefsBean<String>('realName');
+  static final realName  = PrefsBean<String>('realName');
   static final department = PrefsBean<String>('department');
   static final major = PrefsBean<String>('major');
   static final stuType = PrefsBean<String>('stuType');

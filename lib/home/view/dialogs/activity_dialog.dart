@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 
 /// 活动弹窗
@@ -54,7 +55,7 @@ class ActivityDialog extends Dialog {
                                         .replaceAll('<token>',
                                             '${CommonPreferences.token.value}')
                                         .replaceAll('<laketoken>',
-                                            '${CommonPreferences.lakeToken.value}'),
+                                            '${await FeedbackService.refreshToken()}'),
                                     mode: LaunchMode.externalApplication);
                               } else {
                                 ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');

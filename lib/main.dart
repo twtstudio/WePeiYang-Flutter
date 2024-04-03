@@ -216,7 +216,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       ToastProvider.init(baseContext);
       TextUtil.init(baseContext);
       if (CommonPreferences.token.value != '') {
-        FeedbackService.getToken(forceRefresh: true);
+        FeedbackService.refreshToken();
       }
     });
   }

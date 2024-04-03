@@ -39,7 +39,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 // 第一次登陸的時候載入使用者資料
                 // TODO: 這個方法和和新增資訊頁面的方法很醜陋，需要重構
                 // TODO: 應該統一管理token 而不是想到重新整理一下就重新請求
-                FeedbackService.getToken(forceRefresh: true);
+                FeedbackService.refreshToken();
                 Navigator.pushNamedAndRemoveUntil(
                     context, HomeRouter.home, (route) => false);
               }
@@ -60,7 +60,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                 Navigator.pushNamed(context, AuthRouter.addInfo);
               } else {
                 // 第一次登陸的時候載入使用者資料
-                FeedbackService.getToken(forceRefresh: true);
+                FeedbackService.refreshToken();
 
                 Navigator.pushNamedAndRemoveUntil(
                     context, HomeRouter.home, (route) => false);
