@@ -42,60 +42,62 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  late final Color? themePrimary = WpyTheme.of(context).primary;
-
-  late final List<CardBean> cards = [
-    CardBean(
-        ColoredIcon(
-          "assets/svg_pics/lake_butt_icons/daily.png",
-          width: 21.w,
-          color: themePrimary,
-        ),
-        '课程表',
-        'Schedule',
-        ScheduleRouter.course),
-    CardBean(
+  List<CardBean> get cards {
+    final Color? themePrimary = WpyTheme.of(context).primary;
+    return [
+      CardBean(
+          ColoredIcon(
+            "assets/svg_pics/lake_butt_icons/daily.png",
+            width: 21.w,
+            color: themePrimary,
+          ),
+          '课程表',
+          'Schedule',
+          ScheduleRouter.course),
+      CardBean(
+          Icon(
+              // newspaper
+              Icons.article_rounded,
+              size: 24,
+              color: (themePrimary?.withOpacity(0.7) ??
+                  (WpyTheme.of(context).brightness == Brightness.light
+                          ? Color(0xFF81BAFE)
+                          : Colors.white)
+                      .withOpacity(0.7))),
+          '新闻网',
+          'News',
+          HomeRouter.news),
+      CardBean(
+          ColoredIcon(
+            'assets/images/schedule/add.png',
+            width: 24.w,
+            color: themePrimary,
+          ),
+          '地图·校历',
+          'Map-\nCalendar',
+          HomeRouter.mapCalenderPage),
+      CardBean(
+          ColoredIcon(
+            'assets/svg_pics/lake_butt_icons/wiki.png',
+            width: 24.w,
+            color: themePrimary,
+          ),
+          '北洋维基',
+          'Wiki',
+          'https://wiki.tjubot.cn/'),
+      CardBean(
         Icon(
-            // newspaper
-            Icons.article_rounded,
-            size: 24,
-            color: (themePrimary?.withOpacity(0.7) ??
-                (WpyTheme.of(context).brightness == Brightness.light
-                        ? Color(0xFF81BAFE)
-                        : Colors.white)
-                    .withOpacity(0.7))),
-        '新闻网',
-        'News',
-        HomeRouter.news),
-    CardBean(
-        ColoredIcon(
-          'assets/images/schedule/add.png',
-          width: 24.w,
+          Icons.timeline,
+          size: 25,
           color: themePrimary,
         ),
-        '地图·校历',
-        'Map-\nCalendar',
-        HomeRouter.mapCalenderPage),
-    CardBean(
-        ColoredIcon(
-          'assets/svg_pics/lake_butt_icons/wiki.png',
-          width: 24.w,
-          color: themePrimary,
-        ),
-        '北洋维基',
-        'Wiki',
-        'https://wiki.tjubot.cn/'),
-    CardBean(
-      Icon(
-        Icons.timeline,
-        size: 25,
-        color: themePrimary,
+        '成绩',
+        'GPA',
+        GPARouter.gpa,
       ),
-      '成绩',
-      'GPA',
-      GPARouter.gpa,
-    ),
-  ];
+    ];
+  }
+
   String md = '';
 
   ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());

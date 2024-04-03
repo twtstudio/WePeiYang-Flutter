@@ -267,7 +267,7 @@ class AuthService with AsyncTimer {
             data: {"account": account, "password": password},
             options: Options(contentType: Headers.formUrlEncodedContentType));
         var result = rsp.data['result'];
-        CommonPreferences.token.value = result['token'] ?? "";
+        CommonPreferences.token.value = result['token']   ?? "";
         if (CommonPreferences.account.value != account &&
             CommonPreferences.account.value != "") {
           /// 使用新账户登录时，清除旧帐户的课程表和gpa缓存
