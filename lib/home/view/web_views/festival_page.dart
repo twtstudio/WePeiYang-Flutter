@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class FestivalArgs {
   final String url;
@@ -34,6 +34,6 @@ class _FestivalPageState extends WbyWebViewState {
   Future<String> getInitialUrl(BuildContext context) async {
     return args.url
         .replaceAll('<token>', '${CommonPreferences.token.value}')
-        .replaceAll('<laketoken>', '${await FeedbackService.refreshToken()}');
+        .replaceAll('<laketoken>', '${await LakeTokenManager().refreshToken()}');
   }
 }

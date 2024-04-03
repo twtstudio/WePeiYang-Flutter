@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 
 import '../../feedback/network/feedback_service.dart';
@@ -35,7 +36,7 @@ class LostAndFoundPicPostDio extends DioAbstract {
   @override
   List<Interceptor> interceptors = [
     InterceptorsWrapper(onRequest: (options, handler) async {
-      options.headers['token'] = await FeedbackService.lakeToken;
+      options.headers['token'] = await LakeTokenManager().token;
       return handler.next(options);
     }, onResponse: (response, handler) {
       var code = response.data['code'] ?? 0;

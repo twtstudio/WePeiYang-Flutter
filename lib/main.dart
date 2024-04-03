@@ -13,6 +13,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -38,7 +39,6 @@ import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
 import 'feedback/model/feedback_providers.dart';
-import 'feedback/network/feedback_service.dart';
 import 'feedback/network/post.dart';
 import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
@@ -216,7 +216,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
       ToastProvider.init(baseContext);
       TextUtil.init(baseContext);
       if (CommonPreferences.token.value != '') {
-        FeedbackService.refreshToken();
+        LakeTokenManager().refreshToken();
       }
     });
   }

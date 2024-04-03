@@ -4,6 +4,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -15,7 +16,7 @@ class FbDepartmentsProvider {
 
   Future<void> initDepartments() async {
     await FeedbackService.getDepartments(
-      await FeedbackService.lakeToken,
+      await LakeTokenManager().token,
       onResult: (list) {
         departmentList.clear();
         departmentList.addAll(list);
@@ -240,7 +241,7 @@ class LakeModel extends ChangeNotifier {
         notifyListeners();
       },
       onFailure: (e) {
-        FeedbackService.refreshToken();
+        LakeTokenManager().refreshToken();
         failure.call(e);
       },
     );

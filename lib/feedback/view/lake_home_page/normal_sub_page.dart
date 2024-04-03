@@ -8,11 +8,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
@@ -110,7 +110,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       context.read<FestivalProvider>().initFestivalList();
       context.read<NoticeProvider>().initNotices();
     } catch (e) {
-      await FeedbackService.refreshToken();
+      await LakeTokenManager().refreshToken();
       onRefresh(retry: true);
       ToastProvider.error("发生未知错误");
       context
@@ -535,7 +535,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       foregroundColor: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
       onPressed: () async {
         try {
-          await FeedbackService.refreshToken();
+          await LakeTokenManager().refreshToken();
           _tagsProvider.initDepartments();
           _listProvider.initPostList(widget.index, success: () {
             widget.onPressed;
