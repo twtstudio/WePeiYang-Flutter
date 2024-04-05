@@ -2,7 +2,6 @@ import 'dart:convert' show json;
 
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
-import 'package:we_pei_yang_flutter/commons/network/classes_backend_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -127,19 +126,17 @@ class GPANotifier with ChangeNotifier {
     ToastProvider.running("刷新数据中……");
     try {
       // 後端爬蟲沒了 天天出問題 暫時關閉 一方之後可能要用先這樣臨時處理
-      if (CommonPreferences.useClassesBackend.value && false) {
-        var data = await ClassesBackendService.getClasses();
-        if (data == null) throw WpyDioException(error: '云端获取GPA数据失败');
-        _gpaStats = data.item3.stats;
-        total = data.item3.total;
-        notifyListeners();
-      } else {
-        bool _canConnectToClasses = await ClassesService.check();
-        if (!_canConnectToClasses)
-          ToastProvider.error('请连接校园网或连接VPN!');
-        else {
-          await ClassesService.getClasses(context);
-        }
+      // if (CommonPreferences.useClassesBackend.value && false)
+      //   var data = await ClassesBackendService.getClasses();
+      //   if (data == null) throw WpyDioException(error: '云端获取GPA数据失败');
+      //   _gpaStats = data.item3.stats;
+      //   total = data.item3.total;
+      //   notifyListeners();
+      bool _canConnectToClasses = await ClassesService.check();
+      if (!_canConnectToClasses)
+        ToastProvider.error('请连接校园网或连接VPN!');
+      else {
+        await ClassesService.getClasses(context);
       }
     } on DioException catch (_) {
       showDialog(

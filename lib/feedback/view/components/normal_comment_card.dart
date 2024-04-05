@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -134,6 +133,12 @@ class _NCommentCardState extends State<NCommentCard>
       CommonPreferences.isSchAdmin.value ||
       CommonPreferences.isStuAdmin.value ||
       CommonPreferences.isSuper.value;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("==> change dependencies");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -465,6 +470,7 @@ class _NCommentCardState extends State<NCommentCard>
     );
 
     Widget commentContent;
+    WpyTheme.of(context);
     if (widget.comment.content == '') {
       commentContent = SizedBox();
     } else {
@@ -476,15 +482,18 @@ class _NCommentCardState extends State<NCommentCard>
             id: widget.comment.id,
             copy: widget.comment.content,
             toast: '复制评论成功',
-            child: ExpandableText(
-              text: widget.comment.content,
-              maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
-              style: TextUtil.base.w400.NotoSansSC.label(context).h(1.8).sp(14),
-              expand: false || widget.expandAll,
-              buttonIsShown: true,
-              isHTML: false,
-              replyTo: widget.comment.replyToName,
-            ),
+            child: Builder(builder: (context) {
+              return ExpandableText(
+                text: widget.comment.content,
+                maxLines: !widget.isFullView && widget.isSubFloor ? 3 : 8,
+                style:
+                    TextUtil.base.w400.NotoSansSC.label(context).h(1.8).sp(14),
+                expand: false || widget.expandAll,
+                buttonIsShown: true,
+                isHTML: false,
+                replyTo: widget.comment.replyToName,
+              );
+            }),
           ),
         ),
       ]);

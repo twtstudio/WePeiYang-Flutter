@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_html_css/simple_html_css.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 
@@ -54,27 +55,31 @@ class _ExpandableTextState extends State<ExpandableText> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            expand
-                ? widget.isHTML
-                    ? RichText(
-                        text: HTML.toTextSpan(
-                          context,
-                          text,
-                          defaultTextStyle: style,
-                        ),
-                      )
-                    : LinkText(style: style, text: text)
-                : widget.isHTML
-                    ? RichText(
-                        overflow: TextOverflow.clip,
-                        maxLines: maxLines,
-                        text: HTML.toTextSpan(
-                          context,
-                          text,
-                          defaultTextStyle: style,
-                        ),
-                      )
-                    : LinkText(style: style, text: text, maxLine: maxLines),
+            if (expand) ...[
+              if (widget.isHTML)
+                RichText(
+                  text: HTML.toTextSpan(
+                    context,
+                    text,
+                    defaultTextStyle: style,
+                  ),
+                )
+              else
+                LinkText(style: style, text: text)
+            ] else ...[
+              if (widget.isHTML)
+                RichText(
+                  overflow: TextOverflow.clip,
+                  maxLines: maxLines,
+                  text: HTML.toTextSpan(
+                    context,
+                    text,
+                    defaultTextStyle: style,
+                  ),
+                )
+              else
+                LinkText(style: style, text: text, maxLine: maxLines)
+            ],
             if (buttonIsShown)
               WButton(
                 onPressed: () {

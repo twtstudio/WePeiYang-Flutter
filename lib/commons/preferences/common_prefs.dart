@@ -100,8 +100,11 @@ class CommonPreferences {
 
   /// 0 light 1 dark 2 auto
   static final usingDarkTheme = PrefsBean<int>('usingDarkTheme', 0);
+
   /// 深色模式跟随系统false
-  static final notFollowSys = PrefsBean<bool>('notFollowSys', false);
+  static final autoDarkTheme = PrefsBean<bool>('notFollowSys', true);
+
+  /// 首页工具栏的东西
   static final fastJumpOrder = PrefsBean<String>('fastJumpOrder', "[]");
 
   /// 自习室

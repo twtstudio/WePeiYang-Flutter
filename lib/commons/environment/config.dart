@@ -5,17 +5,17 @@ class EnvConfig {
   static void init() {
     QNHD = isDevelop
         // 测试服务器域名
-        ? "https://www.zrzz.site:7013/"
+        ? "https://qnhd.chrisckey.cn/"
         // 正式服务器域名
         : "https://qnhd.twt.edu.cn/";
     QNHDPIC = isDevelop
         // 测试服务器域名
-        ? "https://www.zrzz.site:7015/"
+        ? "https://qnhdpic.chrisckey.cn/"
         // 正式服务器域名
         : "https://qnhdpic.twt.edu.cn/";
     CUSTOM_CLASS = isDevelop
         // 测试服务器域名
-        ? "http://101.42.225.75:8081/"
+        ? "http://activity.twt.edu.cn/"
         // 正式服务器域名
         : "https://activity.twt.edu.cn/";
     LAF = isDevelop ? "http://121.36.230.111:80/" : "http://121.36.230.111:80/";

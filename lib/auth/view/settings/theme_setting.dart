@@ -37,7 +37,7 @@ class _ThemeSettingState extends State<ThemeSetting>
     if (globalTheme.value.meta.brightness == Brightness.dark) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.clear();
-      CommonPreferences.usingDarkTheme.value = 0;
+      CommonPreferences.usingDarkTheme.value = 1;
     }
   }
 
@@ -45,7 +45,7 @@ class _ThemeSettingState extends State<ThemeSetting>
     if (globalTheme.value.meta.brightness == Brightness.light) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
-      CommonPreferences.usingDarkTheme.value = 1;
+      CommonPreferences.usingDarkTheme.value = 0;
     }
   }
 
@@ -283,19 +283,19 @@ class _ThemeSettingState extends State<ThemeSetting>
         ),
         GestureDetector(
           onVerticalDragEnd: (e) {
-            if (canMove = true) {
-              if (e.velocity.pixelsPerSecond.distance > 10.w) {
-                if (e.velocity.pixelsPerSecond.direction < pi / 2) {
-                  canMove = false;
-                  shiftToLight();
-                } else {
-                  if (CommonPreferences.notFollowSys.value) {
-                    canMove = false;
-                    shiftToDark();
-                  } else {
-                    canMove = false;
-                  }
-                }
+            if (canMove = true && e.velocity.pixelsPerSecond.distance > 10.w) {
+              if (CommonPreferences.autoDarkTheme.value) {
+                setState(() {
+                  CommonPreferences.autoDarkTheme.value = false;
+                });
+              }
+
+              if (e.velocity.pixelsPerSecond.direction < pi / 2) {
+                canMove = false;
+                shiftToLight();
+              } else {
+                canMove = false;
+                shiftToDark();
               }
             }
           },
@@ -398,17 +398,14 @@ class _ThemeSettingState extends State<ThemeSetting>
             ),
           ),
           Switch(
-            value: !CommonPreferences.notFollowSys.value,
+            value: CommonPreferences.autoDarkTheme.value,
             onChanged: (value) {
+              CommonPreferences.autoDarkTheme.value = value;
               setState(() {
-                CommonPreferences.notFollowSys.value = !value;
-                if (!CommonPreferences.notFollowSys.value == true) {
-                  if (MediaQuery.platformBrightnessOf(context) ==
-                      Brightness.dark) {
-                    shiftToDark();
-                  } else {
-                    shiftToLight();
-                  }
+                if (CommonPreferences.autoDarkTheme.value &&
+                    MediaQuery.platformBrightnessOf(context) ==
+                        Brightness.dark) {
+                  shiftToDark();
                 } else {
                   shiftToLight();
                 }

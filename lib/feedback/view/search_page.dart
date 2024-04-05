@@ -110,13 +110,15 @@ class _SearchPageState extends State<SearchPage> {
             S.current.feedback_search_history,
             style: TextUtil.base.primaryAction(context).w600.sp(17),
           ),
-          WButton(
-            child: Icon(
+          IconButton(
+            onPressed: showClearDialog,
+            splashColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryLighterActionColor),
+            icon: Icon(
               Icons.delete,
-              size: 16,
+              size: 24,
               color: WpyTheme.of(context).primary,
             ),
-            onPressed: showClearDialog,
           ),
         ],
       ),
@@ -180,6 +182,20 @@ class _SearchPageState extends State<SearchPage> {
                 });
               },
               child: Chip(
+                shadowColor: WpyTheme.of(context)
+                    .get(WpyColorKey.secondaryBackgroundColor)
+                    .withOpacity(0.5),
+                visualDensity: VisualDensity.comfortable,
+                avatar: Icon(Icons.history,
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.secondaryTextColor),
+                    size: 24),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: BorderSide(
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.secondaryBackgroundColor),
+                        width: 1)),
                 elevation: 1,
                 backgroundColor:
                     WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
@@ -204,7 +220,7 @@ class _SearchPageState extends State<SearchPage> {
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Wrap(spacing: 6, children: searchHistory),
+          child: Wrap(spacing: 10, runSpacing: 8, children: searchHistory),
         );
       },
     );
