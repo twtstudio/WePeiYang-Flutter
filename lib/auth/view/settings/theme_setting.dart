@@ -29,6 +29,9 @@ class _ThemeSettingState extends State<ThemeSetting>
   }
 
   shift() {
+    setState(() {
+      CommonPreferences.autoDarkTheme.value = false;
+    });
     shiftToLight();
     shiftToDark();
   }
@@ -37,7 +40,7 @@ class _ThemeSettingState extends State<ThemeSetting>
     if (globalTheme.value.meta.brightness == Brightness.dark) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.clear();
-      CommonPreferences.usingDarkTheme.value = 1;
+      CommonPreferences.usingDarkTheme.value = 0;
     }
   }
 
@@ -45,7 +48,7 @@ class _ThemeSettingState extends State<ThemeSetting>
     if (globalTheme.value.meta.brightness == Brightness.light) {
       globalTheme.value = shiftTheme;
       CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
-      CommonPreferences.usingDarkTheme.value = 0;
+      CommonPreferences.usingDarkTheme.value = 1;
     }
   }
 

@@ -160,8 +160,8 @@ class TagShowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WButton(
-      onPressed: () {
+    return InkWell(
+      onTap: () {
         if (id == -1) {
           Navigator.pushNamed(
             context,
@@ -216,7 +216,6 @@ class TagShowWidget extends StatelessWidget {
                           : type == 1
                               ? "assets/svg_pics/lake_butt_icons/flag.svg"
                               : "assets/svg_pics/lake_butt_icons/hashtag.svg",
-
                       colorFilter: ColorFilter.mode(
                           WpyTheme.of(context)
                               .get(WpyColorKey.primaryActionColor),
@@ -226,13 +225,21 @@ class TagShowWidget extends StatelessWidget {
                   SizedBox(width: type == 0 ? 0 : 2),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: width - 30),
-                    child: Text(
-                      tag,
-                      style: TextUtil.base.NotoSansSC.w400
-                          .sp(14)
-                          .primaryAction(context),
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        tag,
+                        style: TextUtil.base.NotoSansSC.w400
+                            .sp(14)
+                            .primaryAction(context),
+                        strutStyle: StrutStyle(
+                          forceStrutHeight: true,
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   SizedBox(width: 8)
@@ -322,29 +329,44 @@ class _ProfileImageWithDetailedPopupState
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
-          width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
-          height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+          width: SplitUtil.w * 32 > SplitUtil.h * 56
+              ? SplitUtil.w * 32
+              : SplitUtil.h * 56,
+          height: SplitUtil.w * 32 > SplitUtil.h * 56
+              ? SplitUtil.w * 32
+              : SplitUtil.h * 56,
           child: Stack(
             alignment: Alignment.center,
             children: [
               SizedBox(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(SplitUtil.w * 18)),
+                  borderRadius:
+                      BorderRadius.all(Radius.circular(SplitUtil.w * 18)),
                   child: WpyPic(
                     widget.avatar == ""
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
-                    width: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
-                    height: SplitUtil.w * 17 > SplitUtil.h * 32 ? SplitUtil.w * 17 : SplitUtil.h * 32,
+                    width: SplitUtil.w * 17 > SplitUtil.h * 32
+                        ? SplitUtil.w * 17
+                        : SplitUtil.h * 32,
+                    height: SplitUtil.w * 17 > SplitUtil.h * 32
+                        ? SplitUtil.w * 17
+                        : SplitUtil.h * 32,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              if (widget.avatarBox != '' && widget.avatarBox != 'Error' && widget.avatarBox.length > 5)
+              if (widget.avatarBox != '' &&
+                  widget.avatarBox != 'Error' &&
+                  widget.avatarBox.length > 5)
                 WpyPic(
                   widget.avatarBox,
-                  width: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
-                  height: SplitUtil.w * 32 > SplitUtil.h * 56 ? SplitUtil.w * 32 : SplitUtil.h * 56,
+                  width: SplitUtil.w * 32 > SplitUtil.h * 56
+                      ? SplitUtil.w * 32
+                      : SplitUtil.h * 56,
+                  height: SplitUtil.w * 32 > SplitUtil.h * 56
+                      ? SplitUtil.w * 32
+                      : SplitUtil.h * 56,
                   fit: BoxFit.contain,
                   reduce: false,
                 ),

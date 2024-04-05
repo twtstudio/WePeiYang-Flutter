@@ -468,7 +468,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 },
               );
             } else {
-              return SizedBox();
+              return SizedBox.shrink();
             }
           } else {
             var data = _commentList[i - _officialCommentList.length];
@@ -1196,6 +1196,7 @@ class CommentInputFieldState extends State<CommentInputField> {
             style: TextUtil.base.w400.NotoSansSC.sp(14).replySuffix(context),
           ),
           border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.r),
             borderSide: BorderSide.none,
           ),
           contentPadding: EdgeInsets.symmetric(
@@ -1218,7 +1219,8 @@ class CommentInputFieldState extends State<CommentInputField> {
     });
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: SplitUtil.h * 8),
+      padding: EdgeInsets.symmetric(
+          vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 10),
       child: inputField,
     );
   }

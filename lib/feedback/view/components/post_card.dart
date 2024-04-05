@@ -152,7 +152,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           SizedBox(width: SplitUtil.w * 16)
         ]));
 
-    /// 标题eTag
+    /// 标题eTag 指的是 活动 Pined 等等
     var eTagAndTitle = Row(children: [
       if (post.eTag != '')
         Center(child: ETagWidget(entry: widget.post.eTag, full: !widget.outer)),

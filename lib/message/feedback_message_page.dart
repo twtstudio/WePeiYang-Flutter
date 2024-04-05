@@ -126,7 +126,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                       'assets/images/lake_butt_icons/check-square.png',
                       color:
                           WpyTheme.of(context).get(WpyColorKey.basicTextColor),
-                      width: 15.w),
+                      width: 18.w),
                   onPressed: () {
                     showDialog(
                         context: context,
@@ -590,11 +590,14 @@ class _LikeMessageItemState extends State<LikeMessageItem> {
               ),
             ),
             if (post != null && success! && post!.imageUrls.isNotEmpty)
-              Image.network(
-                baseUrl + post!.imageUrls[0],
-                fit: BoxFit.cover,
-                height: 50,
-                width: 70,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  baseUrl + post!.imageUrls[0],
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 70,
+                ),
               ),
           ],
         ),
@@ -952,11 +955,14 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
               ),
             ),
             if (widget.data.post.imageUrls.length != 0)
-              Image.network(
-                baseUrl + widget.data.post.imageUrls[0],
-                fit: BoxFit.cover,
-                height: 50,
-                width: 70,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  baseUrl + widget.data.post.imageUrls[0],
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 70,
+                ),
               ),
           ],
         ),
@@ -1337,11 +1343,14 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
               ),
             ),
             if (widget.data.post.imageUrls.isNotEmpty)
-              Image.network(
-                baseUrl + widget.data.post.imageUrls[0],
-                fit: BoxFit.cover,
-                height: 50,
-                width: 70,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  baseUrl + widget.data.post.imageUrls[0],
+                  fit: BoxFit.cover,
+                  height: 50,
+                  width: 70,
+                ),
               ),
           ],
         ),
