@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/network/theme_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
@@ -54,7 +55,7 @@ class ActivityDialog extends Dialog {
                                         .replaceAll('<token>',
                                             '${CommonPreferences.token.value}')
                                         .replaceAll('<laketoken>',
-                                            '${CommonPreferences.lakeToken.value}'),
+                                            '${await LakeTokenManager().refreshToken()}'),
                                     mode: LaunchMode.externalApplication);
                               } else {
                                 ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');

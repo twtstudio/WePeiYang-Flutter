@@ -8,11 +8,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
@@ -80,9 +80,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     return true;
   }
 
-  onRefresh() async {
-    context.read<LakeModel>().lakeAreas[index]?.status = LakePageStatus.loading;
-    FeedbackService.getToken(onResult: (_) {
+  onRefresh({retry = true}) async {
+    try {
+      context.read<LakeModel>().lakeAreas[index]?.status =
+          LakePageStatus.loading;
       if (index == 0) context.read<FbHotTagsProvider>().initHotTags();
       getRecTag();
       context.read<LakeModel>().initPostList(index, success: () {
@@ -108,14 +109,24 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       });
       context.read<FestivalProvider>().initFestivalList();
       context.read<NoticeProvider>().initNotices();
-    }, onFailure: (e) {
+    } catch (e) {
+      await LakeTokenManager().refreshToken();
+      onRefresh(retry: true);
+      ToastProvider.error("发生未知错误");
+      context
+          .read<LakeModel>()
+          .lakeAreas[index]
+          ?.refreshController
+          .refreshFailed();
+    }
+    /*
       ToastProvider.error(e.error.toString());
       context
           .read<LakeModel>()
           .lakeAreas[index]
           ?.refreshController
           .refreshFailed();
-    });
+     */
   }
 
   _onLoading() {
@@ -522,25 +533,24 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
       foregroundColor: WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-      onPressed: () {
-        FeedbackService.getToken(
-            forceRefresh: true,
-            onResult: (_) {
-              _tagsProvider.initDepartments();
-              _listProvider.initPostList(widget.index, success: () {
-                widget.onPressed;
-              }, failure: (_) {
-                controller.reset();
-                ToastProvider.error('刷新失败');
-              });
-            },
-            onFailure: (e) {
-              controller.reset();
-              ToastProvider.error('刷新失败');
-            });
-        if (!controller.isAnimating) {
-          controller.repeat();
-          widget.onPressed.call();
+      onPressed: () async {
+        try {
+          await LakeTokenManager().refreshToken();
+          _tagsProvider.initDepartments();
+          _listProvider.initPostList(widget.index, success: () {
+            widget.onPressed;
+          }, failure: (_) {
+            controller.reset();
+            ToastProvider.error('刷新失败');
+          });
+        } catch (e) {
+          controller.reset();
+          ToastProvider.error('刷新失败');
+        } finally {
+          if (!controller.isAnimating) {
+            controller.repeat();
+            widget.onPressed.call();
+          }
         }
       },
       mini: true,

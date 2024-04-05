@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simple_html_css/simple_html_css.dart';
-import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 

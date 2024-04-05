@@ -3,7 +3,7 @@ import 'dart:convert' show jsonDecode;
 import 'package:flutter/foundation.dart' show compute;
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
 class MessageService {
@@ -184,8 +184,8 @@ class MessageDio extends DioAbstract {
 
   @override
   List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) {
-      options.headers['token'] = CommonPreferences.lakeToken.value;
+    InterceptorsWrapper(onRequest: (options, handler) async {
+      options.headers['token'] = await LakeTokenManager().token;
       return handler.next(options);
     }),
     ApiInterceptor()

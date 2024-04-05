@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
@@ -45,7 +45,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       AuthService.addInfo(phone, code, email,
           onSuccess: () {
             // 第一次登录成功后載入使用者資料
-            FeedbackService.getToken(forceRefresh: true);
+            LakeTokenManager().refreshToken();
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRouter.home, (route) => false);
           },

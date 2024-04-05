@@ -8,6 +8,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -72,7 +73,7 @@ class _ActivityCardState extends State<ActivityCard> {
                 .replaceAll('browser:', '')
                 .replaceAll('<token>', '${CommonPreferences.token.value}')
                 .replaceAll(
-                    '<laketoken>', '${CommonPreferences.lakeToken.value}');
+                    '<laketoken>', '${await LakeTokenManager().refreshToken()}');
             if (await canLaunchUrlString(launchUrl)) {
               launchUrlString(launchUrl, mode: LaunchMode.externalApplication);
             } else {
