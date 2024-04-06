@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
@@ -17,6 +19,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/scroll_synchronizer.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
@@ -34,8 +37,8 @@ class WPYPage extends StatefulWidget {
 }
 
 class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
-  bool showSchedule = true;
-  bool useRound = true;
+  ValueNotifier<bool> showSchedule = ValueNotifier(true);
+  ValueNotifier<bool> useRound = ValueNotifier(true);
 
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
@@ -169,87 +172,99 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     _sc.addListener(() {
       if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
-          showSchedule == true)
-        setState(() {
-          showSchedule = false;
-        });
+          showSchedule.value == true) showSchedule.value = false;
       if (_sc.position.maxScrollExtent - _sc.offset > 20.1.h &&
-          showSchedule == false)
-        setState(() {
-          showSchedule = true;
-        });
+          showSchedule.value == false) showSchedule.value = true;
     });
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeIn,
-            decoration: BoxDecoration(
-                gradient: WpyTheme.of(context).getGradient(
-                    showSchedule && !Platform.isWindows
-                        ? WpyColorSetKey.primaryGradient
-                        : WpyColorSetKey.gradientPrimaryBackground))),
-        SafeArea(
-          bottom: false,
-          child: Stack(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 70.h),
-                child: ClipRRect(
-                  borderRadius: useRound
-                      ? BorderRadius.only(
-                          topLeft: Radius.circular(40.r),
-                          topRight: Radius.circular(40.r))
-                      : BorderRadius.zero,
-                  child: ScrollConfiguration(
-                    behavior: WPYScrollBehavior(),
-                    child: ListView(
-                      controller: _sc,
-                      children: <Widget>[
-                        TodayCoursesWidget(),
-                        AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeIn,
-                            margin: EdgeInsets.only(top: 20.h),
-                            padding: EdgeInsets.only(top: 40.h),
-                            decoration: BoxDecoration(
-                                color: WpyTheme.of(context)
-                                    .get(WpyColorKey.primaryBackgroundColor),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(40.r),
-                                    topRight: Radius.circular(40.r))),
-                            child: _functionCardsView()),
-                      ],
+
+    return Provider<ScrollSynchronizer>(
+      create: (_) => ScrollSynchronizer.fromExist(_sc),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          ListenableBuilder(
+              listenable: showSchedule,
+              builder: (context, _) {
+                return AnimatedContainer(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                    decoration: BoxDecoration(
+                        gradient: WpyTheme.of(context).getGradient(
+                            showSchedule.value && !Platform.isWindows
+                                ? WpyColorSetKey.primaryGradient
+                                : WpyColorSetKey.gradientPrimaryBackground)));
+              }),
+          SafeArea(
+            bottom: false,
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 70.h),
+                  child: ListenableBuilder(
+                    listenable: useRound,
+                    builder: (context, oldChild) {
+                      return ClipRRect(
+                        borderRadius: useRound.value
+                            ? BorderRadius.only(
+                                topLeft: Radius.circular(40.r),
+                                topRight: Radius.circular(40.r))
+                            : BorderRadius.zero,
+                        child: oldChild!,
+                      );
+                    },
+                    child: ScrollConfiguration(
+                      behavior: WPYScrollBehavior(),
+                      child: ListView(
+                        controller: _sc,
+                        children: <Widget>[
+                          TodayCoursesWidget(),
+                          AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeIn,
+                              margin: EdgeInsets.only(top: 20.h),
+                              padding: EdgeInsets.only(top: 40.h),
+                              decoration: BoxDecoration(
+                                  color: WpyTheme.of(context)
+                                      .get(WpyColorKey.primaryBackgroundColor),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(40.r),
+                                      topRight: Radius.circular(40.r))),
+                              child: _functionCardsView()),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                height: 60.h,
-                margin: EdgeInsets.only(left: 30.w, top: 10.h),
-                alignment: Alignment.centerLeft,
-                child: AnimatedDefaultTextStyle(
-                  style: showSchedule && !Platform.isWindows
-                      ? TextUtil.base.bright(context).w400.sp(22)
-                      : TextUtil.base.primary(context).w400.sp(22),
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn,
-                  onEnd: () => setState(() => useRound = showSchedule),
-                  child: SizedBox(
-                    width: 1.sw - 60.w,
-                    child: Text(
-                      'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                Container(
+                  height: 60.h,
+                  margin: EdgeInsets.only(left: 30.w, top: 10.h),
+                  alignment: Alignment.centerLeft,
+                  child: ListenableBuilder(
+                      listenable: showSchedule,
+                      builder: (context, lastChild) {
+                        return AnimatedDefaultTextStyle(
+                          style: showSchedule.value && !Platform.isWindows
+                              ? TextUtil.base.bright(context).w400.sp(22)
+                              : TextUtil.base.primary(context).w400.sp(22),
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                          onEnd: () => useRound.value = showSchedule.value,
+                          child: SizedBox(
+                            width: 1.sw - 60.w,
+                            child: Text(
+                              'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      }),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
