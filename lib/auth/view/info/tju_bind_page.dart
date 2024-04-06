@@ -145,7 +145,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             constraints: BoxConstraints(maxHeight: 55),
             child: ValueListenableBuilder(
               valueListenable: visNotifier,
-              builder: (context, bool value, _) {
+              builder: (context, bool showPass, _) {
                 return Theme(
                   data: Theme.of(context).copyWith(
                       primaryColor:
@@ -171,7 +171,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                           borderSide: BorderSide.none),
                       suffixIcon: WButton(
                         child: Icon(
-                          value ? Icons.visibility_off : Icons.visibility,
+                          showPass ? Icons.visibility_off : Icons.visibility,
                           color: WpyTheme.of(context)
                               .get(WpyColorKey.defaultActionColor),
                         ),
@@ -180,7 +180,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                         },
                       ),
                     ),
-                    obscureText: value,
+                    obscureText: showPass,
                     onChanged: (input) => setState(() => tjupasswd = input),
                     onEditingComplete: () {
                       _passwordFocus.unfocus();
@@ -250,8 +250,12 @@ class _TjuBindPageState extends State<TjuBindPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
+          systemNavigationBarColor:
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
+      child: Scaffold(
+        appBar: AppBar(
           backgroundColor:
               WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           elevation: 0,
@@ -263,60 +267,64 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           ),
-          systemOverlayStyle: SystemUiOverlayStyle.dark),
-      backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
-                  child: Text(S.current.tju_bind,
-                      style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
-                  child: Text(
-                      CommonPreferences.isBindTju.value
-                          ? S.current.is_bind
-                          : S.current.not_bind,
-                      style: TextUtil.base.bold.oldListAction(context).sp(12)),
-                ),
-              ],
-            ),
+          systemOverlayStyle: WpyTheme.of(context).brightness.reverseUiOverlay,
+        ),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
+                    child: Text(S.current.tju_bind,
+                        style:
+                            TextUtil.base.bold.sp(28).oldFurthAction(context)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
+                    child: Text(
+                        CommonPreferences.isBindTju.value
+                            ? S.current.is_bind
+                            : S.current.not_bind,
+                        style:
+                            TextUtil.base.bold.oldListAction(context).sp(12)),
+                  ),
+                ],
+              ),
 
-            /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
-            SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/tju_work.png',
-                  height: 50,
-                  width: 50,
-                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                ),
-                SizedBox(width: 20),
-                Image.asset(
-                  'assets/images/bind.png',
-                  height: 25,
-                  width: 25,
-                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                ),
-                SizedBox(width: 20),
-                Image.asset(
-                  'assets/images/twt_round.png',
-                  height: 50,
-                  width: 50,
-                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                ),
-              ],
-            ),
-            _detail(context)
-          ],
+              /// 已绑定/未绑定时三个图标的高度不一样，所以加个间隔控制一下
+              SizedBox(height: CommonPreferences.isBindTju.value ? 20 : 0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/tju_work.png',
+                    height: 50,
+                    width: 50,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                  ),
+                  SizedBox(width: 20),
+                  Image.asset(
+                    'assets/images/bind.png',
+                    height: 25,
+                    width: 25,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                  ),
+                  SizedBox(width: 20),
+                  Image.asset(
+                    'assets/images/twt_round.png',
+                    height: 50,
+                    width: 50,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                  ),
+                ],
+              ),
+              _detail(context)
+            ],
+          ),
         ),
       ),
     );

@@ -1032,46 +1032,56 @@ class _PostDetailPageState extends State<PostDetailPage>
       systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
-    return PopScope(
-      canPop: true,
-      onPopInvoked: (didPop) {
-        if (didPop) return;
-        Navigator.pop(context, widget.post);
-      },
-      child: GestureDetector(
-        child: Padding(
-          padding: widget.split ?? false
-              ? EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top <
-                          widget.searchBarHeight
-                      ? widget.searchBarHeight
-                      : MediaQuery.of(context).padding.top)
-              : EdgeInsets.zero,
-          child: Scaffold(
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            appBar: appBar,
-            body: AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                if (child.key != ValueKey("loaded")) {
-                  return child;
-                } else {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  );
-                }
-              },
-              child: body,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: (() {
+        return (WpyTheme.of(context).brightness == Brightness.dark
+                ? SystemUiOverlayStyle.dark
+                : SystemUiOverlayStyle.light)
+            .copyWith(
+                systemNavigationBarColor: WpyTheme.of(context)
+                    .get(WpyColorKey.primaryBackgroundColor));
+      })(),
+      child: PopScope(
+        canPop: true,
+        onPopInvoked: (didPop) {
+          if (didPop) return;
+          Navigator.pop(context, widget.post);
+        },
+        child: GestureDetector(
+          child: Padding(
+            padding: widget.split ?? false
+                ? EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top <
+                            widget.searchBarHeight
+                        ? widget.searchBarHeight
+                        : MediaQuery.of(context).padding.top)
+                : EdgeInsets.zero,
+            child: Scaffold(
+              backgroundColor:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              appBar: appBar,
+              body: AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  if (child.key != ValueKey("loaded")) {
+                    return child;
+                  } else {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  }
+                },
+                child: body,
+              ),
             ),
           ),
+          onHorizontalDragUpdate: (DragUpdateDetails details) {
+            if (details.delta.dx > 20) {
+              Navigator.pop(context, widget.post);
+            }
+          },
         ),
-        onHorizontalDragUpdate: (DragUpdateDetails details) {
-          if (details.delta.dx > 20) {
-            Navigator.pop(context, widget.post);
-          }
-        },
       ),
     );
   }

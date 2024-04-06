@@ -97,117 +97,122 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor:
-            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: AppBar(
-            titleSpacing: 0,
-            leadingWidth: 50,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            title: Text('消息中心',
-                style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_rounded,
-                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                size: 20.w,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            actions: [
-              IconButton(
-                  icon: Image.asset(
-                      'assets/images/lake_butt_icons/check-square.png',
-                      color:
-                          WpyTheme.of(context).get(WpyColorKey.basicTextColor),
-                      width: 18.w),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return LakeDialogWidget(
-                            title: '一键已读：',
-                            titleTextStyle: TextUtil.base.normal
-                                .label(context)
-                                .PingFangSC
-                                .sp(18)
-                                .w600,
-                            content: Text('这将清除所有的消息提醒'),
-                            cancelText: "取消",
-                            confirmTextStyle: TextUtil.base.normal
-                                .reverse(context)
-                                .PingFangSC
-                                .sp(16)
-                                .w600,
-                            cancelTextStyle: TextUtil.base.normal
-                                .label(context)
-                                .PingFangSC
-                                .sp(16)
-                                .w400,
-                            confirmText: "确认",
-                            cancelFun: () {
-                              Navigator.pop(context);
-                            },
-                            confirmFun: () async {
-                              await context
-                                  .read<MessageProvider>()
-                                  .setAllMessageRead();
-                              setState(() {});
-                              Navigator.pop(context);
-                            },
-                            confirmButtonColor: WpyTheme.of(context)
-                                .get(WpyColorKey.primaryTextButtonColor),
-                          );
-                        });
-                  })
-            ],
-            bottom: PreferredSize(
-              preferredSize: Size.infinite,
-              child: Theme(
-                data: ThemeData(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
+          systemNavigationBarColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+      child: Scaffold(
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(100),
+            child: AppBar(
+              titleSpacing: 0,
+              leadingWidth: 50,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              title: Text('消息中心',
+                  style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                  size: 20.w,
                 ),
-                child: TabBar(
-                  indicatorWeight: 0,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorPadding: EdgeInsets.only(bottom: 10),
-                  labelPadding: EdgeInsets.zero,
-                  isScrollable: false,
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _tabController,
-                  labelColor:
-                      WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-                  labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
-                  unselectedLabelColor:
-                      WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                  unselectedLabelStyle:
-                      TextUtil.base.label(context).w500.PingFangSC.sp(14),
-                  indicator: CustomIndicator(
-                      borderSide: BorderSide(
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.primaryActionColor),
-                          width: 2)),
-                  tabs: tb,
-                  onTap: (index) {
-                    currentIndex.value = _tabController.index;
-                  },
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                IconButton(
+                    icon: Image.asset(
+                        'assets/images/lake_butt_icons/check-square.png',
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.basicTextColor),
+                        width: 18.w),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return LakeDialogWidget(
+                              title: '一键已读：',
+                              titleTextStyle: TextUtil.base.normal
+                                  .label(context)
+                                  .PingFangSC
+                                  .sp(18)
+                                  .w600,
+                              content: Text('这将清除所有的消息提醒'),
+                              cancelText: "取消",
+                              confirmTextStyle: TextUtil.base.normal
+                                  .reverse(context)
+                                  .PingFangSC
+                                  .sp(16)
+                                  .w600,
+                              cancelTextStyle: TextUtil.base.normal
+                                  .label(context)
+                                  .PingFangSC
+                                  .sp(16)
+                                  .w400,
+                              confirmText: "确认",
+                              cancelFun: () {
+                                Navigator.pop(context);
+                              },
+                              confirmFun: () async {
+                                await context
+                                    .read<MessageProvider>()
+                                    .setAllMessageRead();
+                                setState(() {});
+                                Navigator.pop(context);
+                              },
+                              confirmButtonColor: WpyTheme.of(context)
+                                  .get(WpyColorKey.primaryTextButtonColor),
+                            );
+                          });
+                    })
+              ],
+              bottom: PreferredSize(
+                preferredSize: Size.infinite,
+                child: Theme(
+                  data: ThemeData(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                  ),
+                  child: TabBar(
+                    indicatorWeight: 0,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorPadding: EdgeInsets.only(bottom: 10),
+                    labelPadding: EdgeInsets.zero,
+                    isScrollable: false,
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: _tabController,
+                    labelColor: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryActionColor),
+                    labelStyle: TextUtil.base.bold.PingFangSC.sp(14),
+                    unselectedLabelColor:
+                        WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    unselectedLabelStyle:
+                        TextUtil.base.label(context).w500.PingFangSC.sp(14),
+                    indicator: CustomIndicator(
+                        borderSide: BorderSide(
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.primaryActionColor),
+                            width: 2)),
+                    tabs: tb,
+                    onTap: (index) {
+                      currentIndex.value = _tabController.index;
+                    },
+                  ),
                 ),
               ),
+              systemOverlayStyle: SystemUiOverlayStyle.dark,
             ),
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
-        ),
-        body: TabBarView(
-            physics: ForceAdjustableScrollPhysics(scrollFactor: 5),
-            controller: _tabController,
-            children: wd));
+          body: TabBarView(
+              physics: ForceAdjustableScrollPhysics(scrollFactor: 5),
+              controller: _tabController,
+              children: wd)),
+    );
   }
 }
 

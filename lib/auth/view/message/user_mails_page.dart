@@ -23,26 +23,32 @@ class UserMailboxPage extends StatefulWidget {
 class _UserMailboxPageState extends State<UserMailboxPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-      appBar: AppBar(
-          title: Text(S.current.message,
-              style: TextUtil.base.bold.sp(16).blue52hz(context)),
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: WButton(
-                child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                    size: 32),
-                onPressed: () => Navigator.pop(context)),
-          ),
-          systemOverlayStyle: SystemUiOverlayStyle.dark),
-      body: UserMailList(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
+          systemNavigationBarColor:
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
+      child: Scaffold(
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+        appBar: AppBar(
+            title: Text(S.current.message,
+                style: TextUtil.base.bold.sp(16).blue52hz(context)),
+            elevation: 0,
+            centerTitle: true,
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: WButton(
+                  child: Icon(Icons.arrow_back,
+                      color:
+                          WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                      size: 32),
+                  onPressed: () => Navigator.pop(context)),
+            ),
+            systemOverlayStyle: SystemUiOverlayStyle.dark),
+        body: UserMailList(),
+      ),
     );
   }
 }

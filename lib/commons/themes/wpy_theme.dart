@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
@@ -78,6 +79,16 @@ class WpyTheme extends InheritedWidget {
       }
     }
   }
+}
+
+extension BrightnessSystemUiOverlay on Brightness {
+  get uiOverlay => this == Brightness.light
+      ? SystemUiOverlayStyle.light
+      : SystemUiOverlayStyle.dark;
+
+  get reverseUiOverlay => this == Brightness.dark
+      ? SystemUiOverlayStyle.light
+      : SystemUiOverlayStyle.dark;
 }
 
 final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);

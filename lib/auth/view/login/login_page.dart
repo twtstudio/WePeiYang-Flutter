@@ -13,16 +13,9 @@ class LoginHomeWidget extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: (() {
-        if (WpyTheme.of(context).brightness == Brightness.dark)
-          return SystemUiOverlayStyle.dark.copyWith(
-              systemNavigationBarColor: WpyTheme.of(context)
-                  .get(WpyColorKey.primaryLightActionColor));
-        else
-          return SystemUiOverlayStyle.light.copyWith(
-              systemNavigationBarColor: WpyTheme.of(context)
-                  .get(WpyColorKey.primaryLightActionColor));
-      })(),
+      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
+          systemNavigationBarColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor)),
       child: Scaffold(
         body: Container(
           width: width,
