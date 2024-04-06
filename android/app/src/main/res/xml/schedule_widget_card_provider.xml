@@ -5,7 +5,7 @@
     android:minHeight="130dp"
     android:maxWidth="130dp"
     android:maxHeight="130dp"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis= "0"
     android:previewImage="@drawable/schedule_card_pic"
     android:initialLayout="@layout/widget_schedule_card"
     android:resizeMode="horizontal|vertical"

@@ -76,6 +76,7 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
     }
 }
 
+
     val pending = PendingIntent.getBroadcast(context, 0, intent, 0)
     val alarm: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     alarm.cancel(pending)
