@@ -86,9 +86,10 @@ class ClassesService {
   }
 
   /// 检查办公网连通
-  static Future<bool> check() async {
+  static Future<bool> check({Duration? timeout}) async {
     try {
-      var response = await spiderDio.get('http://classes.tju.edu.cn');
+      var response = await spiderDio.get('http://classes.tju.edu.cn',
+          options: Options(sendTimeout: timeout));
       if (response.data.toString().contains('只允许校内访问')) return false;
       return true;
     } catch (_) {

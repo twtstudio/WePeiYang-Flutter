@@ -20,7 +20,7 @@ class CommonPreferences {
   static final email = PrefsBean<String>('email');
   static final account = PrefsBean<String>('account');
   static final password = PrefsBean<String>('password');
-  static final realName  = PrefsBean<String>('realName');
+  static final realName = PrefsBean<String>('realName');
   static final department = PrefsBean<String>('department');
   static final major = PrefsBean<String>('major');
   static final stuType = PrefsBean<String>('stuType');
@@ -110,6 +110,9 @@ class CommonPreferences {
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
   static final lastChoseCampus = PrefsBean<int>('lastChoseCampus', 0);
+
+  /// 新闻网提示框
+  static final showNewsNetwork = PrefsBean<bool>('showNewsNetwork', true);
 
   /// 健康信息提交时间
   static final reportTime = PrefsBean<String>('reportTime');
