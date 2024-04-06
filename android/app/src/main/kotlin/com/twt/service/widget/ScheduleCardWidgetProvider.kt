@@ -76,4 +76,8 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
     }
 }
 
-
+    val pending = PendingIntent.getBroadcast(context, 0, intent, 0)
+    val alarm: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    alarm.cancel(pending)
+    val interval = 1000 * 60.toLong()
+    alarm.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), interval, pending)
