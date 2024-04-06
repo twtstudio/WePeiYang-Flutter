@@ -50,7 +50,7 @@ class BuildingGrid extends StatelessWidget {
 
   BuildingGrid(this.list, {Key? key}) : super(key: key);
 
-  ScrollController _sc2 = ScrollController();
+  final ScrollController _sc2 = ScrollController();
 
   void handleDetail(ScrollSynchronizer synchronizer, details) {
     final dy = details.primaryDelta!;

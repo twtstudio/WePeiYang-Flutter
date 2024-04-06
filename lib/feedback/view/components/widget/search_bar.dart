@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -255,9 +256,10 @@ class _SearchBarState extends State<SearchBar>
     return Column(
       children: [
         Container(
-            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            child: searchInputField,
-            padding: EdgeInsets.symmetric(vertical: 6)),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          child: searchInputField,
+          padding: EdgeInsets.symmetric(vertical: 6),
+        ),
         ColoredBox(
           color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           child: AnimatedSize(
@@ -343,7 +345,7 @@ class _SearchBarState extends State<SearchBar>
                           Column(children: tagList),
                       ],
                     ))
-                : SizedBox(),
+                : SizedBox.shrink(),
           ),
         ),
         if (!_showSearch) SizedBox(height: 8),

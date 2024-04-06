@@ -83,22 +83,23 @@ class _SearchPageState extends State<SearchPage> {
     );
 
     var topView = SafeArea(
+        bottom: false,
         child: Stack(
-      alignment: Alignment.topLeft,
-      children: [
-        searchBar,
-        WButton(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 12, left: 12),
-            child: Icon(
-              Icons.arrow_back_ios_new,
-              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+          alignment: Alignment.topLeft,
+          children: [
+            searchBar,
+            WButton(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 9, left: 9),
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                ),
+              ),
+              onPressed: () => Navigator.pop(context),
             ),
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ],
-    ));
+          ],
+        ));
 
     var searchHistoryContainer = Container(
       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),

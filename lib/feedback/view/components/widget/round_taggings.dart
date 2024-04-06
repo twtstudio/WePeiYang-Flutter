@@ -225,21 +225,18 @@ class TagShowWidget extends StatelessWidget {
                   SizedBox(width: type == 0 ? 0 : 2),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: width - 30),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        tag,
-                        style: TextUtil.base.NotoSansSC.w400
-                            .sp(14)
-                            .primaryAction(context),
-                        strutStyle: StrutStyle(
-                          forceStrutHeight: true,
-                          fontSize: 14,
-                          height: 1.4,
-                        ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
+                    child: Text(
+                      tag,
+                      style: TextUtil.base.NotoSansSC.w400
+                          .sp(14)
+                          .primaryAction(context),
+                      strutStyle: StrutStyle(
+                        forceStrutHeight: true,
+                        fontSize: 14,
+                        height: 1.4,
                       ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   SizedBox(width: 8)

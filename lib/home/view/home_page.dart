@@ -115,6 +115,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     double width = WePeiYangApp.screenWidth / 3;
 
+
+    // 底部切换页面按钮
     var homePage = SizedBox(
       height: 70.h,
       width: width,

@@ -146,7 +146,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                   activeColor: WpyTheme.of(context)
                                       .get(WpyColorKey.primaryActionColor),
                                   onChanged: (_) {
-                                    checkNotifier.value = !checkNotifier.value;
+                                    checkNotifier.value =
+                                        !checkNotifier.value;
                                   },
                                 ),
                               );
@@ -162,8 +163,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                             onPressed: () => showDialog(
                                 context: context,
                                 barrierDismissible: true,
-                                builder: (context) =>
-                                    UserAgreementDialog(check: checkNotifier)),
+                                builder: (context) => UserAgreementDialog(
+                                    check: checkNotifier)),
                             child: Text.rich(TextSpan(
                                 text: "《用户协议》",
                                 style: TextUtil.base
