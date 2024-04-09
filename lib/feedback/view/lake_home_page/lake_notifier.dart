@@ -134,7 +134,7 @@ class LakeModel extends ChangeNotifier {
   bool openFeedbackList = false, tabControllerLoaded = false, scroll = false;
   bool barExtended = true;
   double opacity = 0;
-  late TabController tabController;
+  TabController? tabController;
   int sortSeq = 1;
   ChangeablePost horizontalViewingPost = ChangeablePost(Post.empty(), 0);
 
@@ -149,7 +149,7 @@ class LakeModel extends ChangeNotifier {
     scroll = false;
     barExtended = true;
     opacity = 0;
-    tabController.dispose();
+    tabController?.dispose();
     sortSeq = 1;
     horizontalViewingPost = ChangeablePost(Post.empty(), 0);
   }

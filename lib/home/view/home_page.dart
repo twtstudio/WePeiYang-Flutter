@@ -258,7 +258,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 SystemNavigator.pop();
               }
             } else if (context.read<LakeModel>().currentTab != 0) {
-              context.read<LakeModel>().tabController.animateTo(0);
+              context.read<LakeModel>().tabController!.animateTo(0);
             } else {
               _tabController.animateTo(0);
             }

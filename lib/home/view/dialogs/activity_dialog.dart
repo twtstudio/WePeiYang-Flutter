@@ -19,8 +19,6 @@ import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 
 /// 活动弹窗
 class ActivityDialog extends Dialog {
-  final SwiperController controller = SwiperController();
-
   ActivityDialog();
 
   @override
@@ -37,81 +35,87 @@ class ActivityDialog extends Dialog {
           return Column(
             children: [
               Spacer(),
-              data.length == 1
-                  ? SizedBox(
-                      width: 0.81.sw,
-                      height: 1.08.sw,
-                      child: ClipRRect(
+              if (data.length == 1)
+                SizedBox(
+                  width: 0.81.sw,
+                  height: 1.08.sw,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    child: WButton(
+                      onPressed: () async {
+                        if (data[0].url.startsWith('browser:')) {
+                          if (await canLaunchUrlString(
+                              data[0].url.replaceAll('browser:', ''))) {
+                            launchUrlString(
+                                data[0]
+                                    .url
+                                    .replaceAll('browser:', '')
+                                    .replaceAll('<token>',
+                                        '${CommonPreferences.token.value}')
+                                    .replaceAll('<laketoken>',
+                                        '${await LakeTokenManager().refreshToken()}'),
+                                mode: LaunchMode.externalApplication);
+                          } else {
+                            ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
+                          }
+                        } else
+                          Navigator.pushNamed(context, FeedbackRouter.haitang,
+                              arguments: FestivalArgs(data[0].url, '活动'));
+                      },
+                      child: WpyPic(
+                        data[0].picUrl,
+                        fit: BoxFit.cover,
+                        withHolder: true,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                SizedBox(
+                  height: 1.08.sw,
+                  child: Swiper(
+                    loop: true,
+                    autoplay: true,
+                    autoplayDelay: 4000,
+                    itemCount: data.length,
+                    pagination: SwiperPagination(
+                        margin: EdgeInsets.zero,
+                        builder: DotSwiperPaginationBuilder(
+                          activeColor: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryActionColor),
+                          space: 5,
+                        ),
+                        alignment: Alignment.bottomCenter),
+                    itemBuilder: (BuildContext context, int index) {
+                      // if (data.length == 0) return SizedBox();
+                      return ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         child: WButton(
                           onPressed: () async {
-                            if (data[0].url.startsWith('browser:')) {
+                            if (data[index].url.startsWith('browser:')) {
                               if (await canLaunchUrlString(
-                                  data[0].url.replaceAll('browser:', ''))) {
+                                  data[index].url.replaceAll('browser:', ''))) {
                                 launchUrlString(
-                                    data[0]
-                                        .url
-                                        .replaceAll('browser:', '')
-                                        .replaceAll('<token>',
-                                            '${CommonPreferences.token.value}')
-                                        .replaceAll('<laketoken>',
-                                            '${await LakeTokenManager().refreshToken()}'),
-                                    mode: LaunchMode.externalApplication);
+                                    data[index].url.replaceAll('browser:', ''));
                               } else {
                                 ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
                               }
                             } else
                               Navigator.pushNamed(
                                   context, FeedbackRouter.haitang,
-                                  arguments: FestivalArgs(data[0].url, '活动'));
+                                  arguments:
+                                      FestivalArgs(data[index].url, '活动'));
                           },
                           child: WpyPic(
-                            data[0].picUrl,
+                            data[index].picUrl,
                             fit: BoxFit.cover,
-                            withHolder: true,
+                            withHolder: false,
                           ),
                         ),
-                      ),
-                    )
-                  : Swiper(
-                      controller: controller,
-                      loop: true,
-                      autoplay: true,
-                      autoplayDelay: 4000,
-                      itemWidth: 0.81.sw,
-                      itemHeight: 1.08.sw,
-                      itemCount: data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (data.length == 0) return SizedBox();
-                        return ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          child: WButton(
-                            onPressed: () async {
-                              if (data[index].url.startsWith('browser:')) {
-                                if (await canLaunchUrlString(data[index]
-                                    .url
-                                    .replaceAll('browser:', ''))) {
-                                  launchUrlString(data[index]
-                                      .url
-                                      .replaceAll('browser:', ''));
-                                } else {
-                                  ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
-                                }
-                              } else
-                                Navigator.pushNamed(
-                                    context, FeedbackRouter.haitang,
-                                    arguments:
-                                        FestivalArgs(data[index].url, '活动'));
-                            },
-                            child: WpyPic(
-                              data[index].picUrl,
-                              fit: BoxFit.cover,
-                              withHolder: false,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                      );
+                    },
+                  ),
+                ),
               WButton(
                   onPressed: () {
                     Navigator.pop(context);

@@ -88,14 +88,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             .read<LakeModel>()
             .lakeAreas[context
                 .read<LakeModel>()
-                .tabList[context.read<LakeModel>().tabController.index]
+                .tabList[context.read<LakeModel>().tabController!.index]
                 .id]!
             .controller
             .offset >
         1500) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]!
+          .lakeAreas[context.read<LakeModel>().tabController!.index]!
           .controller
           .jumpTo(1500);
     }
@@ -103,7 +103,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         .read<LakeModel>()
         .lakeAreas[context
             .read<LakeModel>()
-            .tabList[context.read<LakeModel>().tabController.index]
+            .tabList[context.read<LakeModel>().tabController!.index]
             .id]!
         .controller
         .animateTo(-85,
@@ -111,7 +111,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   }
 
   _onFeedbackTapped() {
-    if (!context.read<LakeModel>().tabController.indexIsChanging) {
+    if (!context.read<LakeModel>().tabController!.indexIsChanging) {
       if (canSee) {
         context.read<LakeModel>().onFeedbackOpen();
         fbKey.currentState?.tap();
@@ -147,7 +147,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (initializeRefresh) {
       context
           .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController.index]!
+          .lakeAreas[context.read<LakeModel>().tabController!.index]!
           .controller
           .animateTo(-85.h,
               duration: Duration(milliseconds: 1000),
@@ -238,7 +238,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           isScrollable: true,
                           tabAlignment: TabAlignment.center,
                           physics: BouncingScrollPhysics(),
-                          controller: context.read<LakeModel>().tabController,
+                          controller: context.read<LakeModel>().tabController!,
                           labelColor: WpyTheme.of(context)
                               .get(WpyColorKey.primaryActionColor),
                           labelStyle: TextUtil.base.w400.NotoSansSC.sp(18),
@@ -310,24 +310,26 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           ..addListener(() {
                             if (context
                                     .read<LakeModel>()
-                                    .tabController
+                                    .tabController!
                                     .index
                                     .toDouble() ==
                                 context
                                     .read<LakeModel>()
-                                    .tabController
+                                    .tabController!
                                     .animation!
                                     .value) {
                               WPYTab tab =
                                   context.read<LakeModel>().lakeAreas[1]!.tab;
                               if (context
                                           .read<LakeModel>()
-                                          .tabController
+                                          .tabController!
                                           .index !=
                                       tabList.indexOf(tab) &&
                                   canSee) _onFeedbackTapped();
-                              context.read<LakeModel>().currentTab =
-                                  context.read<LakeModel>().tabController.index;
+                              context.read<LakeModel>().currentTab = context
+                                  .read<LakeModel>()
+                                  .tabController!
+                                  .index;
                               context.read<LakeModel>().onFeedbackOpen();
                             }
                           });
@@ -339,7 +341,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           : ExtendedTabBarView(
                               cacheExtent: cacheNum,
                               controller:
-                                  context.read<LakeModel>().tabController,
+                                  context.read<LakeModel>().tabController!,
                               children: List<Widget>.generate(
                                 // 为什么判空去掉了 因为 tabList 每次清空都会被赋初值
                                 tabs.length,
