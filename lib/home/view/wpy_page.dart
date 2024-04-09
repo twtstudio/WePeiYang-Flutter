@@ -126,23 +126,24 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
-    if (CommonPreferences.firstPrivacy.value == true) {
-      rootBundle.loadString('privacy/privacy_content.md').then((str) {
-        setState(() {
-          md = str;
-        });
-      });
-    }
+    //隐私政策部分挪到了app一打开就会显示的部分（login_page.dart里面
+    // if (CommonPreferences.firstPrivacy.value == true) {
+    //   rootBundle.loadString('privacy/privacy_content.md').then((str) {
+    //     setState(() {
+    //       md = str;
+    //     });
+    //   });
+    // }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (CommonPreferences.firstPrivacy.value == true) {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return PrivacyDialog(md);
-            });
-        CommonPreferences.firstPrivacy.value = false;
-      }
+      // if (CommonPreferences.firstPrivacy.value == true) {
+      //   showDialog(
+      //       context: context,
+      //       barrierDismissible: false,
+      //       builder: (BuildContext context) {
+      //         return PrivacyDialog(md);
+      //       });
+      //   CommonPreferences.firstPrivacy.value = false;
+      // }
       var info = await acidInfo;
       if (info.id != -1 &&
           hasShow == false &&

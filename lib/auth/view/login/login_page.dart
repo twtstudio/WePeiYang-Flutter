@@ -4,9 +4,42 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
+import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/themes/wpy_theme.dart';
+import '../privacy/privacy_dialog.dart';
 
-class LoginHomeWidget extends StatelessWidget {
+class LoginHomeWidget extends StatefulWidget{
+
+  @override
+  _LoginHomeWidgetState createState()=>_LoginHomeWidgetState();
+
+}
+
+class _LoginHomeWidgetState extends State<LoginHomeWidget> {
+
+  String md = '';
+  @override
+  void initState(){
+    super.initState();
+    if (CommonPreferences.firstPrivacy.value == true) {
+      rootBundle.loadString('privacy/privacy_content.md').then((str) {
+        setState(() {
+          md = str;
+        });
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
+      if (CommonPreferences.firstPrivacy.value == true) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return PrivacyDialog(md);
+            });
+        CommonPreferences.firstPrivacy.value = false;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
