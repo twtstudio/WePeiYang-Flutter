@@ -18,8 +18,7 @@ class LogoutDialog extends Dialog {
     ToastProvider.success("退出登录成功");
     UmengCommonSdk.onProfileSignOff();
     CommonPreferences.clearAllPrefs();
-    if (CommonPreferences.lakeToken.value != '')
-      context.read<LakeModel>().clearAll();
+    context.read<LakeModel>().clearAll();
     Navigator.pushNamedAndRemoveUntil(
         WePeiYangApp.navigatorState.currentContext!,
         AuthRouter.login,

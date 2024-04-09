@@ -75,7 +75,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     context.read<LakeModel>().getClipboardWeKoContents(context);
-    initPage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initPage();
+    });
   }
 
   @override
