@@ -143,6 +143,7 @@ class CommonPreferences {
   /// 清除所有缓存
   static void clearAllPrefs() {
     sharedPref.clear();
+    firstPrivacy.value = false;//隐私政策不重复显示了
   }
 
   /// 清除办公网缓存
