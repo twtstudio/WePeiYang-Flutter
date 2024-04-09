@@ -21,6 +21,7 @@ import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/colored_icon.dart';
+import 'dialogs/activity_dialog.dart';
 
 class HomePage extends StatefulWidget {
   final int? page;
@@ -114,7 +115,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     double width = WePeiYangApp.screenWidth / 3;
-
 
     // 底部切换页面按钮
     var homePage = SizedBox(
@@ -246,6 +246,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           canPop: false,
           onPopInvoked: (didPop) {
             if (didPop) return;
+            CommonPreferences.lastActivityDialogShownDate.value = "";
             if (_tabController.index == 0) {
               if (_lastPressedAt == null ||
                   DateTime.now().difference(_lastPressedAt!) >

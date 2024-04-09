@@ -2,9 +2,9 @@ import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
-class ThemeDio extends DioAbstract {
+class SplashDio extends DioAbstract {
   @override
-  String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
+  String baseUrl = 'https://demo.subit.org.cn/api/v1/';
 
   @override
   List<Interceptor> interceptors = [
@@ -23,12 +23,12 @@ class ThemeDio extends DioAbstract {
   ];
 }
 
-final themeDio = ThemeDio();
+final splashDio = SplashDio();
 
-class ThemeService with AsyncTimer {
+class SplashService with AsyncTimer {
   static Future<List<BannerPic>> getBanner() async {
     try {
-      var response = await themeDio.get('banner');
+      var response = await splashDio.get('banner');
       var result = response.data['result'];
       var list = <BannerPic>[];
       result.forEach((e) {

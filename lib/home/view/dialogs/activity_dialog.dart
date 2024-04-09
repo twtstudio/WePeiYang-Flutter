@@ -26,7 +26,7 @@ class ActivityDialog extends Dialog {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ThemeService.getBanner(),
+      future: SplashService.getBanner(),
       builder: (context, AsyncSnapshot<List<BannerPic>> snapshot) {
         if (snapshot.hasData) {
           final data = snapshot.data!;
