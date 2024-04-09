@@ -4,7 +4,7 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
 class SplashDio extends DioAbstract {
   @override
-  String baseUrl = 'https://demo.subit.org.cn/api/v1/';
+  String baseUrl = 'https://haitang.twt.edu.cn/api/v1/';
 
   @override
   List<Interceptor> interceptors = [
