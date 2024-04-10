@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +39,6 @@ import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/post.dart';
-import 'generated/l10n.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lost_and_found/module/lost_and_found_providers.dart';
 import 'message/model/message_provider.dart';
@@ -319,7 +317,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ),
         Provider.value(value: ReportDataModel()),
       ],
-      child: Consumer<LocaleModel>(builder: (context, localModel, _) {
+      child: Builder(builder: (context) {
         // 获取友盟在线参数
         context.read<RemoteConfig>().getRemoteConfig();
 
@@ -362,31 +360,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
                           PageStackObserver(),
                           FlutterSmartDialog.observer
                         ],
-                        localizationsDelegates: [
-                          S.delegate,
-                          GlobalMaterialLocalizations.delegate,
-                          GlobalWidgetsLocalizations.delegate,
-                          GlobalCupertinoLocalizations.delegate,
-                        ],
-                        supportedLocales: S.delegate.supportedLocales,
-                        localeListResolutionCallback:
-                            (List<Locale>? preferredLocales,
-                                Iterable<Locale>? supportedLocales) {
-                          var supportedLanguages = supportedLocales
-                                  ?.map((e) => e.languageCode)
-                                  .toList() ??
-                              [];
-                          var preferredLanguages = preferredLocales
-                                  ?.map((e) => e.languageCode)
-                                  .toList() ??
-                              [];
-                          var availableLanguages = preferredLanguages
-                              .where((element) =>
-                                  supportedLanguages.contains(element))
-                              .toList();
-                          return Locale(availableLanguages.first);
-                        },
-                        locale: localModel.locale(),
                         home: child,
                         builder: FlutterSmartDialog.init(builder: _builder),
                         // builder: FToastBuilder(),

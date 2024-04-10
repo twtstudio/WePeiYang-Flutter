@@ -17,8 +17,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
 
   async: ^2.8.2
   amap_location_fluttify: ^0.22.0
@@ -168,5 +166,3 @@ flutter:
 #      fonts:
 #        - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf
 
-flutter_intl:
-  enabled: true
