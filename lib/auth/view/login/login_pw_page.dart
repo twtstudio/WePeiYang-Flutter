@@ -117,90 +117,92 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             Expanded(
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 50),
-                      _usePwLogin ? _pwWidget : _codeWidget,
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: checkNotifier,
-                            builder: (context, bool value, _) {
-                              return Transform.scale(
-                                scaleX: 1.3,
-                                scaleY: 1.3,
-                                child: Checkbox(
-                                  value: value,
-                                  side: MaterialStateBorderSide.resolveWith(
-                                    (_) => BorderSide(
-                                        color: WpyTheme.of(context)
-                                            .get(WpyColorKey.brightTextColor),
-                                        width: 2),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 50),
+                        _usePwLogin ? _pwWidget : _codeWidget,
+                        Spacer(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: checkNotifier,
+                              builder: (context, bool value, _) {
+                                return Transform.scale(
+                                  scaleX: 1.3,
+                                  scaleY: 1.3,
+                                  child: Checkbox(
+                                    value: value,
+                                    side: MaterialStateBorderSide.resolveWith(
+                                      (_) => BorderSide(
+                                          color: WpyTheme.of(context)
+                                              .get(WpyColorKey.brightTextColor),
+                                          width: 2),
+                                    ),
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
+                                    activeColor: WpyTheme.of(context)
+                                        .get(WpyColorKey.primaryActionColor),
+                                    onChanged: (_) {
+                                      checkNotifier.value =
+                                          !checkNotifier.value;
+                                    },
                                   ),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  visualDensity: VisualDensity.compact,
-                                  activeColor: WpyTheme.of(context)
-                                      .get(WpyColorKey.primaryActionColor),
-                                  onChanged: (_) {
-                                    checkNotifier.value =
-                                        !checkNotifier.value;
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                          SizedBox(width: 10),
-                          Text.rich(TextSpan(
-                              text: "我已阅读并同意",
-                              style: TextUtil.base.normal.NotoSansSC.w400
-                                  .sp(10)
-                                  .label(context))),
-                          WButton(
-                            onPressed: () => showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (context) => UserAgreementDialog(
-                                    check: checkNotifier)),
-                            child: Text.rich(TextSpan(
-                                text: "《用户协议》",
+                                );
+                              },
+                            ),
+                            SizedBox(width: 10),
+                            Text.rich(TextSpan(
+                                text: "我已阅读并同意",
+                                style: TextUtil.base.normal.NotoSansSC.w400
+                                    .sp(10)
+                                    .label(context))),
+                            WButton(
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (context) => UserAgreementDialog(
+                                      check: checkNotifier)),
+                              child: Text.rich(TextSpan(
+                                  text: "《用户协议》",
+                                  style: TextUtil.base
+                                      .link(context)
+                                      .NotoSansSC
+                                      .w400
+                                      .sp(10)
+                                      .underLine)),
+                            ),
+                            Text.rich(TextSpan(
+                                text: "与",
                                 style: TextUtil.base
                                     .link(context)
                                     .NotoSansSC
                                     .w400
                                     .sp(10)
-                                    .underLine)),
-                          ),
-                          Text.rich(TextSpan(
-                              text: "与",
-                              style: TextUtil.base
-                                  .link(context)
-                                  .NotoSansSC
-                                  .w400
-                                  .sp(10)
-                                  .label(context))),
-                          WButton(
-                            onPressed: () => showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (context) =>
-                                    PrivacyDialog(md, check: checkNotifier)),
-                            child: Text.rich(TextSpan(
-                                text: "《隐私政策》",
-                                style: TextUtil.base
-                                    .link(context)
-                                    .NotoSansSC
-                                    .w400
-                                    .sp(10)
-                                    .underLine)),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30)
-                    ],
+                                    .label(context))),
+                            WButton(
+                              onPressed: () => showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (context) =>
+                                      PrivacyDialog(md, check: checkNotifier)),
+                              child: Text.rich(TextSpan(
+                                  text: "《隐私政策》",
+                                  style: TextUtil.base
+                                      .link(context)
+                                      .NotoSansSC
+                                      .w400
+                                      .sp(10)
+                                      .underLine)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 30)
+                      ],
+                    ),
                   )),
             ),
           ],

@@ -190,12 +190,12 @@ final colorSetsList = {
       darkSchemeDetail[WpyColorKey.primaryActionColor]!,
       darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
 // 用来挡下面圆角左右的空
-      darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
+//       darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
 // 在0.7停止同理
-    stops: [0, 0.53, 0.7],
+    stops: [0, 0.7],
   ),
 
   WpyColorSetKey.backgroundGradient: LinearGradient(

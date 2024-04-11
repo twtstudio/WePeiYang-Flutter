@@ -6,19 +6,19 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 class HaiTangScheme extends WpyThemeData {
   HaiTangScheme()
       : super(
-    meta: BuiltInThemeMetaData(
-      themeId: "builtin_HaiTang_theme",
-      name: "海棠粉",
-      description: "默认 粉色 主题",
-      brightness: Brightness.light,
-      representativeColor: Color(0xFFD983AE),
-    ),
-    data: WpyThemeDetail(
-      redSchemeDetail,
-      gradient: colorSetsList,
-      primaryColor: haiTangThemeColor,
-    ),
-  );
+          meta: BuiltInThemeMetaData(
+            themeId: "builtin_HaiTang_theme",
+            name: "海棠粉",
+            description: "默认 粉色 主题",
+            brightness: Brightness.light,
+            representativeColor: Color(0xFFD983AE),
+          ),
+          data: WpyThemeDetail(
+            redSchemeDetail,
+            gradient: colorSetsList,
+            primaryColor: haiTangThemeColor,
+          ),
+        );
 }
 
 const haiTangPrimaryColor = Color(0xFFD983AE);
@@ -203,12 +203,12 @@ final colorSetsList = {
       HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
       HaiTangMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
-      lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
+      // lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
 // 在0.7停止同理
-    stops: [0, 0.53, 0.7],
+    stops: [0, 0.7],
   ),
 
   WpyColorSetKey.backgroundGradient: LinearGradient(

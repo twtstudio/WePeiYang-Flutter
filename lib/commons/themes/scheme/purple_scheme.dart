@@ -203,12 +203,12 @@ final colorSetsList = {
       purpleMapper(lightSchemeDetail[WpyColorKey.primaryActionColor]!),
       purpleMapper(lightSchemeDetail[WpyColorKey.primaryLightActionColor]!),
 // 用来挡下面圆角左右的空
-      lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
+     // lightSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
 // 在0.7停止同理
-    stops: [0, 0.53, 0.7],
+    stops: [0, 0.53],
   ),
 
   WpyColorSetKey.backgroundGradient: LinearGradient(
