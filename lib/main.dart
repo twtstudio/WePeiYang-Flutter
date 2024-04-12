@@ -26,7 +26,6 @@ import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
-import 'commons/local/local_model.dart';
 import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
 import 'commons/themes/wpy_theme.dart';
@@ -288,7 +287,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => RemoteConfig()),
-        ChangeNotifierProvider(create: (_) => LocaleModel()),
         ChangeNotifierProvider(create: (_) => GPANotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),

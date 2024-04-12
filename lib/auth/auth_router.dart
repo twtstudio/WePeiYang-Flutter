@@ -15,7 +15,6 @@ import 'package:we_pei_yang_flutter/auth/view/login/register_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_done_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/login/reset_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/settings/language_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
@@ -91,7 +90,6 @@ class AuthRouter {
     avatarBox: (_) => AvatarBoxPage(),
     setting: (_) => SettingPage(),
     generalSetting: (_) => GeneralSettingPage(),
-    languageSetting: (_) => LanguageSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),
