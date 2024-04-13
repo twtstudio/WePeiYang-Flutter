@@ -3,7 +3,6 @@
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/twtstudio/WePeiYang-Flutter?color=green)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/twtstudio/WePeiYang-Flutter?color=blue)
 ![GitHub Repo stars](https://img.shields.io/github/stars/twtstudio/WePeiYang-Flutter?logo=star&color=yellow)
- 
 
 ## 项目背景
 
@@ -13,8 +12,9 @@
 
 ## 安装 (Installation)
 
-- **正式版**: [官网下载(需要校园网)](https://mobile.twt.edu.cn/wpy/index.html)  
-- **Preview 通道**:  请访问[Github Action](https://github.com/twtstudio/WePeiYang-Flutter/actions), 找到最新Build, 选择Summary中的Artifact下载
+- **正式版**: [官网下载(需要校园网)](https://mobile.twt.edu.cn/wpy/index.html)
+- **Preview 通道**:  请访问[Github Action](https://github.com/twtstudio/WePeiYang-Flutter/actions),
+  找到最新Build, 选择Summary中的Artifact下载
 
 ## 主要功能列表
 
@@ -44,10 +44,8 @@
 | [auth](twtstudio/WePeiYang-Flutter/tree/master/lib/auth)     | 注册登录绑定、个人信息页、设置页面               | 头像框、信息更新重设置、                           |
 | [commons](twtstudio/WePeiYang-Flutter/tree/master/lib/commons) | 与手机关联设置、当地缓存、网络请求               | 规定了页面主要外观、字体格式颜色、图标弹窗信息展示 |
 | [feedback](twtstudio/WePeiYang-Flutter/tree/master/lib/feedback) | 请求回显                                         | 请求回显                                           |
-| [generated](twtstudio/WePeiYang-Flutter/tree/master/lib/generated) | 语言设置                                         |                                                    |
 | [gpa](twtstudio/WePeiYang-Flutter/tree/master/lib/gpa)       | GPA显示                                          | 曲线显示、饼状显示                                 |
-| [home](twtstudio/WePeiYang-Flutter/tree/master/lib/home)     | 主页                                             | 主要功能展示、活动弹窗                             |
-| [l10n](twtstudio/WePeiYang-Flutter/tree/master/lib/l10n)     | 生成本地化代码                                   |                                                    |
+| [home](twtstudio/WePeiYang-Flutter/tree/master/lib/home)     | 主页                                             | 主要功能展示、活动弹窗                             | 
 | [message](twtstudio/WePeiYang-Flutter/tree/master/lib/message) | 消息列表                                         | 一键已读                                           |
 | [schedule](twtstudio/WePeiYang-Flutter/tree/master/lib/schedule) | 小窗展示、主页面展示课程安排、课程细节、考试信息 | 夜猫子模式、考试信息                               |
 | [studyroom](twtstudio/WePeiYang-Flutter/tree/master/lib/studyroom) | 自习室信息                                       |                                                    |
@@ -92,31 +90,23 @@
 
 ### 命名规范
 
+## 当前版本：4。4.1
 
+本期更新内容：
 
-## 当前版本：4.3.18
-
-本期更新内容：1.调整了办公网绑定的逻辑 2.修复了gpa显示的bug 3.自习室功能预计下周重新上线~
-
-###  比较大的更新记录：
+### 比较大的更新记录：
 
 ## Git规范
-
-
 
 ## 其他资源
 
 ### 古早版本：
 
-[ WePeiYang-Android 微北洋（安卓版） ](https://github.com/twtstudio/WePeiYang-Android) 
+[ WePeiYang-Android 微北洋（安卓版） ](https://github.com/twtstudio/WePeiYang-Android)
 
 [ WePeiYang-iOS-Everest 微北洋（IOS版本）](https://github.com/twtstudio/WePeiYang-iOS-Everest)
 
-
-
 ## 版权声明
-
-
 
 ## Star History
 
@@ -128,3 +118,6 @@
   </picture>
 </a>
 
+## 备案号
+
+津ICP备05004358号-18A(https://beian.miit.gov.cn/)       
