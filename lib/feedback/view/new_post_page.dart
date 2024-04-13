@@ -13,7 +13,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -81,7 +80,7 @@ class _NewPostPageState extends State<NewPostPage> {
                 images: images,
                 campus: campusNotifier.value,
                 onSuccess: () {
-                  ToastProvider.success(S.current.feedback_post_success);
+                  ToastProvider.success('feedback_post_success');
                   Navigator.pop(context);
                   Navigator.pop(context);
                 },
@@ -111,7 +110,7 @@ class _NewPostPageState extends State<NewPostPage> {
         images: [],
         campus: campusNotifier.value,
         onSuccess: () {
-          ToastProvider.success(S.current.feedback_post_success);
+          ToastProvider.success('feedback_post_success');
           Navigator.pop(context);
           Navigator.pop(context);
         },
@@ -129,7 +128,7 @@ class _NewPostPageState extends State<NewPostPage> {
   Widget build(BuildContext context) {
     final appBar = AppBar(
       title: Text(
-        S.current.feedback_new_post,
+        'feedback_new_post',
         style: TextUtil.base.NotoSansSC.w700.sp(18).label(context),
       ),
       elevation: 0,
@@ -170,7 +169,7 @@ class _NewPostPageState extends State<NewPostPage> {
             tapAble = true;
           }
         },
-        child: Text(S.current.feedback_submit,
+        child: Text('feedback_submit',
             style: TextUtil.base.NotoSansSC.w500.sp(14).bright(context)),
       ),
     );
@@ -522,7 +521,7 @@ class _TitleInputFieldState extends State<TitleInputField> {
         maxLines: 10,
         decoration: InputDecoration.collapsed(
           hintStyle: TextUtil.base.NotoSansSC.w500.sp(18).infoText(context),
-          hintText: S.current.feedback_enter_title,
+          hintText: 'feedback_enter_title',
         ),
         onChanged: (text) {
           titleCounter.value = '${text.characters.length} / 30';
@@ -674,18 +673,18 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       context: context,
       builder: (context) => AlertDialog(
         titleTextStyle: TextUtil.base.NotoSansSC.w500.sp(14).label(context),
-        title: Text(S.current.feedback_delete_image_content),
+        title: Text('feedback_delete_image_content'),
         actions: [
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
-              child: Text(S.current.feedback_cancel)),
+              child: Text('feedback_cancel')),
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
-              child: Text(S.current.feedback_ok)),
+              child: Text('feedback_ok')),
         ],
       ),
     );

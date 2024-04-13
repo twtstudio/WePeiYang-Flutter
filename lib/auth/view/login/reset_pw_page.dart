@@ -4,7 +4,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -60,7 +59,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       body: Column(
         children: [
           Center(
-            child: Text(S.current.find_password_title,
+            child: Text('find_password_title',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 30),
@@ -75,7 +74,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _pwInput1,
                 decoration: InputDecoration(
-                    hintText: S.current.input_password1,
+                    hintText: 'input_password1',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -104,7 +103,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _pwInput2,
                 decoration: InputDecoration(
-                    hintText: S.current.input_password2,
+                    hintText: 'input_password2',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -27,7 +26,7 @@ class WikiPage extends StatelessWidget {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: AppBar(
-            title: Text(S.current.wiki,
+            title: Text('wiki',
                 style: TextUtil.base.bold.sp(16).blue52hz(context)),
             elevation: 0,
             centerTitle: true,

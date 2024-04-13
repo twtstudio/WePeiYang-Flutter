@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -44,7 +43,7 @@ class TjuUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(S.current.tju_unbind_hint,
+              child: Text('tju_unbind_hint',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -57,7 +56,7 @@ class TjuUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
+                    child: Text('cancel', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -65,7 +64,7 @@ class TjuUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
+                    child: Text('ok', style: _hintStyle),
                   ),
                 )
               ],
@@ -100,7 +99,7 @@ class PhoneUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(S.current.phone_unbind_hint,
+              child: Text('phone_unbind_hint',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -113,7 +112,7 @@ class PhoneUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
+                    child: Text('cancel', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -121,7 +120,7 @@ class PhoneUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
+                    child: Text('ok', style: _hintStyle),
                   ),
                 )
               ],
@@ -156,7 +155,7 @@ class EmailUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text(S.current.email_unbind_hint,
+              child: Text('email_unbind_hint',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -169,7 +168,7 @@ class EmailUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
+                    child: Text('cancel', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -177,7 +176,7 @@ class EmailUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
+                    child: Text('ok', style: _hintStyle),
                   ),
                 )
               ],
@@ -300,7 +299,7 @@ class LogoffDialog extends Dialog {
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      child: Text(S.current.cancel,
+                      child: Text('cancel',
                           style: TextUtil.base.w400
                               .primaryAction(context)
                               .sp(15)

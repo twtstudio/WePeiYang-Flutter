@@ -18,7 +18,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_sh
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
@@ -225,7 +224,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             FeedbackService.deleteFloor(
               id: widget.comment.id,
               onSuccess: () {
-                ToastProvider.success(S.current.feedback_delete_success);
+                ToastProvider.success('feedback_delete_success');
                 setState(() {});
               },
               onFailure: (e) {
@@ -290,7 +289,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         },
         child: Row(children: [
           Text(
-            S.current.feedback_rating,
+            'feedback_rating',
             style: TextUtil.base.NotoSansSC.label(context).normal.w500.sp(14),
           ),
           RatingBar.builder(
@@ -313,7 +312,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     } else {
       starWidget = Row(children: [
         Text(
-          S.current.feedback_rating,
+          'feedback_rating',
           style: TextUtil.base.NotoSansSC.label(context).normal.w500.sp(14),
         ),
         RatingBar.builder(

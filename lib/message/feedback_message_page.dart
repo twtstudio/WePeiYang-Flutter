@@ -18,7 +18,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
@@ -418,11 +417,11 @@ class _LikeMessagesListState extends State<LikeMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(S.current.load_fail);
+            body = Text('load_fail');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(S.current.load_more);
+            body = Text('load_more');
           } else {
-            body = Text(S.current.no_more_data);
+            body = Text('no_more_data');
           }
           return SizedBox(
             height: 55,
@@ -784,11 +783,11 @@ class _FloorMessagesListState extends State<FloorMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(S.current.load_fail);
+            body = Text('load_fail');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(S.current.load_more);
+            body = Text('load_more');
           } else {
-            body = Text(S.current.no_more_data);
+            body = Text('no_more_data');
           }
           return SizedBox(
             height: 55,
@@ -1198,11 +1197,11 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text(S.current.load_fail);
+            body = Text('load_fail');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text(S.current.load_more);
+            body = Text('load_more');
           } else {
-            body = Text(S.current.no_more_data);
+            body = Text('no_more_data');
           }
           return SizedBox(
             height: 55,

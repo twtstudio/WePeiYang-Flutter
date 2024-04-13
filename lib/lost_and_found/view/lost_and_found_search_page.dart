@@ -8,7 +8,6 @@ import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/components/widget/lost_and_found_search_bar.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
@@ -135,7 +134,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            S.current.feedback_search_history,
+            'feedback_search_history',
             style: TextUtil.base.primary(context).w600.sp(19),
           ),
           InkWell(
@@ -239,12 +238,12 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
-              cancelText: S.current.feedback_cancel,
+              cancelText: 'feedback_cancel',
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-              confirmText: S.current.feedback_ok,
+              confirmText: 'feedback_ok',
               cancelFun: () {
                 Navigator.pop(context);
               },
@@ -254,7 +253,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 setState(() {});
                 Navigator.pop(context);
               },
-              content: Text(S.current.feedback_clear_history));
+              content: Text('feedback_clear_history'));
         });
   }
 }

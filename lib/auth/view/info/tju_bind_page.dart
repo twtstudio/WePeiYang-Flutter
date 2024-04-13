@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/network/classes_backend_service.dart';
 import '../../../commons/network/classes_service.dart';
@@ -70,7 +69,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
     if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
-        Text("${S.current.bind_account}: ${CommonPreferences.tjuuname.value}",
+        Text("${'bind_account'}: ${CommonPreferences.tjuuname.value}",
             style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         SizedBox(height: 60),
         SizedBox(
@@ -82,7 +81,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     barrierDismissible: true,
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
-            child: Text(S.current.unbind,
+            child: Text('unbind',
                 style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
@@ -108,7 +107,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
         child: Column(children: [
           SizedBox(height: 30),
           Text(
-            S.current.tju_bind_hint,
+            'tju_bind_hint',
             style: TextUtil.base.regular.sp(10).oldThirdAction(context),
           ),
           SizedBox(height: 20),
@@ -123,7 +122,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               cursorColor:
                   WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
               decoration: InputDecoration(
-                  hintText: S.current.tju_account,
+                  hintText: 'tju_account',
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor:
@@ -159,7 +158,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.basicTextColor)),
                     decoration: InputDecoration(
-                      hintText: S.current.password,
+                      hintText: 'password',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -196,7 +195,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             width: 400,
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text(S.current.bind,
+              child: Text('bind',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -279,7 +278,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   Container(
                     alignment: Alignment.centerLeft,
                     margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
-                    child: Text(S.current.tju_bind,
+                    child: Text('tju_bind',
                         style:
                             TextUtil.base.bold.sp(28).oldFurthAction(context)),
                   ),
@@ -287,8 +286,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                     child: Text(
                         CommonPreferences.isBindTju.value
-                            ? S.current.is_bind
-                            : S.current.not_bind,
+                            ? 'is_bind'
+                            : 'not_bind',
                         style:
                             TextUtil.base.bold.oldListAction(context).sp(12)),
                   ),

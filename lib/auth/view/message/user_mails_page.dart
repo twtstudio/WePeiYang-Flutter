@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -31,7 +30,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: AppBar(
-            title: Text(S.current.message,
+            title: Text('message',
                 style: TextUtil.base.bold.sp(16).blue52hz(context)),
             elevation: 0,
             centerTitle: true,

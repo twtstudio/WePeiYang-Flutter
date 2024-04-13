@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -65,7 +64,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(S.current.avatar, style: mainTextStyle),
+                        child: Text('avatar', style: mainTextStyle),
                       ),
                       Hero(
                           tag: 'avatar',
@@ -90,7 +89,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   },
                   child: Row(
                     children: [
-                      Text(S.current.user_name, style: mainTextStyle),
+                      Text('user_name', style: mainTextStyle),
                       Expanded(
                         child: Text(
                           CommonPreferences.nickname.value,
@@ -117,12 +116,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   },
                   child: Row(
                     children: [
-                      Text(S.current.office_network, style: mainTextStyle),
+                      Text('office_network', style: mainTextStyle),
                       Spacer(),
                       Text(
                           CommonPreferences.isBindTju.value
-                              ? S.current.is_bind
-                              : S.current.not_bind,
+                              ? 'is_bind'
+                              : 'not_bind',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,
@@ -143,7 +142,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(S.current.reset_password,
+                        child: Text('reset_password',
                             style: mainTextStyle),
                       ),
                       arrow,
@@ -192,12 +191,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     children: [
                       Image.asset('assets/images/telephone.png', width: 20.w),
                       SizedBox(width: 12.w),
-                      Text(S.current.phone2, style: mainTextStyle),
+                      Text('phone2', style: mainTextStyle),
                       Spacer(),
                       Text(
                           (CommonPreferences.phone.value != "")
-                              ? S.current.is_bind
-                              : S.current.not_bind,
+                              ? 'is_bind'
+                              : 'not_bind',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,
@@ -218,12 +217,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     children: [
                       Image.asset('assets/images/email.png', width: 20.w),
                       SizedBox(width: 12.w),
-                      Text(S.current.email2, style: mainTextStyle),
+                      Text('email2', style: mainTextStyle),
                       Spacer(),
                       Text(
                           (CommonPreferences.email.value != "")
-                              ? S.current.is_bind
-                              : S.current.not_bind,
+                              ? 'is_bind'
+                              : 'not_bind',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,

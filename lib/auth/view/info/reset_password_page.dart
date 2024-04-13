@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -56,7 +55,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text(S.current.reset_password,
+          title: Text('reset_password',
               style: TextUtil.base.bold.sp(16).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
@@ -79,7 +78,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(S.current.password1, style: titleStyle)),
+                child: Text('password1', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -92,7 +91,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: oldPwNode,
                   decoration: InputDecoration(
-                      hintText: S.current.input_password3,
+                      hintText: 'input_password3',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -114,7 +113,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(S.current.password2, style: titleStyle)),
+                child: Text('password2', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -127,7 +126,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode1,
                   decoration: InputDecoration(
-                      hintText: S.current.input_password1,
+                      hintText: 'input_password1',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -149,7 +148,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(S.current.password3, style: titleStyle)),
+                child: Text('password3', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -162,7 +161,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode2,
                   decoration: InputDecoration(
-                      hintText: S.current.input_password4,
+                      hintText: 'input_password4',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -181,7 +180,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: WButton(
-                child: Text(S.current.forget_password,
+                child: Text('forget_password',
                     style: TextUtil.base.regular.underLine.sp(12)),
                 onPressed: () =>
                     Navigator.pushNamed(context, AuthRouter.findHome),
@@ -193,7 +192,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                 child: ElevatedButton(
                   onPressed: _reset,
-                  child: Text(S.current.reset_ok,
+                  child: Text('reset_ok',
                       style: TextUtil.base.regular.reverse(context).sp(13)),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(5),

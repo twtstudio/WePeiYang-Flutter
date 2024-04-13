@@ -16,7 +16,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/dialog_provider.dart';
@@ -54,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
     final hintTextStyle = TextUtil.base.bold.sp(12).oldHintDarkest(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.setting,
+        title: Text('setting',
             style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         elevation: 0,
         centerTitle: true,
@@ -95,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
                   SizedBox(width: 12.w),
                   Expanded(
                     child:
-                        Text(S.current.reset_user_info, style: mainTextStyle),
+                        Text('reset_user_info', style: mainTextStyle),
                   ),
                   arrow,
                   SizedBox(width: 15.w),
@@ -169,7 +168,7 @@ class _SettingPageState extends State<SettingPage> {
                   Image.asset('assets/images/twt.png', width: 20.w),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text(S.current.about_twt, style: mainTextStyle),
+                    child: Text('about_twt', style: mainTextStyle),
                   ),
                   arrow,
                   SizedBox(width: 15.w),
@@ -200,10 +199,10 @@ class _SettingPageState extends State<SettingPage> {
                       size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text(S.current.check_new, style: mainTextStyle),
+                    child: Text('check_new', style: mainTextStyle),
                   ),
                   Text(
-                      "${S.current.current_version}: " +
+                      "${'current_version'}: " +
                           (Platform.isIOS
                               ? iosLocalVersion
                               : EnvConfig.VERSION),
@@ -235,7 +234,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text(S.current.logout, style: mainTextStyle),
+                    child: Text('logout', style: mainTextStyle),
                   ),
                 ],
               ),

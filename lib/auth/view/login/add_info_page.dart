@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -79,7 +78,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       body: Column(
         children: [
           Center(
-            child: Text(S.current.add_info_hint,
+            child: Text('add_info_hint',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 30),
@@ -93,7 +92,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
-                    hintText: S.current.email,
+                    hintText: 'email',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor:
@@ -121,7 +120,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               child: TextField(
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
-                    hintText: S.current.phone,
+                    hintText: 'phone',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor:
@@ -147,7 +146,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: S.current.text_captcha,
+                        hintText: 'text_captcha',
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context)
@@ -198,7 +197,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                             })
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            child: Text(S.current.fetch_captcha,
+                            child: Text('fetch_captcha',
                                 style: TextUtil.base.regular
                                     .reverse(context)
                                     .sp(13)),
@@ -231,7 +230,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               child: ElevatedButton(
                 onPressed: _submit,
-                child: Text(S.current.login2,
+                child: Text('login2',
                     style: TextUtil.base.regular.reverse(context).sp(13)),
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(5),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -14,14 +13,14 @@ class ScheduleSettingPage extends StatefulWidget {
 
 class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   final upNumberList = [
-    "5${S.current.day}",
-    "6${S.current.day}",
-    "7${S.current.day}"
+    "5${'day'}",
+    "6${'day'}",
+    "7${'day'}"
   ];
   final downNumberList = [
-    S.current.mon_fri,
-    S.current.mon_sat,
-    S.current.mon_sun
+    'mon_fri',
+    'mon_sat',
+    'mon_sun'
   ];
   int _index = CommonPreferences.dayNumber.value - 5;
 
@@ -107,7 +106,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
             child: Text(
-              "${S.current.schedule}-${S.current.setting_day_number}",
+              "${'schedule'}-${'setting_day_number'}",
               style: TextUtil.base.bold.sp(28).oldFurthAction(context),
             ),
           ),
@@ -115,7 +114,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             margin: const EdgeInsets.fromLTRB(35, 15, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text(
-              S.current.setting_day_number_hint,
+              'setting_day_number_hint',
               style: TextUtil.base.regular.sp(11.5).oldThirdAction(context),
             ),
           ),

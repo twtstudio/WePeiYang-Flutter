@@ -6,7 +6,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -296,7 +295,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ));
         } else {
           body = Center(
-            child: Text(S.current.feedback_no_post,
+            child: Text('feedback_no_post',
                 style: TextUtil.base.regular.infoText(context)),
           );
         }

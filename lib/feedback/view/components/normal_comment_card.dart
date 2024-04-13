@@ -27,7 +27,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
@@ -278,7 +277,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   id: widget.comment.id,
                                   onSuccess: () {
                                     ToastProvider.success(
-                                        S.current.feedback_delete_success);
+                                        'feedback_delete_success');
                                     setState(() {
                                       _isDeleted = true;
                                     });
@@ -322,7 +321,7 @@ class _NCommentCardState extends State<NCommentCard>
                               floorId: widget.comment.id,
                               onSuccess: () {
                                 ToastProvider.success(
-                                    S.current.feedback_delete_success);
+                                    'feedback_delete_success');
                                 setState(() {
                                   _isDeleted = true;
                                 });

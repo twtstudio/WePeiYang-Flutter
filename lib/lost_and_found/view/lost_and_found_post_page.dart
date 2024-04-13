@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -102,7 +101,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                   phone: dataModel.phone,
                   images: images,
                   onSuccess: () {
-                    ToastProvider.success(S.current.feedback_post_success);
+                    ToastProvider.success('feedback_post_success');
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -131,7 +130,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         phone: dataModel.phone,
         images: [],
         onSuccess: () {
-          ToastProvider.success(S.current.feedback_post_success);
+          ToastProvider.success('feedback_post_success');
           Navigator.pop(context);
           Navigator.pop(context);
         },
@@ -339,7 +338,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             decoration: InputDecoration.collapsed(
                 hintStyle:
                     TextUtil.base.NotoSansSC.w700.sp(18).infoText(context),
-                hintText: S.current.feedback_enter_title),
+                hintText: 'feedback_enter_title'),
             onChanged: (text) {
               titleCounter.value = '${text.characters.length} / 30';
             },
@@ -485,18 +484,18 @@ class _LostAndFoundImagesGridViewState
         builder: (context) => AlertDialog(
                 titleTextStyle:
                     TextUtil.base.NotoSansSC.w500.sp(14).label(context),
-                title: Text(S.current.feedback_delete_image_content),
+                title: Text('feedback_delete_image_content'),
                 actions: [
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop('cancel');
                       },
-                      child: Text(S.current.feedback_cancel)),
+                      child: Text('feedback_cancel')),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop('ok');
                       },
-                      child: Text(S.current.feedback_ok)),
+                      child: Text('feedback_ok')),
                 ]));
   }
 

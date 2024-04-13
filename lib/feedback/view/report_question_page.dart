@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 
@@ -53,7 +52,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        S.current.feedback_report,
+        'feedback_report',
         style: TextUtil.base.NotoSansSC.medium.label(context).sp(18),
       ),
       centerTitle: true,
@@ -74,14 +73,14 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 isQuestion: widget.args.isQuestion,
                 reason: textInput,
                 onSuccess: () {
-                  ToastProvider.success(S.current.feedback_report_success);
+                  ToastProvider.success('feedback_report_success');
                   Navigator.pop(context);
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
           },
-          child: Text(S.current.feedback_report,
+          child: Text('feedback_report',
               style: TextUtil.base.NotoSansSC.reverse(context).w600.sp(18)),
           style: buttonStyle,
         ));

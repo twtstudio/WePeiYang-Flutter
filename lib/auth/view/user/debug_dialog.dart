@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -35,7 +34,7 @@ class DebugDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.cancel, style: _hintStyle),
+                    child: Text('cancel', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -44,7 +43,7 @@ class DebugDialog extends Dialog {
                       Navigator.pushReplacementNamed(context, AuthRouter.debug),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(S.current.ok, style: _hintStyle),
+                    child: Text('ok', style: _hintStyle),
                   ),
                 )
               ],

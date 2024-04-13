@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -173,7 +172,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.current.class_id, style: _hintNameStyle),
+              Text('class_id', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(pair.first.classId, style: _hintValueStyle)
             ],
@@ -183,7 +182,7 @@ class CourseDialog extends Dialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                S.current.campus,
+                'campus',
                 style: _hintNameStyle.copyWith(letterSpacing: 3.0),
               ),
               Padding(
@@ -202,7 +201,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.current.arrange_room, style: _hintNameStyle),
+              Text('arrange_room', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(replaceBuildingWord(pair.arrange.location),
                   style: _hintValueStyle)
@@ -212,7 +211,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.current.arrange_week, style: _hintNameStyle),
+              Text('arrange_week', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(pair.first.weeks, style: _hintValueStyle)
             ],
@@ -221,7 +220,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(S.current.credit,
+              Text('credit',
                   style: _hintNameStyle.copyWith(letterSpacing: 3)),
               Padding(
                 padding: const EdgeInsets.only(top: 3, left: 2),
@@ -235,7 +234,7 @@ class CourseDialog extends Dialog {
   Widget _getRow3(Pair<Course, int> pair) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(S.current.time,
+          Text('time',
               style: _hintNameStyle.copyWith(letterSpacing: 3)),
           SizedBox(height: 3.h),
           Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle)

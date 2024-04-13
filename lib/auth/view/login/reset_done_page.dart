@@ -3,8 +3,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
-
 import '../../../commons/themes/wpy_theme.dart';
 
 class ResetDoneWidget extends StatelessWidget {
@@ -26,7 +24,7 @@ class ResetDoneWidget extends StatelessWidget {
         children: [
           SizedBox(height: 180),
           Center(
-            child: Text(S.current.reset_password_done,
+            child: Text('reset_password_done',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 20),
@@ -36,7 +34,7 @@ class ResetDoneWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context, AuthRouter.login, (route) => false),
-              child: Text(S.current.login3,
+              child: Text('login3',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

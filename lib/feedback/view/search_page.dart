@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart'
     as wpySearchBar;
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -74,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
             context,
             FeedbackRouter.searchResult,
             arguments: SearchResultPageArgs(
-                text, '', '', S.current.feedback_search_result, 0, 0),
+                text, '', '', 'feedback_search_result', 0, 0),
           ).then((_) {
             Navigator.pop(context);
           });
@@ -108,7 +107,7 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            S.current.feedback_search_history,
+            'feedback_search_history',
             style: TextUtil.base.primaryAction(context).w600.sp(17),
           ),
           IconButton(
@@ -148,7 +147,7 @@ class _SearchPageState extends State<SearchPage> {
                 list[list.length - index - 1],
                 '',
                 '',
-                S.current.feedback_search_result,
+                'feedback_search_result',
                 0,
                 0);
             return InkResponse(
@@ -258,12 +257,12 @@ class _SearchPageState extends State<SearchPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
-              cancelText: S.current.feedback_cancel,
+              cancelText: 'feedback_cancel',
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-              confirmText: S.current.feedback_ok,
+              confirmText: 'feedback_ok',
               cancelFun: () {
                 Navigator.pop(context);
               },
@@ -273,7 +272,7 @@ class _SearchPageState extends State<SearchPage> {
                 setState(() {});
                 Navigator.pop(context);
               },
-              content: Text(S.current.feedback_clear_history));
+              content: Text('feedback_clear_history'));
         });
   }
 }

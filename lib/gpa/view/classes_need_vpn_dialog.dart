@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -43,7 +42,7 @@ class ClassesNeedVPNDialog extends Dialog {
               child: Container(
                 decoration: BoxDecoration(),
                 padding: const EdgeInsets.all(12),
-                child: Text(S.current.ok,
+                child: Text('ok',
                     style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
               ),
             ),

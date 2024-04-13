@@ -25,7 +25,6 @@ import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -909,7 +908,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   //     .refreshController
                                   //     .requestRefresh();
                                   ToastProvider.success(
-                                      S.current.feedback_delete_success);
+                                      'feedback_delete_success');
                                   Navigator.of(context).popAndPushNamed(
                                       FeedbackRouter.home,
                                       arguments: 2);
@@ -1360,18 +1359,18 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(S.current.feedback_delete_image_content),
+        title: Text('feedback_delete_image_content'),
         actions: [
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
-              child: Text(S.current.feedback_cancel)),
+              child: Text('feedback_cancel')),
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
-              child: Text(S.current.feedback_ok)),
+              child: Text('feedback_ok')),
         ],
       ),
     );
@@ -1756,7 +1755,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                     .id]
                 ?.refreshController
                 .requestRefresh();
-            ToastProvider.success(S.current.feedback_delete_success);
+            ToastProvider.success('feedback_delete_success');
             Navigator.of(context).pop();
             Navigator.of(context).pop();
           },

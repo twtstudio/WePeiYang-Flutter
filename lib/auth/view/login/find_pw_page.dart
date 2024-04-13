@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -33,7 +32,7 @@ class FindPwWidget extends StatelessWidget {
         children: [
           Spacer(flex: 1),
           Center(
-            child: Text(S.current.find_password_title,
+            child: Text('find_password_title',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 40),
@@ -43,7 +42,7 @@ class FindPwWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
-              child: Text(S.current.has_bind_phone,
+              child: Text('has_bind_phone',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
@@ -70,7 +69,7 @@ class FindPwWidget extends StatelessWidget {
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) => FindPwDialog()),
-              child: Text(S.current.has_not_bind_phone,
+              child: Text('has_not_bind_phone',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
@@ -155,7 +154,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         child: Column(
           children: [
             Center(
-              child: Text(S.current.find_password_title,
+              child: Text('find_password_title',
                   style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
             ),
             SizedBox(height: 40),
@@ -163,7 +162,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
               constraints: BoxConstraints(maxHeight: 55),
               child: TextField(
                 decoration: InputDecoration(
-                    hintText: S.current.phone,
+                    hintText: 'phone',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -185,7 +184,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: S.current.text_captcha,
+                        hintText: 'text_captcha',
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -233,7 +232,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                             })
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            child: Text(S.current.fetch_captcha,
+                            child: Text('fetch_captcha',
                                 style: TextUtil.base.regular
                                     .reverse(context)
                                     .sp(13)),

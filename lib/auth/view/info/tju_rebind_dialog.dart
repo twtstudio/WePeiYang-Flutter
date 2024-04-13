@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -98,7 +97,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text(S.current.wrong + "！",
+          Text('wrong' + "！",
               style: TextUtil.base.bold.sp(17).oldSecondaryAction(context))
         ]),
         SizedBox(height: 8),
@@ -120,7 +119,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
                 child: TextField(
                   controller: codeController,
                   decoration: InputDecoration(
-                      hintText: S.current.captcha,
+                      hintText: 'captcha',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -143,7 +142,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             margin: const EdgeInsets.fromLTRB(25, 30, 25, 10),
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text(S.current.login,
+              child: Text('login',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

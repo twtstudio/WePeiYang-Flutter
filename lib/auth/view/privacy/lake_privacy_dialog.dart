@@ -4,7 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -278,7 +277,7 @@ class LakePrivacyDialog extends Dialog {
         child: Container(
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
-          child: Text(S.current.ok,
+          child: Text('ok',
               style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
         ),
       );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -29,10 +28,10 @@ class FindPwDialog extends Dialog {
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  Text(S.current.has_not_bind_hint1,
+                  Text('has_not_bind_hint1',
                       style: _hintStyle, textAlign: TextAlign.center),
                   Spacer(flex: 1),
-                  Text(S.current.has_not_bind_hint2,
+                  Text('has_not_bind_hint2',
                       style: _hintStyle, textAlign: TextAlign.center),
                   Spacer(flex: 2),
                 ],

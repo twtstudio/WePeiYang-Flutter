@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
@@ -57,7 +56,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         SizedBox(height: 70),
         Center(
           child: Text(
-              "${S.current.bind_phone}: ${CommonPreferences.phone.value}",
+              "${'bind_phone'}: ${CommonPreferences.phone.value}",
               style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         ),
         SizedBox(height: 95),
@@ -70,7 +69,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     barrierDismissible: true,
                     builder: (BuildContext context) => PhoneUnbindDialog())
                 .then((_) => this.setState(() {})),
-            child: Text(S.current.unbind,
+            child: Text('unbind',
                 style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
@@ -101,7 +100,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               constraints: BoxConstraints(maxHeight: 55),
               child: TextField(
                 decoration: InputDecoration(
-                    hintText: S.current.phone,
+                    hintText: 'phone',
                     hintStyle: hintStyle,
                     filled: true,
                     fillColor:
@@ -126,7 +125,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
-                        hintText: S.current.text_captcha,
+                        hintText: 'text_captcha',
                         hintStyle: hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -174,7 +173,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                           })
                       : ElevatedButton(
                           onPressed: _fetchCaptcha,
-                          child: Text(S.current.fetch_captcha,
+                          child: Text('fetch_captcha',
                               style: TextUtil.base.regular
                                   .reverse(context)
                                   .sp(13)),
@@ -209,7 +208,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
             margin: const EdgeInsets.symmetric(horizontal: 30),
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text(S.current.bind,
+              child: Text('bind',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -258,15 +257,15 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 20),
-                child: Text(S.current.phone_bind,
+                child: Text('phone_bind',
                     style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
                 child: Text(
                     (CommonPreferences.phone.value != "")
-                        ? S.current.is_bind
-                        : S.current.not_bind,
+                        ? 'is_bind'
+                        : 'not_bind',
                     style: TextUtil.base.bold.unlabeled(context).sp(12)),
               ),
             ],

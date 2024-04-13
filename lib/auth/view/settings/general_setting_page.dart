@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/generated/l10n.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
 import '../../../commons/local/animation_provider.dart';
@@ -64,7 +63,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(S.current.setting_general, style: titleTextStyle),
+                child: Text('setting_general', style: titleTextStyle),
               ),
               SizedBox(height: 10.h),
               Container(
@@ -357,7 +356,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text(S.current.schedule, style: titleTextStyle),
+                child: Text('schedule', style: titleTextStyle),
               ),
               // SizedBox(height: 10.h),
               // // Container(
@@ -413,10 +412,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(S.current.setting_night_mode,
+                          Text('setting_night_mode',
                               style: mainTextStyle),
                           SizedBox(height: 3.h),
-                          Text(S.current.setting_night_mode_hint,
+                          Text('setting_night_mode_hint',
                               style: hintTextStyle)
                         ],
                       ),
@@ -461,7 +460,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(S.current.setting_day_number,
+                            Text('setting_day_number',
                                 style: mainTextStyle),
                             SizedBox(height: 5.h),
                             Text('${CommonPreferences.dayNumber.value}',
