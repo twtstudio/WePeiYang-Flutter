@@ -39,8 +39,7 @@ class _LinkTextState extends State<LinkText> {
         if (link.value!.startsWith('#MP') &&
             RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
           checkPostId(link.value!.substring(3));
-          //TODO:新换的依赖会把链接判断成phone，但是国际格式手机号暂时用不到先这么糊上去罢
-        } else if (link.type == LinkType.url||link.type==LinkType.phone) {
+        } else if (link.type == LinkType.url) {
           var url = link.value!.startsWith('http')
               ? link.value!
               : 'https://${link.value}';

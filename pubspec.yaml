@@ -65,8 +65,7 @@ dependencies:
   like_button: ^2.0.5
   linkfy_text:
     git:
-      url: https://github.com/Iamstanlee/linkfy_text.git
-      ref: 679a9194df2565527ccaaeca9c673d93261ddf5a
+      url: https://github.com/hxphieno/linkfy_text.git
 
   mutex: ^3.1.0
 
@@ -140,7 +139,6 @@ flutter:
     - assets/svg_pics/
     - assets/svg_pics/lake_butt_icons/
     - assets/svg_pics/laf_butt_icons/
-    - assets/images/fool_splash/
     - privacy/
 
   fonts:
