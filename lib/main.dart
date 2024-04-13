@@ -401,23 +401,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   var now = DateTime.now().toLocal();
 
-  static final splashBase = "assets/images/fool_splash";
-  static final splashes = [
-    "cqu.png",
-    "hit.png",
-    "mit.png",
-    "nku.png",
-    "pku.png",
-    "sjtu.png",
-    "thu.png",
-    "tju.png",
-    "tongji.png",
-    "whu.png",
-    "zju.png",
-  ];
-  late final splashIndex =
-      "${CommonPreferences.userNumber.value}${now.hour}".hashCode %
-          splashes.length;
 
   @override
   Widget build(BuildContext context) {
@@ -428,9 +411,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         isDarkMode && !_isFoolDay ? Colors.black : Colors.white;
 
     // 根据条件选择图标路径
-    String iconPath = _isFoolDay
-        ? '$splashBase/${splashes[splashIndex]}'
-        : isDarkMode
+    String iconPath = isDarkMode
             ? 'assets/images/splash_screen_dark.png'
             : 'assets/images/splash_screen.png';
 
@@ -452,16 +433,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       ),
     );
 
-    // 对于愚人节和深色主题，调整屏幕亮度
-    if (_isFoolDay && isDarkMode) {
-      return ColorFiltered(
-        child: splash,
-        colorFilter: ColorFilter.mode(
-          Colors.black.withOpacity(0.2), // 控制降低亮度的程度
-          BlendMode.darken, // 使用darken混合模式降低亮度
-        ),
-      );
-    }
     // 否则直接splash screen
     return splash;
   }
