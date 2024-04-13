@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPage> {
             context,
             FeedbackRouter.searchResult,
             arguments: SearchResultPageArgs(
-                text, '', '', 'feedback_search_result', 0, 0),
+                text, '', '', '搜索结果', 0, 0),
           ).then((_) {
             Navigator.pop(context);
           });
@@ -107,7 +107,7 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            'feedback_search_history',
+            '历史记录',
             style: TextUtil.base.primaryAction(context).w600.sp(17),
           ),
           IconButton(
@@ -147,7 +147,7 @@ class _SearchPageState extends State<SearchPage> {
                 list[list.length - index - 1],
                 '',
                 '',
-                'feedback_search_result',
+                '搜索结果',
                 0,
                 0);
             return InkResponse(
@@ -257,12 +257,12 @@ class _SearchPageState extends State<SearchPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
-              cancelText: 'feedback_cancel',
+              cancelText: '取消',
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-              confirmText: 'feedback_ok',
+              confirmText: '确定',
               cancelFun: () {
                 Navigator.pop(context);
               },
@@ -272,7 +272,7 @@ class _SearchPageState extends State<SearchPage> {
                 setState(() {});
                 Navigator.pop(context);
               },
-              content: Text('feedback_clear_history'));
+              content: Text('确认清除所有搜索记录吗？'));
         });
   }
 }

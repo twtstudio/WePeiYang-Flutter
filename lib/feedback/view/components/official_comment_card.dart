@@ -224,7 +224,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
             FeedbackService.deleteFloor(
               id: widget.comment.id,
               onSuccess: () {
-                ToastProvider.success('feedback_delete_success');
+                ToastProvider.success('删除成功');
                 setState(() {});
               },
               onFailure: (e) {
@@ -289,7 +289,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         },
         child: Row(children: [
           Text(
-            'feedback_rating',
+            '提问者评分:',
             style: TextUtil.base.NotoSansSC.label(context).normal.w500.sp(14),
           ),
           RatingBar.builder(
@@ -312,7 +312,7 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
     } else {
       starWidget = Row(children: [
         Text(
-          'feedback_rating',
+          '提问者评分:',
           style: TextUtil.base.NotoSansSC.label(context).normal.w500.sp(14),
         ),
         RatingBar.builder(

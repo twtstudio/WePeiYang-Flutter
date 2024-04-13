@@ -55,7 +55,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          title: Text('reset_password',
+          title: Text('密码更改',
               style: TextUtil.base.bold.sp(16).blue52hz(context)),
           elevation: 0,
           centerTitle: true,
@@ -78,7 +78,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text('password1', style: titleStyle)),
+                child: Text('原密码', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -91,7 +91,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: oldPwNode,
                   decoration: InputDecoration(
-                      hintText: 'input_password3',
+                      hintText: '请输入原来的密码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -113,7 +113,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text('password2', style: titleStyle)),
+                child: Text('新密码', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -126,7 +126,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode1,
                   decoration: InputDecoration(
-                      hintText: 'input_password1',
+                      hintText: '请输入新密码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -148,7 +148,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             SizedBox(height: 20),
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text('password3', style: titleStyle)),
+                child: Text('请确认新密码', style: titleStyle)),
             SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -161,7 +161,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   textInputAction: TextInputAction.next,
                   focusNode: newPwNode2,
                   decoration: InputDecoration(
-                      hintText: 'input_password4',
+                      hintText: '请在此输入新密码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -180,7 +180,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: WButton(
-                child: Text('forget_password',
+                child: Text('忘记密码？',
                     style: TextUtil.base.regular.underLine.sp(12)),
                 onPressed: () =>
                     Navigator.pushNamed(context, AuthRouter.findHome),
@@ -192,7 +192,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
                 child: ElevatedButton(
                   onPressed: _reset,
-                  child: Text('reset_ok',
+                  child: Text('确认更改',
                       style: TextUtil.base.regular.reverse(context).sp(13)),
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.all(5),

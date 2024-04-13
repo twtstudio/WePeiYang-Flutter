@@ -134,7 +134,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            'feedback_search_history',
+            '历史记录',
             style: TextUtil.base.primary(context).w600.sp(19),
           ),
           InkWell(
@@ -238,12 +238,12 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                   WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
               titleTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
-              cancelText: 'feedback_cancel',
+              cancelText: '取消',
               confirmTextStyle:
                   TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
               cancelTextStyle:
                   TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-              confirmText: 'feedback_ok',
+              confirmText: '确定',
               cancelFun: () {
                 Navigator.pop(context);
               },
@@ -253,7 +253,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
                 setState(() {});
                 Navigator.pop(context);
               },
-              content: Text('feedback_clear_history'));
+              content: Text('确认清除所有搜索记录吗？'));
         });
   }
 }

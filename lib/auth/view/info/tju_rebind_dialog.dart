@@ -97,7 +97,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset('assets/images/tju_error.png', height: 25),
           SizedBox(width: 5),
-          Text('wrong' + "！",
+          Text('出错了' + "！",
               style: TextUtil.base.bold.sp(17).oldSecondaryAction(context))
         ]),
         SizedBox(height: 8),
@@ -142,7 +142,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             margin: const EdgeInsets.fromLTRB(25, 30, 25, 10),
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text('login',
+              child: Text('登录',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

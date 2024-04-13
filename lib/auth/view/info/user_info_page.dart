@@ -64,7 +64,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text('avatar', style: mainTextStyle),
+                        child: Text('头像', style: mainTextStyle),
                       ),
                       Hero(
                           tag: 'avatar',
@@ -89,7 +89,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   },
                   child: Row(
                     children: [
-                      Text('user_name', style: mainTextStyle),
+                      Text('用户名', style: mainTextStyle),
                       Expanded(
                         child: Text(
                           CommonPreferences.nickname.value,
@@ -116,12 +116,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   },
                   child: Row(
                     children: [
-                      Text('office_network', style: mainTextStyle),
+                      Text('办公网', style: mainTextStyle),
                       Spacer(),
                       Text(
                           CommonPreferences.isBindTju.value
-                              ? 'is_bind'
-                              : 'not_bind',
+                              ? '已绑定'
+                              : '未绑定',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,
@@ -142,7 +142,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text('reset_password',
+                        child: Text('密码更改',
                             style: mainTextStyle),
                       ),
                       arrow,
@@ -191,12 +191,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     children: [
                       Image.asset('assets/images/telephone.png', width: 20.w),
                       SizedBox(width: 12.w),
-                      Text('phone2', style: mainTextStyle),
+                      Text('电话', style: mainTextStyle),
                       Spacer(),
                       Text(
                           (CommonPreferences.phone.value != "")
-                              ? 'is_bind'
-                              : 'not_bind',
+                              ? '已绑定'
+                              : '未绑定',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,
@@ -217,12 +217,12 @@ class _UserInfoPageState extends State<UserInfoPage> {
                     children: [
                       Image.asset('assets/images/email.png', width: 20.w),
                       SizedBox(width: 12.w),
-                      Text('email2', style: mainTextStyle),
+                      Text('邮箱', style: mainTextStyle),
                       Spacer(),
                       Text(
                           (CommonPreferences.email.value != "")
-                              ? 'is_bind'
-                              : 'not_bind',
+                              ? '已绑定'
+                              : '未绑定',
                           style: hintTextStyle),
                       SizedBox(width: 10.w),
                       arrow,

@@ -43,7 +43,7 @@ class TjuUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text('tju_unbind_hint',
+              child: Text('解除办公网绑定后无法正常使用课表、GPA、考表功能。您是否确定解除绑定？',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -56,7 +56,7 @@ class TjuUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('cancel', style: _hintStyle),
+                    child: Text('取消', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -64,7 +64,7 @@ class TjuUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('ok', style: _hintStyle),
+                    child: Text('确定', style: _hintStyle),
                   ),
                 )
               ],
@@ -99,7 +99,7 @@ class PhoneUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text('phone_unbind_hint',
+              child: Text('解除手机号绑定后无法使用手机号登录微北洋。若本次登录为手机号登录则将退出登录，需要您重新进行账号密码登录。您是否确定解除绑定？',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -112,7 +112,7 @@ class PhoneUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('cancel', style: _hintStyle),
+                    child: Text('取消', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -120,7 +120,7 @@ class PhoneUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('ok', style: _hintStyle),
+                    child: Text('确定', style: _hintStyle),
                   ),
                 )
               ],
@@ -155,7 +155,7 @@ class EmailUnbindDialog extends Dialog {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-              child: Text('email_unbind_hint',
+              child: Text('解除邮箱绑定后无法使用邮箱登录微北洋。若本次登录为邮箱登录则将退出登录，需要您重新进行账号密码登录。您是否确定解除绑定？',
                   textAlign: TextAlign.center,
                   style: TextUtil.base.normal.noLine
                       .sp(11)
@@ -168,7 +168,7 @@ class EmailUnbindDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('cancel', style: _hintStyle),
+                    child: Text('取消', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -176,7 +176,7 @@ class EmailUnbindDialog extends Dialog {
                   onPressed: () => _unbind(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('ok', style: _hintStyle),
+                    child: Text('确定', style: _hintStyle),
                   ),
                 )
               ],

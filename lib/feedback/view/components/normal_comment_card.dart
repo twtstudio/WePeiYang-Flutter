@@ -277,7 +277,7 @@ class _NCommentCardState extends State<NCommentCard>
                                   id: widget.comment.id,
                                   onSuccess: () {
                                     ToastProvider.success(
-                                        'feedback_delete_success');
+                                        '删除成功');
                                     setState(() {
                                       _isDeleted = true;
                                     });
@@ -321,7 +321,7 @@ class _NCommentCardState extends State<NCommentCard>
                               floorId: widget.comment.id,
                               onSuccess: () {
                                 ToastProvider.success(
-                                    'feedback_delete_success');
+                                    '删除成功');
                                 setState(() {
                                   _isDeleted = true;
                                 });

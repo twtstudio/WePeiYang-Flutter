@@ -35,7 +35,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
       return Column(children: [
         SizedBox(height: 60),
         Text(
-          "${'bind_email'}: ",
+          "${'绑定邮箱'}: ",
           textAlign: TextAlign.center,
           style: TextUtil.base.bold.sp(15).oldSecondaryAction(context),
         ),
@@ -55,7 +55,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     barrierDismissible: true,
                     builder: (BuildContext context) => EmailUnbindDialog())
                 .then((_) => this.setState(() {})),
-            child: Text('unbind',
+            child: Text('解除绑定',
                 style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
@@ -83,7 +83,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
             constraints: BoxConstraints(maxHeight: 55),
             child: TextField(
               decoration: InputDecoration(
-                  hintText: 'email2',
+                  hintText: '邮箱',
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor: WpyTheme.of(context)
@@ -104,7 +104,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
             margin: const EdgeInsets.symmetric(horizontal: 30),
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text('bind',
+              child: Text('绑定',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -150,7 +150,7 @@ class _EmailBindPageState extends State<EmailBindPage> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 30),
-                child: Text('email_bind',
+                child: Text('邮箱绑定',
                     style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
               ),
               Column(
@@ -159,8 +159,8 @@ class _EmailBindPageState extends State<EmailBindPage> {
                     margin: const EdgeInsets.fromLTRB(0, 32, 0, 30),
                     child: Text(
                         (CommonPreferences.email.value != "")
-                            ? 'is_bind'
-                            : 'not_bind',
+                            ? '已绑定'
+                            : '未绑定',
                         style: TextUtil.base.bold.unlabeled(context).sp(12)),
                   ),
                 ],

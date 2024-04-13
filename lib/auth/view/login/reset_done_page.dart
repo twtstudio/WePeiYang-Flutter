@@ -24,7 +24,7 @@ class ResetDoneWidget extends StatelessWidget {
         children: [
           SizedBox(height: 180),
           Center(
-            child: Text('reset_password_done',
+            child: Text('密码修改完成',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 20),
@@ -34,7 +34,7 @@ class ResetDoneWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(
                   context, AuthRouter.login, (route) => false),
-              child: Text('login3',
+              child: Text('前往登录',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

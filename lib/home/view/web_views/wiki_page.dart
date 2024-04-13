@@ -26,7 +26,7 @@ class WikiPage extends StatelessWidget {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         appBar: AppBar(
-            title: Text('wiki',
+            title: Text('北洋维基',
                 style: TextUtil.base.bold.sp(16).blue52hz(context)),
             elevation: 0,
             centerTitle: true,

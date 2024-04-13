@@ -53,7 +53,7 @@ class _SettingPageState extends State<SettingPage> {
     final hintTextStyle = TextUtil.base.bold.sp(12).oldHintDarkest(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('setting',
+        title: Text('设置',
             style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         elevation: 0,
         centerTitle: true,
@@ -94,7 +94,7 @@ class _SettingPageState extends State<SettingPage> {
                   SizedBox(width: 12.w),
                   Expanded(
                     child:
-                        Text('reset_user_info', style: mainTextStyle),
+                        Text('个人信息更改', style: mainTextStyle),
                   ),
                   arrow,
                   SizedBox(width: 15.w),
@@ -168,7 +168,7 @@ class _SettingPageState extends State<SettingPage> {
                   Image.asset('assets/images/twt.png', width: 20.w),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text('about_twt', style: mainTextStyle),
+                    child: Text('关于天外天', style: mainTextStyle),
                   ),
                   arrow,
                   SizedBox(width: 15.w),
@@ -199,10 +199,10 @@ class _SettingPageState extends State<SettingPage> {
                       size: 20),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text('check_new', style: mainTextStyle),
+                    child: Text('检查更新', style: mainTextStyle),
                   ),
                   Text(
-                      "${'current_version'}: " +
+                      "${'当前版本'}: " +
                           (Platform.isIOS
                               ? iosLocalVersion
                               : EnvConfig.VERSION),
@@ -234,7 +234,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Text('logout', style: mainTextStyle),
+                    child: Text('登出', style: mainTextStyle),
                   ),
                 ],
               ),

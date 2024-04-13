@@ -63,7 +63,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('setting_general', style: titleTextStyle),
+                child: Text('通用', style: titleTextStyle),
               ),
               SizedBox(height: 10.h),
               Container(
@@ -356,7 +356,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('schedule', style: titleTextStyle),
+                child: Text('课程表', style: titleTextStyle),
               ),
               // SizedBox(height: 10.h),
               // // Container(
@@ -412,10 +412,10 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('setting_night_mode',
+                          Text('开启夜猫子模式',
                               style: mainTextStyle),
                           SizedBox(height: 3.h),
-                          Text('setting_night_mode_hint',
+                          Text('晚上9:00以后首页课表将展示第二天课程安排',
                               style: hintTextStyle)
                         ],
                       ),
@@ -460,7 +460,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('setting_day_number',
+                            Text('每周显示天数',
                                 style: mainTextStyle),
                             SizedBox(height: 5.h),
                             Text('${CommonPreferences.dayNumber.value}',

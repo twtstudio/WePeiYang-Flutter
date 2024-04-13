@@ -39,7 +39,7 @@ class LogoutDialog extends Dialog {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 20),
-            Text('logout_hint',
+            Text('您确定要退出登录吗？',
                 style: TextUtil.base.normal.noLine
                     .sp(13)
                     .oldSecondaryAction(context)),
@@ -51,7 +51,7 @@ class LogoutDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('cancel', style: _hintStyle),
+                    child: Text('取消', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -59,7 +59,7 @@ class LogoutDialog extends Dialog {
                   onPressed: () => _logout(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('ok', style: _hintStyle),
+                    child: Text('确定', style: _hintStyle),
                   ),
                 )
               ],

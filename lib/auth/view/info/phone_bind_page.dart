@@ -56,7 +56,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
         SizedBox(height: 70),
         Center(
           child: Text(
-              "${'bind_phone'}: ${CommonPreferences.phone.value}",
+              "${'已绑定号码'}: ${CommonPreferences.phone.value}",
               style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         ),
         SizedBox(height: 95),
@@ -69,7 +69,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     barrierDismissible: true,
                     builder: (BuildContext context) => PhoneUnbindDialog())
                 .then((_) => this.setState(() {})),
-            child: Text('unbind',
+            child: Text('解除绑定',
                 style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
@@ -100,7 +100,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               constraints: BoxConstraints(maxHeight: 55),
               child: TextField(
                 decoration: InputDecoration(
-                    hintText: 'phone',
+                    hintText: '手机号',
                     hintStyle: hintStyle,
                     filled: true,
                     fillColor:
@@ -125,7 +125,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
-                        hintText: 'text_captcha',
+                        hintText: '短信验证码',
                         hintStyle: hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -173,7 +173,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                           })
                       : ElevatedButton(
                           onPressed: _fetchCaptcha,
-                          child: Text('fetch_captcha',
+                          child: Text('获取验证码',
                               style: TextUtil.base.regular
                                   .reverse(context)
                                   .sp(13)),
@@ -208,7 +208,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
             margin: const EdgeInsets.symmetric(horizontal: 30),
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text('bind',
+              child: Text('绑定',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -257,15 +257,15 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
               Container(
                 alignment: Alignment.centerLeft,
                 margin: const EdgeInsets.fromLTRB(35, 20, 20, 20),
-                child: Text('phone_bind',
+                child: Text('电话号码绑定',
                     style: TextUtil.base.bold.sp(28).oldFurthAction(context)),
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 32, 0, 20),
                 child: Text(
                     (CommonPreferences.phone.value != "")
-                        ? 'is_bind'
-                        : 'not_bind',
+                        ? '已绑定'
+                        : '未绑定',
                     style: TextUtil.base.bold.unlabeled(context).sp(12)),
               ),
             ],

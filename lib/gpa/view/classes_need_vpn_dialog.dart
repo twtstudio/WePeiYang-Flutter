@@ -42,7 +42,7 @@ class ClassesNeedVPNDialog extends Dialog {
               child: Container(
                 decoration: BoxDecoration(),
                 padding: const EdgeInsets.all(12),
-                child: Text('ok',
+                child: Text('确定',
                     style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
               ),
             ),

@@ -78,7 +78,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
       body: Column(
         children: [
           Center(
-            child: Text('add_info_hint',
+            child: Text('请补全信息后登录',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 30),
@@ -92,7 +92,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _emailFocus,
                 decoration: InputDecoration(
-                    hintText: 'email',
+                    hintText: '邮箱号',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor:
@@ -120,7 +120,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               child: TextField(
                 focusNode: _phoneFocus,
                 decoration: InputDecoration(
-                    hintText: 'phone',
+                    hintText: '手机号',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor:
@@ -146,7 +146,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: 'text_captcha',
+                        hintText: '短信验证码',
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context)
@@ -197,7 +197,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
                             })
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            child: Text('fetch_captcha',
+                            child: Text('获取验证码',
                                 style: TextUtil.base.regular
                                     .reverse(context)
                                     .sp(13)),
@@ -230,7 +230,7 @@ class _AddInfoWidgetState extends State<AddInfoWidget> {
               margin: const EdgeInsets.symmetric(horizontal: 30),
               child: ElevatedButton(
                 onPressed: _submit,
-                child: Text('login2',
+                child: Text('提交并登录',
                     style: TextUtil.base.regular.reverse(context).sp(13)),
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.all(5),

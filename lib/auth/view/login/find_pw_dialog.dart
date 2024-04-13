@@ -28,10 +28,10 @@ class FindPwDialog extends Dialog {
               child: Column(
                 children: [
                   SizedBox(height: 30),
-                  Text('has_not_bind_hint1',
+                  Text('您好！请联系辅导员进行密码重置！若有疑问，请加入天外天用户社区qq群：',
                       style: _hintStyle, textAlign: TextAlign.center),
                   Spacer(flex: 1),
-                  Text('has_not_bind_hint2',
+                  Text('2群群号：738064793\n3群群号：337647539\n4群群号：758808130',
                       style: _hintStyle, textAlign: TextAlign.center),
                   Spacer(flex: 2),
                 ],

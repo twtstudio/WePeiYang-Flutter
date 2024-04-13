@@ -52,7 +52,7 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        'feedback_report',
+        '举报',
         style: TextUtil.base.NotoSansSC.medium.label(context).sp(18),
       ),
       centerTitle: true,
@@ -73,14 +73,14 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
                 isQuestion: widget.args.isQuestion,
                 reason: textInput,
                 onSuccess: () {
-                  ToastProvider.success('feedback_report_success');
+                  ToastProvider.success('举报成功');
                   Navigator.pop(context);
                 },
                 onFailure: (e) {
                   ToastProvider.error(e.error.toString());
                 });
           },
-          child: Text('feedback_report',
+          child: Text('举报',
               style: TextUtil.base.NotoSansSC.reverse(context).w600.sp(18)),
           style: buttonStyle,
         ));

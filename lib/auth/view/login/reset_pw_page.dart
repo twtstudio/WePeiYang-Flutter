@@ -59,7 +59,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       body: Column(
         children: [
           Center(
-            child: Text('find_password_title',
+            child: Text('天外天账号密码找回',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 30),
@@ -74,7 +74,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 textInputAction: TextInputAction.next,
                 focusNode: _pwInput1,
                 decoration: InputDecoration(
-                    hintText: 'input_password1',
+                    hintText: '请输入新密码',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -103,7 +103,7 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
                 keyboardType: TextInputType.visiblePassword,
                 focusNode: _pwInput2,
                 decoration: InputDecoration(
-                    hintText: 'input_password2',
+                    hintText: '再次输入密码',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),

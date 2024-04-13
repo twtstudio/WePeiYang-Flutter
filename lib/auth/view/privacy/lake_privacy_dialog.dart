@@ -277,7 +277,7 @@ class LakePrivacyDialog extends Dialog {
         child: Container(
           decoration: BoxDecoration(), // 加个这个扩大点击事件范围
           padding: const EdgeInsets.all(16),
-          child: Text('ok',
+          child: Text('确定',
               style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
         ),
       );

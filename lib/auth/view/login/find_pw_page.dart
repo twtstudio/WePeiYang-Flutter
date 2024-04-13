@@ -32,7 +32,7 @@ class FindPwWidget extends StatelessWidget {
         children: [
           Spacer(flex: 1),
           Center(
-            child: Text('find_password_title',
+            child: Text('天外天账号密码找回',
                 style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
           ),
           SizedBox(height: 40),
@@ -42,7 +42,7 @@ class FindPwWidget extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () =>
                   Navigator.pushNamed(context, AuthRouter.findPhone),
-              child: Text('has_bind_phone',
+              child: Text('账号已绑定手机号',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
@@ -69,7 +69,7 @@ class FindPwWidget extends StatelessWidget {
                   context: context,
                   barrierDismissible: true,
                   builder: (BuildContext context) => FindPwDialog()),
-              child: Text('has_not_bind_phone',
+              child: Text('账号未绑定手机号',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(3),
@@ -154,7 +154,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
         child: Column(
           children: [
             Center(
-              child: Text('find_password_title',
+              child: Text('天外天账号密码找回',
                   style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
             ),
             SizedBox(height: 40),
@@ -162,7 +162,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
               constraints: BoxConstraints(maxHeight: 55),
               child: TextField(
                 decoration: InputDecoration(
-                    hintText: 'phone',
+                    hintText: '手机号',
                     hintStyle: _hintStyle,
                     filled: true,
                     fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -184,7 +184,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                   ),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: 'text_captcha',
+                        hintText: '短信验证码',
                         hintStyle: _hintStyle,
                         filled: true,
                         fillColor: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
@@ -232,7 +232,7 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                             })
                         : ElevatedButton(
                             onPressed: _fetchCaptcha,
-                            child: Text('fetch_captcha',
+                            child: Text('获取验证码',
                                 style: TextUtil.base.regular
                                     .reverse(context)
                                     .sp(13)),

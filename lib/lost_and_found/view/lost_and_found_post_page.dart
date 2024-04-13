@@ -101,7 +101,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                   phone: dataModel.phone,
                   images: images,
                   onSuccess: () {
-                    ToastProvider.success('feedback_post_success');
+                    ToastProvider.success('发布成功');
                     Navigator.pop(context);
                     Navigator.pop(context);
                   },
@@ -130,7 +130,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         phone: dataModel.phone,
         images: [],
         onSuccess: () {
-          ToastProvider.success('feedback_post_success');
+          ToastProvider.success('发布成功');
           Navigator.pop(context);
           Navigator.pop(context);
         },
@@ -338,7 +338,7 @@ class _TitleInputFieldState extends State<LostAndFoundTitleInputField> {
             decoration: InputDecoration.collapsed(
                 hintStyle:
                     TextUtil.base.NotoSansSC.w700.sp(18).infoText(context),
-                hintText: 'feedback_enter_title'),
+                hintText: '添加标题'),
             onChanged: (text) {
               titleCounter.value = '${text.characters.length} / 30';
             },
@@ -484,18 +484,18 @@ class _LostAndFoundImagesGridViewState
         builder: (context) => AlertDialog(
                 titleTextStyle:
                     TextUtil.base.NotoSansSC.w500.sp(14).label(context),
-                title: Text('feedback_delete_image_content'),
+                title: Text('是否要删除此图片'),
                 actions: [
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop('cancel');
                       },
-                      child: Text('feedback_cancel')),
+                      child: Text('取消')),
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop('ok');
                       },
-                      child: Text('feedback_ok')),
+                      child: Text('确定')),
                 ]));
   }
 

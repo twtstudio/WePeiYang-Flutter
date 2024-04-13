@@ -30,7 +30,7 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: AppBar(
-            title: Text('message',
+            title: Text('消息',
                 style: TextUtil.base.bold.sp(16).blue52hz(context)),
             elevation: 0,
             centerTitle: true,

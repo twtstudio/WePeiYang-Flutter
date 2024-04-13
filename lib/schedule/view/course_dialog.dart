@@ -172,7 +172,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('class_id', style: _hintNameStyle),
+              Text('逻辑班号', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(pair.first.classId, style: _hintValueStyle)
             ],
@@ -182,7 +182,7 @@ class CourseDialog extends Dialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'campus',
+                '校区',
                 style: _hintNameStyle.copyWith(letterSpacing: 3.0),
               ),
               Padding(
@@ -201,7 +201,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('arrange_room', style: _hintNameStyle),
+              Text('上课地点', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(replaceBuildingWord(pair.arrange.location),
                   style: _hintValueStyle)
@@ -211,7 +211,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('arrange_week', style: _hintNameStyle),
+              Text('起止周', style: _hintNameStyle),
               SizedBox(height: 3.h),
               Text(pair.first.weeks, style: _hintValueStyle)
             ],
@@ -220,7 +220,7 @@ class CourseDialog extends Dialog {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('credit',
+              Text('学分',
                   style: _hintNameStyle.copyWith(letterSpacing: 3)),
               Padding(
                 padding: const EdgeInsets.only(top: 3, left: 2),
@@ -234,7 +234,7 @@ class CourseDialog extends Dialog {
   Widget _getRow3(Pair<Course, int> pair) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('time',
+          Text('时间',
               style: _hintNameStyle.copyWith(letterSpacing: 3)),
           SizedBox(height: 3.h),
           Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle)

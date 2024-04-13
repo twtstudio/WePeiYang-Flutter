@@ -69,7 +69,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
     if (CommonPreferences.isBindTju.value)
       return Column(children: [
         SizedBox(height: 30),
-        Text("${'bind_account'}: ${CommonPreferences.tjuuname.value}",
+        Text("${'绑定账号'}: ${CommonPreferences.tjuuname.value}",
             style: TextUtil.base.bold.sp(15).oldSecondaryAction(context)),
         SizedBox(height: 60),
         SizedBox(
@@ -81,7 +81,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     barrierDismissible: true,
                     builder: (BuildContext context) => TjuUnbindDialog())
                 .then((_) => this.setState(() {})),
-            child: Text('unbind',
+            child: Text('解除绑定',
                 style: TextUtil.base.regular.reverse(context).sp(13)),
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(3),
@@ -107,7 +107,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
         child: Column(children: [
           SizedBox(height: 30),
           Text(
-            'tju_bind_hint',
+            '只有绑定了办公网后才能正常使用课表、GPA、考表功能。若忘记密码请前往办公网找回。',
             style: TextUtil.base.regular.sp(10).oldThirdAction(context),
           ),
           SizedBox(height: 20),
@@ -122,7 +122,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
               cursorColor:
                   WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
               decoration: InputDecoration(
-                  hintText: 'tju_account',
+                  hintText: '办公网账号(学号)',
                   hintStyle: hintStyle,
                   filled: true,
                   fillColor:
@@ -158,7 +158,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.basicTextColor)),
                     decoration: InputDecoration(
-                      hintText: 'password',
+                      hintText: '密码',
                       hintStyle: hintStyle,
                       filled: true,
                       fillColor: WpyTheme.of(context)
@@ -195,7 +195,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
             width: 400,
             child: ElevatedButton(
               onPressed: _bind,
-              child: Text('bind',
+              child: Text('绑定',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -278,7 +278,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
                   Container(
                     alignment: Alignment.centerLeft,
                     margin: const EdgeInsets.fromLTRB(35, 10, 20, 50),
-                    child: Text('tju_bind',
+                    child: Text('办公网账号绑定',
                         style:
                             TextUtil.base.bold.sp(28).oldFurthAction(context)),
                   ),
@@ -286,8 +286,8 @@ class _TjuBindPageState extends State<TjuBindPage> {
                     margin: EdgeInsets.fromLTRB(0, 22, 0, 50),
                     child: Text(
                         CommonPreferences.isBindTju.value
-                            ? 'is_bind'
-                            : 'not_bind',
+                            ? '已绑定'
+                            : '未绑定',
                         style:
                             TextUtil.base.bold.oldListAction(context).sp(12)),
                   ),

@@ -295,7 +295,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ));
         } else {
           body = Center(
-            child: Text('feedback_no_post',
+            child: Text('未检索到相关问题',
                 style: TextUtil.base.regular.infoText(context)),
           );
         }

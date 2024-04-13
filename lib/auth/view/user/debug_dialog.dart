@@ -34,7 +34,7 @@ class DebugDialog extends Dialog {
                   onPressed: () => Navigator.pop(context),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('cancel', style: _hintStyle),
+                    child: Text('取消', style: _hintStyle),
                   ),
                 ),
                 SizedBox(width: 30),
@@ -43,7 +43,7 @@ class DebugDialog extends Dialog {
                       Navigator.pushReplacementNamed(context, AuthRouter.debug),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text('ok', style: _hintStyle),
+                    child: Text('确定', style: _hintStyle),
                   ),
                 )
               ],

@@ -417,11 +417,11 @@ class _LikeMessagesListState extends State<LikeMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text('load_fail');
+            body = Text('加载失败！点击重试！');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text('load_more');
+            body = Text('松手,加载更多!');
           } else {
-            body = Text('no_more_data');
+            body = Text('没有更多数据了!');
           }
           return SizedBox(
             height: 55,
@@ -783,11 +783,11 @@ class _FloorMessagesListState extends State<FloorMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text('load_fail');
+            body = Text('加载失败！点击重试！');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text('load_more');
+            body = Text('松手,加载更多!');
           } else {
-            body = Text('no_more_data');
+            body = Text('没有更多数据了!');
           }
           return SizedBox(
             height: 55,
@@ -1197,11 +1197,11 @@ class _ReplyMessagesListState extends State<ReplyMessagesList>
           } else if (mode == LoadStatus.loading) {
             body = CupertinoActivityIndicator();
           } else if (mode == LoadStatus.failed) {
-            body = Text('load_fail');
+            body = Text('加载失败！点击重试！');
           } else if (mode == LoadStatus.canLoading) {
-            body = Text('load_more');
+            body = Text('松手,加载更多!');
           } else {
-            body = Text('no_more_data');
+            body = Text('没有更多数据了!');
           }
           return SizedBox(
             height: 55,

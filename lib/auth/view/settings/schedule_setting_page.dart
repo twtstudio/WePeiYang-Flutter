@@ -13,14 +13,14 @@ class ScheduleSettingPage extends StatefulWidget {
 
 class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
   final upNumberList = [
-    "5${'day'}",
-    "6${'day'}",
-    "7${'day'}"
+    "5${'天'}",
+    "6${'天'}",
+    "7${'天'}"
   ];
   final downNumberList = [
-    'mon_fri',
-    'mon_sat',
-    'mon_sun'
+    '周一至周五',
+    '周一至周六',
+    '周一至周日'
   ];
   int _index = CommonPreferences.dayNumber.value - 5;
 
@@ -106,7 +106,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.fromLTRB(35, 20, 35, 0),
             child: Text(
-              "${'schedule'}-${'setting_day_number'}",
+              "${'课程表'}-${'每周显示天数'}",
               style: TextUtil.base.bold.sp(28).oldFurthAction(context),
             ),
           ),
@@ -114,7 +114,7 @@ class _ScheduleSettingPageState extends State<ScheduleSettingPage> {
             margin: const EdgeInsets.fromLTRB(35, 15, 35, 20),
             alignment: Alignment.centerLeft,
             child: Text(
-              'setting_day_number_hint',
+              '课程表页面将会根据选择调整展示的天数。',
               style: TextUtil.base.regular.sp(11.5).oldThirdAction(context),
             ),
           ),

@@ -908,7 +908,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   //     .refreshController
                                   //     .requestRefresh();
                                   ToastProvider.success(
-                                      'feedback_delete_success');
+                                      '删除成功');
                                   Navigator.of(context).popAndPushNamed(
                                       FeedbackRouter.home,
                                       arguments: 2);
@@ -1359,18 +1359,18 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('feedback_delete_image_content'),
+        title: Text('是否要删除此图片'),
         actions: [
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('cancel');
               },
-              child: Text('feedback_cancel')),
+              child: Text('取消')),
           WButton(
               onPressed: () {
                 Navigator.of(context).pop('ok');
               },
-              child: Text('feedback_ok')),
+              child: Text('确定')),
         ],
       ),
     );
@@ -1755,7 +1755,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                     .id]
                 ?.refreshController
                 .requestRefresh();
-            ToastProvider.success('feedback_delete_success');
+            ToastProvider.success('删除成功');
             Navigator.of(context).pop();
             Navigator.of(context).pop();
           },
