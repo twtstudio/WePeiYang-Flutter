@@ -95,6 +95,16 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         'GPA',
         GPARouter.gpa,
       ),
+      CardBean(
+          ColoredIcon(
+            'assets/svg_pics/lake_butt_icons/game.png',
+            width: 33.w,
+            color: themePrimary,
+          ),
+          '小游戏',
+          'Game',
+          HomeRouter.game,
+      )
     ];
   }
 
