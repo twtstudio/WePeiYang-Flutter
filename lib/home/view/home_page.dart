@@ -16,12 +16,10 @@ import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
-import 'package:we_pei_yang_flutter/urgent_report/report_server.dart';
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/colored_icon.dart';
-import 'dialogs/activity_dialog.dart';
 
 class HomePage extends StatefulWidget {
   final int? page;
@@ -85,12 +83,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
       }
 
-      var hasReport = await ReportService.getTodayHasReported();
-      if (hasReport) {
-        CommonPreferences.reportTime.value = DateTime.now().toString();
-      } else {
-        CommonPreferences.reportTime.value = '';
-      }
       // 检查当前是否有未处理的事件
       context.findAncestorStateOfType<WePeiYangAppState>()?.checkEventList();
       // 友盟统计账号信息

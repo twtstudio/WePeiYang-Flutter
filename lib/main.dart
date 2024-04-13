@@ -44,7 +44,6 @@ import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
-import 'urgent_report/report_server.dart';
 
 /// 应用入口
 final _entry = WePeiYangApp();
@@ -313,7 +312,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
             return messageProvider;
           },
         ),
-        Provider.value(value: ReportDataModel()),
       ],
       child: Builder(builder: (context) {
         // 获取友盟在线参数
