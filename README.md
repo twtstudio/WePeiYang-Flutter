@@ -49,7 +49,6 @@
 | [message](twtstudio/WePeiYang-Flutter/tree/master/lib/message) | 消息列表                                         | 一键已读                                           |
 | [schedule](twtstudio/WePeiYang-Flutter/tree/master/lib/schedule) | 小窗展示、主页面展示课程安排、课程细节、考试信息 | 夜猫子模式、考试信息                               |
 | [studyroom](twtstudio/WePeiYang-Flutter/tree/master/lib/studyroom) | 自习室信息                                       |                                                    |
-| [urgent_report(特殊时期产物)](twtstudio/WePeiYang-Flutter/tree/master/lib/urgent_report) | 定位、不同楼宇区分                               |                                                    |
 | [main.dart](twtstudio/WePeiYang-Flutter/blob/master/lib/main.dart) | 程序入口、初始化，启动！                         | 启动页设置                                         |
 
 目前代码质量较高的模块有xx 。里面的代码涵盖了xx的用法，xx的高级使用方式，架构的抽象封装，自定义 View 等。 如果不知道从哪里做起，可以先从xx看起，然后一步步追溯到 xxx，看处理方式。
