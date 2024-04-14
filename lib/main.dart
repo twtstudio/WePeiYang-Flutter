@@ -371,7 +371,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     // 点击空白区域取消TextField焦点
     return GestureDetector(
       child: child,
-      onTapDown: (TapDownDetails details) {
+      onTapUp: (_) {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus &&
             currentFocus.focusedChild != null) {
