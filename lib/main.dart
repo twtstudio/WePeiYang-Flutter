@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/foundation.dart'
     show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
@@ -89,11 +88,11 @@ void main() async {
     /// 初始化Connectivity
     await NetStatusListener.init();
 
-    /// 初始化高德API
-    await AmapLocation.instance.updatePrivacyAgree(true);
-    await AmapLocation.instance.updatePrivacyShow(true);
-    await AmapLocation.instance
-        .init(iosKey: '02b9aee6190b4afe20b0ddd7ec0eb374');
+    /// 初始化高德API 暂时干掉 之后重新启用
+    // await AmapLocation.instance.updatePrivacyAgree(true);
+    // await AmapLocation.instance.updatePrivacyShow(true);
+    // await AmapLocation.instance
+    //     .init(iosKey: '02b9aee6190b4afe20b0ddd7ec0eb374');
 
     /// 设置桌面端窗口适配, 依赖为 window_manager
     if (Platform.isWindows) {
@@ -401,7 +400,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
   var now = DateTime.now().toLocal();
 
-
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
@@ -412,8 +410,8 @@ class _StartUpWidgetState extends State<StartUpWidget> {
 
     // 根据条件选择图标路径
     String iconPath = isDarkMode
-            ? 'assets/images/splash_screen_dark.png'
-            : 'assets/images/splash_screen.png';
+        ? 'assets/images/splash_screen_dark.png'
+        : 'assets/images/splash_screen.png';
 
     // 根据条件选择图标颜色
     Color? iconColor = _isFoolDay

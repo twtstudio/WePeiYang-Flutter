@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/auth/view/privacy/privacy_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -96,14 +94,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         GPARouter.gpa,
       ),
       CardBean(
-          ColoredIcon(
-            'assets/svg_pics/lake_butt_icons/game.png',
-            width: 33.w,
-            color: themePrimary,
-          ),
-          '小游戏',
-          'Game',
-          HomeRouter.game,
+        ColoredIcon(
+          'assets/svg_pics/lake_butt_icons/game.png',
+          width: 33.w,
+          color: themePrimary,
+        ),
+        '小游戏',
+        'Game',
+        HomeRouter.game,
       )
     ];
   }

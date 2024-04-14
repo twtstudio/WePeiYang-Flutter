@@ -684,7 +684,6 @@ class AnnouncementBannerWidget extends StatelessWidget {
   }
 }
 
-
 //https://www.cnblogs.com/qqcc1388/p/12405548.html
 /// 跑马灯哗哗哗
 class TextScroller extends StatefulWidget {
@@ -695,9 +694,9 @@ class TextScroller extends StatefulWidget {
 
   TextScroller(
       {required this.paddingLeft,
-        required this.duration,
-        required this.stepOffset,
-        required this.children});
+      required this.duration,
+      required this.stepOffset,
+      required this.children});
 
   _TextScrollerState createState() => _TextScrollerState();
 }

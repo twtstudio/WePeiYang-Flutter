@@ -23,17 +23,17 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!--高德定位sdk https://lbs.amap.com/api/android-location-sdk/guide/android-location/getlocation -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
+    <!--    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />-->
+    <!--    <uses-permission android:name="android.permission.INTERNET" />-->
+    <!--    <uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
+    <!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />-->
+    <!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />-->
 
     <!--应用内更新-->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -157,10 +157,10 @@
         </activity>
 
         <!--    高德-->
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />
-        <service android:name="com.amap.api.location.APSService" />
+<!--        <meta-data-->
+<!--            android:name="com.amap.api.v2.apikey"-->
+<!--            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />-->
+<!--        <service android:name="com.amap.api.location.APSService" />-->
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
