@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, TextTreeRenderer;
+    show DiagnosticsTreeStyle, PlatformDispatcher, TextTreeRenderer;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -214,12 +215,18 @@ class WePeiYangAppState extends State<WePeiYangApp>
         LakeTokenManager().refreshToken();
       }
     });
+    SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
+        _onBrightnessChanged;
   }
+
+  void _onBrightnessChanged() async =>
+      await Future.delayed(Duration(milliseconds: 400)).then(
+        (_) => WpyTheme.updateAutoDarkTheme(context),
+      );
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      WpyTheme.updateAutoDarkTheme(context);
       checkEventList();
     }
   }
