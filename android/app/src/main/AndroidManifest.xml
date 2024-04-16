@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!--高德定位sdk https://lbs.amap.com/api/android-location-sdk/guide/android-location/getlocation -->
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
     <!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
     <!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
     <!--    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
@@ -70,6 +70,11 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="m">
+
+        <!--        Impeller 打包可用 调试还是坏的-->
+        <!--        <meta-data-->
+        <!--            android:name="io.flutter.embedding.android.EnableImpeller"-->
+        <!--            android:value="true" />-->
 
         <!--    应用主Activity    -->
         <activity
@@ -131,9 +136,8 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            tools:replace="android:theme"
-            />
-        <activity android:name="com.android.camera.CropImage"/>
+            tools:replace="android:theme" />
+        <activity android:name="com.android.camera.CropImage" />
 
 
         <!--    QQ sdk必备Activity -->
@@ -157,10 +161,10 @@
         </activity>
 
         <!--    高德-->
-<!--        <meta-data-->
-<!--            android:name="com.amap.api.v2.apikey"-->
-<!--            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />-->
-<!--        <service android:name="com.amap.api.location.APSService" />-->
+        <!--        <meta-data-->
+        <!--            android:name="com.amap.api.v2.apikey"-->
+        <!--            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />-->
+        <!--        <service android:name="com.amap.api.location.APSService" />-->
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
