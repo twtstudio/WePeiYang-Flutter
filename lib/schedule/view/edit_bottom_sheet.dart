@@ -58,7 +58,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
     var pvd = context.read<EditProvider>();
     int frameCheck = pvd.check();
     if (frameCheck != -1) {
-      ToastProvider.error('time frame ${frameCheck + 1} 信息不完整');
+      ToastProvider.error('时段 ${frameCheck + 1} 信息不完整');
       return false;
     }
     return true;

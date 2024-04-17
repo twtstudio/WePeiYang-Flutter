@@ -58,7 +58,7 @@ class TimeFrameWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('time frame ${index + 1}',
+              Text('时段 ${index + 1}',
                   style: TextUtil.base.Swis.medium.label(context).sp(16)),
               Spacer(),
               // canDelete为false时改为白色是为了不改变row的高度
