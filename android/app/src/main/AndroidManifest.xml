@@ -78,7 +78,7 @@
 
         <!--    应用主Activity    -->
         <activity
-            android:name="MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:fitsSystemWindows="true"
@@ -94,6 +94,7 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+
             <!--            &lt;!&ndash; Displays an Android View that continues showing the launch screen-->
             <!--                 Drawable until Flutter paints its first frame, then this splash-->
             <!--                 screen fades out. A splash screen is useful to avoid any visual-->
@@ -106,6 +107,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <meta-data
+                    android:name="android.app.shortcuts"
+                    android:resource="@xml/shortcuts" />
             </intent-filter>
             <!--        求实论坛通知拉起应用    -->
             <!--        微北洋信箱通知拉起应用    -->

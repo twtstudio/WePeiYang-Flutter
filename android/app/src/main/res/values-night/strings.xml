@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    widgets string-->
     <!--    gradle中修改-->
     <!--    <string name="label">微北洋</string>-->
-    <string name="widget_label">微北洋课程表-简约</string>
+    <string name="widget_label">课程表</string>
+
+    <!--    shortcuts string-->
+
+    <!--    wiki shortcuts string-->
+    <string name="wiki_disabled_message"> </string>
+    <string name="wiki_shortcut_short_label">维基</string>
+    <string name="wiki_longcut_long_label">维基</string>
+    <!--    todo shortcuts string-->
+    <string name="todo_disabled_message"> </string>
+    <string name="todo_shortcut_short_label">待办</string>
+    <string name="todo_longcut_long_label">待办</string>
+    <!--    push shortcuts string-->
+    <string name="push_disabled_message"> </string>
+    <string name="push_shortcut_short_label">冒泡</string>
+    <string name="push_longcut_long_label">冒泡</string>
+    <!--    schedule shortcuts string-->
+    <string name="schedule_disabled_message"> </string>
+    <string name="schedule_shortcut_short_label">课程表</string>
+    <string name="schedule_longcut_long_label">课程表</string>
 </resources>

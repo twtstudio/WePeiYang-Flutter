@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/wiki"
+        android:shortcutDisabledMessage="@string/wiki_disabled_message"
+        android:shortcutId="Wiki"
+        android:shortcutLongLabel="@string/wiki_shortcut_long_label"
+        android:shortcutShortLabel="@string/wiki_shortcut_short_label">
+        <!--intent
+            android:action="android.intent.action.VIEW"
+            android:data="content://xiaweizi.com/fromStaticShortcut"
+            android:targetClass="com.example.xiaweizi.shortcutsdemo.TestActivity"
+            android:targetPackage="com.example.xiaweizi.shortcutsdemo" /-->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/todo"
+        android:shortcutDisabledMessage="@string/todo_disabled_message"
+        android:shortcutId="Todo"
+        android:shortcutLongLabel="@string/todo_shortcut_long_label"
+        android:shortcutShortLabel="@string/todo_shortcut_short_label">
+        <!--intent
+            android:action="android.intent.action.VIEW"
+            android:data="content://xiaweizi.com/fromStaticShortcut"
+            android:targetClass="com.example.xiaweizi.shortcutsdemo.TestActivity"
+            android:targetPackage="com.example.xiaweizi.shortcutsdemo"/-->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/push"
+        android:shortcutDisabledMessage="@string/push_disabled_message"
+        android:shortcutId="Schedule"
+        android:shortcutLongLabel="@string/push_shortcut_long_label"
+        android:shortcutShortLabel="@string/push_shortcut_short_label">
+        <!--intent
+            android:action="android.intent.action.VIEW"
+            android:data="content://xiaweizi.com/fromStaticShortcut"
+            android:targetClass="com.example.xiaweizi.shortcutsdemo.TestActivity"
+            android:targetPackage="com.example.xiaweizi.shortcutsdemo" /-->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/schedule"
+        android:shortcutDisabledMessage="@string/schedule_disabled_message"
+        android:shortcutId="Push"
+        android:shortcutLongLabel="@string/schedule_shortcut_long_label"
+        android:shortcutShortLabel="@string/schedule_shortcut_short_label">
+        <!--intent
+            android:action="android.intent.action.VIEW"
+            android:data="content://xiaweizi.com/fromStaticShortcut"
+            android:targetClass="com.example.xiaweizi.shortcutsdemo.TestActivity"
+            android:targetPackage="com.example.xiaweizi.shortcutsdemo" /-->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>
