@@ -10,17 +10,17 @@
     <!--    wiki shortcuts string-->
     <string name="wiki_disabled_message"> </string>
     <string name="wiki_shortcut_short_label">维基</string>
-    <string name="wiki_longcut_long_label">维基</string>
+    <string name="wiki_shortcut_long_label">维基</string>
     <!--    todo shortcuts string-->
     <string name="todo_disabled_message"> </string>
     <string name="todo_shortcut_short_label">待办</string>
-    <string name="todo_longcut_long_label">待办</string>
+    <string name="todo_shortcut_long_label">待办</string>
     <!--    push shortcuts string-->
-    <string name="push_disabled_message"> </string>
-    <string name="push_shortcut_short_label">冒泡</string>
-    <string name="push_longcut_long_label">冒泡</string>
+    <string name="post_disabled_message"> </string>
+    <string name="ost_shortcut_short_label">冒泡</string>
+    <string name="push_shortcut_long_label">冒泡</string>
     <!--    schedule shortcuts string-->
     <string name="schedule_disabled_message"> </string>
     <string name="schedule_shortcut_short_label">课程表</string>
-    <string name="schedule_longcut_long_label">课程表</string>
+    <string name="schedule_shortcut_long_label">课程表</string>
 </resources>

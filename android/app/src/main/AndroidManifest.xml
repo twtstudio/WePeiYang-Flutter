@@ -107,9 +107,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-                <meta-data
-                    android:name="android.app.shortcuts"
-                    android:resource="@xml/shortcuts" />
             </intent-filter>
             <!--        求实论坛通知拉起应用    -->
             <!--        微北洋信箱通知拉起应用    -->
