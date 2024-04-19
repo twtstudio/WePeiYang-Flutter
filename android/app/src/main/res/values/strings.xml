@@ -17,8 +17,8 @@
     <string name="todo_shortcut_long_label">待办</string>
     <!--    push shortcuts string-->
     <string name="post_disabled_message"> </string>
-    <string name="ost_shortcut_short_label">冒泡</string>
-    <string name="push_shortcut_long_label">冒泡</string>
+    <string name="post_shortcut_short_label">冒泡</string>
+    <string name="post_shortcut_long_label">冒泡</string>
     <!--    schedule shortcuts string-->
     <string name="schedule_disabled_message"> </string>
     <string name="schedule_shortcut_short_label">课程表</string>
