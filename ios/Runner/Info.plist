@@ -89,7 +89,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
+	<string>Automatic</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 </dict>

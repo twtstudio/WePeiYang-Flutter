@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -22,6 +23,17 @@ class WpyTheme extends InheritedWidget {
   bool updateShouldNotify(covariant WpyTheme oldWidget) {
     return oldWidget.themeData.meta.themeId != themeData.meta.themeId;
   }
+
+  static Future<bool> isDarkMode(BuildContext context) async {
+    if (Platform.isIOS) {
+      // 使用iOS原生代码检测是否启用了暗黑模式
+      bool isDarkModeEnabled = await iOSThemeService.isDarkModeEnabled();
+      return isDarkModeEnabled;
+    } else {
+      // 对于其他平台，使用Flutter的MediaQuery来检测
+      return MediaQuery.of(context).platformBrightness == Brightness.dark;
+    }
+  } // 事实上不需要单独通过iOS原生代码来获取iOS深色模式状态，MediaQuery就够用了...
 
   Color? get primary => themeData.data.primaryColor;
 
@@ -53,7 +65,7 @@ class WpyTheme extends InheritedWidget {
     globalTheme.value = theme;
   }
 
-  static void updateAutoDarkTheme(BuildContext context) {
+  static Future<void> updateAutoDarkTheme(BuildContext context) async{
     if (!CommonPreferences.autoDarkTheme.value) return;
 
     // 检查要移动到什么主题
@@ -65,7 +77,7 @@ class WpyTheme extends InheritedWidget {
       }
     }, orElse: () => WpyThemeData.brightThemeList[0]);
 
-    if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+    if (await isDarkMode(context)) {
       if (globalTheme.value.meta.brightness == Brightness.light) {
         globalTheme.value = shiftTheme;
         CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
@@ -92,3 +104,12 @@ extension BrightnessSystemUiOverlay on Brightness {
 }
 
 final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);
+
+class iOSThemeService {
+  static const channel = MethodChannel('com.twt.WePeiYang/theme');
+
+  static Future<bool> isDarkModeEnabled() async {
+    final bool isDarkMode = await channel.invokeMethod('isDarkMode');
+    return isDarkMode;
+  }
+}
