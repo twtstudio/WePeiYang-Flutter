@@ -35,17 +35,6 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
 
         GeneratedPluginRegistrant.register(with: self)
 
-        // 设置用于检查暗黑模式的 Flutter 方法通道
-        let themeChannel = FlutterMethodChannel(name: "com.twt.WePeiYang/theme",binaryMessenger: controller.binaryMessenger)
-        themeChannel.setMethodCallHandler {
-            (call, result) -> Void in
-            if call.method == "isDarkMode" {
-                result(ThemeHelper.isDarkMode())
-            } else {
-                result(FlutterMethodNotImplemented)
-            }
-        }
-        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
@@ -54,17 +43,3 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         Channel.reloadWidgetData()
     }
 }
-
-@objc class ThemeHelper: NSObject {
-  @objc static func isDarkMode() -> Bool {
-    if #available(iOS 13.0, *) {
-        return UITraitCollection.current.userInterfaceStyle == .dark
-    } else {
-      // Fallback for iOS versions < 13
-      return true
-    }
-  }
-}
-
-
-

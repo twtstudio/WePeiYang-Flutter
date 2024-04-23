@@ -106,7 +106,7 @@ extension BrightnessSystemUiOverlay on Brightness {
 final globalTheme = ValueNotifier(WpyThemeData.themeList[0]);
 
 class iOSThemeService {
-  static const channel = MethodChannel('com.twt.WePeiYang/theme');
+  static const channel = MethodChannel('com.twt.service/theme');
 
   static Future<bool> isDarkModeEnabled() async {
     final bool isDarkMode = await channel.invokeMethod('isDarkMode');

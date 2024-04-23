@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B4741E62BD7EBC200A785FD /* themeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4741E52BD7EBC200A785FD /* themeHandler.swift */; };
 		556667755269D4177BC0246F /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9E9900FEA97484C9015D7CF /* Pods_Runner.framework */; };
 		568EF1EE28D6400000074B70 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB42890230E00569DB3 /* WidgetKit.framework */; };
 		568EF1EF28D6400000074B70 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56B1FDB62890230F00569DB3 /* SwiftUI.framework */; };
@@ -80,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		3B4741E52BD7EBC200A785FD /* themeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = themeHandler.swift; sourceTree = "<group>"; };
 		4EC6C351A3468DCC55593FFC /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		568EF1ED28D63FFF00074B70 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		568EF1F128D6400000074B70 /* widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = widget.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 				9D7D7FF228D8A74D004C4576 /* pushHandler.swift */,
 				9D7D7FF428D8A758004C4576 /* umengStatisticsHandler.swift */,
 				9D7D7FF628D8A761004C4576 /* widgetHandler.swift */,
+				3B4741E52BD7EBC200A785FD /* themeHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -560,6 +563,7 @@
 				D302FA1E28C6654400B47A90 /* UMAnalyticsSwift.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				9D7D7FF328D8A74D004C4576 /* pushHandler.swift in Sources */,
+				3B4741E62BD7EBC200A785FD /* themeHandler.swift in Sources */,
 				D302FA2228C67F6800B47A90 /* GetuiExtension.swift in Sources */,
 				D302FA2028C6654400B47A90 /* UMCommonLogSwift.swift in Sources */,
 				56ECC29028D8C3C700181B96 /* Model.swift in Sources */,
@@ -665,7 +669,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 202404220055;
+				CURRENT_PROJECT_VERSION = 202404220102;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -914,7 +918,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 202404220055;
+				CURRENT_PROJECT_VERSION = 202404220102;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -941,7 +945,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 202404220055;
+				CURRENT_PROJECT_VERSION = 202404220102;
 				DEVELOPMENT_TEAM = A4JNABY964;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
