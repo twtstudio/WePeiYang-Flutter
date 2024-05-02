@@ -40,71 +40,20 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  List<CardBean> get cards {
-    final Color? themePrimary = WpyTheme.of(context).primary;
-    return [
-      CardBean(
-          ColoredIcon(
-            "assets/svg_pics/lake_butt_icons/daily.png",
-            width: 21.w,
-            color: themePrimary,
-          ),
-          '课程表',
-          'Schedule',
-          ScheduleRouter.course),
-      CardBean(
-          Icon(
-              // newspaper
-              Icons.article_rounded,
-              size: 24.w,
-              color: (themePrimary?.withOpacity(0.7) ??
-                  (WpyTheme.of(context).brightness == Brightness.light
-                          ? Color(0xFF81BAFE)
-                          : Colors.white)
-                      .withOpacity(0.7))),
-          '新闻网',
-          'News',
-          HomeRouter.news),
-      CardBean(
-          ColoredIcon(
-            'assets/images/schedule/add.png',
-            width: 24.w,
-            color: themePrimary,
-          ),
-          '地图·校历',
-          'Map-\nCalendar',
-          HomeRouter.mapCalenderPage),
-      CardBean(
-          ColoredIcon(
-            'assets/svg_pics/lake_butt_icons/wiki.png',
-            width: 24.w,
-            color: themePrimary,
-          ),
-          '北洋维基',
-          'Wiki',
-          'https://wiki.tjubot.cn/'),
-      CardBean(
-        Icon(
-          Icons.timeline,
-          size: 25,
-          color: themePrimary,
-        ),
-        '成绩',
-        'GPA',
-        GPARouter.gpa,
-      ),
-      // CardBean(
-      //   ColoredIcon(
-      //     'assets/svg_pics/lake_butt_icons/game.png',
-      //     width: 33.w,
-      //     color: themePrimary,
-      //   ),
-      //   '小游戏',
-      //   'Game',
-      //   HomeRouter.game,
-      // )
-    ];
-  }
+  List<CardBean> cards = [
+    CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
+        'Schedule', ScheduleRouter.course),
+    CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
+        HomeRouter.news),
+    CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
+        HomeRouter.mapCalenderPage),
+    CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
+        'https://wiki.tjubot.cn/'),
+    CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
+        GPARouter.gpa),
+    CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
+        HomeRouter.game)
+  ];
 
   String md = '';
 
@@ -133,24 +82,8 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
-    //隐私政策部分挪到了app一打开就会显示的部分（login_page.dart里面
-    // if (CommonPreferences.firstPrivacy.value == true) {
-    //   rootBundle.loadString('privacy/privacy_content.md').then((str) {
-    //     setState(() {
-    //       md = str;
-    //     });
-    //   });
-    // }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      // if (CommonPreferences.firstPrivacy.value == true) {
-      //   showDialog(
-      //       context: context,
-      //       barrierDismissible: false,
-      //       builder: (BuildContext context) {
-      //         return PrivacyDialog(md);
-      //       });
-      //   CommonPreferences.firstPrivacy.value = false;
-      // }
       var info = await acidInfo;
       if (info.id != -1 &&
           hasShow == false &&
@@ -446,7 +379,11 @@ class SliverCardsWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              bean.icon
+              ColoredIcon(
+                bean.path,
+                width: bean.width,
+                color: WpyTheme.of(context).primary,
+              )
             ],
           ),
           SizedBox(width: 14.w),
@@ -476,12 +413,13 @@ class SliverCardsWidget extends StatelessWidget {
 }
 
 class CardBean {
-  Widget icon;
+  String path;
+  double? width;
   String label;
   String eng;
   String route;
 
-  CardBean(this.icon, this.label, this.eng, this.route);
+  CardBean(this.path, this.width, this.label, this.eng, this.route);
 }
 
 class WPYScrollBehavior extends ScrollBehavior {

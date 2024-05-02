@@ -1,4 +1,10 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
+
+import '../../gpa/gpa_router.dart';
+import '../../home/home_router.dart';
+import '../../schedule/schedule_router.dart';
 
 class CommonPreferences {
   CommonPreferences._();
@@ -106,6 +112,21 @@ class CommonPreferences {
 
   /// 首页工具栏的东西
   static final fastJumpOrder = PrefsBean<String>('fastJumpOrder', "[]");
+  static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
+    CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
+        'Schedule', ScheduleRouter.course),
+    CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
+        HomeRouter.news),
+    CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
+        HomeRouter.mapCalenderPage),
+    CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
+        'https://wiki.tjubot.cn/'),
+    CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
+        GPARouter.gpa),
+    CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
+        HomeRouter.game)
+  ]);
+  static final userTool = PrefsBean<List<CardBean>>('userTool', []);
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
@@ -143,7 +164,7 @@ class CommonPreferences {
   /// 清除所有缓存
   static void clearAllPrefs() {
     sharedPref.clear();
-    firstPrivacy.value = false;//隐私政策不重复显示了
+    firstPrivacy.value = false; //隐私政策不重复显示了
   }
 
   /// 清除办公网缓存
