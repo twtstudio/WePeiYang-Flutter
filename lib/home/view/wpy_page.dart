@@ -52,6 +52,20 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
           '课程表',
           'Schedule',
           ScheduleRouter.course),
+
+      CardBean(
+          Icon(
+              // newspaper
+              Icons.qr_code_rounded,
+              size: 24.w,
+              color: (themePrimary?.withOpacity(0.7) ??
+                  (WpyTheme.of(context).brightness == Brightness.light
+                          ? Color(0xFF81BAFE)
+                          : Colors.white)
+                      .withOpacity(0.7))),
+          '入校码',
+          'Entry QR',
+          HomeRouter.casQR),
       CardBean(
           Icon(
               // newspaper

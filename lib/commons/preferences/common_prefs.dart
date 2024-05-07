@@ -15,7 +15,7 @@ class CommonPreferences {
   static final token = PrefsBean<String>('token');
   static final nickname = PrefsBean<String>('nickname', '未登录');
   static final lakeNickname = PrefsBean<String>('lakeNickname');
-  static final userNumber = PrefsBean<String>('userNumber');
+  static final userNumber = PrefsBean<String>('userNumber'); // sid 学号
   static final phone = PrefsBean<String>('phone');
   static final email = PrefsBean<String>('email');
   static final account = PrefsBean<String>('account');
@@ -143,7 +143,7 @@ class CommonPreferences {
   /// 清除所有缓存
   static void clearAllPrefs() {
     sharedPref.clear();
-    firstPrivacy.value = false;//隐私政策不重复显示了
+    firstPrivacy.value = false; //隐私政策不重复显示了
   }
 
   /// 清除办公网缓存

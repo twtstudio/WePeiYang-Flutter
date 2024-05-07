@@ -23,6 +23,8 @@ dependencies:
 
   pointycastle: ^3.1.1
   xml: ^6.5.0
+  # 显示二维码
+  syncfusion_flutter_barcodes: ^25.1.42
 
   badges: ^3.1.1
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Widget;
 import "package:flutter/src/widgets/basic.dart";
+import 'package:we_pei_yang_flutter/home/view/cas_qr_page.dart';
 
 import 'view/home_page.dart';
 import 'view/lost_and_found_home_page.dart';
@@ -19,7 +20,8 @@ class HomeRouter {
   static String notice = 'home/notice';
   static String laf = ''; //'home/laf' 现在还不能上线
   static String news = 'home/news';
-  static String game ='';//'home/game'(虚空索引一下.jpg
+  static String casQR = 'home/casQR';
+  static String game = ''; //'home/game'(虚空索引一下.jpg
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     home: (args) => HomePage(args),
     wiki: (_) => WikiPage(),
@@ -28,6 +30,7 @@ class HomeRouter {
     notice: (_) => Builder(builder: (context) => NoticesPage(context: context)),
     laf: (_) => LostAndFoundHomePage(),
     news: (_) => NewsPage(),
-    game:(_) => GamePage()
+    game: (_) => GamePage(),
+    casQR: (_) => CasQRPage(),
   };
 }
