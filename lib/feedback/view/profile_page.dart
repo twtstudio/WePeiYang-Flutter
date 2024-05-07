@@ -362,7 +362,7 @@ class _ProfilePageState extends State<ProfilePage> {
           gradient: WpyTheme.of(context)
               .getGradient(WpyColorSetKey.backgroundGradient)),
       child: SafeArea(
-        bottom: false,
+        bottom: true,
         child: SmartRefresher(
           physics: BouncingScrollPhysics(),
           controller: _refreshController,
