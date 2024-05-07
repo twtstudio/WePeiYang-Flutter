@@ -92,5 +92,24 @@
 	<string>Automatic</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.twt.service.qr</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>入校码</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>ShortcutQR</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.twt.service.courses</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>课程表</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeDate</string>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -245,7 +245,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                 ),
                 child: WButton(
                   onPressed: () {
-                    CommonPreferences.fastJumpOrder.value = "[]";
+                        Navigator.pushNamed(context, AuthRouter.toolbarManage);
                   },
                   child: Row(
                     children: [
@@ -254,13 +254,13 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('重置导航栏顺序', style: mainTextStyle),
+                            Text('编辑工具栏', style: mainTextStyle),
                             SizedBox(height: 3.h),
-                            Text("长按拖拽可排序 点击重置", style: hintTextStyle)
+                            Text("新建或选择标签 或重置", style: hintTextStyle)
                           ],
                         ),
                       ),
-                      Icon(Icons.restore,
+                      Icon(Icons.edit,
                           color: WpyTheme.of(context)
                               .get(WpyColorKey.oldListActionColor),
                           size: 22),

@@ -200,7 +200,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
-
+    _listenForShortcutActions();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
@@ -219,6 +219,24 @@ class WePeiYangAppState extends State<WePeiYangApp>
         _onBrightnessChanged;
   }
 
+  Future<void> _listenForShortcutActions() async {
+    const methodChannel = MethodChannel('com.twt.service/shortcutItem');
+    // Dart端的方法监听
+    methodChannel.setMethodCallHandler((MethodCall call) async {
+      switch (call.method) {
+        case 'onShortcutAction':
+          String actionType = call.arguments;
+          if (actionType == "com.twt.service.courses") {
+            WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+          }
+          break;
+        default:
+          print('No action for ${call.method}');
+      }
+    });
+  }
+
+
   void _onBrightnessChanged() async =>
       await Future.delayed(Duration(milliseconds: 400)).then(
         (_) => WpyTheme.updateAutoDarkTheme(context),
@@ -227,6 +245,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      _listenForShortcutActions();
       checkEventList();
     }
   }
