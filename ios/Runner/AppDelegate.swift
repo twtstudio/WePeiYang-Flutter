@@ -34,6 +34,10 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
 
         GeneratedPluginRegistrant.register(with: self)
+        
+        if let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem {
+                handleShortcutItem(shortcutItem, controller: controller)
+            }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
@@ -41,5 +45,22 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
     override func applicationWillResignActive(_ application: UIApplication) {
         // 每次退出到桌面的时候刷新下
         Channel.reloadWidgetData()
+    }
+    
+    override func application(
+        _ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        let controller = window.rootViewController as! FlutterViewController
+        handleShortcutItem(shortcutItem, controller: controller)
+        completionHandler(true)
+    }
+    
+    private func handleShortcutItem(_ shortcutItem: UIApplicationShortcutItem, controller: FlutterViewController) {
+        let channelName = "com.twt.service/shortcutItem"
+        let channel = FlutterMethodChannel(name: channelName, binaryMessenger: controller.binaryMessenger)
+        // 向Flutter发送快捷操作标识
+        channel.invokeMethod("onShortcutAction", arguments: shortcutItem.type)
     }
 }
