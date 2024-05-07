@@ -196,43 +196,47 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           ),
           elevation: 0,
         ),
-        body: Container(
-          color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
-          child: Column(
-            children: [
-              Spacer(),
-              getAvatar(),
-              Spacer(),
-              Divider(
+        body: SafeArea(
+          bottom: true,
+          top: false,
+          child: Container(
+            color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
+            child: Column(
+              children: [
+                Spacer(),
+                getAvatar(),
+                Spacer(),
+                Divider(
+                    height: 1.0,
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor)),
+                SizedBox(height: 10),
+                WButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AuthRouter.avatarBox)
+                        .then((_) => this.setState(() {}));
+                  },
+                  child: Text(
+                    '更换头像框',
+                    style: TextUtil.base.bright(context).sp(16),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Divider(
                   height: 1.0,
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor)),
-              SizedBox(height: 10),
-              WButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AuthRouter.avatarBox)
-                      .then((_) => this.setState(() {}));
-                },
-                child: Text(
-                  '更换头像框',
-                  style: TextUtil.base.bright(context).sp(16),
+                  color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
                 ),
-              ),
-              SizedBox(height: 10),
-              Divider(
-                height: 1.0,
-                color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
-              ),
-              SizedBox(height: 10),
-              WButton(
-                onPressed: () => showActionButtons(context),
-                child: Text(
-                  '修改个人头像',
-                  style: TextUtil.base.bright(context).sp(16),
+                SizedBox(height: 10),
+                WButton(
+                  onPressed: () => showActionButtons(context),
+                  child: Text(
+                    '修改个人头像',
+                    style: TextUtil.base.bright(context).sp(16),
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-            ],
+                SizedBox(height: 10),
+              ],
+            ),
           ),
         ));
   }
