@@ -368,7 +368,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
     return PopScope(
       onPopInvoked: (didPop) async {
         context.read<NewFloorProvider>().clearAndClose();
-        Navigator.pop(context);
+        if (!didPop) Navigator.pop(context);
       },
       canPop: true,
       // onWillPop: () async {
