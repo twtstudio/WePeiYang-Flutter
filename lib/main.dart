@@ -166,6 +166,29 @@ void main() async {
   }));
 }
 
+String _shortcutActionType = "";
+//iOS快捷操作
+Future<void> _listenForShortcutActions() async {
+  const methodChannel = MethodChannel('com.twt.service/shortcutItem');
+  // Dart端的方法监听
+  methodChannel.setMethodCallHandler((MethodCall call) async {
+    switch (call.method) {
+      case 'onShortcutAction':
+        String actionType = call.arguments;
+        _shortcutActionType = call.arguments;
+        if (actionType == "com.twt.service.courses") {
+          WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+        }
+        else if(actionType == "com.twt.service.qr") {
+          WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+        }
+        break;
+      default:
+        print('No action for ${call.method}');
+    }
+  });
+}
+
 final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
@@ -200,7 +223,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
-    _listenForShortcutActions();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
@@ -217,28 +239,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
     });
     SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
         _onBrightnessChanged;
+    _listenForShortcutActions();
   }
 
-  //iOS快捷操作
-  Future<void> _listenForShortcutActions() async {
-    const methodChannel = MethodChannel('com.twt.service/shortcutItem');
-    // Dart端的方法监听
-    methodChannel.setMethodCallHandler((MethodCall call) async {
-      switch (call.method) {
-        case 'onShortcutAction':
-          String actionType = call.arguments;
-          if (actionType == "com.twt.service.courses") {
-            WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-          }
-          else if(actionType == "com.twt.service.qr") {
-            WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
-          }
-          break;
-        default:
-          print('No action for ${call.method}');
-      }
-    });
-  }
 
   void _onBrightnessChanged() async =>
       await Future.delayed(Duration(milliseconds: 400)).then(
@@ -498,8 +501,20 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       ).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+            if (Platform.isIOS) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+              if (_shortcutActionType == "com.twt.service.courses") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+              }
+              else if(_shortcutActionType == "com.twt.service.qr") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+              }
+            }
+            if(Platform.isAndroid){
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+            }
           },
           onFailure: (_) {
             if (CommonPreferences.account.value != '' &&
@@ -509,8 +524,20 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   CommonPreferences.password.value,
                   onResult: (_) {}, onFailure: (_) {});
             }
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+            if (Platform.isIOS) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+              if (_shortcutActionType == "com.twt.service.courses") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+              }
+              else if(_shortcutActionType == "com.twt.service.qr") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+              }
+            }
+            if(Platform.isAndroid){
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+            }
           },
         ),
       );
