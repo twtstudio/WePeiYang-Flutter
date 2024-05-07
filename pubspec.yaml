@@ -19,7 +19,10 @@ dependencies:
     sdk: flutter
 
   async: ^2.8.2
-#  amap_location_fluttify: ^0.22.0
+  #  amap_location_fluttify: ^0.22.0
+
+  pointycastle: ^3.1.1
+  xml: ^6.5.0
 
   badges: ^3.1.1
 

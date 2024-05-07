@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
+import 'package:we_pei_yang_flutter/commons/network/cas_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -238,6 +239,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           canPop: false,
           onPopInvoked: (didPop) {
             if (didPop) return;
+
             CommonPreferences.lastActivityDialogShownDate.value = "";
             if (_tabController.index == 0) {
               if (_lastPressedAt == null ||
