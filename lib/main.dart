@@ -219,6 +219,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
         _onBrightnessChanged;
   }
 
+  //iOS快捷操作
   Future<void> _listenForShortcutActions() async {
     const methodChannel = MethodChannel('com.twt.service/shortcutItem');
     // Dart端的方法监听
@@ -229,13 +230,15 @@ class WePeiYangAppState extends State<WePeiYangApp>
           if (actionType == "com.twt.service.courses") {
             WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
           }
+          else if(actionType == "com.twt.service.qr") {
+            WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+          }
           break;
         default:
           print('No action for ${call.method}');
       }
     });
   }
-
 
   void _onBrightnessChanged() async =>
       await Future.delayed(Duration(milliseconds: 400)).then(
