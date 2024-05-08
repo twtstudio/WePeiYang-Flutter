@@ -52,9 +52,9 @@ class NetworkImageSSL extends ImageProvider<NetworkImageSSL> {
   // }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    final NetworkImageSSL typedOther = other;
+    final NetworkImageSSL typedOther = other as NetworkImageSSL;
     return url == typedOther.url && scale == typedOther.scale;
   }
 
