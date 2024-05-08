@@ -36,10 +36,9 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         GeneratedPluginRegistrant.register(with: self)
         
         if let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem {
-            // 延迟2秒执行
+            // 延迟1.5秒执行，等app初始化好
             let delaySeconds = 1.5
             DispatchQueue.main.asyncAfter(deadline: .now() + delaySeconds) {
-                // 这里放入要延时执行的代码
                 self.handleShortcutItem(shortcutItem, controller: controller)
                 }
             }

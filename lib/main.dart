@@ -247,9 +247,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
       _listenForShortcutActions();
       if (_shortcutActionType == "com.twt.service.courses") {
         WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+        _shortcutActionType = "";
       }
       else if(_shortcutActionType == "com.twt.service.qr") {
         WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+        _shortcutActionType = "";
       }
       checkEventList();
     }
@@ -505,9 +507,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   context, HomeRouter.home, (route) => false);
               if (_shortcutActionType == "com.twt.service.courses") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+                _shortcutActionType = "";
               }
               else if(_shortcutActionType == "com.twt.service.qr") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+                _shortcutActionType = "";
               }
             }
             if(Platform.isAndroid){
@@ -528,9 +532,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   context, HomeRouter.home, (route) => false);
               if (_shortcutActionType == "com.twt.service.courses") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+                _shortcutActionType = "";
               }
               else if(_shortcutActionType == "com.twt.service.qr") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+                _shortcutActionType = "";
               }
             }
             if(Platform.isAndroid){
