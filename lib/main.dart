@@ -167,6 +167,7 @@ void main() async {
 }
 
 String _shortcutActionType = "";
+String _shortcutResumeActionType = "";
 //iOS快捷操作
 Future<void> _listenForShortcutActions() async {
   const methodChannel = MethodChannel('com.twt.service/shortcutItem');
@@ -175,6 +176,7 @@ Future<void> _listenForShortcutActions() async {
     switch (call.method) {
       case 'onShortcutAction':
         _shortcutActionType = call.arguments;
+        _shortcutResumeActionType = call.arguments;
         break;
       default:
         print('No action for ${call.method}');
@@ -245,13 +247,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listenForShortcutActions();
-      if (_shortcutActionType == "com.twt.service.courses") {
+      if (_shortcutResumeActionType == "com.twt.service.courses") {
         WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-        _shortcutActionType = "";
+        _shortcutResumeActionType = "";
       }
-      else if(_shortcutActionType == "com.twt.service.qr") {
+      else if(_shortcutResumeActionType == "com.twt.service.qr") {
         WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
-        _shortcutActionType = "";
+        _shortcutResumeActionType = "";
       }
       checkEventList();
     }
@@ -507,11 +509,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   context, HomeRouter.home, (route) => false);
               if (_shortcutActionType == "com.twt.service.courses") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-                _shortcutActionType = "";
+                _shortcutResumeActionType = "";
               }
               else if(_shortcutActionType == "com.twt.service.qr") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
-                _shortcutActionType = "";
+                _shortcutResumeActionType = "";
               }
             }
             if(Platform.isAndroid){
@@ -532,11 +534,11 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   context, HomeRouter.home, (route) => false);
               if (_shortcutActionType == "com.twt.service.courses") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-                _shortcutActionType = "";
+                _shortcutResumeActionType = "";
               }
               else if(_shortcutActionType == "com.twt.service.qr") {
                 WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
-                _shortcutActionType = "";
+                _shortcutResumeActionType = "";
               }
             }
             if(Platform.isAndroid){
