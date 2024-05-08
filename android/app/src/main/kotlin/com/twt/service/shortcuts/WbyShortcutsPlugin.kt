@@ -1,6 +1,6 @@
-package com.twt.service.shortcuts
+/*package com.twt.service.shortcuts
 
-import android.content.Context
+//import android.content.Context
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodChannel
 import com.twt.service.common.WbyPlugin
