@@ -1,4 +1,5 @@
 import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
+import 'package:we_pei_yang_flutter/commons/network/cas_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 
@@ -38,6 +39,17 @@ class SplashService with AsyncTimer {
     } catch (e, stack) {
       Logger.reportError(e, stack);
       return [];
+    }
+  }
+
+  static Future<KeyPair?> getKeyPair() async {
+    try {
+      var response = await splashDio.get("keypair");
+      var result = response.data['result'];
+      return KeyPair.fromJson(result);
+    } catch (e, stack) {
+      Logger.reportError(e, stack);
+      return null;
     }
   }
 }
