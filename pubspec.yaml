@@ -50,6 +50,7 @@ dependencies:
   flutter_markdown: ^0.6.22
   flutter_rating_bar: ^4.0.1
   flutter_native_image: ^0.0.6+1
+  flutter_screenutil: ^5.9.0
   flutter_smart_dialog: ^4.9.6
   flutter_svg: ^2.0.10
 
