@@ -174,14 +174,7 @@ Future<void> _listenForShortcutActions() async {
   methodChannel.setMethodCallHandler((MethodCall call) async {
     switch (call.method) {
       case 'onShortcutAction':
-        String actionType = call.arguments;
         _shortcutActionType = call.arguments;
-        if (actionType == "com.twt.service.courses") {
-          WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-        }
-        else if(actionType == "com.twt.service.qr") {
-          WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
-        }
         break;
       default:
         print('No action for ${call.method}');
@@ -252,6 +245,12 @@ class WePeiYangAppState extends State<WePeiYangApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listenForShortcutActions();
+      if (_shortcutActionType == "com.twt.service.courses") {
+        WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+      }
+      else if(_shortcutActionType == "com.twt.service.qr") {
+        WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+      }
       checkEventList();
     }
   }
