@@ -40,85 +40,18 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  List<CardBean> get cards {
-    final Color? themePrimary = WpyTheme.of(context).primary;
-    return [
-      CardBean(
-          ColoredIcon(
-            "assets/svg_pics/lake_butt_icons/daily.png",
-            width: 21.w,
-            color: themePrimary,
-          ),
-          '课程表',
-          'Schedule',
-          ScheduleRouter.course),
-
-      CardBean(
-          Icon(
-              // newspaper
-              Icons.qr_code_rounded,
-              size: 24.w,
-              color: (themePrimary?.withOpacity(0.7) ??
-                  (WpyTheme.of(context).brightness == Brightness.light
-                          ? Color(0xFF81BAFE)
-                          : Colors.white)
-                      .withOpacity(0.7))),
-          '入校码',
-          'Entry QR',
-          HomeRouter.casQR),
-      CardBean(
-          Icon(
-              // newspaper
-              Icons.article_rounded,
-              size: 24.w,
-              color: (themePrimary?.withOpacity(0.7) ??
-                  (WpyTheme.of(context).brightness == Brightness.light
-                          ? Color(0xFF81BAFE)
-                          : Colors.white)
-                      .withOpacity(0.7))),
-          '新闻网',
-          'News',
-          HomeRouter.news),
-      CardBean(
-          ColoredIcon(
-            'assets/images/schedule/add.png',
-            width: 24.w,
-            color: themePrimary,
-          ),
-          '地图·校历',
-          'Map-\nCalendar',
-          HomeRouter.mapCalenderPage),
-      CardBean(
-          ColoredIcon(
-            'assets/svg_pics/lake_butt_icons/wiki.png',
-            width: 24.w,
-            color: themePrimary,
-          ),
-          '北洋维基',
-          'Wiki',
-          'https://wiki.tjubot.cn/'),
-      CardBean(
-        Icon(
-          Icons.timeline,
-          size: 25,
-          color: themePrimary,
-        ),
-        '成绩',
-        'GPA',
-        GPARouter.gpa,
-      ),
-      // CardBean(
-      //   ColoredIcon(
-      //     'assets/svg_pics/lake_butt_icons/game.png',
-      //     width: 33.w,
-      //     color: themePrimary,
-      //   ),
-      //   '小游戏',
-      //   'Game',
-      //   HomeRouter.game,
-      // )
-    ];
-  }
+  // List<CardBean> cards = [
+  //   CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
+  //       'Schedule', ScheduleRouter.course),
+  //   CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
+  //       HomeRouter.casQR),
+  //   CardBean('assets/svg_pics/lake_butt_icons/news.png', 24.w, '新闻网', 'News',
+  //       HomeRouter.news),
+  //   CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
+  //       HomeRouter.mapCalenderPage),
+  //   CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
+  //       'https://wiki.tjubot.cn/'),
+  // ];
 
   String md = '';
 
@@ -295,7 +228,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// 功能跳转卡片
-        SliverCardsWidget(cards),
+        SliverCardsWidget(CommonPreferences.displayedTool.value),
         if (CommonPreferences.showMap.value) MapAndCalender(),
         Padding(
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
@@ -366,64 +299,41 @@ class SliverCardsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //reorder cards based on common preferences
-    List<int> cardOrder =
-        List.from(json.decode(CommonPreferences.fastJumpOrder.value));
 
-    final ordered_cards = cardOrder.length != 0
-        ? List.generate(cards.length, (index) => cards[cardOrder[index]])
-        : cards;
-
-    Widget cardList = ReorderableListView.builder(
-      proxyDecorator: (Widget child, int index, Animation<double> animation) {
-        return child;
-      },
+    Widget cardList = ListView.builder(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.only(left: 16.h),
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
-      itemCount: ordered_cards.length,
+      itemCount: cards.length,
       itemBuilder: (context, i) {
-        if (ordered_cards[i].label == '北洋维基') {
+        if (cards[i].label == '北洋维基') {
           return WButton(
-            key: ValueKey(ordered_cards[i].route),
+            key: ValueKey(cards[i].route),
             onPressed: () async {
-              if (await canLaunchUrl(Uri.parse(ordered_cards[i].route))) {
-                await launchUrl(Uri.parse(ordered_cards[i].route),
+              if (await canLaunchUrl(Uri.parse(cards[i].route))) {
+                await launchUrl(Uri.parse(cards[i].route),
                     mode: LaunchMode.externalApplication);
               } else {
                 ToastProvider.error('请检查网络状态');
               }
             },
-            child: generateCard(context, ordered_cards[i]),
+            child: generateCard(context, cards[i]),
           );
         } else {
           return WButton(
-            key: ValueKey(ordered_cards[i].route),
+            key: ValueKey(cards[i].route),
             onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
-              if (ordered_cards[i].route == "") {
+              if (cards[i].route == "") {
                 ToastProvider.error('开发中 敬请期待！');
               } else {
-                Navigator.pushNamed(context, ordered_cards[i].route);
+                Navigator.pushNamed(context, cards[i].route);
               }
             },
-            child: generateCard(context, ordered_cards[i]),
+            child: generateCard(context, cards[i]),
           );
         }
-      },
-      onReorder: (int oldIndex, int newIndex) {
-        if (newIndex > oldIndex) {
-          newIndex -= 1;
-        }
-        final CardBean item = ordered_cards.removeAt(oldIndex);
-        ordered_cards.insert(newIndex, item);
-
-        // 1 2 3 4 5 -> 1 2 5 4 3
-        if (cardOrder.length == 0)
-          cardOrder = List.generate(cards.length, (i) => i);
-        final temp = cardOrder.removeAt(oldIndex);
-        cardOrder.insert(newIndex, temp);
-        CommonPreferences.fastJumpOrder.value = json.encode(cardOrder);
       },
     );
 
@@ -460,7 +370,11 @@ class SliverCardsWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              bean.icon
+              ColoredIcon(
+                bean.path,
+                color: WpyTheme.of(context).primary,
+                width: bean.width,
+              )
             ],
           ),
           SizedBox(width: 14.w),
@@ -490,12 +404,13 @@ class SliverCardsWidget extends StatelessWidget {
 }
 
 class CardBean {
-  Widget icon;
+  String path;
+  double? width;
   String label;
   String eng;
   String route;
 
-  CardBean(this.icon, this.label, this.eng, this.route);
+  CardBean(this.path, this.width, this.label, this.eng, this.route);
 }
 
 class WPYScrollBehavior extends ScrollBehavior {

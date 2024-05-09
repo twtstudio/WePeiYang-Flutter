@@ -115,6 +115,8 @@ class CommonPreferences {
   static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
+    CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码',
+        'Entry QR', HomeRouter.casQR),
     CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
         HomeRouter.news),
     CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',

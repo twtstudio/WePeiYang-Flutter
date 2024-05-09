@@ -33,15 +33,17 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
     else {
       setState(() {
         CommonPreferences.userTool.value.add(CardBean(
-            "assets/svg_pics/lake_butt_icons/example${num % 4 + 1}.png",
+            "assets/svg_pics/lake_butt_icons/news.png",
             iconSizeList[num % 4 + 1],
             label,
             eng,
-            url));
+            a?"browser:${url}":url));
       });
       await Future.delayed(Duration(seconds: 1));
       ToastProvider.success("创建成功喵~");
-      Navigator.pop(context);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context);
+      });
     }
   }
 
@@ -67,7 +69,8 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.oldActionColor),
                         size: 25.r),
-                  ),SizedBox(width:10.w),
+                  ),
+                  SizedBox(width: 10.w),
                   Text('新建个性化工具',
                       style:
                           TextUtil.base.PingFangSC.bold.label(context).sp(18)),
@@ -129,7 +132,9 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                                   .sp(14)),
                           Switch(
                             value: a,
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              setState(() => a = !a);
+                            },
                             activeColor: WpyTheme.of(context)
                                 .get(WpyColorKey.oldSecondaryActionColor),
                             inactiveThumbColor: WpyTheme.of(context)
@@ -194,7 +199,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                                         .get(WpyColorKey.oldHintColor)),
                                 borderRadius: BorderRadius.circular(15.w)),
                             child: ColoredIcon(
-                              "assets/svg_pics/lake_butt_icons/example${num % 4 + 1}.png",
+                              "assets/svg_pics/lake_butt_icons/news.png",
                               width: iconSizeList[1],
                               color: WpyTheme.of(context).primary,
                             ),
