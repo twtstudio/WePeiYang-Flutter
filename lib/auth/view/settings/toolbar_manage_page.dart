@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_reorderable_grid_view/entities/order_update_entity.dart';
+import 'package:flutter_reorderable_grid_view/widgets/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/edit_user_tool_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -22,20 +24,16 @@ class ToolbarManagePage extends StatefulWidget {
 }
 
 class _ToolbarManagePageState extends State<ToolbarManagePage> {
-
   List<CardBean> peiYangTools = [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
-    CardBean(
-        'assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
+    CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
         HomeRouter.casQR),
     CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
         HomeRouter.news),
-    CardBean(
-        'assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
+    CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
         HomeRouter.mapCalenderPage),
-    CardBean(
-        'assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
+    CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
@@ -62,6 +60,9 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
           );
         });
   }
+
+  final _scrollController = ScrollController();
+  final _gridViewKey = GlobalKey();
 
   @override
   void initState() {
@@ -99,40 +100,40 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
           ),
           CardWidget(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Text("标题：${CommonPreferences.userTool.value[i].label}",
-                          style:
+                  Text("标题：${CommonPreferences.userTool.value[i].label}",
+                      style:
                           TextUtil.base.PingFangSC.bold.label(context).sp(14))
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text("副标题：${CommonPreferences.userTool.value[i].eng}",
-                          style:
-                          TextUtil.base.PingFangSC.bold.label(context).sp(14))
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text("跳转坐标：",
-                          style:
-                          TextUtil.base.PingFangSC.bold.label(context).sp(14))
-                    ],
-                  ),
-                  ExpandableText(
-                    text: '${CommonPreferences.userTool.value[i].route}',
-                    style: TextUtil.base.PingFangSC.bold.label(context).sp(14),
-                    maxLines: 5,
-                    expand: false,
-                    buttonIsShown: true,
-                    isHTML: false,
-                  )
                 ],
-              )),
+              ),
+              Row(
+                children: [
+                  Text("副标题：${CommonPreferences.userTool.value[i].eng}",
+                      style:
+                          TextUtil.base.PingFangSC.bold.label(context).sp(14))
+                ],
+              ),
+              Row(
+                children: [
+                  Text("跳转坐标：",
+                      style:
+                          TextUtil.base.PingFangSC.bold.label(context).sp(14))
+                ],
+              ),
+              ExpandableText(
+                text: '${CommonPreferences.userTool.value[i].route}',
+                style: TextUtil.base.PingFangSC.bold.label(context).sp(14),
+                maxLines: 5,
+                expand: false,
+                buttonIsShown: true,
+                isHTML: false,
+              )
+            ],
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -190,7 +191,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
             style: TextUtil.base.bold.sp(16).oldActionColor(context)),
         centerTitle: true,
         backgroundColor:
-        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         elevation: 0,
         leading: Padding(
           padding: EdgeInsets.only(left: 15.w),
@@ -227,7 +228,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
         ],
       ),
       backgroundColor:
-      WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       body: SafeArea(
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -236,7 +237,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('可更改前后顺序', //'长按拖拽可调整应用位置（首页也可以喵）'
+                Text('长按拖拽可调整应用位置（首页也可以喵）',
                     style: TextUtil.base.medium.sp(14).oldHint(context))
               ],
             ),
@@ -257,20 +258,20 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  Wrap(
-                    spacing: 20.w,
+                  ReorderableBuilder(
                     children: [
                       for (int i = 0;
-                      i < CommonPreferences.displayedTool.value.length;
-                      i++)
+                          i < CommonPreferences.displayedTool.value.length;
+                          i++)
                         WButton(
+                          key: ValueKey(
+                              CommonPreferences.displayedTool.value[i].route),
                           onPressed: () {
                             setState(() {
                               if (CommonPreferences
-                                  .displayedTool.value.length <=
+                                      .displayedTool.value.length <=
                                   2)
-                                ToastProvider.error(
-                                    "您保留的太少啦！最少两个哦");
+                                ToastProvider.error("您保留的太少啦！最少两个哦");
                               else
                                 CommonPreferences.displayedTool.value
                                     .removeAt(i);
@@ -283,7 +284,30 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                               true),
                         )
                     ],
-                  )
+                    builder: (children) {
+                      return GridView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          key: _gridViewKey,
+                          controller: _scrollController,
+                          children: children,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 30 / 19,
+                            crossAxisSpacing: 15.w,
+                          ));
+                    },
+                    onReorder: (List<OrderUpdateEntity> orderUpdateEntities) {
+                      for (final orderUpdateEntity in orderUpdateEntities) {
+                        final _displayTool = CommonPreferences
+                            .displayedTool.value
+                            .removeAt(orderUpdateEntity.oldIndex);
+                        CommonPreferences.displayedTool.value
+                            .insert(orderUpdateEntity.newIndex, _displayTool);
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -310,23 +334,22 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                       for (int i = 0; i < peiYangTools.length; i++)
                         isDisplayed(peiYangTools[i])
                             ? generateSelectCard(
-                            context, peiYangTools[i], false, true)
+                                context, peiYangTools[i], false, true)
                             : WButton(
-                          onPressed: () {
-                            setState(() {
-                              if (CommonPreferences
-                                  .displayedTool.value.length >=
-                                  8)
-                                ToastProvider.error(
-                                    "会不会太多了呢？最多8个喵~");
-                              else
-                                CommonPreferences.displayedTool.value
-                                    .add(peiYangTools[i]);
-                            });
-                          },
-                          child: generateSelectCard(
-                              context, peiYangTools[i], false, false),
-                        )
+                                onPressed: () {
+                                  setState(() {
+                                    if (CommonPreferences
+                                            .displayedTool.value.length >=
+                                        8)
+                                      ToastProvider.error("会不会太多了呢？最多8个喵~");
+                                    else
+                                      CommonPreferences.displayedTool.value
+                                          .add(peiYangTools[i]);
+                                  });
+                                },
+                                child: generateSelectCard(
+                                    context, peiYangTools[i], false, false),
+                              )
                     ],
                   )
                 ],
@@ -389,60 +412,60 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                   SizedBox(height: 15.h),
                   CommonPreferences.userTool.value.isEmpty
                       ? Container(
-                    height: 48.h,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('这里还什么都没有呢，快去创建一个吧↗',
-                            style: TextUtil.base.medium
-                                .sp(14)
-                                .oldHint(context))
-                      ],
-                    ),
-                  )
+                          height: 48.h,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('这里还什么都没有呢，快去创建一个吧↗',
+                                  style: TextUtil.base.medium
+                                      .sp(14)
+                                      .oldHint(context))
+                            ],
+                          ),
+                        )
                       : Wrap(
-                    spacing: 20.w,
-                    children: [
-                      for (int i = 0;
-                      i < CommonPreferences.userTool.value.length;
-                      i++)
-                        isDisplayed(CommonPreferences.userTool.value[i])
-                            ? GestureDetector(
-                          onLongPress: () {
-                            showDetailDialog(context, i);
-                          },
-                          child: generateSelectCard(
-                              context,
-                              CommonPreferences.userTool.value[i],
-                              false,
-                              true),
-                        )
-                            : GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (CommonPreferences
-                                  .displayedTool.value.length >=
-                                  8)
-                                ToastProvider.error(
-                                    "会不会太多了呢？最多8个喵~");
-                              else
-                                CommonPreferences
-                                    .displayedTool.value
-                                    .add(CommonPreferences
-                                    .userTool.value[i]);
-                            });
-                          },
-                          onLongPress: () {
-                            showDetailDialog(context, i);
-                          },
-                          child: generateSelectCard(
-                              context,
-                              CommonPreferences.userTool.value[i],
-                              false,
-                              false),
-                        )
-                    ],
-                  ),
+                          spacing: 20.w,
+                          children: [
+                            for (int i = 0;
+                                i < CommonPreferences.userTool.value.length;
+                                i++)
+                              isDisplayed(CommonPreferences.userTool.value[i])
+                                  ? GestureDetector(
+                                      onLongPress: () {
+                                        showDetailDialog(context, i);
+                                      },
+                                      child: generateSelectCard(
+                                          context,
+                                          CommonPreferences.userTool.value[i],
+                                          false,
+                                          true),
+                                    )
+                                  : GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (CommonPreferences
+                                                  .displayedTool.value.length >=
+                                              8)
+                                            ToastProvider.error(
+                                                "会不会太多了呢？最多8个喵~");
+                                          else
+                                            CommonPreferences
+                                                .displayedTool.value
+                                                .add(CommonPreferences
+                                                    .userTool.value[i]);
+                                        });
+                                      },
+                                      onLongPress: () {
+                                        showDetailDialog(context, i);
+                                      },
+                                      child: generateSelectCard(
+                                          context,
+                                          CommonPreferences.userTool.value[i],
+                                          false,
+                                          false),
+                                    )
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -489,16 +512,14 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color:
-                        WpyTheme.of(context).get(WpyColorKey.beanDarkColor),
+                            WpyTheme.of(context).get(WpyColorKey.beanDarkColor),
                       ),
                     ),
                   ),
                   ColoredIcon(
                     bean.path,
                     width: bean.width,
-                    color: WpyTheme
-                        .of(context)
-                        .primary,
+                    color: WpyTheme.of(context).primary,
                   )
                 ],
               ),
@@ -511,20 +532,14 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                     width: 70.w,
                     child: Text(bean.eng,
                         maxLines: 2,
-                        style: TextUtil.base.w500
-                            .label(context)
-                            .sp(12)
-                            .w400,
+                        style: TextUtil.base.w500.label(context).sp(12).w400,
                         overflow: TextOverflow.ellipsis),
                   ),
                   SizedBox(
                     width: 70.w,
                     child: Text(bean.label,
                         maxLines: 2,
-                        style: TextUtil.base.w400
-                            .label(context)
-                            .sp(12)
-                            .medium),
+                        style: TextUtil.base.w400.label(context).sp(12).medium),
                   ),
                 ],
               )
@@ -536,15 +551,15 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
               offset: Offset(5.r, -5.r),
               child: isDisplayed
                   ? Image.asset(
-                width: 22.r,
-                "assets/images/tool_minus.png",
-              )
+                      width: 22.r,
+                      "assets/images/tool_minus.png",
+                    )
                   : isSelected
-                  ? null
-                  : Image.asset(
-                width: 22.r,
-                "assets/images/tool_add.png",
-              ),
+                      ? null
+                      : Image.asset(
+                          width: 22.r,
+                          "assets/images/tool_add.png",
+                        ),
             ),
           )
         ],

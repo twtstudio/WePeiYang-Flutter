@@ -38,7 +38,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-
   String md = '';
 
   ValueNotifier<DateTime> _now = ValueNotifier(DateTime.now());
@@ -284,42 +283,56 @@ class SliverCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //reorder cards based on common preferences
-
-    Widget cardList = ListView.builder(
+    Widget cardList = ReorderableListView.builder(
+      proxyDecorator: (Widget child, int index, Animation<double> animation) {
+        return child;
+      },
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.only(left: 16.h),
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
-      itemCount: cards.length,
+      itemCount: CommonPreferences.displayedTool.value.length,
       itemBuilder: (context, i) {
-        if (cards[i].label == '北洋维基') {
+        if (CommonPreferences.displayedTool.value[i].label == '北洋维基') {
           return WButton(
-            key: ValueKey(cards[i].route),
+            key: ValueKey(CommonPreferences.displayedTool.value[i].route),
             onPressed: () async {
-              if (await canLaunchUrl(Uri.parse(cards[i].route))) {
-                await launchUrl(Uri.parse(cards[i].route),
+              if (await canLaunchUrl(
+                  Uri.parse(CommonPreferences.displayedTool.value[i].route))) {
+                await launchUrl(
+                    Uri.parse(CommonPreferences.displayedTool.value[i].route),
                     mode: LaunchMode.externalApplication);
               } else {
                 ToastProvider.error('请检查网络状态');
               }
             },
-            child: generateCard(context, cards[i]),
+            child:
+                generateCard(context, CommonPreferences.displayedTool.value[i]),
           );
         } else {
           return WButton(
-            key: ValueKey(cards[i].route),
+            key: ValueKey(CommonPreferences.displayedTool.value[i].route),
             onPressed: () {
               ///为预热失物招领添加了if条件，上线后去掉即可
-              if (cards[i].route == "") {
+              if (CommonPreferences.displayedTool.value[i].route == "") {
                 ToastProvider.error('开发中 敬请期待！');
               } else {
-                Navigator.pushNamed(context, cards[i].route);
+                Navigator.pushNamed(
+                    context, CommonPreferences.displayedTool.value[i].route);
               }
             },
-            child: generateCard(context, cards[i]),
+            child:
+                generateCard(context, CommonPreferences.displayedTool.value[i]),
           );
         }
+      },
+      onReorder: (int oldIndex, int newIndex) {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        final CardBean item =
+            CommonPreferences.displayedTool.value.removeAt(oldIndex);
+        CommonPreferences.displayedTool.value.insert(newIndex, item);
       },
     );
 
