@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -40,18 +38,6 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   final ScrollController _sc = ScrollController();
   late final TabController _tc;
 
-  // List<CardBean> cards = [
-  //   CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
-  //       'Schedule', ScheduleRouter.course),
-  //   CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
-  //       HomeRouter.casQR),
-  //   CardBean('assets/svg_pics/lake_butt_icons/news.png', 24.w, '新闻网', 'News',
-  //       HomeRouter.news),
-  //   CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
-  //       HomeRouter.mapCalenderPage),
-  //   CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
-  //       'https://wiki.tjubot.cn/'),
-  // ];
 
   String md = '';
 

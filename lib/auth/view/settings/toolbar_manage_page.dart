@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:linkfy_text/linkfy_text.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/edit_user_tool_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
 import '../../../commons/widgets/colored_icon.dart';
-import '../../../feedback/view/components/widget/linkify_text.dart';
 import '../../../feedback/view/components/widget/long_text_shower.dart';
 import '../../../gpa/gpa_router.dart';
 import '../../../home/home_router.dart';
