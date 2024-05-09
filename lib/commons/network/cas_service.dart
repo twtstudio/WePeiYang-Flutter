@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:pointycastle/export.dart';
+import 'package:we_pei_yang_flutter/auth/network/splash_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:xml/xml.dart';
 
@@ -40,13 +41,62 @@ class DesService {
   }
 }
 
+class KeyPair {
+  CasService({
+    String? key,
+    String? iv,
+  }) {
+    _key = key;
+    _iv = iv;
+  }
+
+  KeyPair.fromJson(dynamic json) {
+    _key = json['key'];
+    _iv = json['iv'];
+  }
+
+  String? _key;
+  String? _iv;
+
+  KeyPair copyWith({
+    String? key,
+    String? iv,
+  }) =>
+      CasService(
+        key: key ?? _key,
+        iv: iv ?? _iv,
+      );
+
+  String? get key => _key;
+
+  String? get iv => _iv;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['key'] = _key;
+    map['iv'] = _iv;
+    return map;
+  }
+}
+
 class EncryptedPathInterceptor extends InterceptorsWrapper {
+  static final headerMap = {
+    "Content-Type": "application/json;charset=UTF-8",
+    "Accept": "application/json;charset=UTF-8",
+    "Host": "f.tju.edu.cn",
+    "Connection": "Keep-Alive",
+    "Accept-Encoding": "gzip",
+    "User-Agent": "okhttp/3.12.0",
+  };
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     options.headers["User-Agent"] =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3";
     final source_string = "method=${options.path}"
         "&${options.queryParameters.entries.map((e) => "${e.key}=${e.value}").join("&")}";
+
+    options.headers.addAll(headerMap);
 
     options.path = getEncryptedString(source_string);
     options.queryParameters = {};
@@ -110,4 +160,5 @@ class CasService {
     );
     return response.data["message"];
   }
+
 }

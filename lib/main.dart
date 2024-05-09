@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, PlatformDispatcher, TextTreeRenderer;
+    show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -166,6 +166,24 @@ void main() async {
   }));
 }
 
+String _shortcutActionType = "";
+String _shortcutResumeActionType = "";
+//iOS快捷操作
+Future<void> _listenForShortcutActions() async {
+  const methodChannel = MethodChannel('com.twt.service/shortcutItem');
+  // Dart端的方法监听
+  methodChannel.setMethodCallHandler((MethodCall call) async {
+    switch (call.method) {
+      case 'onShortcutAction':
+        _shortcutActionType = call.arguments;
+        _shortcutResumeActionType = call.arguments;
+        break;
+      default:
+        print('No action for ${call.method}');
+    }
+  });
+}
+
 final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
@@ -200,7 +218,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void initState() {
     super.initState();
-    _listenForShortcutActions();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
@@ -217,23 +234,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     });
     SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
         _onBrightnessChanged;
-  }
-
-  Future<void> _listenForShortcutActions() async {
-    const methodChannel = MethodChannel('com.twt.service/shortcutItem');
-    // Dart端的方法监听
-    methodChannel.setMethodCallHandler((MethodCall call) async {
-      switch (call.method) {
-        case 'onShortcutAction':
-          String actionType = call.arguments;
-          if (actionType == "com.twt.service.courses") {
-            WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
-          }
-          break;
-        default:
-          print('No action for ${call.method}');
-      }
-    });
+    _listenForShortcutActions();
   }
 
 
@@ -246,6 +247,14 @@ class WePeiYangAppState extends State<WePeiYangApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listenForShortcutActions();
+      if (_shortcutResumeActionType == "com.twt.service.courses") {
+        WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+        _shortcutResumeActionType = "";
+      }
+      else if(_shortcutResumeActionType == "com.twt.service.qr") {
+        WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+        _shortcutResumeActionType = "";
+      }
       checkEventList();
     }
   }
@@ -495,8 +504,22 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       ).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+            if (Platform.isIOS) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+              if (_shortcutActionType == "com.twt.service.courses") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+                _shortcutResumeActionType = "";
+              }
+              else if(_shortcutActionType == "com.twt.service.qr") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+                _shortcutResumeActionType = "";
+              }
+            }
+            if(Platform.isAndroid){
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+            }
           },
           onFailure: (_) {
             if (CommonPreferences.account.value != '' &&
@@ -506,8 +529,22 @@ class _StartUpWidgetState extends State<StartUpWidget> {
                   CommonPreferences.password.value,
                   onResult: (_) {}, onFailure: (_) {});
             }
-            Navigator.pushNamedAndRemoveUntil(
-                context, HomeRouter.home, (route) => false);
+            if (Platform.isIOS) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+              if (_shortcutActionType == "com.twt.service.courses") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(ScheduleRouter.course);
+                _shortcutResumeActionType = "";
+              }
+              else if(_shortcutActionType == "com.twt.service.qr") {
+                WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+                _shortcutResumeActionType = "";
+              }
+            }
+            if(Platform.isAndroid){
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomeRouter.home, (route) => false);
+            }
           },
         ),
       );

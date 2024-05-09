@@ -17,7 +17,6 @@ import 'package:we_pei_yang_flutter/auth/view/login/reset_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
-import 'package:we_pei_yang_flutter/auth/view/settings/toolbar_manage_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 
@@ -55,7 +54,6 @@ class AuthRouter {
   static String scheduleSetting = 'setting/schedule_setting';
   static String themeSetting = "setting/theme_setting";
   static String debugInfo = "setting/debug_info";
-  static String toolbarManage= "setting/toolbar_manage";
 
   static String mailbox = "user/mailbox";
   static String aboutTwt = "user/about_twt";
@@ -98,6 +96,5 @@ class AuthRouter {
     debug: (_) => DebugPage(),
     themeSetting: (_) => ThemeSetting(),
     debugInfo: (_) => DebugInfoPage(),
-    toolbarManage:(_)=>ToolbarManagePage(),
   };
 }

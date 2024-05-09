@@ -76,12 +76,12 @@ class _CoursePageState extends State<CoursePage> {
     screenshotController.captureAsUiImage(pixelRatio: 4.0).then((image) async {
       await screenshotController
           .captureFromLongWidget(Stack(
-        children: [
-          Container(
-            width: image?.width.toDouble(),
-            height: image?.height.toDouble(),
-            child: CustomPaint(
-              painter: ScheduleBackgroundPrinter(
+            children: [
+              Container(
+                width: image?.width.toDouble(),
+                height: image?.height.toDouble(),
+                child: CustomPaint(
+                  painter: ScheduleBackgroundPrinter(
                 primaryActionColor:
                     WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                 primaryLightActionColor: WpyTheme.of(context)
