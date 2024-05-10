@@ -22,22 +22,21 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
   var eng = '';
   var label = '';
   var url = '';
-  bool a = true;
   int num = 1;
-  List<double?> iconSizeList = [24.w, 24.w, 24.w, 24.w];
+  List<double?> iconSizeList = [24.w, 24.w, 25.w, 24.w];
 
   Future<void> _submit() async {
-    ToastProvider.running("新建中……");
     if (eng == '' || label == '' || url == '')
       ToastProvider.error("请将信息填写完整喵~");
     else {
+      ToastProvider.running("新建中……");
       setState(() {
         CommonPreferences.userTool.value.add(CardBean(
-            "assets/svg_pics/lake_butt_icons/news.png",
-            iconSizeList[num % 4 + 1],
+            "assets/svg_pics/lake_butt_icons/sample${num % 4 + 1}.png",
+            iconSizeList[num % 4],
             label,
             eng,
-            a?"browser:${url}":url));
+            url));
       });
       await Future.delayed(Duration(seconds: 1));
       ToastProvider.success("创建成功喵~");
@@ -61,6 +60,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
           ),
           child: Column(
             children: [
+              SizedBox(height: 10.h),
               Row(
                 children: [
                   WButton(
@@ -90,7 +90,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                   ),
                 ],
               ),
-              SizedBox(height: 5.h),
+              SizedBox(height: 10.h),
               CardWidget(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -117,36 +117,37 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                     InputWidget(
                       onChanged: (text) => url = text,
                       title: '跳转坐标',
-                      hintText: '请输入正确有效的网址喵',
+                      hintText: '请输入正确有效的网址喵（建议粘贴',
                       initText: url,
                       inputFormatter: [LengthLimitingTextInputFormatter(20)],
                     ),
-                    Container(
-                      height: 48.h,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("微北洋内打开/跳转浏览器",
-                              style: TextUtil.base.PingFangSC.bold
-                                  .label(context)
-                                  .sp(14)),
-                          Switch(
-                            value: a,
-                            onChanged: (value) {
-                              setState(() => a = !a);
-                            },
-                            activeColor: WpyTheme.of(context)
-                                .get(WpyColorKey.oldSecondaryActionColor),
-                            inactiveThumbColor: WpyTheme.of(context)
-                                .get(WpyColorKey.oldHintColor),
-                            activeTrackColor: WpyTheme.of(context)
-                                .get(WpyColorKey.oldSwitchBarColor),
-                            inactiveTrackColor: WpyTheme.of(context)
-                                .get(WpyColorKey.oldSwitchBarColor),
-                          )
-                        ],
-                      ),
-                    ),
+                    //TODO:先藏起来，再想想
+                    // Container(
+                    //   height: 48.h,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text("微北洋内打开/跳转浏览器",
+                    //           style: TextUtil.base.PingFangSC.bold
+                    //               .label(context)
+                    //               .sp(14)),
+                    //       Switch(
+                    //         value: isBrowser,
+                    //         onChanged: (value) {
+                    //           setState(() => isBrowser = !isBrowser);
+                    //         },
+                    //         activeColor: WpyTheme.of(context)
+                    //             .get(WpyColorKey.oldSecondaryActionColor),
+                    //         inactiveThumbColor: WpyTheme.of(context)
+                    //             .get(WpyColorKey.oldHintColor),
+                    //         activeTrackColor: WpyTheme.of(context)
+                    //             .get(WpyColorKey.oldSwitchBarColor),
+                    //         inactiveTrackColor: WpyTheme.of(context)
+                    //             .get(WpyColorKey.oldSwitchBarColor),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -189,7 +190,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                           ),
                           Container(
                             width: 50.r,
-                            padding: EdgeInsets.all(1.r),
+                            padding: EdgeInsets.all(8.r),
                             clipBehavior: Clip.hardEdge,
                             decoration: BoxDecoration(
                                 color: WpyTheme.of(context)
@@ -199,8 +200,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                                         .get(WpyColorKey.oldHintColor)),
                                 borderRadius: BorderRadius.circular(15.w)),
                             child: ColoredIcon(
-                              "assets/svg_pics/lake_butt_icons/news.png",
-                              width: iconSizeList[1],
+                              "assets/svg_pics/lake_butt_icons/sample${num % 4 + 1}.png",
                               color: WpyTheme.of(context).primary,
                             ),
                           ),

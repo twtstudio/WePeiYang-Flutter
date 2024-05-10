@@ -157,7 +157,13 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
               WButton(
                 onPressed: () {
                   setState(() {
-                    CommonPreferences.userTool.value.removeAt(i);
+                    //加一个判定防止有人卡bug 加到display但是把本地删了然后再加（
+                    if (isDisplayed(CommonPreferences.userTool.value[i])) {
+                      ToastProvider.error("请先在展示区删除该标签！");
+                    } else {
+                      CommonPreferences.userTool.value.removeAt(i);
+                      ToastProvider.success("已删除！");
+                    }
                   });
                   Navigator.pop(context);
                 },

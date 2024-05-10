@@ -278,6 +278,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 class SliverCardsWidget extends StatelessWidget {
   final List<CardBean> cards;
   final ScrollController controller = ScrollController();
+  static List<String> peiyangLabel = [
+    '课程表',
+    '入校码',
+    '新闻网',
+    '地图·校历',
+    '成绩',
+    '小游戏'
+  ];
 
   SliverCardsWidget(this.cards);
 
@@ -293,7 +301,7 @@ class SliverCardsWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       itemCount: CommonPreferences.displayedTool.value.length,
       itemBuilder: (context, i) {
-        if (CommonPreferences.displayedTool.value[i].label == '北洋维基') {
+        if (!peiyangLabel.contains(CommonPreferences.displayedTool.value[i].label)) {
           return WButton(
             key: ValueKey(CommonPreferences.displayedTool.value[i].route),
             onPressed: () async {
