@@ -12,6 +12,7 @@ abstract class DioAbstract {
   List<Interceptor> interceptors = [];
   InterceptorsWrapper? errorInterceptor = null;
   ResponseType responseType = ResponseType.json;
+  bool SSL = true;
 
   late final Dio _dio;
 
@@ -27,6 +28,14 @@ abstract class DioAbstract {
         validateStatus: (status) => status! < 400);
 
     _dio = Dio(options);
+    if (!SSL) {
+      (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        var client = HttpClient();
+        // 设置为信任所有证书
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      };
+    }
     // 不要删除！！！！
     // 配置 fiddler 代理
     // (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

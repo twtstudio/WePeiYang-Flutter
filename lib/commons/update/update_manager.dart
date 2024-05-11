@@ -47,16 +47,18 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   Future<void> checkUpdate({bool auto = true}) async {
+    print("==> status: $status, $auto");
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
+        print("get here");
         // 无事发生就检查更新
         setGetVersion();
         // 获取最新版本
         final dynamic v = Platform.isIOS
             ? await UpdateService.latestIOSVersion
             : await UpdateService.latestAndroidVersion;
-
+        print("==> check update : $v");
         // 如果获取最新版本失败，需要显示弹窗的时候显示检查更新失败
         if (v == null) {
           setIdle();
@@ -119,7 +121,10 @@ class UpdateManager extends UpdateStatusListener {
         break;
       case UpdateStatus.getVersion:
         // 正在请求检查更新接口，弹窗告诉他不要急
-        if (!_auto) ToastProvider.running("正在请求最新版本信息");
+        if (!auto) {
+          print("获取到这里");
+          ToastProvider.running("正在请求最新版本信息");
+        }
         break;
       case UpdateStatus.download:
         // 既然正在下载就显示进度

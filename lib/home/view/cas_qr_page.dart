@@ -52,7 +52,6 @@ class CasQRPage extends StatelessWidget {
                   ),
                   onPressed: () {
                     refreshNotifier.refresh();
-                    ToastProvider.running('正在刷新');
                   },
                 ),
                 SizedBox(width: 10.w)
@@ -177,16 +176,10 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
   int buzyCnt = 0;
 
   void _refresh() async {
-    // 如果多次快速点击 刷新按钮，提示刷新过于频繁
     if (lastRefresh != null &&
-        DateTime.now().difference(lastRefresh!).inSeconds < 1) {
-      buzyCnt++;
-      if (buzyCnt > 3) {
-        ToastProvider.error('刷新过于频繁，请稍后再试');
-        buzyCnt = 0;
-        return;
-      }
-    }
+        DateTime.now().difference(lastRefresh!) < Duration(seconds: 1)) return;
+
+    ToastProvider.running('正在刷新');
     final sid = CommonPreferences.userNumber.value;
     qrContent = await CasService.getQRContent(sid);
     print("==> qrContent: $qrContent");
@@ -194,15 +187,17 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
     if (mounted) setState(() {});
   }
 
-  late final Timer _timer =
+  late final Timer _periodUpdateCycle =
       Timer.periodic(Duration(minutes: 2, seconds: 30), (timer) {
     _refresh();
   });
 
+  bool expectUpdate = false;
+
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    _periodUpdateCycle.cancel();
   }
 
   @override

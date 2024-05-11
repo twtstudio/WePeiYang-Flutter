@@ -7,6 +7,7 @@ class InstallManager {
 
   static void install(String apkName) {
     var argument = {'path': apkName};
+    print(apkName);
     _channel.invokeMethod('install', argument);
   }
 

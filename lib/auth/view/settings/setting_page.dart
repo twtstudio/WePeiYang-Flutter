@@ -93,8 +93,7 @@ class _SettingPageState extends State<SettingPage> {
                       width: 20.w),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child:
-                        Text('个人信息更改', style: mainTextStyle),
+                    child: Text('个人信息更改', style: mainTextStyle),
                   ),
                   arrow,
                   SizedBox(width: 15.w),
@@ -189,7 +188,10 @@ class _SettingPageState extends State<SettingPage> {
                 Navigator.pushNamed(context, AuthRouter.debugInfo);
               },
               onTap: () {
-                context.read<UpdateManager>().checkUpdate(auto: false);
+                print("tab");
+                context.read<UpdateManager>().checkUpdate(
+                      auto: false,
+                    );
               },
               child: Row(
                 children: [

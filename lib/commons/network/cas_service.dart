@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:pointycastle/export.dart';
-import 'package:we_pei_yang_flutter/auth/network/splash_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:xml/xml.dart';
 

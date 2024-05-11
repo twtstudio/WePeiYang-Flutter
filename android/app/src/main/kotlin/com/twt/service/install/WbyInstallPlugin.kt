@@ -36,6 +36,7 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
                     methodCall = result
                     installAPK(path)
                 }
+
                 "goToMarket" -> goToMarket(result)
                 "canGoToMarket" -> canGoToMarket(result)
                 else -> result.notImplemented()
@@ -81,6 +82,7 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
     private fun installAPK(path: String) {
         try {
             resultFile = File(path)
+            println(resultFile.exists())
             activityBinding.addActivityResultListener(this)
             installApkWithSdkVersion()
         } catch (e: Exception) {
@@ -119,9 +121,9 @@ class WbyInstallPlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResu
         get() = Intent(Intent.ACTION_VIEW).apply {
             //参数1 上下文, 参数2 Provider主机地址 和配置文件中保持一致   参数3  共享的文件
             val apkUri = FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.ApkProvider",
-                resultFile,
+                    context,
+                    "${context.packageName}.ApkProvider",
+                    resultFile,
             )
             //添加这一句表示对目标应用临时授权该Uri所代表的文件
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
