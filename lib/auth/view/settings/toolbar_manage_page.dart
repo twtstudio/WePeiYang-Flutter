@@ -37,8 +37,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
-    CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
-        HomeRouter.game)
+    // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
+    //     HomeRouter.game)
   ];
   List<CardBean> userTools = CommonPreferences.userTool.value;
 
