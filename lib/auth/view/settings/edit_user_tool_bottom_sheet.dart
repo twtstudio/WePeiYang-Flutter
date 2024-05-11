@@ -7,10 +7,10 @@ import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
+
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
-import 'package:http/http.dart' as http;
 
 class EditUserToolBottomSheet extends StatefulWidget {
   @override
@@ -199,9 +199,16 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.oldHintColor)),
                                 borderRadius: BorderRadius.circular(15.w)),
-                            child: ColoredIcon(
+                            child: AnimatedSwitcher(
+                              transitionBuilder: (child, anime){
+                                return ScaleTransition(scale: anime, child: child,);
+                              },
+                              duration: Duration(milliseconds: 300),
+                              child: ColoredIcon(
+                              key: ValueKey(num),
                               "assets/svg_pics/lake_butt_icons/sample${num % 4 + 1}.png",
-                              color: WpyTheme.of(context).primary,
+                            color: WpyTheme.of(context).primary,
+                          ),
                             ),
                           ),
                           WButton(

@@ -4,18 +4,20 @@ import 'package:flutter_reorderable_grid_view/widgets/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/edit_user_tool_bottom_sheet.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/animated_appear_widget.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/edit_widgets.dart';
-import '../../../commons/widgets/colored_icon.dart';
-import '../../../feedback/view/components/widget/long_text_shower.dart';
-import '../../../gpa/gpa_router.dart';
-import '../../../home/home_router.dart';
-import '../../../home/view/map_calendar_page.dart';
+
 import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
+import '../../../commons/widgets/colored_icon.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../feedback/view/components/widget/long_text_shower.dart';
+import '../../../gpa/gpa_router.dart';
+import '../../../home/home_router.dart';
+import '../../../home/view/map_calendar_page.dart';
 import '../../../schedule/schedule_router.dart';
 
 class ToolbarManagePage extends StatefulWidget {
@@ -264,55 +266,58 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  ReorderableBuilder(
-                    children: [
-                      for (int i = 0;
-                          i < CommonPreferences.displayedTool.value.length;
-                          i++)
-                        WButton(
-                          key: ValueKey(
-                              CommonPreferences.displayedTool.value[i].route),
-                          onPressed: () {
-                            setState(() {
-                              if (CommonPreferences
-                                      .displayedTool.value.length <=
-                                  2)
-                                ToastProvider.error("您保留的太少啦！最少两个哦");
-                              else
-                                CommonPreferences.displayedTool.value
-                                    .removeAt(i);
-                            });
-                          },
-                          child: generateSelectCard(
-                              context,
-                              CommonPreferences.displayedTool.value[i],
-                              true,
-                              true),
-                        )
-                    ],
-                    builder: (children) {
-                      return GridView(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          key: _gridViewKey,
-                          controller: _scrollController,
-                          children: children,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 30 / 19,
-                            crossAxisSpacing: 15.w,
-                          ));
-                    },
-                    onReorder: (List<OrderUpdateEntity> orderUpdateEntities) {
-                      for (final orderUpdateEntity in orderUpdateEntities) {
-                        final _displayTool = CommonPreferences
-                            .displayedTool.value
-                            .removeAt(orderUpdateEntity.oldIndex);
-                        CommonPreferences.displayedTool.value
-                            .insert(orderUpdateEntity.newIndex, _displayTool);
-                      }
-                    },
+                  AnimatedAppear(
+                    duration: Duration(milliseconds: 300),
+                    child: ReorderableBuilder(
+                      children: [
+                        for (int i = 0;
+                            i < CommonPreferences.displayedTool.value.length;
+                            i++)
+                          WButton(
+                            key: ValueKey(
+                                CommonPreferences.displayedTool.value[i].route),
+                            onPressed: () {
+                              setState(() {
+                                if (CommonPreferences
+                                        .displayedTool.value.length <=
+                                    2)
+                                  ToastProvider.error("您保留的太少啦！最少两个哦");
+                                else
+                                  CommonPreferences.displayedTool.value
+                                      .removeAt(i);
+                              });
+                            },
+                            child: generateSelectCard(
+                                context,
+                                CommonPreferences.displayedTool.value[i],
+                                true,
+                                true),
+                          )
+                      ],
+                      builder: (children) {
+                        return GridView(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            key: _gridViewKey,
+                            controller: _scrollController,
+                            children: children,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 30 / 19,
+                              crossAxisSpacing: 15.w,
+                            ));
+                      },
+                      onReorder: (List<OrderUpdateEntity> orderUpdateEntities) {
+                        for (final orderUpdateEntity in orderUpdateEntities) {
+                          final _displayTool = CommonPreferences
+                              .displayedTool.value
+                              .removeAt(orderUpdateEntity.oldIndex);
+                          CommonPreferences.displayedTool.value
+                              .insert(orderUpdateEntity.newIndex, _displayTool);
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),
