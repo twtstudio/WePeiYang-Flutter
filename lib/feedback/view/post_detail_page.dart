@@ -907,8 +907,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   //         lake.tabList[lake.currentTab].id]!
                                   //     .refreshController
                                   //     .requestRefresh();
-                                  ToastProvider.success(
-                                      '删除成功');
+                                  ToastProvider.success('删除成功');
                                   Navigator.of(context).popAndPushNamed(
                                       FeedbackRouter.home,
                                       arguments: 2);
@@ -1028,7 +1027,6 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
       ),
       elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -1038,7 +1036,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 : SystemUiOverlayStyle.light)
             .copyWith(
                 systemNavigationBarColor: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor));
+                    .get(WpyColorKey.secondaryBackgroundColor));
       })(),
       child: PopScope(
         canPop: true,

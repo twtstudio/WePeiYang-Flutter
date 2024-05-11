@@ -30,22 +30,20 @@ class _UserMailboxPageState extends State<UserMailboxPage> {
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: AppBar(
-            title: Text('消息',
-                style: TextUtil.base.bold.sp(16).blue52hz(context)),
-            elevation: 0,
-            centerTitle: true,
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: WButton(
-                  child: Icon(Icons.arrow_back,
-                      color:
-                          WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                      size: 32),
-                  onPressed: () => Navigator.pop(context)),
-            ),
-            systemOverlayStyle: SystemUiOverlayStyle.dark),
+          title: Text('消息', style: TextUtil.base.bold.sp(16).blue52hz(context)),
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: WButton(
+                child: Icon(Icons.arrow_back,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    size: 32),
+                onPressed: () => Navigator.pop(context)),
+          ),
+        ),
         body: UserMailList(),
       ),
     );

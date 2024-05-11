@@ -204,7 +204,6 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                   ),
                 ),
               ),
-              systemOverlayStyle: SystemUiOverlayStyle.dark,
             ),
           ),
           body: TabBarView(

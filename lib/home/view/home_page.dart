@@ -240,7 +240,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           onPopInvoked: (didPop) {
             if (didPop) return;
 
-
             CommonPreferences.lastActivityDialogShownDate.value = "";
             if (_tabController.index == 0) {
               if (_lastPressedAt == null ||

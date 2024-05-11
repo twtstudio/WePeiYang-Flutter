@@ -269,6 +269,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                   AnimatedAppear(
                     duration: Duration(milliseconds: 300),
                     child: ReorderableBuilder(
+                      dragChildBoxDecoration: BoxDecoration(),
                       children: [
                         for (int i = 0;
                             i < CommonPreferences.displayedTool.value.length;
