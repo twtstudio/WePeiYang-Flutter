@@ -19,7 +19,6 @@ dependencies:
     sdk: flutter
 
   async: ^2.8.2
-  #  amap_location_fluttify: ^0.22.0
 
   pointycastle: ^3.1.1
   xml: ^6.5.0
@@ -65,7 +64,7 @@ dependencies:
 
   image_cropper: ^1.5.0
   image_picker: ^1.0.7
-  intl: ^0.18.1
+  # intl: ^0.18.1
 
   like_button: ^2.0.5
   linkfy_text:
