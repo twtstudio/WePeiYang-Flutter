@@ -2,6 +2,8 @@ import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save
 import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/share_channel.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+typedef JavascriptChannel = Future<void> Function(JavaScriptMessage message);
+
 class WebViewConfig {
   final String page;
   final String url;
@@ -16,9 +18,9 @@ class WebViewConfig {
 
     void addChannel(String c) {
       if (c == WebViewChannels.share.value) {
-        _channels.add(ShareChannel(page));
+        _channels.add((msg) => ShareChannel.shareImg(msg, page: page));
       } else if (c == WebViewChannels.saveImg.value) {
-        _channels.add(ImgSaveChannel(page));
+        _channels.add((msg) => ImgSaveChannel.imgSave(msg, page: page));
       }
     }
 

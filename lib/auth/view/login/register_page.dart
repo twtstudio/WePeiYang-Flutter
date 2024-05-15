@@ -955,19 +955,19 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                 .primaryAction(context))),
                         style: ButtonStyle(
                           overlayColor:
-                              MaterialStateProperty.resolveWith<Color>(
+                              WidgetStateProperty.resolveWith<Color>(
                                   (states) {
-                            if (states.contains(MaterialState.pressed))
+                            if (states.contains(WidgetState.pressed))
                               return WpyTheme.of(context)
                                   .get(WpyColorKey.reverseBackgroundColor)
                                   .withOpacity(0.1);
                             return WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor);
                           }),
-                          backgroundColor: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(
                               WpyTheme.of(context)
                                   .get(WpyColorKey.primaryBackgroundColor)),
-                          shape: MaterialStateProperty.all(
+                          shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(24))),
                         ),

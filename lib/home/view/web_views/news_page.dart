@@ -11,7 +11,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 // ignore: must_be_immutable
 class NewsPage extends StatelessWidget {
   static const URL = "https://news.twt.edu.cn/";
-  WebViewController? _controller;
+  WebViewController _controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    ..loadRequest(Uri.parse(URL));
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +32,8 @@ class NewsPage extends StatelessWidget {
       canPop: false,
       onPopInvoked: (didPop) async {
         if (didPop) return;
-        if (await _controller?.canGoBack() ?? false)
-          _controller!.goBack();
+        if (await _controller.canGoBack())
+          _controller.goBack();
         else
           Navigator.pop(context);
       },
@@ -54,12 +56,9 @@ class NewsPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebView(
-            initialUrl: URL,
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController controller) {
-              this._controller = controller;
-            }),
+        body: WebViewWidget(
+          controller: _controller,
+        ),
       ),
     );
   }
@@ -70,7 +69,7 @@ class NewNetworkAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _roundShape = MaterialStateProperty.all<RoundedRectangleBorder>(
+    final _roundShape = WidgetStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // 设置边框圆角为20
       ),
@@ -117,8 +116,8 @@ class NewNetworkAlertDialog extends StatelessWidget {
                       )),
                   ElevatedButton(
                     style: ButtonStyle(
-                      elevation: MaterialStateProperty.all<double>(3),
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      elevation: WidgetStateProperty.all<double>(3),
+                      backgroundColor: WidgetStateProperty.all<Color>(
                         WpyTheme.of(context)
                             .get(WpyColorKey.primaryActionColor),
                       ),

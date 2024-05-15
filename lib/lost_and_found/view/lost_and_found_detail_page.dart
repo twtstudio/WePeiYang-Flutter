@@ -234,9 +234,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               Navigator.of(context).pop();
                             },
                             style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all<Size>(
+                              minimumSize: WidgetStateProperty.all<Size>(
                                   Size(110.w, 40.h)),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
@@ -287,12 +287,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                     );
                                   },
                             style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all<Size>(
+                              minimumSize: WidgetStateProperty.all<Size>(
                                   Size(110.w, 40.h)),
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.primaryActionColor)),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
@@ -356,9 +356,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               Navigator.of(context).pop();
                             },
                             style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all<Size>(
+                              minimumSize: WidgetStateProperty.all<Size>(
                                   Size(110.w, 40.h)),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
@@ -385,12 +385,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                       ToastProvider.error('删除失败');
                                     }),
                             style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all<Size>(
+                              minimumSize: WidgetStateProperty.all<Size>(
                                   Size(110, 40)),
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.primaryActionColor)),
-                              shape: MaterialStateProperty.all<
+                              shape: WidgetStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
@@ -905,8 +905,8 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                           style: ButtonStyle(
                               alignment: Alignment.topRight,
                               padding:
-                                  MaterialStateProperty.all(EdgeInsets.zero),
-                              overlayColor: MaterialStateProperty.all(
+                                  WidgetStateProperty.all(EdgeInsets.zero),
+                              overlayColor: WidgetStateProperty.all(
                                   Colors.transparent)),
                           onPressed: () {
                             setState(() {

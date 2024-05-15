@@ -56,8 +56,8 @@ class MainPageStudyRoomWidget extends StatelessWidget {
           TextButton.icon(
             onPressed: () => context.read<CampusProvider>().next(),
             style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.only(left: 8.w)),
-                overlayColor: MaterialStateProperty.resolveWith((_) =>
+                padding: WidgetStateProperty.all(EdgeInsets.only(left: 8.w)),
+                overlayColor: WidgetStateProperty.resolveWith((_) =>
                     WpyTheme.of(context)
                         .get(WpyColorKey.primaryLightestActionColor))),
             icon: Text(

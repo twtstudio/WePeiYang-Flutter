@@ -31,17 +31,17 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
   @override
   Widget build(BuildContext context) {
     final buttonStyle = ButtonStyle(
-      elevation: MaterialStateProperty.all(1),
-      overlayColor: MaterialStateProperty.resolveWith<Color>((states) {
-        if (states.contains(MaterialState.pressed))
+      elevation: WidgetStateProperty.all(1),
+      overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.pressed))
           return WpyTheme.of(context).get(WpyColorKey.oldActionRippleColor);
         return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
       }),
-      backgroundColor: MaterialStateProperty.all(
+      backgroundColor: WidgetStateProperty.all(
           WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
-      shape: MaterialStateProperty.all(
+      shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-      minimumSize: MaterialStateProperty.all(Size(80, 40)),
+      minimumSize: WidgetStateProperty.all(Size(80, 40)),
     );
     var appBar = AppBar(
       backgroundColor:
@@ -169,8 +169,8 @@ class _ReportQuestionPageState extends State<ReportQuestionPage> {
               SizedBox(width: 25),
               TextButton(
                   style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(Size(1, 1)),
-                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    minimumSize: WidgetStateProperty.all(Size(1, 1)),
+                    padding: WidgetStateProperty.all(EdgeInsets.zero),
                   ),
                   onPressed: () {
                     showDialog(

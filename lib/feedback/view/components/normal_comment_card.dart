@@ -740,7 +740,7 @@ class _NCommentCardState extends State<NCommentCard>
               TextButton(
                   style: ButtonStyle(
                       alignment: Alignment.topRight,
-                      padding: MaterialStateProperty.all(EdgeInsets.zero)),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero)),
                   onPressed: () {
                     setState(() {
                       _picFullView = false;
@@ -895,11 +895,11 @@ class AdminPopUpState extends State<AdminPopUp> {
                   adminTopFloor(widget.floorId, tc.text);
                 },
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(2),
-                  backgroundColor: MaterialStateProperty.all(
+                  elevation: WidgetStateProperty.all(2),
+                  backgroundColor: WidgetStateProperty.all(
                       WpyTheme.of(context)
                           .get(WpyColorKey.secondaryBackgroundColor)),
-                  shape: MaterialStateProperty.all(
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),
                     ),

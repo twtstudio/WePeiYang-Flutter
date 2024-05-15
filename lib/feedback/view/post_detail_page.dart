@@ -517,7 +517,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                               WpyColorKey.oldSwitchBarColor),
                                           checkColor: WpyTheme.of(context).get(
                                               WpyColorKey.reverseTextColor),
-                                          side: MaterialStateBorderSide
+                                          side: WidgetStateBorderSide
                                               .resolveWith((_) => BorderSide(
                                                     color: WpyTheme.of(context)
                                                         .get(WpyColorKey

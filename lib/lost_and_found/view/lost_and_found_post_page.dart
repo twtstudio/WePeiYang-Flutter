@@ -278,10 +278,10 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         height: 32,
         child: ElevatedButton(
             style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                backgroundColor: MaterialStateProperty.all(
+                elevation: WidgetStateProperty.all(0),
+                backgroundColor: WidgetStateProperty.all(
                     WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.r)))),
             onPressed: () async {
               if (tapAble) {

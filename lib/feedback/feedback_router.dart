@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/feedback/view/collection_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dart';
@@ -15,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/view/search_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 import 'package:we_pei_yang_flutter/home/view/home_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
-import 'package:we_pei_yang_flutter/home/view/web_views/summary_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_notice_page.dart';
 
@@ -36,7 +34,6 @@ class FeedbackRouter {
   static String report = 'feedback/report';
   static String reportOther = 'feedback/report_other_reason';
   static String notice = 'feedback/notice';
-  static String summary = 'feedback/summary';
   static String haitang = 'feedback/haitang';
   static String openBox = 'feedback/openbox';
   static String collection = 'feedback/collection';
@@ -56,8 +53,6 @@ class FeedbackRouter {
     mailbox: (_) => FeedbackMessagePage(),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
-    summary: (_) =>
-        Builder(builder: (context) => FeedbackSummaryPage(context: context)),
     haitang: (args) =>
         Builder(builder: (context) => FestivalPage(args, context: context)),
     openBox: (args) => OpenBox(args),

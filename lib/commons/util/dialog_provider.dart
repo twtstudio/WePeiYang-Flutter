@@ -116,20 +116,20 @@ class LakeDialogWidget extends Dialog {
                             .sp(16)
                             .w600),
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(3),
+                  elevation: WidgetStateProperty.all(3),
                   overlayColor:
-                      MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.pressed))
+                      WidgetStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(WidgetState.pressed))
                       return WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor);
                     return WpyTheme.of(context)
                         .get(WpyColorKey.secondaryBackgroundColor);
                   }),
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                       cancelButtonColor ??
                           WpyTheme.of(context)
                               .get(WpyColorKey.secondaryBackgroundColor)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20))),
                 ),
               ),
@@ -164,7 +164,7 @@ class LakeDialogWidget extends Dialog {
                               .sp(16)
                               .w400),
                   style: ButtonStyle(
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
                   ),
                 ),
@@ -184,20 +184,20 @@ class LakeDialogWidget extends Dialog {
                             .w400,
                   ),
                   style: ButtonStyle(
-                    elevation: MaterialStateProperty.all(3),
+                    elevation: WidgetStateProperty.all(3),
                     overlayColor:
-                        MaterialStateProperty.resolveWith<Color>((states) {
-                      if (states.contains(MaterialState.pressed))
+                        WidgetStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(WidgetState.pressed))
                         return WpyTheme.of(context)
                             .get(WpyColorKey.oldSecondaryActionColor);
                       return WpyTheme.of(context)
                           .get(WpyColorKey.secondaryBackgroundColor);
                     }),
-                    backgroundColor: MaterialStateProperty.all(
+                    backgroundColor: WidgetStateProperty.all(
                         confirmButtonColor ??
                             WpyTheme.of(context)
                                 .get(WpyColorKey.secondaryBackgroundColor)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
                   ),
                 ),

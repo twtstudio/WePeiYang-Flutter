@@ -14,9 +14,10 @@ class NetStatusListener {
     });
   }
 
-  ConnectivityResult _status = ConnectivityResult.none;
+  List<ConnectivityResult> _status = [ConnectivityResult.none];
 
-  bool get hasNetwork => _instance._status != ConnectivityResult.none;
+  bool get hasNetwork =>
+      _instance._status.any((element) => element != ConnectivityResult.none);
 }
 
 class NetCheckInterceptor extends InterceptorsWrapper {

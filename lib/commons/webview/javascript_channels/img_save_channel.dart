@@ -5,18 +5,9 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ImgSaveChannel implements JavascriptChannel {
-  final String page;
-
-  ImgSaveChannel(this.page);
-
-  @override
-  String get name => "WbyImgSaveChannel";
-
-  @override
-  get onMessageReceived => imgSave;
-
-  Future<void> imgSave(JavascriptMessage message) async {
+class ImgSaveChannel {
+  static Future<void> imgSave(JavaScriptMessage message,
+      {required String page}) async {
     try {
       final bytes = base64.decode(message.message.split(",")[1]);
       final fileName = "$page${DateTime.now().millisecondsSinceEpoch}.jpg";

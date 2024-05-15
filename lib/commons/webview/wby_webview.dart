@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/remote_config/config/webview.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -33,14 +31,12 @@ enum _PageState { initUrl, initError, initWebView, showWebView }
 
 class WbyWebViewState extends State<WbyWebView> {
   _PageState state = _PageState.initUrl;
-  WebViewController? _controller;
+  WebViewController _controller = WebViewController()
+    ..setJavaScriptMode(JavaScriptMode.unrestricted);
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
     UmengCommonSdk.onPageStart('webview/${widget.page}');
   }
 
@@ -94,7 +90,7 @@ class WbyWebViewState extends State<WbyWebView> {
     if (url != null) {
       setState(() {
         state = _PageState.initWebView;
-        _controller?.loadUrl(url);
+        _controller.loadRequest(Uri.parse(url));
       });
     } else {
       setState(() {
@@ -124,7 +120,9 @@ class WbyWebViewState extends State<WbyWebView> {
       children: [
         Opacity(
           opacity: state == _PageState.showWebView ? 1.0 : 0.0,
-          child: WebView(
+          child: WebViewWidget(
+            /*
+
             onWebViewCreated: (controller) {
               _controller = controller;
               WidgetsBinding.instance.addPostFrameCallback((_) => initUrl());
@@ -140,6 +138,8 @@ class WbyWebViewState extends State<WbyWebView> {
               ToastProvider.error('加载遇到了错误');
             },
             javascriptChannels: (getJsChannels() ?? []).toSet(),
+             */
+            controller: _controller,
           ),
         ),
         top,

@@ -278,14 +278,6 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
                     subtitle:
                         Text(_androidDeviceInfo?.serialNumber ?? 'Unknown'),
                   ),
-                  ListTile(
-                    title: Text('Display Resolution'),
-                    subtitle: Text(
-                      _androidDeviceInfo != null
-                          ? "${_androidDeviceInfo!.displayMetrics.widthPx} x ${_androidDeviceInfo!.displayMetrics.heightPx}"
-                          : "Unknown",
-                    ),
-                  ),
                 ],
                 Divider(),
                 ListTile(

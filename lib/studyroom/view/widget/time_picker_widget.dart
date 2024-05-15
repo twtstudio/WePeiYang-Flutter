@@ -252,7 +252,7 @@ class _TimeItem extends StatelessWidget {
     final button = TextButton(
       onPressed: onclick,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           isChecked
               ? WpyTheme.of(context)
                   .get(WpyColorKey.primaryLightestActionColor)
@@ -261,16 +261,16 @@ class _TimeItem extends StatelessWidget {
                   .get(WpyColorKey.primaryBackgroundColor)
                   .withOpacity(0.1),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.w),
           ),
         ),
         overlayColor: WpyTheme.of(context).primary == null
             ? null
-            : MaterialStateColor.resolveWith(
+            : WidgetStateColor.resolveWith(
                 (states) => WpyTheme.of(context).primary!.withOpacity(0.1)),
-        side: MaterialStateProperty.all(
+        side: WidgetStateProperty.all(
           BorderSide(
             color: isChecked
                 ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)

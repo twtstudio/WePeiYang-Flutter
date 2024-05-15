@@ -213,19 +213,19 @@ class LAFWeKoDialog extends StatelessWidget {
               ElevatedButton(
                 onPressed: onConfirm,
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(3),
+                  elevation: WidgetStateProperty.all(3),
                   overlayColor:
-                      MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.pressed))
+                      WidgetStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(WidgetState.pressed))
                       return WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor);
                     return WpyTheme.of(context)
                         .get(WpyColorKey.secondaryBackgroundColor);
                   }),
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                       WpyTheme.of(context)
                           .get(WpyColorKey.secondaryBackgroundColor)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),
                 child: Container(

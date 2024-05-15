@@ -198,139 +198,140 @@ class _LostAndFoundSearchResultPageState
                 ),
                 onRefresh: _onRefresh,
                 onLoading: _onLoading,
-                child: StaggeredGridView.countBuilder(
+                child: SingleChildScrollView(
                   controller: _scrollController,
-                  crossAxisCount: 2,
-                  itemCount: postList.length,
-                  itemBuilder: (BuildContext context, int index) => InkWell(
-                      onTap: () {
-                        Tuple2 tuple2 = Tuple2(false, postList[index].id);
-                        Navigator.pushNamed(context, LAFRouter.lafDetailPage,
-                            arguments: tuple2);
-                      },
-                      child: Card(
-                        elevation: 3,
-                        shadowColor: WpyTheme.of(context)
-                            .get(WpyColorKey.backgroundGradientEndColor)
-                            .withOpacity(0.1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(
-                              color: Colors.transparent, width: 0.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            postList[index].coverPhotoPath == null
-                                ? SizedBox(
-                                    width: double.infinity,
-                                    child: Card(
-                                      child: Padding(
-                                        // 添加Padding组件
-                                        padding: EdgeInsets.all(
-                                            10.r), // 设置所有方向的内边距为15个像素
-                                        child: Text(postList[index].text,
-                                            style: TextUtil.base.w400
-                                                .infoText(context)
-                                                .sp(14)
-                                                .h(1.1)
-                                                .NotoSansSC
-                                                .copyWith(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                )),
-                                      ),
-                                      elevation: 0,
-                                      color: Color(0xfff8f8f8),
-                                    ))
-                                : Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        start: 11.w,
-                                        end: 11.w,
-                                        bottom: 7.h,
-                                        top: 7.h),
-                                    child: LayoutBuilder(
-                                      builder: (context, constrains) {
-                                        final maxWidth =
-                                            constrains.constrainWidth();
-                                        final width = postList[index]
-                                                .coverPhotoSize
-                                                ?.width
-                                                .toDouble() ??
-                                            1;
-                                        final height = postList[index]
-                                                .coverPhotoSize
-                                                ?.height
-                                                .toDouble() ??
-                                            0;
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              10.0.r), // 设置圆角半径为10.0
-                                          child: Container(
-                                            width: maxWidth,
-                                            child: WpyPic(
-                                              postList[index].coverPhotoPath!,
-                                              withHolder: true,
-                                              holderHeight:
-                                                  height * maxWidth / width,
-                                              fit: BoxFit.fitWidth,
+                  child: SliverMasonryGrid.count(
+                    crossAxisCount: 2,
+                    childCount: postList.length,
+                    itemBuilder: (BuildContext context, int index) => InkWell(
+                        onTap: () {
+                          Tuple2 tuple2 = Tuple2(false, postList[index].id);
+                          Navigator.pushNamed(context, LAFRouter.lafDetailPage,
+                              arguments: tuple2);
+                        },
+                        child: Card(
+                          elevation: 3,
+                          shadowColor: WpyTheme.of(context)
+                              .get(WpyColorKey.backgroundGradientEndColor)
+                              .withOpacity(0.1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: const BorderSide(
+                                color: Colors.transparent, width: 0.0),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              postList[index].coverPhotoPath == null
+                                  ? SizedBox(
+                                      width: double.infinity,
+                                      child: Card(
+                                        child: Padding(
+                                          // 添加Padding组件
+                                          padding: EdgeInsets.all(
+                                              10.r), // 设置所有方向的内边距为15个像素
+                                          child: Text(postList[index].text,
+                                              style: TextUtil.base.w400
+                                                  .infoText(context)
+                                                  .sp(14)
+                                                  .h(1.1)
+                                                  .NotoSansSC
+                                                  .copyWith(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  )),
+                                        ),
+                                        elevation: 0,
+                                        color: Color(0xfff8f8f8),
+                                      ))
+                                  : Container(
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: 11.w,
+                                          end: 11.w,
+                                          bottom: 7.h,
+                                          top: 7.h),
+                                      child: LayoutBuilder(
+                                        builder: (context, constrains) {
+                                          final maxWidth =
+                                              constrains.constrainWidth();
+                                          final width = postList[index]
+                                                  .coverPhotoSize
+                                                  ?.width
+                                                  .toDouble() ??
+                                              1;
+                                          final height = postList[index]
+                                                  .coverPhotoSize
+                                                  ?.height
+                                                  .toDouble() ??
+                                              0;
+                                          return ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                                10.0.r), // 设置圆角半径为10.0
+                                            child: Container(
+                                              width: maxWidth,
+                                              child: WpyPic(
+                                                postList[index].coverPhotoPath!,
+                                                withHolder: true,
+                                                holderHeight:
+                                                    height * maxWidth / width,
+                                                fit: BoxFit.fitWidth,
+                                              ),
+                                              height: height >= 3 * width
+                                                  ? 3 * maxWidth
+                                                  : height * maxWidth / width,
                                             ),
-                                            height: height >= 3 * width
-                                                ? 3 * maxWidth
-                                                : height * maxWidth / width,
-                                          ),
-                                        );
-                                      },
-                                    )),
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                  start: 12.w, end: 12.w),
-                              child: Text(
-                                postList[index].title,
-                                style: TextUtil.base.w600
-                                    .label(context)
-                                    .sp(15)
-                                    .NotoSansSC,
+                                          );
+                                        },
+                                      )),
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                    start: 12.w, end: 12.w),
+                                child: Text(
+                                  postList[index].title,
+                                  style: TextUtil.base.w600
+                                      .label(context)
+                                      .sp(15)
+                                      .NotoSansSC,
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                  start: 12.w,
-                                  end: 25.w,
-                                  bottom: 18.h,
-                                  top: 10.h),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    _timeAgo(
-                                        postList[index].detailedUploadTime),
-                                    style: TextUtil.base.w400
-                                        .infoText(context)
-                                        .sp(10)
-                                        .NotoSansSC,
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      SvgPicture.asset(
-                                          'assets/svg_pics/icon_flame.svg',
-                                          width: 16.0.w,
-                                          height: 16.0.h),
-                                      Text(
-                                        '${postList[index].hot.toString()}',
-                                        style: TextUtil.base.infoText(context),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              Padding(
+                                padding: EdgeInsetsDirectional.only(
+                                    start: 12.w,
+                                    end: 25.w,
+                                    bottom: 18.h,
+                                    top: 10.h),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      _timeAgo(
+                                          postList[index].detailedUploadTime),
+                                      style: TextUtil.base.w400
+                                          .infoText(context)
+                                          .sp(10)
+                                          .NotoSansSC,
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        SvgPicture.asset(
+                                            'assets/svg_pics/icon_flame.svg',
+                                            width: 16.0.w,
+                                            height: 16.0.h),
+                                        Text(
+                                          '${postList[index].hot.toString()}',
+                                          style:
+                                              TextUtil.base.infoText(context),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      )),
-                  staggeredTileBuilder: (int index) =>
-                      const StaggeredTile.fit(1),
+                            ],
+                          ),
+                        )),
+                  ),
                 ),
               );
             }),

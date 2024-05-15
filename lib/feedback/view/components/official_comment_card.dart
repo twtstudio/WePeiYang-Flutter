@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:simple_html_css/simple_html_css.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -394,16 +394,24 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
 
         break;
       case Official.subFloor:
-        var comment = RichText(
-          overflow: TextOverflow.ellipsis,
-          maxLines: 4,
-          text: HTML.toTextSpan(
-            context,
-            widget.comment.content,
-            defaultTextStyle:
-                TextUtil.base.w400.normal.label(context).NotoSansSC.sp(16),
-          ),
+        var comment = HtmlWidget(
+          widget.comment.content,
+          textStyle: TextUtil.base.w400.normal.label(context).NotoSansSC.sp(16),
+          onTapUrl: (url) {
+            print(url);
+            return true;
+          },
         );
+        // var comment = RichText(
+        //   overflow: TextOverflow.ellipsis,
+        //   maxLines: 4,
+        //   text: HTML.toTextSpan(
+        //     context,
+        //     widget.comment.content,
+        //     defaultTextStyle:
+        //         TextUtil.base.w400.normal.label(context).NotoSansSC.sp(16),
+        //   ),
+        // );
 
         column.addAll([
           box,

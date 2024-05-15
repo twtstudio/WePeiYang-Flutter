@@ -539,9 +539,9 @@ class _InnerSingleImageWidgetState extends State<InnerSingleImageWidget> {
                               TextButton(
                                   style: ButtonStyle(
                                       alignment: Alignment.topRight,
-                                      padding: MaterialStateProperty.all(
+                                      padding: WidgetStateProperty.all(
                                           EdgeInsets.zero),
-                                      overlayColor: MaterialStateProperty.all(
+                                      overlayColor: WidgetStateProperty.all(
                                           Colors.transparent)),
                                   onPressed: () {
                                     setState(() {

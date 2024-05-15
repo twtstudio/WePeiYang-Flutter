@@ -225,14 +225,14 @@ class _SearchBarState extends State<SearchBar>
                       });
                     },
                     style: ButtonStyle(
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
+                      padding: WidgetStateProperty.all(EdgeInsets.zero),
                       visualDensity: VisualDensity.compact,
-                      backgroundColor: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(
                           WpyTheme.of(context)
                               .get(WpyColorKey.primaryBackgroundColor)),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
-                      elevation: MaterialStateProperty.all(2),
+                      elevation: WidgetStateProperty.all(2),
                     ),
                     child: _controller.text == ''
                         ? SvgPicture.asset(

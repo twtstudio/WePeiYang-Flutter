@@ -151,10 +151,10 @@ class _NewPostPageState extends State<NewPostPage> {
       tag: "addNewPost",
       child: ElevatedButton(
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(
+          elevation: WidgetStateProperty.all(0),
+          backgroundColor: WidgetStateProperty.all(
               WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
             ),
