@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 
 import '../themes/template/wpy_theme_data.dart';
@@ -7,7 +8,7 @@ import '../themes/wpy_theme.dart';
 
 class LevelUtil extends StatelessWidget {
   final String level;
-  final TextStyle style;
+  TextStyle style;
   final bool? big;
 
   LevelUtil({Key? key, required this.level, required this.style, this.big})
@@ -40,6 +41,7 @@ class LevelUtil extends StatelessWidget {
   * */
 
   List<Color> getColorBasedOnLevel(BuildContext context) {
+
     // Parse the level once at the beginning
     double parsedLevel = double.parse(level);
     int parsedLevelInt = parsedLevel.toInt();
@@ -73,9 +75,16 @@ class LevelUtil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: SplitUtil.w * ((this.big ?? false) ? SplitUtil.w * 40 : SplitUtil.w * 26),
-      height: SplitUtil.h * ((this.big ?? false) ? SplitUtil.w * 18 : SplitUtil.w * 12),
+
+    ///根据字体大小动态决定container大小(bug修复)
+    double a = this.style.fontSize!;
+    double b1 = 44/12*a;
+    double b2 = 18/12*a;
+
+    ///container套字体
+    Widget w1= Container(
+      width: SplitUtil.w * b1,
+      height: SplitUtil.h * b2,
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -86,14 +95,19 @@ class LevelUtil extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          "LV" + level,
+          " LV" + level+" ",
           style: style,
         ),
       ),
     );
+
+    return w1;
   }
 }
 
+/********************
+ * 经验条(追2)
+ *******************/
 class LevelProgress extends StatelessWidget {
   final double value;
 
@@ -105,9 +119,11 @@ class LevelProgress extends StatelessWidget {
       width: 100.w,
       height: 4.w,
       decoration: BoxDecoration(
+        //这是背景颜色
         border: Border.all(
             width: 0.8,
             color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
+        //这个是边框颜色
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -119,6 +135,7 @@ class LevelProgress extends StatelessWidget {
               value,
               value
             ]),
+        //这个是圆角,渐变色
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
