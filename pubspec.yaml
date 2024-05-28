@@ -5,7 +5,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.4.4+144
+version: 4.4.5+146
 
 # 打包代码 flutter build apk --split-per-abi
 # flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
@@ -65,7 +65,6 @@ dependencies:
 
   image_cropper: ^1.5.0
   image_picker: ^1.0.7
-  intl: ^0.18.1
 
   like_button: ^2.0.5
   linkfy_text:
