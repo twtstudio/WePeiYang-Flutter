@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reorderable_grid_view/entities/order_update_entity.dart';
 import 'package:flutter_reorderable_grid_view/widgets/widgets.dart';
@@ -386,8 +387,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                           style: TextUtil.base.bold
                               .sp(16)
                               .oldActionColor(context)),
-                      WButton(
-                        onPressed: () {
+                      GestureDetector(
+                        onTap: () {
                           if (CommonPreferences.userTool.value.length < 8)
                             showModalBottomSheet(
                               context: context,
@@ -398,7 +399,13 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                               isDismissible: true,
                               enableDrag: false,
                               isScrollControlled: true,
-                              builder: (context) => EditUserToolBottomSheet(),
+                              builder: (context) => Padding(
+                                padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                                child: EditUserToolBottomSheet(),
+                              ),
                             ).then((value) => setState(() {}));
                           else
                             ToastProvider.error("会不会太多了呢？最多8个喵~");

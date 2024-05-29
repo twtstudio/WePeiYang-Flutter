@@ -75,16 +75,8 @@ class LevelUtil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    ///根据字体大小动态决定container大小(bug修复)
-    double a = this.style.fontSize!;
-    double b1 = 44/12*a;
-    double b2 = 18/12*a;
-
-    ///container套字体
-    Widget w1= Container(
-      width: SplitUtil.w * b1,
-      height: SplitUtil.h * b2,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -93,11 +85,9 @@ class LevelUtil extends StatelessWidget {
             stops: [0.5, 0.8]),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Center(
-        child: Text(
-          " LV" + level+" ",
-          style: style,
-        ),
+      child: Text(
+        "LV" + level,
+        style: style,
       ),
     );
 

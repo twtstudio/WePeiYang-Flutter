@@ -117,7 +117,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                     InputWidget(
                       onChanged: (text) => url = text,
                       title: '跳转坐标',
-                      hintText: '请输入正确有效的网址喵（建议粘贴',
+                      hintText: '需http(s)://前缀喵（建议粘贴）',
                       initText: url,
                       inputFormatter: [LengthLimitingTextInputFormatter(20)],
                     ),
@@ -200,15 +200,18 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
                                         .get(WpyColorKey.oldHintColor)),
                                 borderRadius: BorderRadius.circular(15.w)),
                             child: AnimatedSwitcher(
-                              transitionBuilder: (child, anime){
-                                return ScaleTransition(scale: anime, child: child,);
+                              transitionBuilder: (child, anime) {
+                                return ScaleTransition(
+                                  scale: anime,
+                                  child: child,
+                                );
                               },
                               duration: Duration(milliseconds: 300),
                               child: ColoredIcon(
-                              key: ValueKey(num),
-                              "assets/svg_pics/lake_butt_icons/sample${num % 4 + 1}.png",
-                            color: WpyTheme.of(context).primary,
-                          ),
+                                key: ValueKey(num),
+                                "assets/svg_pics/lake_butt_icons/sample${num % 4 + 1}.png",
+                                color: WpyTheme.of(context).primary,
+                              ),
                             ),
                           ),
                           WButton(
