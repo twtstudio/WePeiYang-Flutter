@@ -909,13 +909,17 @@ class FeedbackService with AsyncTimer {
 
   static adminDeletePost(
       {required id,
+      String? reason,
       required OnSuccess onSuccess,
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('adminDeletePost', () async {
       try {
         await feedbackAdminPostDio.get(
           'post/delete',
-          queryParameters: {'id': id},
+          queryParameters: {
+            'id': id,
+            if (reason != null) 'reason': reason,
+          },
         );
         onSuccess.call();
       } on DioException catch (e) {

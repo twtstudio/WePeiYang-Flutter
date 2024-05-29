@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
@@ -74,8 +73,7 @@ class LevelUtil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: SplitUtil.w * ((this.big ?? false) ? SplitUtil.w * 40 : SplitUtil.w * 26),
-      height: SplitUtil.h * ((this.big ?? false) ? SplitUtil.w * 18 : SplitUtil.w * 12),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -84,11 +82,9 @@ class LevelUtil extends StatelessWidget {
             stops: [0.5, 0.8]),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Center(
-        child: Text(
-          "LV" + level,
-          style: style,
-        ),
+      child: Text(
+        "LV" + level,
+        style: style,
       ),
     );
   }

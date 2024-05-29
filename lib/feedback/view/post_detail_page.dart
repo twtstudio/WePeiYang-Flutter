@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -1742,26 +1743,36 @@ class _AnimatedOptionState extends State<AnimatedOption>
         break;
       // 删帖
       case 100:
+        final reason = await showDialog(
+          context: context,
+          builder: (context) {
+            return SearchableDropdownDialog();
+          },
+        );
+        if (reason == null) return;
         FeedbackService.adminDeletePost(
           id: widget.id.toString(),
+          reason: reason == "" ? null : reason,
           onSuccess: () {
-            context
-                .read<LakeModel>()
-                .lakeAreas[context
-                    .read<LakeModel>()
-                    .tabList[context.read<LakeModel>().currentTab]
-                    .id]
-                ?.refreshController
-                .requestRefresh();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context
+                  .read<LakeModel>()
+                  .lakeAreas[context
+                      .read<LakeModel>()
+                      .tabList[context.read<LakeModel>().currentTab]
+                      .id]
+                  ?.refreshController
+                  .requestRefresh();
+            });
             ToastProvider.success('删除成功');
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+            Navigator.of(context).popMultiple(2);
           },
           onFailure: (e) {
             Navigator.of(context).pop();
             ToastProvider.error(e.error.toString());
           },
         );
+
         break;
       default:
         // 修改etag
@@ -1772,19 +1783,221 @@ class _AnimatedOptionState extends State<AnimatedOption>
             value: val,
             onSuccess: () => setState(() {
                   isSelected = false;
-                  context
-                      .read<LakeModel>()
-                      .lakeAreas[context
-                          .read<LakeModel>()
-                          .tabList[context.read<LakeModel>().currentTab]
-                          .id]
-                      ?.refreshController
-                      .requestRefresh();
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context
+                        .read<LakeModel>()
+                        .lakeAreas[context
+                            .read<LakeModel>()
+                            .tabList[context.read<LakeModel>().currentTab]
+                            .id]
+                        ?.refreshController
+                        .requestRefresh();
+                  });
+                  for (int i = 0; i < 3; i++) {
+                    Navigator.of(context).pop();
+                  }
                   ToastProvider.running('成功');
                 }),
             onFailure: (e) => ToastProvider.error(e.message ?? '失败'));
     }
+  }
+}
+
+extension NavigatorStateExtension on NavigatorState {
+  void popMultiple(int count) {
+    for (int i = 0; i < count; i++) {
+      pop();
+    }
+  }
+}
+
+class SearchableDropdownDialog extends StatefulWidget {
+  @override
+  _SearchableDropdownDialogState createState() =>
+      _SearchableDropdownDialogState();
+}
+
+class _SearchableDropdownDialogState extends State<SearchableDropdownDialog> {
+  List<String> violations = [
+    "诽谤他人，泄露他人隐私，侵害他人合法权益",
+    "人身攻击及辱骂他人",
+    "发表诅咒、歧视、漠视生命尊严等性质的言论",
+    "对他人进行诅咒、恐吓或威胁，尤其是死亡威胁",
+    "讽刺其他用户，阴阳怪气地表达批评",
+    "对其他用户使用粗俗用语，并产生了冒犯",
+    "对其他用户创作的内容直接进行贬低性的评论",
+    "针对其他用户的私德、观点立场、素质、能力等方面的贬低或不尊重",
+    "引战行为，包括但不限于通过敏感话题带节奏，误导大众，引导舆论风向，或者对用户调拨离间，蓄意破坏用户间和谐，故意发布具有引战行为的内容",
+    "散布谣言，扰乱社会秩序，破坏社会稳定",
+    "重复发布干扰正常用户体验的内容。包括但不限于以下几种形式：",
+    "重复的回答内容多次发布在不同问题下",
+    "频繁发布难以辨识涵义影响阅读体验的字符、数字等无意义乱码",
+    "宣扬淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪",
+    "冒充他人，通过头像、用户名等个人信息暗示自己与他人或机构相等同或有关联",
+    "冒充他人，通过头像、用户名等个人信息暗示自己与他人或机构相等同或有关联",
+    "使用特殊符号、图片等方式规避垃圾广告内容审核的广告内容",
+    "不规范转载或大篇幅转载他人内容同时加入推广营销内容",
+    "发布包含欺骗性的恶意营销内容，如通过伪造经历、冒充他人等方式进行恶意营销",
+    "发布含有潜在危险的内容，或使用第三方网站伪造跳转链接，如钓鱼网站、木马、病毒网站等",
+    "煽动民族仇恨、民族歧视，破坏民族团结",
+    "侮辱、滥用英烈形象，否定英烈事迹，美化粉饰侵略战争行为的",
+    "破坏国家宗教政策，宣扬邪教和封建迷信",
+    "反对宪法所确定的基本原则",
+    "损害国家荣誉和利益",
+    "煽动非法集会、结社、游行、示威、聚众扰乱社会秩序",
+    "危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一",
+    "含有法律、行政法规禁止的其他内容的信息",
+    "恶意对抗行为，包括但不限于使用变体、谐音等方式规避安全审查，明知相关行为违反法律法规和社区规范仍然多次发布等"
+  ];
+
+  final selectedItem = ValueNotifier("");
+  FocusNode focusNode = FocusNode();
+  TextEditingController textEditingController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      titlePadding: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4.r),
+      ),
+      actionsPadding: EdgeInsets.all(10),
+      title: Center(child: Text('删帖原因')),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Autocomplete<String>(
+            optionsBuilder: (TextEditingValue textEditingValue) {
+              if (textEditingValue.text.isEmpty) {
+                return violations;
+              } else {
+                final lowerCaseText = textEditingValue.text.toLowerCase();
+                return violations.where((String item) {
+                  return item.toLowerCase().contains(lowerCaseText);
+                });
+              }
+            },
+            onSelected: (String selection) {
+              selectedItem.value = selection;
+              focusNode.unfocus();
+            },
+            fieldViewBuilder: (BuildContext context,
+                TextEditingController textEditingController,
+                FocusNode focusNode,
+                VoidCallback onFieldSubmitted) {
+              this.focusNode = focusNode;
+              this.textEditingController = textEditingController;
+              textEditingController.addListener(() {
+                selectedItem.value = textEditingController.text;
+              });
+              return TextField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  labelText: '原因',
+                  labelStyle: TextStyle(
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.secondaryInfoTextColor),
+                  ),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryTextButtonColor),
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+              );
+            },
+            optionsViewBuilder: (BuildContext context,
+                AutocompleteOnSelected<String> onSelected,
+                Iterable<String> options) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 2.0,
+                  borderRadius: BorderRadius.circular(8),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 200,
+                    ),
+                    child: Container(
+                      width: 300,
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(8.0),
+                        itemCount: options.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final String option = options.elementAt(index);
+                          return GestureDetector(
+                            onTap: () {
+                              onSelected(option);
+                            },
+                            child: ListTile(
+                              title: Text(option),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(null);
+          },
+          child: Text(
+            '取消',
+            style: TextStyle(
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+            ),
+          ),
+        ),
+        ListenableBuilder(
+          listenable: selectedItem,
+          child: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop("");
+            },
+            child: Text(
+              '直接删除',
+              style: TextStyle(
+                color: WpyTheme.of(context).get(WpyColorKey.dangerousRed),
+              ),
+            ),
+          ),
+          builder: (ctx, old) {
+            if (selectedItem.value == "") return old!;
+            return ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
+              ),
+              onPressed: () async {
+                if (selectedItem.value == "") {
+                  ToastProvider.error('请选择删帖原因');
+                  return;
+                }
+                Navigator.of(context).pop(selectedItem.value);
+              },
+              child: Text(
+                '确定',
+                style: TextStyle(
+                  color: WpyTheme.of(context).get(WpyColorKey.brightTextColor),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
 }
