@@ -228,9 +228,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /********************
-                             * 经验条上方
-                             ********************/
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,18 +249,14 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                             SizedBox(height: 6.h),
-                            /********************
-                             * 经验条组件(追踪1)
-                             ********************/
                             LevelProgress(
-                              value: (CommonPreferences.levelPoint.value)
+                              value: (CommonPreferences.levelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble() /
-                                  (CommonPreferences.nextLevelPoint.value)
+                                  (CommonPreferences.nextLevelPoint.value -
+                                          CommonPreferences.curLevelPoint.value)
                                       .toDouble(),
                             ),
-                            /********************
-                             * 经验条下方文字(还需xxx经验)
-                             ********************/
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -283,7 +276,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ],
                             )
-                            /***************/
                           ],
                         )
                       ],

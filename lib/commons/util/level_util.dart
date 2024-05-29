@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
 
 class LevelUtil extends StatelessWidget {
   final String level;
-  TextStyle style;
+  final TextStyle style;
   final bool? big;
 
   LevelUtil({Key? key, required this.level, required this.style, this.big})
@@ -41,7 +39,6 @@ class LevelUtil extends StatelessWidget {
   * */
 
   List<Color> getColorBasedOnLevel(BuildContext context) {
-
     // Parse the level once at the beginning
     double parsedLevel = double.parse(level);
     int parsedLevelInt = parsedLevel.toInt();
@@ -90,14 +87,9 @@ class LevelUtil extends StatelessWidget {
         style: style,
       ),
     );
-
-    return w1;
   }
 }
 
-/********************
- * 经验条(追2)
- *******************/
 class LevelProgress extends StatelessWidget {
   final double value;
 
@@ -109,11 +101,9 @@ class LevelProgress extends StatelessWidget {
       width: 100.w,
       height: 4.w,
       decoration: BoxDecoration(
-        //这是背景颜色
         border: Border.all(
             width: 0.8,
             color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor)),
-        //这个是边框颜色
         gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -125,7 +115,6 @@ class LevelProgress extends StatelessWidget {
               value,
               value
             ]),
-        //这个是圆角,渐变色
         borderRadius: BorderRadius.circular(5),
         boxShadow: [
           BoxShadow(
