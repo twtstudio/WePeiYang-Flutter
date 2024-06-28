@@ -41,6 +41,8 @@ extension MessageTypeExtension on MessageType {
   }
 }
 
+//信息中心界面(2024.5.29考古)
+//日常考古
 class FeedbackMessagePage extends StatefulWidget {
   @override
   _FeedbackMessagePageState createState() => _FeedbackMessagePageState();
@@ -72,6 +74,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               currentIndex.value = _tabController.index;
             }
           });
+    //240529考古,表示点赞/评论/校务回复/湖底通知tab
+    // 考古,红点type来自此处
     tb = types.map((t) {
       return MessageTab(type: t);
     }).toList();
@@ -197,6 +201,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.primaryActionColor),
                             width: 2)),
+
+                    //此处包含四个栏目
                     tabs: tb,
                     onTap: (index) {
                       currentIndex.value = _tabController.index;
@@ -214,6 +220,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
   }
 }
 
+//240529追踪考古,似乎没有包含红点方法,回溯
 class MessageTab extends StatefulWidget {
   final MessageType? type;
   final bool? isEmail;
@@ -264,8 +271,12 @@ class _MessageTabState extends State<MessageTab> {
         },
       );
 
+      //count 来自于以下
+      //由type 进行调用
+      //type 来自常量map
       int count = context.select((MessageProvider messageProvider) =>
           messageProvider.getMessageCount(type: widget.type));
+
       return Tab(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -275,6 +286,8 @@ class _MessageTabState extends State<MessageTab> {
               ? tab
               : badges.Badge(
                   child: tab,
+                  //考古, 红点实现方法!!
+                  //count 来自于上面
                   badgeContent: Text(
                     count.toString(),
                     style: TextUtil.base.reverse(context).sp(8),

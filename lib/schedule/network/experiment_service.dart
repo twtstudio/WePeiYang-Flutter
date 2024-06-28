@@ -10,6 +10,7 @@ enum ExperimentKeys {
   ExperimentName,
   GroupId,
   ExperimentCenter,
+  IsOpenToChoose,
   Labs,
   Teacher,
   Time,
@@ -23,6 +24,7 @@ extension on ExperimentKeys {
     ExperimentKeys.ExperimentName: 5,
     ExperimentKeys.GroupId: 6,
     ExperimentKeys.ExperimentCenter: 7,
+    ExperimentKeys.IsOpenToChoose: 8,
     ExperimentKeys.Labs: 9,
     ExperimentKeys.Teacher: 10,
     ExperimentKeys.Time: 18,
@@ -38,6 +40,7 @@ class Experiment {
   final String experimentName;
   final String groupId;
   final String experimentCenter;
+  final String isOpenToChoose;
   final String labs;
   final String teacher;
   final String time;
@@ -49,6 +52,7 @@ class Experiment {
       required this.experimentName,
       required this.groupId,
       required this.experimentCenter,
+      required this.isOpenToChoose,
       required this.labs,
       required this.teacher,
       required this.time});
@@ -76,6 +80,7 @@ class Experiment {
       experimentName: raw[ExperimentKeys.ExperimentName.item],
       groupId: raw[ExperimentKeys.GroupId.item],
       experimentCenter: raw[ExperimentKeys.ExperimentCenter.item],
+      isOpenToChoose: raw[ExperimentKeys.IsOpenToChoose.item],
       labs: removeCommonSubstrings(
         raw[ExperimentKeys.Labs.item],
         raw[ExperimentKeys.ExperimentName.item],
@@ -120,6 +125,8 @@ class ExperimentService {
       if (classIdSet.contains(course.classId)) {
         Arrange arrangeTemplate = course.arrangeList[0];
         for (var exp in expList) {
+          // 只有当开放选课为是时才进行课程的替换
+          if (exp.isOpenToChoose != "是") continue;
           Arrange arrange = arrangeTemplate.copyWith(
             isExperiment: true,
             name: exp.experimentName,

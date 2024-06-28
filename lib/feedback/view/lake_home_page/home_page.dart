@@ -30,7 +30,8 @@ import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../home/view/web_views/festival_page.dart';
-
+import '../../../message/model/message_provider.dart';
+import 'package:badges/badges.dart' as badges;
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
 
@@ -155,6 +156,43 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       initializeRefresh = false;
     }
 
+    /// 2024.5.29 新增功能:信息中心红点通知功能
+    /// 在搜索框最右侧,点击后跳转通知界面
+    /// 根据当前红点信息展示红点(右上角红点)
+
+    List<MessageType> types = MessageType.values;
+    int count = 0;
+    for (var type in types) {
+      count += context
+          .select((MessageProvider messageProvider) =>
+              messageProvider.getMessageCount(type: type))
+          .toInt();
+    }
+
+    Widget w1 = Icon(
+      Icons.mail_outline,
+      color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+      size: 19,
+    );
+
+    Widget notifyButton = WButton(
+      onPressed: (){
+        Navigator.pushNamed(context, FeedbackRouter.mailbox);
+      },
+      child: Container(
+        child: count == 0
+            ? w1
+            : badges.Badge(
+              child: w1,
+              //考古, 红点实现方法!!
+              badgeContent: Text(
+                count.toString(),
+                style: TextUtil.base.reverse(context).sp(8),
+              )),
+      ),
+    );
+
+    ///搜索框
     var searchBar = WButton(
       onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
@@ -189,6 +227,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               .sp(15),
                         ),
                       ),
+                      //搜索栏文字
                       Text(
                         data.recTag == null ? '' : '  为你推荐',
                         overflow: TextOverflow.ellipsis,
@@ -200,7 +239,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       ),
                     ],
                   )),
-          Spacer()
+          Spacer(),
+          notifyButton,
+          SizedBox(width: 14.h),
         ]),
       ),
     );
