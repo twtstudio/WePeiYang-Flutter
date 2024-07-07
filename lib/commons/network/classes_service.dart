@@ -82,6 +82,7 @@ class ClassesService {
       await mtx.acquire();
       ExperimentService.refreshExperiment(courseProvider)
           .whenComplete(() => mtx.release());
+      ToastProvider.success("已刷新！");
     });
   }
 
