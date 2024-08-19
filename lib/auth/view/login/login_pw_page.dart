@@ -164,9 +164,8 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                               onPressed: () => showDialog(
                                   context: context,
                                   barrierDismissible: true,
-                                  ///TODO:登录页点击弹窗不显示_detail组件
-                                  builder: (context) => UserAgreementDialog(
-                                      check: checkNotifier)),
+                                  //直接传入check=checkNotifier会导致_detail组件不显示
+                                  builder: (context) => UserAgreementDialog()),
                               child: Text.rich(TextSpan(
                                   text: "《用户协议》",
                                   style: TextUtil.base
