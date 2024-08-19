@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -35,7 +36,7 @@ class UserAgreementDialog extends Dialog {
                     child: Text('微北洋用户协议',
                         style:
                             TextUtil.base.bold.sp(18).customColor(textColor))),
-                Text("更新日期：2022年03月19日\n" + "生效日期：2021年08月13日\n"),
+                Text("更新日期：2024年08月20日\n" + "生效日期：2021年08月13日\n"),
                 BoldText("一．引言"),
                 Text("微北洋产品和服务的提供者为天津大学（以下简称“我们”）。"
                     "微北洋自推出以来连接全校师生，带来学习与生活的便捷。"
@@ -143,24 +144,19 @@ class UserAgreementDialog extends Dialog {
   }
 
   Widget _detail(BuildContext context) {
+
+    /// 退出 APP
+    void _Quit() async {
+      await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
+
     if (check == null) {
-      return WButton(
-        onPressed: () => Navigator.pop(context),
-        child: Container(
-          decoration: BoxDecoration(), // 加个这个扩大点击事件范围
-          padding: const EdgeInsets.all(16),
-          child: Text('确定',
-              style: TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
-        ),
-      );
-    } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           WButton(
             onPressed: () {
-              check!.value = false;
-              Navigator.pop(context);
+              _Quit();
             },
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
@@ -171,7 +167,6 @@ class UserAgreementDialog extends Dialog {
           ),
           WButton(
             onPressed: () {
-              check!.value = true;
               Navigator.pop(context);
             },
             child: Container(
@@ -179,11 +174,13 @@ class UserAgreementDialog extends Dialog {
               padding: const EdgeInsets.all(16),
               child: Text('同意',
                   style:
-                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
+                  TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],
       );
+    } else {
+      return Row();
     }
   }
 }
