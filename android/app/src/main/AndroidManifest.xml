@@ -64,11 +64,12 @@
 
     <application
         android:name=".WBYApplication"
+        android:allowBackup="false"
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/label"
         android:usesCleartextTraffic="true"
-        tools:replace="android:label"
+        tools:replace="android:label,android:allowBackup"
         tools:targetApi="m">
 
         <!--        Impeller 打包可用 调试还是坏的-->
