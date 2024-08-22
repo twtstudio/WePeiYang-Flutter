@@ -391,7 +391,16 @@ class WePeiYangAppState extends State<WePeiYangApp>
                           FlutterSmartDialog.observer
                         ],
                         home: child,
-                        builder: FlutterSmartDialog.init(builder: _builder),
+                        builder: (context, child) => Overlay(
+                          initialEntries: [
+                            if (child != null) ...[
+                              OverlayEntry(
+                                builder: (context) => child,
+                              ),
+                            ],
+                          ],
+                        ),
+                        // builder: FlutterSmartDialog.init(builder: _builder),
                         // builder: FToastBuilder(),
                       );
                     })),

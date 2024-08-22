@@ -192,8 +192,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                   context,
                   FeedbackRouter.localImageView,
                   arguments: LocalImageViewPageArgs([], [
-                    'assets/images/calender/first.jpg',
-                    'assets/images/calender/second.jpg'
+                    'assets/images/calender/first.png',
+                    'assets/images/calender/second.png'
                   ], 2, 0),
                 );
               },
@@ -212,14 +212,14 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
-                                  'assets/images/calender/first.jpg')))),
+                                  'assets/images/calender/first.png')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '23-24第一学期',
+                        '24-25第一学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900
@@ -236,8 +236,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                   context,
                   FeedbackRouter.localImageView,
                   arguments: LocalImageViewPageArgs([], [
-                    'assets/images/calender/first.jpg',
-                    'assets/images/calender/second.jpg'
+                    'assets/images/calender/first.png',
+                    'assets/images/calender/second.png'
                   ], 2, 1),
                 );
               },
@@ -255,7 +255,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryLightestActionColor),
                             BlendMode.screen),
-                        image: AssetImage('assets/images/calender/second.jpg'),
+                        image: AssetImage('assets/images/calender/second.png'),
                       ))),
                   Positioned(
                     top: 20.h,
@@ -263,7 +263,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '23-24第二学期',
+                        '24-25第二学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900

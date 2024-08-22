@@ -114,6 +114,7 @@ class CourseProvider with ChangeNotifier {
       //   notifyListeners();
       //   _widgetChannel.invokeMethod("refreshScheduleWidget");
       await ClassesService.getClasses(context);
+
     } on DioException catch (_) {
       showDialog(
         context: context,

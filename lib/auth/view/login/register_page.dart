@@ -1003,7 +1003,8 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                               context: context,
                               barrierDismissible: true,
                               builder: (context) =>
-                                  UserAgreementDialog(check: checkNotifier)),
+                              ///直接传入ckeck=checkNotifier会导致不显示_detail组件
+                                  UserAgreementDialog()),
                           child: Text.rich(TextSpan(
                               text: "《用户协议》",
                               style: TextUtil.base.normal.NotoSansSC.w400

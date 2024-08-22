@@ -28,8 +28,11 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
         });
       });
     }
+
+    ///首次打开APP弹出隐私协议
+    ///修改为拒绝后再次打开APP仍弹出隐私协议
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      if (CommonPreferences.firstPrivacy.value == true) {
+      if (CommonPreferences.firstPrivacy.value == true ) {
         showDialog(
             context: context,
             barrierDismissible: false,
