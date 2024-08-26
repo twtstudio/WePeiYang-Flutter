@@ -63,8 +63,6 @@ void main() async {
       print('[INFO]: This device isn\'t support high refresh rate');
     }
 
-    /// 初始化友盟 TODO: fix this or remove this
-    await UmengCommonSdk.initCommon();
 
     /// 设置桌面端窗口适配, 依赖为 window_manager
     if (Platform.isWindows) {

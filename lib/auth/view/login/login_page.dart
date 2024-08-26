@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -8,18 +9,16 @@ import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../privacy/privacy_dialog.dart';
 
-class LoginHomeWidget extends StatefulWidget{
-
+class LoginHomeWidget extends StatefulWidget {
   @override
-  _LoginHomeWidgetState createState()=>_LoginHomeWidgetState();
-
+  _LoginHomeWidgetState createState() => _LoginHomeWidgetState();
 }
 
 class _LoginHomeWidgetState extends State<LoginHomeWidget> {
-
   String md = '';
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     if (CommonPreferences.firstPrivacy.value == true) {
       rootBundle.loadString('privacy/privacy_content.md').then((str) {
@@ -31,9 +30,10 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
 
     ///首次打开APP弹出隐私协议
     ///修改为拒绝后再次打开APP仍弹出隐私协议
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async{
-      if (CommonPreferences.firstPrivacy.value == true ) {
-        showDialog(
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (CommonPreferences.firstPrivacy.value == true) {
+        // 如果已经同意了隐私协议， init, 否则弹窗等待， 如果没同意的话就会直接退出APP, 不会运行到这里
+        await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -41,8 +41,10 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
             });
         CommonPreferences.firstPrivacy.value = false;
       }
+      UmengCommonSdk.initCommon();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
