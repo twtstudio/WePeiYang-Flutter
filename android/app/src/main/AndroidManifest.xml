@@ -58,8 +58,6 @@
         <intent>
             <action android:name="com.getui.sdk.action" />
         </intent>
-        <!--    腾讯sdk（分享）-->
-        <package android:name="com.tencent.mobileqq" />
     </queries>
 
     <application
@@ -145,32 +143,6 @@
         <activity android:name="com.android.camera.CropImage" />
 
 
-        <!--    QQ sdk必备Activity -->
-        <activity
-            android:name="com.tencent.connect.common.AssistActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="behind" />
-        <activity
-            android:name="com.tencent.tauth.AuthActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tencent1104743406" />
-            </intent-filter>
-        </activity>
-
-        <!--    高德-->
-        <!--        <meta-data-->
-        <!--            android:name="com.amap.api.v2.apikey"-->
-        <!--            android:value="7b3d4abbc6ac33c33b7d97985e8baf4f" />-->
-        <!--        <service android:name="com.amap.api.location.APSService" />-->
-
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service
             android:name=".push.WBYIntentService"
@@ -208,16 +180,6 @@
             android:name=".widget.WidgetCardService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <!--    QQ分享 -->
-        <provider
-            android:name=".common.ImageProvider"
-            android:authorities="${applicationId}.ImageProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
 
         <!--    应用内更新apk存储地址  -->
         <provider

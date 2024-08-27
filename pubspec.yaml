@@ -5,7 +5,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.4.5+146
+version: 4.4.6+147
 
 # 打包代码 flutter build apk --split-per-abi
 # flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
@@ -114,7 +114,7 @@ dependencies:
   transparent_image: ^2.0.1
 
   package_info_plus: ^6.0.0
-  device_info_plus: ^9.1.2
+#  device_info_plus: ^9.1.2
 
 
 dev_dependencies:

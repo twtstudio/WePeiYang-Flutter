@@ -164,6 +164,7 @@
 - 微北洋使用了**魅族推送**，通过采集用户的设备信息来方便用户接收推送消息。详情内容请访问[《魅族隐私政策》](https://www.meizu.com/about/privacy.html)
 - 微北洋使用了**OPPO推送**，通过采集用户的设备信息来方便用户接收推送消息。详情内容请访问[《OPPO隐私政策》](https://www.oppo.com/cn/privacy-policy/)
 - 微北洋使用了**VIVO推送**，通过采集用户的设备信息来方便用户接收推送消息。详情内容请访问[《VIVO隐私政策》](https://www.vivo.com.cn/zh/about-vivo/privacy-policy)
+- 微北洋使用了**QQ互联SDK**，提供社交平台分享功能。详情内容请访问[《QQ互联SDK隐私保护声明》](https://wiki.connect.qq.com/qq%e4%ba%92%e8%81%94sdk%e9%9a%90%e7%a7%81%e4%bf%9d%e6%8a%a4%e5%a3%b0%e6%98%8e)
 
 #### **4. 您如何行使您的个人信息权利**
 

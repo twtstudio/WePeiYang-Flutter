@@ -65,7 +65,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         createNotificationChannel()
         // 如果用户同意了条款，并且打开通知权限，就初始化个推 sdk
         runCatching(::initSdkWhenOpenApp).onFailure {
-            log("init sdk when open app failure : $it")
+            log("init GE TUI SDK when open app failure : $it")
         }
     }
 

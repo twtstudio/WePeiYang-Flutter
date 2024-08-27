@@ -34,9 +34,11 @@ class WBYApplication : Application() {
                     RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(true).build()
                 )
             }
+
+
+            UMConfigure.preInit(applicationContext, "60464782b8c8d45c1390e7e3", Build.BRAND)
             // Build 类获取系统信息
             // https://blog.csdn.net/duyiqun/article/details/54882735
-            UMConfigure.preInit(applicationContext, "60464782b8c8d45c1390e7e3", Build.BRAND)
             // 加载flutter
             FlutterInjector.instance().flutterLoader().startInitialization(this)
         }

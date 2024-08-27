@@ -1,6 +1,8 @@
 package com.twt.service.statistics
 
+import android.os.Build
 import android.util.Log
+import com.twt.service.WBYApplication
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
 import com.umeng.analytics.MobclickAgent
@@ -33,6 +35,8 @@ class WbyStatisticsPlugin : WbyPlugin() {
     }
 
     private fun initCommon() {
+
+//        val buildContext = WBYApplication.context?.get() ?: return
         UMConfigure.init(
             context,
             "60464782b8c8d45c1390e7e3",

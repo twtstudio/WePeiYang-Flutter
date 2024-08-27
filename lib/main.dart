@@ -23,7 +23,6 @@ import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
-import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/network/wpy_dio.dart';
@@ -478,8 +477,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _appInitProcess(BuildContext context) {
-    /// 初始化友盟
-    UmengCommonSdk.initCommon();
 
     // 检查更新
     context.read<UpdateManager>().checkUpdate();
