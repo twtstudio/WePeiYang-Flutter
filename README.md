@@ -122,3 +122,9 @@
 ## 备案号
 
 津ICP备05004358号-18A(https://beian.miit.gov.cn/)       
+
+
+
+## 一些没有用的东西
+Here is the 7th flag:
+flag7{bmcgQzMwMSBhbnl0aW1lISBX}
