@@ -232,19 +232,21 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
     );
 
-    return ColoredBox(
-        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            topView,
-            Expanded(
-                child: ColoredBox(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.secondaryBackgroundColor),
-                    child: searchHistory)),
-          ],
-        ));
+    return Scaffold(
+      body: ColoredBox(
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              topView,
+              Expanded(
+                  child: ColoredBox(
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.secondaryBackgroundColor),
+                      child: searchHistory)),
+            ],
+          )),
+    );
   }
 
   showClearDialog() {

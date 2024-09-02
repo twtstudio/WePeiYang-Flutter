@@ -32,6 +32,7 @@ import '../../../commons/widgets/w_button.dart';
 import '../../../home/view/web_views/festival_page.dart';
 import '../../../message/model/message_provider.dart';
 import 'package:badges/badges.dart' as badges;
+
 class FeedbackHomePage extends StatefulWidget {
   FeedbackHomePage({Key? key}) : super(key: key);
 
@@ -172,7 +173,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     Widget w1 = Icon(
       Icons.mail_outline,
       color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
-      size: 19,
+      size: 25.r,
     );
 
     Widget notifyButton = WButton(
@@ -180,6 +181,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         Navigator.pushNamed(context, FeedbackRouter.mailbox);
       },
       child: Container(
+        margin:EdgeInsets.only(top: 8.h) ,
         child: count == 0
             ? w1
             : badges.Badge(
@@ -197,7 +199,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       onPressed: () => Navigator.pushNamed(context, FeedbackRouter.search),
       child: Container(
         height: searchBarHeight - 8.h,
-        margin: EdgeInsets.fromLTRB(15.h, 8.h, 15.h, 0),
+        margin: EdgeInsets.fromLTRB(15.h, 8.h, 10.h, 0),
         decoration: BoxDecoration(
             color:
                 WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
@@ -240,7 +242,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                     ],
                   )),
           Spacer(),
-          notifyButton,
           SizedBox(width: 14.h),
         ]),
       ),
@@ -435,7 +436,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                       duration: Duration(milliseconds: 500),
                       curve: Curves.easeOutCirc,
                       child: Column(children: [
-                        searchBar,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(width: 0.9.sw, child: searchBar),
+                            notifyButton
+                          ],
+                        ),
                         SizedBox(
                           height: tabBarHeight,
                           child: Row(
