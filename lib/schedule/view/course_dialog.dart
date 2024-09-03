@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
+import '../../commons/preferences/common_prefs.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 
@@ -71,7 +72,7 @@ class CourseDialog extends Dialog {
 
   Widget _getSingleCard(BuildContext context, Pair<Course, int> pair) {
     var teacher = '';
-    final _teachers = pair.arrange.isExperiment
+    final _teachers = (pair.arrange.isExperiment&CommonPreferences.isShowExperiment.value)
         ? pair.arrange.teacherList
         : pair.first.teacherList;
     _teachers.forEach((str) {
@@ -114,7 +115,7 @@ class CourseDialog extends Dialog {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      pair.arrange.isExperiment
+                      (pair.arrange.isExperiment&CommonPreferences.isShowExperiment.value)
                           ? "${pair.first.name}\n"
                               "${pair.arrange.name!}"
                           : pair.first.name,

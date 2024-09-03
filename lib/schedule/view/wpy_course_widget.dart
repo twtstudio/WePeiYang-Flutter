@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
+import '../../commons/preferences/common_prefs.dart';
 import '../../commons/widgets/w_button.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
@@ -107,7 +108,7 @@ class TodayCoursesWidget extends StatelessWidget {
                           SizedBox(
                             width: 1.sw - 125.w - 50.r,
                             child: Text(
-                              todayPairs[i].arrange.isExperiment
+                              (todayPairs[i].arrange.isExperiment&CommonPreferences.isShowExperiment.value)
                                   ? "[实验] ${todayPairs[i].arrange.name!}"
                                   : todayPairs[i].first.name,
                               style: TextUtil.base.PingFangSC

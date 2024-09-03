@@ -72,6 +72,7 @@ class CommonPreferences {
   /// 自定义课表
   static final customCourseToken = PrefsBean<String>('customCourseToken');
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
+  static final isShowExperiment = PrefsBean<bool>('isShowExperiment',true);
 
   /// 学期信息
   /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
