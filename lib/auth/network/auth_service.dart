@@ -304,7 +304,7 @@ class AuthService with AsyncTimer {
     });
   }
 
-  /// 登陆时获取短信验证码
+  /// 登录时获取短信验证码
   static getCaptchaOnLogin(String phone,
       {required OnSuccess onSuccess, required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('getCaptchaOnLogin', () async {

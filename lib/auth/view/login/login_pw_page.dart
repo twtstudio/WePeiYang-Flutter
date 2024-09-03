@@ -346,7 +346,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             ),
           ),
         ),
-        SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登陆等位置在同一个水平线上
+        SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登录等位置在同一个水平线上
         Row(
           children: [
             Spacer(),

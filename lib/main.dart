@@ -498,7 +498,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<ExamProvider>().readPref();
     context.read<CourseProvider>().readPref();
 
-    /// 如果登陆过，尝试刷新token
+    /// 如果登录过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
       Future.delayed(
@@ -555,7 +555,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         ),
       );
     } else {
-      /// 没登陆过的话，多看一会的启动页再跳转到登录页
+      /// 没登录过的话，多看一会的启动页再跳转到登录页
       Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }

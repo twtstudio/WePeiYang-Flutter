@@ -146,7 +146,7 @@ class CommonPreferences {
   static final lastActivityDialogShownDate =
       PrefsBean<String>('lastActivityDialogShownDate', '');
 
-  /// 是否为初次使用此app（重新登陆也算）
+  /// 是否为初次使用此app（重新登录也算）
   static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
   static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 

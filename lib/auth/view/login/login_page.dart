@@ -157,7 +157,7 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                      text: "首次登录微北洋请使用天外天账号密码登录\n在登陆后绑定手机号码即可手机验证登录",
+                      text: "首次登录微北洋请使用天外天账号密码登录\n在登录后绑定手机号码即可手机验证登录",
                       style: TextUtil.base.normal.NotoSansSC
                           .sp(12)
                           .w400
