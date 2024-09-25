@@ -7,7 +7,7 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class AboutTwtPage extends StatelessWidget {
-  static const URL = "https://i.twt.edu.cn/#/about";
+  static const URL = "https://www.twt.edu.cn/";
 
   @override
   Widget build(BuildContext context) {

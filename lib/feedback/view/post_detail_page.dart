@@ -481,6 +481,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     child: ConstrainedBox(
                         constraints: constraints,
                         child: NCommentCard(
+                          type: widget.post.type,
                           uid: widget.post.uid,
                           comment: data,
                           ancestorUId: widget.post.id,

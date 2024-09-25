@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/person_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
+import '../../../../commons/preferences/common_prefs.dart';
 import '../../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../../commons/themes/wpy_theme.dart';
 import '../../../../commons/widgets/w_button.dart';
@@ -310,19 +311,28 @@ class ProfileImageWithDetailedPopup extends StatefulWidget {
 
 class _ProfileImageWithDetailedPopupState
     extends State<ProfileImageWithDetailedPopup> {
+
+  bool get hasAdmin =>
+      CommonPreferences.isSchAdmin.value ||
+      CommonPreferences.isStuAdmin.value ||
+      CommonPreferences.isSuper.value;
+
   @override
   Widget build(BuildContext ctx) {
     return WButton(
-      onPressed: () => Navigator.pushNamed(context, FeedbackRouter.person,
-          arguments: PersonPageArgs(
-              widget.postOrCommentId,
-              widget.fromPostCard,
-              widget.type,
-              widget.uid,
-              widget.avatar,
-              widget.nickName,
-              widget.level,
-              widget.heroTag)),
+      onPressed: () {
+        if ((widget.type != 1) || hasAdmin)
+          Navigator.pushNamed(context, FeedbackRouter.person,
+              arguments: PersonPageArgs(
+                  widget.postOrCommentId,
+                  widget.fromPostCard,
+                  widget.type,
+                  widget.uid,
+                  widget.avatar,
+                  widget.nickName,
+                  widget.level,
+                  widget.heroTag));
+      },
       child: Hero(
         tag: widget.heroTag,
         child: SizedBox(
@@ -340,7 +350,7 @@ class _ProfileImageWithDetailedPopupState
                   borderRadius:
                       BorderRadius.all(Radius.circular(SplitUtil.w * 18)),
                   child: WpyPic(
-                    widget.avatar == ""
+                    (widget.avatar == "" || widget.type == 1)
                         ? '${EnvConfig.QNHD}avatar/beam/20/${widget.uid}.svg'
                         : 'https://qnhdpic.twt.edu.cn/download/origin/${widget.avatar}',
                     width: SplitUtil.w * 17 > SplitUtil.h * 32
