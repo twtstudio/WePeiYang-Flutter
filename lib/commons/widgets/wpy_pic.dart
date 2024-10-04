@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -9,6 +12,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 
 /// 统一Button样式
+/// 千万别改!!!!千万别改!!!改了就崩溃
 class WpyPic extends StatefulWidget {
   WpyPic(
     this.imageUrl, {
@@ -21,6 +25,7 @@ class WpyPic extends StatefulWidget {
     this.withCache = true,
     this.alignment = Alignment.center,
     this.reduce = false,
+    this.hide = false,
   }) : super(key: key);
 
   final String imageUrl;
@@ -33,11 +38,14 @@ class WpyPic extends StatefulWidget {
   final Alignment alignment;
   final bool reduce;
 
+  final bool hide;
+
   @override
   _WpyPicState createState() => _WpyPicState();
 }
 
 class _WpyPicState extends State<WpyPic> {
+
   Widget get asset {
     if (widget.imageUrl.endsWith('.svg')) {
       return SvgPicture.asset(
@@ -111,8 +119,7 @@ class _WpyPicState extends State<WpyPic> {
           ),
           child: imageWidget,
         );
-      else
-        return imageWidget;
+      return imageWidget;
     }
   }
 
@@ -133,11 +140,31 @@ class _WpyPicState extends State<WpyPic> {
   @override
   Widget build(BuildContext context) {
     if (widget.imageUrl.startsWith('assets')) {
-      return asset;
+      return Container(child: asset);
       // } else if (widget.withCache) {
       //   return cachedNetwork;
     } else {
-      return network;
+      return Container(child: network);
     }
+  }
+}
+
+///2024年10月3日考古
+///原本打算实现对图片模糊处理的方法
+///但在尝试修改WpyPic时出现了全局崩溃的情况(由于WpyPic的布局规范不明确,这属于是历史遗留问题,无法修复)
+///因此被迫将帖子相关的图片组件与WpyPic分离
+///该组件保留了一部分WpyPic的功能,同时新增了图片模糊功能
+///该组件应该用于帖子预览页面
+///以及帖子详细界面
+
+///对于较小的图片,如要隐藏,则不显示文字,只显示眼睛
+///对于较大的图片,显示眼睛与详细的隐藏原因
+///隐藏图片的机制为图片/黑色的磨砂玻璃质感/响应式标志
+class PostPic extends StatelessWidget {
+  late final String imageUrl;
+  PostPic(this.imageUrl);
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

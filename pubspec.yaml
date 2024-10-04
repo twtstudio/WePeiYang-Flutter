@@ -38,9 +38,7 @@ dependencies:
     path: ./lib/commons/network/dio_cookie_cached_handler
 
   extended_tabs: ^4.1.0
-  extended_image:
-    git:
-      url: https://github.com/steven12138/extended_image.git
+  extended_image: any
 
   flutter_displaymode: ^0.6.0
   flutter_html:
@@ -62,6 +60,8 @@ dependencies:
 
 
   http_parser: ^4.0.2
+  glass_kit: any
+  frosted_glass_effect: any
 
   image_cropper: ^1.5.0
   image_picker: ^1.0.7
@@ -99,9 +99,7 @@ dependencies:
   uuid: ^4.3.3
 
   webview_flutter: ^2.0.13 # TODO: update the new webview package
-  wechat_assets_picker:
-    git:
-      url: https://github.com/steven12138/flutter_wechat_assets_picker.git
+  wechat_assets_picker: any
   window_manager: ^0.3.8
 
   waterfall_flow: ^3.0.3
@@ -114,6 +112,7 @@ dependencies:
   transparent_image: ^2.0.1
 
   package_info_plus: ^6.0.0
+  glass: any
 #  device_info_plus: ^9.1.2
 
 
