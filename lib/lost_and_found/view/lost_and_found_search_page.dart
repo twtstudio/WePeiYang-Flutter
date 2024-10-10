@@ -29,6 +29,35 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         'feedback_found_search_history', _foundSearchHistoryList.value);
   }
 
+  showClearDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LakeDialogWidget(
+              title: '清除记录',
+              titleTextStyle:
+              TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
+              cancelText: '取消',
+              cancelTextStyle:
+              TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+              confirmText: '确定',
+              confirmTextStyle:
+              TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
+              confirmButtonColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
+              cancelFun: () {
+                Navigator.pop(context);
+              },
+              confirmFun: () {
+                _foundSearchHistoryList.value.clear();
+                _addHistory();
+                setState(() {});
+                Navigator.pop(context);
+              },
+              content: Text('确认清除所有搜索记录吗？'));
+        });
+  }
+
   @override
   void initState() {
     _foundSearchHistoryList = ValueNotifier([])
@@ -69,66 +98,42 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       },
     );
 
-    var topView = SafeArea(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Stack(children: [
-          searchBar,
-          InkWell(
-            child: Padding(
-              padding: EdgeInsets.only(top: 12.h, left: 12.h),
-              child: Icon(
-                Icons.arrow_back_ios_new,
-                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                size: 27.r,
+    var selector = Selector<LostAndFoundModel2, String>(
+        selector: (context, model) {
+          return model.currentCategory[type]!;
+        },
+        builder: (context, category, _) {
+          return Flex(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            direction: Axis.horizontal,
+            children: <Widget>[
+              Expanded(
+                child: LostAndFoundTag(category: '全部', type: type),
+                flex: 4,
               ),
-            ),
-            onTap: () => Navigator.pop(context),
-          ),
-        ]),
-        Padding(
-          padding:
-              EdgeInsetsDirectional.only(bottom: 10.h, start: 20.h, end: 20.h),
-          child: Selector<LostAndFoundModel2, String>(
-            selector: (context, model) {
-              return model.currentCategory[type]!;
-            },
-            builder: (context, category, _) {
-              return Flex(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Expanded(
-                    child: LostAndFoundTag(category: '全部', type: type),
-                    flex: 4,
-                  ),
-                  Expanded(
-                    child: LostAndFoundTag(category: '生活日用', type: type),
-                    flex: 5,
-                  ),
-                  Expanded(
-                    child: LostAndFoundTag(category: '数码产品', type: type),
-                    flex: 5,
-                  ),
-                  Expanded(
-                    child: LostAndFoundTag(category: '钱包卡证', type: type),
-                    flex: 5,
-                  ),
-                  Expanded(
-                    child: LostAndFoundTag(category: '其他', type: type),
-                    flex: 4,
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ],
-    ));
+              Expanded(
+                child: LostAndFoundTag(category: '生活日用', type: type),
+                flex: 5,
+              ),
+              Expanded(
+                child: LostAndFoundTag(category: '数码产品', type: type),
+                flex: 5,
+              ),
+              Expanded(
+                child: LostAndFoundTag(category: '钱包卡证', type: type),
+                flex: 5,
+              ),
+              Expanded(
+                child: LostAndFoundTag(category: '其他', type: type),
+                flex: 4,
+              ),
+            ],
+          );
+        },
+      );
 
-    var searchHistoryContainer = Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 8.h),
+    var historyTitle = Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
       alignment: Alignment.centerLeft,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,7 +154,7 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       ),
     );
 
-    var searchHistoryList = ValueListenableBuilder(
+    var historyContent = ValueListenableBuilder(
       valueListenable: _foundSearchHistoryList,
       builder: (_, List<String> list, __) {
         if (list.isEmpty) {
@@ -208,17 +213,32 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
 
     var searchHistory = Padding(
       child: Column(
-        children: [searchHistoryContainer, searchHistoryList],
+        children: [historyTitle, historyContent],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
     );
 
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: searchBar,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(0),
+          child: selector,
+        ),
+        toolbarHeight: 80.h,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: Container(
         color: Colors.white,
         child: Column(
           children: [
-            topView,
             Expanded(
               child: SingleChildScrollView(
                 child: searchHistory,
@@ -228,35 +248,6 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
         ),
       ),
     );
-  }
-
-  showClearDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return LakeDialogWidget(
-              title: '清除记录',
-              confirmButtonColor:
-                  WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
-              titleTextStyle:
-                  TextUtil.base.normal.label(context).NotoSansSC.sp(18).w600,
-              cancelText: '取消',
-              confirmTextStyle:
-                  TextUtil.base.normal.reverse(context).NotoSansSC.sp(16).w400,
-              cancelTextStyle:
-                  TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
-              confirmText: '确定',
-              cancelFun: () {
-                Navigator.pop(context);
-              },
-              confirmFun: () {
-                _foundSearchHistoryList.value.clear();
-                _addHistory();
-                setState(() {});
-                Navigator.pop(context);
-              },
-              content: Text('确认清除所有搜索记录吗？'));
-        });
   }
 }
 

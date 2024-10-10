@@ -51,47 +51,47 @@ class _LostAndFoundSearchBarState extends State<LostAndFoundSearchBar>
         maxHeight: 30,
       ),
       child: Padding(
-          padding: EdgeInsets.only(left: 45.w, right: 12.w),
-          child: Row(
-            children: [
-              Expanded(
-                child: Consumer<FbHotTagsProvider>(
-                  builder: (_, data, __) => TextField(
-                    controller: _controller,
-                    focusNode: _fNode,
-                    style: TextStyle().label(context).NotoSansSC.w400.sp(15),
-                    decoration: InputDecoration(
-                      hintStyle:
-                          TextStyle().infoText(context).NotoSansSC.w400.sp(15),
-                      hintText: data.recTag == null ? '天大不能没有微北洋' : '暂无相关内容',
-                      contentPadding: EdgeInsets.only(right: 6.w),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(1080.w),
+        padding: EdgeInsets.only(top:5.h),
+        child: Row(
+              children: [
+                Expanded(
+                  child: Consumer<FbHotTagsProvider>(
+                    builder: (_, data, __) => TextField(
+                      controller: _controller,
+                      focusNode: _fNode,
+                      style: TextStyle().label(context).NotoSansSC.w400.sp(15),
+                      decoration: InputDecoration(
+                        hintStyle:
+                            TextStyle().infoText(context).NotoSansSC.w400.sp(15),
+                        hintText: data.recTag == null ? '天大不能没有微北洋' : '暂无相关内容',
+                        contentPadding: EdgeInsets.only(right: 6.w),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(1080.w),
+                        ),
+                        fillColor: WpyTheme.of(context)
+                            .get(WpyColorKey.secondaryBackgroundColor),
+                        filled: true,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 19.w,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.infoTextColor),
+                        ),
                       ),
-                      fillColor: WpyTheme.of(context)
-                          .get(WpyColorKey.secondaryBackgroundColor),
-                      filled: true,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 19.w,
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.infoTextColor),
-                      ),
+                      enabled: true,
+                      onSubmitted: (content) {
+                        if (content.isNotEmpty) {
+                          widget.onSubmitted.call(content);
+                        } else {}
+                      },
+                      textInputAction: TextInputAction.search,
                     ),
-                    enabled: true,
-                    onSubmitted: (content) {
-                      if (content.isNotEmpty) {
-                        widget.onSubmitted.call(content);
-                      } else {}
-                    },
-                    textInputAction: TextInputAction.search,
                   ),
                 ),
-              ),
-              SizedBox(width: 6.w),
-            ],
-          )),
+              ],
+            ),
+      ),
     );
 
     return Column(
