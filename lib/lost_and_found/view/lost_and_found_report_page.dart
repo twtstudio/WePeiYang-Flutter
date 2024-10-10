@@ -12,8 +12,10 @@ class LostAndFoundReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          elevation: 0, // 取消阴影
-          backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          elevation: 0,
+          // 取消阴影
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: IconButton(
             icon: Image.asset(
               'assets/images/back.png',
@@ -23,10 +25,7 @@ class LostAndFoundReportPage extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
           ),
 
-          title: Text(
-            '举报',
-            style: TextUtil.base.w500.primary(context).sp(18)
-          ),
+          title: Text('举报', style: TextUtil.base.w500.primary(context).sp(18)),
           centerTitle: true,
         ),
         body: Padding(
@@ -50,13 +49,14 @@ class LostAndFoundReportPage extends StatelessWidget {
                 style: TextUtil.base.sp(17).customColor(Colors.grey[700]!),
               ),
               GestureDetector(
-                onTap: () {                },
+                onTap: () {},
                 child: Container(
                   margin: EdgeInsets.only(left: 290.w, top: 270.h),
                   width: 80.w,
                   height: 32.h,
                   decoration: BoxDecoration(
-                    color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryActionColor),
                     borderRadius: BorderRadius.circular(30.r),
                   ),
                   child: Center(
@@ -67,12 +67,8 @@ class LostAndFoundReportPage extends StatelessWidget {
                   ),
                 ),
               ),
-
-
             ],
           ),
         ));
-
-    // 在这里可以继续添加其他 Row 或 Column
   }
 }

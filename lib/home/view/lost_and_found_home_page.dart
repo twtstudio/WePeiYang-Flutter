@@ -26,92 +26,93 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
           top: false,
           bottom: false,
           child: Scaffold(
-              appBar: LostAndFoundAppBar(
-                height: 97.h,
-                leading: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 19.w, bottom: 9.h),
-                  child: WButton(
-                    child: WpyPic(
-                      'assets/svg_pics/laf_butt_icons/back.svg',
-                      width: 30.w,
-                      height: 30.w,
+              appBar: AppBar(
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.primaryActionColor),
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.primaryLighterActionColor),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-
-                    ///to do
                   ),
-                ),
-                action: Padding(
-                  padding: EdgeInsetsDirectional.only(end: 22.w, bottom: 10.h),
-                  child: WButton(
-                    child: WpyPic(
-                      'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
-                      width: 24.w,
-                      height: 24.w,
+                  leading: Padding(
+                    padding: EdgeInsets.only(left: 20.w),
+                    child: WButton(
+                      child: WpyPic(
+                        'assets/svg_pics/laf_butt_icons/back.svg',
+                        width: 30.w,
+                        height: 30.w,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    onPressed: () {},
-
-                    ///to do
                   ),
-                ),
-                title: Padding(
-                  padding: EdgeInsets.only(bottom: 5.h),
-                  child: TabBar(
+                  title: TabBar(
                     labelStyle: TextUtil.base.sp(20).bright(context).w600,
                     unselectedLabelStyle:
                         TextUtil.base.normal.sp(20).bright(context),
-                    labelPadding:
-                        EdgeInsetsDirectional.only(start: 52.w, end: 50.w),
-                    isScrollable: true,
-                    indicatorSize: TabBarIndicatorSize.label,
                     indicatorColor: Colors.white,
                     indicatorWeight: 2.h,
+                    dividerHeight: 0,
                     tabs: [
                       Text('寻物'),
                       Text('寻主'),
                     ],
                   ),
-                ),
-              ),
-              body: Stack(
-                children: [
-                  Container(
-                    child: TabBarView(
-                      children: [
-                        LostAndFoundSubPage(
-                          type: '寻物启事',
-                          findOwner: false,
+                  actions: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 20.w),
+                      child: WButton(
+                        child: WpyPic(
+                          'assets/svg_pics/laf_butt_icons/ph_cube-bold.svg',
+                          width: 24.w,
+                          height: 24.w,
                         ),
-                        LostAndFoundSubPage(
-                          type: '失物招领',
-                          findOwner: true,
-                        )
-                      ],
+                        onPressed: () {},
+                      ),
                     ),
+                  ]),
+              body: TabBarView(
+                children: [
+                  LostAndFoundSubPage(
+                    type: '寻物启事',
+                    findOwner: false,
                   ),
-                  Positioned(
-                    bottom: ScreenUtil().bottomBarHeight + 90.h,
-                    right: 20.w,
-                    child: InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: Container(
-                          height: 52.r,
-                          width: 52.r,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/add_post.png"),
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(
-                              context, LAFRouter.lostAndFoundPostPage);
-                        }),
+                  LostAndFoundSubPage(
+                    type: '失物招领',
+                    findOwner: true,
                   )
                 ],
+              ),
+              floatingActionButton: Padding(
+                padding: EdgeInsets.only(bottom: 100.h),
+                child: FloatingActionButton(
+                  //浮动按钮的背景色和形状是取决于自身的，不适应于子组件，存在在两个图层
+                  shape: CircleBorder(),
+                  backgroundColor:
+                      WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, LAFRouter.lostAndFoundPostPage);
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.add,
+                      size: 40.w,
+                      color: Colors.white,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
               )),
         ));
   }
@@ -148,8 +149,7 @@ class LostAndFoundAppBar extends StatelessWidget
               end: Alignment.bottomCenter,
               colors: [
                 WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-                WpyTheme.of(context)
-                    .get(WpyColorKey.primaryLighterActionColor),
+                WpyTheme.of(context).get(WpyColorKey.primaryLighterActionColor),
               ]),
         ),
         child: Stack(
