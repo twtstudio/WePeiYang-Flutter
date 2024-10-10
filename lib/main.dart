@@ -193,7 +193,7 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
-class WePeiYangApp extends StatefulWidget {
+class  WePeiYangApp extends StatefulWidget {
   static late double screenWidth;
   static late double screenHeight;
 
