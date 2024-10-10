@@ -213,19 +213,21 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 10.w),
     );
 
-    return ColoredBox(
-        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             topView,
             Expanded(
-                child: ColoredBox(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    child: searchHistory)),
+              child: SingleChildScrollView(
+                child: searchHistory,
+              ),
+            ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   showClearDialog() {
