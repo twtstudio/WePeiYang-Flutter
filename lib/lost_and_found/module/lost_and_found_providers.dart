@@ -13,3 +13,4 @@ List<SingleChildWidget> lostAndFoundProviders = [
   ),
   Provider.value(value: NewLostAndFoundPostProvider()),
 ];
+

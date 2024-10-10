@@ -18,6 +18,8 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 
+
+///更细一下provider的位置，放在providers里
 class NewLostAndFoundPostProvider {
   String title = "";
   String content = "";
@@ -43,6 +45,7 @@ class NewLostAndFoundPostProvider {
   }
 }
 
+///更新一下图片资源，以及组件的关系
 class LostAndFoundPostPage extends StatefulWidget {
   @override
   State<LostAndFoundPostPage> createState() => _LostAndFoundPostPageState();
@@ -150,11 +153,10 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
             leading: IconButton(
-                padding: EdgeInsets.zero,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
                 icon: Icon(Icons.keyboard_arrow_left,
-                    color:WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor), size: 36.r),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.oldThirdActionColor),
+                    size: 36.r),
                 onPressed: () {
                   var dataModel = context.read<NewLostAndFoundPostProvider>();
                   dataModel.clear();
@@ -163,27 +165,28 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             title: Text("发布${selectTypeText[typeNotifier.value]}",
                 style: TextUtil.base.NotoSansSC.w400.sp(18).label(context)),
             actions: [
-              InkWell(
-                  onTap: () async {
-                    setState(() {
-                      changeType();
-                    });
-                  },
-                  child: Container(
-                      width: 36.w,
-                      height: 36.h,
-                      child: Column(children: [
-                        SizedBox(height: 11.h),
-                        Image.asset("assets/images/post_swap.png"),
-                        Text(
-                          texts[typeNotifier.value],
-                          style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
-                        )
-                      ]))),
-              SizedBox(width: 10.w)
+              Padding(
+                padding: EdgeInsets.only(right: 16.w, top: 14.h),
+                child: InkWell(
+                    onTap: () async {
+                      setState(() {
+                        changeType();
+                      });
+                    },
+                    child: Container(
+                        width: 36.w,
+                        height: 36.h,
+                        child: Column(children: [
+                          Image.asset("assets/images/post_swap.png"),
+                          Text(
+                            texts[typeNotifier.value],
+                            style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
+                          )
+                        ]))),
+              ),
             ],
-            centerTitle: true,
             backgroundColor: Colors.transparent,
+            centerTitle: true,
             elevation: 0),
         body: Container(
             padding: EdgeInsets.all(16.r),
@@ -203,29 +206,50 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                       InputPhoneField()
                     ],
                   )),
-              Container(
-                  height: 150.h,
-                  alignment: Alignment.center,
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    selectCategoryDialog(context),
-                    SelectCategoryButton(),
-                    SizedBox(width: 8.w),
-                    LostAndFoundPostButton()
-                  ]))
+              Padding(
+                padding: EdgeInsets.only(top:25.h),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                          selectCategoryDialog(context),
+                      TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _showSelectDialog = true;
+                            });
+                          },
+                          child: Text("#  ${categoryNotifier.value}",
+                              style:
+                              TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context))),
+                          SizedBox(width: 8.w),
+                          TextButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.primaryTextButtonColor)),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.r)))),
+                            onPressed: () async {
+                            if (tapAble) {
+                              tapAble = false;
+                              await _submit();
+                              await Future.delayed(Duration(milliseconds: 3000));
+                              tapAble = true;
+                            }
+                          },
+                            child: Text(
+                            '发送',
+                            style: TextUtil.base.NotoSansSC.w400
+                                .sp(14)
+                                .reverse(context),
+                          ))
+                    ]),
+              )
             ])));
-  }
-
-  TextButton SelectCategoryButton() {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            _showSelectDialog = true;
-          });
-        },
-        child: Text("#  ${categoryNotifier.value}",
-            style:
-                TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context)));
   }
 
   Visibility selectCategoryDialog(BuildContext context) {
@@ -270,31 +294,6 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         child: Container(
             child: Text(option,
                 style: TextUtil.base.NotoSansSC.w400.sp(12).primary(context))));
-  }
-
-  SizedBox LostAndFoundPostButton() {
-    return SizedBox(
-        width: 63,
-        height: 32,
-        child: ElevatedButton(
-            style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                backgroundColor: MaterialStateProperty.all(
-                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r)))),
-            onPressed: () async {
-              if (tapAble) {
-                tapAble = false;
-                await _submit();
-                await Future.delayed(Duration(milliseconds: 3000));
-                tapAble = true;
-              }
-            },
-            child: Text(
-              '发送',
-              style: TextUtil.base.NotoSansSC.w400.sp(14).reverse(context),
-            )));
   }
 }
 
@@ -373,8 +372,7 @@ class LostAndFoundContentInputField extends StatefulWidget {
       _LostAndFoundContentInputFieldState();
 }
 
-class _LostAndFoundContentInputFieldState
-    extends State<LostAndFoundContentInputField> {
+class _LostAndFoundContentInputFieldState extends State<LostAndFoundContentInputField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _contentController;
 
@@ -413,7 +411,8 @@ class _LostAndFoundContentInputFieldState
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(300)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     Widget bottomTextCounter = ValueListenableBuilder(
         valueListenable: contentCounter,
@@ -442,8 +441,7 @@ class LostAndFoundImagesGridView extends StatefulWidget {
       _LostAndFoundImagesGridViewState();
 }
 
-class _LostAndFoundImagesGridViewState
-    extends State<LostAndFoundImagesGridView> {
+class _LostAndFoundImagesGridViewState extends State<LostAndFoundImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
@@ -639,8 +637,8 @@ class _SelectDateFieldState extends State<SelectDateField> {
                 width: 195.w,
                 height: 36.h,
                 decoration: BoxDecoration(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.oldSwitchBarColor),
+                    color:
+                        WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
                     borderRadius: BorderRadius.circular(16.r)),
                 child: Stack(children: [
                   Container(
@@ -661,8 +659,9 @@ class _SelectDateFieldState extends State<SelectDateField> {
                                   .sp(14)
                                   .primaryAction(context))
                           : Text(yyyymmddtexts[widget.typeNotifier.value],
-                              style:
-                                  TextUtil.base.NotoSansSC.w400.sp(14).infoText(context)))
+                              style: TextUtil.base.NotoSansSC.w400
+                                  .sp(14)
+                                  .infoText(context)))
                 ]))));
   }
 }
@@ -741,7 +740,8 @@ class _InputLocationFieldState extends State<InputLocationField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(26)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
         width: 195.w,
@@ -832,7 +832,8 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(11)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
         width: 195.w,

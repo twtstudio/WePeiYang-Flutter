@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_sub_page.dart';
 
+import '../../commons/util/type_util.dart';
+
 class LostAndFoundHomePage extends StatefulWidget {
   LostAndFoundHomePage({Key? key}) : super(key: key);
 
@@ -74,7 +76,18 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                           width: 24.w,
                           height: 24.w,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          ///仅用于测试，
+                          // Navigator.pushNamed(
+                          //     context,
+                          //     LAFRouter.lafDetailPage,
+                          //     //进入详细信息页面的时候要传这两个参数
+                          //     arguments: Tuple2(2, true)
+                          // );
+                          //进入举报页面的时候会有非空断言报错
+                          // Navigator.pushNamed(
+                          //     context, LAFRouter.lostAndFoundReportPage);
+                        },
                       ),
                     ),
                   ]),
