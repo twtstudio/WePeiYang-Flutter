@@ -67,7 +67,7 @@ jobs:
 
     # Upload APKs with version and git commit hash in name
     - name: Upload ARM64-v8a APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-arm64-v8a.apk
         path: ${{ env.arm64_v8a_apk_path }}
