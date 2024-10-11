@@ -18,7 +18,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 
-
 ///更细一下provider的位置，放在providers里
 class NewLostAndFoundPostProvider {
   String title = "";
@@ -207,47 +206,45 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                     ],
                   )),
               Padding(
-                padding: EdgeInsets.only(top:25.h),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                          selectCategoryDialog(context),
-                      TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _showSelectDialog = true;
-                            });
-                          },
-                          child: Text("#  ${categoryNotifier.value}",
-                              style:
-                              TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context))),
-                          SizedBox(width: 8.w),
-                          TextButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  WpyTheme.of(context)
-                                      .get(WpyColorKey.primaryTextButtonColor)),
-                              padding: MaterialStateProperty.all(
-                                  EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.r)))),
-                            onPressed: () async {
-                            if (tapAble) {
-                              tapAble = false;
-                              await _submit();
-                              await Future.delayed(Duration(milliseconds: 3000));
-                              tapAble = true;
-                            }
-                          },
-                            child: Text(
-                            '发送',
-                            style: TextUtil.base.NotoSansSC.w400
-                                .sp(14)
-                                .reverse(context),
-                          ))
-                    ]),
+                padding: EdgeInsets.only(top: 25.h),
+                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  selectCategoryDialog(context),
+                  TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _showSelectDialog = true;
+                        });
+                      },
+                      child: Text("#  ${categoryNotifier.value}",
+                          style: TextUtil.base.NotoSansSC.w400
+                              .sp(14)
+                              .primaryAction(context))),
+                  SizedBox(width: 8.w),
+                  TextButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              WpyTheme.of(context)
+                                  .get(WpyColorKey.primaryTextButtonColor)),
+                          padding: MaterialStateProperty.all(
+                              EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.r)))),
+                      onPressed: () async {
+                        if (tapAble) {
+                          tapAble = false;
+                          await _submit();
+                          await Future.delayed(Duration(milliseconds: 3000));
+                          tapAble = true;
+                        }
+                      },
+                      child: Text(
+                        '发送',
+                        style: TextUtil.base.NotoSansSC.w400
+                            .sp(14)
+                            .reverse(context),
+                      ))
+                ]),
               )
             ])));
   }
@@ -372,7 +369,8 @@ class LostAndFoundContentInputField extends StatefulWidget {
       _LostAndFoundContentInputFieldState();
 }
 
-class _LostAndFoundContentInputFieldState extends State<LostAndFoundContentInputField> {
+class _LostAndFoundContentInputFieldState
+    extends State<LostAndFoundContentInputField> {
   late final ValueNotifier<String> contentCounter;
   late final TextEditingController _contentController;
 
@@ -601,26 +599,46 @@ class SelectDateField extends StatefulWidget {
 }
 
 class _SelectDateFieldState extends State<SelectDateField> {
-  static const yyyymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
+  static const initialdate = ["请填写丢失日期", "请填写拾取日期"];
   DateTime? selectedDate;
-  late String yyyymmdd = "";
+  late String date = "";
 
   @override
   Widget build(BuildContext context) {
     Future<void> _selectDate(BuildContext context) async {
       var dataModel = context.read<NewLostAndFoundPostProvider>();
       final DateTime? picked = await showDatePicker(
+          helpText: "选择日期",
+          cancelText: "取消",
+          confirmText: "确定",
+          errorFormatText: "请输入正确的日期格式",
+          errorInvalidText: "请输入有效的日期",
           context: context,
           initialDate: DateTime.now(),
           firstDate: DateTime(2015),
           lastDate: DateTime.now());
+      //     builder: (BuildContext context, Widget child) {
+      //     return Theme(
+      //     data: ThemeData.light().copyWith(
+      //       colorScheme: ColorScheme.fromSwatch(
+      //         primarySwatch: Colors.teal,
+      //         accentColor: Colors.teal,
+      //       ),
+      //       dialogBackgroundColor:Colors.white,
+      //     ),
+      //     child: child,
+      //   );
+      // };
+///修改日期选择器的颜色
+
+
 
       if (picked != null && picked != selectedDate) {
         setState(() {
           selectedDate = picked;
-          yyyymmdd =
+          date =
               "${picked.year}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
-          dataModel.date = yyyymmdd;
+          dataModel.date = date;
         });
       }
     }
@@ -658,7 +676,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                               style: TextUtil.base.NotoSansSC.w400
                                   .sp(14)
                                   .primaryAction(context))
-                          : Text(yyyymmddtexts[widget.typeNotifier.value],
+                          : Text(initialdate[widget.typeNotifier.value],
                               style: TextUtil.base.NotoSansSC.w400
                                   .sp(14)
                                   .infoText(context)))

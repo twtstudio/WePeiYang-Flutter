@@ -12,6 +12,8 @@ import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_sub_page.
 
 import '../../commons/util/type_util.dart';
 
+///我该怎么看到自己发布的所有帖子？
+
 class LostAndFoundHomePage extends StatefulWidget {
   LostAndFoundHomePage({Key? key}) : super(key: key);
 
@@ -84,9 +86,11 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                           //     //进入详细信息页面的时候要传这两个参数
                           //     arguments: Tuple2(2, true)
                           // );
-                          //进入举报页面的时候会有非空断言报错
+                          //进入举报，历史页面的时候会有非空断言报错
                           // Navigator.pushNamed(
                           //     context, LAFRouter.lostAndFoundReportPage);
+                          // Navigator.pushNamed(
+                          //     context, LAFRouter.lostAndFoundHistoryPage);
                         },
                       ),
                     ),

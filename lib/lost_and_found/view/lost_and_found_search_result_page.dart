@@ -11,7 +11,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/home/view/lost_and_found_home_page.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
@@ -30,6 +29,9 @@ class LostAndFoundSearchResultPage extends StatefulWidget {
 }
 
 class LostAndFoundSearchResultPageArgs {
+
+  //负责参数传递，是否要合并到一类里呢,在其他页面里也有用到
+
   final String type;
   final String category;
   final String keyword;
@@ -106,33 +108,6 @@ class _LostAndFoundSearchResultPageState
       _onRefresh();
     }
 
-    var appBar = LostAndFoundAppBar(
-      height: 100,
-      leading: Padding(
-        padding: EdgeInsetsDirectional.only(start: 8.w, bottom: 8.h),
-        child: WButton(
-          child: WpyPic(
-            'assets/svg_pics/laf_butt_icons/back.svg',
-            width: 28.w,
-            height: 28.w,
-          ),
-          onPressed: () => Navigator.pop(context),
-
-          ///to do
-        ),
-      ),
-      action: Padding(
-        padding: EdgeInsetsDirectional.only(end: 20.w, bottom: 12.h),
-      ),
-      title: Padding(
-        padding: EdgeInsets.only(bottom: 8.h),
-        child: Text(
-          '搜索结果',
-          style: TextUtil.base.reverse(context).NotoSansSC.w400.sp(20),
-        ),
-      ),
-    );
-
     //用于计算时间差
     String _timeAgo(String dateTimeStr) {
       final year = int.parse(dateTimeStr.substring(0, 4));
@@ -161,182 +136,213 @@ class _LostAndFoundSearchResultPageState
     }
 
     return Scaffold(
-        body: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        appBar,
-        SizedBox(
-          height: 7.h,
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [
+                    WpyTheme.of(context)
+                        .get(WpyColorKey.primaryActionColor),
+                    WpyTheme.of(context)
+                        .get(WpyColorKey.primaryLighterActionColor),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
+            ),
+          ),
+          elevation: 0,
+          leading: WButton(
+            child: WpyPic(
+              'assets/svg_pics/laf_butt_icons/back.svg',
+              width: 30.w,
+              height: 30.w,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            '搜索结果',
+            style: TextUtil.base.sp(20).bright(context).w500,
+          ),
+          centerTitle: true,
         ),
-        Expanded(
-          child: Container(
-            padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
-            child: Selector<LostAndFoundModel2, List<LostAndFoundPost>>(
-                selector: (context, model) {
-              return model
-                  .postList[context.read<LostAndFoundModel2>().currentType]!
-                  .toList();
-            }, builder: (context, postList, _) {
-              return SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: true,
-                header: ClassicHeader(
-                  idleText: '下拉以刷新 (乀*･ω･)乀',
-                  releaseText: '下拉以刷新',
-                  refreshingText: "正在刷新喵",
-                  completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-                  failedText: '刷新失败（；´д｀）ゞ',
-                ),
-                controller:
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsetsDirectional.only(start: 12.w, end: 12.w),
+                child: Selector<LostAndFoundModel2, List<LostAndFoundPost>>(
+                    selector: (context, model) {
+                  return model
+                      .postList[context.read<LostAndFoundModel2>().currentType]!
+                      .toList();
+                }, builder: (context, postList, _) {
+                  return SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    controller:
                     context.read<LostAndFoundModel2>().refreshController[
-                        context.read<LostAndFoundModel2>().currentType]!,
-                footer: ClassicFooter(
-                  idleText: '下拉以刷新',
-                  noDataText: '无数据',
-                  loadingText: '加载中，请稍等  ;P',
-                  failedText: '加载失败（；´д｀）ゞ',
-                ),
-                onRefresh: _onRefresh,
-                onLoading: _onLoading,
-                child: StaggeredGridView.countBuilder(
-                  controller: _scrollController,
-                  crossAxisCount: 2,
-                  itemCount: postList.length,
-                  itemBuilder: (BuildContext context, int index) => InkWell(
-                      onTap: () {
-                        Tuple2 tuple2 = Tuple2(false, postList[index].id);
-                        Navigator.pushNamed(context, LAFRouter.lafDetailPage,
-                            arguments: tuple2);
-                      },
-                      child: Card(
-                        elevation: 3,
-                        shadowColor: WpyTheme.of(context)
-                            .get(WpyColorKey.backgroundGradientEndColor)
-                            .withOpacity(0.1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          side: const BorderSide(
-                              color: Colors.transparent, width: 0.0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            postList[index].coverPhotoPath == null
-                                ? SizedBox(
-                                    width: double.infinity,
-                                    child: Card(
-                                      child: Padding(
-                                        // 添加Padding组件
-                                        padding: EdgeInsets.all(
-                                            10.r), // 设置所有方向的内边距为15个像素
-                                        child: Text(postList[index].text,
-                                            style: TextUtil.base.w400
-                                                .infoText(context)
-                                                .sp(14)
-                                                .h(1.1)
-                                                .NotoSansSC
-                                                .copyWith(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                )),
-                                      ),
-                                      elevation: 0,
-                                      color: Color(0xfff8f8f8),
-                                    ))
-                                : Container(
-                                    padding: EdgeInsetsDirectional.only(
-                                        start: 11.w,
-                                        end: 11.w,
-                                        bottom: 7.h,
-                                        top: 7.h),
-                                    child: LayoutBuilder(
-                                      builder: (context, constrains) {
-                                        final maxWidth =
-                                            constrains.constrainWidth();
-                                        final width = postList[index]
-                                                .coverPhotoSize
-                                                ?.width
-                                                .toDouble() ??
-                                            1;
-                                        final height = postList[index]
-                                                .coverPhotoSize
-                                                ?.height
-                                                .toDouble() ??
-                                            0;
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                              10.0.r), // 设置圆角半径为10.0
-                                          child: Container(
-                                            width: maxWidth,
-                                            child: WpyPic(
-                                              postList[index].coverPhotoPath!,
-                                              withHolder: true,
-                                              holderHeight:
-                                                  height * maxWidth / width,
-                                              fit: BoxFit.fitWidth,
-                                            ),
-                                            height: height >= 3 * width
-                                                ? 3 * maxWidth
-                                                : height * maxWidth / width,
-                                          ),
-                                        );
-                                      },
-                                    )),
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                  start: 12.w, end: 12.w),
-                              child: Text(
-                                postList[index].title,
-                                style: TextUtil.base.w600
-                                    .label(context)
-                                    .sp(15)
-                                    .NotoSansSC,
-                              ),
+                    context.read<LostAndFoundModel2>().currentType]!,
+                    header: ClassicHeader(
+                      idleText: '下拉以刷新 (乀*･ω･)乀',
+                      releaseText: '下拉以刷新',
+                      refreshingText: "正在刷新喵",
+                      completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+                      failedText: '刷新失败（；´д｀）ゞ',
+                    ),
+                    footer: ClassicFooter(
+                      idleText: '下拉以刷新',
+                      noDataText: '无数据',
+                      loadingText: '加载中，请稍等  ;P',
+                      failedText: '加载失败（；´д｀）ゞ',
+                    ),
+                    onRefresh: _onRefresh,
+                    onLoading: _onLoading,
+                    child: StaggeredGridView.countBuilder(
+                      controller: _scrollController,
+                      crossAxisCount: 2,
+                      itemCount: postList.length,
+                      itemBuilder: (BuildContext context, int index) => InkWell(
+                          onTap: () {
+                            Tuple2 tuple2 = Tuple2(false, postList[index].id);
+                            Navigator.pushNamed(
+                                context, LAFRouter.lafDetailPage,
+                                arguments: tuple2);
+                          },
+                          child: Card(
+                            elevation: 3,
+                            shadowColor: WpyTheme.of(context)
+                                .get(WpyColorKey.backgroundGradientEndColor)
+                                .withOpacity(0.1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              side: const BorderSide(
+                                  color: Colors.transparent, width: 0.0),
                             ),
-                            Padding(
-                              padding: EdgeInsetsDirectional.only(
-                                  start: 12.w,
-                                  end: 25.w,
-                                  bottom: 18.h,
-                                  top: 10.h),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    _timeAgo(
-                                        postList[index].detailedUploadTime),
-                                    style: TextUtil.base.w400
-                                        .infoText(context)
-                                        .sp(10)
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                postList[index].coverPhotoPath == null
+                                    ? SizedBox(
+                                        width: double.infinity,
+                                        child: Card(
+                                          child: Padding(
+                                            // 添加Padding组件
+                                            padding: EdgeInsets.all(
+                                                10.r), // 设置所有方向的内边距为15个像素
+                                            child: Text(postList[index].text,
+                                                style: TextUtil.base.w400
+                                                    .infoText(context)
+                                                    .sp(14)
+                                                    .h(1.1)
+                                                    .NotoSansSC
+                                                    .copyWith(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    )),
+                                          ),
+                                          elevation: 0,
+                                          color: Color(0xfff8f8f8),
+                                        ))
+                                    : Container(
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 11.w,
+                                            end: 11.w,
+                                            bottom: 7.h,
+                                            top: 7.h),
+                                        child: LayoutBuilder(
+                                          builder: (context, constrains) {
+                                            final maxWidth =
+                                                constrains.constrainWidth();
+                                            final width = postList[index]
+                                                    .coverPhotoSize
+                                                    ?.width
+                                                    .toDouble() ??
+                                                1;
+                                            final height = postList[index]
+                                                    .coverPhotoSize
+                                                    ?.height
+                                                    .toDouble() ??
+                                                0;
+                                            return ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      10.0.r), // 设置圆角半径为10.0
+                                              child: Container(
+                                                width: maxWidth,
+                                                child: WpyPic(
+                                                  postList[index]
+                                                      .coverPhotoPath!,
+                                                  withHolder: true,
+                                                  holderHeight:
+                                                      height * maxWidth / width,
+                                                  fit: BoxFit.fitWidth,
+                                                ),
+                                                height: height >= 3 * width
+                                                    ? 3 * maxWidth
+                                                    : height * maxWidth / width,
+                                              ),
+                                            );
+                                          },
+                                        )),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                      start: 12.w, end: 12.w),
+                                  child: Text(
+                                    postList[index].title,
+                                    style: TextUtil.base.w600
+                                        .label(context)
+                                        .sp(15)
                                         .NotoSansSC,
                                   ),
-                                  Row(
+                                ),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                      start: 12.w,
+                                      end: 25.w,
+                                      bottom: 18.h,
+                                      top: 10.h),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      SvgPicture.asset(
-                                          'assets/svg_pics/icon_flame.svg',
-                                          width: 16.0.w,
-                                          height: 16.0.h),
                                       Text(
-                                        '${postList[index].hot.toString()}',
-                                        style: TextUtil.base.infoText(context),
+                                        _timeAgo(
+                                            postList[index].detailedUploadTime),
+                                        style: TextUtil.base.w400
+                                            .infoText(context)
+                                            .sp(10)
+                                            .NotoSansSC,
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          SvgPicture.asset(
+                                              'assets/svg_pics/icon_flame.svg',
+                                              width: 16.0.w,
+                                              height: 16.0.h),
+                                          Text(
+                                            '${postList[index].hot.toString()}',
+                                            style:
+                                                TextUtil.base.infoText(context),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )),
-                  staggeredTileBuilder: (int index) =>
-                      const StaggeredTile.fit(1),
-                ),
-              );
-            }),
-          ),
-        )
-      ],
-    ));
+                          )),
+                      staggeredTileBuilder: (int index) =>
+                          const StaggeredTile.fit(1),
+                    ),
+                  );
+                }),
+              ),
+            )
+          ],
+        ));
   }
 }
