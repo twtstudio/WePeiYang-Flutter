@@ -73,7 +73,7 @@ jobs:
         path: ${{ env.arm64_v8a_apk_path }}
 
     - name: Upload ARMv7a APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-armeabi-v7a.ap
         path: ${{ env.armeabi_v7a_apk_path }}
