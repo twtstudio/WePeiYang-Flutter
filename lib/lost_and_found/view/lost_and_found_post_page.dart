@@ -44,6 +44,8 @@ class NewLostAndFoundPostProvider {
   }
 }
 
+final categoryNotifier = ValueNotifier<String?>(null);
+
 ///更新一下图片资源，以及组件的关系
 class LostAndFoundPostPage extends StatefulWidget {
   @override
@@ -53,12 +55,10 @@ class LostAndFoundPostPage extends StatefulWidget {
 class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   //0->失物 1->招领
   final typeNotifier = ValueNotifier(0);
-  final categoryNotifier = ValueNotifier('选择分类');
   static const selectTypeText = ['失物', '招领'];
   static const texts = ['招领', '失物'];
 
   bool tapAble = true;
-  bool _showSelectDialog = false;
 
   void changeType() {
     if (typeNotifier.value == 1) {
@@ -78,7 +78,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
       ToastProvider.error("请检查内容是否填写完整！");
       return;
     }
-    if (categoryNotifier.value == "选择分类") {
+    if (categoryNotifier.value == null) {
       ToastProvider.error("请选择分类！");
       return;
     }
@@ -208,18 +208,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
               Padding(
                 padding: EdgeInsets.only(top: 25.h),
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  selectCategoryDialog(context),
-                  TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _showSelectDialog = true;
-                        });
-                      },
-                      child: Text("#  ${categoryNotifier.value}",
-                          style: TextUtil.base.NotoSansSC.w400
-                              .sp(14)
-                              .primaryAction(context))),
-                  SizedBox(width: 8.w),
+                  CategorySelector(),
+                  SizedBox(width: 16.w),
                   TextButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
@@ -248,49 +238,36 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
               )
             ])));
   }
+}
 
-  Visibility selectCategoryDialog(BuildContext context) {
-    return Visibility(
-        visible: _showSelectDialog,
-        child: Container(
-            margin: EdgeInsets.fromLTRB(0, 30.h, 0, 0),
-            padding: EdgeInsets.fromLTRB(0, 5.h, 0, 5.h),
-            height: 120.h,
-            width: 86.w,
-            decoration: BoxDecoration(
-                color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor),
-                borderRadius: BorderRadius.circular(10.r),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 3.r),
-                      blurRadius: 6.r,
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.basicTextColor)
-                          .withOpacity(0.25))
-                ]),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                buildSelectCategoryOption("生活日用", context),
-                buildSelectCategoryOption("数码产品", context),
-                buildSelectCategoryOption("钱包卡证", context),
-                buildSelectCategoryOption("其他", context)
-              ],
-            )));
-  }
+//使用valuenotifier动态刷新类别的选择，默认值最好是努力了，使用hing展示默认值，否则会要求value里包含默认值
 
-  Widget buildSelectCategoryOption(String option, BuildContext context) {
-    return InkWell(
-        onTap: () {
-          setState(() {
-            categoryNotifier.value = option;
-            _showSelectDialog = false;
-          });
-        },
-        child: Container(
-            child: Text(option,
-                style: TextUtil.base.NotoSansSC.w400.sp(12).primary(context))));
+class CategorySelector extends StatelessWidget {
+  final List<String> categories = ['生活日用', '数码产品', '钱包卡证','其他'];
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: categoryNotifier,
+      builder: (context, String? value, _) {
+        return DropdownButton<String>(
+          value: value,
+          hint: Text('选择分类'),  // 设置默认显示的提示内容
+          onChanged: (newValue) {
+            categoryNotifier.value = newValue;  // 更新选中值
+          },
+
+          items: categories.map<DropdownMenuItem<String>>((String category) {
+            return DropdownMenuItem<String>(
+              value: category,
+              child: Container(
+                  width: 80.w,
+                  child:Text(category)),
+            );
+          }).toList(),
+        );
+      },
+    );
   }
 }
 
@@ -439,7 +416,8 @@ class LostAndFoundImagesGridView extends StatefulWidget {
       _LostAndFoundImagesGridViewState();
 }
 
-class _LostAndFoundImagesGridViewState extends State<LostAndFoundImagesGridView> {
+class _LostAndFoundImagesGridViewState
+    extends State<LostAndFoundImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
@@ -537,6 +515,7 @@ class _LostAndFoundImagesGridViewState extends State<LostAndFoundImagesGridView>
     ]);
   }
 
+
   @override
   Widget build(BuildContext context) {
     var gridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
@@ -629,9 +608,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
       //     child: child,
       //   );
       // };
-///修改日期选择器的颜色
-
-
+      ///修改日期选择器的颜色
 
       if (picked != null && picked != selectedDate) {
         setState(() {
