@@ -110,6 +110,8 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
               floatingActionButton: Padding(
                 padding: EdgeInsets.only(bottom: 100.h),
                 child: FloatingActionButton(
+                  //floatingactionbutton自身是hero属性的小组件，不需要再添加hero部件，直接加herotag即可
+                  heroTag: 'add',
                   //浮动按钮的背景色和形状是取决于自身的，不适应于子组件，存在在两个图层
                   shape: CircleBorder(),
                   backgroundColor:

@@ -211,30 +211,33 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   CategorySelector(),
                   SizedBox(width: 30.w),
-                  TextButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.primaryActionColor)),
-                          padding: MaterialStateProperty.all(
-                              EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.r)))),
-                      onPressed: () async {
-                        if (tapAble) {
-                          tapAble = false;
-                          await _submit();
-                          await Future.delayed(Duration(milliseconds: 3000));
-                          tapAble = true;
-                        }
-                      },
-                      child: Text(
-                        '发送',
-                        style: TextUtil.base.NotoSansSC.w400
-                            .sp(16)
-                            .reverse(context),
-                      ))
+                  Hero(
+                    tag: 'add',
+                    child: TextButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                WpyTheme.of(context)
+                                    .get(WpyColorKey.primaryActionColor)),
+                            padding: MaterialStateProperty.all(
+                                EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.r)))),
+                        onPressed: () async {
+                          if (tapAble) {
+                            tapAble = false;
+                            await _submit();
+                            await Future.delayed(Duration(milliseconds: 3000));
+                            tapAble = true;
+                          }
+                        },
+                        child: Text(
+                          '发送',
+                          style: TextUtil.base.NotoSansSC.w400
+                              .sp(16)
+                              .reverse(context),
+                        )),
+                  )
                 ]),
               )
             ])));
