@@ -97,6 +97,7 @@ class LostAndFoundHomePageState extends State<LostAndFoundHomePage> {
                   ]),
               body: TabBarView(
                 children: [
+                  ///搜索框是否要放在subpage里？
                   LostAndFoundSubPage(
                     type: '寻物启事',
                     findOwner: false,
