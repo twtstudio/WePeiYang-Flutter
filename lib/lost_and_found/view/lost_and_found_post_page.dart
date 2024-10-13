@@ -187,60 +187,62 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             backgroundColor: Colors.transparent,
             centerTitle: true,
             elevation: 0),
-        body: Container(
-            padding: EdgeInsets.all(16.r),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              LostAndFoundTitleInputField(),
-              LostAndFoundContentInputField(),
-              LostAndFoundImagesGridView(),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 27.h),
-                      SelectDateField(typeNotifier: typeNotifier),
-                      SizedBox(height: 14.h),
-                      InputLocationField(typeNotifier: typeNotifier),
-                      SizedBox(height: 14.h),
-                      InputPhoneField()
-                      ///phone为什么没有notifier
-                    ],
-                  )),
-              Padding(
-                padding: EdgeInsets.only(top: 25.h),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  CategorySelector(),
-                  SizedBox(width: 30.w),
-                  Hero(
-                    tag: 'add',
-                    child: TextButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                WpyTheme.of(context)
-                                    .get(WpyColorKey.primaryActionColor)),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.r)))),
-                        onPressed: () async {
-                          if (tapAble) {
-                            tapAble = false;
-                            await _submit();
-                            await Future.delayed(Duration(milliseconds: 3000));
-                            tapAble = true;
-                          }
-                        },
-                        child: Text(
-                          '发送',
-                          style: TextUtil.base.NotoSansSC.w400
-                              .sp(16)
-                              .reverse(context),
-                        )),
-                  )
-                ]),
-              )
-            ])));
+        body: SingleChildScrollView(
+          child: Container(
+              padding: EdgeInsets.all(16.r),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                LostAndFoundTitleInputField(),
+                LostAndFoundContentInputField(),
+                LostAndFoundImagesGridView(),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 27.h),
+                        SelectDateField(typeNotifier: typeNotifier),
+                        SizedBox(height: 14.h),
+                        InputLocationField(typeNotifier: typeNotifier),
+                        SizedBox(height: 14.h),
+                        InputPhoneField()
+                        ///phone为什么没有notifier
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 25.h),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    CategorySelector(),
+                    SizedBox(width: 30.w),
+                    Hero(
+                      tag: 'add',
+                      child: TextButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.primaryActionColor)),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.r)))),
+                          onPressed: () async {
+                            if (tapAble) {
+                              tapAble = false;
+                              await _submit();
+                              await Future.delayed(Duration(milliseconds: 3000));
+                              tapAble = true;
+                            }
+                          },
+                          child: Text(
+                            '发送',
+                            style: TextUtil.base.NotoSansSC.w400
+                                .sp(16)
+                                .reverse(context),
+                          )),
+                    )
+                  ]),
+                )
+              ])),
+        ));
   }
 }
 
