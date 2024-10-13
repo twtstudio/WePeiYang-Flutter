@@ -165,23 +165,20 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 style: TextUtil.base.NotoSansSC.w400.sp(18).label(context)),
             actions: [
               Padding(
-                padding: EdgeInsets.only(right: 16.w, top: 14.h),
+                padding: EdgeInsets.only(right: 18.w, top: 12.h),
                 child: InkWell(
                     onTap: () async {
                       setState(() {
                         changeType();
                       });
                     },
-                    child: Container(
-                        width: 36.w,
-                        height: 36.h,
-                        child: Column(children: [
-                          Image.asset("assets/images/post_swap.png"),
+                    child: Column(children: [
+                          Image.asset("assets/images/lost_and_found_icons/switch.png",width: 23.w,),
                           Text(
                             texts[typeNotifier.value],
                             style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
                           )
-                        ]))),
+                        ])),
               ),
             ],
             backgroundColor: Colors.transparent,
@@ -209,7 +206,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                 padding: EdgeInsets.only(top: 25.h),
                 child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   CategorySelector(),
-                  SizedBox(width: 16.w),
+                  SizedBox(width: 30.w),
                   TextButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
@@ -231,7 +228,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                       child: Text(
                         '发送',
                         style: TextUtil.base.NotoSansSC.w400
-                            .sp(14)
+                            .sp(16)
                             .reverse(context),
                       ))
                 ]),
@@ -241,8 +238,9 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
 }
 
 //使用valuenotifier动态刷新类别的选择，默认值最好是努力了，使用hing展示默认值，否则会要求value里包含默认值
-
+///修改样式
 class CategorySelector extends StatelessWidget {
+
   final List<String> categories = ['生活日用', '数码产品', '钱包卡证','其他'];
 
   @override
@@ -251,18 +249,23 @@ class CategorySelector extends StatelessWidget {
       valueListenable: categoryNotifier,
       builder: (context, String? value, _) {
         return DropdownButton<String>(
+          elevation: 2,
+          borderRadius: BorderRadius.circular(18.h),
           value: value,
           hint: Text('选择分类'),  // 设置默认显示的提示内容
           onChanged: (newValue) {
             categoryNotifier.value = newValue;  // 更新选中值
           },
-
           items: categories.map<DropdownMenuItem<String>>((String category) {
             return DropdownMenuItem<String>(
               value: category,
               child: Container(
-                  width: 80.w,
-                  child:Text(category)),
+                decoration: BoxDecoration(
+                    // color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                    // borderRadius: BorderRadius.circular(16)
+                ),
+                  width: 90.w,
+                  child:Text('# ${category}',style: TextStyle(color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),)),
             );
           }).toList(),
         );
@@ -620,13 +623,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
       }
     }
 
-    return Container(
-        width: 195.w,
-        height: 36.h,
-        decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-            borderRadius: BorderRadius.circular(16.r)),
-        child: InkWell(
+    return InkWell(
             onTap: () => _selectDate(context),
             child: Container(
                 width: 195.w,
@@ -640,11 +637,10 @@ class _SelectDateFieldState extends State<SelectDateField> {
                       width: 17.w,
                       height: 17.h,
                       margin: EdgeInsets.fromLTRB(20.w, 9.5.r, 0, 0),
-                      child: selectedDate != null
-                          ? Image.asset("assets/images/icon_clock_filled.png",
-                              fit: BoxFit.fill)
-                          : Image.asset("assets/images/icon_clock.png",
-                              fit: BoxFit.fill)),
+                      child: Icon(
+                        Icons.access_time_outlined,
+                        color: selectedDate != null ? Colors.blue : Colors.grey,
+                      )),
                   Container(
                       margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0),
                       child: selectedDate != null
@@ -657,7 +653,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
                               style: TextUtil.base.NotoSansSC.w400
                                   .sp(14)
                                   .infoText(context)))
-                ]))));
+                ])));
   }
 }
 
