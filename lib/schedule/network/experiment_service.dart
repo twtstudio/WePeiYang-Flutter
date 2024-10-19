@@ -125,19 +125,21 @@ class ExperimentService {
       if (classIdSet.contains(course.classId)) {
         Arrange arrangeTemplate = course.arrangeList[0];
         for (var exp in expList) {
-          // 只有当开放选课为是时才进行课程的替换
-          if (exp.isOpenToChoose != "是") continue;
-          Arrange arrange = arrangeTemplate.copyWith(
-            isExperiment: true,
-            name: exp.experimentName,
-            location: exp.labs,
-            weekList: [parseWeek(exp.time)],
-            teacherList: [exp.teacher],
-          );
+          // 只有当开放选课为是且为对应课程时才进行课程的替换
+          if (exp.isOpenToChoose == "是" &&
+              arrangeTemplate.name == exp.courseName) {
+            Arrange arrange = arrangeTemplate.copyWith(
+              isExperiment: true,
+              name: exp.experimentName,
+              location: exp.labs,
+              weekList: [parseWeek(exp.time)],
+              teacherList: [exp.teacher],
+            );
 
-          // 删除对应的站位课程
-          courseList[i].arrangeList[0].weekList.remove(parseWeek(exp.time));
-          courseList[i].arrangeList.add(arrange);
+            // 删除对应的站位课程
+            courseList[i].arrangeList[0].weekList.remove(parseWeek(exp.time));
+            courseList[i].arrangeList.add(arrange);
+          }
         }
       }
     }
