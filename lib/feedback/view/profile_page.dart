@@ -250,11 +250,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             SizedBox(height: 6.h),
                             LevelProgress(
-                              value: (CommonPreferences.levelPoint.value -
-                                          CommonPreferences.curLevelPoint.value)
+                              value: (CommonPreferences.levelPoint.value )
                                       .toDouble() /
-                                  (CommonPreferences.nextLevelPoint.value -
-                                          CommonPreferences.curLevelPoint.value)
+                                  (CommonPreferences.nextLevelPoint.value )
                                       .toDouble(),
                             ),
                             Row(
@@ -293,10 +291,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       SizedBox(width: 10.w),
                       CustomCard(
-                        image: 'assets/images/mylike.png',
-                        text: '我的点赞',
+                        image: 'assets/images/history.png',
+                        text: '历史浏览',
                         onPressed: () {
-                          Navigator.pushNamed(context, FeedbackRouter.mailbox);
+                          Navigator.pushNamed(context, FeedbackRouter.history);
                         },
                       ),
                       SizedBox(

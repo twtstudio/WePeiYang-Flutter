@@ -428,6 +428,30 @@ class FeedbackService with AsyncTimer {
     }
   }
 
+  static getHistoryPosts({
+    required OnResult<List<Post>> onResult,
+    required page_size,
+    required page,
+    required OnFailure onFailure,
+  }) async {
+    try {
+      var response = await feedbackDio.get(
+        'posts/history',
+        queryParameters: {
+          'page': '$page',
+          'page_size': '$page_size',
+        },
+      );
+      List<Post> list = [];
+      for (Map<String, dynamic> json in response.data['data']['list']) {
+        list.add(Post.fromJson(json));
+      }
+      onResult(list);
+    } on DioException catch (e) {
+      onFailure(e);
+    }
+  }
+
   static getFloorReplyById({
     required int floorId,
     required int page,

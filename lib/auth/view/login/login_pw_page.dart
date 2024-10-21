@@ -90,122 +90,128 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
     final size = MediaQuery.of(context).size;
     final width = size.width;
     final height = size.height;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          gradient: WpyTheme.of(context)
-              .getGradient(WpyColorSetKey.primaryGradientAllScreen),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
-              child: Text.rich(TextSpan(children: [
-                TextSpan(
-                    text: "Welcome\n\n",
-                    style: TextUtil.base.normal.NotoSansSC
-                        .sp(40)
-                        .w700
-                        .bright(context)),
-              ])),
-            ),
-            Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 50),
-                        _usePwLogin ? _pwWidget : _codeWidget,
-                        Spacer(),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ValueListenableBuilder(
-                              valueListenable: checkNotifier,
-                              builder: (context, bool value, _) {
-                                return Transform.scale(
-                                  scaleX: 1.3,
-                                  scaleY: 1.3,
-                                  child: Checkbox(
-                                    value: value,
-                                    side: WidgetStateBorderSide.resolveWith(
-                                      (_) => BorderSide(
-                                          color: WpyTheme.of(context)
-                                              .get(WpyColorKey.brightTextColor),
-                                          width: 2),
+    return GestureDetector(
+      onTap: () {
+        // 当点击空白区域时，关闭键盘
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            gradient: WpyTheme.of(context)
+                .getGradient(WpyColorSetKey.primaryGradientAllScreen),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
+                child: Text.rich(TextSpan(children: [
+                  TextSpan(
+                      text: "Welcome\n\n",
+                      style: TextUtil.base.normal.NotoSansSC
+                          .sp(40)
+                          .w700
+                          .bright(context)),
+                ])),
+              ),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: SafeArea(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 50),
+                          _usePwLogin ? _pwWidget : _codeWidget,
+                          Spacer(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ValueListenableBuilder(
+                                valueListenable: checkNotifier,
+                                builder: (context, bool value, _) {
+                                  return Transform.scale(
+                                    scaleX: 1.3,
+                                    scaleY: 1.3,
+                                    child: Checkbox(
+                                      value: value,
+                                      side: MaterialStateBorderSide.resolveWith(
+                                        (_) => BorderSide(
+                                            color: WpyTheme.of(context)
+                                                .get(WpyColorKey.brightTextColor),
+                                            width: 2),
+                                      ),
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      visualDensity: VisualDensity.compact,
+                                      activeColor: WpyTheme.of(context)
+                                          .get(WpyColorKey.primaryActionColor),
+                                      onChanged: (_) {
+                                        checkNotifier.value =
+                                            !checkNotifier.value;
+                                      },
                                     ),
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    visualDensity: VisualDensity.compact,
-                                    activeColor: WpyTheme.of(context)
-                                        .get(WpyColorKey.primaryActionColor),
-                                    onChanged: (_) {
-                                      checkNotifier.value =
-                                          !checkNotifier.value;
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                            SizedBox(width: 10),
-                            Text.rich(TextSpan(
-                                text: "我已阅读并同意",
-                                style: TextUtil.base.normal.NotoSansSC.w400
-                                    .sp(10)
-                                    .label(context))),
-                            WButton(
-                              onPressed: () => showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  //直接传入check=checkNotifier会导致_detail组件不显示
-                                  builder: (context) => UserAgreementDialog()),
-                              child: Text.rich(TextSpan(
-                                  text: "《用户协议》",
+                                  );
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              Text.rich(TextSpan(
+                                  text: "我已阅读并同意",
+                                  style: TextUtil.base.normal.NotoSansSC.w400
+                                      .sp(10)
+                                      .label(context))),
+                              WButton(
+                                onPressed: () => showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    //直接传入check=checkNotifier会导致_detail组件不显示
+                                    builder: (context) => UserAgreementDialog()),
+                                child: Text.rich(TextSpan(
+                                    text: "《用户协议》",
+                                    style: TextUtil.base
+                                        .link(context)
+                                        .NotoSansSC
+                                        .w400
+                                        .sp(10)
+                                        .underLine)),
+                              ),
+                              Text.rich(TextSpan(
+                                  text: "与",
                                   style: TextUtil.base
                                       .link(context)
                                       .NotoSansSC
                                       .w400
                                       .sp(10)
-                                      .underLine)),
-                            ),
-                            Text.rich(TextSpan(
-                                text: "与",
-                                style: TextUtil.base
-                                    .link(context)
-                                    .NotoSansSC
-                                    .w400
-                                    .sp(10)
-                                    .label(context))),
-                            WButton(
-                              onPressed: () => showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (context) =>
-                                      PrivacyDialog(md, check: checkNotifier)),
-                              child: Text.rich(TextSpan(
-                                  text: "《隐私政策》",
-                                  style: TextUtil.base
-                                      .link(context)
-                                      .NotoSansSC
-                                      .w400
-                                      .sp(10)
-                                      .underLine)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 30)
-                      ],
-                    ),
-                  )),
-            ),
-          ],
+                                      .label(context))),
+                              WButton(
+                                onPressed: () => showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (context) =>
+                                        PrivacyDialog(md, check: checkNotifier)),
+                                child: Text.rich(TextSpan(
+                                    text: "《隐私政策》",
+                                    style: TextUtil.base
+                                        .link(context)
+                                        .NotoSansSC
+                                        .w400
+                                        .sp(10)
+                                        .underLine)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 30)
+                        ],
+                      ),
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -346,7 +352,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
             ),
           ),
         ),
-        SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登陆等位置在同一个水平线上
+        SizedBox(height: 23), //这里的数值调整是为了两个界面的短信登录等位置在同一个水平线上
         Row(
           children: [
             Spacer(),

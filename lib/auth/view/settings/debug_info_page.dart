@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -24,43 +23,43 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
   String _osVersion = 'Unknown';
   String _deviceModel = 'Unknown';
   String osType = "OS";
-  AndroidDeviceInfo? _androidDeviceInfo;
-  IosDeviceInfo? _iosDeviceInfo;
+  // AndroidDeviceInfo? _androidDeviceInfo;
+  // IosDeviceInfo? _iosDeviceInfo;
 
-  Future<void> _initDeviceInfo() async {
-    final PackageInfo info = await PackageInfo.fromPlatform();
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String deviceModel;
-    String osVersion;
-
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      final iosDeviceInfo = await deviceInfo.iosInfo;
-      deviceModel = iosDeviceInfo.model;
-      osVersion = iosDeviceInfo.systemVersion;
-      osType = "iOS";
-      _iosDeviceInfo = iosDeviceInfo;
-    } else {
-      final androidDeviceInfo = await deviceInfo.androidInfo;
-      androidDeviceInfo.display;
-      deviceModel = androidDeviceInfo.model;
-      osVersion = androidDeviceInfo.version.release;
-      osType = "Android";
-      _androidDeviceInfo = androidDeviceInfo;
-    }
-
-    setState(() {
-      _appInfo = info;
-      _deviceModel = deviceModel;
-      _osVersion = osVersion;
-    });
-  }
+  // Future<void> _initDeviceInfo() async {
+  //   final PackageInfo info = await PackageInfo.fromPlatform();
+  //   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  //   String deviceModel;
+  //   String osVersion;
+  //
+  //   if (Theme.of(context).platform == TargetPlatform.iOS) {
+  //     final iosDeviceInfo = await deviceInfo.iosInfo;
+  //     deviceModel = iosDeviceInfo.model;
+  //     osVersion = iosDeviceInfo.systemVersion;
+  //     osType = "iOS";
+  //     _iosDeviceInfo = iosDeviceInfo;
+  //   } else {
+  //     final androidDeviceInfo = await deviceInfo.androidInfo;
+  //     androidDeviceInfo.display;
+  //     deviceModel = androidDeviceInfo.model;
+  //     osVersion = androidDeviceInfo.version.release;
+  //     osType = "Android";
+  //     _androidDeviceInfo = androidDeviceInfo;
+  //   }
+  //
+  //   setState(() {
+  //     _appInfo = info;
+  //     _deviceModel = deviceModel;
+  //     _osVersion = osVersion;
+  //   });
+  // }
 
   final screenshotController = ScreenshotController();
 
   @override
   void initState() {
     super.initState();
-    _initDeviceInfo();
+    // _initDeviceInfo();
   }
 
   @override
@@ -86,7 +85,7 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
         actions: [
           IconButton(
             onPressed: () {
-              _initDeviceInfo();
+              // _initDeviceInfo();
             },
             icon: Icon(
               Icons.refresh,
@@ -217,68 +216,76 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
                   title: Text('Device Model'),
                   subtitle: Text(_deviceModel),
                 ),
-                ListTile(
-                  title: Text('Device ID'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.identifierForVendor ?? 'Unknown'
-                          : _androidDeviceInfo?.fingerprint ?? 'Unknown'),
-                ),
-                ListTile(
-                  title: Text('Device Name'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.name ?? 'Unknown'
-                          : _androidDeviceInfo?.device ?? 'Unknown'),
-                ),
-                ListTile(
-                  title: Text('Device Brand'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.name ?? 'Unknown'
-                          : _androidDeviceInfo?.brand ?? 'Unknown'),
-                ),
-                ListTile(
-                  title: Text('Device Manufacturer'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.name ?? 'Unknown'
-                          : _androidDeviceInfo?.manufacturer ?? 'Unknown'),
-                ),
-                ListTile(
-                  title: Text('Device Type'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.name ?? 'Unknown'
-                          : _androidDeviceInfo?.type ?? 'Unknown'),
-                ),
-                ListTile(
-                  title: Text('Device System Name'),
-                  subtitle: Text(
-                      Theme.of(context).platform == TargetPlatform.iOS
-                          ? _iosDeviceInfo?.systemName ?? 'Unknown'
-                          : _androidDeviceInfo?.host ?? 'Unknown'),
-                ),
-                if (Theme.of(context).platform == TargetPlatform.android) ...[
-                  ListTile(
-                    title: Text('Supported ABIs'),
-                    subtitle: Text(
-                        _androidDeviceInfo?.supportedAbis.join("\n") ??
-                            'Unknown'),
-                  ),
-                  // is real device
-                  ListTile(
-                    title: Text('Is Real Device'),
-                    subtitle: Text(
-                        _androidDeviceInfo?.isPhysicalDevice.toString() ??
-                            'Unknown'),
-                  ),
-                  ListTile(
-                    title: Text('Android Serial Number'),
-                    subtitle:
-                        Text(_androidDeviceInfo?.serialNumber ?? 'Unknown'),
-                  ),
-                ],
+                // ListTile(
+                //   title: Text('Device ID'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.identifierForVendor ?? 'Unknown'
+                //           : _androidDeviceInfo?.fingerprint ?? 'Unknown'),
+                // ),
+                // ListTile(
+                //   title: Text('Device Name'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.name ?? 'Unknown'
+                //           : _androidDeviceInfo?.device ?? 'Unknown'),
+                // ),
+                // ListTile(
+                //   title: Text('Device Brand'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.name ?? 'Unknown'
+                //           : _androidDeviceInfo?.brand ?? 'Unknown'),
+                // ),
+                // ListTile(
+                //   title: Text('Device Manufacturer'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.name ?? 'Unknown'
+                //           : _androidDeviceInfo?.manufacturer ?? 'Unknown'),
+                // ),
+                // ListTile(
+                //   title: Text('Device Type'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.name ?? 'Unknown'
+                //           : _androidDeviceInfo?.type ?? 'Unknown'),
+                // ),
+                // ListTile(
+                //   title: Text('Device System Name'),
+                //   subtitle: Text(
+                //       Theme.of(context).platform == TargetPlatform.iOS
+                //           ? _iosDeviceInfo?.systemName ?? 'Unknown'
+                //           : _androidDeviceInfo?.host ?? 'Unknown'),
+                // ),
+                // if (Theme.of(context).platform == TargetPlatform.android) ...[
+                //   ListTile(
+                //     title: Text('Supported ABIs'),
+                //     subtitle: Text(
+                //         _androidDeviceInfo?.supportedAbis.join("\n") ??
+                //             'Unknown'),
+                //   ),
+                //   // is real device
+                //   ListTile(
+                //     title: Text('Is Real Device'),
+                //     subtitle: Text(
+                //         _androidDeviceInfo?.isPhysicalDevice.toString() ??
+                //             'Unknown'),
+                //   ),
+                //   ListTile(
+                //     title: Text('Android Serial Number'),
+                //     subtitle:
+                //         Text(_androidDeviceInfo?.serialNumber ?? 'Unknown'),
+                //   ),
+                //   ListTile(
+                //     title: Text('Display Resolution'),
+                //     subtitle: Text(
+                //       _androidDeviceInfo != null
+                //           ? "${_androidDeviceInfo!.displayMetrics.widthPx} x ${_androidDeviceInfo!.displayMetrics.heightPx}"
+                //           : "Unknown",
+                //     ),
+                //   ),
+                // ],
                 Divider(),
                 ListTile(
                   title: Text(

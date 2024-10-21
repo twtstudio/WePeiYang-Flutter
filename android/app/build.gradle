@@ -311,9 +311,6 @@ dependencies {
     // 华为多版本
     // https://developer.huawei.com/consumer/cn/doc/development/AppGallery-connect-Guides/agc-config-flavor-android-0000001057944603
 
-    // QQ sdk
-    implementation fileTree(dir: 'libs', include: '*.jar')
-
     // 友盟 sdk
     implementation 'com.umeng.umsdk:common:9.4.7'// 必选
     implementation 'com.umeng.umsdk:asms:1.5.0'// 必选

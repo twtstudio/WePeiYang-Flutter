@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_button.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
@@ -101,51 +99,51 @@ class _EditDetailPageState extends State<EditDetailPage> {
     Navigator.pop(context);
   }
 
-  void _showDialog(BuildContext context, String text,
-      {VoidCallback? ok, VoidCallback? cancel}) {
-    SmartDialog.show(
-      clickMaskDismiss: false,
-      builder: (context) => WbyDialogLayout(
-        bottomPadding: true,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 30.w),
-          child: Column(
+  Future<bool?> _showDialog(String text) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
                 child: Container(
-                    width: 30.w,
-                    height: 30.h,
-                    child: ColoredIcon(
-                      'assets/images/schedule/notify.png',
-                      color: WpyTheme.of(context).primary,
-                    )),
+                  width: 30.w,
+                  height: 30.h,
+                  child: ColoredIcon(
+                    'assets/images/schedule/notify.png',
+                    color: WpyTheme.of(context).primary,
+                  ),
+                ),
               ),
               SizedBox(height: 25.h),
-              Text(text,
-                  style:
-                      TextUtil.base.PingFangSC.primary(context).medium.sp(15)),
-              SizedBox(height: 30.h),
-              WbyDialogStandardTwoButton(
-                first: () {
-                  SmartDialog.dismiss();
-                  if (cancel != null) cancel();
-                },
-                second: () {
-                  SmartDialog.dismiss();
-                  if (ok != null) ok();
-                },
-                firstText: '取消',
-                secondText: '确定',
-                secondType: ButtonType.blue,
+              Text(
+                text,
+                style: TextUtil.base.PingFangSC.primary(context).medium.sp(15),
               ),
+              SizedBox(height: 30.h),
             ],
           ),
-        ),
-      ),
+          actions: <Widget>[
+            WbyDialogStandardTwoButton(
+              first: () {
+                Navigator.of(context).pop(false); // 返回false表示取消
+              },
+              second: () {
+                Navigator.of(context).pop(true); // 返回true表示确认
+              },
+              firstText: '取消',
+              secondText: '确定',
+              secondType: ButtonType.blue,
+            ),
+          ],
+        );
+      },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,14 +168,15 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) {
+      onPopInvoked: (didPop) async {
         if (didPop) return;
-        _showDialog(context, '是否保存修改内容?', ok: () {
+        bool? confirm =await _showDialog('是否保存修改内容?');
+        if(confirm==true){
           var check = _check(context);
           if (check) _saveAndQuit(context);
-        }, cancel: () {
+        }else{
           Navigator.pop(context);
-        });
+        }
       },
       child: Scaffold(
         backgroundColor:
@@ -296,10 +295,9 @@ class _EditDetailPageState extends State<EditDetailPage> {
             Material(
               color: WpyTheme.of(context).get(WpyColorKey.errorActionColor),
               child: InkWell(
-                onTap: () {
-                  _showDialog(context, '是否删除此课程?', ok: () {
-                    _deleteAndQuit(context);
-                  });
+                onTap: () async {
+                  bool? confirm=await _showDialog("您确定要删除该课程吗?");
+                  if(confirm == true)_deleteAndQuit(context);
                 },
                 splashFactory: InkRipple.splashFactory,
                 child: Container(

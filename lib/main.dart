@@ -23,7 +23,6 @@ import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
-import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/network/wpy_dio.dart';
@@ -63,8 +62,6 @@ void main() async {
       print('[INFO]: This device isn\'t support high refresh rate');
     }
 
-    /// 初始化友盟 TODO: fix this or remove this
-    await UmengCommonSdk.initCommon();
 
     /// 设置桌面端窗口适配, 依赖为 window_manager
     if (Platform.isWindows) {
@@ -196,7 +193,7 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
-class WePeiYangApp extends StatefulWidget {
+class  WePeiYangApp extends StatefulWidget {
   static late double screenWidth;
   static late double screenHeight;
 
@@ -480,8 +477,6 @@ class _StartUpWidgetState extends State<StartUpWidget> {
   }
 
   void _appInitProcess(BuildContext context) {
-    /// 初始化友盟
-    UmengCommonSdk.initCommon();
 
     // 检查更新
     context.read<UpdateManager>().checkUpdate();
@@ -503,7 +498,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     context.read<ExamProvider>().readPref();
     context.read<CourseProvider>().readPref();
 
-    /// 如果登陆过，尝试刷新token
+    /// 如果登录过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
       Future.delayed(
@@ -560,7 +555,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
         ),
       );
     } else {
-      /// 没登陆过的话，多看一会的启动页再跳转到登录页
+      /// 没登录过的话，多看一会的启动页再跳转到登录页
       Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }

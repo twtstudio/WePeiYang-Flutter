@@ -150,23 +150,6 @@ class _CollectionPageState extends State<CollectionPage> {
 
     Widget body = CustomScrollView(
       slivers: [
-        SliverAppBar(
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-              size: 20.w,
-            ),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: Text(
-            "我的收藏",
-            style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
-          ),
-          centerTitle: true,
-        ),
         SliverToBoxAdapter(
           child: Container(
               color: WpyTheme.of(context)
@@ -176,22 +159,41 @@ class _CollectionPageState extends State<CollectionPage> {
       ],
     );
 
-    return Container(
-      //改背景色用
-      color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-      child: SmartRefresher(
-        physics: BouncingScrollPhysics(),
-        controller: _refreshController,
-        header: RefreshHeader(context),
-        footer: ClassicFooter(
-          idleText: '没有更多数据了:>',
-          idleIcon: Icon(Icons.check),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor:
+        WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+            size: 20.w,
+          ),
+          onPressed: () => Navigator.pop(context),
         ),
-        enablePullDown: true,
-        onRefresh: _onRefresh,
-        enablePullUp: true,
-        onLoading: _onLoading,
-        child: body,
+        title: Text(
+          "我的收藏",
+          style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        //改背景色用
+        color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+        child: SmartRefresher(
+          physics: BouncingScrollPhysics(),
+          controller: _refreshController,
+          header: RefreshHeader(context),
+          footer: ClassicFooter(
+            idleText: '没有更多数据了:>',
+            idleIcon: Icon(Icons.check),
+          ),
+          enablePullDown: true,
+          onRefresh: _onRefresh,
+          enablePullUp: true,
+          onLoading: _onLoading,
+          child: body,
+        ),
       ),
     );
   }

@@ -18,6 +18,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 
+///更细一下provider的位置，放在providers里
 class NewLostAndFoundPostProvider {
   String title = "";
   String content = "";
@@ -43,6 +44,9 @@ class NewLostAndFoundPostProvider {
   }
 }
 
+final categoryNotifier = ValueNotifier<String?>(null);
+
+///更新一下图片资源，以及组件的关系
 class LostAndFoundPostPage extends StatefulWidget {
   @override
   State<LostAndFoundPostPage> createState() => _LostAndFoundPostPageState();
@@ -51,12 +55,10 @@ class LostAndFoundPostPage extends StatefulWidget {
 class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   //0->失物 1->招领
   final typeNotifier = ValueNotifier(0);
-  final categoryNotifier = ValueNotifier('选择分类');
   static const selectTypeText = ['失物', '招领'];
   static const texts = ['招领', '失物'];
 
   bool tapAble = true;
-  bool _showSelectDialog = false;
 
   void changeType() {
     if (typeNotifier.value == 1) {
@@ -76,7 +78,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
       ToastProvider.error("请检查内容是否填写完整！");
       return;
     }
-    if (categoryNotifier.value == "选择分类") {
+    if (categoryNotifier.value == null) {
       ToastProvider.error("请选择分类！");
       return;
     }
@@ -150,11 +152,10 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
             leading: IconButton(
-                padding: EdgeInsets.zero,
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
                 icon: Icon(Icons.keyboard_arrow_left,
-                    color:WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor), size: 36.r),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.oldThirdActionColor),
+                    size: 36.r),
                 onPressed: () {
                   var dataModel = context.read<NewLostAndFoundPostProvider>();
                   dataModel.clear();
@@ -163,138 +164,127 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             title: Text("发布${selectTypeText[typeNotifier.value]}",
                 style: TextUtil.base.NotoSansSC.w400.sp(18).label(context)),
             actions: [
-              InkWell(
-                  onTap: () async {
-                    setState(() {
-                      changeType();
-                    });
-                  },
-                  child: Container(
-                      width: 36.w,
-                      height: 36.h,
-                      child: Column(children: [
-                        SizedBox(height: 11.h),
-                        Image.asset("assets/images/post_swap.png"),
-                        Text(
-                          texts[typeNotifier.value],
-                          style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
-                        )
-                      ]))),
-              SizedBox(width: 10.w)
+              Padding(
+                padding: EdgeInsets.only(right: 18.w, top: 12.h),
+                child: InkWell(
+                    onTap: () async {
+                      setState(() {
+                        changeType();
+                      });
+                    },
+                    child: Column(children: [
+                      Image.asset(
+                        "assets/images/lost_and_found_icons/switch.png",
+                        width: 23.w,
+                      ),
+                      Text(
+                        texts[typeNotifier.value],
+                        style: TextUtil.base.NotoSansSC.w400.sp(10).blue89,
+                      )
+                    ])),
+              ),
             ],
-            centerTitle: true,
             backgroundColor: Colors.transparent,
+            centerTitle: true,
             elevation: 0),
-        body: Container(
-            padding: EdgeInsets.all(16.r),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              LostAndFoundTitleInputField(),
-              LostAndFoundContentInputField(),
-              LostAndFoundImagesGridView(),
-              Container(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    children: [
-                      SizedBox(height: 27.h),
-                      SelectDateField(typeNotifier: typeNotifier),
-                      SizedBox(height: 14.h),
-                      InputLocationField(typeNotifier: typeNotifier),
-                      SizedBox(height: 14.h),
-                      InputPhoneField()
-                    ],
+        body: SingleChildScrollView(
+          child: Container(
+              padding: EdgeInsets.all(16.r),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                LostAndFoundTitleInputField(),
+                LostAndFoundContentInputField(),
+                LostAndFoundImagesGridView(),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      children: [
+                        SizedBox(height: 27.h),
+                        SelectDateField(typeNotifier: typeNotifier),
+                        SizedBox(height: 14.h),
+                        InputLocationField(typeNotifier: typeNotifier),
+                        SizedBox(height: 14.h),
+                        InputPhoneField()
+                        ///phone为什么没有notifier
+                      ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.only(top: 25.h),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    CategorySelector(),
+                    SizedBox(width: 30.w),
+                    Hero(
+                      tag: 'add',
+                      child: TextButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.primaryActionColor)),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.r)))),
+                          onPressed: () async {
+                            if (tapAble) {
+                              tapAble = false;
+                              await _submit();
+                              await Future.delayed(Duration(milliseconds: 3000));
+                              tapAble = true;
+                            }
+                          },
+                          child: Text(
+                            '发送',
+                            style: TextUtil.base.NotoSansSC.w400
+                                .sp(16)
+                                .reverse(context),
+                          )),
+                    )
+                  ]),
+                )
+              ])),
+        ));
+  }
+}
+
+//使用valuenotifier动态刷新类别的选择，默认值最好是努力了，使用hing展示默认值，否则会要求value里包含默认值
+///修改样式
+class CategorySelector extends StatelessWidget {
+  final List<String> categories = ['生活日用', '数码产品', '钱包卡证', '其他'];
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: categoryNotifier,
+      builder: (context, String? value, _) {
+        return DropdownButton<String>(
+          elevation: 2,
+          borderRadius: BorderRadius.circular(18.h),
+          value: value,
+          hint: Text('选择分类'),
+          // 设置默认显示的提示内容
+          onChanged: (newValue) {
+            categoryNotifier.value = newValue; // 更新选中值
+          },
+          items: categories.map<DropdownMenuItem<String>>((String category) {
+            return DropdownMenuItem<String>(
+              value: category,
+              child: Container(
+                  decoration: BoxDecoration(
+                      // color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                      // borderRadius: BorderRadius.circular(16)
+                      ),
+                  width: 90.w,
+                  child: Text(
+                    '# ${category}',
+                    style: TextStyle(
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.primaryActionColor)),
                   )),
-              Container(
-                  height: 150.h,
-                  alignment: Alignment.center,
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    selectCategoryDialog(context),
-                    SelectCategoryButton(),
-                    SizedBox(width: 8.w),
-                    LostAndFoundPostButton()
-                  ]))
-            ])));
-  }
-
-  TextButton SelectCategoryButton() {
-    return TextButton(
-        onPressed: () {
-          setState(() {
-            _showSelectDialog = true;
-          });
-        },
-        child: Text("#  ${categoryNotifier.value}",
-            style:
-                TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context)));
-  }
-
-  Visibility selectCategoryDialog(BuildContext context) {
-    return Visibility(
-        visible: _showSelectDialog,
-        child: Container(
-            margin: EdgeInsets.fromLTRB(0, 30.h, 0, 0),
-            padding: EdgeInsets.fromLTRB(0, 5.h, 0, 5.h),
-            height: 120.h,
-            width: 86.w,
-            decoration: BoxDecoration(
-                color: WpyTheme.of(context)
-                    .get(WpyColorKey.primaryBackgroundColor),
-                borderRadius: BorderRadius.circular(10.r),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 3.r),
-                      blurRadius: 6.r,
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.basicTextColor)
-                          .withOpacity(0.25))
-                ]),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                buildSelectCategoryOption("生活日用", context),
-                buildSelectCategoryOption("数码产品", context),
-                buildSelectCategoryOption("钱包卡证", context),
-                buildSelectCategoryOption("其他", context)
-              ],
-            )));
-  }
-
-  Widget buildSelectCategoryOption(String option, BuildContext context) {
-    return InkWell(
-        onTap: () {
-          setState(() {
-            categoryNotifier.value = option;
-            _showSelectDialog = false;
-          });
-        },
-        child: Container(
-            child: Text(option,
-                style: TextUtil.base.NotoSansSC.w400.sp(12).primary(context))));
-  }
-
-  SizedBox LostAndFoundPostButton() {
-    return SizedBox(
-        width: 63,
-        height: 32,
-        child: ElevatedButton(
-            style: ButtonStyle(
-                elevation: WidgetStateProperty.all(0),
-                backgroundColor: WidgetStateProperty.all(
-                    WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-                shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.r)))),
-            onPressed: () async {
-              if (tapAble) {
-                tapAble = false;
-                await _submit();
-                await Future.delayed(Duration(milliseconds: 3000));
-                tapAble = true;
-              }
-            },
-            child: Text(
-              '发送',
-              style: TextUtil.base.NotoSansSC.w400.sp(14).reverse(context),
-            )));
+            );
+          }).toList(),
+        );
+      },
+    );
   }
 }
 
@@ -413,7 +403,8 @@ class _LostAndFoundContentInputFieldState
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(300)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     Widget bottomTextCounter = ValueListenableBuilder(
         valueListenable: contentCounter,
@@ -603,67 +594,77 @@ class SelectDateField extends StatefulWidget {
 }
 
 class _SelectDateFieldState extends State<SelectDateField> {
-  static const yyyymmddtexts = ["请填写丢失日期", "请填写拾取日期"];
+  static const initialdate = ["请填写丢失日期", "请填写拾取日期"];
   DateTime? selectedDate;
-  late String yyyymmdd = "";
+  late String date = "";
 
   @override
   Widget build(BuildContext context) {
     Future<void> _selectDate(BuildContext context) async {
       var dataModel = context.read<NewLostAndFoundPostProvider>();
       final DateTime? picked = await showDatePicker(
+          helpText: "选择日期",
+          cancelText: "取消",
+          confirmText: "确定",
+          errorFormatText: "请输入正确的日期格式",
+          errorInvalidText: "请输入有效的日期",
           context: context,
           initialDate: DateTime.now(),
           firstDate: DateTime(2015),
           lastDate: DateTime.now());
+      //     builder: (BuildContext context, Widget child) {
+      //     return Theme(
+      //     data: ThemeData.light().copyWith(
+      //       colorScheme: ColorScheme.fromSwatch(
+      //         primarySwatch: Colors.teal,
+      //         accentColor: Colors.teal,
+      //       ),
+      //       dialogBackgroundColor:Colors.white,
+      //     ),
+      //     child: child,
+      //   );
+      // };
+      ///修改日期选择器的颜色
 
       if (picked != null && picked != selectedDate) {
         setState(() {
           selectedDate = picked;
-          yyyymmdd =
+          date =
               "${picked.year}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
-          dataModel.date = yyyymmdd;
+          dataModel.date = date;
         });
       }
     }
 
-    return Container(
-        width: 195.w,
-        height: 36.h,
-        decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-            borderRadius: BorderRadius.circular(16.r)),
-        child: InkWell(
-            onTap: () => _selectDate(context),
-            child: Container(
-                width: 195.w,
-                height: 36.h,
-                decoration: BoxDecoration(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.oldSwitchBarColor),
-                    borderRadius: BorderRadius.circular(16.r)),
-                child: Stack(children: [
+    return InkWell(
+        onTap: () => _selectDate(context),
+        child: Container(
+            width: 180.w,
+            height: 36.h,
+            decoration: BoxDecoration(
+                color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+                borderRadius: BorderRadius.circular(16.r)),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(
+                    Icons.access_time_outlined,
+                    color: selectedDate != null
+                        ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                        : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+                  ),
                   Container(
-                      width: 17.w,
-                      height: 17.h,
-                      margin: EdgeInsets.fromLTRB(20.w, 9.5.r, 0, 0),
-                      child: selectedDate != null
-                          ? Image.asset("assets/images/icon_clock_filled.png",
-                              fit: BoxFit.fill)
-                          : Image.asset("assets/images/icon_clock.png",
-                              fit: BoxFit.fill)),
-                  Container(
-                      margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0),
                       child: selectedDate != null
                           ? Text(
                               "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
                               style: TextUtil.base.NotoSansSC.w400
                                   .sp(14)
                                   .primaryAction(context))
-                          : Text(yyyymmddtexts[widget.typeNotifier.value],
-                              style:
-                                  TextUtil.base.NotoSansSC.w400.sp(14).infoText(context)))
-                ]))));
+                          : Text(initialdate[widget.typeNotifier.value],
+                              style: TextUtil.base.NotoSansSC.w400
+                                  .sp(14)
+                                  .infoText(context))),
+                ])));
   }
 }
 
@@ -741,24 +742,26 @@ class _InputLocationFieldState extends State<InputLocationField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(26)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
-        width: 195.w,
+        width: 180.w,
         height: 36.h,
         decoration: BoxDecoration(
             color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16)),
-        child: Stack(children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Icon(
+            Icons.location_on_outlined,
+            color: isFilled || isFocused
+                ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+          ),
           Container(
-              width: 17.w,
-              height: 17.h,
-              margin: EdgeInsets.fromLTRB(20.w, 9.5.h, 0, 0),
-              child: !(isFilled || isFocused)
-                  ? Image.asset("assets/images/icon_location.png")
-                  : Image.asset("assets/images/icon_location_fill.png")),
-          Container(
-              margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
+              //textfeld类必须套在container等组件里
+              width: 100.w,
+              child: inputField)
         ]));
   }
 }
@@ -832,24 +835,27 @@ class _InputPhoneFieldState extends State<InputPhoneField> {
         },
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(11)],
-        cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+        cursorColor:
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
-        width: 195.w,
+        width: 180.w,
         height: 36.h,
         decoration: BoxDecoration(
             color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
             borderRadius: BorderRadius.circular(16.r)),
-        child: Stack(children: [
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+          Icon(
+          Icons.local_phone_outlined,
+          color: isFilled || isFocused
+              ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+              : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+        ),
           Container(
-              width: 17.w,
-              height: 17.h,
-              margin: EdgeInsets.fromLTRB(20.w, 9.5.h, 0, 0),
-              child: !(isFilled || isFocused)
-                  ? Image.asset("assets/images/icon_smile_chat.png")
-                  : Image.asset("assets/images/icon_smile_chat_fill.png")),
-          Container(
-              margin: EdgeInsets.fromLTRB(45.w, 10.h, 0, 0), child: inputField)
+            width: 100.w,
+              child: inputField)
         ]));
   }
 }

@@ -4,12 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
-import com.tencent.connect.common.Constants
-import com.tencent.tauth.Tencent
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
-import com.twt.service.share.qq.QQFactory
-import com.twt.service.share.qq.QQListener
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
@@ -22,46 +18,12 @@ class WbySharePlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResult
     internal lateinit var result: MethodChannel.Result
     internal var continueDo: (() -> Unit)? = null
 
-    private val mTencent: Tencent? by lazy {
-        Tencent.createInstance(
-            "1104743406",
-            context,
-            "${context.packageName}.ImageProvider"
-        )
-    }
 
     override val name: String
         get() = "com.twt.service/share"
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "shareToQQ" -> {
-                try {
-//                    QQFactory(mTencent, activityBinding.activity).share(call)
-                    result.success("success")
-                } catch (e: Exception) {
-                    result.error("-1", "cannot share to qq", null)
-                }
-            }
-            "shareImgToQQ" -> kotlin.runCatching {
-                if (mTencent == null) {
-                    result.error("", "QQ分享配置错误", null)
-                    return
-                }
-                continueDo = {
-                    Tencent.setIsPermissionGranted(true)
-                    activityBinding.addActivityResultListener(this)
-                    QQFactory(mTencent!!, activityBinding.activity, qqShareListener).shareImg(
-                        call
-                    )
-                }
-                this.result = result
-                if (!permissionListener.requestPermissions()) {
-                    continueDo!!.invoke()
-                }
-            }.onFailure {
-                result.error("-1", "cannot share img to qq", "$it")
-            }
             else -> result.notImplemented()
         }
     }
@@ -83,14 +45,8 @@ class WbySharePlugin : WbyPlugin(), ActivityAware, PluginRegistry.ActivityResult
         activityBinding.removeRequestPermissionsResultListener(permissionListener)
     }
 
-    private val qqShareListener by lazy { QQListener(this) }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == Constants.REQUEST_QQ_SHARE) {
-            Tencent.onActivityResultData(requestCode, resultCode, data, qqShareListener)
-            activityBinding.removeActivityResultListener(this)
-            return true
-        }
         return false
     }
 

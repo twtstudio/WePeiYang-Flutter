@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -75,7 +76,6 @@ class PrivacyDialog extends Dialog {
   }
 
   Widget _detail(BuildContext context) {
-
     /// 退出 APP
     void _Quit() async {
       await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -87,7 +87,7 @@ class PrivacyDialog extends Dialog {
         children: [
           WButton(
             onPressed: () {
-              _Quit();
+              Navigator.pop(context);
             },
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
@@ -97,7 +97,8 @@ class PrivacyDialog extends Dialog {
             ),
           ),
           WButton(
-            onPressed: () {
+            onPressed: () async {
+              await UmengCommonSdk.initCommon();
               Navigator.pop(context);
             },
             child: Container(
@@ -105,7 +106,7 @@ class PrivacyDialog extends Dialog {
               padding: const EdgeInsets.all(16),
               child: Text('同意',
                   style:
-                  TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
+                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],

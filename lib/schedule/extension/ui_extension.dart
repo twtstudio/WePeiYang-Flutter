@@ -8,6 +8,8 @@ import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_detail_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/course_dialog.dart';
 
+import '../../commons/preferences/common_prefs.dart';
+
 class AnimatedActiveCourse extends StatelessWidget {
   static const _duration = const Duration(milliseconds: 375);
   final List<Pair<Course, int>> _pairs;
@@ -77,7 +79,7 @@ class AnimatedActiveCourse extends StatelessWidget {
                       Spacer(),
                       Text(
                           formatText(
-                            !_pairs[0].arrange.isExperiment
+                            !(_pairs[0].arrange.isExperiment& CommonPreferences.isShowExperiment.value)
                                 ? _pairs[0].first.name
                                 : _pairs[0].arrange.name!,
                           ),

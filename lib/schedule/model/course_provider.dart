@@ -204,4 +204,11 @@ class CourseDisplayProvider with ChangeNotifier {
   }
 
   bool get nightMode => CommonPreferences.nightMode.value;
+
+  set showExperiment(bool value){
+    CommonPreferences.isShowExperiment.value=value;
+    notifyListeners();
+  }
+
+  bool get showExperiment => CommonPreferences.isShowExperiment.value;
 }

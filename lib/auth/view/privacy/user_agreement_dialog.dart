@@ -24,7 +24,8 @@ class UserAgreementDialog extends Dialog {
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+            color:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
         child: Column(
           children: [
             Expanded(
@@ -36,8 +37,9 @@ class UserAgreementDialog extends Dialog {
                       alignment: Alignment.topCenter,
                       margin: const EdgeInsets.only(top: 20, bottom: 18),
                       child: Text('微北洋用户协议',
-                          style:
-                              TextUtil.base.bold.sp(18).customColor(textColor))),
+                          style: TextUtil.base.bold
+                              .sp(18)
+                              .customColor(textColor))),
                   Text("更新日期：2024年08月20日\n" + "生效日期：2021年08月13日\n"),
                   BoldText("一．引言"),
                   Text("微北洋产品和服务的提供者为天津大学（以下简称“我们”）。"
@@ -147,8 +149,7 @@ class UserAgreementDialog extends Dialog {
   }
 
   Widget _detail(BuildContext context) {
-
-    /// 退出 APP
+    /// 退出 APP(只适用于安卓端)，ios请用exit(0)
     void _Quit() async {
       await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     }
@@ -159,7 +160,7 @@ class UserAgreementDialog extends Dialog {
         children: [
           WButton(
             onPressed: () {
-              _Quit();
+              Navigator.pop(context);
             },
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
@@ -177,7 +178,7 @@ class UserAgreementDialog extends Dialog {
               padding: const EdgeInsets.all(16),
               child: Text('同意',
                   style:
-                  TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
+                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],
