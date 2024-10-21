@@ -185,6 +185,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                 buttonIsShown: true,
                 isHTML: false,
               ));
+
     /// 评论点赞点踩浏览量
     var likeUnlikeVisit = Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -360,7 +361,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                   children: [
                     ...head,
                     //此处为图片
-                    PostPreviewPic(imgUrls: post.imageUrls),
+                    Center(child: PostPreviewPic(imgUrls: post.imageUrls)),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: SplitUtil.w * 16),

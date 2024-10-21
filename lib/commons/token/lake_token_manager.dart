@@ -34,8 +34,6 @@ class LakeTokenManager extends TokenManagerAbstract {
   }
 
   Future<String> refreshToken() async {
-    print("==> refreshing new lake token");
-    print(StackTrace.current);
     try {
       final response = await LakeTokenDio().get('auth/token', queryParameters: {
         'token': CommonPreferences.token.value,

@@ -147,14 +147,16 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     final tabList = context.select((LakeModel model) => model.tabList);
 
     if (initializeRefresh) {
-      context
-          .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController!.index]!
-          .controller
-          .animateTo(-85.h,
-              duration: Duration(milliseconds: 1000),
-              curve: Curves.easeOutCirc);
-      initializeRefresh = false;
+      final controller =
+          context
+              .read<LakeModel>()
+              .lakeAreas[context.read<LakeModel>().tabController!.index]!
+              .controller;
+      if(controller.hasClients) {
+        controller.animateTo(-85.h,
+            duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
+        initializeRefresh = false;
+      }
     }
 
     /// 2024.5.29 新增功能:信息中心红点通知功能
