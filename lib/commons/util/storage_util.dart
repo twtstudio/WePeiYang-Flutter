@@ -21,7 +21,6 @@ class StorageUtil {
                     type: StorageDirectory.downloads))!
                 .first)
         : await getApplicationDocumentsDirectory();
-    print("==> temp download dir ${downloadDir.path}");
     filesDir = await getApplicationSupportDirectory();
     tempDir = await getTemporaryDirectory();
     photoDir = Platform.isAndroid

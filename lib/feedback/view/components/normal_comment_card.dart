@@ -136,7 +136,6 @@ class _NCommentCardState extends State<NCommentCard>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print("==> change dependencies");
   }
 
   @override

@@ -125,7 +125,6 @@ class NewNetworkAlertDialog extends StatelessWidget {
                       shape: _roundShape,
                     ),
                     onPressed: () {
-                      print("==> get");
                       Navigator.pop(context);
                     },
                     child: Text("确定",

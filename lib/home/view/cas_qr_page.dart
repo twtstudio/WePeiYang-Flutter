@@ -182,7 +182,6 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
     ToastProvider.running('正在刷新');
     final sid = CommonPreferences.userNumber.value;
     qrContent = await CasService.getQRContent(sid);
-    print("==> qrContent: $qrContent");
     lastRefresh = DateTime.now();
     if (mounted) setState(() {});
   }

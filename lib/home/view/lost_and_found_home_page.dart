@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_sub_page.dart';
 
-import '../../commons/util/type_util.dart';
 
 ///我该怎么看到自己发布的所有帖子？
 

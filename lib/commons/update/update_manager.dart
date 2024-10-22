@@ -47,7 +47,6 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   Future<void> checkUpdate({bool auto = true}) async {
-    print("==> status: $status, $auto");
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
@@ -58,7 +57,6 @@ class UpdateManager extends UpdateStatusListener {
         final dynamic v = Platform.isIOS
             ? await UpdateService.latestIOSVersion
             : await UpdateService.latestAndroidVersion;
-        print("==> check update : $v");
         // 如果获取最新版本失败，需要显示弹窗的时候显示检查更新失败
         if (v == null) {
           setIdle();

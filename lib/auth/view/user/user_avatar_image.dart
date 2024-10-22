@@ -57,7 +57,6 @@ class UserAvatarImage extends StatelessWidget {
           if (avatarBoxUrl != "Error")
             Builder(
               builder: (context) {
-                print("==> $avatarBoxUrl");
                 return FadeInImage.memoryNetwork(
                   placeholder: kTransparentImage,
                   image: avatarBoxUrl,

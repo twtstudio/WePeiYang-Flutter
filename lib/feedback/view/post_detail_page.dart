@@ -1719,9 +1719,6 @@ class _AnimatedOptionState extends State<AnimatedOption>
               ToastProvider.error(e.error.toString());
             },
           );
-          // 退出帖子
-          Navigator.of(context).pop(true);
-          Navigator.of(context).pop(true);
         } else {
           if (tc.text != '') {
             await FeedbackService.adminTopPost(
@@ -1734,9 +1731,6 @@ class _AnimatedOptionState extends State<AnimatedOption>
                 ToastProvider.error(e.error.toString());
               },
             );
-            // 退出帖子
-            Navigator.of(context).pop(true);
-            Navigator.of(context).pop(true);
           } else {
             ToastProvider.error('请输入数值！');
           }
@@ -1794,9 +1788,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
                         ?.refreshController
                         .requestRefresh();
                   });
-                  for (int i = 0; i < 3; i++) {
-                    Navigator.of(context).pop();
-                  }
+                  Navigator.of(context).pop();
                   ToastProvider.running('成功');
                 }),
             onFailure: (e) => ToastProvider.error(e.message ?? '失败'));

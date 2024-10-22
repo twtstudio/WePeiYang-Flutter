@@ -86,48 +86,27 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool get wantKeepAlive => true;
 
   void listToTop() {
-    if (context
-            .read<LakeModel>()
-            .lakeAreas[context
-                .read<LakeModel>()
-                .tabList[context.read<LakeModel>().tabController!.index]
-                .id]!
-            .controller
-            .offset >
-        1500) {
-      context
-          .read<LakeModel>()
-          .lakeAreas[context.read<LakeModel>().tabController!.index]!
-          .controller
-          .jumpTo(1500);
-    }
-    context
+    final controller = context
         .read<LakeModel>()
-        .lakeAreas[context
-            .read<LakeModel>()
-            .tabList[context.read<LakeModel>().tabController!.index]
-            .id]!
-        .controller
-        .animateTo(-85,
-            duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
+        .lakeAreas[context.read<LakeModel>().tabController!.index]!
+        .controller;
+    if (controller.offset > 1500) {
+      controller.jumpTo(1500);
+    }
+    controller.animateTo(
+      -85,
+      duration: Duration(milliseconds: 400),
+      curve: Curves.easeOutCirc,
+    );
   }
 
   _onFeedbackTapped() {
-    if (!context.read<LakeModel>().tabController!.indexIsChanging) {
-      if (canSee) {
-        context.read<LakeModel>().onFeedbackOpen();
-        fbKey.currentState?.tap();
-        setState(() {
-          canSee = false;
-        });
-      } else {
-        context.read<LakeModel>().onFeedbackOpen();
-        fbKey.currentState?.tap();
-        setState(() {
-          canSee = true;
-        });
-      }
-    }
+    if (context.read<LakeModel>().tabController!.indexIsChanging) return;
+    context.read<LakeModel>().onFeedbackOpen();
+    fbKey.currentState?.tap();
+    setState(() {
+      canSee = !canSee;
+    });
   }
 
   @override
@@ -147,12 +126,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     final tabList = context.select((LakeModel model) => model.tabList);
 
     if (initializeRefresh) {
-      final controller =
-          context
-              .read<LakeModel>()
-              .lakeAreas[context.read<LakeModel>().tabController!.index]!
-              .controller;
-      if(controller.hasClients) {
+      final controller = context
+          .read<LakeModel>()
+          .lakeAreas[context.read<LakeModel>().tabController!.index]!
+          .controller;
+      if (controller.hasClients) {
         controller.animateTo(-85.h,
             duration: Duration(milliseconds: 1000), curve: Curves.easeOutCirc);
         initializeRefresh = false;
@@ -179,20 +157,20 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     );
 
     Widget notifyButton = WButton(
-      onPressed: (){
+      onPressed: () {
         Navigator.pushNamed(context, FeedbackRouter.mailbox);
       },
       child: Container(
-        margin:EdgeInsets.only(top: 8.h) ,
+        margin: EdgeInsets.only(top: 8.h),
         child: count == 0
             ? w1
             : badges.Badge(
-              child: w1,
-              //考古, 红点实现方法!!
-              badgeContent: Text(
-                count.toString(),
-                style: TextUtil.base.reverse(context).sp(8),
-              )),
+                child: w1,
+                //考古, 红点实现方法!!
+                badgeContent: Text(
+                  count.toString(),
+                  style: TextUtil.base.reverse(context).sp(8),
+                )),
       ),
     );
 
@@ -482,10 +460,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         onTap: () {
                           if (tabList.isNotEmpty) {
                             initializeRefresh = true;
+                            final id = context.read<LakeModel>().currentTabId;
                             context
                                 .read<NewPostProvider>()
                                 .postTypeNotifier
-                                .value = tabList[1].id;
+                                .value = id == 0 ? 2 : id;
                             Navigator.pushNamed(context, FeedbackRouter.newPost,
                                 arguments: NewPostArgs(false, '', 0, ''));
                           }

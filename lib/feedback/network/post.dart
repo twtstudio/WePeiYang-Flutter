@@ -335,6 +335,11 @@ class WPYTab {
     this.name = '',
   });
 
+  @override
+  String toString() {
+    return 'WPYTab{id: $id, shortname: $shortname, name: $name}';
+  }
+
   int id;
   String shortname;
   String name;

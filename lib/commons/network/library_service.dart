@@ -49,14 +49,11 @@ class LibraryDio extends DioAbstract {
             handler.next(options);
           },
           onResponse: (response, handler) {
-            print(
-                "==> content type: ${response.headers['Content-Type']?.first.split(';').first}");
             if (response.headers['Content-Type']?.first.split(';').first !=
                 'application/json') {
               handler.next(response);
               return;
             }
-            print("==> result data: ${response.data}");
             if (response.data['code'] != 0) {
               throw LibRequestException(response.data['message']);
             }
@@ -132,7 +129,6 @@ class LibraryService {
       ))
           .data['access_token'] as String;
 
-      print("==> access token: $token");
 
       // # Authorize
       final result = (await userDio.post(
@@ -145,7 +141,6 @@ class LibraryService {
       ))
           .data;
       final code = result['code'] as String;
-      print("==> get code: $code");
 
       // # use code get cookie
       icDio.get("/authcenter/doCode", queryParameters: {

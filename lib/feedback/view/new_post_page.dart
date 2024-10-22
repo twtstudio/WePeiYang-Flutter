@@ -284,7 +284,6 @@ class _LakeSelectorState extends State<LakeSelector> {
                             return WButton(
                               onPressed: () {
                                 notifier.value = tabList[index + 1].id;
-
                                 ///在切换发帖区时，要清空department，不然就会导致参数问题
                                 context.read<NewPostProvider>().department =
                                     null;
