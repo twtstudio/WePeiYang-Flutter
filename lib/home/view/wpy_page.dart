@@ -285,7 +285,7 @@ class SliverCardsWidget extends StatelessWidget {
     '地图·校历',
     '成绩',
     // '小游戏'
-    '失物招領'
+    // '失物招领'
   ];
 
   SliverCardsWidget(this.cards);
@@ -302,7 +302,8 @@ class SliverCardsWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       itemCount: CommonPreferences.displayedTool.value.length,
       itemBuilder: (context, i) {
-        if (!peiyangLabel.contains(CommonPreferences.displayedTool.value[i].label)) {
+        if (!peiyangLabel
+            .contains(CommonPreferences.displayedTool.value[i].label)) {
           return WButton(
             key: ValueKey(CommonPreferences.displayedTool.value[i].route),
             onPressed: () async {
@@ -322,13 +323,8 @@ class SliverCardsWidget extends StatelessWidget {
           return WButton(
             key: ValueKey(CommonPreferences.displayedTool.value[i].route),
             onPressed: () {
-              ///为预热失物招领添加了if条件，上线后去掉即可
-              if (CommonPreferences.displayedTool.value[i].route == "") {
-                ToastProvider.error('开发中 敬请期待！');
-              } else {
-                Navigator.pushNamed(
-                    context, CommonPreferences.displayedTool.value[i].route);
-              }
+              Navigator.pushNamed(
+                  context, CommonPreferences.displayedTool.value[i].route);
             },
             child:
                 generateCard(context, CommonPreferences.displayedTool.value[i]),

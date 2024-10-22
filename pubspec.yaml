@@ -5,10 +5,16 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # 请保证 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.4.6+147
+version: 4.4.7+148
 
-# 打包代码 flutter build apk --split-per-abi
-# flutter build apk --target-platform android-arm,android-arm64 --split-per-abi
+# Build:
+# flutter build apk \
+#  --dart-define=ENVIRONMENT=RELEASE \
+#  --dart-define=VERSION=4.4.7 \
+#  --dart-define=VERSIONCODE=148 \
+#  --target-platform=android-arm,android-arm64 \
+#  --split-per-abi \
+#  --obfuscate --split-debug-info=HLQ_Struggle
 
 environment:
   # sdk: ">=2.10.0 <3.0.0"
