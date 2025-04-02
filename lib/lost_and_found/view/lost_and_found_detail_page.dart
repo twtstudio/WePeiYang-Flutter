@@ -152,26 +152,26 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   Widget MultipleImage(LostAndFoundPost post) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(
-          post.coverPhotoPathInDetail.length,
+          post.imageUrls.length,
           (index) => GestureDetector(
             onTap: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs(post.coverPhotoPathInDetail,
-                  post.coverPhotoPathInDetail.length, index, false),
+              arguments: ImageViewPageArgs(post.imageUrls,
+                  post.imageUrls.length, index, false),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
-              child: WpyPic(post.coverPhotoPathInDetail[index],
+              child: WpyPic(post.imageUrls[index],
                   fit: BoxFit.cover,
                   width: (1.sw -
                           40.w -
-                          (post.coverPhotoPathInDetail.length - 1) * 10.w) /
-                      post.coverPhotoPathInDetail.length,
+                          (post.imageUrls.length - 1) * 10.w) /
+                      post.imageUrls.length,
                   height: (1.sw -
                           40.w -
-                          (post.coverPhotoPathInDetail.length - 1) * 10.w) /
-                      post.coverPhotoPathInDetail.length,
+                          (post.imageUrls.length - 1) * 10.w) /
+                      post.imageUrls.length,
                   withHolder: true),
             ),
           ),
@@ -181,7 +181,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
   // 构建UI
   Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner) {
     //判断是否是自己的帖子，暂时只能用这个来判断了
-    if (CommonPreferences.lakeNickname.value.toString() == post.author) {
+    ///author暂时改为uid用于测试，后端接口没有author
+    if (CommonPreferences.lakeNickname.value.toString() == post.uid) {
       isMine = true;
     }
 
@@ -257,36 +258,36 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             onPressed: phoneNum != '' || isLimited
                                 ? null
                                 : () {
-                                    LostAndFoundService.getRecordNum(
-                                      yyyymmdd: formattedDate,
-                                      user: CommonPreferences.lakeNickname.value
-                                          .toString(),
-                                      onResult: (num) {
-                                        if (num >= 3) {
-                                          setState(() {
-                                            isLimited = true;
-                                          });
-                                          Navigator.of(context).pop();
-                                          _showConfirmationDialog();
-                                        } else {
-                                          setState(() {
-                                            phoneNum = post.phone;
-                                          });
-
-                                          LostAndFoundService.locationAddRecord(
-                                            yyyymmdd: formattedDate,
-                                            user: CommonPreferences
-                                                .lakeNickname.value
-                                                .toString(),
-                                            onSuccess: () {},
-                                            onFailure: (e) {},
-                                          );
-                                          Navigator.of(context).pop();
-                                          _showConfirmationDialog();
-                                        }
-                                      },
-                                      onFailure: (e) {},
-                                    );
+                                    // LostAndFoundService.getRecordNum(
+                                    //   yyyymmdd: formattedDate,
+                                    //   user: CommonPreferences.lakeNickname.value
+                                    //       .toString(),
+                                    //   onResult: (num) {
+                                    //     if (num >= 3) {
+                                    //       setState(() {
+                                    //         isLimited = true;
+                                    //       });
+                                    //       Navigator.of(context).pop();
+                                    //       _showConfirmationDialog();
+                                    //     } else {
+                                    //       setState(() {
+                                    //         phoneNum = post.phone;
+                                    //       });
+                                    //
+                                    //       LostAndFoundService.locationAddRecord(
+                                    //         yyyymmdd: formattedDate,
+                                    //         user: CommonPreferences
+                                    //             .lakeNickname.value
+                                    //             .toString(),
+                                    //         onSuccess: () {},
+                                    //         onFailure: (e) {},
+                                    //       );
+                                    //       Navigator.of(context).pop();
+                                    //       _showConfirmationDialog();
+                                    //     }
+                                    //   },
+                                    //   onFailure: (e) {},
+                                    // );
                                   },
                             style: ButtonStyle(
                               minimumSize: MaterialStateProperty.all<Size>(
@@ -417,10 +418,11 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     }
 
     String _formatDate(String originalString) {
-      if (originalString.length != 14) {
-        throw FormatException('Invalid input length');
-      }
-      return '${originalString.substring(0, 4)}-${originalString.substring(4, 6)}-${originalString.substring(6, 8)} ${originalString.substring(8, 10)}:${originalString.substring(10, 12)}:${originalString.substring(12, 14)}';
+      // if (originalString.length != 14) {
+      //   throw FormatException('Invalid input length');
+      // }
+      // return '${originalString.substring(0, 4)}-${originalString.substring(4, 6)}-${originalString.substring(6, 8)} ${originalString.substring(8, 10)}:${originalString.substring(10, 12)}:${originalString.substring(12, 14)}';
+      return originalString;
     }
 
     void _showMenu() {
@@ -539,8 +541,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       );
     }
 
-    var Images = post.coverPhotoPathInDetail.length == 1
-        ? SingleImageWidget(post.coverPhotoPathInDetail[0])
+    var Images = post.imageUrls.length == 1
+        ? SingleImageWidget(post.imageUrls[0])
         : MultipleImage(post);
 
     // 使用post数据构建UI
@@ -608,8 +610,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                ///author暂时改为uid用于测试，后端接口没有author
                                 Text(
-                                  post.author,
+                                  post.uid,
                                   style: TextUtil.base.normal
                                       .primary(context)
                                       .sp(14),
@@ -618,7 +621,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 Row(
                                   children: [
                                     Text(
-                                      _formatDate(post.detailedUploadTime),
+                                      _formatDate(post.time),
                                       style: TextUtil.base.normal
                                           .infoText(context)
                                           .sp(8),
@@ -642,7 +645,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     ),
                     SizedBox(height: 10.h),
                     SizedBox(height: 5.h),
-                    (post.coverPhotoPathInDetail.isNotEmpty)
+                    (post.imageUrls.isNotEmpty)
                         ? Padding(
                             padding: EdgeInsets.only(left: 4.w),
                             child: Images,
@@ -678,7 +681,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               ),
                               SizedBox(width: 2.w),
                               Text(
-                                post.category + '  ',
+                                (post.category.toString()) + '  ',
                                 style: TextUtil.base.normal
                                     .infoText(context)
                                     .sp(10),
@@ -696,7 +699,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                     Padding(
                       padding: EdgeInsets.all(7.r),
                       child: Text(
-                        post.text,
+                        post.content,
                         style: TextUtil.base.normal
                             .infoText(context)
                             .sp(15)
@@ -718,7 +721,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             children: [
                               SizedBox(height: 3.h),
                               Text(
-                                  "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
+                                  // "${post.uploadTime.substring(0, 4)}-${post.uploadTime.substring(4, 6)}-${post.uploadTime.substring(6, 8)}",
+                                  "${post.time}",
                                   style: TextUtil.base.w600
                                       .primaryAction(context)
                                       .sp(14)),
@@ -824,20 +828,20 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                               onPressed: polished
                                   ? null
                                   : () async {
-                                      setState(() {
-                                        polished = true;
-                                      });
-
-                                      await LostAndFoundService.polish(
-                                        id: post.id,
-                                        user: post.author,
-                                        onSuccess: () {
-                                          ToastProvider.success('成功擦亮');
-                                        },
-                                        onFailure: (e) {
-                                          // 在此处理请求失败的情况
-                                        },
-                                      );
+                                      // setState(() {
+                                      //   polished = true;
+                                      // });
+                                      //
+                                      // await LostAndFoundService.polish(
+                                      //   id: post.id,
+                                      //   user: post.author,
+                                      //   onSuccess: () {
+                                      //     ToastProvider.success('成功擦亮');
+                                      //   },
+                                      //   onFailure: (e) {
+                                      //     // 在此处理请求失败的情况
+                                      //   },
+                                      // );
                                     },
                             )),
                       ],

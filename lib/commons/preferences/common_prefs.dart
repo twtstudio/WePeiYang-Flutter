@@ -74,6 +74,9 @@ class CommonPreferences {
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
   static final isShowExperiment = PrefsBean<bool>('isShowExperiment', true);
 
+  /// 失物招领
+  static final lafToken=PrefsBean<String>('lafToken');
+
   /// 学期信息
   /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
   static final termStart = PrefsBean<int>('termStart', 1676822400);
@@ -126,7 +129,7 @@ class CommonPreferences {
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
-    // CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招領', 'laf',
+    // CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
     //     HomeRouter.laf),
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
     //     HomeRouter.game)

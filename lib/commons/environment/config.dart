@@ -18,7 +18,7 @@ class EnvConfig {
         ? "http://activity.twt.edu.cn/"
         // 正式服务器域名
         : "https://activity.twt.edu.cn/";
-    LAF = isDevelop ? "http://121.36.230.111:80/" : "http://121.36.230.111:80/";
+    LAF = isDevelop ? "http://110.41.178.7:8080/" : "http://110.41.178.7:8080/";
   }
 
   static bool get isDevelop => ENVIRONMENT == "DEVELOP";

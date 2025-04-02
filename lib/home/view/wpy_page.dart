@@ -10,6 +10,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
+import 'package:we_pei_yang_flutter/commons/token/laf_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -17,6 +18,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/scroll_synchronizer.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -286,7 +288,7 @@ class SliverCardsWidget extends StatelessWidget {
     '地图·校历',
     '成绩',
     // '小游戏'
-    // '失物招领'
+    '失物招领'
   ];
 
   SliverCardsWidget(this.cards) :
@@ -294,6 +296,7 @@ class SliverCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(order);
     Widget cardList = ReorderableListView.builder(
       proxyDecorator: (Widget child, int index, Animation<double> animation) {
         return child;
@@ -326,6 +329,10 @@ class SliverCardsWidget extends StatelessWidget {
           return WButton(
             key: ValueKey(cardBean.route),
             onPressed: () {
+              // cardBean.label=='失物招领'?
+              //    LafTokenManager().firstGetToken().then((value) =>  Navigator.pushNamed(
+              //        context, cardBean.route))
+              //     :
               Navigator.pushNamed(
                   context, cardBean.route);
             },

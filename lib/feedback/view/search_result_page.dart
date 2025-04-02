@@ -74,7 +74,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
         searchMode: searchMode,
       );
       final list = result.item1, page = result.item2;
-
       status = SearchPageStatus.idle;
       totalPage = page;
       _list.clear();
@@ -111,6 +110,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
             searchMode: searchMode);
         final list = result.item1, page = result.item2;
         totalPage = page;
+        print(currentPage);
+        print(totalPage);
         setState(() => _list.addAll(list));
         _refreshController.loadComplete();
         if (list.isEmpty) _refreshController.loadNoData();

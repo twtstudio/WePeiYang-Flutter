@@ -50,9 +50,11 @@ class _LostAndFoundSearchResultPageState
   void _onRefresh() async {
     context.read<LostAndFoundModel2>().clearByType(type);
     await context.read<LostAndFoundModel2>().getNext(
-          type: type,
-          category: category,
-          keyword: keyword,
+      page: 1,
+      page_size: 10,
+      type: type,
+      // type: widget.type,
+      // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
           success: () {
             context.read<LostAndFoundModel2>().lafSubStatus[type] =
                 LAFSubStatus.ready;
@@ -75,9 +77,11 @@ class _LostAndFoundSearchResultPageState
 
   void _onLoading() async {
     await context.read<LostAndFoundModel2>().getNext(
-          type: type,
-          category: category,
-          keyword: keyword,
+      page: 1,
+      page_size: 10,
+      type: type,
+      // type: widget.type,
+      // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
           success: () {
             context.read<LostAndFoundModel2>().lafSubStatus[type] =
                 LAFSubStatus.ready;
@@ -218,7 +222,7 @@ class _LostAndFoundSearchResultPageState
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                postList[index].coverPhotoPath == null
+                                postList[index].imageUrls.isEmpty
                                     ? SizedBox(
                                         width: double.infinity,
                                         child: Card(
@@ -226,7 +230,7 @@ class _LostAndFoundSearchResultPageState
                                             // 添加Padding组件
                                             padding: EdgeInsets.all(
                                                 10.r), // 设置所有方向的内边距为15个像素
-                                            child: Text(postList[index].text,
+                                            child: Text(postList[index].content,
                                                 style: TextUtil.base.w400
                                                     .infoText(context)
                                                     .sp(14)
@@ -246,41 +250,42 @@ class _LostAndFoundSearchResultPageState
                                             end: 11.w,
                                             bottom: 7.h,
                                             top: 7.h),
-                                        child: LayoutBuilder(
-                                          builder: (context, constrains) {
-                                            final maxWidth =
-                                                constrains.constrainWidth();
-                                            final width = postList[index]
-                                                    .coverPhotoSize
-                                                    ?.width
-                                                    .toDouble() ??
-                                                1;
-                                            final height = postList[index]
-                                                    .coverPhotoSize
-                                                    ?.height
-                                                    .toDouble() ??
-                                                0;
-                                            return ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      10.0.r), // 设置圆角半径为10.0
-                                              child: Container(
-                                                width: maxWidth,
-                                                child: WpyPic(
-                                                  postList[index]
-                                                      .coverPhotoPath!,
-                                                  withHolder: true,
-                                                  holderHeight:
-                                                      height * maxWidth / width,
-                                                  fit: BoxFit.fitWidth,
-                                                ),
-                                                height: height >= 3 * width
-                                                    ? 3 * maxWidth
-                                                    : height * maxWidth / width,
-                                              ),
-                                            );
-                                          },
-                                        )),
+                                        // child: LayoutBuilder(
+                                        //   builder: (context, constrains) {
+                                        //     final maxWidth =
+                                        //         constrains.constrainWidth();
+                                        //     final width = postList[index]
+                                        //             .coverPhotoSize
+                                        //             ?.width
+                                        //             .toDouble() ??
+                                        //         1;
+                                        //     final height = postList[index]
+                                        //             .coverPhotoSize
+                                        //             ?.height
+                                        //             .toDouble() ??
+                                        //         0;
+                                        //     return ClipRRect(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(
+                                        //               10.0.r), // 设置圆角半径为10.0
+                                        //       child: Container(
+                                        //         width: maxWidth,
+                                        //         child: WpyPic(
+                                        //           postList[index]
+                                        //               .coverPhotoPath!,
+                                        //           withHolder: true,
+                                        //           holderHeight:
+                                        //               height * maxWidth / width,
+                                        //           fit: BoxFit.fitWidth,
+                                        //         ),
+                                        //         height: height >= 3 * width
+                                        //             ? 3 * maxWidth
+                                        //             : height * maxWidth / width,
+                                        //       ),
+                                        //     );
+                                        //   },
+                                        // )
+                                ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.only(
                                       start: 12.w, end: 12.w),
@@ -304,7 +309,7 @@ class _LostAndFoundSearchResultPageState
                                     children: <Widget>[
                                       Text(
                                         _timeAgo(
-                                            postList[index].detailedUploadTime),
+                                            postList[index].time),
                                         style: TextUtil.base.w400
                                             .infoText(context)
                                             .sp(10)

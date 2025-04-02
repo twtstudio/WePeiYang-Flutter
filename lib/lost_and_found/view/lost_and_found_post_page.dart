@@ -91,17 +91,15 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             dataModel.images.clear();
             if (dataModel.check) {
               LostAndFoundService.sendLostAndFoundPost(
-                  author: CommonPreferences.lakeNickname.value,
+                  tag: 1,
                   type: selectTypeText[typeNotifier.value],
                   category: categoryNotifier.value,
                   title: dataModel.title,
-                  text: dataModel.content,
-                  yyyymmdd: dataModel.date,
-                  yyyymmddhhmmss:
-                      "${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}${DateTime.now().day.toString().padLeft(2, '0')}${DateTime.now().hour.toString().padLeft(2, '0')}${DateTime.now().minute.toString().padLeft(2, '0')}${DateTime.now().second.toString().padLeft(2, '0')}",
+                  content: dataModel.content,
+                  campus:1,
                   location: dataModel.location,
                   phone: dataModel.phone,
-                  images: images,
+                  time:1,
                   onSuccess: () {
                     ToastProvider.success('发布成功');
                     Navigator.pop(context);
@@ -120,17 +118,15 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
           });
     } else {
       LostAndFoundService.sendLostAndFoundPost(
-        author: CommonPreferences.lakeNickname.value,
+        tag: "",
         type: selectTypeText[typeNotifier.value],
         category: categoryNotifier.value,
         title: dataModel.title,
-        text: dataModel.content,
-        yyyymmdd: dataModel.date,
-        yyyymmddhhmmss:
-            "${DateTime.now().year}${DateTime.now().month.toString().padLeft(2, '0')}${DateTime.now().day.toString().padLeft(2, '0')}${DateTime.now().hour.toString().padLeft(2, '0')}${DateTime.now().minute.toString().padLeft(2, '0')}${DateTime.now().second.toString().padLeft(2, '0')}",
+        content: dataModel.content,
+        campus:"",
         location: dataModel.location,
         phone: dataModel.phone,
-        images: [],
+        time:"",
         onSuccess: () {
           ToastProvider.success('发布成功');
           Navigator.pop(context);
@@ -658,17 +654,18 @@ class _SelectDateFieldState extends State<SelectDateField> {
                             .get(WpyColorKey.primaryActionColor)
                         : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
                   ),
-                  Container(
-                      child: selectedDate != null
-                          ? Text(
-                              "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
-                              style: TextUtil.base.NotoSansSC.w400
-                                  .sp(14)
-                                  .primaryAction(context))
-                          : Text(initialdate[widget.typeNotifier.value],
-                              style: TextUtil.base.NotoSansSC.w400
-                                  .sp(14)
-                                  .infoText(context))),
+                  // Container(
+                  //     child: selectedDate != null
+                  //         ? Text(
+                  //             "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
+                  //             style: TextUtil.base.NotoSansSC.w400
+                  //                 .sp(14)
+                  //                 .primaryAction(context))
+                  //         : Text(initialdate[widget.typeNotifier.value],
+                  //             style: TextUtil.base.NotoSansSC.w400
+                  //                 .sp(14)
+                  //                 .infoText(context))),
+
                 ])));
   }
 }

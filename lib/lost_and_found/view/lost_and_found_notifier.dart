@@ -50,38 +50,42 @@ class LAFoundModel with ChangeNotifier {
   Map<String, Size> _imageSizeCache = {};
 
   Future<void> getNext(
-      {required String type,
+      {required int page,
+        required String type,
       required OnSuccess success,
       required OnFailure failure,
-      required String category,
-      String? keyword,
-      int? num}) async {
+      required int page_size,
+      int? list}) async {
     await LostAndFoundService.getLostAndFoundPosts(
-      type: type,
-      keyword: keyword,
-      category: category,
-      num: num ?? 10,
+    list: list,
+      page:page,
+      page_size: page_size ?? 10,
       onSuccess: (list) async {
+        List<String> typechoose=['失物招领','寻物启事'];
+
         if (list.isEmpty) {
           ToastProvider.cancelAll();
           ToastProvider.running('没有更多内容了');
         } else {
           for (LostAndFoundPost item in list) {
-            if (item.coverPhotoPath != null) {
-              if (_imageSizeCache[item.coverPhotoPath] != null)
-                item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
-              else {
-                // TODO: 这里有问题 这个包http依赖太老了
-                //   final httpInput =
-                //     await HttpInput.createHttpInput(item.coverPhotoPath!);
-                // item.coverPhotoSize =
-                //     await ImageSizeGetter.getSizeAsync(httpInput);
-                // cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
-              }
+            if(type==typechoose[item.type]){
+              postList[typechoose[item.type]]?.add(item);
             }
+
+            // if (item.coverPhotoPath != null) {
+            //   if (_imageSizeCache[item.coverPhotoPath] != null)
+            //     item.coverPhotoSize = _imageSizeCache[item.coverPhotoPath];
+            //   else {
+            //     // TODO: 这里有问题 这个包http依赖太老了
+            //     //   final httpInput =
+            //     //     await HttpInput.createHttpInput(item.coverPhotoPath!);
+            //     // item.coverPhotoSize =
+            //     //     await ImageSizeGetter.getSizeAsync(httpInput);
+            //     // cacheImageSize(item.coverPhotoPath!, item.coverPhotoSize);
+            //   }
+            // }
           }
         }
-        postList[type]?.addAll(list);
 
         success();
         notifyListeners();
@@ -89,9 +93,9 @@ class LAFoundModel with ChangeNotifier {
       onFailure: (e) {
         failure(e);
       },
-      history: postList[type]!.isEmpty
-          ? '0'
-          : postList[type]!.map((e) => e.id).toList().join(','),
+      // history: postList[type]!.isEmpty
+      //     ? '0'
+      //     : postList[type]!.map((e) => e.id).toList().join(','),
     );
   }
 
@@ -193,9 +197,9 @@ class LAFWeKoDialog extends StatelessWidget {
                 child: Text(post.title,
                     style: TextUtil.base.label(context).bold.sp(17).NotoSansSC),
               ),
-              if (post.coverPhotoPath != null)
+              if (post.imageUrls.isNotEmpty)
                 WpyPic(
-                  post.coverPhotoPath!,
+                  post.imageUrls[0]!,
                   height: 150.h,
                   width: 150.w,
                   fit: BoxFit.cover,
@@ -203,7 +207,7 @@ class LAFWeKoDialog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 10.h),
                 child: Text(
-                  post.text,
+                  post.content,
                   style:
                       TextUtil.base.infoText(context).regular.sp(14).NotoSansSC,
                   maxLines: 2,
