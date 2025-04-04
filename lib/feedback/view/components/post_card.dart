@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -609,42 +610,53 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
         backgroundColor: MaterialStateProperty.all(
             WpyTheme.of(context).get(WpyColorKey.primaryActionColor)));
+
     return Column(children: [
       ...widget.post.voteDetail!.options
-          .map((e) => Row(
-                children: [
-                  Transform.scale(
-                    scale: 0.8,
-                    child: Checkbox(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      value: selectedId.contains(e.id),
-                      onChanged: (_) {
-                        setState(() {
-                          if (selectedId.contains(e.id)) {
-                            selectedId.remove(e.id);
-                          } else {
-                            selectedId.add(e.id);
-                            if (selectedId.length >
-                                widget.post.voteDetail!.maxSelection) {
-                              selectedId.removeAt(0);
+          .map((e) => Container(
+            margin: EdgeInsets.only(top:5.w),
+            child: Row(
+                  children: [
+                    Transform.scale(
+                      scale: 0.8,
+                      child: Checkbox(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        value: selectedId.contains(e.id),
+                        onChanged: (_) {
+                          setState(() {
+                            if (selectedId.contains(e.id)) {
+                              selectedId.remove(e.id);
+                            } else {
+                              selectedId.add(e.id);
+                              if (selectedId.length >
+                                  widget.post.voteDetail!.maxSelection) {
+                                selectedId.removeAt(0);
+                              }
                             }
-                          }
-                        });
-                      },
-                      activeColor: WpyTheme.of(context)
-                          .get(WpyColorKey.primaryActionColor),
-                      side: BorderSide(
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.primaryActionColor)),
+                          });
+                        },
+                        activeColor: WpyTheme.of(context)
+                            .get(WpyColorKey.primaryActionColor),
+                        side: BorderSide(
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.primaryActionColor)),
+                      ),
                     ),
-                  ),
-                  Text(e.content,
-                      style: TextUtil.base.w400.NotoSansSC
-                          .sp(14)
-                          .primary(context)
-                          .h(1.6)),
-                ],
-              ))
+                    Container(
+                      width: 270.h,
+                      child: Wrap(
+                        children: [
+                          Text(e.content,
+                              style: TextUtil.base.w400.NotoSansSC
+                                  .sp(14)
+                                  .primary(context)
+                                  .h(1.6)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+          ))
           .toList(),
       AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
@@ -716,10 +728,18 @@ class VoteOptionWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              option.content + (selected ? " (已选)" : ""),
-              style:
-                  TextUtil.base.w400.NotoSansSC.sp(14).primary(context).h(1.6),
+            Container(
+              margin: EdgeInsets.only(top:5.w),
+              width: 230.h,
+              child: Wrap(
+                  children: [
+                    Text(
+                      option.content + (selected ? " (已选)" : ""),
+                      style:
+                      TextUtil.base.w400.NotoSansSC.sp(14).primary(context).h(1.6),
+                    ),
+                  ]
+              ),
             ),
             Spacer(),
             Text(
