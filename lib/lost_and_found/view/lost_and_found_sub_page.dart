@@ -33,6 +33,15 @@ class LostAndFoundSubPage extends StatefulWidget {
 
 class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     with AutomaticKeepAliveClientMixin {
+
+  @override
+  void deactivate() {
+    var bool = ModalRoute.of(context)?.isCurrent;
+    if (bool!) {
+      _onRefresh();
+    }
+  }
+
   final ScrollController _scrollController = ScrollController();
   //用于页数
   var curPage=1;
@@ -60,9 +69,6 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
           },
         page: curPage,
         page_size: 10,
-
-          // type: widget.type,
-          // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
         );
   }
 
@@ -310,7 +316,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                     onTap: () {
                                       Tuple2 detailTuple = Tuple2(
                                           tuple.item1[idx].id,
-                                          widget.findOwner);
+                                          widget.findOwner,);
+
                                       Navigator.pushNamed(
                                           context, LAFRouter.lafDetailPage,
                                           arguments: detailTuple);

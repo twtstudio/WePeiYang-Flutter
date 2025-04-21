@@ -72,9 +72,26 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     showDialog(context: context, builder: (_) => Loading());
   }
 
+  //categoryNotifier.value是string，网络请求参数为int，转换函数
+  _categoryValueChange(String value){
+    if(value=='生活日用'){
+      return 0;
+    }
+    if(value=='数码用品'){
+      return 1;
+    }
+    if(value=='钱包卡证'){
+      return 2;
+    }
+    if(value=='其他'){
+      return 3;
+    }
+  }
+
   _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
     if (!dataModel.check) {
+      print(dataModel.date);
       ToastProvider.error("请检查内容是否填写完整！");
       return;
     }
@@ -92,7 +109,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             if (dataModel.check) {
               LostAndFoundService.sendLostAndFoundPost(
                   tag: 1,
-                  type: selectTypeText[typeNotifier.value],
+                  type: typeNotifier.value==1?false:true,
                   category: categoryNotifier.value,
                   title: dataModel.title,
                   content: dataModel.content,
@@ -119,14 +136,14 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     } else {
       LostAndFoundService.sendLostAndFoundPost(
         tag: "",
-        type: selectTypeText[typeNotifier.value],
-        category: categoryNotifier.value,
+        type: typeNotifier.value==1?false:true,
+        category:  _categoryValueChange(categoryNotifier.value!),
         title: dataModel.title,
         content: dataModel.content,
         campus:"",
         location: dataModel.location,
         phone: dataModel.phone,
-        time:"",
+        time: dataModel.date,
         onSuccess: () {
           ToastProvider.success('发布成功');
           Navigator.pop(context);
@@ -594,81 +611,167 @@ class SelectDateField extends StatefulWidget {
 }
 
 class _SelectDateFieldState extends State<SelectDateField> {
-  static const initialdate = ["请填写丢失日期", "请填写拾取日期"];
-  DateTime? selectedDate;
-  late String date = "";
+  // static const initialdate = ["请填写丢失日期", "请填写拾取日期"];
+  // DateTime? selectedDate;
+  // late String date = "";
+  //
+  // @override
+  // Widget build(BuildContext context) {
+  //   Future<void> _selectDate(BuildContext context) async {
+  //     var dataModel = context.read<NewLostAndFoundPostProvider>();
+  //     final DateTime? picked = await showDatePicker(
+  //         helpText: "选择日期",
+  //         cancelText: "取消",
+  //         confirmText: "确定",
+  //         errorFormatText: "请输入正确的日期格式",
+  //         errorInvalidText: "请输入有效的日期",
+  //         context: context,
+  //         initialDate: DateTime.now(),
+  //         firstDate: DateTime(2015),
+  //         lastDate: DateTime.now());
+  //     //     builder: (BuildContext context, Widget child) {
+  //     //     return Theme(
+  //     //     data: ThemeData.light().copyWith(
+  //     //       colorScheme: ColorScheme.fromSwatch(
+  //     //         primarySwatch: Colors.teal,
+  //     //         accentColor: Colors.teal,
+  //     //       ),
+  //     //       dialogBackgroundColor:Colors.white,
+  //     //     ),
+  //     //     child: child,
+  //     //   );
+  //     // };
+  //     ///修改日期选择器的颜色
+  //
+  //     if (picked != null && picked != selectedDate) {
+  //       setState(() {
+  //         selectedDate = picked;
+  //         date =
+  //             "${picked.year}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
+  //         dataModel.date = date;
+  //       });
+  //     }
+  //   }
+  //
+  //   return InkWell(
+  //       onTap: () => _selectDate(context),
+  //       child: Container(
+  //           width: 180.w,
+  //           height: 36.h,
+  //           decoration: BoxDecoration(
+  //               color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+  //               borderRadius: BorderRadius.circular(16.r)),
+  //           child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //               children: [
+  //                 Icon(
+  //                   Icons.access_time_outlined,
+  //                   color: selectedDate != null
+  //                       ? WpyTheme.of(context)
+  //                           .get(WpyColorKey.primaryActionColor)
+  //                       : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+  //                 ),
+  //                 // Container(
+  //                 //     child: selectedDate != null
+  //                 //         ? Text(
+  //                 //             "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
+  //                 //             style: TextUtil.base.NotoSansSC.w400
+  //                 //                 .sp(14)
+  //                 //                 .primaryAction(context))
+  //                 //         : Text(initialdate[widget.typeNotifier.value],
+  //                 //             style: TextUtil.base.NotoSansSC.w400
+  //                 //                 .sp(14)
+  //                 //                 .infoText(context))),
+  //
+  //               ])));
+  late final ValueNotifier<String> contentCounter;
+  late final TextEditingController _dateController;
+  bool isFilled = false;
+  bool isFocused = false;
+  FocusNode focusNode = FocusNode();
+  static const datetexts = ['请填写丢失时间', '请填写拾取时间'];
+
+  @override
+  void initState() {
+    super.initState();
+    var dataModel = context.read<NewLostAndFoundPostProvider>();
+    _dateController = TextEditingController(text: dataModel.date);
+    contentCounter =
+    ValueNotifier('${dataModel.date.characters.length}/1000')
+      ..addListener(() {
+        dataModel.date = _dateController.text;
+      });
+    focusNode.addListener(() {
+      setState(() {
+        isFocused = focusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> _selectDate(BuildContext context) async {
-      var dataModel = context.read<NewLostAndFoundPostProvider>();
-      final DateTime? picked = await showDatePicker(
-          helpText: "选择日期",
-          cancelText: "取消",
-          confirmText: "确定",
-          errorFormatText: "请输入正确的日期格式",
-          errorInvalidText: "请输入有效的日期",
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2015),
-          lastDate: DateTime.now());
-      //     builder: (BuildContext context, Widget child) {
-      //     return Theme(
-      //     data: ThemeData.light().copyWith(
-      //       colorScheme: ColorScheme.fromSwatch(
-      //         primarySwatch: Colors.teal,
-      //         accentColor: Colors.teal,
-      //       ),
-      //       dialogBackgroundColor:Colors.white,
-      //     ),
-      //     child: child,
-      //   );
-      // };
-      ///修改日期选择器的颜色
+    Widget inputField = TextField(
+        focusNode: focusNode,
+        controller: _dateController,
+        keyboardType: TextInputType.multiline,
+        textInputAction: TextInputAction.newline,
+        maxLines: 1,
+        style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
+        decoration: InputDecoration.collapsed(
+            hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context),
+            hintText:
+            isFocused ? "" : datetexts[widget.typeNotifier.value]),
+        onChanged: (text) {
+          contentCounter.value = '${text.characters.length}/26';
+          if (contentCounter.value != '0/26') {
+            isFilled = true;
+          } else {
+            isFilled = false;
+          }
+        },
+        onTap: () {
+          setState(() {
+            isFocused = true;
+          });
+        },
+        onEditingComplete: () {
+          setState(() {
+            isFocused = false;
+          });
+        },
+        scrollPhysics: NeverScrollableScrollPhysics(),
+        inputFormatters: [CustomizedLengthTextInputFormatter(26)],
+        cursorColor:
+        WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
-      if (picked != null && picked != selectedDate) {
-        setState(() {
-          selectedDate = picked;
-          date =
-              "${picked.year}${picked.month.toString().padLeft(2, '0')}${picked.day.toString().padLeft(2, '0')}";
-          dataModel.date = date;
-        });
-      }
-    }
-
-    return InkWell(
-        onTap: () => _selectDate(context),
-        child: Container(
-            width: 180.w,
-            height: 36.h,
-            decoration: BoxDecoration(
-                color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-                borderRadius: BorderRadius.circular(16.r)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Icon(
-                    Icons.access_time_outlined,
-                    color: selectedDate != null
-                        ? WpyTheme.of(context)
-                            .get(WpyColorKey.primaryActionColor)
-                        : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
-                  ),
-                  // Container(
-                  //     child: selectedDate != null
-                  //         ? Text(
-                  //             "${selectedDate!.year}年${selectedDate!.month}月${selectedDate!.day}日",
-                  //             style: TextUtil.base.NotoSansSC.w400
-                  //                 .sp(14)
-                  //                 .primaryAction(context))
-                  //         : Text(initialdate[widget.typeNotifier.value],
-                  //             style: TextUtil.base.NotoSansSC.w400
-                  //                 .sp(14)
-                  //                 .infoText(context))),
-
-                ])));
+    return Container(
+        width: 180.w,
+        height: 36.h,
+        decoration: BoxDecoration(
+            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+            borderRadius: BorderRadius.circular(16)),
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          Icon(
+            Icons.access_time_outlined,
+            color: isFilled || isFocused
+                ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+          ),
+          Container(
+            //textfeld类必须套在container等组件里
+              width: 100.w,
+              child: inputField)
+        ]));
   }
-}
+  }
+
 
 class InputLocationField extends StatefulWidget {
   final ValueNotifier<int> typeNotifier;

@@ -29,14 +29,19 @@ class LafTokenManager extends TokenManagerAbstract {
   @override
   Future<String> get token async {
     final token = CommonPreferences.lafToken.value;
-    if (checkTokenLocal(token)) return token;
+    if (checkTokenLocal(token)) {
+      return token;
+    }
     return refreshToken();
   }
 
   Future<String> refreshToken() async {
     ///为什么刷新显示token失效
     try {
-       final response = await LafTokenDio().get('laf/refresh',options: Options(headers: {'token':CommonPreferences.lafToken.value}));
+       final response = await LafTokenDio().get('laf/login',queryParameters: {
+         'account':CommonPreferences.account.value,
+         'password':CommonPreferences.password.value,
+       });
 
       if (response.data['result'] != null &&
           response.data['result']['token'] != null) {

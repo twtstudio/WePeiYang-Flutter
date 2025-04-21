@@ -296,7 +296,6 @@ class SliverCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(order);
     Widget cardList = ReorderableListView.builder(
       proxyDecorator: (Widget child, int index, Animation<double> animation) {
         return child;
@@ -329,10 +328,6 @@ class SliverCardsWidget extends StatelessWidget {
           return WButton(
             key: ValueKey(cardBean.route),
             onPressed: () {
-              // cardBean.label=='失物招领'?
-              //    LafTokenManager().firstGetToken().then((value) =>  Navigator.pushNamed(
-              //        context, cardBean.route))
-              //     :
               Navigator.pushNamed(
                   context, cardBean.route);
             },

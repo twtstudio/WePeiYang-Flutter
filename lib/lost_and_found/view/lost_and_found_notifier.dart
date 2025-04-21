@@ -37,6 +37,16 @@ class LAFoundModel with ChangeNotifier {
     '寻物启事': '全部',
   };
 
+  //获取联系方式
+  Map<String , LAFoundDetail> detailmap={};
+
+  bool _isLimited = false;
+  bool get isLimited => _isLimited;
+  set isLimited(bool value) {
+    _isLimited = value;
+    notifyListeners();
+  }
+
   clearByType(type) {
     postList[type]?.clear();
     lafSubStatus[type] = LAFSubStatus.unload;
@@ -70,6 +80,7 @@ class LAFoundModel with ChangeNotifier {
           for (LostAndFoundPost item in list) {
             if(type==typechoose[item.type]){
               postList[typechoose[item.type]]?.add(item);
+              detailmap["${item.id}"]=new LAFoundDetail();
             }
 
             // if (item.coverPhotoPath != null) {
@@ -248,4 +259,41 @@ class LAFWeKoDialog extends StatelessWidget {
       ],
     );
   }
+}
+
+
+class LAFoundDetail extends ChangeNotifier {
+  bool _isMine = false;
+  bool get isMine => _isMine;
+  set isMine(bool value) {
+    _isMine = value;
+    notifyListeners();
+  }
+
+  bool _polished = false;
+  bool get polished => _polished;
+  set polished(bool value) {
+    _polished = value;
+    notifyListeners();
+  }
+
+  String _phoneNum = '';
+  String get phoneNum => _phoneNum;
+  set phoneNum(String value) {
+    _phoneNum = value;
+    notifyListeners();
+  }
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  set isLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+
+}
+
+class LAFUtil{
+  static final RefreshController refreshControllerController = RefreshController();
 }

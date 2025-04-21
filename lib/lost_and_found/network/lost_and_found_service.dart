@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/token/laf_token_manager.dart';
@@ -23,6 +24,8 @@ class LostAndFoundDio extends DioAbstract {
       var code = response.data['code'] ?? 0;
       switch (code) {
         case 200: // 成功
+          return handler.next(response);
+        case -1: // 获取联系方式超过三次
           return handler.next(response);
         default: // 其他错误
           return handler.reject(
@@ -59,13 +62,12 @@ final lostAndFoundPicPostDio = LostAndFoundPicPostDio();
 
 class LostAndFoundService with AsyncTimer {
   //通过账户密码获得token
-  static getTokenByPw(
-      String account,
+  static getTokenByPw(String account,
       String passwd,
-  {
-  required OnSuccess onSuccess,
-  required OnFailure onFailure,
-  }) async {
+      {
+        required OnSuccess onSuccess,
+        required OnFailure onFailure,
+      }) async {
     try {
       var response = await lostAndFoundDio.get('laf/login', queryParameters: {
         'account': account,
@@ -75,7 +77,6 @@ class LostAndFoundService with AsyncTimer {
         CommonPreferences.lafToken.value = response.data['result']['token'];
       onSuccess();
     } on DioException catch (e) {
-
       onFailure(e);
     }
   }
@@ -91,18 +92,18 @@ class LostAndFoundService with AsyncTimer {
     try {
       // Options requestOptions = new Options(headers: {"history": history});
       var res = await lostAndFoundDio.get(
-          // keyword != null
-          //     ? 'sort/search'
-          //     : (category != '全部'
-          //         ? 'sort/getbytypeandcategorywithnum'
-          //         : 'sort/getbytypewithnum'),
-        'laf/post/get/falls',
+        // keyword != null
+        //     ? 'sort/search'
+        //     : (category != '全部'
+        //         ? 'sort/getbytypeandcategorywithnum'
+        //         : 'sort/getbytypewithnum'),
+          'laf/post/get/falls',
           queryParameters: {
-          'page':page,
-            'page_size':page_size,
+            'page': page,
+            'page_size': page_size,
           }
 
-          // options: requestOptions
+        // options: requestOptions
       );
 
       List<LostAndFoundPost> list = [];
@@ -124,7 +125,7 @@ class LostAndFoundService with AsyncTimer {
     try {
       var response = await lostAndFoundDio.get(
         'laf/post/getById',
-        queryParameters: {'post_id':id,},
+        queryParameters: {'post_id': id,},
       );
       var post = LostAndFoundPost.fromJson(response.data['result']);
       onResult(post);
@@ -132,6 +133,46 @@ class LostAndFoundService with AsyncTimer {
       onFailure(e);
     }
   }
+
+  //获取联系方式
+  static void getRecordNum({
+    required int post_id,
+    required OnResult<String?> onResult,
+    required OnFailure onFailure,
+  }) async {
+    try {
+      var response=await lostAndFoundDio.post(
+          'laf/post/get/phone', formData: FormData.fromMap(
+          {
+            'post_id': post_id,
+          }));
+      var post=response.data['result'];
+      onResult(post);
+    } on DioException catch (e) {
+      onFailure(e);
+    }
+  }
+
+  //添加图片
+  static void saveLostAndFoundSavePhoto({
+    required int post_id,
+    required XFile pho,
+    required OnSuccess onSuccess,
+    required OnFailure onFailure,
+  }) async {
+    try{
+      await lostAndFoundDio.post('laf/pho/savepho',formData: FormData.fromMap(
+          {
+            'post_id':post_id,
+            'pho':pho,
+          }));
+      onSuccess.call();
+    } on DioException catch(e){
+      onFailure(e);
+    }
+  }
+
+
 
   // //擦亮
   // static polish(
@@ -157,7 +198,7 @@ class LostAndFoundService with AsyncTimer {
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('deleteLostAndFoundPost', () async {
       try {
-        await lostAndFoundDio.post('laf/delete',
+        await lostAndFoundDio.post('laf/post/delete',
             formData: FormData.fromMap({'post_id': id}));
         onSuccess.call();
       } on DioException catch (e) {
@@ -224,7 +265,7 @@ class LostAndFoundService with AsyncTimer {
 
   //发帖
   static sendLostAndFoundPost(
-      {required type,
+      {required bool type,
       required category,
       required campus,
       required title,
