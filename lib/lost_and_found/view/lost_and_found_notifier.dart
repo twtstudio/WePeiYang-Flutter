@@ -137,7 +137,10 @@ class LAFoundModel with ChangeNotifier {
                 builder: (BuildContext context) {
                   return LAFWeKoDialog(
                     post: post,
-                    onConfirm: () => Navigator.pop(context, true),
+                    onConfirm: () {
+                      Clipboard.setData(ClipboardData(text: ''));
+                      Navigator.pop(context, true);
+                    } ,
                     onCancel: () => Navigator.pop(context, true),
                   );
                 },

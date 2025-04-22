@@ -162,6 +162,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
             leading: IconButton(
@@ -197,7 +198,7 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                     ])),
               ),
             ],
-            backgroundColor: Colors.transparent,
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             centerTitle: true,
             elevation: 0),
         body: SingleChildScrollView(

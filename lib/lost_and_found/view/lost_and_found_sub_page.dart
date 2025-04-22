@@ -185,7 +185,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     );
 
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -322,23 +322,39 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                           context, LAFRouter.lafDetailPage,
                                           arguments: detailTuple);
                                     },
-                                    child: Card(
-                                      elevation: 3,
-                                      shadowColor: WpyTheme.of(context)
-                                          .get(WpyColorKey
-                                              .backgroundGradientEndColor)
-                                          .withOpacity(0.1),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                        side: const BorderSide(
-                                            color: Colors.transparent,
-                                            width: 0.0),
+
+                                    child: Container(
+                                      margin: EdgeInsets.symmetric(vertical: 2.w,horizontal: 2.h),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15.r),
+                                        color: Colors.white,
+                                        boxShadow: [BoxShadow(
+                                          color: WpyTheme.of(context)
+                                              .get(WpyColorKey.basicTextColor)
+                                              .withOpacity(0.05),
+                                          spreadRadius: 0.0,
+                                          offset: Offset(0, 4),
+                                          blurRadius: 8,
+                                        )]
                                       ),
+
+                                      // elevation: 2,
+                                      // shadowColor: WpyTheme.of(context)
+                                      //     .get(WpyColorKey
+                                      //         .backgroundGradientEndColor)
+                                      //     .withOpacity(0.1),
+                                      // shape: RoundedRectangleBorder(
+                                      //   borderRadius:
+                                      //       BorderRadius.circular(8.r),
+                                      //   side: const BorderSide(
+                                      //       color: Colors.transparent,
+                                      //       width: 0.0),
+                                      // ),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
+                                          //没有图片情况
                                           if (tuple.item1[idx].imageUrls.isEmpty)
                                             Padding(
                                               padding:
