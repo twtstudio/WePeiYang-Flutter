@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:we_pei_yang_flutter/xiaotian/model/xiaotian_state.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'auth/network/auth_service.dart';
@@ -317,6 +318,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     });
   }
 
+
   showDialog(String content) {
     if (content.isNotEmpty) {
       showMessageDialog(
@@ -333,14 +335,15 @@ class WePeiYangAppState extends State<WePeiYangApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RemoteConfig()),
-        ChangeNotifierProvider(create: (_) => GPANotifier()),
-        ChangeNotifierProvider(create: (_) => PushManager()),
-        ChangeNotifierProvider(create: (_) => UpdateManager()),
-        ChangeNotifierProvider(create: (_) => AnimationProvider()),
-        ...scheduleProviders,
-        ...studyroomProviders,
-        ...feedbackProviders,
+       ChangeNotifierProvider(create: (_) => RemoteConfig()),
+       ChangeNotifierProvider(create: (_) => GPANotifier()),
+       ChangeNotifierProvider(create: (_) => PushManager()),
+       ChangeNotifierProvider(create: (_) => UpdateManager()),
+       ChangeNotifierProvider(create: (_) => AnimationProvider()),
+       ChangeNotifierProvider(create: (_) => xiaotianChatState()),
+       ...scheduleProviders,
+       ...studyroomProviders,
+       ...feedbackProviders,
         ...lostAndFoundProviders,
         ChangeNotifierProvider(
           create: (context) {

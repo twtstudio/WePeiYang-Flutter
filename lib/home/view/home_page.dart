@@ -16,6 +16,8 @@ import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
+import 'package:we_pei_yang_flutter/xiaotian/view/page/xiaotian_page.dart';
+
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
@@ -44,6 +46,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pages
       ..add(WPYPage())
       ..add(FeedbackHomePage(key: feedbackKey))
+      ..add(AiPage())
       ..add(ProfilePage());
     _tabController = TabController(
       length: pages.length,
@@ -166,15 +169,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    var selfPage = SizedBox(
+    var aiPage = SizedBox(
       height: 70.h,
-
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 300),
         child: IconButton(
           key: ValueKey(_currentIndex == 2),
           splashRadius: 1,
           icon: _currentIndex == 2
+              ? ColoredIcon(
+            'assets/images/ai.png',
+            width: 24.h,
+            color: WpyTheme.of(context).primary,
+          )
+              : ColoredIcon(
+            'assets/images/ai_grey.png',
+            width: 24.h,
+            //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+          ),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          onPressed: () => _tabController.animateTo(2),
+        ),
+      ),
+    );
+
+    var selfPage = SizedBox(
+      height: 70.h,
+
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: IconButton(
+          key: ValueKey(_currentIndex == 3),
+          splashRadius: 1,
+          icon: _currentIndex == 3
               ? ColoredIcon(
                   'assets/images/my.png',
                   width: 24.h,
@@ -186,7 +213,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
                 ),
           color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(2),
+          onPressed: () => _tabController.animateTo(3),
         ),
       ),
     );
@@ -208,7 +235,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: SafeArea(
 
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[homePage, feedbackPage, selfPage]),
+              children: <Widget>[homePage, feedbackPage,aiPage, selfPage]),
         ),
       ),
     );
