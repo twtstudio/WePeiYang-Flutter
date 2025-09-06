@@ -31,6 +31,7 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.basicTextColor: Color.fromARGB(255, 202, 202, 202),
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 154, 154, 154),
   WpyColorKey.labelTextColor: Color(0xFFC1C1C1),
+  WpyColorKey.labelTextColorWithOp: Color(0x66C1C1C1),
   WpyColorKey.unlabeledColor: Color(0xFFC5C5C5),
   WpyColorKey.cursorColor: Color.fromARGB(255, 85, 112, 188),
   WpyColorKey.infoTextColor: Color(0xFFBBBBBB),
@@ -44,6 +45,9 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   // the Main Action on main page
   WpyColorKey.beanDarkColor: Color(0xFF3687E5),
   WpyColorKey.beanLightColor: Color(0xFF4B81C7),
+
+  WpyColorKey.lightPrimaryContainerColor: Color(0xFFB3D6FF),
+  WpyColorKey.lighterPrimaryContainerColor: Color(0xFFE4F0FF),
 
 // schedule page background color
   WpyColorKey.primaryLighterActionColor: Color(0xFF183C50),
@@ -196,6 +200,16 @@ final colorSetsList = {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
 // 在0.7停止同理
+    stops: [0, 0.7],
+  ),
+
+  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+    colors: [
+      darkSchemeDetail[WpyColorKey.primaryActionColor]!,
+      darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
     stops: [0, 0.7],
   ),
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/xiaotian/model/xiaotian_dio.dart';
 import '../widget/bubble_widget.dart';
 import '../../model/xiaotian_state.dart';
 import 'package:provider/provider.dart';
@@ -8,19 +7,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
-import '../../../commons/preferences/common_prefs.dart';
 import '../../model/xiaotian_model.dart';
+import '../../util/sendMessage.dart';
 
 class openNewSession extends StatelessWidget {
   const openNewSession({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return WButton(
         onPressed: (){
           context.read<xiaotianChatState>().openNewSession();
         },
-        icon: const Icon(Icons.add)
+        child: Icon(Icons.add,size: 28.r,)
     );
   }
 }
@@ -83,6 +82,8 @@ class _ChatTileState extends State<ChatTile> {
                 final key = ValueKey(msg.id);
 
                 if (msg is UserMessage) {
+                  //迭代出最后一个问题
+                  inputState.saveLast(msg.content);
                   return bubbleFromUser(key:key,text: msg.content);
                 }
                 else if (msg is AiMessage) {
@@ -180,43 +181,7 @@ class _inputBoxState extends State<inputBox> {
                         ),
                         SizedBox(width: 12.w),
                         WButton(
-                          onPressed: () {
-                            if (inputState.textController.text.isEmpty) return;
-
-                            final _inputState = inputState;
-
-                            if (chatState.sessionId == '0') {
-                              final id = getSessionId();
-                              chatState.setSessionId(id);
-                            }
-
-                            chatState.messageAdd(_inputState.makeMessage());
-
-                            Stream<ChatEvent> sseStream = AiTjuApi().streamChat(
-                              prompt: _inputState.textController.text.trim(),
-                              sessionId: chatState.sessionId,
-                              userId: CommonPreferences.userNumber.value,
-                              files: _inputState.files,
-                              searchTime: _inputState.searchTime,
-                              searchType: _inputState.searchType,
-                            );
-
-                            final ai_ans = AiMessage(stream: sseStream);
-                            chatState.messageAdd(ai_ans);
-
-                            final currentText = _inputState.textController.text;
-                            _inputState.clear();
-
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              if (inputState.scrollController.hasClients) {
-                                inputState.scrollController.animateTo(
-                                  inputState.scrollController.position.maxScrollExtent,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                );
-                              }
-                            });
-                          },
+                          onPressed: () => sendAMessage(inputState.textController.text,context),
                           child: Icon(Icons.send_rounded, size: 20.r),
                         ),
                       ],
@@ -231,6 +196,8 @@ class _inputBoxState extends State<inputBox> {
     );
   }
 }
+
+
 
 class SearchT {
   static const timeCh = ['不限', '一周内', '一月内', '一年内'];

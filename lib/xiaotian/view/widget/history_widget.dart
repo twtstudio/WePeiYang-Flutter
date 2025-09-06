@@ -21,6 +21,8 @@ class historyTab extends StatelessWidget {
         final chatState = context.read<xiaotianChatState>();
         Navigator.of(context).pop();
 
+        chatState.isLoading(true);
+
         final hisMes = await AiTjuApi().getConversation(
           sessionId: session.sessionId,
           userId: CommonPreferences.userNumber.value,
@@ -37,14 +39,17 @@ class historyTab extends StatelessWidget {
           chatState
             ..setSessionId(session.sessionId)
             ..messageSet(hisToCurMes)
-            ..setHistorySession(sessions);
+            ..setHistorySession(sessions)
+            ..isLoading(false);
+
+
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10.h,horizontal: 10.w),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.r)
         ),
-        child: Text(session.title,style: TextUtil.base.PingFangSC.w400.sp(14),),
+        child: Text(session.title,style: TextUtil.base.labelWithOp(context).PingFangSC.w400.sp(14),),
       ),
     );
   }
@@ -54,22 +59,27 @@ class historyTab extends StatelessWidget {
 
 Widget drawerHeader(BuildContext context) {
   return Container(
-    height: 100.h, // 控制整体高度
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-    child: Row(
-      children: [
-        Image.asset(
-            'assets/images/ai/image130.png',
-          width: 28.w,
-          height: 28.h,
-        ),
-        SizedBox(width: 16),
-        Text(
-          '小天老师',
-          style: TextUtil.base.label(context).w400.PingFangSC.sp(24)
-        ),
-      ],
-    ),
+    // height: 100.h, // 控制整体高度
+    padding: EdgeInsets.only(left: 15.w, top: 42.h,bottom: 27.h),
+    child: RichText(
+      text: TextSpan(
+        style: TextUtil.base.label(context).w600.PingFangSC.sp(24),
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle, // 中线对齐
+            child: Padding(
+              padding: EdgeInsets.only(right: 12.w),
+              child: Image.asset(
+                'assets/images/ai/image130.png',
+                width: 28.w,
+                height: 28.h,
+              ),
+            ),
+          ),
+          TextSpan(text: '小天老师'),
+        ],
+      ),
+    )
   );
 }
 
@@ -122,7 +132,14 @@ class _historyDrawerState extends State<historyDrawer> {
           margin: EdgeInsets.only(bottom: 8.h,left: 15.w,right: 15.w),
           padding:EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
           decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
+          boxShadow: [
+            BoxShadow(
+              color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05),
+              blurRadius: 10.r,
+              offset: Offset(0,4.h)
+              )
+            ],
+            gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.lighterPrimaryGradient),
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Column(
@@ -130,10 +147,10 @@ class _historyDrawerState extends State<historyDrawer> {
             children: [
               // 日期标题
               Padding(
-                padding: const EdgeInsets.only(bottom: 4),
+                padding: EdgeInsets.only(bottom: 4.h),
                 child: Text(
                   dateStr,
-                  style: TextUtil.base.PingFangSC.bright(context).w400.sp(14),
+                  style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
                 ),
               ),
               // 当天的所有 tab

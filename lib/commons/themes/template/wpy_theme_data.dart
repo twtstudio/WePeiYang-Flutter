@@ -165,6 +165,7 @@ enum WpyColorKey {
   basicTextColor,
   secondaryTextColor,
   labelTextColor,
+  labelTextColorWithOp,
   unlabeledColor,
   cursorColor,
   infoTextColor,
@@ -175,6 +176,9 @@ enum WpyColorKey {
   primaryTextButtonColor,
   beanDarkColor,
   beanLightColor,
+
+  lightPrimaryContainerColor,
+  lighterPrimaryContainerColor,
 
 // schedule page background color
   primaryLighterActionColor,
@@ -305,4 +309,5 @@ enum WpyColorSetKey {
   primaryGradientAllScreen,
   gradientPrimaryBackground,
   progressBarGradientSet,
+  lighterPrimaryGradient
 }

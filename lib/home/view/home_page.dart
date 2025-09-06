@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return SystemUiOverlayStyle.light.copyWith(
                 systemNavigationBarColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor));
-        } else if (_tabController.index == 2) {
+        } else if (_tabController.index == 3) {
           return SystemUiOverlayStyle.light.copyWith(
               systemNavigationBarColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor));

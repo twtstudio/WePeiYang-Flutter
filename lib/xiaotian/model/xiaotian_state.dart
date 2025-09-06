@@ -5,6 +5,14 @@ import 'xiaotian_model.dart';
 class xiaotianInputState extends ChangeNotifier {
   List<String> files = [];
 
+
+
+  static String _lastQuestion = '';
+  String get last => _lastQuestion;
+  void saveLast(String last) {
+    _lastQuestion = last;
+  }
+
   final _time = ['noLimit','oneWeek','oneMonth','oneYear'];
   final _type = ['precise','no','all'];
 
@@ -106,13 +114,14 @@ class xiaotianChatState extends ChangeNotifier {
   //当前会话id
   String _sessionId = '0';
 
-  //判断是否正在生成流
-  bool _streamBuilding = false;
-  bool get streamBuilding => _streamBuilding;
+  //判断是否正在加载
+  bool _loading = true;
+  bool get loading => _loading;
 
-  //改变其状态
-  void changeStreamState() {
-    _streamBuilding = !_streamBuilding;
+  //改变加载状态
+  void isLoading(bool b) {
+    _loading = b;
+    notifyListeners();
   }
 
   // 获取当前会话消息
@@ -182,6 +191,7 @@ class xiaotianChatState extends ChangeNotifier {
       }
     }
   }
+
 
 
 }

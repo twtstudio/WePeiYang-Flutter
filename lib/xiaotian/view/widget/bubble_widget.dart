@@ -6,11 +6,11 @@ import '../../model/xiaotian_state.dart';
 import '../../model/xiaotian_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../commons/widgets/w_button.dart';
-import '../../model/xiaotian_dio.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:async';
+import '../../util/sendMessage.dart';
 
 
 
@@ -33,7 +33,10 @@ class bubbleFromAi extends StatefulWidget {
   State<bubbleFromAi> createState() => _bubbleFromAiState();
 }
 
-class _bubbleFromAiState extends State<bubbleFromAi> {
+class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final _textNotifier = ValueNotifier<String>(''); // token 拼接结果
   final _sourceNotifier = ValueNotifier<List<Source>>([]);
   final _followupNotifier = ValueNotifier<String?>(null);
@@ -110,23 +113,25 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
+        padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 10.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- 主体文本 ---
+            //TODO:为什么会一口气显示？
             Container(
-              margin: EdgeInsets.symmetric(vertical: 10.h),
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
+                maxWidth: MediaQuery.of(context).size.width * 0.92,
               ),
               child: ValueListenableBuilder<String>(
                 valueListenable: _textNotifier,
                 builder: (context, text, child) {
                   if (text.isEmpty && widget.stream != null) {
+                    //TODO:加载动画
                     return const SizedBox(
                         width: 20,
                         height: 20,
@@ -146,7 +151,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
               ),
             ),
 
-            // --- source ---
+            //信息来源
             ValueListenableBuilder<List<Source>>(
               valueListenable: _sourceNotifier,
               builder: (context, sources, child) {
@@ -155,18 +160,20 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
               },
             ),
 
-            // --- followup ---
+            //跟随问题
             ValueListenableBuilder<String?>(
               valueListenable: _followupNotifier,
               builder: (context, followup, child) {
                 if (followup == null || followup.isEmpty) {
                   return const SizedBox.shrink();
                 }
-                return followUp(followup, () {});
+                return followUp(context,followup, () {
+                  sendAMessage(followup, context);
+                });
               },
             ),
 
-            // --- 错误信息 ---
+            //错误信息
             ValueListenableBuilder<String?>(
               valueListenable: _errorNotifier,
               builder: (context, error, child) {
@@ -178,7 +185,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
               },
             ),
 
-            // --- 按钮 ---
+            //按钮
             ValueListenableBuilder<String>(
               valueListenable: _textNotifier,
               builder: (context, text, child) {
@@ -190,17 +197,17 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    //复制
                     WButton(
                       child: Icon(Icons.copy_rounded, size: 20.r),
                       onPressed: () =>
                           Clipboard.setData(ClipboardData(text: text)),
                     ),
                     SizedBox(width: 12.w),
+                    //重新生成回答
                     WButton(
                       child: Icon(Icons.refresh_rounded, size: 20.r),
-                      onPressed: () {
-                        // TODO: 重新生成回答
-                      },
+                      onPressed: () => reSendQuestion(context),
                     ),
                   ],
                 );
@@ -214,9 +221,10 @@ class _bubbleFromAiState extends State<bubbleFromAi> {
 }
 
 
+
 //用户发言的气泡
 class bubbleFromUser extends StatelessWidget {
-  final String text;            // 消息内容
+  final String text;
 
   const bubbleFromUser({
     Key? key,
@@ -240,12 +248,12 @@ class bubbleFromUser extends StatelessWidget {
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               decoration: BoxDecoration(
-                color: const Color(0xFF000000),
+                color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
                 text,
-                style: TextUtil.base.PingFangSC.normal.w400.sp(14),
+                style: TextUtil.base.PingFangSC.label(context).normal.w400.sp(14),
               ),
             ),
             // 气泡下的按钮
@@ -260,7 +268,6 @@ class bubbleFromUser extends StatelessWidget {
                 WButton(
                   child: Icon(Icons.edit, size: 20.r),
                   onPressed: (){
-                    //TODO:重新编辑问题
                     context.read<xiaotianInputState>().onEdit(text);
                   },
                 ),
@@ -295,22 +302,34 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
       margin: EdgeInsets.symmetric(vertical: 10.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
       decoration: BoxDecoration(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(10.r),
-        color: Colors.blueAccent.shade100,
+        border: Border.all(
+          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor).withOpacity(0.4),
+          width: 2.r,
+        ),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0,4.h),
+            blurRadius: 10.r,
+            color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05)
+          )
+        ]
       ),
       child: Column(
         children: [
           // 头部行
           Row(
             children: [
-              Text('信息来源 ${widget.source.length}'),
-              IconButton(
+              Text('信息来源 ${widget.source.length}',style: TextUtil.base.label(context).PingFangSC.w500.sp(14),),
+              SizedBox(width: 6.w),
+              WButton(
                 onPressed: () {
                   setState(() {
                     _open = !_open;
                   });
                 },
-                icon: Icon(
+                child: Icon(
                   _open ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                 ),
               ),
@@ -318,43 +337,44 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
           ),
           // 展开部分
           if (_open)
-            Column(
-              children: widget.source.map((src) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 4.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // 来源标题
-                      Text(src.title ?? ''),
-                      SizedBox(width: 4.w),
-                      // 来源类型
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(7),
-                        ),
-                        child: Text(
-                          src.contentType == 'web' ? '网络' : '知识库',
-                          style: TextStyle(
-                            color: Colors.deepPurple.shade500,
-                            fontSize: 14,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.source.map((src) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 2.h),
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextUtil.base.PingFangSC.w400.medium.label(context).sp(12),
+                        children: [
+                          TextSpan(text: src.title ?? ''),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 4.w),
+                              child: Image.asset(
+                                src.contentType == 'web'? 'assets/images/ai/form_web.png': 'assets/images/ai/database.png',
+                                width: 12.w,
+                                height: 12.h,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
+                    )
+                  );
+                }).toList(),
+              ),
+            )
         ],
       ),
     );
   }
 }
 
-Widget followUp(String title,VoidCallback onTap) {
+Widget followUp(BuildContext context,String title,VoidCallback onTap) {
   return GestureDetector(
     onTap: onTap,
       //发送关联问题
@@ -363,17 +383,34 @@ Widget followUp(String title,VoidCallback onTap) {
         padding: EdgeInsets.symmetric(vertical:10.h,horizontal: 15.w),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
-            color: Colors.grey.shade200
+            gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.primaryGradient),
+            boxShadow: [
+              BoxShadow(
+                  offset: Offset(0,4.h),
+                  blurRadius: 10.r,
+                  color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05)
+              )
+            ]
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              title,
-              style: TextUtil.base.PingFangSC.w400.medium.sp(12),
-            ),
-            const Icon(Icons.chevron_right)
-          ],
+        child: RichText(
+          text: TextSpan(
+            style: TextUtil.base.PingFangSC.bright(context).w400.medium.sp(12),
+            children: [
+              TextSpan(text: title),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 4.w),
+                  child: Image.asset(
+                    'assets/images/ai/arrow.png',
+                    width: 12.w,
+                    height: 12.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ],
+          ),
         )
     ),
   );

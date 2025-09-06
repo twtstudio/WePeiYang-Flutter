@@ -108,7 +108,7 @@ dependencies:
   uuid: ^4.3.3
 
   webview_flutter: ^2.0.13 # TODO: update the new webview package
-  wechat_assets_picker: any
+#  wechat_assets_picker: any
   window_manager: ^0.3.8
 
   waterfall_flow: ^3.0.3
@@ -143,6 +143,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/ai/
     - assets/images/calender/
     - assets/images/account/
     - assets/images/account/1.5x/

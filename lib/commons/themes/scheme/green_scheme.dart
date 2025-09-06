@@ -55,6 +55,7 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
   WpyColorKey.basicTextColor: Colors.black,
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 145, 145, 145),
   WpyColorKey.labelTextColor: Color(0xFF2A2A2A),
+  WpyColorKey.labelTextColorWithOp: Color(0x662A2A2A),
   WpyColorKey.unlabeledColor: Color(0xFF979797),
   WpyColorKey.cursorColor: greenMapper,
   WpyColorKey.infoTextColor: Color(0xFF4E4E4E),
@@ -64,6 +65,9 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
   WpyColorKey.primaryActionColor: greenMapper,
   WpyColorKey.primaryLightActionColor: greenMapper,
   WpyColorKey.primaryTextButtonColor: greenMapper,
+
+  WpyColorKey.lightPrimaryContainerColor: greenMapper,
+  WpyColorKey.lighterPrimaryContainerColor: greenMapper,
 
   // the Main Action on main page
   WpyColorKey.beanDarkColor: greenMapper,
@@ -232,6 +236,16 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
 // 在0.7停止同理
     stops: [0, 0.23, 0.4],
+  ),
+
+  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+    colors: [
+      greenMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!),
+      greenMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryContainerColor]!),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0, 0.7],
   ),
 
   WpyColorSetKey.primaryGradientAllScreen: LinearGradient(

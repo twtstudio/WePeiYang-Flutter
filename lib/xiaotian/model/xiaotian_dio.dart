@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'dart:math';
 import 'xiaotian_model.dart';
 
-
+const XIAOTIAN_URL = 'https://student.tju.edu.cn/ai';
 
 /// API 单例
 class AiTjuApi {
@@ -15,11 +15,25 @@ class AiTjuApi {
 
   final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'https://student.tju.edu.cn/ai', // 保持与现有地址一致
+      baseUrl: XIAOTIAN_URL,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 120),
     ),
   );
+
+  // 2. 添加 LogInterceptor 拦截器
+  void setupDio() {
+    dio.interceptors.add(
+      LogInterceptor(
+        requestHeader: true,  // 是否打印请求头
+        requestBody: true,    // 是否打印请求体
+        responseHeader: true, // 是否打印响应头
+        responseBody: true,   // 是否打印响应体
+        error: true,          // 是否打印错误信息
+        logPrint: (obj) => print(obj.toString()), // 使用 print 函数来输出日志
+      ),
+    );
+  }
 
   /// Cho phép cập nhật header mặc định (Cookie/Authorization...) nếu muốn
   void updateDefaultHeaders(Map<String, String> headers) {
@@ -27,7 +41,6 @@ class AiTjuApi {
   }
 
   /*  SSE 流式对话 */
-  /// Trả về Stream<ChatEvent> để render realtime
   Stream<ChatEvent> streamChat({
     required String prompt,
     required String sessionId,
@@ -59,7 +72,6 @@ class AiTjuApi {
     );
 
     // stream bytes -> utf8 ->  SSE
-
     final lines = rs.data.stream
         .cast<List<int>>() // Stream<Uint8List> -> Stream<List<int>>
         .transform(utf8.decoder) // -> Stream<String>
@@ -68,22 +80,25 @@ class AiTjuApi {
     final eventData = StringBuffer();
 
     await for (final line in lines) {
+      print("原始行: $line");
       if (line.isEmpty) {
         final dataStr = eventData.toString();
         eventData.clear();
         if (dataStr.isEmpty) continue;
+        print("完整块: $dataStr");
         if (dataStr == '[DONE]') break;
         try {
           final map = jsonDecode(dataStr);
+          print("解析后的 JSON: $map");
           if (map['token'] != null) yield ChatEvent.token(map['token']);
-          if (map['source'] != null) {
-            final list = (map['source'] as List)
+          if (map['sources'] != null) {
+            final list = (map['sources'] as List)
                 .map((e) => Source.fromJson(e as Map<String, dynamic>))
                 .toList();
             yield ChatEvent.source(list);
           }
-          if (map['followup'] != null) {
-            yield ChatEvent.followup(map['followup'].toString());
+          if (map['question'] != null) {
+            yield ChatEvent.followup(map['question'].toString());
           }
           if (map['trace_id'] != null) {
             yield ChatEvent.traceId(map['trace_id'].toString());
@@ -91,7 +106,9 @@ class AiTjuApi {
           if (map['error'] != null) {
             yield ChatEvent.error(map['error'].toString());
           }
-        } catch (_) {}
+        } catch (e, st) {
+          print("解析失败: $e\n$st");
+        }
         continue;
       }
 
@@ -102,7 +119,7 @@ class AiTjuApi {
           eventData.write(payload);
         }
       } else {
-        print('不是data');
+        print('不是data: $line');
       }
     }
   }

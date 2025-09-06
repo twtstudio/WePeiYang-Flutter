@@ -57,6 +57,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle label(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.labelTextColor));
+  TextStyle labelWithOp(context) => this
+      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.labelTextColorWithOp));
 
   TextStyle unlabeled(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.unlabeledColor));

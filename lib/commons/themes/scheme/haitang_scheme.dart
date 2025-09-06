@@ -45,6 +45,7 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.basicTextColor: Colors.black,
   WpyColorKey.secondaryTextColor: Color.fromARGB(255, 145, 145, 145),
   WpyColorKey.labelTextColor: Color(0xFF2A2A2A),
+  WpyColorKey.labelTextColorWithOp: Color(0x662A2A2A),
   WpyColorKey.unlabeledColor: Color(0xFF979797),
   WpyColorKey.cursorColor: HaiTangMapper,
   WpyColorKey.infoTextColor: Color(0xFF4E4E4E),
@@ -54,6 +55,9 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.primaryActionColor: HaiTangMapper,
   WpyColorKey.primaryLightActionColor: HaiTangMapper,
   WpyColorKey.primaryTextButtonColor: HaiTangMapper,
+
+  WpyColorKey.lightPrimaryContainerColor: HaiTangMapper,
+  WpyColorKey.lighterPrimaryContainerColor: HaiTangMapper,
 
   // the Main Action on main page
   WpyColorKey.beanDarkColor: HaiTangMapper,
@@ -231,6 +235,16 @@ final colorSetsList = {
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+  ),
+
+  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+    colors: [
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryContainerColor]!),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    stops: [0, 0.7],
   ),
 
   WpyColorSetKey.gradientPrimaryBackground: LinearGradient(colors: [
