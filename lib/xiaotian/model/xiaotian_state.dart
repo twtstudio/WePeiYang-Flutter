@@ -5,14 +5,6 @@ import 'xiaotian_model.dart';
 class xiaotianInputState extends ChangeNotifier {
   List<String> files = [];
 
-
-
-  static String _lastQuestion = '';
-  String get last => _lastQuestion;
-  void saveLast(String last) {
-    _lastQuestion = last;
-  }
-
   final _time = ['noLimit','oneWeek','oneMonth','oneYear'];
   final _type = ['precise','no','all'];
 
@@ -65,7 +57,7 @@ class xiaotianInputState extends ChangeNotifier {
   }
 
   //让焦点失焦
-  void unfocus() {
+  void unFocus() {
     node.unfocus();
   }
 
@@ -106,6 +98,14 @@ class xiaotianChatState extends ChangeNotifier {
   factory xiaotianChatState()=>_instance;
   xiaotianChatState._internal();
 
+  bool _isStreamCompleted = true;
+  bool get isStreamCompleted => _isStreamCompleted;
+
+  void changeStreamState(bool b) {
+    _isStreamCompleted = b;
+    notifyListeners();
+  }
+
 
   //储存的会话
   final Map<String, List<ChatMessage>> _sessions = {};
@@ -114,9 +114,16 @@ class xiaotianChatState extends ChangeNotifier {
   //当前会话id
   String _sessionId = '0';
 
+  bool _hasLoading = false;
+  bool get firstLoad => _hasLoading;
+  void save() {
+    _hasLoading = true;
+    notifyListeners();
+  }
+
   //判断是否正在加载
-  bool _loading = true;
-  bool get loading => _loading;
+  bool _loading = false;
+  bool get historyLoading => _loading;
 
   //改变加载状态
   void isLoading(bool b) {

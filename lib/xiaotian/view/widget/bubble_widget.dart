@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import '../../model/xiaotian_state.dart';
 import '../../model/xiaotian_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +22,7 @@ class bubbleFromAi extends StatefulWidget {
     this.text,
     this.stream,
     required this.messageId,
+    required this.index,
   }) : assert(
   (text != null && stream == null) || (text == null && stream != null),
   'Provide either a text or a stream, but not both.',
@@ -28,7 +31,7 @@ class bubbleFromAi extends StatefulWidget {
   final String messageId;
   final String? text;
   final Stream<ChatEvent>? stream;
-
+  final int index;
   @override
   State<bubbleFromAi> createState() => _bubbleFromAiState();
 }
@@ -36,31 +39,38 @@ class bubbleFromAi extends StatefulWidget {
 class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
   final _textNotifier = ValueNotifier<String>(''); // token 拼接结果
   final _sourceNotifier = ValueNotifier<List<Source>>([]);
   final _followupNotifier = ValueNotifier<String?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
 
   StreamSubscription<ChatEvent>? _streamSubscription;
-
-  bool _isStreamCompleted = false;
-
   @override
   void initState() {
     super.initState();
 
+    final chatState = context.read<xiaotianChatState>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.stream != null) {
+        chatState.changeStreamState(false);
+      } else if (widget.text != null) {
+        chatState.changeStreamState(true);
+      }
+    });
+
     if (widget.stream != null) {
-      _isStreamCompleted = false;
+      chatState.changeStreamState(false);
       _streamSubscription = widget.stream!.listen(
             (event) {
           switch (event.type) {
             case 'token':
               final token = event.data['token'] as String;
-              _textNotifier.value += token;
+              if (mounted) {
+                _textNotifier.value += token;
+              }
               break;
             case 'source':
-            /// event.data 是 List<Source>
               final list = (event.data as List<Source>);
               _sourceNotifier.value = list;
               break;
@@ -79,14 +89,14 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
           if (mounted) {
             _errorNotifier.value = error.toString();
             setState(() {
-              _isStreamCompleted = true;
+              chatState.changeStreamState(true);
             });
           }
         },
         onDone: () {
           if (mounted) {
             setState(() {
-              _isStreamCompleted = true;
+              chatState.changeStreamState(true);
             });
             context.read<xiaotianChatState>().completeMessageStream(
               widget.messageId,
@@ -97,7 +107,6 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
       );
     } else if (widget.text != null) {
       _textNotifier.value = widget.text!;
-      _isStreamCompleted = true;
     }
   }
 
@@ -131,13 +140,21 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                 valueListenable: _textNotifier,
                 builder: (context, text, child) {
                   if (text.isEmpty && widget.stream != null) {
-                    //TODO:加载动画
-                    return const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2));
+                    return Baseline(
+                      baseline: 20,
+                      baselineType: TextBaseline.alphabetic,
+                      child: SizedBox(
+                        width: 25.w,
+                        height: 25.h,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Loading(),
+                        ),
+                      ),
+                    );
                   }
                   return Markdown(
+                    padding: EdgeInsets.symmetric(vertical: 4.h),
                     data: text,
                     selectable: true,
                     shrinkWrap: true,
@@ -190,24 +207,31 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
               valueListenable: _textNotifier,
               builder: (context, text, child) {
                 // 判断 stream 是否结束（如果结束就显示按钮）
-                if (!_isStreamCompleted || text.isEmpty) {
+                if (!context.read<xiaotianChatState>().isStreamCompleted || text.isEmpty) {
                   return const SizedBox.shrink();
                 }
-
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     //复制
                     WButton(
-                      child: Icon(Icons.copy_rounded, size: 20.r),
+                      child: SvgPicture.asset(
+                        'assets/svg_pics/ai_icons/copy.svg',
+                        width: 16.r,
+                        height: 16.r,
+                      ),
                       onPressed: () =>
                           Clipboard.setData(ClipboardData(text: text)),
                     ),
                     SizedBox(width: 12.w),
                     //重新生成回答
                     WButton(
-                      child: Icon(Icons.refresh_rounded, size: 20.r),
-                      onPressed: () => reSendQuestion(context),
+                      child:  SvgPicture.asset(
+                      'assets/svg_pics/ai_icons/resend.svg',
+                      width: 16.r,
+                      height: 16.r,
+                      ),
+                      onPressed: () => reSendQuestion(context,widget.index),
                     ),
                   ],
                 );
@@ -261,12 +285,20 @@ class bubbleFromUser extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 WButton(
-                  child: Icon(Icons.copy_rounded, size: 20.r),
+                  child:  SvgPicture.asset(
+                  'assets/svg_pics/ai_icons/copy.svg',
+                    width: 16.r,
+                    height: 16.r,
+                  ),
                   onPressed: () =>Clipboard.setData(ClipboardData(text: text)),
                 ),
                 SizedBox(width: 12.w),
                 WButton(
-                  child: Icon(Icons.edit, size: 20.r),
+                  child:  SvgPicture.asset(
+                  'assets/svg_pics/ai_icons/edit.svg',
+                  width: 16.r,
+                  height: 16.r,
+                  ),
                   onPressed: (){
                     context.read<xiaotianInputState>().onEdit(text);
                   },
@@ -317,6 +349,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
         ]
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // 头部行
           Row(
@@ -331,20 +364,25 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                 },
                 child: Icon(
                   _open ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                 ),
               ),
             ],
           ),
+          SizedBox(height: 2.h,),
           // 展开部分
           if (_open)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.zero,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: widget.source.map((src) {
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 2.h),
                     child: RichText(
+                      textAlign: TextAlign.left,
                       text: TextSpan(
                         style: TextUtil.base.PingFangSC.w400.medium.label(context).sp(12),
                         children: [
@@ -354,7 +392,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 4.w),
                               child: Image.asset(
-                                src.contentType == 'web'? 'assets/images/ai/form_web.png': 'assets/images/ai/database.png',
+                                src.contentType == 'database'? 'assets/images/ai/database.png': 'assets/images/ai/form_web.png',
                                 width: 12.w,
                                 height: 12.h,
                                 fit: BoxFit.contain,

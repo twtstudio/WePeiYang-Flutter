@@ -71,55 +71,46 @@ class AiTjuApi {
       ),
     );
 
-    // stream bytes -> utf8 ->  SSE
+    // stream bytes -> utf8 -> SSE 行
     final lines = rs.data.stream
         .cast<List<int>>() // Stream<Uint8List> -> Stream<List<int>>
         .transform(utf8.decoder) // -> Stream<String>
-        .transform(const LineSplitter()); // -> Stream<String> each lines
-
-    final eventData = StringBuffer();
+        .transform(const LineSplitter()); // -> Stream<String> 每行
 
     await for (final line in lines) {
       print("原始行: $line");
-      if (line.isEmpty) {
-        final dataStr = eventData.toString();
-        eventData.clear();
-        if (dataStr.isEmpty) continue;
-        print("完整块: $dataStr");
-        if (dataStr == '[DONE]') break;
-        try {
-          final map = jsonDecode(dataStr);
-          print("解析后的 JSON: $map");
-          if (map['token'] != null) yield ChatEvent.token(map['token']);
-          if (map['sources'] != null) {
-            final list = (map['sources'] as List)
-                .map((e) => Source.fromJson(e as Map<String, dynamic>))
-                .toList();
-            yield ChatEvent.source(list);
-          }
-          if (map['question'] != null) {
-            yield ChatEvent.followup(map['question'].toString());
-          }
-          if (map['trace_id'] != null) {
-            yield ChatEvent.traceId(map['trace_id'].toString());
-          }
-          if (map['error'] != null) {
-            yield ChatEvent.error(map['error'].toString());
-          }
-        } catch (e, st) {
-          print("解析失败: $e\n$st");
-        }
+
+      if (!line.startsWith('data:')) {
+        print("不是 data: $line");
         continue;
       }
 
-      if (line.startsWith('data:')) {
-        final payload = line.length >= 5 ? line.substring(5).trimLeft() : '';
-        if (payload.isNotEmpty) {
-          if (eventData.isNotEmpty) eventData.write('\n');
-          eventData.write(payload);
+      final payload = line.substring(5).trimLeft();
+      if (payload.isEmpty) continue;
+      if (payload == '[DONE]') break;
+
+      try {
+        final map = jsonDecode(payload);
+        print("解析后的 JSON: $map");
+
+        if (map['token'] != null) yield ChatEvent.token(map['token']);
+        if (map['sources'] != null) {
+          final list = (map['sources'] as List)
+              .map((e) => Source.fromJson(e as Map<String, dynamic>))
+              .toList();
+          yield ChatEvent.source(list);
         }
-      } else {
-        print('不是data: $line');
+        if (map['question'] != null) {
+          yield ChatEvent.followup(map['question'].toString());
+        }
+        if (map['trace_id'] != null) {
+          yield ChatEvent.traceId(map['trace_id'].toString());
+        }
+        if (map['error'] != null) {
+          yield ChatEvent.error(map['error'].toString());
+        }
+      } catch (e, st) {
+        print("解析失败: $e\n$st");
       }
     }
   }

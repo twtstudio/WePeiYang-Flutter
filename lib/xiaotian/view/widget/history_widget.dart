@@ -8,6 +8,8 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/preferences/common_prefs.dart';
 import '../../model/xiaotian_model.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class historyTab extends StatelessWidget {
   const historyTab({super.key,required this.session});
@@ -60,7 +62,7 @@ class historyTab extends StatelessWidget {
 Widget drawerHeader(BuildContext context) {
   return Container(
     // height: 100.h, // 控制整体高度
-    padding: EdgeInsets.only(left: 15.w, top: 42.h,bottom: 27.h),
+    padding: EdgeInsets.only(left: 15.w, top: 22.h,bottom: 27.h),
     child: RichText(
       text: TextSpan(
         style: TextUtil.base.label(context).w600.PingFangSC.sp(24),
@@ -165,11 +167,32 @@ class _historyDrawerState extends State<historyDrawer> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: children,
-      ),
+      child: SafeArea(
+        bottom: true,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: children,
+        ),
+      )
     );
   }
 }
 
+class openHistory extends StatelessWidget {
+  const openHistory({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return WButton(
+      child: SvgPicture.asset(
+        'assets/svg_pics/ai_icons/more.svg',
+        width: 28.r,
+        height: 28.r,
+        color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+      ),
+      onPressed: () {
+        Scaffold.of(context).openDrawer();
+      },
+    );;
+  }
+}

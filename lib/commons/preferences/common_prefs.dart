@@ -159,6 +159,10 @@ class CommonPreferences {
   static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
   static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 
+  ///是否未点开过小天老师ai
+  static final firstUseAI = PrefsBean<bool>('firstUseAI', true);
+  static final AIPublicTime = PrefsBean<int>('AIPublicTime', 2025);
+
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
   static final lastCheckUpdateTime =
@@ -176,6 +180,7 @@ class CommonPreferences {
   static void clearAllPrefs() {
     sharedPref.clear();
     firstPrivacy.value = false; //隐私政策不重复显示了
+    firstUseAI.value = false;   //AI引导不重复显示
   }
 
   /// 清除办公网缓存

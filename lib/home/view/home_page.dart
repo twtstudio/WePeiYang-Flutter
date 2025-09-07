@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/xiaotian/view/page/xiaotian_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
@@ -182,10 +183,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             width: 24.h,
             color: WpyTheme.of(context).primary,
           )
-              : ColoredIcon(
+              : !CommonPreferences.firstUseAI.value && DateTime.now().year <=  CommonPreferences.AIPublicTime.value ?
+          ColoredIcon(
             'assets/images/ai_grey.png',
             width: 24.h,
             //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
+          ) : ShimmerOverlayIcon(
+              icon: ColoredIcon(
+                'assets/images/ai/ai_new.png',
+                width: 24.h,
+              ),
+            badge: SvgPicture.asset(
+                'assets/svg_pics/ai_icons/Vector.svg'
+            ),
+            offset: 13,
           ),
           color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           onPressed: () => _tabController.animateTo(2),

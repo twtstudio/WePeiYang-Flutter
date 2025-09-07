@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../widget/bubble_widget.dart';
 import '../../model/xiaotian_state.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,9 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../model/xiaotian_model.dart';
 import '../../util/sendMessage.dart';
+import '../../model/xiaotian_dio.dart';
+import '../../../commons/preferences/common_prefs.dart';
+
 
 class openNewSession extends StatelessWidget {
   const openNewSession({super.key});
@@ -16,13 +20,23 @@ class openNewSession extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WButton(
-        onPressed: (){
+        onPressed: () async {
           context.read<xiaotianChatState>().openNewSession();
+          final sessions = await AiTjuApi().getAllSessions(CommonPreferences.userNumber.value);
+          Provider.of<xiaotianChatState>(context, listen: false)
+              .setHistorySession(sessions);
         },
-        child: Icon(Icons.add,size: 28.r,)
+        child:  SvgPicture.asset(
+          'assets/svg_pics/ai_icons/new.svg',
+          width: 28.r,
+          height: 28.r,
+          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+        ),
     );
   }
 }
+
+
 
 
 //开启新页面的占位贴图
@@ -82,8 +96,6 @@ class _ChatTileState extends State<ChatTile> {
                 final key = ValueKey(msg.id);
 
                 if (msg is UserMessage) {
-                  //迭代出最后一个问题
-                  inputState.saveLast(msg.content);
                   return bubbleFromUser(key:key,text: msg.content);
                 }
                 else if (msg is AiMessage) {
@@ -92,12 +104,14 @@ class _ChatTileState extends State<ChatTile> {
                       key: key,
                       messageId: msg.id,
                       text: msg.text,
+                      index:index
                     );
                   } else {
                     return bubbleFromAi(
-                      key: key,
-                      messageId: msg.id,
-                      stream: msg.stream,
+                        key: key,
+                        messageId: msg.id,
+                        stream: msg.stream,
+                        index:index
                     );
                   }
                 }
@@ -147,7 +161,7 @@ class _inputBoxState extends State<inputBox> {
                 child: TextField(
                   controller: inputState.textController,
                   focusNode: inputState.node,
-                  onTapOutside: (_) => inputState.unfocus(),
+                  onTapOutside: (_) => inputState.unFocus(),
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   style: TextStyle(fontSize: 14.sp, height: 1.2.h),
@@ -160,7 +174,7 @@ class _inputBoxState extends State<inputBox> {
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
                     border: InputBorder.none,
-                    hintText: '给小天老师发消息',
+                    hintText: chatState.isStreamCompleted ? '给小天老师发消息' : '正在生成答案，请耐心等待',
                     hintStyle: TextStyle(height: 1.2.h),
                   ),
                 ),
@@ -170,19 +184,31 @@ class _inputBoxState extends State<inputBox> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    WebSearch(inputState),
+                    WebSearch(),
                     Row(
                       children: [
                         WButton(
                           onPressed: () {
                             // TODO: 添加链接文件
                           },
-                          child: Icon(Icons.link_off_rounded, size: 20.r),
+                          child: SizedBox.shrink(),
                         ),
                         SizedBox(width: 12.w),
-                        WButton(
+                        chatState.isStreamCompleted ? WButton(
                           onPressed: () => sendAMessage(inputState.textController.text,context),
-                          child: Icon(Icons.send_rounded, size: 20.r),
+                          child:  SvgPicture.asset(
+                            'assets/svg_pics/ai_icons/send.svg',
+                            width: 20.r,
+                            height: 20.r,
+                            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                          ),
+                        ) : WButton(
+                          onPressed: (){},
+                          child:  SvgPicture.asset(
+                            'assets/svg_pics/ai_icons/stop.svg',
+                            width: 24.r,
+                            height: 24.r,
+                          ),
                         ),
                       ],
                     ),
@@ -207,38 +233,47 @@ class SearchT {
   static int nextType(int current) => (current + 1) % typeCh.length;
 }
 
-Widget WebSearch(xiaotianInputState inputState) {
-  return Row(
-    children: [
-      WButton(
-        onPressed: () => inputState.changeOpenSearch(),
-        child: Icon(
-          Icons.language_rounded,
-          color: inputState.openSearch ? Colors.blue : Colors.grey,
-          size: 20.r,
+class WebSearch extends StatelessWidget {
+  const WebSearch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final inputState = context.read<xiaotianInputState>();
+    return Row(
+      children: [
+        WButton(
+          onPressed: () => inputState.changeOpenSearch(),
+          child:  SvgPicture.asset(
+            'assets/svg_pics/ai_icons/global.svg',
+            width: 20.r,
+            height: 20.r,
+            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+          ),
         ),
-      ),
-      if (inputState.openSearch)
-        Row(
-          children: [
-            SizedBox(width: 12.w),
-            WButton(
-              onPressed: () {
-                final next = SearchT.nextTime(inputState.timeIndex);
-                inputState.changeTime(next);
-              },
-              child: Text(SearchT.timeCh[inputState.timeIndex]),
-            ),
-            SizedBox(width: 12.w),
-            WButton(
-              onPressed: () {
-                final next = SearchT.nextType(inputState.typeIndex);
-                inputState.changeType(next);
-              },
-              child: Text(SearchT.typeCh[inputState.typeIndex]),
-            ),
-          ],
-        ),
-    ],
-  );
+        if (inputState.openSearch)
+          Row(
+            children: [
+              SizedBox(width: 12.w),
+              WButton(
+                onPressed: () {
+                  final next = SearchT.nextTime(inputState.timeIndex);
+                  inputState.changeTime(next);
+                },
+                child: Text(SearchT.timeCh[inputState.timeIndex],style: TextUtil.base.PingFangSC.normal.label(context).sp(13),),
+              ),
+              SizedBox(width: 12.w),
+              WButton(
+                onPressed: () {
+                  final next = SearchT.nextType(inputState.typeIndex);
+                  inputState.changeType(next);
+                },
+                child: Text(SearchT.typeCh[inputState.typeIndex],style: TextUtil.base.PingFangSC.normal.label(context).sp(13),),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
 }
+
+

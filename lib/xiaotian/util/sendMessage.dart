@@ -5,23 +5,21 @@ import '../model/xiaotian_state.dart';
 import '../model/xiaotian_model.dart';
 import '../../../commons/preferences/common_prefs.dart';
 
-void reSendQuestion(BuildContext context) {
+void reSendQuestion(BuildContext context,int index) {
   final inputState = context.read<xiaotianInputState>();
   final chatState = context.read<xiaotianChatState>();
+  String question = '';
 
-  Stream<ChatEvent> sseStream = AiTjuApi().streamChat(
-    prompt: inputState.last,
-    sessionId: chatState.sessionId,
-    userId: CommonPreferences.userNumber.value,
-    files: inputState.files,
-    searchTime: inputState.searchTime,
-    searchType: inputState.searchType,
-  );
+  //找到该消息的前一个用户消息
+  for(int i = index; i>=0; i--) {
+    final msg = chatState.messages[i];
+    if(msg is UserMessage) {
+      question = msg.content;
+      break;
+    }
+  }
 
-  final ai_ans = AiMessage(stream: sseStream);
-  chatState.messageAdd(ai_ans);
-
-  scrollScreen(inputState.scrollController);
+  sendAMessage(question, context);
 }
 
 void sendAMessage(String text,BuildContext context) {
@@ -52,9 +50,6 @@ void sendAMessage(String text,BuildContext context) {
   final ai_ans = AiMessage(stream: sseStream);
   print(ai_ans.stream);
   chatState.messageAdd(ai_ans);
-
-  final currentText = text;
-  inputState.saveLast(currentText);
   _inputState.clear();
 
   scrollScreen(inputState.scrollController);
