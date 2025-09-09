@@ -111,7 +111,8 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
           break;
         case 'trace_id':
           _trace = event.data['trace_id'];
-          print(_trace);
+          //保存最后一个traceID用于意见反馈
+          context.read<xiaotianChatState>().saveLastTraceID(_trace);
           break;
       }
     }
@@ -186,7 +187,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                 },
               ),
             ),
-
+            aiDeclaration(context),
             //信息来源
             ValueListenableBuilder<List<Source>>(
               valueListenable: _sourceNotifier,
@@ -544,5 +545,24 @@ Widget followUp(BuildContext context,String title,VoidCallback onTap) {
           ),
         )
     ),
+  );
+}
+
+Widget aiDeclaration(BuildContext context) {
+  return Container(
+    width: double.infinity,
+    margin: EdgeInsets.only(bottom: 10.h),
+    padding: EdgeInsets.symmetric(vertical: 4.h,horizontal: 5.w),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.r),
+        // color: WpyTheme.of(context).get(WpyColorKey.elegantPostTagColor).withOpacity(0.7),
+        color: Colors.transparent,
+        border: Border.all(
+          // color: WpyTheme.of(context).get(WpyColorKey.elegantLongPostTagColor),
+          color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
+          width: 1.5,
+        ),
+    ),
+    child: Text('本回答由AI生成，内容仅供参考，请仔细甄别。',style:TextUtil.base.label(context).PingFangSC.w500.sp(13),),
   );
 }

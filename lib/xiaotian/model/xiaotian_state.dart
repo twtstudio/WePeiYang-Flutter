@@ -114,6 +114,12 @@ class xiaotianChatState extends ChangeNotifier {
   //当前会话id
   String _sessionId = '0';
 
+  String _traceID = '';
+  String get traceID => _traceID;
+  void saveLastTraceID(String trace) {
+    _traceID = trace;
+  }
+
   bool _hasLoading = false;
   bool get firstLoad => _hasLoading;
   void save() {

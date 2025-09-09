@@ -12,6 +12,8 @@ import '../../model/xiaotian_model.dart';
 import '../../util/sendMessage.dart';
 import '../../model/xiaotian_dio.dart';
 import '../../../commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'back_dialog.dart';
 
 
 class openNewSession extends StatelessWidget {
@@ -26,7 +28,7 @@ class openNewSession extends StatelessWidget {
           Provider.of<xiaotianChatState>(context, listen: false)
               .setHistorySession(sessions);
         },
-        child:  SvgPicture.asset(
+        child: SvgPicture.asset(
           'assets/svg_pics/ai_icons/new.svg',
           width: 28.r,
           height: 28.r,
@@ -34,6 +36,46 @@ class openNewSession extends StatelessWidget {
     );
   }
 }
+
+class Suggestion extends StatelessWidget {
+  const Suggestion({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return WButton(
+      onPressed: () async {
+        final result = await showCustomInputDialog(
+          context,
+          title: '发送反馈',
+          hint: '请输入你的意见',
+        );
+        if(result == null) return;
+        final fb = FeedBack(traceId: context.read<xiaotianChatState>().traceID, likeCount: '2',feedbackInformation: result,state: '');
+        feedBackPost(fb);
+        ToastProvider.success('反馈成功');
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 5.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor).withOpacity(0.9),
+        ),
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              'assets/svg_pics/ai_icons/feedback.svg',
+              width: 24.r,
+              height: 24.r,
+            ),
+            SizedBox(height: 5.h,),
+            Text('意\n见\n反\n馈',style: TextUtil.base.normal.PingFangSC.bold.textButtonPrimary(context).sp(15)),
+          ],
+        ),
+      )
+    );
+  }
+}
+
 
 
 
@@ -99,6 +141,7 @@ class _ChatTileState extends State<ChatTile> {
                 }
                 else if (msg is AiMessage) {
                   if (msg.text != null && msg.text!.isNotEmpty) {
+                    chatState.saveLastTraceID(msg.traceId!);
                     return bubbleFromAi(
                       key: key,
                       messageId: msg.id,

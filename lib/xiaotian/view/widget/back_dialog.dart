@@ -63,7 +63,7 @@ class _FeedbackDialogState extends State<_FeedbackDialog> {
               autofocus: true,
               maxLines: 4,
               textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _submit(),
+              onSubmitted: (_) => _trace_submit(),
               cursorColor: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
               style: TextStyle(color: Colors.black87),
               decoration: InputDecoration(
@@ -142,6 +142,157 @@ class _FeedbackDialogState extends State<_FeedbackDialog> {
                   ),
                 ),
                 WButton(
+                  onPressed: ()=> _trace_submit(),
+                  child: Container(
+                      width: 82.w,
+                      height: 35.h,
+                      decoration: BoxDecoration(
+                        color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      child: Center(
+                        child: Text('发送',style: TextUtil.base.bright(context).PingFangSC.bold.sp(14),),
+                      )
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _trace_submit() {
+    final text = _ctrl.text.trim();
+    if (text.isEmpty) return; // 简单拦截
+    if (_selectedLabel == null) return; // 必须选一个标签
+    Navigator.of(context).pop({
+      'text': text,
+      'code': _codeMap[_selectedLabel]!,
+    });
+  }
+}
+
+
+
+Future<String?> showCustomInputDialog(
+    BuildContext context, {
+      String? title,
+      String? hint,
+      String? initial,
+    }) =>
+    showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => _CustomInputDialog(
+        title: title,
+        hint: hint,
+        initial: initial,
+      ),
+    );
+
+class _CustomInputDialog extends StatefulWidget {
+  final String? title;
+  final String? hint;
+  final String? initial;
+
+  const _CustomInputDialog({this.title, this.hint, this.initial});
+
+  @override
+  State<_CustomInputDialog> createState() => _CustomInputDialogState();
+}
+
+class _CustomInputDialogState extends State<_CustomInputDialog> {
+  late TextEditingController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController(text: widget.initial);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.lighterPrimaryBackGround),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Text('反馈', style: TextUtil.base.PingFangSC.w400.bold.label(context).sp(16)),
+            ),
+            SizedBox(height: 16.h),
+            TextField(
+              controller: _ctrl,
+              autofocus: true,
+              maxLines: 4,
+              textInputAction: TextInputAction.send,
+              onSubmitted: (_) => _submit(),
+              cursorColor: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
+              style: TextStyle(color: Colors.black87),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                hintText: widget.hint ?? '请输入',
+                hintStyle: TextUtil.base
+                    .label(context)
+                    .PingFangSC
+                    .normal
+                    .sp(14)
+                    .copyWith(color: Colors.grey[500]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                  borderSide: BorderSide(color: Colors.transparent),
+                ),
+                contentPadding:
+                EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              ),
+            ),
+            SizedBox(height: 20.h),
+
+            // 按钮组
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                WButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  child: Container(
+                      width: 82.w,
+                      height: 35.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                        border: Border.all(
+                          color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text('取消',style: TextUtil.base.label(context).PingFangSC.bold.sp(14),),
+                      )
+                  ),
+                ),
+                WButton(
                   onPressed: ()=> _submit(),
                   child: Container(
                       width: 82.w,
@@ -166,10 +317,6 @@ class _FeedbackDialogState extends State<_FeedbackDialog> {
   void _submit() {
     final text = _ctrl.text.trim();
     if (text.isEmpty) return; // 简单拦截
-    if (_selectedLabel == null) return; // 必须选一个标签
-    Navigator.of(context).pop({
-      'text': text,
-      'code': _codeMap[_selectedLabel]!,
-    });
+    Navigator.of(context).pop(text);
   }
 }

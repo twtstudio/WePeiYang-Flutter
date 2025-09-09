@@ -75,7 +75,16 @@ class _AiPageState extends State<AiPage> {
               actions: [const openNewSession(),SizedBox(width: 15.w)],
             ),
             drawer: const historyDrawer(),
-            body: PageControl(context)
+              body: Stack(
+                children: [
+                  PageControl(context),
+                  Positioned(
+                      bottom: 250.h,
+                      right: 16.w,
+                      child: const Suggestion()
+                  )
+                ],
+              )
           )
         )
     );
