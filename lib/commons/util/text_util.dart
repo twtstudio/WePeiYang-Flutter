@@ -84,6 +84,9 @@ extension TextStyleAttr on TextStyle {
   TextStyle infoText(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
 
+  TextStyle linkText(context) =>
+      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.dangerousRed));
+
   TextStyle oldHint(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.oldHintColor));
 

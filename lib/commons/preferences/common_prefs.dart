@@ -180,7 +180,6 @@ class CommonPreferences {
   static void clearAllPrefs() {
     sharedPref.clear();
     firstPrivacy.value = false; //隐私政策不重复显示了
-    firstUseAI.value = false;   //AI引导不重复显示
   }
 
   /// 清除办公网缓存

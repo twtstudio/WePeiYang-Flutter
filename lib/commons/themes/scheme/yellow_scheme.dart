@@ -60,7 +60,7 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.beanLightColor: yellowMapper,
 
   WpyColorKey.lightPrimaryContainerColor: yellowMapper,
-  WpyColorKey.lighterPrimaryContainerColor: yellowMapper,
+  WpyColorKey.lighterPrimaryBackGround: yellowMapper,
 
 // schedule page background color
   WpyColorKey.primaryLighterActionColor: yellowMapper,
@@ -239,7 +239,7 @@ final colorSetsList = {
   WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
     colors: [
       yellowMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!),
-      yellowMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryContainerColor]!),
+      yellowMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),
     ],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

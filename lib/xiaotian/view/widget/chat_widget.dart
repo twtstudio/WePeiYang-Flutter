@@ -30,7 +30,6 @@ class openNewSession extends StatelessWidget {
           'assets/svg_pics/ai_icons/new.svg',
           width: 28.r,
           height: 28.r,
-          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
         ),
     );
   }
@@ -53,21 +52,21 @@ class newChatTile extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text('Hi，同学你好！我是你们24小时不下线的“小天老师”～很高兴见到你',textAlign:TextAlign.center,
-                    style: TextUtil.base.label(context).w400.PingFangSC.bold.sp(22)
+                    style: TextUtil.base.label(context).w400.PingFangSC.bold.sp(21)
+                ),
+              ),
+              SizedBox(height: 40.h,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Text('我努力为你提供精准、智能、高效的校内信息咨询服务',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15)
                 ),
               ),
               SizedBox(height: 10,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: Text('我努力为你提供精准、智能、高效的校内信息咨询服务',textAlign:TextAlign.start,
-                    style: TextUtil.base.label(context).w400.PingFangSC.medium.sp(16)
-                ),
-              ),
-              SizedBox(height: 10,),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: Text('因为我也刚刚和大家见面,我的回答仅供参考,有误的地方请你批评指正哦～快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.start,
-                    style: TextUtil.base.label(context).w400.PingFangSC.medium.sp(16)
+                child: Text('因为我也刚刚和大家见面,我的回答仅供参考,有误的地方请你批评指正哦～快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15)
                 ),
               ),
             ],
@@ -104,7 +103,8 @@ class _ChatTileState extends State<ChatTile> {
                       key: key,
                       messageId: msg.id,
                       text: msg.text,
-                      index:index
+                      index:index,
+                      trace:msg.traceId
                     );
                   } else {
                     return bubbleFromAi(
@@ -140,7 +140,7 @@ class _inputBoxState extends State<inputBox> {
     return Consumer2<xiaotianInputState,xiaotianChatState>
       (builder: (context,inputState,chatState,_) {
         return Container(
-          margin: EdgeInsets.only(bottom: 15.h),
+          margin: EdgeInsets.symmetric(horizontal: 15.h),
           width: 360.w,
           height: 100.h,
           padding: EdgeInsets.only(left:15.w,right: 15.w,top: 15.h,bottom: 5.h),
@@ -148,9 +148,9 @@ class _inputBoxState extends State<inputBox> {
             color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             boxShadow: [
               BoxShadow(
-                color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05),
-                blurRadius: 10.r,
-                offset: Offset(0,4.h)
+                color: WpyTheme.of(context).get(WpyColorKey.beanDarkColor).withOpacity(0.6),
+                blurRadius: 8.r,
+                offset: Offset(0,0)
               )
             ],
             borderRadius: BorderRadius.circular(15.r),
@@ -164,7 +164,7 @@ class _inputBoxState extends State<inputBox> {
                   onTapOutside: (_) => inputState.unFocus(),
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  style: TextStyle(fontSize: 14.sp, height: 1.2.h),
+                  style: TextUtil.base.label(context).w500.PingFangSC.medium.sp(14),
                   strutStyle: StrutStyle(
                     fontSize: 14.sp,
                     height: 1.2.h,
@@ -175,7 +175,7 @@ class _inputBoxState extends State<inputBox> {
                     contentPadding: EdgeInsets.zero,
                     border: InputBorder.none,
                     hintText: chatState.isStreamCompleted ? '给小天老师发消息' : '正在生成答案，请耐心等待',
-                    hintStyle: TextStyle(height: 1.2.h),
+                    hintStyle:TextUtil.base.label(context).w500.PingFangSC.medium.sp(13),
                   ),
                 ),
               ),
@@ -198,16 +198,16 @@ class _inputBoxState extends State<inputBox> {
                           onPressed: () => sendAMessage(inputState.textController.text,context),
                           child:  SvgPicture.asset(
                             'assets/svg_pics/ai_icons/send.svg',
-                            width: 20.r,
-                            height: 20.r,
+                            width: 24.r,
+                            height: 24.r,
                             color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                           ),
                         ) : WButton(
                           onPressed: (){},
                           child:  SvgPicture.asset(
                             'assets/svg_pics/ai_icons/stop.svg',
-                            width: 24.r,
-                            height: 24.r,
+                            width: 28.r,
+                            height: 28.r,
                           ),
                         ),
                       ],
@@ -245,9 +245,9 @@ class WebSearch extends StatelessWidget {
           onPressed: () => inputState.changeOpenSearch(),
           child:  SvgPicture.asset(
             'assets/svg_pics/ai_icons/global.svg',
-            width: 20.r,
-            height: 20.r,
-            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+            width: 24.r,
+            height: 24.r,
+            color: inputState.openSearch ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor) : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
           ),
         ),
         if (inputState.openSearch)

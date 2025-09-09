@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
 import '../../model/xiaotian_state.dart';
 import '../../model/xiaotian_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,8 +12,10 @@ import '../../../commons/widgets/w_button.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'dart:async';
 import '../../util/sendMessage.dart';
+import 'back_dialog.dart';
 
 
 
@@ -23,6 +26,7 @@ class bubbleFromAi extends StatefulWidget {
     this.stream,
     required this.messageId,
     required this.index,
+    this.trace,
   }) : assert(
   (text != null && stream == null) || (text == null && stream != null),
   'Provide either a text or a stream, but not both.',
@@ -32,9 +36,11 @@ class bubbleFromAi extends StatefulWidget {
   final String? text;
   final Stream<ChatEvent>? stream;
   final int index;
+  final String? trace;
   @override
   State<bubbleFromAi> createState() => _bubbleFromAiState();
 }
+
 
 class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClientMixin {
   @override
@@ -43,8 +49,8 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
   final _sourceNotifier = ValueNotifier<List<Source>>([]);
   final _followupNotifier = ValueNotifier<String?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
+  String _trace = '';
 
-  StreamSubscription<ChatEvent>? _streamSubscription;
   @override
   void initState() {
     super.initState();
@@ -53,66 +59,78 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.stream != null) {
-        chatState.changeStreamState(false);
+        chatState.StreamCompleted(false);
+        // 调用我们新的异步处理函数，但不要 await 它
+        _processChatStream().catchError((e, st) {
+          // 捕获 stream 处理过程中可能发生的任何错误
+          if (mounted) {
+            _errorNotifier.value = e.toString();
+            setState(() {
+              chatState.StreamCompleted(true);
+            });
+            print("Stream processing error: $e\n$st");
+          }
+        });
       } else if (widget.text != null) {
-        chatState.changeStreamState(true);
+        // 这是当 widget 从历史记录加载时，直接显示文本
+        chatState.StreamCompleted(true);
+        _textNotifier.value = widget.text!;
       }
     });
+  }
 
-    if (widget.stream != null) {
-      chatState.changeStreamState(false);
-      _streamSubscription = widget.stream!.listen(
-            (event) {
-          switch (event.type) {
-            case 'token':
-              final token = event.data['token'] as String;
-              if (mounted) {
-                _textNotifier.value += token;
-              }
-              break;
-            case 'source':
-              final list = (event.data as List<Source>);
-              _sourceNotifier.value = list;
-              break;
-            case 'followup':
-              _followupNotifier.value = event.data['question'] as String;
-              break;
-            case 'error':
-              _errorNotifier.value = event.data['message'] as String;
-              break;
-            case 'trace_id':
-              debugPrint("trace_id: ${event.data['trace_id']}");
-              break;
-          }
-        },
-        onError: (error) {
+  /// 使用 "await for" 循环来顺序处理 Stream 事件
+  Future<void> _processChatStream() async {
+    // 确保 stream 存在
+    if (widget.stream == null) return;
+
+    await for (final event in widget.stream!) {
+      // 如果 widget 已经被销毁了，就立刻停止处理
+      if (!mounted) break;
+
+      switch (event.type) {
+        case 'token':
+          final token = event.data['token'] as String;
+
+          await Future.delayed(Duration(milliseconds: 50 + (10 * token.length))); // 我把延迟调到50ms，效果更明显
+
           if (mounted) {
-            _errorNotifier.value = error.toString();
-            setState(() {
-              chatState.changeStreamState(true);
-            });
+            _textNotifier.value += token;
           }
-        },
-        onDone: () {
-          if (mounted) {
-            setState(() {
-              chatState.changeStreamState(true);
-            });
-            context.read<xiaotianChatState>().completeMessageStream(
-              widget.messageId,
-              _textNotifier.value,
-            );
-          }
-        },
+          break;
+        case 'source':
+          final list = (event.data as List<Source>);
+          _sourceNotifier.value = list;
+          break;
+        case 'followup':
+          _followupNotifier.value = event.data['question'] as String;
+          break;
+        case 'error':
+          _errorNotifier.value = event.data['message'] as String;
+          break;
+        case 'trace_id':
+          _trace = event.data['trace_id'];
+          print(_trace);
+          break;
+      }
+    }
+
+    if (mounted) {
+      final chatState = context.read<xiaotianChatState>();
+      setState(() {
+        chatState.StreamCompleted(true);
+      });
+      // 保存最终结果
+      context.read<xiaotianChatState>().completeMessageStream(
+        widget.messageId,
+        _textNotifier.value,
       );
-    } else if (widget.text != null) {
-      _textNotifier.value = widget.text!;
     }
   }
 
   @override
   void dispose() {
-    _streamSubscription?.cancel();
+    // _streamSubscription?.cancel();
     _textNotifier.dispose();
     _sourceNotifier.dispose();
     _followupNotifier.dispose();
@@ -217,21 +235,58 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                     WButton(
                       child: SvgPicture.asset(
                         'assets/svg_pics/ai_icons/copy.svg',
-                        width: 16.r,
-                        height: 16.r,
+                        width: 20.r,
+                        height: 20.r,
                       ),
-                      onPressed: () =>
-                          Clipboard.setData(ClipboardData(text: text)),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: text));
+                        ToastProvider.success('复制成功');
+                      }
                     ),
                     SizedBox(width: 12.w),
                     //重新生成回答
                     WButton(
                       child:  SvgPicture.asset(
                       'assets/svg_pics/ai_icons/resend.svg',
-                      width: 16.r,
-                      height: 16.r,
+                      width: 20.r,
+                      height: 20.r,
                       ),
                       onPressed: () => reSendQuestion(context,widget.index),
+                    ),
+                    SizedBox(width: 12.w),
+                    //点赞
+                    WButton(
+                      child:  SvgPicture.asset(
+                        'assets/svg_pics/ai_icons/like.svg',
+                        width: 20.r,
+                        height: 20.r,
+                      ),
+                      onPressed: (){
+                        final trace = _trace != '' ? _trace : widget.trace;
+                        print(trace);
+                        final fb = FeedBack(traceId: trace, likeCount: '1');
+                        feedBackPost(fb);
+                        ToastProvider.success('点赞成功');
+                      },
+                    ),
+                    SizedBox(width: 12.w),
+                    //点踩
+                    WButton(
+                      child:  SvgPicture.asset(
+                        'assets/svg_pics/ai_icons/unlike.svg',
+                        width: 20.r,
+                        height: 20.r,
+                      ),
+                      onPressed: () async {
+                        final  Map<String,String>? result = await showFeedbackDialog(
+                          context,
+                          hint: '请输入你的意见',
+                        );
+                        final trace = _trace != '' ? _trace : widget.trace;
+                        final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result?['text'],state: result?['code']);
+                        feedBackPost(fb);
+                        ToastProvider.success('反馈成功');
+                      },
                     ),
                   ],
                 );
@@ -272,37 +327,43 @@ class bubbleFromUser extends StatelessWidget {
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               decoration: BoxDecoration(
-                color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
+                color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
                 text,
-                style: TextUtil.base.PingFangSC.label(context).normal.w400.sp(14),
+                style: TextUtil.base.PingFangSC.bright(context).normal.w400.sp(14),
               ),
             ),
             // 气泡下的按钮
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                //复制
                 WButton(
                   child:  SvgPicture.asset(
                   'assets/svg_pics/ai_icons/copy.svg',
-                    width: 16.r,
-                    height: 16.r,
+                    width: 20.r,
+                    height: 20.r,
                   ),
-                  onPressed: () =>Clipboard.setData(ClipboardData(text: text)),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: text));
+                    ToastProvider.success('复制成功');
+                  }
                 ),
                 SizedBox(width: 12.w),
+                //重新发送
                 WButton(
                   child:  SvgPicture.asset(
                   'assets/svg_pics/ai_icons/edit.svg',
-                  width: 16.r,
-                  height: 16.r,
+                  width: 20.r,
+                  height: 20.r,
                   ),
                   onPressed: (){
                     context.read<xiaotianInputState>().onEdit(text);
                   },
                 ),
+
               ],
             ),
           ],
@@ -334,11 +395,11 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
       margin: EdgeInsets.symmetric(vertical: 10.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(10.r),
         border: Border.all(
-          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor).withOpacity(0.4),
-          width: 2.r,
+          color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor).withOpacity(0.4),
+          width: 1.r,
         ),
         boxShadow: [
           BoxShadow(
@@ -354,8 +415,13 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
           // 头部行
           Row(
             children: [
-              Text('信息来源 ${widget.source.length}',style: TextUtil.base.label(context).PingFangSC.w500.sp(14),),
-              SizedBox(width: 6.w),
+              Row(
+                children: [
+                  Text('信息来源  ',style: TextUtil.base.label(context).PingFangSC.w500.sp(14),),
+                  Text('${widget.source.length}',style: TextUtil.base.label(context).PingFangSC.w600.sp(14),),
+                ],
+              ),
+              SizedBox(width: 4.w),
               WButton(
                 onPressed: () {
                   setState(() {
@@ -418,10 +484,10 @@ Widget followUp(BuildContext context,String title,VoidCallback onTap) {
       //发送关联问题
     child: Container(
         margin: EdgeInsets.symmetric(vertical: 10.h),
-        padding: EdgeInsets.symmetric(vertical:10.h,horizontal: 15.w),
+        padding: EdgeInsets.symmetric(vertical:8.h,horizontal: 12.w),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
-            gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.primaryGradient),
+            color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
             boxShadow: [
               BoxShadow(
                   offset: Offset(0,4.h),
@@ -432,7 +498,7 @@ Widget followUp(BuildContext context,String title,VoidCallback onTap) {
         ),
         child: RichText(
           text: TextSpan(
-            style: TextUtil.base.PingFangSC.bright(context).w400.medium.sp(12),
+            style: TextUtil.base.PingFangSC.label(context).w400.medium.sp(12),
             children: [
               TextSpan(text: title),
               WidgetSpan(

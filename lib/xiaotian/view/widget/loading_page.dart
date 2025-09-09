@@ -79,7 +79,7 @@ Widget holderBubble(BuildContext context, double width, double height,
           AnimatedBuilder(
             animation: controller,
             builder: (context, child) {
-              final opacity = 0.3 + 0.5 * controller.value; // 在 0.4~0.7 之间变动
+              final opacity = 0.1 + 0.4 * controller.value; // 在 0.4~0.7 之间变动
               return Container(
                 width: width.w,
                 height: height.h,

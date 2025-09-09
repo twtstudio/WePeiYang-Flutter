@@ -50,14 +50,14 @@ class HistoryChatMessage {
   final String content;
   final bool file;
   final int likeCount;
-  final String? traceId;
+  final String traceId;
 
   HistoryChatMessage({
     required this.role,
     required this.content,
     required this.file,
     required this.likeCount,
-    this.traceId,
+    required this.traceId,
   });
 
   factory HistoryChatMessage.fromJson(Map<String, dynamic> m) {
@@ -66,7 +66,7 @@ class HistoryChatMessage {
       content: m['content'],
       file: m['file'] == true,
       likeCount: int.tryParse(m['likeCount']?.toString() ?? '0') ?? 0,
-      traceId: m['trace_id'],
+      traceId: m['trace_id'] as String? ?? '',
     );
   }
 
@@ -110,4 +110,18 @@ class AiMessage extends ChatMessage {
     this.traceId,
     this.stream,
   }) : super('ai');
+}
+
+class FeedBack {
+  final traceId;
+  final likeCount;
+  final String? state;
+  final String? feedbackInformation;
+
+  FeedBack({
+    required this.traceId,
+    required this.likeCount,
+    this.state,
+    this.feedbackInformation
+  });
 }

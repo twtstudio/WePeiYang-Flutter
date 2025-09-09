@@ -88,6 +88,7 @@ class bodyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
           child: Consumer<xiaotianChatState>(
@@ -99,7 +100,26 @@ class bodyPage extends StatelessWidget {
           ),
         ),
         //输入框
-        const SafeArea(child: inputBox()),
+        SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            inputBox(),
+            // 临时把字号调大/颜色调明显以便调试
+            Text(
+              '内容由 AI 生成，请仔细甄别',
+              style: TextUtil.base.labelWithOp(context).PingFangSC.w500.sp(10),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
+              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(8),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 4.h,)
+          ],
+        ),)
       ],
     );
   }

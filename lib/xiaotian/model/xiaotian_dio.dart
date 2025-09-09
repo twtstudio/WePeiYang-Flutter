@@ -78,10 +78,10 @@ class AiTjuApi {
         .transform(const LineSplitter()); // -> Stream<String> 每行
 
     await for (final line in lines) {
-      print("原始行: $line");
+      // print("原始行: $line");
 
       if (!line.startsWith('data:')) {
-        print("不是 data: $line");
+        // print("不是 data: $line");
         continue;
       }
 
@@ -91,7 +91,7 @@ class AiTjuApi {
 
       try {
         final map = jsonDecode(payload);
-        print("解析后的 JSON: $map");
+        // print("解析后的 JSON: $map");
 
         if (map['token'] != null) yield ChatEvent.token(map['token']);
         if (map['sources'] != null) {
@@ -110,7 +110,7 @@ class AiTjuApi {
           yield ChatEvent.error(map['error'].toString());
         }
       } catch (e, st) {
-        print("解析失败: $e\n$st");
+        // print("解析失败: $e\n$st");
       }
     }
   }
@@ -201,6 +201,32 @@ class AiTjuApi {
         .map((e) => HistoryChatMessage.fromJson(e))
         .toList();
     return list;
+  }
+
+  //发送意见反馈
+  Future<Response> updateLikeStatus({
+    required String traceId,
+    required String likeCount,  // "0"=无操作, "1"=赞, "2"=踩
+    String? state,              // "1"=有害, "2"=不准确, "3"=没帮助, "4"=其他
+    String? feedbackInformation,
+  }) async {
+    try {
+      final data = {
+        "traceId": traceId,
+        "likeCount": likeCount,
+        if (state != null) "state": state,
+        if (feedbackInformation != null) "feedbackInformation": feedbackInformation,
+      };
+
+      final response = await dio.post(
+        "/ai-api/questionRecords/exportByTraceId",
+        data: data,
+      );
+      return response;
+    } on DioException catch (e) {
+      print("请求失败: ${e.response?.data ?? e.message}");
+      rethrow;
+    }
   }
 }
 

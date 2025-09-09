@@ -36,7 +36,7 @@ class _TextWatermarkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final textStyle = TextStyle(
-      color: Colors.grey.withOpacity(0.15),
+      color: Colors.grey.withOpacity(0.05),
       fontSize: 18,
     );
     final paragraph = ui.ParagraphBuilder(

@@ -101,7 +101,7 @@ class xiaotianChatState extends ChangeNotifier {
   bool _isStreamCompleted = true;
   bool get isStreamCompleted => _isStreamCompleted;
 
-  void changeStreamState(bool b) {
+  void StreamCompleted(bool b) {
     _isStreamCompleted = b;
     notifyListeners();
   }
@@ -179,7 +179,7 @@ class xiaotianChatState extends ChangeNotifier {
       return AiMessage(
         text: history_message_api.content,
         likeCount: history_message_api.likeCount,
-        traceId: history_message_api.traceId,
+        traceId: history_message_api.traceId!,
         //源和追问不返回传null
       );
     }

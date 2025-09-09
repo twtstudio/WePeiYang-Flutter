@@ -36,8 +36,10 @@ void sendAMessage(String text,BuildContext context) {
     chatState.setSessionId(id);
   }
 
+  //这是用户消息
   chatState.messageAdd(_inputState.makeMessage());
 
+  //请求ai回复
   Stream<ChatEvent> sseStream = AiTjuApi().streamChat(
     prompt: text.trim(),
     sessionId: chatState.sessionId,
@@ -47,9 +49,13 @@ void sendAMessage(String text,BuildContext context) {
     searchType: _inputState.searchType,
   );
 
+  //添加ai消息
   final ai_ans = AiMessage(stream: sseStream);
+  print('ai_ans.stream - start');
   print(ai_ans.stream);
+  print('ai_ans.stream - end');
   chatState.messageAdd(ai_ans);
+
   _inputState.clear();
 
   scrollScreen(inputState.scrollController);
@@ -66,4 +72,19 @@ void scrollScreen(ScrollController controller) {
       );
     }
   });
+}
+
+void feedBackPost(FeedBack fb) async {
+  try {
+    final response = await AiTjuApi().updateLikeStatus(
+        traceId: fb.traceId,
+        likeCount: fb.likeCount,
+        state: fb.state ?? '',
+        feedbackInformation: fb.feedbackInformation ?? ''
+    );
+    print("请求成功: ${response.data}");
+  } catch(e) {
+    print('error:$e');
+  }
+
 }

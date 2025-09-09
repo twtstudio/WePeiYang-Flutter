@@ -51,7 +51,7 @@ class historyTab extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.r)
         ),
-        child: Text(session.title,style: TextUtil.base.labelWithOp(context).PingFangSC.w400.sp(14),),
+        child: Text(session.title,style: TextUtil.base.label(context).PingFangSC.w400.sp(14),maxLines: 1,),
       ),
     );
   }
@@ -141,7 +141,8 @@ class _historyDrawerState extends State<historyDrawer> {
               offset: Offset(0,4.h)
               )
             ],
-            gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.lighterPrimaryGradient),
+            // gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.lighterPrimaryGradient),
+            color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Column(
@@ -188,7 +189,6 @@ class openHistory extends StatelessWidget {
         'assets/svg_pics/ai_icons/more.svg',
         width: 28.r,
         height: 28.r,
-        color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
       ),
       onPressed: () {
         Scaffold.of(context).openDrawer();
