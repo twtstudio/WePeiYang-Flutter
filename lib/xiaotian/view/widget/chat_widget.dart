@@ -125,6 +125,22 @@ class ChatTile extends StatefulWidget {
 }
 
 class _ChatTileState extends State<ChatTile> {
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // 安排一个回调，它会在第一帧绘制完成后执行
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     // 在这里，我们可以安全地访问 Provider
+  //     // listen: false 是一个优化，因为我们只需要获取一次控制器，不需要监听后续变化
+  //     final inputState = Provider.of<xiaotianInputState>(context, listen: false);
+  //
+  //     // 直接调用你已经写好的函数
+  //     scrollScreen(inputState.scrollController);
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<xiaotianChatState, xiaotianInputState>(
