@@ -130,37 +130,43 @@ class _historyDrawerState extends State<historyDrawer> {
 
     grouped.forEach((dateStr, tabs) {
       children.add(
-        Container(
-          margin: EdgeInsets.only(bottom: 8.h,left: 15.w,right: 15.w),
-          padding:EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
-          decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05),
-              blurRadius: 10.r,
-              offset: Offset(0,4.h)
-              )
-            ],
-            // gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.lighterPrimaryGradient),
-            color: WpyTheme.of(context).get(WpyColorKey.skeletonEndBColor),
-            borderRadius: BorderRadius.circular(10.r),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 日期标题
-              Padding(
-                padding: EdgeInsets.only(bottom: 4.h),
-                child: Text(
-                  dateStr,
-                  style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            // 日期标题
+            Padding(
+              padding: EdgeInsets.only(left: 25.w,bottom: 4.h),
+              child: Text(
+                dateStr,
+                style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
               ),
-              // 当天的所有 tab
-              ...tabs.map((tab) => historyTab(session: tab)),
-            ],
-          ),
-        ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 8.h,left: 15.w,right: 15.w),
+              padding:EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05),
+                      blurRadius: 10.r,
+                      offset: Offset(0,4.h)
+                  )
+                ],
+                color: WpyTheme.of(context).get(WpyColorKey.skeletonEndBColor),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 当天的所有 tab
+                  ...tabs.map((tab) => historyTab(session: tab)),
+                ],
+              ),
+            ),
+          ],
+        )
       );
     });
 
