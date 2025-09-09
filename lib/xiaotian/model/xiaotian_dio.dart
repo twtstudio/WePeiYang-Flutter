@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'dart:math';
 import 'xiaotian_model.dart';
+import 'package:flutter/foundation.dart';
 
 const XIAOTIAN_URL = 'https://student.tju.edu.cn/ai';
+
+Map<String, dynamic> parseJson(String payload) {
+  return jsonDecode(payload) as Map<String, dynamic>;
+}
 
 /// API 单例
 class AiTjuApi {
   AiTjuApi._();
   static final _instance = AiTjuApi._();
   factory AiTjuApi() => _instance;
-
 
   final Dio dio = Dio(
     BaseOptions(
@@ -90,7 +94,8 @@ class AiTjuApi {
       if (payload == '[DONE]') break;
 
       try {
-        final map = jsonDecode(payload);
+        // final map = jsonDecode(payload);
+        final map = await compute<String, Map<String, dynamic>>(parseJson, payload);
         // print("解析后的 JSON: $map");
 
         if (map['token'] != null) yield ChatEvent.token(map['token']);

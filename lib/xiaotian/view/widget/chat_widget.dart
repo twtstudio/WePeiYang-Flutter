@@ -217,7 +217,7 @@ class _inputBoxState extends State<inputBox> {
                     contentPadding: EdgeInsets.zero,
                     border: InputBorder.none,
                     hintText: chatState.isStreamCompleted ? '给小天老师发消息' : '正在生成答案，请耐心等待',
-                    hintStyle:TextUtil.base.label(context).w500.PingFangSC.medium.sp(13),
+                    hintStyle:TextUtil.base.labelWithOp(context).w500.PingFangSC.medium.sp(13),
                   ),
                 ),
               ),

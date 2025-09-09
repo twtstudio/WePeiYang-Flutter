@@ -6,7 +6,6 @@ import '../model/xiaotian_model.dart';
 import '../../../commons/preferences/common_prefs.dart';
 
 void reSendQuestion(BuildContext context,int index) {
-  final inputState = context.read<xiaotianInputState>();
   final chatState = context.read<xiaotianChatState>();
   String question = '';
 

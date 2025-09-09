@@ -13,7 +13,7 @@ class xiaotianInputState extends ChangeNotifier {
   int typeIndex = 0;
 
   String searchTime = 'noLimit';         //搜索时间范围
-  String searchType = 'precise';         //搜索类型
+  String searchType = 'no';         //搜索类型
 
   void changeTime(int i) {
     timeIndex = i;
@@ -37,7 +37,7 @@ class xiaotianInputState extends ChangeNotifier {
     timeIndex = 0;
     typeIndex = 0;
     searchTime = 'noLimit';
-    searchType = 'precise';
+    searchType = 'no';
   }
 
 
@@ -49,7 +49,7 @@ class xiaotianInputState extends ChangeNotifier {
   //发送完之后清除输入状态
   void clear() {
     files = [];
-    searchType = 'precise';
+    searchType = 'no';
     searchTime = 'onLimit';
     node.unfocus();
     textController.clear();

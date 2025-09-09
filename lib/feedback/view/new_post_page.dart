@@ -19,8 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
 import 'package:we_pei_yang_flutter/main.dart';
-// import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../commons/themes/template/wpy_theme_data.dart';
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -1077,13 +1076,12 @@ class _ImagesGridViewState extends State<ImagesGridView> {
   static const maxImage = 3;
 
   loadAssets() async {
-    // final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
-    //     pickerConfig: AssetPickerConfig(
-    //         maxAssets: 1,
-    //         requestType: RequestType.image,
-    //         themeColor:
-    //             WpyTheme.of(context).get(WpyColorKey.primaryActionColor)));
-    final assets = [];
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
+        pickerConfig: AssetPickerConfig(
+            maxAssets: 1,
+            requestType: RequestType.image,
+            themeColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryActionColor)));
     if (assets == null) return; // 取消选择图片的情况
     for (int i = 0; i < assets.length; i++) {
       File? file = await assets[i].file;

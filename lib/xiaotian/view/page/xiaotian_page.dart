@@ -78,11 +78,12 @@ class _AiPageState extends State<AiPage> {
               body: Stack(
                 children: [
                   PageControl(context),
-                  Positioned(
-                      bottom: 250.h,
-                      right: 16.w,
-                      child: const Suggestion()
-                  )
+                  if(context.read<xiaotianChatState>().sessionId != '0')
+                    Positioned(
+                        bottom: 250.h,
+                        right: 16.w,
+                        child: const Suggestion()
+                    )
                 ],
               )
           )

@@ -136,7 +136,7 @@ class _historyDrawerState extends State<historyDrawer> {
           children: [
             // 日期标题
             Padding(
-              padding: EdgeInsets.only(left: 25.w,bottom: 4.h),
+              padding: EdgeInsets.only(left: 25.w,bottom: 4.h,top: 4.h),
               child: Text(
                 dateStr,
                 style: TextUtil.base.PingFangSC.label(context).bold.sp(14),

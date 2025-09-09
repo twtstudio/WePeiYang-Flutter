@@ -96,10 +96,11 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
         case 'token':
           final token = event.data['token'] as String;
 
-          await Future.delayed(Duration(milliseconds: 50 + (10 * token.length)));
+          await Future.delayed(Duration(milliseconds: 10 + (10 * token.length)));
 
           if (mounted) {
             _textNotifier.value += token;
+            scrollScreen(context.read<xiaotianInputState>().scrollController);
           }
           break;
         case 'source':
