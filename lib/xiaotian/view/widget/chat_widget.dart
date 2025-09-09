@@ -141,7 +141,6 @@ class _ChatTileState extends State<ChatTile> {
                 }
                 else if (msg is AiMessage) {
                   if (msg.text != null && msg.text!.isNotEmpty) {
-                    chatState.saveLastTraceID(msg.traceId!);
                     return bubbleFromAi(
                       key: key,
                       messageId: msg.id,

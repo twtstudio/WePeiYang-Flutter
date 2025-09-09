@@ -51,6 +51,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
   final _followupNotifier = ValueNotifier<String?>(null);
   final _errorNotifier = ValueNotifier<String?>(null);
   String _trace = '';
+  bool showDec = false;
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
             _errorNotifier.value = e.toString();
             setState(() {
               chatState.StreamCompleted(true);
+              showDec = true;
             });
             print("Stream processing error: $e\n$st");
           }
@@ -75,6 +77,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
       } else if (widget.text != null) {
         // 这是当 widget 从历史记录加载时，直接显示文本
         chatState.StreamCompleted(true);
+        showDec = true;
         _textNotifier.value = widget.text!;
       }
     });
@@ -93,7 +96,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
         case 'token':
           final token = event.data['token'] as String;
 
-          await Future.delayed(Duration(milliseconds: 50 + (10 * token.length))); // 我把延迟调到50ms，效果更明显
+          await Future.delayed(Duration(milliseconds: 50 + (10 * token.length)));
 
           if (mounted) {
             _textNotifier.value += token;
@@ -121,6 +124,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
       final chatState = context.read<xiaotianChatState>();
       setState(() {
         chatState.StreamCompleted(true);
+        showDec = true;
       });
       // 保存最终结果
       context.read<xiaotianChatState>().completeMessageStream(
@@ -187,7 +191,10 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                 },
               ),
             ),
-            aiDeclaration(context),
+
+            if(showDec)
+              aiDeclaration(context),
+
             //信息来源
             ValueListenableBuilder<List<Source>>(
               valueListenable: _sourceNotifier,
@@ -397,7 +404,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.h),
+      margin: EdgeInsets.only(bottom: 10.h),
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
       decoration: BoxDecoration(
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
