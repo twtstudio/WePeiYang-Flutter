@@ -66,7 +66,7 @@ final Map<WpyColorKey, dynamic> greenSchemeDetail = {
   WpyColorKey.primaryLightActionColor: greenMapper,
   WpyColorKey.primaryTextButtonColor: greenMapper,
 
-  WpyColorKey.lightPrimaryContainerColor: greenMapper,
+  WpyColorKey.lightPrimaryContainer: greenMapper,
   WpyColorKey.lighterPrimaryBackGround: greenMapper,
 
   // the Main Action on main page
@@ -240,7 +240,7 @@ final colorSetsList = {
 
   WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
     colors: [
-      greenMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!),
+      greenMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       greenMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),
     ],
     begin: Alignment.topCenter,

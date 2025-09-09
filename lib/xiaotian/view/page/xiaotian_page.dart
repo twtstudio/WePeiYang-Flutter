@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import '../widget/loading_page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../commons/themes/wpy_theme.dart';
+import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../widget/history_widget.dart';
 import '../widget/chat_widget.dart';
 import '../../model/xiaotian_state.dart';
@@ -59,7 +61,7 @@ class _AiPageState extends State<AiPage> {
         child: WatermarkBg(
           text:  CommonPreferences.userNumber.value,
           child:Scaffold(
-            backgroundColor: Colors.transparent,
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.lighterPrimaryBackGround),
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
@@ -109,12 +111,12 @@ class bodyPage extends StatelessWidget {
             // 临时把字号调大/颜色调明显以便调试
             Text(
               '内容由 AI 生成，请仔细甄别',
-              style: TextUtil.base.labelWithOp(context).PingFangSC.w500.sp(10),
+              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
               textAlign: TextAlign.center,
             ),
             Text(
               '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
-              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(8),
+              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 4.h,)

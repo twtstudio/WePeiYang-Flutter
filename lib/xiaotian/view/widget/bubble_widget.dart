@@ -4,7 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/dialog/dialog_layout.dart';
+import 'package:flutter/gestures.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../model/xiaotian_state.dart';
 import '../../model/xiaotian_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -282,8 +283,11 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                           context,
                           hint: '请输入你的意见',
                         );
+                        if(result == null) {
+                          return;
+                        }
                         final trace = _trace != '' ? _trace : widget.trace;
-                        final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result?['text'],state: result?['code']);
+                        final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result['text'],state: result['code']);
                         feedBackPost(fb);
                         ToastProvider.success('反馈成功');
                       },
@@ -452,13 +456,36 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                       text: TextSpan(
                         style: TextUtil.base.PingFangSC.w400.medium.label(context).sp(12),
                         children: [
-                          TextSpan(text: src.title ?? ''),
+                          src.contentType == 'database'
+                              ? TextSpan(
+                            text: src.title ?? '',
+                          )
+                              : TextSpan(
+                            text: src.title ?? '',
+                            style: TextUtil.base.PingFangSC.w400.medium.label(context).sp(12).copyWith(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                final link = src.link ?? '';
+                                if (link.isEmpty) return;
+                                final Uri uri = Uri.parse(link);
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                } else {
+                                  debugPrint('无法打开链接: $link');
+                                }
+                              },
+                          ),
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
                               padding: EdgeInsets.only(left: 4.w),
                               child: Image.asset(
-                                src.contentType == 'database'? 'assets/images/ai/database.png': 'assets/images/ai/form_web.png',
+                                src.contentType == 'database'
+                                    ? 'assets/images/ai/database.png'
+                                    : 'assets/images/ai/form_web.png',
                                 width: 12.w,
                                 height: 12.h,
                                 fit: BoxFit.contain,
@@ -467,7 +494,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   );
                 }).toList(),
               ),
@@ -483,11 +510,11 @@ Widget followUp(BuildContext context,String title,VoidCallback onTap) {
     onTap: onTap,
       //发送关联问题
     child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10.h),
+        margin: EdgeInsets.only(bottom: 10.h),
         padding: EdgeInsets.symmetric(vertical:8.h,horizontal: 12.w),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
-            color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
+            color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainer),
             boxShadow: [
               BoxShadow(
                   offset: Offset(0,4.h),

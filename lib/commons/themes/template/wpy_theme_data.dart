@@ -177,7 +177,7 @@ enum WpyColorKey {
   beanDarkColor,
   beanLightColor,
 
-  lightPrimaryContainerColor,
+  lightPrimaryContainer,
   lighterPrimaryBackGround,
 
 // schedule page background color

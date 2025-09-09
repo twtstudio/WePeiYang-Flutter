@@ -42,8 +42,8 @@ final Map<WpyColorKey, Color> lightSchemeDetail = {
   WpyColorKey.primaryLightActionColor: Color(0xFFA6CFFF),
   WpyColorKey.primaryTextButtonColor: Color(0xFF2D4E9A),
 
-  WpyColorKey.lightPrimaryContainerColor: Color(0xFFE9EEF5),
-  WpyColorKey.lighterPrimaryBackGround: Color(0xFFE4EAF2),
+  WpyColorKey.lightPrimaryContainer: Color(0xFFE9EEF5),
+  WpyColorKey.lighterPrimaryBackGround: Color(0xFFF6F9FD),
 
   // the Main Action on main page
   WpyColorKey.beanDarkColor: Color(0xFF80B7F9),
@@ -226,7 +226,7 @@ final colorSetsList = {
 
   WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
     colors: [
-      lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!,
+      lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!,
       lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!,
     ],
     begin: Alignment.topCenter,

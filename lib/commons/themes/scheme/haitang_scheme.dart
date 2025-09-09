@@ -56,7 +56,7 @@ final Map<WpyColorKey, dynamic> redSchemeDetail = {
   WpyColorKey.primaryLightActionColor: HaiTangMapper,
   WpyColorKey.primaryTextButtonColor: HaiTangMapper,
 
-  WpyColorKey.lightPrimaryContainerColor: HaiTangMapper,
+  WpyColorKey.lightPrimaryContainer: HaiTangMapper,
   WpyColorKey.lighterPrimaryBackGround: HaiTangMapper,
 
   // the Main Action on main page
@@ -239,7 +239,7 @@ final colorSetsList = {
 
   WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
     colors: [
-      HaiTangMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainerColor]!),
+      HaiTangMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       HaiTangMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),
     ],
     begin: Alignment.topCenter,

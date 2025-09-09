@@ -51,22 +51,22 @@ class newChatTile extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text('Hi，同学你好！我是你们24小时不下线的“小天老师”～很高兴见到你',textAlign:TextAlign.center,
+                child: Text('Hi，同学你好！\n 我是你们24小时不下线的“小天老师”\n很高兴见到你~',textAlign:TextAlign.center,
                     style: TextUtil.base.label(context).w400.PingFangSC.bold.sp(21)
                 ),
               ),
               SizedBox(height: 40.h,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: Text('我努力为你提供精准、智能、高效的校内信息咨询服务',textAlign:TextAlign.center,
-                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15)
+                child: Text('我努力为你提供精准、智能、高效的\n校内信息咨询服务',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(height: 20.h,),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: Text('因为我也刚刚和大家见面,我的回答仅供参考,有误的地方请你批评指正哦～快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
-                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15)
+                child: Text('因为我也刚刚和大家见面,我的回答仅供参考\n有误的地方请你批评指正哦～\n快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
                 ),
               ),
             ],

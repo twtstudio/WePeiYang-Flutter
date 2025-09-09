@@ -142,7 +142,7 @@ class _historyDrawerState extends State<historyDrawer> {
               )
             ],
             // gradient: WpyTheme.of(context).getGradient(WpyColorSetKey.lighterPrimaryGradient),
-            color: WpyTheme.of(context).get(WpyColorKey.lightPrimaryContainerColor),
+            color: WpyTheme.of(context).get(WpyColorKey.skeletonEndBColor),
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Column(
@@ -165,6 +165,7 @@ class _historyDrawerState extends State<historyDrawer> {
     });
 
     return Drawer(
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.lighterPrimaryBackGround),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),

@@ -18,16 +18,17 @@
 
 ## 主要功能列表
 
-| 功能                | 描述             |
-| ------------------- | ---------------- |
-| schedule            | 课程表           |
-| map_calender        | 地图校历         |
-| wiki                | 北洋wiki入口     |
-| gpa                 | GPA查询          |
-| lake                | 青年湖底（论坛） |
-| studyroom           | 自习室           |
-| 考试信息（开发中……) | 考试信息         |
-| lost_and_found      | 失物招领         |
+| 功能             | 描述       |
+|----------------|----------|
+| schedule       | 课程表      |
+| map_calender   | 地图校历     |
+| wiki           | 北洋wiki入口 |
+| gpa            | GPA查询    |
+| lake           | 青年湖底（论坛） |
+| studyroom      | 自习室      |
+| 考试信息（开发中……)    | 考试信息     |
+| lost_and_found | 失物招领     |
+| xiaotian       | 小天AI     |
 
 ## Android 原生内容
 
