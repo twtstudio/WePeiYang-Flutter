@@ -52,6 +52,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
   final _errorNotifier = ValueNotifier<String?>(null);
   String _trace = '';
   bool showDec = false;
+  bool getNetWorkError = false;
 
   @override
   void initState() {
@@ -164,7 +165,7 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
               child: ValueListenableBuilder<String>(
                 valueListenable: _textNotifier,
                 builder: (context, text, child) {
-                  if (text.isEmpty && widget.stream != null) {
+                  if (text.isEmpty && widget.stream != null && !getNetWorkError) {
                     return Baseline(
                       baseline: 20,
                       baselineType: TextBaseline.alphabetic,
@@ -179,21 +180,21 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
                     );
                   }
                   return Markdown(
-                    padding: EdgeInsets.symmetric(vertical: 4.h),
-                    data: text,
-                    selectable: true,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    styleSheet:
-                    MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                      p: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                      data: text,
+                      selectable: true,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      styleSheet:
+                      MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                        p: Theme.of(context).textTheme.bodyMedium,
+                      ),
                   );
                 },
               ),
             ),
 
-            if(showDec)
+            if(showDec && !getNetWorkError)
               aiDeclaration(context),
 
             //信息来源
@@ -223,9 +224,12 @@ class _bubbleFromAiState extends State<bubbleFromAi> with AutomaticKeepAliveClie
               valueListenable: _errorNotifier,
               builder: (context, error, child) {
                 if (error == null) return const SizedBox.shrink();
+                getNetWorkError = true;
+                print('error:${error}');
                 return Text(
-                  "⚠ $error",
-                  style: const TextStyle(color: Colors.red),
+                  '遇到错误，请重新生成'
+                  // "⚠ $error",
+                  // style: const TextStyle(color: Colors.red),
                 );
               },
             ),
