@@ -93,7 +93,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
-                      'assets/images/account/map_pei_yang.jpg'
+                      'assets/images/account/map_pei_yang_new.jpg'
                     ], 2, 0));
               },
               child: Stack(
@@ -134,7 +134,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
                       'assets/images/account/map_wei_jin.jpg',
-                      'assets/images/account/map_pei_yang.jpg'
+                      'assets/images/account/map_pei_yang_new.jpg'
                     ], 2, 1));
               },
               child: Stack(
@@ -152,7 +152,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       .get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
                               image: AssetImage(
-                                  'assets/images/account/map_pei_yang.jpg')))),
+                                  'assets/images/account/map_pei_yang_new.jpg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,

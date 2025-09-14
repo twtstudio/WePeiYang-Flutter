@@ -323,6 +323,41 @@ class _PostCardNormalState extends State<PostCardNormal> {
               ),
             ),
           SizedBox(width: 8),
+          if (post.department != null) ...[
+            Container(
+              height: 14,
+              width: 14,
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+              padding: EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
+              ),
+              child: SvgPicture.asset(
+                "assets/svg_pics/lake_butt_icons/hashtag.svg",
+              ),
+            ),
+            SizedBox(width: SplitUtil.w * 2),
+            // Text(
+            //   "部门: ",
+            //   style:
+            //       TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
+            // ),
+            ConstrainedBox(
+              constraints: BoxConstraints(),
+              child: Text(
+                post.department!.name,
+                style: TextUtil.base.NotoSansSC.w400
+                    .sp(14)
+                    .primaryAction(context)
+                    .copyWith(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+          SizedBox(width: 8),
           Spacer(),
           Text(
             post.visitCount.toString() + "次浏览",
@@ -614,8 +649,8 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
     return Column(children: [
       ...widget.post.voteDetail!.options
           .map((e) => Container(
-            margin: EdgeInsets.only(top:5.w),
-            child: Row(
+                margin: EdgeInsets.only(top: 5.w),
+                child: Row(
                   children: [
                     Transform.scale(
                       scale: 0.8,
@@ -656,7 +691,7 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
                     ),
                   ],
                 ),
-          ))
+              ))
           .toList(),
       AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
@@ -729,17 +764,17 @@ class VoteOptionWidget extends StatelessWidget {
         Row(
           children: [
             Container(
-              margin: EdgeInsets.only(top:5.w),
+              margin: EdgeInsets.only(top: 5.w),
               width: 230.h,
-              child: Wrap(
-                  children: [
-                    Text(
-                      option.content + (selected ? " (已选)" : ""),
-                      style:
-                      TextUtil.base.w400.NotoSansSC.sp(14).primary(context).h(1.6),
-                    ),
-                  ]
-              ),
+              child: Wrap(children: [
+                Text(
+                  option.content + (selected ? " (已选)" : ""),
+                  style: TextUtil.base.w400.NotoSansSC
+                      .sp(14)
+                      .primary(context)
+                      .h(1.6),
+                ),
+              ]),
             ),
             Spacer(),
             Text(
