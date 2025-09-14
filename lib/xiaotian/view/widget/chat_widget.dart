@@ -156,20 +156,38 @@ class _ChatTileState extends State<ChatTile> {
                   return bubbleFromUser(key:key,text: msg.content);
                 }
                 else if (msg is AiMessage) {
-                  if (msg.text != null && msg.text!.isNotEmpty) {
+                  if ((msg.text != null && msg.text!.isNotEmpty) || msg.isAi == true) {
                     return bubbleFromAi(
                       key: key,
                       messageId: msg.id,
                       text: msg.text,
                       index:index,
-                      trace:msg.traceId
+                      trace:msg.traceId,
+                      onFinished: (text){
+                        msg.setText(text);
+                      },prompt: msg.prompt,
+                      searchTime: msg.searchTime,
+                      searchType: msg.searchType,
+                      sessionId: msg.sessionId,
+                      userId: msg.userId,
+                      files: msg.files,
+                      headers: msg.headers,
                     );
                   } else {
                     return bubbleFromAi(
                         key: key,
                         messageId: msg.id,
                         stream: msg.stream,
-                        index:index
+                        index:index,
+                        onFinished: (text){
+                          msg.setText(text);
+                        }, prompt: msg.prompt,
+                      searchTime: msg.searchTime,
+                      searchType: msg.searchType,
+                      sessionId: msg.sessionId,
+                      userId: msg.userId,
+                      files: msg.files,
+                      headers: msg.headers,
                     );
                   }
                 }

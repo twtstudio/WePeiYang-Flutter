@@ -40,7 +40,6 @@ class AiTjuApi {
     dio.options.headers.addAll(headers);
   }
 
-  /*  SSE 流式对话 */
   Stream<ChatEvent> streamChat({
     required String prompt,
     required String sessionId,
