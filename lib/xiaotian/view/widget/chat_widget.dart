@@ -156,40 +156,20 @@ class _ChatTileState extends State<ChatTile> {
                   return bubbleFromUser(key:key,text: msg.content);
                 }
                 else if (msg is AiMessage) {
-                  if ((msg.text != null && msg.text!.isNotEmpty) || msg.isAi == true) {
-                    return bubbleFromAi(
-                      key: key,
-                      messageId: msg.id,
-                      text: msg.text,
-                      index:index,
-                      trace:msg.traceId,
-                      onFinished: (text){
-                        msg.setText(text);
-                      },prompt: msg.prompt,
-                      searchTime: msg.searchTime,
-                      searchType: msg.searchType,
-                      sessionId: msg.sessionId,
-                      userId: msg.userId,
-                      files: msg.files,
-                      headers: msg.headers,
-                    );
-                  } else {
-                    return bubbleFromAi(
-                        key: key,
-                        messageId: msg.id,
-                        stream: msg.stream,
-                        index:index,
-                        onFinished: (text){
-                          msg.setText(text);
-                        }, prompt: msg.prompt,
-                      searchTime: msg.searchTime,
-                      searchType: msg.searchType,
-                      sessionId: msg.sessionId,
-                      userId: msg.userId,
-                      files: msg.files,
-                      headers: msg.headers,
-                    );
-                  }
+                  return bubbleFromAi_Stream(
+                    key: key,
+                    messageId: msg.id,
+                    index: index,
+                    onFinished: (text) {
+                      msg.setText(text);
+                    },
+                    prompt: msg.prompt,
+                    searchTime: msg.searchTime,
+                    searchType: msg.searchType,
+                    sessionId: msg.sessionId,
+                    headers: msg.headers,
+                    text: msg.text, // 历史消息直接显示
+                  );
                 }
                 else {
                   return const SizedBox.shrink();
@@ -276,7 +256,10 @@ class _inputBoxState extends State<inputBox> {
                             'assets/svg_pics/ai_icons/send.svg',
                             width: 24.r,
                             height: 24.r,
-                            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                            colorFilter: ColorFilter.mode(
+                              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ) : WButton(
                           onPressed: (){},

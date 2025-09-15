@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,11 +22,10 @@ import 'dart:async';
 import '../../util/sendMessage.dart';
 import 'back_dialog.dart';
 
-class bubbleFromAi extends StatefulWidget {
-  bubbleFromAi({
+class bubbleFromAi_Stream extends StatefulWidget {
+  bubbleFromAi_Stream({
     super.key,
     this.text,
-    this.stream,
     required this.messageId,
     required this.index,
     this.trace,
@@ -50,126 +48,105 @@ class bubbleFromAi extends StatefulWidget {
   Map<String, String>? headers;
   final String messageId;
   final String? text;
-  final Stream<ChatEvent>? stream;
   final int index;
   final String? trace;
   final Function(String) onFinished;
 
   @override
-  State<bubbleFromAi> createState() => _bubbleFromAiState();
+  State<bubbleFromAi_Stream> createState() => _bubbleFromAi_StreamState();
 }
 
-class _bubbleFromAiState extends State<bubbleFromAi>
+class _bubbleFromAi_StreamState extends State<bubbleFromAi_Stream>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  StreamController<ChatEvent> streamController = StreamController<ChatEvent>();
-  String _trace = '';
-  bool showDec = false;
-  bool isAsking = false;
-
-  void prepareToAsk() async {
-    ///TODO:组件内管理没用，放在外面去
-    askTian();
-  }
-
-  void askTian() {
-    /// 此处以下为正式请求
-    bool firstDataEventYielded = false;
-
-    final params = {
-      'prompt': widget.prompt!,
-      'session_id': widget.sessionId!,
-      'user_id': widget.userId!,
-      if (widget.searchTime != null) 'searchTime': widget.searchTime!,
-      if (widget.searchType != null) 'searchType': widget.searchType!,
-    };
-    print(widget.prompt! + " + " + widget.sessionId! + " + " + widget.userId!);
-    final url = Uri.https('student.tju.edu.cn', '/ai-rag/api/chat/stream');
-    var request = http.Request("POST", url);
-    request.bodyFields = params;
-    final String hardcodedAuthToken =
-        "Your Lake Token";
-
-    request.headers["Authorization"] = "Bearer $hardcodedAuthToken";
-    request.headers["Accept"] = "text/event-stream";
-    request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    if (widget.headers != null) request.headers.addAll(widget.headers!);
-    http.Client().send(request).then((response) {
-      final stream = response.stream.transform(utf8.decoder);
-
-      stream.listen((data) {
-        final dataLines = data
-            .split("\n")
-            .where((element) => element.trim().isNotEmpty)
-            .toList();
-        for (String line in dataLines) {
-          line = line.trim();
-          if (line.startsWith('event:')) continue;
-          if (!line.startsWith('data:')) continue;
-          final payload = line.substring(5).trimLeft();
-          if (payload.isEmpty) continue;
-          if (payload == '[DONE]') return;
-
-          try {
-            final map = jsonDecode(payload);
-            if (!firstDataEventYielded &&
-                map.keys.any((k) => [
-                      'token',
-                      'sources',
-                      'question',
-                      'trace_id',
-                      'error'
-                    ].contains(k))) {
-              firstDataEventYielded = true;
-            }
-
-            if (map['token'] != null)
-              streamController.add(ChatEvent.token(map['token']));
-            if (map['question'] != null) {
-              streamController.add(ChatEvent.followup(map['question']));
-              print("发送成功 + " + map["question"]);
-            }
-            if (map['sources'] != null) {
-              final list = (map['sources'] as List)
-                  .map((e) => Source.fromJson(e as Map<String, dynamic>))
-                  .toList();
-              streamController.add(ChatEvent.source(list));
-            }
-            if (map['trace_id'] != null)
-              streamController
-                  .add(ChatEvent.traceId(map['trace_id'].toString()));
-
-            if (map['error'] != null)
-              streamController.add(ChatEvent.error(map['error'].toString()));
-          } catch (e) {}
-        }
-      }, onDone: () {
-        if (!streamController.isClosed) streamController.close();
-      }, onError: (e, st) {
-        if (!streamController.isClosed) streamController.close();
-      }, cancelOnError: false);
-    }).catchError((e, st) {
-      if (!streamController.isClosed) streamController.close();
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    prepareToAsk();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   String text = '';
   List<Source> sources = [];
   String? followup;
   String? error;
-  bool streamCompleted = false;
+  String _trace = '';
+  bool _streamCompleted = false;
+
+  StreamSubscription<ChatEvent>? _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<xiaotianChatState>().StreamCompleted(false);
+      }
+    });
+    // 如果已经有历史文本，就直接显示
+    if (widget.text != null && widget.text!.isNotEmpty) {
+      text = widget.text!;
+      _streamCompleted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          context.read<xiaotianChatState>().StreamCompleted(true);
+        }
+      });
+    } else {
+      // 否则主动发起流请求
+      print(widget.searchType);
+      _subscription = AiTjuApi().streamChat(
+        prompt: widget.prompt ?? '',
+        sessionId: widget.sessionId ?? '',
+        searchTime: widget.searchTime,
+        searchType: widget.searchType,
+        headers: widget.headers,
+      ).listen(
+            (event) {
+          setState(() {
+            switch (event.type) {
+              case 'followup':
+                followup = event.data['question'];
+                break;
+              case 'token':
+                text += event.data['token'] ?? '';
+                break;
+              case 'source':
+                sources = List<Source>.from(event.data);
+                break;
+              case 'trace_id':
+                _trace = event.data['trace_id'] ?? '';
+                _streamCompleted = true;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    context.read<xiaotianChatState>().StreamCompleted(true);
+                  }
+                });
+                widget.onFinished(text);
+                break;
+              case 'error':
+                error = event.data['message'];
+                _streamCompleted = true;
+                break;
+
+            }
+            scrollScreen(context.read<xiaotianInputState>().scrollController);
+          });
+        },
+        onDone: () {
+          setState(() => _streamCompleted = true);
+          widget.onFinished(text);
+        },
+        onError: (err) {
+          setState(() {
+            error = err.toString();
+            _streamCompleted = true;
+          });
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,164 +155,118 @@ class _bubbleFromAiState extends State<bubbleFromAi>
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-        child: StreamBuilder<ChatEvent>(
-          stream: streamController.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final event = snapshot.data!;
-              switch (event.type) {
-                case 'followup':
-
-                  ///TODO:拿不到 FollowUp？
-                  followup = event.data['question'];
-                  break;
-                case 'token':
-                  text += event.data['token'] ?? '';
-                  break;
-                case 'source':
-                  sources = List<Source>.from(event.data);
-                  break;
-                case 'trace_id':
-                  _trace = event.data['trace_id'] ?? '';
-                  streamCompleted = true;
-                  widget.onFinished(text);
-                  break;
-                case 'error':
-                  error = event.data['message'];
-                  break;
-              }
-              scrollScreen(context.read<xiaotianInputState>().scrollController);
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 主体文本
-                Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.92,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 主体文本
+            Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.92,
+              ),
+              child: text.isEmpty
+                  ? Baseline(
+                baseline: 20,
+                baselineType: TextBaseline.alphabetic,
+                child: SizedBox(
+                  width: 25.w,
+                  height: 25.h,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Loading(),
                   ),
-                  child: text.isEmpty
-                      ? Baseline(
-                          baseline: 20,
-                          baselineType: TextBaseline.alphabetic,
-                          child: SizedBox(
-                            width: 25.w,
-                            height: 25.h,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Loading(),
-                            ),
-                          ),
-                        )
-                      : Markdown(
-                          padding: EdgeInsets.symmetric(vertical: 4.h),
-                          data: text,
-                          selectable: true,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          styleSheet:
-                              MarkdownStyleSheet.fromTheme(Theme.of(context))
-                                  .copyWith(
-                            p: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
                 ),
+              )
+                  : Markdown(
+                padding: EdgeInsets.symmetric(vertical: 4.h),
+                data: text,
+                selectable: true,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                styleSheet:
+                MarkdownStyleSheet.fromTheme(Theme.of(context))
+                    .copyWith(
+                  p: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ),
 
-                if (showDec) aiDeclaration(context),
+            if(_streamCompleted) aiDeclaration(context),
 
-                // 信息来源
-                if (sources.isNotEmpty) CollapsibleSourceList(source: sources),
+            // 信息来源
+            if (sources.isNotEmpty) CollapsibleSourceList(source: sources),
 
-                // 跟随问题
-                if (followup != null && followup!.isNotEmpty)
-                  followUp(context, followup!, () {
-                    sendAMessage(followup!, context);
-                  }),
+            // 跟随问题
+            if (followup != null && followup!.isNotEmpty)
+              followUp(context, followup!, () {
+                sendAMessage(followup!, context);
+              }),
 
-                // 错误信息
-                if (error != null)
-                  Text(
-                    "⚠ $error",
-                    style: const TextStyle(color: Colors.red),
-                  ),
+            // 错误信息
+            // if (error != null)
+            //   Text("⚠ $error", style: const TextStyle(color: Colors.red)),
 
-                // 按钮
-                if (streamCompleted && text.isNotEmpty)
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // 复制
-                      WButton(
-                        child: SvgPicture.asset(
-                          'assets/svg_pics/ai_icons/copy.svg',
-                          width: 20.r,
-                          height: 20.r,
-                        ),
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: text));
-                          ToastProvider.success('复制成功');
-                        },
-                      ),
-                      SizedBox(width: 12.w),
-                      // 重新生成
-                      WButton(
-                        child: SvgPicture.asset(
-                          'assets/svg_pics/ai_icons/resend.svg',
-                          width: 20.r,
-                          height: 20.r,
-                        ),
-                        onPressed: () => reSendQuestion(context, widget.index),
-                      ),
-                      SizedBox(width: 12.w),
-                      // 点赞
-                      WButton(
-                        child: SvgPicture.asset(
-                          'assets/svg_pics/ai_icons/like.svg',
-                          width: 20.r,
-                          height: 20.r,
-                        ),
-                        onPressed: () {
-                          final trace = _trace != '' ? _trace : widget.trace;
-                          final fb = FeedBack(traceId: trace, likeCount: '1');
-                          feedBackPost(fb);
-                          ToastProvider.success('点赞成功');
-                        },
-                      ),
-                      SizedBox(width: 12.w),
-                      // 点踩
-                      WButton(
-                        child: SvgPicture.asset(
-                          'assets/svg_pics/ai_icons/unlike.svg',
-                          width: 20.r,
-                          height: 20.r,
-                        ),
-                        onPressed: () async {
-                          final Map<String, String>? result =
-                              await showFeedbackDialog(context,
-                                  hint: '请输入你的意见');
-                          if (result == null) return;
-                          final trace = _trace != '' ? _trace : widget.trace;
-                          final fb = FeedBack(
-                            traceId: trace,
-                            likeCount: '2',
-                            feedbackInformation: result['text'],
-                            state: result['code'],
-                          );
-                          feedBackPost(fb);
-                          ToastProvider.success('反馈成功');
-                        },
-                      ),
-                    ],
-                  ),
-              ],
-            );
-          },
+            // 底部按钮
+            if (_streamCompleted && text.isNotEmpty)
+              buttonForAI(text: text, index: widget.index, trace: _trace),
+          ],
         ),
       ),
     );
   }
 }
+
+//加载历史气泡
+class bubbleFromAi_Text extends StatelessWidget {
+  const bubbleFromAi_Text({
+    super.key,
+    required this.text,
+    required this.messageId,
+    required this.index,
+    this.trace,
+  });
+
+  final String messageId;
+  final String text;
+  final int index;
+  final String? trace;
+  @override
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 10.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- 主体文本 ---
+            Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.92,
+                ),
+                child: Markdown(
+                  padding: EdgeInsets.symmetric(vertical: 4.h),
+                  data: text,
+                  selectable: true,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  styleSheet:
+                  MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                    p: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                )
+            ),
+            //AI声明
+            aiDeclaration(context),
+            //底部按钮
+            buttonForAI(text: text, index: index, trace: trace)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 //用户发言的气泡
 class bubbleFromUser extends StatelessWidget {
@@ -382,6 +313,10 @@ class bubbleFromUser extends StatelessWidget {
                       'assets/svg_pics/ai_icons/copy.svg',
                       width: 20.r,
                       height: 20.r,
+                      colorFilter: ColorFilter.mode(
+                        WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                        BlendMode.srcIn,
+                      ),
                     ),
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: text));
@@ -394,6 +329,10 @@ class bubbleFromUser extends StatelessWidget {
                     'assets/svg_pics/ai_icons/edit.svg',
                     width: 20.r,
                     height: 20.r,
+                    colorFilter: ColorFilter.mode(
+                      WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                      BlendMode.srcIn,
+                    ),
                   ),
                   onPressed: () {
                     context.read<xiaotianInputState>().onEdit(text);
@@ -501,10 +440,10 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                         children: [
                           src.contentType == 'database'
                               ? TextSpan(
-                                  text: src.title ?? '',
+                                  text: src.title,
                                 )
                               : TextSpan(
-                                  text: src.title ?? '',
+                                  text: src.title,
                                   style: TextUtil.base.PingFangSC.w400.medium
                                       .label(context)
                                       .sp(12)
@@ -514,7 +453,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                                       ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () async {
-                                      final link = src.link ?? '';
+                                      final link = src.link;
                                       if (link.isEmpty) return;
                                       final Uri uri = Uri.parse(link);
                                       if (await canLaunchUrl(uri)) {
@@ -525,7 +464,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                                         debugPrint('无法打开链接: $link');
                                       }
                                     },
-                                ),
+                              ),
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
@@ -598,7 +537,7 @@ Widget aiDeclaration(BuildContext context) {
   return Container(
     width: double.infinity,
     margin: EdgeInsets.only(bottom: 10.h),
-    padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 5.w),
+    padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 10.w),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8.r),
       // color: WpyTheme.of(context).get(WpyColorKey.elegantPostTagColor).withOpacity(0.7),
@@ -615,3 +554,93 @@ Widget aiDeclaration(BuildContext context) {
     ),
   );
 }
+
+class buttonForAI extends StatelessWidget {
+  const buttonForAI({super.key,required this.text,required this.index,required this.trace});
+  final text;
+  final index;
+  final trace;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        //复制
+        WButton(
+            child: SvgPicture.asset(
+              'assets/svg_pics/ai_icons/copy.svg',
+              width: 20.r,
+              height: 20.r,
+              colorFilter: ColorFilter.mode(
+                WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                BlendMode.srcIn,
+              ),
+            ),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: text));
+              ToastProvider.success('复制成功');
+            }
+        ),
+        SizedBox(width: 12.w),
+        //重新生成回答
+        WButton(
+          child:  SvgPicture.asset(
+            'assets/svg_pics/ai_icons/resend.svg',
+            width: 20.r,
+            height: 20.r,
+            colorFilter: ColorFilter.mode(
+              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () => reSendQuestion(context,index),
+        ),
+        SizedBox(width: 12.w),
+        //点赞
+        WButton(
+          child:  SvgPicture.asset(
+            'assets/svg_pics/ai_icons/like.svg',
+            width: 20.r,
+            height: 20.r,
+            colorFilter: ColorFilter.mode(
+              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: (){
+            final fb = FeedBack(traceId: trace, likeCount: '1');
+            feedBackPost(fb);
+            ToastProvider.success('点赞成功');
+          },
+        ),
+        SizedBox(width: 12.w),
+        //点踩
+        WButton(
+          child:  SvgPicture.asset(
+            'assets/svg_pics/ai_icons/unlike.svg',
+            width: 20.r,
+            height: 20.r,
+            colorFilter: ColorFilter.mode(
+              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+              BlendMode.srcIn,
+            ),
+          ),
+          onPressed: () async {
+            final  Map<String,String>? result = await showFeedbackDialog(
+              context,
+              hint: '请输入你的意见',
+            );
+            if(result == null) {
+              return;
+            }
+            final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result['text'],state: result['code']);
+            feedBackPost(fb);
+            ToastProvider.success('反馈成功');
+          },
+        ),
+      ],
+    );
+  }
+}
+
