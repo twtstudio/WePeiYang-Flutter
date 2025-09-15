@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'dart:math';
 import 'xiaotian_model.dart';
+
 
 const XIAOTIAN_URL = 'https://student.tju.edu.cn/ai';
 
@@ -21,130 +26,194 @@ class AiTjuApi {
     ),
   );
 
-  // 2. 添加 LogInterceptor 拦截器
-  void setupDio() {
-    dio.interceptors.add(
-      LogInterceptor(
-        requestHeader: true,  // 是否打印请求头
-        requestBody: true,    // 是否打印请求体
-        responseHeader: true, // 是否打印响应头
-        responseBody: false,   // 是否打印响应体
-        error: true,          // 是否打印错误信息
-        logPrint: (obj) => print(obj.toString()), // 使用 print 函数来输出日志
-      ),
-    );
-  }
-
-  /// Cho phép cập nhật header mặc định (Cookie/Authorization...) nếu muốn
-  void updateDefaultHeaders(Map<String, String> headers) {
-    dio.options.headers.addAll(headers);
-  }
-
-  /*  SSE 流式对话 */
   Stream<ChatEvent> streamChat({
     required String prompt,
     required String sessionId,
-    required String userId,
-    List<String>? files,
     String? searchTime,
     String? searchType,
-    Map<String, String>? headers, // header
-  }) async* {
-    // 1. 创建并启动计时器
-    final stopwatch = Stopwatch()..start();
-    bool firstLineReceived = false;
-    bool firstDataEventYielded = false;
+    Map<String, String>? headers,
+  }) {
+    final streamController = StreamController<ChatEvent>();
 
-    print(" T0: [${stopwatch.elapsedMilliseconds}ms] 开始执行 streamChat 方法...");
-
-    final params = <String, dynamic>{
+    final params = {
       'prompt': prompt,
-      'sessionId': sessionId,
-      'userId': userId,
-      if (files != null) 'files': files,
-      if (searchTime != null) 'searchTime': searchTime,
-      if (searchType != null) 'searchType': searchType,
+      'session_id': sessionId,
+      'user_id': CommonPreferences.userNumber.value,        //获取账号学号
+      'searchTime': searchTime ?? 'noLimit',
+      'searchType': searchType ?? 'no',
     };
 
-    try {
-      final rs = await dio.get(
-        '/ai-api/ai/stream',
-        queryParameters: params,
-        options: Options(
-          responseType: ResponseType.stream,
-          headers: {
-            'Accept': 'text/event-stream',
-            ...?headers,
-          },
-        ),
-      );
+    final url = Uri.https('student.tju.edu.cn', '/ai-rag/api/chat/stream');
+    var request = http.Request("POST", url)
+      ..bodyFields = params
+      ..headers.addAll({
+        "Authorization": CommonPreferences.token.value,       //获取账号token
+        "Accept": "text/event-stream",
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...?headers,
+      });
 
-      // 2. 记录 dio.get 完成的时间点
-      // 这代表服务器已响应，HTTP头部已收到，准备开始接收数据流
-      print(" T1: [${stopwatch.elapsedMilliseconds}ms] Dio请求成功，收到服务器响应头(Headers)。");
+    http.Client().send(request).then((response) {
+      final stream = response.stream.transform(utf8.decoder);
+      bool firstDataEventYielded = false;
 
-      final lines = rs.data.stream
-          .cast<List<int>>()
-          .transform(utf8.decoder)
-          .transform(const LineSplitter());
+      stream.listen(
+            (data) {
+          final dataLines = data.split("\n").where((element) => element.trim().isNotEmpty).toList();
+          for (String line in dataLines) {
+            line = line.trim();
+            if (line.startsWith('event:')) continue;
+            if (!line.startsWith('data:')) continue;
 
-      await for (final line in lines) {
-        // 3. 记录收到第一行数据的时间点
-        if (!firstLineReceived) {
-          firstLineReceived = true;
-          print(" T2: [${stopwatch.elapsedMilliseconds}ms] 收到第一行流数据。");
-        }
+            final payload = line.substring(5).trimLeft();
+            if (payload.isEmpty || payload == '[DONE]') continue;
 
-        if (!line.startsWith('data:')) {
-          continue;
-        }
+            try {
+              final map = jsonDecode(payload);
+              if (!firstDataEventYielded && map.keys.any((k) => ['token', 'sources', 'question', 'trace_id', 'error'].contains(k))) {
+                firstDataEventYielded = true;
+              }
 
-        final payload = line.substring(5).trimLeft();
-        if (payload.isEmpty) continue;
-        if (payload == '[DONE]') break;
-
-        try {
-          final map = jsonDecode(payload);
-
-          // 4. 记录解析并准备推送第一个有效事件的时间点
-          if (!firstDataEventYielded) {
-            // 确保这是一个有内容的事件，而不是空的 keep-alive 包
-            if (map.keys.any((k) => ['token', 'sources', 'question', 'trace_id', 'error'].contains(k))) {
-              firstDataEventYielded = true;
-              print(" T3: [${stopwatch.elapsedMilliseconds}ms] 解析并产出(yield)第一个有效数据事件。");
+              if (map['token'] != null) streamController.add(ChatEvent.token(map['token']));
+              if (map['question'] != null) streamController.add(ChatEvent.followup(map['question']));
+              if (map['sources'] != null) {
+                final list = (map['sources'] as List).map((e) => Source.fromJson(e as Map<String, dynamic>)).toList();
+                streamController.add(ChatEvent.source(list));
+              }
+              if (map['trace_id'] != null) streamController.add(ChatEvent.traceId(map['trace_id'].toString()));
+              if (map['error'] != null) streamController.add(ChatEvent.error(map['error'].toString()));
+            } catch (e) {
+              // Ignore json parsing errors for incomplete data chunks
             }
           }
-
-          // --- 原有逻辑 ---
-          if (map['token'] != null) yield ChatEvent.token(map['token']);
-          if (map['sources'] != null) {
-            final list = (map['sources'] as List)
-                .map((e) => Source.fromJson(e as Map<String, dynamic>))
-                .toList();
-            yield ChatEvent.source(list);
+        },
+        onDone: () {
+          if (!streamController.isClosed) streamController.close();
+        },
+        onError: (e, st) {
+          if (!streamController.isClosed) {
+            streamController.add(ChatEvent.error('Stream failed: $e'));
+            streamController.close();
           }
-          if (map['question'] != null) {
-            yield ChatEvent.followup(map['question'].toString());
-          }
-          if (map['trace_id'] != null) {
-            yield ChatEvent.traceId(map['trace_id'].toString());
-          }
-          if (map['error'] != null) {
-            yield ChatEvent.error(map['error'].toString());
-          }
-        } catch (e, st) {
-          // print("解析失败: $e\n$st");
-        }
+        },
+        cancelOnError: true,
+      );
+    }).catchError((e, st) {
+      if (!streamController.isClosed) {
+        streamController.add(ChatEvent.error('Failed to send request: $e'));
+        streamController.close();
       }
-    } on DioException catch(e) {
-      print("Dio Error at [${stopwatch.elapsedMilliseconds}ms]: $e");
-      // 重新抛出异常，让上层能捕获
-      rethrow;
-    } finally {
-      stopwatch.stop();
-      print(" T_End: [${stopwatch.elapsedMilliseconds}ms] streamChat 方法执行完毕。");
-    }
+    });
+
+    return streamController.stream;
   }
+
+
+  /// Cho phép cập nhật header mặc định (Cookie/Authorization...) nếu muốn
+  // void updateDefaultHeaders(Map<String, String> headers) {
+  //   dio.options.headers.addAll(headers);
+  // }
+  //
+  // Stream<ChatEvent> streamChat({
+  //   required String prompt,
+  //   required String sessionId,
+  //   required String userId,
+  //   List<String>? files,
+  //   String? searchTime,
+  //   String? searchType,
+  //   Map<String, String>? headers, // header
+  // }) async* {
+  //   // 1. 创建并启动计时器
+  //   final stopwatch = Stopwatch()..start();
+  //   bool firstLineReceived = false;
+  //   bool firstDataEventYielded = false;
+  //
+  //   print(" T0: [${stopwatch.elapsedMilliseconds}ms] 开始执行 streamChat 方法...");
+  //
+  //   final params = <String, dynamic>{
+  //     'prompt': prompt,
+  //     'sessionId': sessionId,
+  //     'userId': userId,
+  //     if (files != null) 'files': files,
+  //     if (searchTime != null) 'searchTime': searchTime,
+  //     if (searchType != null) 'searchType': searchType,
+  //   };
+  //
+  //   try {
+  //     final rs = await dio.get(
+  //       '/ai-api/ai/stream',
+  //       queryParameters: params,
+  //       options: Options(
+  //         responseType: ResponseType.stream,
+  //         headers: {
+  //           'Accept': 'text/event-stream',
+  //           ...?headers,
+  //         },
+  //       ),
+  //     );
+  //
+  //
+  //     final lines = rs.data.stream
+  //         .cast<List<int>>()
+  //         .transform(utf8.decoder)
+  //         .transform(const LineSplitter());
+  //
+  //     await for (final line in lines) {
+  //       // 3. 记录收到第一行数据的时间点
+  //       if (!firstLineReceived) {
+  //         firstLineReceived = true;
+  //       }
+  //
+  //       if (!line.startsWith('data:')) {
+  //         continue;
+  //       }
+  //
+  //       final payload = line.substring(5).trimLeft();
+  //       if (payload.isEmpty) continue;
+  //       if (payload == '[DONE]') break;
+  //
+  //       try {
+  //         final map = jsonDecode(payload);
+  //
+  //         // 4. 记录解析并准备推送第一个有效事件的时间点
+  //         if (!firstDataEventYielded) {
+  //           // 确保这是一个有内容的事件，而不是空的 keep-alive 包
+  //           if (map.keys.any((k) => ['token', 'sources', 'question', 'trace_id', 'error'].contains(k))) {
+  //             firstDataEventYielded = true;
+  //           }
+  //         }
+  //
+  //         // --- 原有逻辑 ---
+  //         if (map['token'] != null) yield ChatEvent.token(map['token']);
+  //         if (map['sources'] != null) {
+  //           final list = (map['sources'] as List)
+  //               .map((e) => Source.fromJson(e as Map<String, dynamic>))
+  //               .toList();
+  //           yield ChatEvent.source(list);
+  //         }
+  //         if (map['question'] != null) {
+  //           yield ChatEvent.followup(map['question'].toString());
+  //         }
+  //         if (map['trace_id'] != null) {
+  //           yield ChatEvent.traceId(map['trace_id'].toString());
+  //         }
+  //         if (map['error'] != null) {
+  //           yield ChatEvent.error(map['error'].toString());
+  //         }
+  //       } catch (e, st) {
+  //         // print("解析失败: $e\n$st");
+  //       }
+  //     }
+  //   } on DioException catch(e) {
+  //     print("Dio Error at [${stopwatch.elapsedMilliseconds}ms]: $e");
+  //     // 重新抛出异常，让上层能捕获
+  //     rethrow;
+  //   } finally {
+  //     stopwatch.stop();
+  //     print(" T_End: [${stopwatch.elapsedMilliseconds}ms] streamChat 方法执行完毕。");
+  //   }
+  // }
+
 
   /// ============== 1b. Fetch full Answer 链接token==============
   /// Return fullText (token) + rawSse (所有 SSE ）

@@ -46,8 +46,8 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.beanDarkColor: Color(0xFF3687E5),
   WpyColorKey.beanLightColor: Color(0xFF4B81C7),
 
-  WpyColorKey.lightPrimaryContainer: Color(0xFF3687E5),
-  WpyColorKey.lighterPrimaryBackGround: Color(0xFF3687E5),
+  WpyColorKey.lightPrimaryContainer: Color(0xFF515F70),
+  WpyColorKey.lighterPrimaryBackGround: Color(0xFF101010),
 
 // schedule page background color
   WpyColorKey.primaryLighterActionColor: Color(0xFF183C50),

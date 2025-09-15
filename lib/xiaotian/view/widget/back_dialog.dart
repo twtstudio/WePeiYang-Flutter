@@ -62,10 +62,11 @@ class _FeedbackDialogState extends State<_FeedbackDialog> {
               controller: _ctrl,
               autofocus: true,
               maxLines: 4,
+
               textInputAction: TextInputAction.send,
               onSubmitted: (_) => _trace_submit(),
               cursorColor: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
-              style: TextStyle(color: Colors.black87),
+              style:TextUtil.base.label(context).PingFangSC.normal.sp(14),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -241,7 +242,7 @@ class _CustomInputDialogState extends State<_CustomInputDialog> {
               textInputAction: TextInputAction.send,
               onSubmitted: (_) => _submit(),
               cursorColor: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
-              style: TextStyle(color: Colors.black87),
+              style:TextUtil.base.label(context).PingFangSC.normal.sp(14),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),

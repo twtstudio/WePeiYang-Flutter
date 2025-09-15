@@ -288,7 +288,7 @@ class SliverCardsWidget extends StatelessWidget {
     '地图·校历',
     '成绩',
     // '小游戏'
-    '失物招领'
+    // '失物招领'
   ];
 
   SliverCardsWidget(this.cards) :

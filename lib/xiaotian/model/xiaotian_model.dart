@@ -1,18 +1,26 @@
+import 'dart:async';
+
 import 'package:uuid/uuid.dart';
+
 /// ================ 模型 ===============
 
 //ai传回的回答结构
 class ChatEvent {
   final String type; // token / source / followup / trace_id / error
   final dynamic data;
+
   ChatEvent._(this.type, this.data);
 
   factory ChatEvent.token(String text) => ChatEvent._('token', {'token': text});
+
   factory ChatEvent.source(List<Source> list) => ChatEvent._('source', list);
+
   factory ChatEvent.followup(String question) =>
       ChatEvent._('followup', {'question': question});
+
   factory ChatEvent.traceId(String id) =>
       ChatEvent._('trace_id', {'trace_id': id});
+
   factory ChatEvent.error(String msg) => ChatEvent._('error', {'message': msg});
 
   @override
@@ -22,6 +30,7 @@ class ChatEvent {
 //文件来源的结构
 class Source {
   final String title, link, pubTime, contentType;
+
   Source.fromJson(Map<String, dynamic> m)
       : title = m['title'] ?? '',
         link = m['link'] ?? '',
@@ -32,16 +41,17 @@ class Source {
 //历史会话记录的结构
 class HistorySession {
   final String sessionId, title, creationTime;
+
   HistorySession.fromJson(Map<String, dynamic> m)
       : sessionId = m['session_id'],
         title = m['title'],
         creationTime = m['creation_time'];
 
   Map<String, dynamic> toJson() => {
-    'session_id': sessionId,
-    'title': title,
-    'creation_time': creationTime,
-  };
+        'session_id': sessionId,
+        'title': title,
+        'creation_time': creationTime,
+      };
 }
 
 //请求历史消息时返回的消息类型/接口模型
@@ -71,18 +81,19 @@ class HistoryChatMessage {
   }
 
   Map<String, dynamic> toJson() => {
-    'role': role,
-    'content': content,
-    'file': file,
-    'likeCount': likeCount,
-    'trace_id': traceId,
-  };
+        'role': role,
+        'content': content,
+        'file': file,
+        'likeCount': likeCount,
+        'trace_id': traceId,
+      };
 }
 
 //消息类型的抽象类
 abstract class ChatMessage {
   final String role;
   final String id;
+
   ChatMessage(this.role) : id = const Uuid().v4();
 }
 
@@ -103,13 +114,33 @@ class AiMessage extends ChatMessage {
   final String? traceId;
 
   final Stream<ChatEvent>? stream;
+  final bool? isAi;
+  String? prompt;
+  String? sessionId;
+  String? userId;
+  List<String>? files;
+  String? searchTime;
+  String? searchType;
+  Map<String, String>? headers; // header
 
-  AiMessage({
-    this.text,
-    this.likeCount = 0,
-    this.traceId,
-    this.stream,
-  }) : super('ai');
+  AiMessage(
+      {this.isAi,
+      this.text,
+      this.likeCount = 0,
+      this.traceId,
+      this.stream,
+      this.prompt,
+      this.sessionId,
+      this.searchTime,
+      this.searchType,
+      this.headers,
+      this.files,
+      this.userId})
+      : super('ai');
+
+  void setText(String text){
+    this.text = text;
+  }
 }
 
 class FeedBack {
@@ -118,10 +149,9 @@ class FeedBack {
   final String? state;
   final String? feedbackInformation;
 
-  FeedBack({
-    required this.traceId,
-    required this.likeCount,
-    this.state,
-    this.feedbackInformation
-  });
+  FeedBack(
+      {required this.traceId,
+      required this.likeCount,
+      this.state,
+      this.feedbackInformation});
 }
