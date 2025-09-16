@@ -1,8 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
+
+void _log(String msg) {
+  if (kDebugMode) debugPrint('[Schedule] $msg');
+}
 
 class ScheduleService {
   // /// 是否有辅修
@@ -18,25 +23,36 @@ class ScheduleService {
   static void fetchCourses(
       {required OnResult<List<Course>> onResult,
       required OnFailure onFailure}) async {
+    _log('Starting to fetch courses...');
+
     try {
       final courseList = <Course>[];
+      _log('STEP 1: Getting major courses');
 
       // 获取主修课程
       final majorCourses = await _getDetailTable(false);
+      _log('STEP 1: Major courses fetched, count=${majorCourses.length}');
+
       courseList.addAll(majorCourses);
 
       if (ClassesService.hasMinor) {
+        _log('STEP 2: Found minor, getting minor courses...');
+
         await Future.delayed(Duration(milliseconds: 500)); // 防止过快点击
         // 获取辅修课程
         final minorCourses = await _getDetailTable(true);
         courseList.addAll(minorCourses);
         await Future.delayed(Duration(milliseconds: 500));
+        _log('STEP 2: Minor courses fetched, count=${minorCourses.length}');
+
         // 切换为主修，防止gpa获取辅修成绩
         await _getDetailTable(false);
       }
+      _log('All courses fetched successfully.');
 
       onResult(courseList);
     } on DioException catch (e) {
+      _log('Error in fetchCourses: $e');
       onFailure(e);
     }
   }
@@ -98,24 +114,37 @@ class ScheduleService {
     // 如果是本科生
 
     Response<dynamic> res;
+    _log('Starting _getDetailTable for ${getMinor ? "minor" : "major"}...');
+
     if (!isMaster) {
       final projectId = getMinor ? 2 : 1;
+      _log('STEP 3: GET index.action?projectId=$projectId');
+
       await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!index.action?projectId=$projectId");
 
       await Future.delayed(Duration(milliseconds: 100));
+      _log('STEP 4: GET innerIndex.action?projectId=$projectId');
+
       res = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=$projectId");
     }
     // 如果是研究生
     else {
+      _log('STEP 3: GET innerIndex.action for master student...');
+
       res = await ClassesService.spiderDio.get(
           "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
+    _log('STEP 5: Received response. Checking session...');
+
     if (res.data.toString().contains('统一认证系统')) {
+      _log('Error: Session expired.');
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
+    _log('STEP 6: IDs found. Sending POST request for courseTable.action...');
+
     // 获取课表
     res = await ClassesService.spiderDio.post(
       'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
@@ -128,11 +157,14 @@ class ScheduleService {
       },
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
+    _log('STEP 7: Course table data received. Starting to parse HTML...');
     return _parseCourseHTML(res.data.toString());
   }
 
   /// 解析请求到的html课程数据
   static List<Course> _parseCourseHTML(String data) {
+    _log('Parsing HTML data...');
+
     /// 判断会话是否过期
     if (data.contains("本次会话已经被过期"))
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
@@ -237,8 +269,11 @@ class ScheduleService {
         });
         courseList.add(course);
       });
+      _log('HTML parsing finished. Found ${courseList.length} courses.');
+
       return courseList;
     } catch (e) {
+      _log('Error during HTML parsing: $e');
       throw WpyDioException(error: '解析课程数据出错，请重新尝试');
     }
   }
@@ -253,9 +288,12 @@ class ScheduleService {
   static void fetchExam(
       {required OnResult<List<Exam>> onResult,
       required OnFailure onFailure}) async {
+    _log('Starting to fetch exam...');
     try {
       var response = await ClassesService.spiderDio
           .get("http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
+      _log('Exam data received. Checking session...');
+
       if (response.data.toString().contains('统一认证系统')) {
         throw WpyDioException(error: "办公网绑定失效，请重新绑定");
       }

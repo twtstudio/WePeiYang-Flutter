@@ -75,10 +75,10 @@ class CommonPreferences {
   static final isShowExperiment = PrefsBean<bool>('isShowExperiment', true);
 
   /// 失物招领
-  static final lafToken=PrefsBean<String>('lafToken');
-  static final lafGetNum=PrefsBean<List>('lafGetNum',[]);//记录联系方式
-  static final lafGetNumId=PrefsBean<List>('lafGetNumId',[]);//已记录联系方式帖子id
-  static final lafGetDate=PrefsBean<String>('lafGetDate','');
+  static final lafToken = PrefsBean<String>('lafToken');
+  static final lafGetNum = PrefsBean<List>('lafGetNum', []); //记录联系方式
+  static final lafGetNumId = PrefsBean<List>('lafGetNumId', []); //已记录联系方式帖子id
+  static final lafGetDate = PrefsBean<String>('lafGetDate', '');
 
   /// 学期信息
   /// 修改termStart默认值的时候，记得也修改下kotlin/com.twt.service/widget/SchedulePreferences.kt中的默认值
@@ -132,8 +132,8 @@ class CommonPreferences {
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
-  CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
-         HomeRouter.laf),
+    CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
+        HomeRouter.laf),
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
     //     HomeRouter.game)
   ]);
@@ -162,6 +162,10 @@ class CommonPreferences {
   ///是否未点开过小天老师ai
   static final firstUseAI = PrefsBean<bool>('firstUseAI', true);
   static final AIPublicTime = PrefsBean<int>('AIPublicTime', 2025);
+
+  //存储Image Expires
+  static final mapExpires = PrefsBean<int>('mapExpires');
+  static final calendarExpires = PrefsBean<int>('calendarExpires');
 
   /// 应用更新相关配置，使用beta版还是release版微北洋
   static final apkType = PrefsBean<String>('apkType', 'release');
@@ -217,7 +221,7 @@ mixin PreferencesUtil<T> {
   dynamic _getValue(String key) => pref.get(key);
 
   _setValue(T value, String key) async {
-    if(T is List){
+    if (T is List) {
       await pref.setStringList(key, value as List<String>);
     }
     switch (T) {
