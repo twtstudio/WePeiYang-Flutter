@@ -22,8 +22,8 @@ import 'dart:async';
 import '../../util/sendMessage.dart';
 import 'back_dialog.dart';
 
-class bubbleFromAi_Stream extends StatefulWidget {
-  bubbleFromAi_Stream({
+class bubbleFromAi extends StatefulWidget {
+  bubbleFromAi({
     super.key,
     this.text,
     required this.messageId,
@@ -53,10 +53,10 @@ class bubbleFromAi_Stream extends StatefulWidget {
   final Function(String) onFinished;
 
   @override
-  State<bubbleFromAi_Stream> createState() => _bubbleFromAi_StreamState();
+  State<bubbleFromAi> createState() => _bubbleFromAiState();
 }
 
-class _bubbleFromAi_StreamState extends State<bubbleFromAi_Stream>
+class _bubbleFromAiState extends State<bubbleFromAi>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -89,7 +89,6 @@ class _bubbleFromAi_StreamState extends State<bubbleFromAi_Stream>
       });
     } else {
       // 否则主动发起流请求
-      print(widget.searchType);
       _subscription = AiTjuApi().streamChat(
         prompt: widget.prompt ?? '',
         sessionId: widget.sessionId ?? '',
@@ -108,6 +107,7 @@ class _bubbleFromAi_StreamState extends State<bubbleFromAi_Stream>
                 break;
               case 'source':
                 sources = List<Source>.from(event.data);
+                _streamCompleted = true;
                 break;
               case 'trace_id':
                 _trace = event.data['trace_id'] ?? '';

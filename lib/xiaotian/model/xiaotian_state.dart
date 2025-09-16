@@ -29,13 +29,25 @@ class xiaotianInputState extends ChangeNotifier {
 
   void changeOpenSearch() {
     openSearch = !openSearch;
-    if (!openSearch) {resetSearch();}
+    if (openSearch == false) {
+      resetSearch();
+    }
+    else {
+      onSearch();
+    }
     notifyListeners();
+  }
+
+  void onSearch() {
+    timeIndex = 0;
+    typeIndex = 0;
+    searchTime = 'noLimit';
+    searchType = 'precise';
   }
 
   void resetSearch() {
     timeIndex = 0;
-    typeIndex = 0;
+    typeIndex = 1;
     searchTime = 'noLimit';
     searchType = 'no';
   }

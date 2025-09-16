@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'dart:math';
 import 'xiaotian_model.dart';
@@ -39,8 +37,8 @@ class AiTjuApi {
       'prompt': prompt,
       'session_id': sessionId,
       'user_id': CommonPreferences.userNumber.value,        //获取账号学号
-      'searchTime': searchTime ?? 'noLimit',
-      'searchType': searchType ?? 'no',
+      'search_time': searchTime ?? 'noLimit',
+      'search_type': searchType ?? 'no',
     };
 
     final url = Uri.https('student.tju.edu.cn', '/ai-rag/api/chat/stream');

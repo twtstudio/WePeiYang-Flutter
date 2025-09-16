@@ -156,7 +156,7 @@ class _ChatTileState extends State<ChatTile> {
                   return bubbleFromUser(key:key,text: msg.content);
                 }
                 else if (msg is AiMessage) {
-                  return bubbleFromAi_Stream(
+                  return bubbleFromAi(
                     key: key,
                     messageId: msg.id,
                     index: index,
