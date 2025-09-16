@@ -5,14 +5,14 @@ import '../model/xiaotian_state.dart';
 import '../model/xiaotian_model.dart';
 import '../../../commons/preferences/common_prefs.dart';
 
-void reSendQuestion(BuildContext context,int index) {
+void reSendQuestion(BuildContext context, int index) {
   final chatState = context.read<xiaotianChatState>();
   String question = '';
 
   //找到该消息的前一个用户消息
-  for(int i = index; i>=0; i--) {
+  for (int i = index; i >= 0; i--) {
     final msg = chatState.messages[i];
-    if(msg is UserMessage) {
+    if (msg is UserMessage) {
       question = msg.content;
       break;
     }
@@ -21,7 +21,7 @@ void reSendQuestion(BuildContext context,int index) {
   sendAMessage(question, context);
 }
 
-void sendAMessage(String text,BuildContext context) {
+void sendAMessage(String text, BuildContext context) {
   if (text.isEmpty) return;
 
   final inputState = context.read<xiaotianInputState>();
@@ -39,7 +39,9 @@ void sendAMessage(String text,BuildContext context) {
   chatState.messageAdd(_inputState.makeMessage());
 
   //请求ai回复
-  Stream<ChatEvent> sseStream = AiTjuApi().streamChat(
+
+  //添加ai消息
+  final ai_ans = AiMessage(
     prompt: text.trim(),
     sessionId: chatState.sessionId,
     userId: CommonPreferences.userNumber.value,
@@ -47,9 +49,6 @@ void sendAMessage(String text,BuildContext context) {
     searchTime: _inputState.searchTime,
     searchType: _inputState.searchType,
   );
-
-  //添加ai消息
-  final ai_ans = AiMessage(stream: sseStream);
   print('ai_ans.stream - start');
   print(ai_ans.stream);
   print('ai_ans.stream - end');
@@ -79,11 +78,9 @@ void feedBackPost(FeedBack fb) async {
         traceId: fb.traceId,
         likeCount: fb.likeCount,
         state: fb.state ?? '',
-        feedbackInformation: fb.feedbackInformation ?? ''
-    );
+        feedbackInformation: fb.feedbackInformation ?? '');
     print("请求成功: ${response.data}");
-  } catch(e) {
+  } catch (e) {
     print('error:$e');
   }
-
 }
