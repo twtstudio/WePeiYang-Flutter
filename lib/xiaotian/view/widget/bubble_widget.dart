@@ -9,7 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:we_pei_yang_flutter/xiaotian/model/xiaotian_dio.dart';
+import 'package:we_pei_yang_flutter/xiaotian/network/xiaotian_service.dart';
 import '../../model/xiaotian_state.dart';
 import '../../model/xiaotian_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,7 +19,7 @@ import '../../../commons/themes/template/wpy_theme_data.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'dart:async';
-import '../../util/sendMessage.dart';
+import '../sendMessage.dart';
 import 'back_dialog.dart';
 
 class bubbleFromAi extends StatefulWidget {
@@ -89,7 +89,7 @@ class _bubbleFromAiState extends State<bubbleFromAi>
       });
     } else {
       // 否则主动发起流请求
-      _subscription = AiTjuApi().streamChat(
+      _subscription = AiService().streamChat(
         prompt: widget.prompt ?? '',
         sessionId: widget.sessionId ?? '',
         searchTime: widget.searchTime,

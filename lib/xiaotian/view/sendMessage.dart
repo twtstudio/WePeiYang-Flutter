@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../model/xiaotian_dio.dart';
+import '../network/xiaotian_service.dart';
 import '../model/xiaotian_state.dart';
 import '../model/xiaotian_model.dart';
 import '../../../commons/preferences/common_prefs.dart';
@@ -74,7 +74,7 @@ void scrollScreen(ScrollController controller) {
 
 void feedBackPost(FeedBack fb) async {
   try {
-    final response = await AiTjuApi().updateLikeStatus(
+    final response = await AiService().updateLikeStatus(
         traceId: fb.traceId,
         likeCount: fb.likeCount,
         state: fb.state ?? '',

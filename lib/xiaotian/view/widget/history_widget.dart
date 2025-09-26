@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../model/xiaotian_state.dart';
-import '../../model/xiaotian_dio.dart';
+import '../../network/xiaotian_service.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../commons/util/text_util.dart';
 import '../../../commons/themes/wpy_theme.dart';
@@ -25,7 +25,7 @@ class historyTab extends StatelessWidget {
 
         chatState.isLoading(true);
 
-        final hisMes = await AiTjuApi().getConversation(
+        final hisMes = await AiService().getConversation(
           sessionId: session.sessionId,
           userId: CommonPreferences.userNumber.value,
         );
@@ -35,7 +35,7 @@ class historyTab extends StatelessWidget {
               (i) => chatState.fromHistoryToCurrent(hisMes[i]),
         );
 
-        final sessions = await AiTjuApi().getAllSessions(
+        final sessions = await AiService().getAllSessions(
           CommonPreferences.userNumber.value,
         );
           chatState

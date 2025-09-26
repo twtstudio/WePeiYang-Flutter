@@ -8,7 +8,7 @@ import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../widget/history_widget.dart';
 import '../widget/chat_widget.dart';
 import '../../model/xiaotian_state.dart';
-import '../../model/xiaotian_dio.dart';
+import '../../network/xiaotian_service.dart';
 import '../../../commons/preferences/common_prefs.dart';
 import '../widget/water_mark.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,7 +46,7 @@ class _AiPageState extends State<AiPage> {
 
   }
   Future<void> _loadHistory() async {
-    final sessions = await AiTjuApi().getAllSessions(CommonPreferences.userNumber.value);
+    final sessions = await AiService().getAllSessions(CommonPreferences.userNumber.value);
 
     if (mounted) {
       Provider.of<xiaotianChatState>(context, listen: false)
