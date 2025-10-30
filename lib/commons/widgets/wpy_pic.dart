@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -56,6 +59,20 @@ class WpyPic extends StatefulWidget {
           ),
         );
       });
+
+  static Future<void> clearAllCache() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+      String cachePath = '${tempDir.path}/libCachedImageData';
+      final cacheDir = Directory(cachePath);
+
+      if (await cacheDir.exists()) {
+        await for (final FileSystemEntity entity in cacheDir.list()) {
+          await entity.delete(recursive: true);
+        }
+      }
+    } catch (e) {}
+  }
 
   @override
   _WpyPicState createState() => _WpyPicState();

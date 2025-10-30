@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import '../../../commons/local/animation_provider.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../commons/widgets/wpy_pic.dart';
 import '../../../gpa/model/gpa_notifier.dart';
 
 class GeneralSettingPage extends StatefulWidget {
@@ -264,6 +265,43 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           color: WpyTheme.of(context)
                               .get(WpyColorKey.oldListActionColor),
                           size: 22),
+                      SizedBox(width: 15.w),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: WButton(
+                  onPressed: () async {
+                    ToastProvider.running("正在清除缓存...");
+                    try {
+                      await WpyPic.clearAllCache();
+                      ToastProvider.success("图片缓存已清除");
+                    } catch (e) {
+                      ToastProvider.error("清除缓存失败: $e");
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('清除图片缓存', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('清除所有已缓存的图片文件', style: hintTextStyle)
+                          ],
+                        ),
+                      ),
+                      arrow,
                       SizedBox(width: 15.w),
                     ],
                   ),
