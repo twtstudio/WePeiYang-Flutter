@@ -56,6 +56,12 @@ class AiService {
       'prompt': prompt,
       'session_id': sessionId,
       'user_id': CommonPreferences.userNumber.value,
+      'student_info': jsonEncode({
+        'studentNumber': CommonPreferences.userNumber.value,
+        'deptName': CommonPreferences.department.value,
+        'specialty': CommonPreferences.major.value,
+        'education':CommonPreferences.stuType.value,
+      }),
       'search_time': searchTime ?? 'noLimit',
       'search_type': searchType ?? 'no',
     };
