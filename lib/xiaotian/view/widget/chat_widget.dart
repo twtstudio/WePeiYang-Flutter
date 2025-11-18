@@ -9,8 +9,8 @@ import '../../../commons/widgets/w_button.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../model/xiaotian_model.dart';
-import '../../util/sendMessage.dart';
-import '../../model/xiaotian_dio.dart';
+import '../sendMessage.dart';
+import '../../network/xiaotian_service.dart';
 import '../../../commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'back_dialog.dart';
@@ -24,7 +24,7 @@ class openNewSession extends StatelessWidget {
     return WButton(
         onPressed: () async {
           context.read<xiaotianChatState>().openNewSession();
-          final sessions = await AiTjuApi().getAllSessions(CommonPreferences.userNumber.value);
+          final sessions = await AiService().getAllSessions(CommonPreferences.userNumber.value);
           Provider.of<xiaotianChatState>(context, listen: false)
               .setHistorySession(sessions);
         },
