@@ -45,6 +45,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   bool showFBDropdown = false;
 
+  // double get _safeTop => MediaQuery.of(context).padding.top;
   /// 42.h
   static double get searchBarHeight => 42.h;
 
@@ -111,6 +112,15 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   void _onTabChange() {
     LakeUtil.currentTab.value = tabController!.index;
+    if (tabController != null && LakeUtil.tabList.isNotEmpty) {
+      final currentTabIndex = tabController!.index;
+      final isSchoolAffairsTab =
+          LakeUtil.tabList[currentTabIndex].name == '校务专区';
+
+      if (!isSchoolAffairsTab) {
+        fbKey.currentState?.hide();
+      }
+    }
   }
 
   void _initializeTabController(int length) {
@@ -284,13 +294,26 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             width: 2.h,
           ),
         ),
-        tabs: List.generate(
-          tabList.length,
-          (index) => DaTab(
+        onTap: (index) {
+          // final tabName = tabList[index].name;
+          //
+          // if (tabName == '校务专区') {
+          //   fbKey.currentState?.tap();
+          // } else {
+          //   fbKey.currentState?.hide();
+          // }
+        },
+        tabs: List.generate(tabList.length, (index) {
+          final isSchoolAffairs = tabList[index].name == '校务专区';
+          final isSelected = index == tabController!.index;
+
+          return DaTab(
+            selected: isSelected,
             text: tabList[index].shortname,
-            withDropDownButton: tabList[index].name == '校务专区',
-          ),
-        ),
+            withDropDownButton: isSchoolAffairs,
+            onTap: isSchoolAffairs ? () => fbKey.currentState?.tap() : null,
+          );
+        }),
       ),
     );
   }
@@ -443,6 +466,37 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           MediaQuery.of(context).padding.top < searchBarHeight
                               ? searchBarHeight
                               : MediaQuery.of(context).padding.top),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: LakeUtil.showSearch,
+                    builder: (context, showSearch, _) {
+                      final topPadding = MediaQuery.of(context).padding.top;
+                      final totalHeaderHeight = searchBarHeight + tabBarHeight;
+
+                      double headerMarginTop;
+                      if (topPadding < searchBarHeight) {
+                        headerMarginTop = showSearch ? searchBarHeight : 0;
+                      } else {
+                        headerMarginTop = showSearch
+                            ? topPadding
+                            : topPadding - searchBarHeight;
+                      }
+
+                      final calculatedTop = headerMarginTop + totalHeaderHeight;
+
+                      return Positioned(
+                        top: calculatedTop,
+                        left: 0,
+                        right: 0,
+                        child: FbTagsWrap(
+                          key: fbKey,
+                          maxHeight: MediaQuery.of(context).size.height -
+                              calculatedTop -
+                              (Platform.isWindows ? 0 : 52.h) -
+                              MediaQuery.of(context).padding.bottom,
+                        ),
+                      );
+                    },
+                  ),
 
                   // 发帖按钮 addPost
                   Positioned(
@@ -545,7 +599,8 @@ class BannerWidget extends StatelessWidget {
 }
 
 class FbTagsWrap extends StatefulWidget {
-  FbTagsWrap({Key? key}) : super(key: key);
+  final double maxHeight;
+  const FbTagsWrap({Key? key, required this.maxHeight}) : super(key: key);
 
   @override
   FbTagsWrapState createState() => FbTagsWrapState();
@@ -653,5 +708,15 @@ class FbTagsWrapState extends State<FbTagsWrap>
         _tagsContainerBackgroundOpacity = 0;
         _tagsWrapIsShow = false;
       });
+  }
+
+  void hide() {
+    if (_tagsWrapIsShow == true) {
+      if (_tagsContainerCanAnimate) _tagsContainerCanAnimate = false;
+      setState(() {
+        _tagsContainerBackgroundOpacity = 0;
+        _tagsWrapIsShow = false;
+      });
+    }
   }
 }
