@@ -6,7 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # 请保证
 # 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.4.11+163
+version: 4.4.12+168
 
 # Build:
 # flutter build apk \
@@ -147,6 +147,7 @@ flutter:
     - assets/images/
     - assets/images/ai/
     - assets/images/calender/
+    - assets/images/school_map/
     - assets/images/account/
     - assets/images/account/1.5x/
     - assets/images/account/2.0x/
