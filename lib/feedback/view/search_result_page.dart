@@ -97,37 +97,36 @@ class _SearchResultPageState extends State<SearchResultPage> {
     _refreshPost();
   }
 
-  ///目前逻辑是一个page传给后端，想要的效果是分页在前端显示，每次刷新去后端获取新的页
-  ///但现在后端是全部传给前端，所以这个loading要一直是nodata
+
   _onLoading() async {
-    // if (currentPage != totalPage) {
-    //   currentPage++;
-    //   try {
-    //     final result = await FeedbackService.getPosts(
-    //         departmentId: departmentId,
-    //         type: '$type',
-    //         page: currentPage,
-    //         tagId: tagId,
-    //         keyword: keyword,
-    //         searchMode: searchMode);
-    //     final list = result.item1, page = result.item2;
-    //     totalPage = page;
-    //     print(currentPage);
-    //     print(totalPage);
-    //     setState(() => _list.addAll(list));
-    //     _refreshController.loadComplete();
-    //     if (list.isEmpty) _refreshController.loadNoData();
-    //   } catch (e) {
-    //     if (e is DioException) {
-    //       ToastProvider.error(e.error.toString());
-    //       _refreshController.loadFailed();
-    //     } else {
-    //       Logger.reportError(e, StackTrace.current);
-    //     }
-    //   }
-    // } else {
-      _refreshController.loadNoData();
-    // }
+     if (currentPage != totalPage) {
+       currentPage++;
+       try {
+         final result = await FeedbackService.getPosts(
+             departmentId: departmentId,
+             type: '$type',
+             page: currentPage,
+             tagId: tagId,
+             keyword: keyword,
+             searchMode: searchMode);
+         final list = result.item1, page = result.item2;
+         totalPage = page;
+         print(currentPage);
+         print(totalPage);
+         setState(() => _list.addAll(list));
+         _refreshController.loadComplete();
+         if (list.isEmpty) _refreshController.loadNoData();
+       } catch (e) {
+         if (e is DioException) {
+           ToastProvider.error(e.error.toString());
+           _refreshController.loadFailed();
+         } else {
+           Logger.reportError(e, StackTrace.current);
+         }
+       }
+     } else {
+    _refreshController.loadNoData();
+     }
   }
 
   @override
