@@ -25,7 +25,7 @@ class MapCalenderState extends State<MapCalendarPage> {
           toolbarHeight: 40,
           titleSpacing: 0,
           backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_new,
@@ -41,12 +41,12 @@ class MapCalenderState extends State<MapCalendarPage> {
           elevation: 0,
         ),
         backgroundColor:
-        WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(top: 16.h),
-              child: MapAndCalender(),
-            )));
+          padding: EdgeInsets.only(top: 16.h),
+          child: MapAndCalender(),
+        )));
   }
 }
 
@@ -59,18 +59,18 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   BoxDecoration cardDecoration(ctx) => BoxDecoration(
-    color: WpyTheme.of(ctx).get(WpyColorKey.primaryBackgroundColor),
-    borderRadius: BorderRadius.circular(15),
-    boxShadow: [
-      BoxShadow(
-        offset: Offset(0, 4),
-        blurRadius: 8,
-        color: WpyTheme.of(ctx)
-            .get(WpyColorKey.basicTextColor)
-            .withOpacity(0.05),
-      ),
-    ],
-  );
+        color: WpyTheme.of(ctx).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 4),
+            blurRadius: 8,
+            color: WpyTheme.of(ctx)
+                .get(WpyColorKey.basicTextColor)
+                .withOpacity(0.05),
+          ),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +92,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
-                      'assets/images/school_map/map_wei_jin.jpg',
-                      'assets/images/school_map/map_pei_yang_new.jpg'
+                      'assets/images/school_map/wjl.jpeg',
+                      'assets/images/school_map/byy.jpeg'
                     ], 2, 0));
               },
               child: Stack(
@@ -111,7 +111,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
-                                  'assets/images/school_map/map_wei_jin.jpg')))),
+                                  'assets/images/school_map/wjl.jpeg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -133,8 +133,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs([], [
-                      'assets/images/school_map/map_wei_jin.jpg',
-                      'assets/images/school_map/map_pei_yang_new.jpg'
+                      'assets/images/school_map/wjl.jpeg',
+                      'assets/images/school_map/byy.jpeg'
                     ], 2, 1));
               },
               child: Stack(
@@ -152,7 +152,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       .get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
                               image: AssetImage(
-                                  'assets/images/school_map/map_pei_yang_new.jpg')))),
+                                  'assets/images/school_map/byy.jpeg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -219,7 +219,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '24-25第一学期',
+                        '25-26第一学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900
@@ -249,21 +249,21 @@ class MapAndCalenderState extends State<MapAndCalender> {
                       margin: EdgeInsets.fromLTRB(0, 10.h, 18.h, 16.h),
                       decoration: cardDecoration(context).copyWith(
                           image: DecorationImage(
-                            alignment: Alignment.topCenter,
-                            fit: BoxFit.cover,
-                            colorFilter: ColorFilter.mode(
-                                WpyTheme.of(context)
-                                    .get(WpyColorKey.primaryLightestActionColor),
-                                BlendMode.screen),
-                            image: AssetImage('assets/images/calender/second.jpg'),
-                          ))),
+                        alignment: Alignment.topCenter,
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                            WpyTheme.of(context)
+                                .get(WpyColorKey.primaryLightestActionColor),
+                            BlendMode.screen),
+                        image: AssetImage('assets/images/calender/second.jpg'),
+                      ))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '24-25第二学期',
+                        '25-26第二学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900

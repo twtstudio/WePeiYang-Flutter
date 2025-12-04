@@ -20,7 +20,25 @@ class _FestivalPageState extends WbyWebViewState {
 
   @override
   Future<String> getInitialUrl(BuildContext context) async {
-    ///测试qpi，正式为https://www.qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences.lakeToken.value}
-    return 'https://qnhd.twt.edu.cn/message/#/?type=default&token=${await LakeTokenManager().token}';
+    // 获取token
+    var token = await LakeTokenManager().token;
+
+    // 检查是否合格
+    if (token == null || token.isEmpty) {
+      debugPrint("Error：Token 不存在");
+      //如果验证错误可以检查是否需要回到主页登录
+      // return 'https://qnhd.twt.edu.cn/login';
+      return ''; //
+    }
+
+    // Debug 使用
+    String finalUrl =
+        'https://qnhd.twt.edu.cn/message/#/?type=default&token=$token';
+    debugPrint("URL WebView: $finalUrl");
+
+    return finalUrl;
+
+    // ///测试qpi，正式为https://www.qnhd.twt.edu.cn/message/#/?type=default&token=${CommonPreferences.lakeToken.value}
+    // return 'https://qnhd.twt.edu.cn/message/#/?type=default&token=${await LakeTokenManager().token}';
   }
 }
