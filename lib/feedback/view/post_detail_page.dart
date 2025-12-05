@@ -115,8 +115,10 @@ class _PostDetailPageState extends State<PostDetailPage>
       }
     });
     order.addListener(() {
+      print("Oder changed to: ${order.value}");
       _refreshController.requestRefresh();
       CommonPreferences.feedbackFloorSortType.value = order.value;
+      // _refreshController.requestRefresh();
     });
     _getIOSShowBlock();
     initWhileChangingPost();
@@ -831,27 +833,63 @@ class _PostDetailPageState extends State<PostDetailPage>
     return Row(
       children: [
         SizedBox(width: SplitUtil.w * 15),
+        // 这里是‘默认’选项即根据点赞数量 ： order.value = 2
         GestureDetector(
-          onTap: () {
-            order.value = 1;
-          },
-          child: Text('时间正序',
-              style: order.value == 1
-                  ? TextUtil.base.w700.sp(14).primaryAction(context)
-                  : TextUtil.base.label(context).w500.sp(14)),
-        ),
+            onTap: () {
+              if (order.value != 2) {
+                order.value = 2;
+              }
+              _refreshController.requestRefresh();
+            },
+            child: ValueListenableBuilder<int>(
+              valueListenable: order,
+              builder: (context, value, _) {
+                return Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text('默认',
+                      style: value == 2
+                          ? TextUtil.base.w700.sp(14).primaryAction(context)
+                          : TextUtil.base.label(context).w500.sp(14)),
+                );
+              },
+            )),
         SizedBox(width: SplitUtil.w * 15),
+        // 这里为时间⇅
         GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onTap: () {
-            order.value = 0;
+            // 逻辑：如果当前是0 -> 1, 当前是1 或 2 -> 0
+            if (order.value == 0) {
+              order.value = 1;
+            } else {
+              order.value = 0;
+            }
+            ;
           },
-          child: Text('时间倒序',
-              style: order.value == 0
-                  ? TextUtil.base.w700.sp(14).primaryAction(context)
-                  : TextUtil.base.label(context).w500.sp(14)),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: ValueListenableBuilder<int>(
+              valueListenable: order,
+              builder: (context, value, _) {
+                String text = '时间 ⇅';
+                if (value == 0) text = '时间 ↓'; // 时间降序
+                if (value == 1) text = '时间 ↑'; // 时间升序
+
+                bool isTimeSort = (value == 0 || value == 1);
+                return Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(text,
+                      style: isTimeSort
+                          ? TextUtil.base.w700.sp(14).primaryAction(context)
+                          : TextUtil.base.label(context).w500.sp(14)),
+                );
+              },
+            ),
+          ),
         ),
         Spacer(),
         ValueListenableBuilder(
+          // 只看楼主
           valueListenable: onlyOwner,
           builder: (context, value, _) {
             return WButton(
