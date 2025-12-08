@@ -182,21 +182,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             'assets/images/ai.png',
             width: 24.h,
             color: WpyTheme.of(context).primary,
-          )
-              : !CommonPreferences.firstUseAI.value && DateTime.now().year <=  CommonPreferences.AIPublicTime.value ?
+          ) :
           ColoredIcon(
             'assets/images/ai_grey.png',
             width: 24.h,
             //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-          ) : ShimmerOverlayIcon(
-              icon: ColoredIcon(
-                'assets/images/ai/ai_new.png',
-                width: 24.h,
-              ),
-            badge: SvgPicture.asset(
-                'assets/svg_pics/ai_icons/Vector.svg'
-            ),
-            offset: 13,
           ),
           color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           onPressed: () => _tabController.animateTo(2),

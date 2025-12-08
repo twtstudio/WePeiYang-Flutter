@@ -838,8 +838,8 @@ class _PostDetailPageState extends State<PostDetailPage>
             onTap: () {
               if (order.value != 2) {
                 order.value = 2;
+                _refreshController.requestRefresh();
               }
-              _refreshController.requestRefresh();
             },
             child: ValueListenableBuilder<int>(
               valueListenable: order,
@@ -863,8 +863,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               order.value = 1;
             } else {
               order.value = 0;
-            }
-            ;
+            };
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
