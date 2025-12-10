@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/auth/view/login/reset_pw_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/general_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/schedule_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/setting_page.dart';
+import 'package:we_pei_yang_flutter/auth/view/settings/shield_setting_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/toolbar_manage_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
@@ -51,6 +52,7 @@ class AuthRouter {
   /// 个人页 & 设置页
   static String setting = 'setting/home';
   static String generalSetting = 'setting/general_setting';
+  static String shieldSetting = 'setting/shield_setting';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
   static String themeSetting = "setting/theme_setting";
@@ -92,6 +94,7 @@ class AuthRouter {
     avatarBox: (_) => AvatarBoxPage(),
     setting: (_) => SettingPage(),
     generalSetting: (_) => GeneralSettingPage(),
+    shieldSetting: (_) => ShieldSettingPage(),
     scheduleSetting: (_) => ScheduleSettingPage(),
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),

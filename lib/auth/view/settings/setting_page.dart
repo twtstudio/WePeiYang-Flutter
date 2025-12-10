@@ -139,6 +139,39 @@ class _SettingPageState extends State<SettingPage> {
             padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
             decoration: BoxDecoration(
               color:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: InkWell(
+              onLongPress: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (_) => DebugDialog(),
+                );
+              },
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.shieldSetting)
+                      .then((_) => this.setState(() {})),
+              child: Row(
+                children: [
+                  Icon(Icons.filter_alt_outlined,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(child: Text('屏蔽设置', style: mainTextStyle)),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               borderRadius: BorderRadius.circular(12.r),
             ),

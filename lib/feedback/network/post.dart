@@ -106,6 +106,7 @@ class Post {
   /// 依赖有没有 id 来判空
   bool get isNull => this.id == 0;
 
+
   Post.fromJson(Map<String, dynamic> json)
       : id = json["id"] ?? 0,
         variant = json["variant"] == null
@@ -144,9 +145,12 @@ class Post {
         visitCount = json["visit_count"] ?? 0,
         eTag = json["e_tag"] ?? '',
         nickname = json["nickname"] ?? '',
-        level = json["user_info"]["level"] ?? 0,
-        avatar = json["user_info"]["avatar"] ?? '',
-        avatarBox = json["user_info"]["avatar_frame"] ?? '';
+        // level = json["user_info"]["level"] ?? 0,
+        // avatar = json["user_info"]["avatar"] ?? '',
+        // avatarBox = json["user_info"]["avatar_frame"] ?? '';
+        level = (json["user_info"] ?? const {})["level"] ?? 0,
+        avatar = (json["user_info"] ?? const {})["avatar"] ?? '',
+        avatarBox = (json["user_info"] ?? const {})["avatar_frame"] ?? '';
 
   Post.empty()
       : id = 0,

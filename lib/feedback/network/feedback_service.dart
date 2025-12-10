@@ -94,6 +94,10 @@ final feedbackPicPostDio = FeedbackPicPostDio();
 final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
+
+   static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
+   static List<String> shieldComment = CommonPreferences.shieldComment.value;
+
   static getTokenByPw(
     String user,
     String passwd, {
@@ -344,7 +348,10 @@ class FeedbackService with AsyncTimer {
 
     List<Post> list = [];
     for (Map<String, dynamic> json in response.data['data']['list']) {
-      list.add(Post.fromJson(json));
+      final item = Post.fromJson(json);
+      //UID屏蔽
+      if (shieldUserUid.contains(item.uid.toString())) continue;
+      list.add(item);
     }
     return Tuple2(list, response.data['data']['total']);
   }
@@ -560,7 +567,14 @@ class FeedbackService with AsyncTimer {
       );
       List<Floor> commentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
-        commentList.add(Floor.fromJson(json));
+        final item = Floor.fromJson(json);
+        bool isBlocked = shieldComment.any((pattern) {
+          final reg = RegExp(pattern);
+          return reg.hasMatch(item.content);
+        });
+        if (isBlocked) continue;
+        if (shieldUserUid.contains(item.uid.toString())) continue;
+        commentList.add(item);
       }
       onSuccess(commentList, commentResponse.data['data']['total']);
     } on DioException catch (e) {

@@ -6,7 +6,12 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
+import '../../commons/preferences/common_prefs.dart';
+
 class MessageService {
+  static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
+  static List<String> shieldComment = CommonPreferences.shieldComment.value;
+
   static getUnreadMessagesCount(
       {required OnResult<MessageCount> onResult,
       required OnFailure onFailure}) async {
@@ -48,7 +53,14 @@ class MessageService {
       });
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
-        list.add(FloorMessage.fromJson(json));
+        final item = FloorMessage.fromJson(json);
+        bool isBlocked = shieldComment.any((pattern) {
+          final reg = RegExp(pattern);
+          return reg.hasMatch(item.floor.content);
+        });
+        if (isBlocked) continue;
+        if(shieldUserUid.contains(item.floor.uid.toString())) continue;
+        list.add(item);
       }
       onSuccess(list, response.data['total']);
     } on DioException catch (e) {
