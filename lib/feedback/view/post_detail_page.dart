@@ -797,7 +797,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                   ToastProvider.success('删除成功');
                                   Navigator.of(context).popAndPushNamed(
                                       FeedbackRouter.home,
-                                      arguments: 2);
+                                      arguments: 3);
                                 },
                                 onFailure: (e) {
                                   ToastProvider.error(e.error.toString());
