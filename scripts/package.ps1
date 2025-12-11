@@ -31,7 +31,7 @@ function New-Apk {
 
 # RELEASE版 - 正式服务器 + com.twt.service 无注释
 # 打包32和64位
-New-Apk -environment "RELEASE" -platforms "android-arm,android-arm64"
+New-Apk -environment "RELEASE" -platforms "android-arm64"
 
 # ONLINE_TEST版 - 正式服务器 + com.twt.service + 注释
 # 仅打包64位
