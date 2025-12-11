@@ -222,47 +222,44 @@ class PrefsBean<T> with PreferencesUtil<T> {
 mixin PreferencesUtil<T> {
   static SharedPreferences get pref => CommonPreferences.sharedPref;
 
-  dynamic _getValue(String key) => pref.get(key);
-
-  _setValue(T value, String key) async {
-    if (T is List) {
-      await pref.setStringList(key, value as List<String>);
+  dynamic _getValue(String key) {
+    if (T == List<String>) {
+      return pref.getStringList(key);
     }
-    switch (T) {
-      case String:
-        await pref.setString(key, value as String);
-        break;
-      case bool:
-        await pref.setBool(key, value as bool);
-        break;
-      case int:
-        await pref.setInt(key, value as int);
-        break;
-      case double:
-        await pref.setDouble(key, value as double);
-        break;
-      case List:
-        await pref.setStringList(key, value as List<String>);
-        break;
+    return pref.get(key);
+  }
+
+  Future<void> _setValue(T value, String key) async {
+    if (value is List<String>) {
+      await pref.setStringList(key, value);
+      return;
+    }
+    if (value is String) {
+      await pref.setString(key, value);
+      return;
+    }
+    if (value is bool) {
+      await pref.setBool(key, value);
+      return;
+    }
+    if (value is int) {
+      await pref.setInt(key, value);
+      return;
+    }
+    if (value is double) {
+      await pref.setDouble(key, value);
+      return;
     }
   }
 
-  void _clearValue(String key) async => await pref.remove(key);
+  Future<void> _clearValue(String key) async => await pref.remove(key);
 
   dynamic _getDefaultValue() {
-    switch (T) {
-      case String:
-        return '';
-      case int:
-        return 0;
-      case double:
-        return 0.0;
-      case bool:
-        return false;
-      case List:
-        return [];
-      default:
-        return null;
-    }
+    if (T == String) return '';
+    if (T == int) return 0;
+    if (T == double) return 0.0;
+    if (T == bool) return false;
+    if (T == List<String>) return <String>[];
+    return null;
   }
 }
