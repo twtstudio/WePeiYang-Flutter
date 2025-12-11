@@ -58,8 +58,34 @@ class MessageService {
           final reg = RegExp(pattern);
           return reg.hasMatch(item.floor.content);
         });
-        if (isBlocked) continue;
-        if(shieldUserUid.contains(item.floor.uid.toString())) continue;
+        if (isBlocked) {
+          item.floor.content = '**屏蔽内容**';
+        }
+        if(shieldUserUid.contains(item.floor.uid.toString())) {
+          item.floor.nickname = '屏蔽用户';
+          item.floor.avatar = '';
+          item.floor.content = '';
+        };
+        list.add(item);
+      }
+      onSuccess(list, response.data['total']);
+    } on DioException catch (e) {
+      onFailure(e);
+    }
+  }
+
+  static getLakeMessages(
+      {required page,
+        required void Function(List<LakeEmailMessage> list, int totalPage) onSuccess,
+        required OnFailure onFailure}) async {
+    try {
+      var response = await messageDio.get("notices", queryParameters: {
+        "page_size": '20',
+        "page": '$page',
+      });
+      List<LakeEmailMessage> list = [];
+      for (Map<String, dynamic> json in response.data['list']) {
+        final item = LakeEmailMessage.fromJson(json);
         list.add(item);
       }
       onSuccess(list, response.data['total']);

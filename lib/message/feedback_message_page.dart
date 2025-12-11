@@ -28,10 +28,10 @@ import '../commons/widgets/w_button.dart';
 import 'model/message_model.dart';
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
-enum MessageType { like, floor, reply }
+enum MessageType { like, floor, reply ,lake}
 
 extension MessageTypeExtension on MessageType {
-  String get name => ['点赞', '评论', '校务回复'][this.index];
+  String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -66,7 +66,7 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     wd.clear();
     tb.clear();
     _tabController =
-        TabController(length: types.length + 1, vsync: this, initialIndex: 0)
+        TabController(length: types.length, vsync: this, initialIndex: 0)
           ..addListener(() {
             ///这个if避免点击tab时回调两次
             ///https://blog.csdn.net/u010960265/article/details/104982299
@@ -89,14 +89,13 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           return FloorMessagesList();
         case MessageType.reply:
           return ReplyMessagesList();
+        case MessageType.lake:
+          return LakeEmailPage();
         default:
           return SizedBox.shrink();
       }
     }).toList();
-    wd.add(LakeEmailPage(
-      context: context,
-    ));
-    tb.add(MessageTab(isEmail: true));
+    // tb.add(MessageTab());
   }
 
   @override
@@ -216,9 +215,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
 //240529追踪考古,似乎没有包含红点方法,回溯
 class MessageTab extends StatefulWidget {
   final MessageType? type;
-  final bool? isEmail;
 
-  const MessageTab({Key? key, this.type, this.isEmail}) : super(key: key);
+  const MessageTab({Key? key, this.type}) : super(key: key);
 
   @override
   _MessageTabState createState() => _MessageTabState();
@@ -236,27 +234,7 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.isEmail ?? false) {
-      int count = context.select((MessageProvider messageProvider) =>
-          messageProvider.getMessageCount(isEmail: true));
-      return Tab(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(width: _tabPaddingWidth),
-          count == 0
-              ? Text('湖底通知')
-              : badges.Badge(
-                  child: Text('湖底通知'),
-                  badgeContent: Text(
-                    count.toString(),
-                    style: TextUtil.base.reverse(context).sp(8),
-                  )),
-          SizedBox(width: _tabPaddingWidth),
-        ],
-      ));
-    } else {
-      _tabPaddingWidth = MediaQuery.of(context).size.width / 30;
+      _tabPaddingWidth = MediaQuery.of(context).size.width / 40;
       Widget tab = ValueListenableBuilder(
         valueListenable: pageState.currentIndex,
         builder: (_, int current, __) {
@@ -274,7 +252,7 @@ class _MessageTabState extends State<MessageTab> {
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(width: _tabPaddingWidth),
+          // SizedBox(width: _tabPaddingWidth),
           count == 0
               ? tab
               : badges.Badge(
@@ -285,11 +263,10 @@ class _MessageTabState extends State<MessageTab> {
                     count.toString(),
                     style: TextUtil.base.reverse(context).sp(8),
                   )),
-          SizedBox(width: _tabPaddingWidth),
+          // SizedBox(width: _tabPaddingWidth),
         ],
       ));
     }
-  }
 }
 
 class LikeMessagesList extends StatefulWidget {

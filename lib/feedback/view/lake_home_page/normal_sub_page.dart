@@ -725,8 +725,8 @@ class AnnouncementBannerWidget extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, HomeRouter.notice),
+                    // onPressed: () =>
+                    //     Navigator.pushNamed(context, HomeRouter.notice),
                   ),
             Spacer()
           ]),

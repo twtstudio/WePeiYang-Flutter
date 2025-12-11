@@ -57,6 +57,17 @@ class FloorMessage {
         this.floor = Floor.fromJson(json["floor"]);
 }
 
+class LakeEmailMessage {
+  String title;
+  String content;
+  String sender;
+
+  LakeEmailMessage.fromJson(Map<String, dynamic> json)
+      : this.title = json["title"],
+        this.content = json["content"],
+        this.sender = json["sender"];
+}
+
 class NoticeMessage {
   int id;
   DateTime createdAt;
