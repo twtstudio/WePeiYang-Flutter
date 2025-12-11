@@ -17,7 +17,6 @@ class HomeRouter {
   static String hz = 'home/52hz';
   static String mapCalenderPage = 'home/mapCalenderPage';
   static String restartGame = 'home/restartGame';
-  static String notice = 'home/notice';
   static String laf = 'home/laf'; //'home/laf' 现在还不能上线
   static String news = 'home/news';
   static String casQR = 'home/casQR';
@@ -27,7 +26,6 @@ class HomeRouter {
     wiki: (_) => WikiPage(),
     mapCalenderPage: (_) => MapCalendarPage(),
     hz: (_) => FiftyTwoHzPage(),
-    notice: (_) => Builder(builder: (context) => NoticesPage(context: context)),
     laf: (_) => LostAndFoundHomePage(),
     news: (_) => NewsPage(),
     game: (_) => GamePage(),

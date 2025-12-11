@@ -98,6 +98,19 @@ class FeedbackService with AsyncTimer {
    static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
    static List<String> shieldComment = CommonPreferences.shieldComment.value;
 
+   static bool shieldRex(dynamic item) {
+     return shieldComment.any((pattern) {
+       // 判断 pattern 是否包含正则特殊字符
+       final isRegex = RegExp(r'[.^$*+?{}\[\]()|\\]').hasMatch(pattern);
+       if (isRegex) {
+         final reg = RegExp(pattern);
+         return reg.hasMatch(item.content);
+       } else {
+         return pattern == item.content;
+       }
+     });
+   }
+
   static getTokenByPw(
     String user,
     String passwd, {
@@ -568,11 +581,11 @@ class FeedbackService with AsyncTimer {
       List<Floor> commentList = [];
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         final item = Floor.fromJson(json);
-        bool isBlocked = shieldComment.any((pattern) {
-          final reg = RegExp(pattern);
-          return reg.hasMatch(item.content);
-        });
+
+        bool isBlocked = shieldRex(item);
         if (isBlocked) continue;
+
+        //TODO:改成后端？
         if (shieldUserUid.contains(item.uid.toString())) continue;
         commentList.add(item);
       }

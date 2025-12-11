@@ -12,6 +12,19 @@ class MessageService {
   static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
   static List<String> shieldComment = CommonPreferences.shieldComment.value;
 
+  static bool shieldRex(dynamic item) {
+    return shieldComment.any((pattern) {
+      // 判断 pattern 是否包含正则特殊字符
+      final isRegex = RegExp(r'[.^$*+?{}\[\]()|\\]').hasMatch(pattern);
+      if (isRegex) {
+        final reg = RegExp(pattern);
+        return reg.hasMatch(item.content);
+      } else {
+        return pattern == item.content;
+      }
+    });
+  }
+
   static getUnreadMessagesCount(
       {required OnResult<MessageCount> onResult,
       required OnFailure onFailure}) async {
@@ -54,13 +67,11 @@ class MessageService {
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
         final item = FloorMessage.fromJson(json);
-        bool isBlocked = shieldComment.any((pattern) {
-          final reg = RegExp(pattern);
-          return reg.hasMatch(item.floor.content);
-        });
+        bool isBlocked = shieldRex(item);
         if (isBlocked) {
           item.floor.content = '**屏蔽内容**';
         }
+        //TODO:改成后端？
         if(shieldUserUid.contains(item.floor.uid.toString())) {
           item.floor.nickname = '屏蔽用户';
           item.floor.avatar = '';

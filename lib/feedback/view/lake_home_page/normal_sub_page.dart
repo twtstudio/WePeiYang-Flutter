@@ -710,8 +710,8 @@ class AnnouncementBannerWidget extends StatelessWidget {
                                         .sp(15))),
                       ],
                     ),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, HomeRouter.notice),
+                    // onPressed: () =>
+                    //     Navigator.pushNamed(context, HomeRouter.notice),
                   )
                 : WButton(
                     child: SizedBox(
