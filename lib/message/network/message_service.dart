@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import '../../commons/preferences/common_prefs.dart';
 
 class MessageService {
-  static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
   static List<String> shieldComment = CommonPreferences.shieldComment.value;
 
   static bool shieldRex(dynamic item) {
@@ -71,12 +70,7 @@ class MessageService {
         if (isBlocked) {
           item.floor.content = '**屏蔽内容**';
         }
-        //TODO:改成后端？
-        if(shieldUserUid.contains(item.floor.uid.toString())) {
-          item.floor.nickname = '屏蔽用户';
-          item.floor.avatar = '';
-          item.floor.content = '';
-        };
+        //TODO:后端处理拉黑用户
         list.add(item);
       }
       onSuccess(list, response.data['total']);

@@ -64,7 +64,7 @@ dependencies:
 
   fluttertoast: ^8.2.4
 
-  fluwx: ^5.7.5
+#  fluwx: ^5.7.5
 
   gallery_saver:
     git:

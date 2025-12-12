@@ -25,7 +25,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
   @override
   void initState() {
     //载入储存的shieldUserUid和shieldComment
-    _shieldUserUid = CommonPreferences.shieldUserUid.value;
+    //TODO:UserID改成后端
+    // _shieldUserUid = CommonPreferences.shieldUserUid.value;
     _shieldComment = CommonPreferences.shieldComment.value;
     super.initState();
   }
@@ -87,8 +88,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                     }
                     _shieldUserUid.add(uid);
                     //本地储存一次
-                    //TODO:
-                    CommonPreferences.shieldUserUid.value = _shieldUserUid;
+                    //TODO:添加屏蔽UserID网络请求
+                    // CommonPreferences.shieldUserUid.value = _shieldUserUid;
                     ToastProvider.success('屏蔽用户添加成功');
                   },
                   child: Row(
@@ -127,8 +128,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                                     _shieldUserUid.removeAt(index);
                                   });
                                   //本地储存一次
-                                  //TODO:
-                                  CommonPreferences.shieldUserUid.value = _shieldUserUid;
+                                  //TODO:删除屏蔽UserID网络请求
+                                  // CommonPreferences.shieldUserUid.value = _shieldUserUid;
                                   ToastProvider.success('删除成功');
                                 },
                                 child: Icon(Icons.delete_rounded,

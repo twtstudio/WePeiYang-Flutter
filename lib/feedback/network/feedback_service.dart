@@ -95,7 +95,6 @@ final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
 
-   static List<String> shieldUserUid = CommonPreferences.shieldUserUid.value;
    static List<String> shieldComment = CommonPreferences.shieldComment.value;
 
    static bool shieldRex(dynamic item) {
@@ -362,8 +361,6 @@ class FeedbackService with AsyncTimer {
     List<Post> list = [];
     for (Map<String, dynamic> json in response.data['data']['list']) {
       final item = Post.fromJson(json);
-      //UID屏蔽
-      if (shieldUserUid.contains(item.uid.toString())) continue;
       list.add(item);
     }
     return Tuple2(list, response.data['data']['total']);
@@ -584,9 +581,7 @@ class FeedbackService with AsyncTimer {
 
         bool isBlocked = shieldRex(item);
         if (isBlocked) continue;
-
         //TODO:改成后端？
-        if (shieldUserUid.contains(item.uid.toString())) continue;
         commentList.add(item);
       }
       onSuccess(commentList, commentResponse.data['data']['total']);

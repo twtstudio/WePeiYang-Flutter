@@ -25,9 +25,6 @@ class _AiPageState extends State<AiPage> {
   @override
   void initState() {
     super.initState();
-    // AiTjuApi().setupDio();
-    //第一次打开之后写入本地存储
-    CommonPreferences.firstUseAI.value = false;
 
     final state = context.read<xiaotianChatState>();
 

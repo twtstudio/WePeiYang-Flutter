@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
-import 'package:fluwx/fluwx.dart';
 
 // class NoticesPage extends WbyWebView {
 //   NoticesPage({Key? key, required BuildContext context})

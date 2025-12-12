@@ -159,12 +159,7 @@ class CommonPreferences {
   static final firstPrivacy = PrefsBean<bool>('firstPrivacy', true);
   static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 
-  ///是否未点开过小天老师ai
-  static final firstUseAI = PrefsBean<bool>('firstUseAI', true);
-  static final AIPublicTime = PrefsBean<int>('AIPublicTime', 2025);
-
   ///屏蔽词设置
-  static final shieldUserUid = PrefsBean<List<String>>('shieldUserUid',[]);
   static final shieldComment = PrefsBean<List<String>>('shieldComment',[]);
 
   //存储Image Expires
