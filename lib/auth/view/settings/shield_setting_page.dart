@@ -86,7 +86,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                     if(uid == null) {
                       return;
                     }
-                    _shieldUserUid.add(uid);
+                    // _shieldUserUid.add(uid);
                     //本地储存一次
                     //TODO:添加屏蔽UserID网络请求
                     // CommonPreferences.shieldUserUid.value = _shieldUserUid;

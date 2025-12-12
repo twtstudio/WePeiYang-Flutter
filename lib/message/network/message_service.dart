@@ -9,19 +9,34 @@ import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 import '../../commons/preferences/common_prefs.dart';
 
 class MessageService {
-  static List<String> shieldComment = CommonPreferences.shieldComment.value;
+  static List<String> get shieldComment =>
+      CommonPreferences.shieldComment.value;
 
-  static bool shieldRex(dynamic item) {
-    return shieldComment.any((pattern) {
-      // 判断 pattern 是否包含正则特殊字符
+  //判断是否屏蔽
+  static bool CommentBlockCheck(FloorMessage item) {
+    final content = item.floor.content ?? '';
+    for (final pattern in shieldComment) {
+      if (pattern.trim().isEmpty) continue;
+
+      // 判断是否包含正则特殊字符
       final isRegex = RegExp(r'[.^$*+?{}\[\]()|\\]').hasMatch(pattern);
+
       if (isRegex) {
-        final reg = RegExp(pattern);
-        return reg.hasMatch(item.content);
+        // 按正则表达式匹配
+        try {
+          final reg = RegExp(pattern);
+          if (reg.hasMatch(content)) return true;//匹配上
+        } catch (e) {
+          // 正则格式错误，忽略
+          continue;
+        }
       } else {
-        return pattern == item.content;
+        //精准匹配
+        if (pattern == content) return true;//匹配上
       }
-    });
+    }
+
+    return false;
   }
 
   static getUnreadMessagesCount(
@@ -65,8 +80,9 @@ class MessageService {
       });
       List<FloorMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
+
         final item = FloorMessage.fromJson(json);
-        bool isBlocked = shieldRex(item);
+        bool isBlocked = CommentBlockCheck(item);
         if (isBlocked) {
           item.floor.content = '**屏蔽内容**';
         }

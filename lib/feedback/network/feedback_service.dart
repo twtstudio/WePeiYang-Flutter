@@ -95,20 +95,47 @@ final feedbackAdminPostDio = FeedbackAdminPostDio();
 
 class FeedbackService with AsyncTimer {
 
-   static List<String> shieldComment = CommonPreferences.shieldComment.value;
+  static List<String> get shieldComment =>
+      CommonPreferences.shieldComment.value;
 
-   static bool shieldRex(dynamic item) {
-     return shieldComment.any((pattern) {
-       // 判断 pattern 是否包含正则特殊字符
-       final isRegex = RegExp(r'[.^$*+?{}\[\]()|\\]').hasMatch(pattern);
-       if (isRegex) {
-         final reg = RegExp(pattern);
-         return reg.hasMatch(item.content);
-       } else {
-         return pattern == item.content;
-       }
-     });
-   }
+  //判断是否改屏蔽
+  static bool CommentBlockCheck(Floor item) {
+    final content = item.content ?? '';
+    for (final pattern in shieldComment) {
+      if (pattern.trim().isEmpty) continue;
+
+      // 判断是否包含正则特殊字符
+      final isRegex = RegExp(r'[.^$*+?{}\[\]()|\\]').hasMatch(pattern);
+
+      if (isRegex) {
+        // 按正则表达式匹配
+        try {
+          final reg = RegExp(pattern);
+          if (reg.hasMatch(content)) return true;//匹配上
+        } catch (e) {
+          // 正则格式错误，忽略
+          continue;
+        }
+      } else {
+        //精准匹配
+        if (pattern == content) return true;//匹配上
+      }
+    }
+
+    //没匹配上，开始该评论的评论的匹配
+    if(item.subFloors.isNotEmpty) {
+      List<Floor> subFloors = [];
+      for (final subitem in item.subFloors) {
+        if (!CommentBlockCheck(subitem)) {
+          subFloors.add(subitem);
+        }
+      }
+      item.subFloors = subFloors;
+    }
+
+    return false;
+  }
+
 
   static getTokenByPw(
     String user,
@@ -576,12 +603,13 @@ class FeedbackService with AsyncTimer {
         },
       );
       List<Floor> commentList = [];
+
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         final item = Floor.fromJson(json);
-
-        bool isBlocked = shieldRex(item);
-        if (isBlocked) continue;
-        //TODO:改成后端？
+        //判断是否屏蔽
+        bool isBlock = CommentBlockCheck(item);
+        if (isBlock) continue;
+        //用户屏蔽由后端来做
         commentList.add(item);
       }
       onSuccess(commentList, commentResponse.data['data']['total']);
