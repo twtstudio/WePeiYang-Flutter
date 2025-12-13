@@ -138,5 +138,6 @@ class AliyunTokenClient {
 
     return currentTimestamp < (_expireTimestamp! - bufferSeconds);
   }
+
 }
 
