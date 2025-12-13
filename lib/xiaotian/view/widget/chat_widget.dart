@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../widget/bubble_widget.dart';
+import '../widget/hot_topic.dart';
 import '../../model/xiaotian_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,10 +80,92 @@ class Suggestion extends StatelessWidget {
 
 
 
+//开启新页面的占位贴图和推荐话题
+class NewChatTile extends StatefulWidget {
+  const NewChatTile({super.key});
 
-//开启新页面的占位贴图
-class newChatTile extends StatelessWidget {
-  const newChatTile({super.key});
+  @override
+  State<NewChatTile> createState() => _NewChatTileState();
+}
+class _NewChatTileState extends State<NewChatTile> {
+  List<HotTopic> _hotTopics = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchHotTopics();
+  }
+
+
+  void _fetchHotTopics() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+
+      final topics = await AiService().getHotTopics(timeRange: "week");
+
+
+      if (mounted) {
+        setState(() {
+          _hotTopics = topics;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        print("在UI层捕获到错误: $e");
+      }
+    }
+  }
+
+  Widget _buildTopicChips() {
+    // 加载动画
+    if (_isLoading) {
+      return const CircularProgressIndicator(strokeWidth: 2.0);
+    }
+    //如果没有热门话题
+    if (_hotTopics.isEmpty) {
+      return const Text(
+        "暂时没有热门话题哦~",
+        style:TextStyle(color: Colors.grey),
+      );
+    }
+
+    return Wrap(
+      spacing: 12.0,
+      runSpacing: 10.0,
+      alignment: WrapAlignment.center,
+      children: _hotTopics.map((hotTopic) {
+
+        return ActionChip(
+          label: Text(hotTopic.topic),
+
+          labelStyle: TextStyle(
+              color: Colors.blue.shade800,
+              fontSize: 15,
+              fontWeight: FontWeight.w500
+          ),
+          backgroundColor: Colors.blue.shade50,
+          side: BorderSide(color: Colors.blue.shade200, width: 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+
+          onPressed: () {
+            print('点击了话题: ${hotTopic.topic}');
+            sendAMessage(hotTopic.topic, context);
+          },
+        );
+      }).toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +187,12 @@ class newChatTile extends StatelessWidget {
                     style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
                 ),
               ),
-              SizedBox(height: 20.h,),
+              SizedBox(height: 20.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: _buildTopicChips(),
+              ),
+              SizedBox(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 child: Text('因为我也刚刚和大家见面,我的回答仅供参考\n有误的地方请你批评指正哦～\n快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,

@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'dart:math';
 import '../../commons/network/wpy_dio.dart';
 import '../model/xiaotian_model.dart';
+import '../view/widget/hot_topic.dart';
 
 class AIRequestException implements Exception {
   final String message;
@@ -154,6 +155,41 @@ class AiService {
         .map((e) => HistoryChatMessage.fromJson(e))
         .toList();
     return list;
+  }
+
+  /*热门话题推荐*/
+  Future<List<HotTopic>> getHotTopics({String timeRange = 'month'}) async {
+    try {
+      final requestBody = {
+        "time_range": timeRange,
+      };
+
+      final response = await AiTianDio.post(
+        '/api/analysis/hot_topics',
+        data: requestBody,
+      );
+
+      if (response.data['status'] == 'success' && response.data['data'] is List) {
+
+        final List<dynamic> topicListJson = response.data['data'];
+
+        List<HotTopic> topics = topicListJson
+            .map((jsonItem) => HotTopic.fromJson(jsonItem as Map<String, dynamic>))
+            .toList();
+
+        return topics;
+      } else {
+        print('获取热榜业务失败或数据格式不正确: ${response.data}');
+        return [];
+      }
+    } on DioException catch (e) {
+      print("获取热榜请求失败: ${e.response?.data ?? e.message}");
+      return []; // 请求失败时，返回一个空列表
+    } catch (e) {
+      // 捕获其他可能的异常，比如数据解析错误
+      print('获取热榜时发生未知错误: $e');
+      return []; // 同样返回空列表
+    }
   }
 
   //发送意见反馈
