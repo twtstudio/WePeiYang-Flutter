@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../commons/speech_to_text/model/record_controller.dart';
@@ -174,9 +175,9 @@ class _inputBoxState extends State<inputBox> {
   // 1. 定义录音控制器
   // todo (强烈建议将 Key 移至服务端或加密存储，不要直接写在前端)
   final _recordController = RecordController(
-    accessKeyId: "LTAI5tGc3G6r4EEkbrhAXL1k",
-    accessKeySecret: "8BAV7BVqkyKDKzWBPA4W4Lkd8Ivk4k",
-    appKey: "UrF8OYAAvLMNW0oq",
+    accessKeyId: aliyunInfo.accessKeyId,
+    accessKeySecret: aliyunInfo.accessKeySecret,
+    appKey: aliyunInfo.appKey,
   );
   // 用来记录开始录音时的光标位置或已有文本，视需求而定
   String _textBeforeRecording = "";
@@ -305,7 +306,14 @@ class _inputBoxState extends State<inputBox> {
                         builder: (context, child) {
                           bool isProcessing = _recordController.state == RecordState.processing;
                           bool isRecording = _recordController.isRecording;
-
+                          final boxShadow = isRecording
+                              ? [BoxShadow( // 录音时添加阴影
+                            color: Colors.red.withOpacity(0.3),
+                            blurRadius: 8.r,
+                            spreadRadius: 2.r,
+                            offset: Offset(0, 2.r),
+                          )]
+                              : []; // 非录音时无阴影
                           return WButton(
                             onPressed: isProcessing ? null : _toggleRecording,
                             child: isProcessing
@@ -315,12 +323,19 @@ class _inputBoxState extends State<inputBox> {
                               child: CircularProgressIndicator(strokeWidth: 2, color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
                             )
                                 : Icon(
-                              isRecording ? Icons.mic : Icons.mic_none, // todo 这里你可以换成你的 SVG 图片
+                              isRecording ? Icons.mic_rounded : Icons.mic_none, // todo 这里可以换成的 SVG 图片
                               size: 24.r,
                               // 录音时变色
                               color: isRecording
                                   ? Colors.red
                                   : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                              shadows: isRecording?[
+                                Shadow(
+                                  color: Colors.red.withOpacity(0.5),
+                                  blurRadius: 3,
+                                  offset: Offset(2,2),
+                                )
+                              ]:null,
                             ),
                           );
                         },
