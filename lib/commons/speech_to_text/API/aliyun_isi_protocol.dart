@@ -29,6 +29,12 @@ class AliyunAsrResponse {
   }
 }
 
+class aliyunInfo{
+  static const accessKeyId = "LTAI5tGc3G6r4EEkbrhAXL1k";
+  static const accessKeySecret = "8BAV7BVqkyKDKzWBPA4W4Lkd8Ivk4k";
+  static const appKey= "UrF8OYAAvLMNW0oq";
+}
+
 /// 音频编码格式
 enum AudioFormat {
   pcm,
