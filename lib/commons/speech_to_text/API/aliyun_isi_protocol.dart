@@ -30,8 +30,8 @@ class AliyunAsrResponse {
 }
 
 class aliyunInfo{
-  static const accessKeyId = "LTAI5tGc3G6"+"r4EEkbrhAXL1k";
-  static const accessKeySecret = "8BAV7BVqky"+"KDKzWBPA4W4Lkd8Ivk4k";
+  static const accessKeyId = "LTAI5tHMTiiR9"+"DQur9Ue5tu3";
+  static const accessKeySecret = "g6Rsj77LzgTMSSia"+"3MSgs5OVs4sPQQ";
   static const appKey= "UrF8OYA"+"AvLMNW0oq";
 }
 
