@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -32,6 +33,7 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/schedule/page/course_page.dart';
+import '../../commons/speech_to_text/model/record_controller.dart';
 import 'components/official_comment_card.dart';
 import 'components/post_card.dart';
 import 'lake_home_page/lake_notifier.dart';
@@ -79,6 +81,11 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   int preChangeId = 0;
 
+  // 录音控制器
+  late final RecordController _recordController;
+  String _prefixText = ""; // 光标前的文字
+  String _suffixText = ""; // 光标后的文字
+
   ///判断管理员权限
   bool get hasAdmin =>
       CommonPreferences.isSchAdmin.value ||
@@ -122,6 +129,15 @@ class _PostDetailPageState extends State<PostDetailPage>
     });
     _getIOSShowBlock();
     initWhileChangingPost();
+
+    //初始化录音控制器
+    _recordController = RecordController(
+      accessKeyId: aliyunInfo.accessKeyId,
+      accessKeySecret: aliyunInfo.accessKeySecret,
+      appKey: aliyunInfo.appKey,
+    );
+    _recordController.init();
+    _recordController.addListener(_syncVoiceToInput);
   }
 
   void initWhileChangingPost() {
@@ -277,6 +293,9 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   void dispose() {
     _refreshController.dispose();
+    //录音销毁控制器
+    _recordController.removeListener(_syncVoiceToInput);
+    _recordController.dispose();
     super.dispose();
   }
 
@@ -927,6 +946,63 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
   }
 
+  //同步语音文字的逻辑
+  void _syncVoiceToInput() {
+    if (!mounted) return;
+
+    final inputState = launchKey.currentState;
+
+    // 只有在有结果时才更新
+    if (_recordController.state == RecordState.success &&_recordController.resultText.isNotEmpty) {
+      // 策略：将语音内容追加到光标处，或者直接覆盖
+      // 获取当前的语音结果
+      final voiceResult = _recordController.resultText;
+      // 1. 拼接新文本： 前段 + 语音 + 后段
+      final newText = _prefixText + voiceResult + _suffixText;
+      // 2. 计算新光标位置： 前段长度 + 语音长度
+      final newCursorIndex = _prefixText.length + voiceResult.length;
+
+      inputState?.textEditingController.value = TextEditingValue(
+        text: newText,
+        // 保持光标在语音文字的后面，方便用户继续输入
+        selection: TextSelection.collapsed(offset: newCursorIndex),
+      );
+
+      // 更新字数统计
+      inputState?.setState(() {
+        inputState.commentLengthIndicator = '${newText.length}/200';
+      });
+    }
+    else if(_recordController.state == RecordState.error){
+      ToastProvider.error(_recordController.errorMessage);
+    }
+  }
+
+  //切换录音状态
+  void _toggleRecording() {
+    final inputState = launchKey.currentState;
+    if (inputState == null) return;
+
+    if (!_recordController.isRecording) {
+      final controller = inputState.textEditingController;
+      final text = controller.text;
+      final selection = controller.selection;
+      // 处理光标丢失的情况（比如没点输入框就点录音），默认追加到最后
+      int start = selection.start;
+      int end = selection.end;
+      if (start < 0 || end < 0) {
+        // 如果没有光标，默认光标在最后
+        start = text.length;
+        end = text.length;
+      }
+      // 1. 切割光标前的文字
+      _prefixText = text.substring(0, start);
+      // 2. 切割光标后的文字 (如果有选中文本，selection.end 会跳过选中的部分，实现“语音替换选中文字”的效果)
+      _suffixText = text.substring(end, text.length);
+    }
+    _recordController.toggleRecording();
+  }
+
   GestureDetector _buildBottomActionBar() {
     final checkButton = WButton(
       onPressed: () {
@@ -1033,6 +1109,39 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           onPressed: () => launchKey
                                               .currentState
                                               ?.getClipboardData(),
+                                        ),
+                                        // 录音按钮
+                                        // 使用 ListenableBuilder 监听 controller 状态变化来刷新按钮样式
+                                        ListenableBuilder(
+                                          listenable: _recordController,
+                                          builder: (context, child) {
+                                            bool isProcessing = _recordController.state == RecordState.processing;
+                                            bool isRecording = _recordController.isRecording;
+                                            return WButton(
+                                              onPressed: isProcessing ? null : _toggleRecording,
+                                              child: isProcessing
+                                                  ? SizedBox(
+                                                width: 24.r,
+                                                height: 24.r,
+                                                child: CircularProgressIndicator(strokeWidth: 2, color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
+                                              )
+                                                  : Icon(
+                                                isRecording ? Icons.mic_rounded : Icons.mic_none, // todo 这里可以换成的 SVG 图片
+                                                size: 24.r,
+                                                // 录音时变色
+                                                color: isRecording
+                                                    ? Colors.red
+                                                    : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                                                shadows: isRecording?[
+                                                  Shadow(
+                                                    color: Colors.red.withOpacity(0.5),
+                                                    blurRadius: 3,
+                                                    offset: Offset(2,2),
+                                                  )
+                                                ]:null,
+                                              ),
+                                            );
+                                          },
                                         ),
                                         IconButton(
                                           icon: Image.asset(
