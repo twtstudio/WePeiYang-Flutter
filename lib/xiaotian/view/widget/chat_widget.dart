@@ -172,7 +172,7 @@ class inputBox extends StatefulWidget {
 }
 
 class _inputBoxState extends State<inputBox> {
-  // 1. 定义录音控制器
+  //定义录音控制器
   // todo (强烈建议将 Key 移至服务端或加密存储，不要直接写在前端)
   final _recordController = RecordController(
     accessKeyId: aliyunInfo.accessKeyId,
@@ -181,6 +181,8 @@ class _inputBoxState extends State<inputBox> {
   );
   // 用来记录开始录音时的光标位置或已有文本，视需求而定
   String _textBeforeRecording = "";
+  String _prefixText = ""; // 光标前的文字
+  String _suffixText = ""; // 光标后的文字
   @override
   void initState() {
     super.initState();
@@ -198,10 +200,8 @@ class _inputBoxState extends State<inputBox> {
     super.dispose();
   }
 
-  // 4. 同步语音文字的逻辑
+  //同步语音文字的逻辑
   void _syncVoiceToInput() {
-    // 获取当前的 inputState (需要 context)
-    // 注意：这里假设 context 可用。如果在 dispose 后调用会报错，所以上面要在 dispose 移除监听
     if (!mounted) return;
 
     final inputState = Provider.of<xiaotianInputState>(context, listen: false);
@@ -209,16 +209,17 @@ class _inputBoxState extends State<inputBox> {
     // 只有在有结果时才更新
     if (_recordController.state == RecordState.success &&_recordController.resultText.isNotEmpty) {
       // 策略：将语音内容追加到光标处，或者直接覆盖
-      // 这里采用简单的逻辑：如果是录音中，将当前文本替换为 "录音前的文本 + 识别结果"
-      // 这样用户在说话时能看到实时上屏
-
-      String newText = _textBeforeRecording + _recordController.resultText;
+      // 获取当前的语音结果
+      final voiceResult = _recordController.resultText;
+      // 1. 拼接新文本： 前段 + 语音 + 后段
+      final newText = _prefixText + voiceResult + _suffixText;
+      // 2. 计算新光标位置： 前段长度 + 语音长度
+      final newCursorIndex = _prefixText.length + voiceResult.length;
 
       inputState.textController.value = TextEditingValue(
         text: newText,
-        selection: TextSelection.fromPosition(
-          TextPosition(offset: newText.length),
-        ),
+        // 保持光标在语音文字的后面，方便用户继续输入
+        selection: TextSelection.collapsed(offset: newCursorIndex),
       );
     }
     else if(_recordController.state == RecordState.error){
@@ -229,10 +230,22 @@ class _inputBoxState extends State<inputBox> {
   // 开始/停止录音的包装方法
   void _toggleRecording() {
     final inputState = Provider.of<xiaotianInputState>(context, listen: false);
-
     if (!_recordController.isRecording) {
-      // 开始录音前，记录当前输入框已有的内容
-      _textBeforeRecording = inputState.textController.text;
+      final controller = inputState.textController;
+      final text = controller.text;
+      final selection = controller.selection;
+      // 处理光标丢失的情况（比如没点输入框就点录音），默认追加到最后
+      int start = selection.start;
+      int end = selection.end;
+      if (start < 0 || end < 0) {
+        // 如果没有光标，默认光标在最后
+        start = text.length;
+        end = text.length;
+      }
+      // 1. 切割光标前的文字
+      _prefixText = text.substring(0, start);
+      // 2. 切割光标后的文字 (如果有选中文本，selection.end 会跳过选中的部分，实现“语音替换选中文字”的效果)
+      _suffixText = text.substring(end, text.length);
     }
 
     _recordController.toggleRecording();
@@ -266,7 +279,6 @@ class _inputBoxState extends State<inputBox> {
               child: TextField(
                 controller: inputState.textController,
                 focusNode: inputState.node,
-                onTapOutside: (_) => inputState.unFocus(),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 style: TextUtil.base.label(context).w500.PingFangSC.medium.sp(14),
@@ -306,14 +318,6 @@ class _inputBoxState extends State<inputBox> {
                         builder: (context, child) {
                           bool isProcessing = _recordController.state == RecordState.processing;
                           bool isRecording = _recordController.isRecording;
-                          final boxShadow = isRecording
-                              ? [BoxShadow( // 录音时添加阴影
-                            color: Colors.red.withOpacity(0.3),
-                            blurRadius: 8.r,
-                            spreadRadius: 2.r,
-                            offset: Offset(0, 2.r),
-                          )]
-                              : []; // 非录音时无阴影
                           return WButton(
                             onPressed: isProcessing ? null : _toggleRecording,
                             child: isProcessing
