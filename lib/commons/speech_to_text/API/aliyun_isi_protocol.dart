@@ -30,9 +30,9 @@ class AliyunAsrResponse {
 }
 
 class aliyunInfo{
-  static const accessKeyId = "LTAI5tHMTiiR9"+"DQur9Ue5tu3";
-  static const accessKeySecret = "g6Rsj77LzgTMSSia"+"3MSgs5OVs4sPQQ";
-  static const appKey= "UrF8OYA"+"AvLMNW0oq";
+  static const accessKeyId = "LTAI5tRMxDtuW"+"3oVG8VXAooD";
+  static const accessKeySecret = "3cDr1j9uQwkWf1d"+"7KIUbS4Q72zIRXG";
+  static const appKey= "OEcw3CQ"+"Av1uM8QAJ";
 }
 
 /// 音频编码格式
