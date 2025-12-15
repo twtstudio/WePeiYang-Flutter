@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../commons/speech_to_text/model/record_controller.dart';
 import '../widget/bubble_widget.dart';
 import '../widget/hot_topic.dart';
 import '../../model/xiaotian_state.dart';
@@ -23,17 +25,17 @@ class openNewSession extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WButton(
-        onPressed: () async {
-          context.read<xiaotianChatState>().openNewSession();
-          final sessions = await AiService().getAllSessions(CommonPreferences.userNumber.value);
-          Provider.of<xiaotianChatState>(context, listen: false)
-              .setHistorySession(sessions);
-        },
-        child: SvgPicture.asset(
-          'assets/svg_pics/ai_icons/new.svg',
-          width: 28.r,
-          height: 28.r,
-        ),
+      onPressed: () async {
+        context.read<xiaotianChatState>().openNewSession();
+        final sessions = await AiService().getAllSessions(CommonPreferences.userNumber.value);
+        Provider.of<xiaotianChatState>(context, listen: false)
+            .setHistorySession(sessions);
+      },
+      child: SvgPicture.asset(
+        'assets/svg_pics/ai_icons/new.svg',
+        width: 28.r,
+        height: 28.r,
+      ),
     );
   }
 }
@@ -44,35 +46,35 @@ class Suggestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WButton(
-      onPressed: () async {
-        final result = await showCustomInputDialog(
-          context,
-          title: '发送反馈',
-          hint: '请输入你的意见',
-        );
-        if(result == null) return;
-        final fb = FeedBack(traceId: context.read<xiaotianChatState>().traceID, likeCount: '2',feedbackInformation: result,state: '');
-        feedBackPost(fb);
-        ToastProvider.success('反馈成功');
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 5.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.r),
-          color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor).withOpacity(0.9),
-        ),
-        child: Column(
-          children: [
-            SvgPicture.asset(
-              'assets/svg_pics/ai_icons/feedback.svg',
-              width: 24.r,
-              height: 24.r,
-            ),
-            SizedBox(height: 5.h,),
-            Text('意\n见\n反\n馈',style: TextUtil.base.normal.PingFangSC.bold.textButtonPrimary(context).sp(15)),
-          ],
-        ),
-      )
+        onPressed: () async {
+          final result = await showCustomInputDialog(
+            context,
+            title: '发送反馈',
+            hint: '请输入你的意见',
+          );
+          if(result == null) return;
+          final fb = FeedBack(traceId: context.read<xiaotianChatState>().traceID, likeCount: '2',feedbackInformation: result,state: '');
+          feedBackPost(fb);
+          ToastProvider.success('反馈成功');
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 5.w,vertical: 5.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor).withOpacity(0.9),
+          ),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                'assets/svg_pics/ai_icons/feedback.svg',
+                width: 24.r,
+                height: 24.r,
+              ),
+              SizedBox(height: 5.h,),
+              Text('意\n见\n反\n馈',style: TextUtil.base.normal.PingFangSC.bold.textButtonPrimary(context).sp(15)),
+            ],
+          ),
+        )
     );
   }
 }
@@ -277,95 +279,207 @@ class inputBox extends StatefulWidget {
 }
 
 class _inputBoxState extends State<inputBox> {
+  //定义录音控制器
+  // todo (强烈建议将 Key 移至服务端或加密存储，不要直接写在前端)
+  final _recordController = RecordController(
+    accessKeyId: aliyunInfo.accessKeyId,
+    accessKeySecret: aliyunInfo.accessKeySecret,
+    appKey: aliyunInfo.appKey,
+  );
+  // 用来记录开始录音时的光标位置或已有文本，视需求而定
+  String _textBeforeRecording = "";
+  String _prefixText = ""; // 光标前的文字
+  String _suffixText = ""; // 光标后的文字
+  @override
+  void initState() {
+    super.initState();
+    // 2. 初始化录音权限
+    _recordController.init();
+
+    // 3. 添加监听器，当语音识别有结果时，同步到输入框
+    _recordController.addListener(_syncVoiceToInput);
+  }
+
+  @override
+  void dispose() {
+    _recordController.removeListener(_syncVoiceToInput);
+    _recordController.dispose();
+    super.dispose();
+  }
+
+  //同步语音文字的逻辑
+  void _syncVoiceToInput() {
+    if (!mounted) return;
+
+    final inputState = Provider.of<xiaotianInputState>(context, listen: false);
+
+    // 只有在有结果时才更新
+    if (_recordController.state == RecordState.success &&_recordController.resultText.isNotEmpty) {
+      // 策略：将语音内容追加到光标处，或者直接覆盖
+      // 获取当前的语音结果
+      final voiceResult = _recordController.resultText;
+      // 1. 拼接新文本： 前段 + 语音 + 后段
+      final newText = _prefixText + voiceResult + _suffixText;
+      // 2. 计算新光标位置： 前段长度 + 语音长度
+      final newCursorIndex = _prefixText.length + voiceResult.length;
+
+      inputState.textController.value = TextEditingValue(
+        text: newText,
+        // 保持光标在语音文字的后面，方便用户继续输入
+        selection: TextSelection.collapsed(offset: newCursorIndex),
+      );
+    }
+    else if(_recordController.state == RecordState.error){
+      ToastProvider.error(_recordController.errorMessage);
+    }
+  }
+
+  // 开始/停止录音的包装方法
+  void _toggleRecording() {
+    final inputState = Provider.of<xiaotianInputState>(context, listen: false);
+    if (!_recordController.isRecording) {
+      final controller = inputState.textController;
+      final text = controller.text;
+      final selection = controller.selection;
+      // 处理光标丢失的情况（比如没点输入框就点录音），默认追加到最后
+      int start = selection.start;
+      int end = selection.end;
+      if (start < 0 || end < 0) {
+        // 如果没有光标，默认光标在最后
+        start = text.length;
+        end = text.length;
+      }
+      // 1. 切割光标前的文字
+      _prefixText = text.substring(0, start);
+      // 2. 切割光标后的文字 (如果有选中文本，selection.end 会跳过选中的部分，实现“语音替换选中文字”的效果)
+      _suffixText = text.substring(end, text.length);
+    }
+
+    _recordController.toggleRecording();
+  }
+
   int i1 = 0;
   int i2 = 0;
   @override
   Widget build(BuildContext context) {
     return Consumer2<xiaotianInputState,xiaotianChatState>
       (builder: (context,inputState,chatState,_) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 15.h),
-          width: 360.w,
-          height: 100.h,
-          padding: EdgeInsets.only(left:15.w,right: 15.w,top: 15.h,bottom: 5.h),
-          decoration: BoxDecoration(
-            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            boxShadow: [
-              BoxShadow(
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 15.h),
+        width: 360.w,
+        height: 100.h,
+        padding: EdgeInsets.only(left:15.w,right: 15.w,top: 15.h,bottom: 5.h),
+        decoration: BoxDecoration(
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          boxShadow: [
+            BoxShadow(
                 color: WpyTheme.of(context).get(WpyColorKey.beanDarkColor).withOpacity(0.6),
                 blurRadius: 8.r,
                 offset: Offset(0,0)
-              )
-            ],
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: inputState.textController,
-                  focusNode: inputState.node,
-                  onTapOutside: (_) => inputState.unFocus(),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  style: TextUtil.base.label(context).w500.PingFangSC.medium.sp(14),
-                  strutStyle: StrutStyle(
-                    fontSize: 14.sp,
-                    height: 1.2.h,
-                    forceStrutHeight: true,
-                  ),
-                  decoration: InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.zero,
-                    border: InputBorder.none,
-                    hintText: chatState.isStreamCompleted ? '给小天老师发消息' : '正在生成答案，请耐心等待',
-                    hintStyle:TextUtil.base.labelWithOp(context).w500.PingFangSC.medium.sp(13),
-                  ),
+            )
+          ],
+          borderRadius: BorderRadius.circular(15.r),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: inputState.textController,
+                focusNode: inputState.node,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                style: TextUtil.base.label(context).w500.PingFangSC.medium.sp(14),
+                strutStyle: StrutStyle(
+                  fontSize: 14.sp,
+                  height: 1.2.h,
+                  forceStrutHeight: true,
+                ),
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                  border: InputBorder.none,
+                  hintText:chatState.isStreamCompleted ? '给小天老师发消息' : '正在生成答案，请耐心等待',
+                  hintStyle:TextUtil.base.labelWithOp(context).w500.PingFangSC.medium.sp(13),
                 ),
               ),
-              SizedBox(
-                height: 32.h,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    WebSearch(),
-                    Row(
-                      children: [
-                        WButton(
-                          onPressed: () {
-                            // TODO: 添加链接文件
-                          },
-                          child: SizedBox.shrink(),
-                        ),
-                        SizedBox(width: 12.w),
-                        chatState.isStreamCompleted ? WButton(
-                          onPressed: () => sendAMessage(inputState.textController.text,context),
-                          child:  SvgPicture.asset(
-                            'assets/svg_pics/ai_icons/send.svg',
-                            width: 24.r,
-                            height: 24.r,
-                            colorFilter: ColorFilter.mode(
-                              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                              BlendMode.srcIn,
+            ),
+            SizedBox(
+              height: 32.h,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  WebSearch(),
+                  Row(
+                    children: [
+                      WButton(
+                        onPressed: () {
+                          // TODO: 添加链接文件
+                        },
+                        child: SizedBox.shrink(),
+                      ),
+                      SizedBox(width: 12.w),
+                      // 5. 新增：录音按钮
+                      // 使用 ListenableBuilder 监听 controller 状态变化来刷新按钮样式
+                      ListenableBuilder(
+                        listenable: _recordController,
+                        builder: (context, child) {
+                          bool isProcessing = _recordController.state == RecordState.processing;
+                          bool isRecording = _recordController.isRecording;
+                          return WButton(
+                            onPressed: isProcessing ? null : _toggleRecording,
+                            child: isProcessing
+                                ? SizedBox(
+                              width: 24.r,
+                              height: 24.r,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
+                            )
+                                : Icon(
+                              isRecording ? Icons.mic_rounded : Icons.mic_none, // todo 这里可以换成的 SVG 图片
+                              size: 24.r,
+                              // 录音时变色
+                              color: isRecording
+                                  ? Colors.red
+                                  : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                              shadows: isRecording?[
+                                Shadow(
+                                  color: Colors.red.withOpacity(0.5),
+                                  blurRadius: 3,
+                                  offset: Offset(2,2),
+                                )
+                              ]:null,
                             ),
-                          ),
-                        ) : WButton(
-                          onPressed: (){},
-                          child:  SvgPicture.asset(
-                            'assets/svg_pics/ai_icons/stop.svg',
-                            width: 28.r,
-                            height: 28.r,
+                          );
+                        },
+                      ),
+                      SizedBox(width: 12.w),
+                      chatState.isStreamCompleted ? WButton(
+                        onPressed: () => sendAMessage(inputState.textController.text,context),
+                        child:  SvgPicture.asset(
+                          'assets/svg_pics/ai_icons/send.svg',
+                          width: 24.r,
+                          height: 24.r,
+                          colorFilter: ColorFilter.mode(
+                            WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                            BlendMode.srcIn,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ) : WButton(
+                        onPressed: (){},
+                        child:  SvgPicture.asset(
+                          'assets/svg_pics/ai_icons/stop.svg',
+                          width: 28.r,
+                          height: 28.r,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }
+            ),
+          ],
+        ),
+      );
+    }
     );
   }
 }
