@@ -80,7 +80,7 @@ class Suggestion extends StatelessWidget {
 
 
 
-//开启新页面的占位贴图和推荐话题
+//开启新页面的占位贴图和热门话题
 class NewChatTile extends StatefulWidget {
   const NewChatTile({super.key});
 
@@ -105,7 +105,7 @@ class _NewChatTileState extends State<NewChatTile> {
 
     try {
 
-      final topics = await AiService().getHotTopics(timeRange: "week");
+      final topics = await AiService().getHotTopics();
 
 
       if (mounted) {
@@ -138,30 +138,27 @@ class _NewChatTileState extends State<NewChatTile> {
       );
     }
 
-    return Wrap(
-      spacing: 12.0,
-      runSpacing: 10.0,
-      alignment: WrapAlignment.center,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: _hotTopics.map((hotTopic) {
-
-        return ActionChip(
-          label: Text(hotTopic.topic),
-
-          labelStyle: TextStyle(
-              color: Colors.blue.shade800,
-              fontSize: 15,
-              fontWeight: FontWeight.w500
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1.0),
+          child: ActionChip(
+            label: Text(
+              hotTopic.topic,
+              style: TextUtil.base.normal.PingFangSC.textButtonPrimary(context).sp(14)
+            ),
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            side: BorderSide(color:  WpyTheme.of(context).get(WpyColorKey.beanDarkColor).withOpacity(0.8), width: 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            onPressed: () {
+              print('点击了话题: ${hotTopic.topic}');
+              sendAMessage(hotTopic.topic, context);
+            },
           ),
-          backgroundColor: Colors.blue.shade50,
-          side: BorderSide(color: Colors.blue.shade200, width: 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-
-          onPressed: () {
-            print('点击了话题: ${hotTopic.topic}');
-            sendAMessage(hotTopic.topic, context);
-          },
         );
       }).toList(),
     );
@@ -187,16 +184,19 @@ class _NewChatTileState extends State<NewChatTile> {
                     style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
                 ),
               ),
-              SizedBox(height: 20.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.w),
-                child: _buildTopicChips(),
-              ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 10.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 child: Text('因为我也刚刚和大家见面,我的回答仅供参考\n有误的地方请你批评指正哦～\n快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
                     style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
+                ),
+              ),
+              SizedBox(height: 60.h,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Align(
+                  alignment: Alignment.centerLeft,   // 让chips靠左
+                  child: _buildTopicChips(),
                 ),
               ),
             ],

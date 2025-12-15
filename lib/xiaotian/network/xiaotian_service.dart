@@ -165,7 +165,7 @@ class AiService {
       };
 
       final response = await AiTianDio.post(
-        '/api/analysis/hot_topics',
+        '-rag/api/analysis/hot_topics',
         data: requestBody,
       );
 
