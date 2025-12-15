@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'dart:math';
 import '../../commons/network/wpy_dio.dart';
 import '../model/xiaotian_model.dart';
-import '../view/widget/hot_topic.dart';
 
 class AIRequestException implements Exception {
   final String message;
@@ -37,6 +36,32 @@ class aiTianDio extends DioAbstract {
       },
     )
   ];
+}
+//热门话题
+class HotTopic {
+  final String topic;
+  final String tag;
+  final int count;
+  final String summary;
+  final String type;
+
+  HotTopic({
+    required this.topic,
+    required this.tag,
+    required this.count,
+    required this.summary,
+    required this.type,
+  });
+
+  factory HotTopic.fromJson(Map<String, dynamic> json) {
+    return HotTopic(
+      topic: json['topic'] ?? '',
+      tag: json['tag'] ?? '',
+      count: json['count'] ?? 0,
+      summary: json['summary'] ?? '',
+      type: json['type'] ?? '',
+    );
+  }
 }
 
 /// API 单例

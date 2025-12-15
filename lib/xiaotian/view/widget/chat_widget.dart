@@ -4,7 +4,6 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../commons/speech_to_text/model/record_controller.dart';
 import '../widget/bubble_widget.dart';
-import '../widget/hot_topic.dart';
 import '../../model/xiaotian_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -169,6 +168,7 @@ class _NewChatTileState extends State<NewChatTile> {
   @override
   Widget build(BuildContext context) {
     return Center(
+      child: SingleChildScrollView(
       child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,6 +203,7 @@ class _NewChatTileState extends State<NewChatTile> {
               ),
             ],
           ),
+      ),
     );
   }
 }
