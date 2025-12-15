@@ -9,6 +9,7 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
 import '../../../commons/util/toast_provider.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../network/blocklist_service.dart';
 
 class ShieldSettingPage extends StatefulWidget {
   const ShieldSettingPage({super.key});
@@ -24,12 +25,18 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
 
   @override
   void initState() {
-    //载入储存的shieldUserUid和shieldComment
-    //TODO:UserID改成后端
-    // _shieldUserUid = CommonPreferences.shieldUserUid.value;
+    // _loadShield();
     _shieldComment = CommonPreferences.shieldComment.value;
     super.initState();
   }
+
+  // void _loadShield() async {
+  //   _shieldUserUid = await BlockListService.getBlockList(onFailure: (e){
+  //     print(e);
+  //     ToastProvider.error('获取屏蔽用户失败');
+  //   });
+  //   _shieldComment = CommonPreferences.shieldComment.value;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,21 +83,26 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: WButton(
-                  onPressed: () async {
-                    final  String? uid = await showShieldDialog(
-                      context,
-                      hint: '请输入屏蔽用户uid',
-                      title: '添加uid',
-                      type:0,
-                    );
-                    if(uid == null) {
-                      return;
-                    }
-                    // _shieldUserUid.add(uid);
-                    //本地储存一次
-                    //TODO:添加屏蔽UserID网络请求
-                    // CommonPreferences.shieldUserUid.value = _shieldUserUid;
-                    ToastProvider.success('屏蔽用户添加成功');
+                  onPressed: () {
+                    ToastProvider.success('正在开发哦');
+                    // final  String? uid = await showShieldDialog(
+                    //   context,
+                    //   hint: '请输入屏蔽用户uid',
+                    //   title: '添加uid',
+                    //   type:0,
+                    // );
+                    // if(uid == null) {
+                    //   return;
+                    // }
+                    // BlockListService.addBlock(uid, onSuccess: () {
+                    //   ToastProvider.success('添加成功');
+                    //   setState(() {
+                    //     _loadShield();
+                    //   });
+                    // }, onFailure: (e){
+                    //   print(e);
+                    //   ToastProvider.success('添加失败');
+                    // });
                   },
                   child: Row(
                     children: [
@@ -124,13 +136,18 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                               Expanded(child: Text(uid, style: mainTextStyle)),
                               WButton(
                                 onPressed:(){
-                                  setState(() {
-                                    _shieldUserUid.removeAt(index);
-                                  });
-                                  //本地储存一次
-                                  //TODO:删除屏蔽UserID网络请求
-                                  // CommonPreferences.shieldUserUid.value = _shieldUserUid;
-                                  ToastProvider.success('删除成功');
+                                  // setState(() {
+                                  //   _shieldUserUid.removeAt(index);
+                                  // });
+                                  // BlockListService.deleteBlock(uid, onSuccess: (){
+                                  //   ToastProvider.success('删除成功');
+                                  //   setState(() {
+                                  //     _loadShield();
+                                  //   });
+                                  // }, onFailure: (e){
+                                  //   print(e);
+                                  //   ToastProvider.error('删除失败');
+                                  // });
                                 },
                                 child: Icon(Icons.delete_rounded,
                                     color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
@@ -175,8 +192,6 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                       return;
                     }
                     _shieldComment.add(word);
-                    //本地储存一次
-                    //TODO:
                     CommonPreferences.shieldComment.value = _shieldComment;
                     ToastProvider.success('屏蔽词添加成功');
                   },
@@ -215,8 +230,6 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                                   setState(() {
                                     _shieldComment.removeAt(index);
                                   });
-                                  //本地储存一次
-                                  //TODO:
                                   CommonPreferences.shieldComment.value = _shieldComment;
                                   ToastProvider.success('删除成功');
                                 },
