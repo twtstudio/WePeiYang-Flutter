@@ -103,7 +103,7 @@ class bodyPage extends StatelessWidget {
           child: Consumer<xiaotianChatState>(
             builder: (context, chatState, _) {
               return chatState.sessionId == '0'
-                  ? const newChatTile()
+                  ? const NewChatTile()
                   : const ChatTile();
             },
           ),

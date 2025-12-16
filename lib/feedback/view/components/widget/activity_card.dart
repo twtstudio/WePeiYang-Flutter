@@ -63,13 +63,15 @@ class _ActivityCardState extends State<ActivityCard> {
           } else {
             ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
           }
-        } else
+        } else {
           Navigator.pushNamed(
             context,
             FeedbackRouter.haitang,
             arguments: FestivalArgs(url,
                 context.read<FestivalProvider>().nonePopupList[index].title),
           );
+        }
+
       },
       child: Stack(
         children: [

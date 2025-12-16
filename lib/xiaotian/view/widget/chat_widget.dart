@@ -78,38 +78,131 @@ class Suggestion extends StatelessWidget {
   }
 }
 
-//开启新页面的占位贴图
-class newChatTile extends StatelessWidget {
-  const newChatTile({super.key});
+
+
+
+//开启新页面的占位贴图和热门话题
+class NewChatTile extends StatefulWidget {
+  const NewChatTile({super.key});
+
+  @override
+  State<NewChatTile> createState() => _NewChatTileState();
+}
+class _NewChatTileState extends State<NewChatTile> {
+  List<HotTopic> _hotTopics = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchHotTopics();
+  }
+
+
+  void _fetchHotTopics() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+
+      final topics = await AiService().getHotTopics();
+
+
+      if (mounted) {
+        setState(() {
+          _hotTopics = topics;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        print("在UI层捕获到错误: $e");
+      }
+    }
+  }
+
+  Widget _buildTopicChips() {
+    // 加载动画
+    if (_isLoading) {
+      return const CircularProgressIndicator(strokeWidth: 2.0);
+    }
+    //如果没有热门话题
+    if (_hotTopics.isEmpty) {
+      return const Text(
+        "暂时没有热门话题哦~",
+        style:TextStyle(color: Colors.grey),
+      );
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: _hotTopics.map((hotTopic) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1.0),
+          child: ActionChip(
+            label: Text(
+              hotTopic.topic,
+              style: TextUtil.base.normal.PingFangSC.textButtonPrimary(context).sp(14)
+            ),
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            side: BorderSide(color:  WpyTheme.of(context).get(WpyColorKey.beanDarkColor).withOpacity(0.8), width: 1),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            onPressed: () {
+              print('点击了话题: ${hotTopic.topic}');
+              sendAMessage(hotTopic.topic, context);
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
+      child: SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Text('Hi，同学你好！\n 我是你们24小时不下线的“小天老师”\n很高兴见到你~',textAlign:TextAlign.center,
-                style: TextUtil.base.label(context).w400.PingFangSC.bold.sp(21)
-            ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Text('Hi，同学你好！\n 我是你们24小时不下线的“小天老师”\n很高兴见到你~',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.bold.sp(21)
+                ),
+              ),
+              SizedBox(height: 40.h,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Text('我努力为你提供精准、智能、高效的\n校内信息咨询服务',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Text('因为我也刚刚和大家见面,我的回答仅供参考\n有误的地方请你批评指正哦～\n快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
+                    style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
+                ),
+              ),
+              SizedBox(height: 60.h,),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                child: Align(
+                  alignment: Alignment.centerLeft,   // 让chips靠左
+                  child: _buildTopicChips(),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 40.h,),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.w),
-            child: Text('我努力为你提供精准、智能、高效的\n校内信息咨询服务',textAlign:TextAlign.center,
-                style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
-            ),
-          ),
-          SizedBox(height: 20.h,),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.w),
-            child: Text('因为我也刚刚和大家见面,我的回答仅供参考\n有误的地方请你批评指正哦～\n快来和我一起开启这段超棒的问答旅程吧～',textAlign:TextAlign.center,
-                style: TextUtil.base.label(context).w400.PingFangSC.normal.sp(15).h(1.4)
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -123,6 +216,21 @@ class ChatTile extends StatefulWidget {
 }
 
 class _ChatTileState extends State<ChatTile> {
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // 安排一个回调，它会在第一帧绘制完成后执行
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     // 在这里，我们可以安全地访问 Provider
+  //     // listen: false 是一个优化，因为我们只需要获取一次控制器，不需要监听后续变化
+  //     final inputState = Provider.of<xiaotianInputState>(context, listen: false);
+  //
+  //     // 直接调用你已经写好的函数
+  //     scrollScreen(inputState.scrollController);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
