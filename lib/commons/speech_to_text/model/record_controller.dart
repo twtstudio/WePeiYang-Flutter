@@ -42,10 +42,6 @@ class RecordController extends ChangeNotifier {
   String get errorMessage => _errorMessage;
   bool get isRecording => _state == RecordState.recording;
 
-  /// 初始化资源
-  Future<void> init() async {
-    await _recordManager.init();
-  }
 
   @override
   void dispose() {
@@ -71,8 +67,15 @@ class RecordController extends ChangeNotifier {
       _resultText = "";
       _errorMessage = "";
 
-// 不要设置 _resultText = "[正在启动...]"，仅更新状态
+      //仅更新状态
       _updateState(RecordState.processing);
+      final hasPermission = await _recordManager.ensurePermission();
+      if (!hasPermission) {
+        // 如果用户拒绝，设置错误信息并返回
+        _errorMessage = "请授予麦克风权限以使用语音输入";
+        _updateState(RecordState.error);
+        return;
+      }
 
       final token = await _tokenClient.getToken();
       if (token == null) {
@@ -82,11 +85,11 @@ class RecordController extends ChangeNotifier {
       }
 
       await _recordManager.startRecording();
-      // _resultText = "[正在录音... 点击按钮停止]";
+
       _updateState(RecordState.recording);
       //启动 60 秒定时器
       _maxDurationTimer = Timer(_maxRecordDuration, () {
-        // 关键修改 2: 定时器触发，检查是否仍在录音，并强制停止
+        //定时器触发，检查是否仍在录音，并强制停止
         if (_state == RecordState.recording) {
           debugPrint('60秒录音时间到，自动停止。');
           // 注意：这里调用 toggleRecording 会执行 _maxDurationTimer?.cancel()

@@ -8,25 +8,25 @@ class SpeechRecordManager {
 
   String? _currentRecordingPath;
 
-  /// 初始化录音机
-  Future<void> init() async {
-    // 权限检查和请求
+  Future<bool> ensurePermission() async {
+    //先检查是否已有权限，如果有直接返回 true，避免不必要的弹窗逻辑
+    if (await _recorder.hasPermission()) {
+      return true;
+    }
+    //请求系统麦克风权限
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      throw Exception('Microphone permission not granted');
+      // 用户拒绝了权限
+      return false;
     }
-
-    // 检查是否有录音权限（record 库自带的方法）
+    //再次确认 record 库内部状态
     final hasPermission = await _recorder.hasPermission();
-    if (!hasPermission) {
-      throw Exception('Microphone permission not granted (Record internal check failed)');
-    }
+    return hasPermission;
   }
 
   /// 资源释放 (record 库中是 dispose)
   Future<void> dispose() async {
     // 释放资源，防止内存泄漏
-    // record^4.4.4 版本中，dispose 是 Future<void>
     await _recorder.dispose();
   }
 
@@ -35,7 +35,10 @@ class SpeechRecordManager {
   Future<String> startRecording() async {
     // 确保权限已授予
     if (!await _recorder.hasPermission()) {
-      await init();
+      final granted = await ensurePermission();
+      if (!granted) {
+        throw Exception('Microphone permission not granted');
+      }
     }
 
     // 停止之前的录音（以防万一）

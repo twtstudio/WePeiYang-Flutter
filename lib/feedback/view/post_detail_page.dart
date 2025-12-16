@@ -136,7 +136,6 @@ class _PostDetailPageState extends State<PostDetailPage>
       accessKeySecret: aliyunInfo.accessKeySecret,
       appKey: aliyunInfo.appKey,
     );
-    _recordController.init();
     _recordController.addListener(_syncVoiceToInput);
   }
 

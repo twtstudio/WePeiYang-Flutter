@@ -186,10 +186,7 @@ class _inputBoxState extends State<inputBox> {
   @override
   void initState() {
     super.initState();
-    // 2. 初始化录音权限
-    _recordController.init();
-
-    // 3. 添加监听器，当语音识别有结果时，同步到输入框
+    // 添加监听器，当语音识别有结果时，同步到输入框
     _recordController.addListener(_syncVoiceToInput);
   }
 
