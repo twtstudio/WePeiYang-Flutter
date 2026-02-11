@@ -18,15 +18,36 @@ import com.twt.service.push.WbyPushPlugin
 import com.twt.service.share.WbySharePlugin
 import com.twt.service.statistics.WbyStatisticsPlugin
 import com.twt.service.widget.WbyWidgetPlugin
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterShellArgs
 import android.os.Build
 import android.os.Bundle
 import androidx.core.view.WindowCompat
+import android.content.ComponentName
+import android.content.pm.PackageManager
+import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
 
 class MainActivity : FlutterActivity() {
+
+    companion object {
+        const val TAG = "MainActivity"
+        private const val CHANNEL = "icon_switch"
+        fun log(message: String) = LogUtil.d(TAG, message)
+    }
+
+    private val iconAliases = listOf(
+        "com.twt.service.ICONBlue",
+        "com.twt.service.ICONCyan",
+        "com.twt.service.ICONGold",
+        "com.twt.service.ICONPink",
+        "com.twt.service.ICONPurple",
+        "com.twt.service.ICONRed",
+        "com.twt.service.ICONYellow",
+        "com.twt.service.ICONSpring",
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aligns the Flutter view vertically with the window.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false)
@@ -38,11 +59,14 @@ class MainActivity : FlutterActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+//        enableLauncherForDebug()
     }
 
     // 加入微北洋使用的所有自己写的 plugin
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+
         flutterEngine.plugins.runCatching {
             add(
                 setOf(
@@ -76,7 +100,61 @@ class MainActivity : FlutterActivity() {
             Toast.makeText(this, "不该出现的错误：$it", Toast.LENGTH_LONG).show()
             LogUtil.e(TAG, it)
         }
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+            .setMethodCallHandler { call, result ->
+                if (call.method == "switchIcon") {
+                    val target = call.argument<String>("target")!!
+                    switchIcon(target)
+                    result.success(null)
+                }
+            }
+
     }
+
+//    private fun enableLauncherForDebug() {
+//        if (BuildConfig.DEBUG) {
+//            // 调试模式下 MainActivity 保持 Launcher
+//            packageManager.setComponentEnabledSetting(
+//                ComponentName(this, "com.twt.service.MainActivity"),
+//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                PackageManager.DONT_KILL_APP
+//            )
+//        } else {
+//            // Release 时禁用 MainActivity Launcher
+//            packageManager.setComponentEnabledSetting(
+//                ComponentName(this, "com.twt.service.MainActivity"),
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+//                PackageManager.DONT_KILL_APP
+//            )
+//        }
+//    }
+
+    //应用图标切换
+    private fun switchIcon(target: String) {
+        val pm = packageManager
+
+        // 禁用 MainActivity launcher
+        pm.setComponentEnabledSetting(
+            ComponentName(this, "com.twt.service.MainActivity"),
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP
+        )
+
+        iconAliases.forEach { alias ->
+            val state = if (alias == target)
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+            else
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+
+            pm.setComponentEnabledSetting(
+                ComponentName(this, alias),
+                state,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+    }
+
 
     // https://blog.csdn.net/llew2011/article/details/105453204/
     // dart_snapshot.cc的SearchMapping()方法内部循环遍历native_library_path查找libapp.so，
@@ -122,8 +200,4 @@ class MainActivity : FlutterActivity() {
         ChangeDisplay.recreateWhenConfigChange(newConfig, this)
     }
 
-    companion object {
-        const val TAG = "MainActivity"
-        fun log(message: String) = LogUtil.d(TAG, message)
-    }
 }

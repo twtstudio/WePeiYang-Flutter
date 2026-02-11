@@ -69,6 +69,7 @@ class WpyThemeMetaData {
   final String name;
   final String description;
   final String author;
+  final String address;
   final DateTime publishedDate;
   final DateTime lastUpdatedDate;
   final String version;
@@ -83,6 +84,7 @@ class WpyThemeMetaData {
     required this.name,
     required this.description,
     required this.author,
+    required this.address,
     required this.publishedDate,
     required this.lastUpdatedDate,
     required this.version,
@@ -99,6 +101,7 @@ class WpyThemeMetaData {
       name: json['name'],
       description: json['description'],
       author: json['author'],
+      address: json['address'],
       publishedDate: DateTime.parse(json['publishedDate']),
       lastUpdatedDate: DateTime.parse(json['lastUpdatedDate']),
       version: json['version'],

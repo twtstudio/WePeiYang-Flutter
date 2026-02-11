@@ -13,6 +13,7 @@ class OrangeScheme extends WpyThemeData {
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xffe0ae57),
+            address: "com.twt.service.ICONGold"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

@@ -12,6 +12,7 @@ class LightScheme extends WpyThemeData {
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xFF2C7EDF),
+            address: "com.twt.service.ICONBlue"
           ),
           data: WpyThemeDetail(
             lightSchemeDetail,

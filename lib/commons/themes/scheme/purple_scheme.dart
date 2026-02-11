@@ -13,6 +13,7 @@ class PurpleScheme extends WpyThemeData {
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xFF921AFF),
+            address: "com.twt.service.ICONPurple"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

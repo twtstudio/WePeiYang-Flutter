@@ -12,6 +12,7 @@ class DarkScheme extends WpyThemeData {
             brightness: Brightness.dark,
             representativeColor: Color(0xFF1f1f1f),
             hintTextColor: Color(0xFFeff4fa),
+            address: "com.twt.service.ICONBlue"
           ),
           data: WpyThemeDetail(
             darkSchemeDetail,

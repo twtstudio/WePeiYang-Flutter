@@ -3,16 +3,18 @@ import 'package:we_pei_yang_flutter/commons/themes/scheme/light_scheme.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/official_meta_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 
+//TODO:夕阳红暂改为春节红
 class RedScheme extends WpyThemeData {
   RedScheme()
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_red_theme",
-            name: "夕阳红",
+            name: "春节红",
             description: "默认 红 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xff9c2525),
+            address: "com.twt.service.ICONSpring"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

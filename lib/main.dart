@@ -20,6 +20,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/network/message_service.dart';
+import 'auth/network/screen_splash_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
@@ -28,6 +29,7 @@ import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
+import 'commons/themes/scheme/red_scheme.dart';
 import 'commons/themes/wpy_theme.dart';
 import 'commons/update/update_manager.dart';
 import 'commons/util/logger.dart';
@@ -368,6 +370,12 @@ class WePeiYangAppState extends State<WePeiYangApp>
         // 获取友盟在线参数
         context.read<RemoteConfig>().getRemoteConfig();
 
+        //TODO:每年春节都判断一次
+        if(!CommonPreferences.happenSpring.value) {
+          globalTheme.value = RedScheme();
+          CommonPreferences.happenSpring.value = true;
+        }
+
         return ListenableBuilder(
             listenable: globalTheme,
             builder: (context, _) {
@@ -378,7 +386,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                     designSize: const Size(390, 844),
                     useInheritedMediaQuery: true,
                     minTextAdapt: true,
-                    child: StartUpWidget(),
+                    child: SplashScreen(),
                     builder: ((context, child) {
                       return MaterialApp(
                         debugShowCheckedModeBanner: false,
@@ -443,58 +451,80 @@ class WePeiYangAppState extends State<WePeiYangApp>
 }
 
 /// 启动页Widget
-class StartUpWidget extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  _StartUpWidgetState createState() => _StartUpWidgetState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _StartUpWidgetState extends State<StartUpWidget> {
-  late var _isFoolDay = now.month == 4 && now.day == 1;
+class _SplashScreenState extends State<SplashScreen> {
+  String? _iconPath;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _appInitProcess(context);
+      _loadSplashIcon();
     });
   }
 
-  var now = DateTime.now().toLocal();
+  Future<void> _loadSplashIcon() async {
+    bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
+
+    // 默认本地图片
+    String iconPath = isDarkMode
+        ? 'assets/images/splash_screen_dark.png'
+        : 'assets/images/splash_screen.png';
+
+    try {
+      final remotePath = isDarkMode
+          ? await SplashService.getSplashDark()
+          : await SplashService.getSplashLight();
+
+      if (remotePath != "" && remotePath.isNotEmpty) {
+        iconPath = remotePath;
+      }
+    } catch (e, st) {
+      print('ERROR$e\n$st');
+    }
+
+    // 更新状态刷新UI
+    if (mounted) {
+      setState(() {
+        _iconPath = iconPath;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
 
-    // 根据当前主题和日期选择背景颜色
-    Color backgroundColor =
-        isDarkMode && !_isFoolDay ? Colors.black : Colors.white;
+    // 背景色
+    Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    Color? iconColor = WpyTheme.of(context).primary; // 适配主题
 
-    // 根据条件选择图标路径
-    String iconPath = isDarkMode
+    // 如果还没加载完，显示占位/默认图
+    final displayIcon = _iconPath ?? (isDarkMode
         ? 'assets/images/splash_screen_dark.png'
-        : 'assets/images/splash_screen.png';
+        : 'assets/images/splash_screen.png');
 
-    // 根据条件选择图标颜色
-    Color? iconColor = _isFoolDay
-        ? null // 愚人节 使用图片自带颜色
-        : WpyTheme.of(context).primary; // 适配主题
-
-    // 构建splash界面
-    final splash = Container(
+    return Container(
       color: backgroundColor,
       padding: EdgeInsets.all(30),
       constraints: BoxConstraints.expand(),
       child: Center(
         child: ColoredIcon(
-          iconPath,
+          displayIcon,
           color: iconColor,
         ),
       ),
     );
-
-    // 否则直接splash screen
-    return splash;
   }
+}
+
 
   void _appInitProcess(BuildContext context) {
     // 检查更新
@@ -520,11 +550,7 @@ class _StartUpWidgetState extends State<StartUpWidget> {
     /// 如果登录过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
-      Future.delayed(
-        _isFoolDay
-            ? Duration(seconds: 2) // fool splash screen time control
-            : Duration(milliseconds: 0),
-      ).then(
+      Future.delayed(Duration(milliseconds: 0),).then(
         (_) => AuthService.getInfo(
           onSuccess: () {
             if (Platform.isIOS) {
@@ -578,5 +604,4 @@ class _StartUpWidgetState extends State<StartUpWidget> {
       Future.delayed(const Duration(seconds: 1)).then(
           (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
     }
-  }
 }

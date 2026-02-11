@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -10,6 +11,8 @@ import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/schedule_background.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/home/view/map_calendar_page.dart';
+
+import '../../../commons/util/toast_provider.dart';
 
 class ThemeSetting extends StatefulWidget {
   const ThemeSetting({super.key});
@@ -22,6 +25,13 @@ class _ThemeSettingState extends State<ThemeSetting>
     with SingleTickerProviderStateMixin {
   late WpyThemeData shiftTheme;
   bool canMove = true;
+  static const _channel = MethodChannel('icon_switch');
+
+  static Future<void> switchIcon(String alias) async {
+    await _channel.invokeMethod('switchIcon', {
+      "target": alias,
+    });
+  }
 
   @override
   void initState() {
@@ -71,10 +81,21 @@ class _ThemeSettingState extends State<ThemeSetting>
       children: [
         for (final theme in WpyThemeData.brightThemeList)
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               globalTheme.value = theme;
               CommonPreferences.usingDarkTheme.value = 0;
               CommonPreferences.appThemeId.value = theme.meta.themeId;
+              print(theme.meta.address);
+              if(CommonPreferences.autoAppWithTheme.value) {
+                try {
+                  await switchIcon(theme.meta.address);
+                }
+                catch (e) {
+                  ToastProvider.error('貌似切换失败了捏');
+                  print(e);
+                }
+              }
+
             },
             child: WpyThemeCard(
               name: theme.meta.name,
@@ -427,6 +448,42 @@ class _ThemeSettingState extends State<ThemeSetting>
       ),
     );
 
+    Widget autoAppWithThemeSelect = Container(
+      padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+      margin: EdgeInsets.only(top: 3.h),
+      decoration: BoxDecoration(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [Text('应用图标颜色跟随主题变动'), SizedBox(height: 3.h), Text('切换后请稍等片刻')],
+            ),
+          ),
+          Switch(
+            value: CommonPreferences.autoAppWithTheme.value,
+            onChanged: (value) {
+              setState(() {
+                CommonPreferences.autoAppWithTheme.value = value;
+              });
+            },
+            activeColor:
+            WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+            inactiveThumbColor:
+            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+            activeTrackColor:
+            WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+            inactiveTrackColor:
+            WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
         appBar: AppBar(
           title: Text("主题设置",
@@ -448,7 +505,7 @@ class _ThemeSettingState extends State<ThemeSetting>
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: ListView(
-          children: [layout, autoDarkThemeSelect, gridView],
+          children: [layout, autoDarkThemeSelect,autoAppWithThemeSelect, gridView],
         ));
   }
 }

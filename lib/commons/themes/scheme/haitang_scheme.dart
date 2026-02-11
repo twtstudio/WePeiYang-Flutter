@@ -12,6 +12,7 @@ class HaiTangScheme extends WpyThemeData {
             description: "默认 粉色 主题",
             brightness: Brightness.light,
             representativeColor: Color(0xFFD983AE),
+            address: "com.twt.service.ICONPink"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

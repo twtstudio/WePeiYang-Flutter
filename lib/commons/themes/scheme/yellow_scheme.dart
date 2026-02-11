@@ -9,9 +9,10 @@ class YellowScheme extends WpyThemeData {
           meta: BuiltInThemeMetaData(
             themeId: "builtin_yellow_theme",
             name: "镜音黄",
-            description: "默认 红 主题",
+            description: "默认 黄 主题",
             brightness: Brightness.light,
             representativeColor: Color(0xffffe211),
+            address: "com.twt.service.ICONYellow"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

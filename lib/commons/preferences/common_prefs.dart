@@ -114,8 +114,12 @@ class CommonPreferences {
   /// 0 light 1 dark 2 auto
   static final usingDarkTheme = PrefsBean<int>('usingDarkTheme', 0);
 
-  /// 深色模式跟随系统false
+  /// 深色模式跟随系统
   static final autoDarkTheme = PrefsBean<bool>('notFollowSys', true);
+  /// 应用图标跟随主题
+  static final autoAppWithTheme = PrefsBean<bool>('notFollowTheme', true);
+
+  static final happenSpring = PrefsBean<bool>('happenSpring', false);
 
   /// 首页工具栏的东西
   static final displayOrder = PrefsBean<String>('displayOrder', "0,1,2,3,4,5");

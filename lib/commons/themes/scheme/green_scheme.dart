@@ -13,6 +13,7 @@ class GreenScheme extends WpyThemeData {
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xFF39C5BB),
+            address: "com.twt.service.ICONCyan"
           ),
           data: WpyThemeDetail(
             greenSchemeDetail,
