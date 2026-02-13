@@ -34,7 +34,11 @@ class openNewSession extends StatelessWidget {
         'assets/svg_pics/ai_icons/new.svg',
         width: 28.r,
         height: 28.r,
-      ),
+        colorFilter: ColorFilter.mode(
+          WpyTheme.of(context).primary!,
+          BlendMode.srcIn,
+        ),
+      )
     );
   }
 }
@@ -467,6 +471,10 @@ class _inputBoxState extends State<inputBox> {
                           'assets/svg_pics/ai_icons/stop.svg',
                           width: 28.r,
                           height: 28.r,
+                          colorFilter: ColorFilter.mode(
+                            WpyTheme.of(context).primary!,
+                            BlendMode.srcIn,
+                          ),
                         ),
                       ),
                     ],

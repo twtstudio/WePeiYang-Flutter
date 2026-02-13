@@ -196,6 +196,10 @@ class openHistory extends StatelessWidget {
         'assets/svg_pics/ai_icons/more.svg',
         width: 28.r,
         height: 28.r,
+        colorFilter: ColorFilter.mode(
+          WpyTheme.of(context).primary!,
+          BlendMode.srcIn,
+        ),
       ),
       onPressed: () {
         Scaffold.of(context).openDrawer();
