@@ -58,9 +58,12 @@ class ActivityDialog extends Dialog {
                           } else {
                             ToastProvider.error('好像无法打开活动呢，请联系天外天工作室');
                           }
-                        } else
+                        }
+                        else if (data[0].url.isEmpty) {}
+                        else {
                           Navigator.pushNamed(context, FeedbackRouter.haitang,
                               arguments: FestivalArgs(data[0].url, '活动'));
+                        }
                       },
                       child: WpyPic(
                         data[0].picUrl,
