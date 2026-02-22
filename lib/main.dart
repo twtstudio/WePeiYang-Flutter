@@ -41,6 +41,7 @@ import 'feedback/network/post.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lost_and_found/module/lost_and_found_providers.dart';
 import 'message/model/message_provider.dart';
+import 'private_chat/model/private_chat_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
 import 'schedule/schedule_providers.dart';
@@ -341,6 +342,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
        ChangeNotifierProvider(create: (_) => UpdateManager()),
        ChangeNotifierProvider(create: (_) => AnimationProvider()),
        ChangeNotifierProvider(create: (_) => xiaotianChatState()),
+       ChangeNotifierProvider(create: (_) => PrivateChatProvider()),
        ...scheduleProviders,
        ...studyroomProviders,
        ...feedbackProviders,

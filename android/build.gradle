@@ -1,36 +1,50 @@
 buildscript {
-    repositories {
-        google()
-        // 友盟 Maven仓库
-        maven { url 'https://repo1.maven.org/maven2/' }
-        // 配置HMS Core SDK的Maven仓地址。
-        maven { url 'https://developer.huawei.com/repo/' }
+    // 统一管理版本，避免硬编码
+    ext {
+        kotlin_version = '1.9.0'
+        agp_version = '7.4.0'
+        agconnect_version = '1.6.0.300'
+    }
 
-        // 荣耀
-        maven {
-            url 'https://developer.hihonor.com/repo/'
-        }
+    repositories {
+        // 核心：Flutter 仓库置顶（优先下载 flutter_embedding 核心依赖）
+        maven { url "https://download.flutter.io" }
+        // 阿里云镜像（国内访问加速）
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+        // 华为官方仓库（AGConnect 依赖唯一来源）
+        maven { url 'https://developer.huawei.com/repo/' }
+        // 荣耀仓库
+        maven { url 'https://developer.hihonor.com/repo/' }
+        // 官方仓库（兜底）
+        google()
+        mavenCentral()
+        // 友盟仓库（按需保留）
+        maven { url 'https://repo1.maven.org/maven2/' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
-        // 增加agcp插件配置。
-        classpath 'com.huawei.agconnect:agcp:1.6.0.300'
+        classpath "com.android.tools.build:gradle:$agp_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.huawei.agconnect:agcp:$agconnect_version"
     }
 }
 
 allprojects {
     repositories {
-        google()
-        // 个推 Maven仓库
-
-        maven {
-            url "https://mvn.getui.com/nexus/content/repositories/releases/"
-        }
-        // 友盟 Maven仓库
-        maven { url 'https://repo1.maven.org/maven2/' }
-        // OPPO厂商通道配置
+        // 核心：Flutter 仓库置顶
+        maven { url "https://download.flutter.io" }
+        // 阿里云镜像
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+        // 厂商仓库
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://developer.hihonor.com/repo/' }
+        // 个推仓库
+        maven { url "https://mvn.getui.com/nexus/content/repositories/releases/" }
+        // OPPO 仓库（保留凭证）
         maven {
             url 'https://maven.columbus.heytapmobi.com/repository/releases/'
             credentials {
@@ -38,20 +52,27 @@ allprojects {
                 password 'c0b08da17e3ec36c3870fed674a0bcb36abc2e23'
             }
         }
-        // 配置HMS Core SDK的Maven仓地址。
-        maven { url 'https://developer.huawei.com/repo/' }
-
-        // 荣耀
-        maven {
-            url 'https://developer.hihonor.com/repo/'
-        }
+        // 官方仓库兜底
+        google()
+        mavenCentral()
     }
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+
+    project.afterEvaluate {
+        // 禁用单元测试配置生成任务（解决跨盘符冲突）
+        tasks.findByName('generateDebugUnitTestConfig')?.enabled = false
+        tasks.findByName('generateReleaseUnitTestConfig')?.enabled = false
+        tasks.withType(Test) {
+            enabled = false
+        }
+    }
 }
+
 subprojects {
     project.evaluationDependsOn(':app')
 }

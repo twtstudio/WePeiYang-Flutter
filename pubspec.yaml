@@ -117,6 +117,7 @@ dependencies:
   url_launcher: ^6.2.5
   uuid: ^4.3.3
 
+  web_socket_channel: ^3.0.1
   webview_flutter: ^2.0.13 # TODO: update the new webview package
   wechat_picker_library: 1.0.5
   wechat_assets_picker: any
@@ -196,3 +197,6 @@ flutter:
 #      fonts:
 #        - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf
 
+# 强制全局覆盖 photo_manager 为稳定版，绕过 3.8.3 的 toUri Bug
+dependency_overrides:
+  photo_manager: 3.8.2

@@ -14,6 +14,10 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
+import '../../private_chat/model/private_chat_model.dart';
+import '../../private_chat/model/private_chat_provider.dart';
+import '../../private_chat/view/page/private_chat_conversation_page.dart';
+import 'package:provider/provider.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
 import 'components/widget/refresh_header.dart';
@@ -134,6 +138,45 @@ class _PersonPageState extends State<PersonPage> {
     super.initState();
   }
 
+  /// 打开与该用户的私聊页面
+  Future<void> _openPrivateChat(BuildContext context) async {
+    if (uid == null) return;
+    final provider = context.read<PrivateChatProvider>();
+
+    // 确保私聊服务已初始化
+    if (provider.myUserId == null) {
+      await provider.init();
+    }
+
+    // 创建或获取与该用户的会话
+    final error = await provider.addContact(uid!);
+    if (error != null && mounted) {
+      ToastProvider.error(error);
+      return;
+    }
+
+    // 找到刚创建/已存在的联系人
+    final contact = provider.contacts
+        .where((c) => c.userId == uid)
+        .firstOrNull;
+    if (contact == null) {
+      ToastProvider.error('创建会话失败');
+      return;
+    }
+
+    // 选中该联系人并跳转到聊天页面
+    await provider.selectContact(contact);
+    if (mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PrivateChatConversationPage(contact: contact),
+        ),
+      );
+      provider.clearCurrentContact();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var postLists = (List.generate(
@@ -220,6 +263,35 @@ class _PersonPageState extends State<PersonPage> {
                 level: level ?? '',
                 style: TextUtil.base.bright(context).bold.sp(9),
               ),
+              SizedBox(height: 8.h),
+              // 私信按钮
+              if (uid != null &&
+                  uid.toString() !=
+                      CommonPreferences.lakeUid.value)
+                WButton(
+                  onPressed: () => _openPrivateChat(context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.primaryActionColor),
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.mail_outline,
+                            size: 14.sp, color: Colors.white),
+                        SizedBox(width: 4.w),
+                        Text(
+                          '私信',
+                          style: TextUtil.base.w600.sp(12).reverse(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           )
         ]));
