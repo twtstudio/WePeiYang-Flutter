@@ -20,6 +20,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/dialog_provider.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../private_chat/private_chat_router.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -202,6 +203,81 @@ class _SettingPageState extends State<SettingPage> {
                   Expanded(
                     child: Text('关于天外天', style: mainTextStyle),
                   ),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: WButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, PrivateChatRouter.settings),
+              child: Row(
+                children: [
+                  Icon(Icons.chat_outlined,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(child: Text('私聊设置', style: mainTextStyle)),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: WButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, PrivateChatRouter.log),
+              child: Row(
+                children: [
+                  Icon(Icons.bug_report_outlined,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(child: Text('私聊调试日志', style: mainTextStyle)),
+                  arrow,
+                  SizedBox(width: 15.w),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 15.h),
+          Container(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
+            decoration: BoxDecoration(
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: WButton(
+              onPressed: () =>
+                  Navigator.pushNamed(context, PrivateChatRouter.apiTest),
+              child: Row(
+                children: [
+                  Icon(Icons.api_outlined,
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      size: 20.w),
+                  SizedBox(width: 12.w),
+                  Expanded(child: Text('私聊接口测试', style: mainTextStyle)),
                   arrow,
                   SizedBox(width: 15.w),
                 ],

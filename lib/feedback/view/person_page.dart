@@ -16,7 +16,6 @@ import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../../private_chat/model/private_chat_model.dart';
 import '../../private_chat/model/private_chat_provider.dart';
-import '../../private_chat/view/page/private_chat_conversation_page.dart';
 import 'package:provider/provider.dart';
 import '../feedback_router.dart';
 import 'components/post_card.dart';
@@ -146,6 +145,10 @@ class _PersonPageState extends State<PersonPage> {
     // 确保私聊服务已初始化
     if (provider.myUserId == null) {
       await provider.init();
+      if (provider.myUserId == null && mounted) {
+        ToastProvider.error('私聊服务初始化失败，请检查登录状态');
+        return;
+      }
     }
 
     // 创建或获取与该用户的会话
@@ -159,21 +162,19 @@ class _PersonPageState extends State<PersonPage> {
     final contact = provider.contacts
         .where((c) => c.userId == uid)
         .firstOrNull;
-    if (contact == null) {
+    if (contact == null && mounted) {
       ToastProvider.error('创建会话失败');
       return;
     }
 
     // 选中该联系人并跳转到聊天页面
-    await provider.selectContact(contact);
+    await provider.selectContact(contact!);
     if (mounted) {
-      await Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (_) => PrivateChatConversationPage(contact: contact),
-        ),
+        'private_chat/conversation',
+        arguments: contact,
       );
-      provider.clearCurrentContact();
     }
   }
 

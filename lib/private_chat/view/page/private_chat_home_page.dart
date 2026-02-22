@@ -5,13 +5,15 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
 import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_conversation_page.dart';
 import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_settings_page.dart';
-import 'package:we_pei_yang_flutter/private_chat/view/widget/contact_tile_widget.dart';
+import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_log_page.dart';
+import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_api_test_page.dart';
 
-/// 私聊主页 — 会话列表
+/// 私聊主页 — 微信风格会话列表
 class PrivateChatHomePage extends StatefulWidget {
   const PrivateChatHomePage({super.key});
 
@@ -41,49 +43,71 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
           backgroundColor:
               WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           appBar: AppBar(
-            title: Text(
-              '私信',
-              style: TextUtil.base.bold.sp(18).label(context),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '私信',
+                  style: TextUtil.base.bold.sp(18).label(context),
+                ),
+                SizedBox(width: 6.w),
+                Container(
+                  width: 8.w,
+                  height: 8.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: provider.isConnected
+                        ? const Color(0xFF4CAF50)
+                        : const Color(0xFFFF5252),
+                  ),
+                ),
+              ],
             ),
             backgroundColor:
                 WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             elevation: 0,
             actions: [
-              // 连接状态
-              Padding(
-                padding: EdgeInsets.only(right: 4.w),
-                child: Icon(
-                  Icons.circle,
-                  size: 10.sp,
-                  color: provider.isConnected
-                      ? WpyTheme.of(context).get(WpyColorKey.successGreen)
-                      : WpyTheme.of(context).get(WpyColorKey.dangerousRed),
-                ),
-              ),
-              // 设置
               IconButton(
-                icon: Icon(
-                  Icons.settings_outlined,
-                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const PrivateChatSettingsPage(),
-                    ),
-                  );
-                },
+                icon: Icon(Icons.bug_report_outlined,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const PrivateChatLogPage())),
+                tooltip: '调试日志',
+              ),
+              IconButton(
+                icon: Icon(Icons.api_outlined,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const PrivateChatApiTestPage())),
+                tooltip: 'API 测试',
+              ),
+              IconButton(
+                icon: Icon(Icons.settings_outlined,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const PrivateChatSettingsPage())),
                 tooltip: '私信设置',
               ),
-              // 添加联系人
-              IconButton(
-                icon: Icon(
-                  Icons.person_add_outlined,
-                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                ),
-                onPressed: () => _showAddContactDialog(context, provider),
-                tooltip: '添加聊天对象',
+              PopupMenuButton<String>(
+                icon: Icon(Icons.add_circle_outline,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onSelected: (value) {
+                  if (value == 'add') _showAddContactDialog(context, provider);
+                },
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'add',
+                    child: Row(children: [
+                      Icon(Icons.person_add_outlined, size: 20.sp),
+                      SizedBox(width: 8.w),
+                      Text('发起聊天', style: TextUtil.base.regular.sp(14).label(context)),
+                    ]),
+                  ),
+                ],
               ),
             ],
           ),
@@ -99,26 +123,17 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.chat_bubble_outline,
-              size: 80.sp,
-              color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
-            ),
+            Icon(Icons.chat_bubble_outline_rounded, size: 72.sp,
+                color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor).withOpacity(0.4)),
             SizedBox(height: 16.h),
-            Text(
-              '暂无会话',
-              style: TextUtil.base.regular.sp(16).secondary(context),
-            ),
+            Text('暂无会话', style: TextUtil.base.w600.sp(16).secondary(context)),
             SizedBox(height: 8.h),
-            Text(
-              '点击右上角 ➕ 添加聊天对象',
-              style: TextUtil.base.regular.sp(14).secondary(context),
-            ),
+            Text('点击右上角 + 发起新的聊天', style: TextUtil.base.regular.sp(13).secondary(context)),
             SizedBox(height: 24.h),
-            OutlinedButton.icon(
+            TextButton.icon(
               onPressed: () => provider.fetchContacts(),
-              icon: const Icon(Icons.refresh),
-              label: const Text('刷新'),
+              icon: Icon(Icons.refresh, size: 18.sp),
+              label: Text('刷新', style: TextUtil.base.regular.sp(14)),
             ),
           ],
         ),
@@ -127,18 +142,14 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
 
     return RefreshIndicator(
       onRefresh: () => provider.fetchContacts(),
-      child: ListView.separated(
+      child: ListView.builder(
         itemCount: provider.contacts.length,
-        separatorBuilder: (_, __) => Divider(
-          height: 1,
-          indent: 72.w,
-          color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
-        ),
         itemBuilder: (context, index) {
           final contact = provider.contacts[index];
-          return ContactTileWidget(
+          return _WeChatStyleContactTile(
             contact: contact,
             onTap: () => _openConversation(context, provider, contact),
+            onLongPress: () => _showContactActions(context, contact),
           );
         },
       ),
@@ -152,63 +163,196 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
   ) async {
     await provider.selectContact(contact);
     if (context.mounted) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => PrivateChatConversationPage(contact: contact),
-        ),
-      );
+      await Navigator.push(context,
+          MaterialPageRoute(builder: (_) => PrivateChatConversationPage(contact: contact)));
       provider.clearCurrentContact();
-      if (context.mounted) {
-        provider.fetchContacts();
-      }
     }
   }
 
-  void _showAddContactDialog(
-      BuildContext context, PrivateChatProvider provider) {
+  void _showContactActions(BuildContext context, PrivateChatContact contact) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16.r))),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(width: 36.w, height: 4.h, margin: EdgeInsets.only(bottom: 12.h),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2.r))),
+              ListTile(
+                leading: Icon(Icons.push_pin_outlined, size: 22.sp),
+                title: Text('置顶会话', style: TextUtil.base.regular.sp(15).label(context)),
+                onTap: () { Navigator.pop(ctx); ToastProvider.success('功能开发中'); },
+              ),
+              ListTile(
+                leading: Icon(Icons.delete_outline, size: 22.sp,
+                    color: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
+                title: Text('删除会话', style: TextUtil.base.regular.sp(15).copyWith(
+                    color: WpyTheme.of(context).get(WpyColorKey.dangerousRed))),
+                onTap: () { Navigator.pop(ctx); ToastProvider.success('功能开发中'); },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddContactDialog(BuildContext context, PrivateChatProvider provider) {
     final controller = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
-          '添加聊天对象',
-          style: TextUtil.base.bold.sp(16).label(context),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        title: Text('发起聊天', style: TextUtil.base.bold.sp(17).label(context)),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(
             labelText: '对方用户 ID',
-            hintText: '输入用户ID',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
+            hintText: '请输入对方的用户ID',
+            prefixIcon: Icon(Icons.person_outline, size: 20.sp),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           ),
           autofocus: true,
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('取消'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx),
+              child: Text('取消', style: TextUtil.base.regular.sp(14).secondary(context))),
           FilledButton(
             onPressed: () async {
               final id = int.tryParse(controller.text.trim());
-              if (id == null || id <= 0) {
-                ToastProvider.error('请输入有效的用户ID');
-                return;
-              }
+              if (id == null || id <= 0) { ToastProvider.error('请输入有效的用户ID'); return; }
               Navigator.pop(ctx);
               final error = await provider.addContact(id);
               if (error != null && context.mounted) {
                 ToastProvider.error(error);
+              } else {
+                final contact = provider.contacts.where((c) => c.userId == id).firstOrNull;
+                if (contact != null && context.mounted) _openConversation(context, provider, contact);
               }
             },
-            child: const Text('添加'),
+            style: FilledButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+            child: const Text('确定'),
           ),
         ],
       ),
     );
+  }
+}
+
+/// 微信风格会话列表项
+class _WeChatStyleContactTile extends StatelessWidget {
+  final PrivateChatContact contact;
+  final VoidCallback onTap;
+  final VoidCallback? onLongPress;
+
+  const _WeChatStyleContactTile({required this.contact, required this.onTap, this.onLongPress});
+
+  @override
+  Widget build(BuildContext context) {
+    final timeStr = _formatTime(contact.lastMsgTime);
+    final hasUnread = contact.unreadCount > 0;
+
+    return InkWell(
+      onTap: onTap,
+      onLongPress: onLongPress,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(
+            color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor).withOpacity(0.5), width: 0.5)),
+        ),
+        child: Row(
+          children: [
+            // 头像 + 未读红点
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: SizedBox(
+                    width: 48.w, height: 48.w,
+                    child: contact.avatarUrl.isNotEmpty
+                        ? WpyPic(contact.avatarUrl, width: 48.w, height: 48.w, fit: BoxFit.cover, withCache: true)
+                        : Container(
+                            decoration: BoxDecoration(color: _getAvatarColor(contact.userId), borderRadius: BorderRadius.circular(8.r)),
+                            child: Center(child: Text(_getAvatarText(contact.username),
+                                style: TextUtil.base.bold.sp(18).copyWith(color: Colors.white))),
+                          ),
+                  ),
+                ),
+                if (hasUnread) Positioned(top: -4.h, right: -4.w, child: Container(
+                  constraints: BoxConstraints(minWidth: 18.w, minHeight: 18.w),
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  decoration: BoxDecoration(color: const Color(0xFFFF3B30), borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(color: Colors.white, width: 1.5)),
+                  child: Center(child: Text(
+                    contact.unreadCount > 99 ? '99+' : '${contact.unreadCount}',
+                    style: TextStyle(color: Colors.white, fontSize: 10.sp, fontWeight: FontWeight.w600),
+                  )),
+                )),
+              ],
+            ),
+            SizedBox(width: 12.w),
+            // 右侧内容
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Expanded(child: Text(contact.username, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: TextUtil.base.w600.sp(16).label(context))),
+                    if (timeStr.isNotEmpty) Text(timeStr, style: TextUtil.base.regular.sp(12).copyWith(
+                        color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor).withOpacity(0.7))),
+                  ]),
+                  SizedBox(height: 4.h),
+                  Text(contact.lastMsg.isEmpty ? '暂无消息' : contact.lastMsg,
+                      maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: TextUtil.base.regular.sp(13).copyWith(
+                          color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor).withOpacity(0.7))),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Color _getAvatarColor(int userId) {
+    const colors = [Color(0xFF5B8CFF), Color(0xFF44C5A0), Color(0xFFFF8C5A), Color(0xFFCF7BFF),
+        Color(0xFFFF6B8A), Color(0xFF64B5F6), Color(0xFFFFB74D), Color(0xFF81C784)];
+    return colors[userId % colors.length];
+  }
+
+  String _getAvatarText(String username) {
+    if (username.isEmpty) return '?';
+    final lastChar = username[username.length - 1];
+    if (RegExp(r'[\u4e00-\u9fa5]').hasMatch(lastChar)) return lastChar;
+    return username[0].toUpperCase();
+  }
+
+  String _formatTime(String? rawTime) {
+    if (rawTime == null || rawTime.isEmpty) return '';
+    try {
+      final dt = DateTime.parse(rawTime.replaceFirst(' ', 'T'));
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final msgDay = DateTime(dt.year, dt.month, dt.day);
+      final diff = today.difference(msgDay).inDays;
+      if (diff == 0) return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+      if (diff == 1) return '昨天';
+      if (diff < 7) {
+        const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+        return '周${weekdays[dt.weekday - 1]}';
+      }
+      return '${dt.month}/${dt.day}';
+    } catch (_) {
+      return '';
+    }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 
 /// 联系人列表项组件
@@ -21,14 +22,22 @@ class ContactTileWidget extends StatelessWidget {
     final timeStr = contact.formattedLastMsgTime;
 
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor:
-            WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-        child: Text(
-          contact.username.length > 2
-              ? contact.username.substring(contact.username.length - 2)
-              : contact.username,
-          style: TextUtil.base.regular.sp(14).reverse(context),
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8.r),
+        child: SizedBox(
+          width: 40.w, height: 40.w,
+          child: contact.avatarUrl.isNotEmpty
+              ? WpyPic(contact.avatarUrl, width: 40.w, height: 40.w, fit: BoxFit.cover, withCache: true)
+              : CircleAvatar(
+                  backgroundColor:
+                      WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                  child: Text(
+                    contact.username.length > 2
+                        ? contact.username.substring(contact.username.length - 2)
+                        : contact.username,
+                    style: TextUtil.base.regular.sp(14).reverse(context),
+                  ),
+                ),
         ),
       ),
       title: Text(

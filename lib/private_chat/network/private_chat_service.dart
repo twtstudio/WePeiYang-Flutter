@@ -2,31 +2,70 @@ import 'dart:convert';
 
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
+
+/// 私聊日志记录器
+class PrivateChatLogger {
+  static final List<String> _logs = [];
+  static int _maxLogs = 500;
+
+  static List<String> get logs => List.unmodifiable(_logs);
+
+  static void log(String tag, String message) {
+    final now = DateTime.now();
+    final timeStr =
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}.${now.millisecond.toString().padLeft(3, '0')}';
+    final entry = '[$timeStr] [$tag] $message';
+    _logs.add(entry);
+    if (_logs.length > _maxLogs) _logs.removeAt(0);
+  }
+
+  static void clear() => _logs.clear();
+}
 
 /// 私聊网络请求 Dio 实例
 class PrivateChatDio extends DioAbstract {
   // TODO: 请根据实际后端地址修改此 baseUrl
   @override
-  String baseUrl = '${EnvConfig.QNHD}private-chat/';
+  // 线上地址（部署后切换）
+  // String baseUrl = '${EnvConfig.QNHD}private-chat/';
+  // 本地调试地址（Android 模拟器用 10.0.2.2 访问宿主机 localhost）
+  String baseUrl = 'http://10.0.2.2:8081/private-chat/';
 
   @override
   List<Interceptor> interceptors = [
-    InterceptorsWrapper(onRequest: (options, handler) async {
-      options.headers['token'] = await LakeTokenManager().token;
+    InterceptorsWrapper(onRequest: (options, handler) {
+      // 后端使用 X-Test-User-Id 请求头识别用户身份
+      final userId = CommonPreferences.lakeUid.value;
+      options.headers['X-Test-User-Id'] = userId;
+      PrivateChatLogger.log(
+        'HTTP',
+        '→ ${options.method} ${options.path} [userId=$userId]',
+      );
       return handler.next(options);
     }, onResponse: (response, handler) {
-      var code = response.data['code'] ?? 0;
+      final code = response.data['code'] ?? 0;
+      final msg = response.data['msg'] ?? '';
+      PrivateChatLogger.log(
+        'HTTP',
+        '← ${response.requestOptions.method} ${response.requestOptions.path} [code=$code] $msg',
+      );
       switch (code) {
         case 200:
           return handler.next(response);
         default:
           return handler.reject(
-            WpyDioException(error: response.data['msg'] ?? '未知错误'),
+            WpyDioException(error: msg.isNotEmpty ? msg : '未知错误'),
             true,
           );
       }
+    }, onError: (error, handler) {
+      PrivateChatLogger.log(
+        'HTTP',
+        '✖ ${error.requestOptions.method} ${error.requestOptions.path} ERROR: ${error.message}',
+      );
+      return handler.next(error);
     }),
   ];
 }
@@ -230,6 +269,22 @@ class PrivateChatService {
       final response = await privateChatDio.post(
         'setting/unblock',
         queryParameters: {'unblockUserId': unblockUserId},
+      );
+      return PrivateChatApiResult.fromJson(response.data);
+    } on DioException catch (e) {
+      return PrivateChatApiResult(
+        code: -1,
+        msg: e.error?.toString() ?? '网络请求失败',
+      );
+    }
+  }
+
+  /// 获取用户资料（昵称、头像）
+  static Future<PrivateChatApiResult> getUserProfile(int userId) async {
+    try {
+      final response = await privateChatDio.get(
+        'user/profile',
+        queryParameters: {'userId': userId},
       );
       return PrivateChatApiResult.fromJson(response.data);
     } on DioException catch (e) {

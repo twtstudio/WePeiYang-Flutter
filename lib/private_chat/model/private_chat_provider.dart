@@ -16,6 +16,9 @@ class PrivateChatProvider extends ChangeNotifier {
   List<PrivateChatMsgVO> _currentMessages = [];
   PrivateChatUserSetting? _userSetting;
 
+  /// 用户资料缓存 { userId: { 'nickname': ..., 'avatar': ... } }
+  final Map<int, Map<String, String>> _userProfileCache = {};
+
   /// 消息版本号，每次消息列表变化时递增
   int _messageVersion = 0;
 
@@ -38,11 +41,19 @@ class PrivateChatProvider extends ChangeNotifier {
   Future<void> init() async {
     // 从 CommonPreferences 获取当前用户 ID
     final uidStr = CommonPreferences.lakeUid.value;
-    if (uidStr.isEmpty) return;
+    PrivateChatLogger.log('Provider', '初始化私聊服务，lakeUid=$uidStr');
+    if (uidStr.isEmpty) {
+      PrivateChatLogger.log('Provider', '❌ lakeUid 为空，无法初始化');
+      return;
+    }
     final uid = int.tryParse(uidStr);
-    if (uid == null || uid <= 0) return;
+    if (uid == null || uid <= 0) {
+      PrivateChatLogger.log('Provider', '❌ lakeUid 解析失败: $uidStr');
+      return;
+    }
 
     _myUserId = uid;
+    PrivateChatLogger.log('Provider', '✅ myUserId=$uid');
 
     _wsService = PrivateChatWebSocketService(userId: uid);
     _wsService!.onMessageReceived = _onWsMessage;
@@ -74,6 +85,7 @@ class PrivateChatProvider extends ChangeNotifier {
   /// 获取会话列表
   Future<void> fetchContacts() async {
     if (_myUserId == null) return;
+    PrivateChatLogger.log('Provider', '获取会话列表...');
     try {
       final result = await PrivateChatService.getSessions();
       if (result.isSuccess && result.data != null) {
@@ -89,19 +101,28 @@ class PrivateChatProvider extends ChangeNotifier {
             unreadCount: session.unreadCount,
           );
         }).toList();
+        PrivateChatLogger.log('Provider', '✅ 获取到 ${_contacts.length} 个会话');
         notifyListeners();
+        // 异步获取所有联系人的用户资料（昵称、头像）
+        _fetchUserProfilesForContacts();
+      } else {
+        PrivateChatLogger.log('Provider', '❌ 获取会话失败: ${result.msg}');
       }
-    } catch (_) {}
+    } catch (e) {
+      PrivateChatLogger.log('Provider', '❌ 获取会话异常: $e');
+    }
   }
 
   /// 添加新联系人（创建会话）
   Future<String?> addContact(int targetUserId) async {
     if (_myUserId == null) return '请先登录';
     if (targetUserId == _myUserId) return '不能添加自己';
+    PrivateChatLogger.log('Provider', '创建会话 targetUserId=$targetUserId');
 
     final existing =
         _contacts.where((c) => c.userId == targetUserId).toList();
     if (existing.isNotEmpty) {
+      PrivateChatLogger.log('Provider', '会话已存在，直接选中');
       await selectContact(existing.first);
       return null;
     }
@@ -115,12 +136,17 @@ class PrivateChatProvider extends ChangeNotifier {
           sessionId: result.data['sessionId'],
         );
         _contacts.insert(0, contact);
+        PrivateChatLogger.log('Provider', '✅ 会话创建成功 sessionId=${contact.sessionId}');
         notifyListeners();
+        // 异步获取该用户的资料
+        _fetchAndApplyUserProfile(contact);
         return null;
       } else {
+        PrivateChatLogger.log('Provider', '❌ 创建会话失败: ${result.msg}');
         return result.msg;
       }
     } catch (e) {
+      PrivateChatLogger.log('Provider', '❌ 创建会话异常: $e');
       return '创建会话失败: $e';
     }
   }
@@ -205,7 +231,7 @@ class PrivateChatProvider extends ChangeNotifier {
       if (result.isSuccess && result.data != null) {
         final msg = PrivateChatMsgVO.fromJson(result.data);
         _updateMessageInList(msg);
-        _updateContactLastMsg(msg, '[消息已撤回]');
+        _refreshContactLastMsg();
         return null;
       } else {
         return result.msg;
@@ -221,6 +247,7 @@ class PrivateChatProvider extends ChangeNotifier {
       final result = await PrivateChatService.deleteMessage(msgId);
       if (result.isSuccess) {
         _currentMessages.removeWhere((m) => m.msgId == msgId);
+        _refreshContactLastMsg();
         notifyListeners();
         return null;
       } else {
@@ -239,8 +266,14 @@ class PrivateChatProvider extends ChangeNotifier {
 
     // 撤回通知
     if (msg.isRecalled) {
-      _updateMessageInList(msg);
-      _updateContactLastMsg(msg, '[消息已撤回]');
+      // 在对应的聊天界面内，更新消息列表后刷新摘要
+      if (_currentContact != null && _currentContact!.userId == otherUserId) {
+        _updateMessageInList(msg);
+        _refreshContactLastMsg();
+      } else {
+        // 不在聊天界面，直接更新联系人 lastMsg
+        _updateContactLastMsgByUserId(otherUserId, '[消息已撤回]');
+      }
       return;
     }
 
@@ -281,12 +314,17 @@ class PrivateChatProvider extends ChangeNotifier {
     if (contactIndex == -1) {
       final contact = PrivateChatContact(
         userId: otherUserId,
-        username: '用户 $otherUserId',
+        username: _userProfileCache[otherUserId]?['nickname'] ?? '用户 $otherUserId',
+        avatar: _userProfileCache[otherUserId]?['avatar'] ?? '',
         sessionId: msg.sessionId,
         lastMsg: msg.content ?? '',
         lastMsgTime: msg.sendTime,
       );
       _contacts.insert(0, contact);
+      // 如果缓存中没有该用户资料，异步获取
+      if (!_userProfileCache.containsKey(otherUserId)) {
+        _fetchAndApplyUserProfile(contact);
+      }
     } else {
       final contact = _contacts[contactIndex];
       contact.lastMsg = msg.content ?? '';
@@ -321,6 +359,42 @@ class PrivateChatProvider extends ChangeNotifier {
     if (matched.isNotEmpty) {
       matched.first.lastMsg = lastMsg;
     }
+    notifyListeners();
+  }
+
+  /// 通过对方 userId 直接更新联系人的 lastMsg（不依赖 _currentContact）
+  void _updateContactLastMsgByUserId(int otherUserId, String lastMsg) {
+    final matched =
+        _contacts.where((c) => c.userId == otherUserId).toList();
+    if (matched.isNotEmpty) {
+      matched.first.lastMsg = lastMsg;
+    }
+    notifyListeners();
+  }
+
+  /// 根据当前消息列表刷新联系人的最后一条消息摘要
+  void _refreshContactLastMsg() {
+    if (_currentContact == null) return;
+    final matched =
+        _contacts.where((c) => c.userId == _currentContact!.userId).toList();
+    if (matched.isEmpty) return;
+    final contact = matched.first;
+
+    if (_currentMessages.isEmpty) {
+      contact.lastMsg = '';
+      contact.lastMsgTime = null;
+      notifyListeners();
+      return;
+    }
+
+    // _currentMessages 按时间倒序排列，第一条即最新消息
+    final latest = _currentMessages.first;
+    if (latest.isRecalled) {
+      contact.lastMsg = '[消息已撤回]';
+    } else {
+      contact.lastMsg = latest.content ?? '';
+    }
+    contact.lastMsgTime = latest.sendTime;
     notifyListeners();
   }
 
@@ -394,6 +468,53 @@ class PrivateChatProvider extends ChangeNotifier {
     } catch (e) {
       return '取消拉黑失败: $e';
     }
+  }
+
+  // ======== 用户资料获取 ========
+
+  /// 为所有联系人异步获取用户资料
+  Future<void> _fetchUserProfilesForContacts() async {
+    for (final contact in _contacts) {
+      await _fetchAndApplyUserProfile(contact);
+    }
+  }
+
+  /// 获取单个用户资料并应用到联系人
+  Future<void> _fetchAndApplyUserProfile(PrivateChatContact contact) async {
+    // 先查缓存
+    if (_userProfileCache.containsKey(contact.userId)) {
+      final cached = _userProfileCache[contact.userId]!;
+      contact.username = cached['nickname'] ?? contact.username;
+      contact.avatar = cached['avatar'] ?? '';
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final result = await PrivateChatService.getUserProfile(contact.userId);
+      if (result.isSuccess && result.data != null) {
+        final nickname = result.data['nickname']?.toString() ?? '';
+        final avatar = result.data['avatar']?.toString() ?? '';
+        // 存入缓存
+        _userProfileCache[contact.userId] = {
+          'nickname': nickname,
+          'avatar': avatar,
+        };
+        if (nickname.isNotEmpty) contact.username = nickname;
+        if (avatar.isNotEmpty) contact.avatar = avatar;
+        notifyListeners();
+        PrivateChatLogger.log('Provider', '✅ 获取用户资料 uid=${contact.userId} nickname=$nickname');
+      } else {
+        PrivateChatLogger.log('Provider', '⚠️ 获取用户资料失败 uid=${contact.userId}: ${result.msg}');
+      }
+    } catch (e) {
+      PrivateChatLogger.log('Provider', '⚠️ 获取用户资料异常 uid=${contact.userId}: $e');
+    }
+  }
+
+  /// 根据 userId 获取缓存的用户资料
+  Map<String, String>? getUserProfileFromCache(int userId) {
+    return _userProfileCache[userId];
   }
 
   @override

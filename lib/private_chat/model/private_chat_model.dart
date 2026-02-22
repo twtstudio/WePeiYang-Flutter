@@ -127,7 +127,8 @@ class ChatSession {
 /// 联系人（前端展示用）
 class PrivateChatContact {
   final int userId;
-  final String username;
+  String username;
+  String avatar;
   int? sessionId;
   String lastMsg;
   String? lastMsgTime;
@@ -136,11 +137,20 @@ class PrivateChatContact {
   PrivateChatContact({
     required this.userId,
     required this.username,
+    this.avatar = '',
     this.sessionId,
     this.lastMsg = '',
     this.lastMsgTime,
     this.unreadCount = 0,
   });
+
+  /// 获取头像 URL（优先自定义头像，否则用 SVG 默认头像）
+  String get avatarUrl {
+    if (avatar.isNotEmpty) {
+      return 'https://qnhdpic.twt.edu.cn/download/origin/$avatar';
+    }
+    return '';
+  }
 
   /// 格式化最后消息时间
   String get formattedLastMsgTime {

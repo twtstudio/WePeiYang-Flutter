@@ -117,7 +117,7 @@ dependencies:
   url_launcher: ^6.2.5
   uuid: ^4.3.3
 
-  web_socket_channel: ^3.0.1
+  web_socket_channel: ^2.4.1
   webview_flutter: ^2.0.13 # TODO: update the new webview package
   wechat_picker_library: 1.0.5
   wechat_assets_picker: any

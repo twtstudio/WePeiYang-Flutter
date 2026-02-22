@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
+import 'package:we_pei_yang_flutter/private_chat/network/private_chat_service.dart';
 
 /// WebSocket 服务 — 管理实时消息推送连接
 class PrivateChatWebSocketService {
@@ -33,6 +34,7 @@ class PrivateChatWebSocketService {
 
   /// 建立 WebSocket 连接
   void connect() {
+    PrivateChatLogger.log('WS', '尝试连接 $_wsUrl');
     try {
       _channel = WebSocketChannel.connect(Uri.parse(_wsUrl));
 
@@ -41,19 +43,25 @@ class PrivateChatWebSocketService {
           if (!_isConnected) {
             _isConnected = true;
             onConnectionChanged?.call(true);
+            PrivateChatLogger.log('WS', '连接已建立');
           }
           try {
+            PrivateChatLogger.log('WS', '← 收到消息: $data');
             final json = jsonDecode(data);
             final msg = PrivateChatMsgVO.fromJson(json);
             onMessageReceived?.call(msg);
-          } catch (_) {}
+          } catch (e) {
+            PrivateChatLogger.log('WS', '消息解析失败: $e');
+          }
         },
         onDone: () {
+          PrivateChatLogger.log('WS', '连接已关闭');
           _isConnected = false;
           onConnectionChanged?.call(false);
           _scheduleReconnect();
         },
         onError: (error) {
+          PrivateChatLogger.log('WS', '连接错误: $error');
           _isConnected = false;
           onConnectionChanged?.call(false);
           _scheduleReconnect();
@@ -64,14 +72,17 @@ class PrivateChatWebSocketService {
         if (!_isConnected) {
           _isConnected = true;
           onConnectionChanged?.call(true);
+          PrivateChatLogger.log('WS', '连接就绪');
         }
       }).catchError((e) {
+        PrivateChatLogger.log('WS', '连接就绪失败: $e');
         if (!_isConnected) {
           onConnectionChanged?.call(false);
           _scheduleReconnect();
         }
       });
     } catch (e) {
+      PrivateChatLogger.log('WS', '连接异常: $e');
       _isConnected = false;
       onConnectionChanged?.call(false);
       _scheduleReconnect();
@@ -80,6 +91,7 @@ class PrivateChatWebSocketService {
 
   /// 断开连接
   void disconnect() {
+    PrivateChatLogger.log('WS', '主动断开连接');
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
     _channel?.sink.close();
@@ -93,6 +105,7 @@ class PrivateChatWebSocketService {
     _reconnectTimer?.cancel();
     _reconnectTimer = Timer(const Duration(seconds: 5), () {
       if (!_isConnected) {
+        PrivateChatLogger.log('WS', '自动重连...');
         connect();
       }
     });
