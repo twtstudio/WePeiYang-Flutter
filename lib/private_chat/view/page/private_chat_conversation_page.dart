@@ -6,8 +6,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
 
@@ -70,6 +68,37 @@ class _PrivateChatConversationPageState
     } else {
       _scrollToBottom();
     }
+  }
+
+  void _showBlockConfirmDialog(BuildContext context, PrivateChatProvider provider) {
+    showDialog(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text('拉黑用户', style: TextUtil.base.bold.sp(16).label(context)),
+        content: Text('确定要拉黑 ${widget.contact.username} 吗？拉黑后将无法收到对方的消息。',
+            style: TextUtil.base.regular.sp(14).label(context)),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(c),
+              child: const Text('取消')),
+          FilledButton(
+            onPressed: () async {
+              Navigator.pop(c);
+              final error = await provider.blockUser(widget.contact.userId);
+              if (error != null && mounted) {
+                ToastProvider.error(error);
+              } else if (mounted) {
+                ToastProvider.success('已拉黑');
+                Navigator.pop(context);
+              }
+            },
+            style: FilledButton.styleFrom(
+                backgroundColor: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
+            child: const Text('拉黑'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showMessageActions(BuildContext context, PrivateChatMsgVO msg) {
@@ -204,6 +233,55 @@ class _PrivateChatConversationPageState
             centerTitle: true,
             backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             elevation: 0.5,
+            actions: [
+              PopupMenuButton<String>(
+                icon: Icon(Icons.more_vert,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onSelected: (value) {
+                  switch (value) {
+                    case 'share':
+                      ToastProvider.success('分享功能开发中');
+                      break;
+                    case 'block':
+                      _showBlockConfirmDialog(context, provider);
+                      break;
+                    case 'report':
+                      ToastProvider.success('举报功能开发中');
+                      break;
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'share',
+                    child: Row(children: [
+                      Icon(Icons.share_outlined, size: 20.sp,
+                          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
+                      SizedBox(width: 8.w),
+                      Text('分享个人名片', style: TextUtil.base.regular.sp(14).label(context)),
+                    ]),
+                  ),
+                  PopupMenuItem(
+                    value: 'block',
+                    child: Row(children: [
+                      Icon(Icons.block_outlined, size: 20.sp,
+                          color: WpyTheme.of(context).get(WpyColorKey.warningColor)),
+                      SizedBox(width: 8.w),
+                      Text('拉黑当前用户', style: TextUtil.base.regular.sp(14).label(context)),
+                    ]),
+                  ),
+                  PopupMenuItem(
+                    value: 'report',
+                    child: Row(children: [
+                      Icon(Icons.flag_outlined, size: 20.sp,
+                          color: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
+                      SizedBox(width: 8.w),
+                      Text('举报当前用户', style: TextUtil.base.regular.sp(14).label(context)),
+                    ]),
+                  ),
+                ],
+              ),
+            ],
           ),
           body: Column(
             children: [
@@ -312,33 +390,29 @@ class _ChatBubble extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 3.h),
       child: Row(
         mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // 对方头像
-          if (!isMine) _buildAvatar(context, msg.senderId ?? 0),
-          if (!isMine) SizedBox(width: 8.w),
-
           // 气泡
           Flexible(
             child: GestureDetector(
               onLongPress: onLongPress,
               child: Container(
-                constraints: BoxConstraints(maxWidth: 0.65.sw),
+                constraints: BoxConstraints(maxWidth: 0.7.sw),
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 decoration: BoxDecoration(
                   color: isMine
-                      ? const Color(0xFF95EC69) // 微信绿
-                      : WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                      ? const Color(0xFF5B8CFF) // 蓝色（自己）
+                      : Colors.white,            // 白色（对方）
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(isMine ? 16.r : 4.r),
-                    topRight: Radius.circular(isMine ? 4.r : 16.r),
-                    bottomLeft: Radius.circular(16.r),
-                    bottomRight: Radius.circular(16.r),
+                    topLeft: Radius.circular(16.r),
+                    topRight: Radius.circular(16.r),
+                    bottomLeft: Radius.circular(isMine ? 16.r : 4.r),
+                    bottomRight: Radius.circular(isMine ? 4.r : 16.r),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 3,
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 4,
                       offset: const Offset(0, 1),
                     ),
                   ],
@@ -347,7 +421,7 @@ class _ChatBubble extends StatelessWidget {
                   msg.content ?? '',
                   style: TextStyle(
                     fontSize: 15.sp,
-                    color: isMine ? const Color(0xFF1D1D1D) : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    color: isMine ? Colors.white : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                     height: 1.4,
                   ),
                 ),
@@ -355,83 +429,30 @@ class _ChatBubble extends StatelessWidget {
             ),
           ),
 
-          // 我的头像
-          if (isMine) SizedBox(width: 8.w),
-          if (isMine) _buildMyAvatar(context),
+          // 已读/未读状态指示器（仅我发的消息显示）
+          if (isMine) ...[
+            SizedBox(width: 4.w),
+            _buildReadStatusIndicator(context),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildAvatar(BuildContext context, int userId) {
-    final provider = context.read<PrivateChatProvider>();
-    final profile = provider.getUserProfileFromCache(userId);
-    final avatar = profile?['avatar'] ?? '';
-    final avatarUrl = avatar.isNotEmpty
-        ? 'https://qnhdpic.twt.edu.cn/download/origin/$avatar'
-        : '';
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(6.r),
-      child: SizedBox(
-        width: 36.w, height: 36.w,
-        child: avatarUrl.isNotEmpty
-            ? WpyPic(avatarUrl, width: 36.w, height: 36.w, fit: BoxFit.cover, withCache: true)
-            : _buildDefaultAvatar(context, userId),
-      ),
-    );
-  }
-
-  Widget _buildDefaultAvatar(BuildContext context, int userId) {
-    final colors = [
-      const Color(0xFF5B8CFF), const Color(0xFF44C5A0), const Color(0xFFFF8C5A),
-      const Color(0xFFCF7BFF), const Color(0xFFFF6B8A), const Color(0xFF64B5F6),
-    ];
-    final provider = context.read<PrivateChatProvider>();
-    final nickname = provider.getUserProfileFromCache(userId)?['nickname'] ?? '';
-    final displayChar = _getDisplayChar(nickname, userId);
+  /// 已读/未读状态指示器
+  Widget _buildReadStatusIndicator(BuildContext context) {
+    final isRead = msg.msgStatus == 1;
     return Container(
-      width: 36.w, height: 36.w,
+      width: 8.w,
+      height: 8.w,
+      margin: EdgeInsets.only(bottom: 4.h),
       decoration: BoxDecoration(
-        color: colors[userId % colors.length],
-        borderRadius: BorderRadius.circular(6.r),
-      ),
-      child: Center(
-        child: Text(displayChar,
-            style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.w600)),
-      ),
-    );
-  }
-
-  String _getDisplayChar(String nickname, int userId) {
-    if (nickname.isEmpty) return '${userId % 100}';
-    final lastChar = nickname[nickname.length - 1];
-    if (RegExp(r'[\u4e00-\u9fa5]').hasMatch(lastChar)) return lastChar;
-    return nickname[0].toUpperCase();
-  }
-
-  Widget _buildMyAvatar(BuildContext context) {
-    final myAvatar = CommonPreferences.avatar.value;
-    final myAvatarUrl = myAvatar.isNotEmpty
-        ? 'https://qnhdpic.twt.edu.cn/download/origin/$myAvatar'
-        : '';
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(6.r),
-      child: SizedBox(
-        width: 36.w, height: 36.w,
-        child: myAvatarUrl.isNotEmpty
-            ? WpyPic(myAvatarUrl, width: 36.w, height: 36.w, fit: BoxFit.cover, withCache: true)
-            : Container(
-                width: 36.w, height: 36.w,
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-                  borderRadius: BorderRadius.circular(6.r),
-                ),
-                child: Center(
-                  child: Text('我', style: TextStyle(color: Colors.white, fontSize: 14.sp, fontWeight: FontWeight.w600)),
-                ),
-              ),
+        shape: BoxShape.circle,
+        color: isRead ? const Color(0xFF5B8CFF) : Colors.transparent,
+        border: Border.all(
+          color: isRead ? const Color(0xFF5B8CFF) : Colors.grey[400]!,
+          width: 1.5,
+        ),
       ),
     );
   }

@@ -17,8 +17,6 @@ import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/xiaotian/view/page/xiaotian_page.dart';
-import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_home_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
@@ -49,7 +47,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ..add(WPYPage())
       ..add(FeedbackHomePage(key: feedbackKey))
       ..add(AiPage())
-      ..add(PrivateChatHomePage())
       ..add(ProfilePage());
     _tabController = TabController(
       length: pages.length,
@@ -196,38 +193,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
-    var chatPage = SizedBox(
-      height: 70.h,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: IconButton(
-          key: ValueKey(_currentIndex == 3),
-          splashRadius: 1,
-          icon: _currentIndex == 3
-              ? ColoredIcon(
-                  'assets/images/icon_smile_chat_fill.png',
-                  width: 24.h,
-                  color: WpyTheme.of(context).primary,
-                )
-              : ColoredIcon(
-                  'assets/images/icon_smile_chat.png',
-                  width: 24.h,
-                ),
-          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(3),
-        ),
-      ),
-    );
-
     var selfPage = SizedBox(
       height: 70.h,
 
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 300),
         child: IconButton(
-          key: ValueKey(_currentIndex == 4),
+          key: ValueKey(_currentIndex == 3),
           splashRadius: 1,
-          icon: _currentIndex == 4
+          icon: _currentIndex == 3
               ? ColoredIcon(
                   'assets/images/my.png',
                   width: 24.h,
@@ -239,7 +213,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
                 ),
           color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(4),
+          onPressed: () => _tabController.animateTo(3),
         ),
       ),
     );
@@ -261,7 +235,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: SafeArea(
 
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[homePage, feedbackPage, aiPage, chatPage, selfPage]),
+              children: <Widget>[homePage, feedbackPage, aiPage, selfPage]),
         ),
       ),
     );
@@ -277,7 +251,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return SystemUiOverlayStyle.light.copyWith(
                 systemNavigationBarColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor));
-        } else if (_tabController.index == 4) {
+        } else if (_tabController.index == 3) {
           return SystemUiOverlayStyle.light.copyWith(
               systemNavigationBarColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor));

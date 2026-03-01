@@ -25,13 +25,14 @@ import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
 import '../commons/themes/wpy_theme.dart';
 import '../commons/widgets/w_button.dart';
+import '../private_chat/view/widget/private_chat_session_list_widget.dart';
 import 'model/message_model.dart';
 
 ///枚举MessageType，每个type都是tabView -> list -> item的层次
-enum MessageType { like, floor, reply ,lake}
+enum MessageType { like, floor, reply, lake, privateChat }
 
 extension MessageTypeExtension on MessageType {
-  String get name => ['点赞', '评论', '校务回复', '湖底通知'][this.index];
+  String get name => ['点赞', '评论', '校务回复', '湖底通知', '私信'][this.index];
 
   List<MessageType> get others {
     List<MessageType> result = [];
@@ -91,6 +92,8 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
           return ReplyMessagesList();
         case MessageType.lake:
           return LakeEmailPage();
+        case MessageType.privateChat:
+          return PrivateChatSessionListWidget();
         default:
           return SizedBox.shrink();
       }
