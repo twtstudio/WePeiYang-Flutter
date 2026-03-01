@@ -83,6 +83,7 @@ class PrivateChatProvider extends ChangeNotifier {
   // ======== 会话管理 ========
 
   /// 获取会话列表
+  /// 调用后端 sessions 接口，将返回的 ChatSession 映射为本地 PrivateChatContact 列表
   Future<void> fetchContacts() async {
     if (_myUserId == null) return;
     PrivateChatLogger.log('Provider', '获取会话列表...');
@@ -113,56 +114,70 @@ class PrivateChatProvider extends ChangeNotifier {
     }
   }
 
-  /// 添加新联系人（创建会话）
+  /// 添加新联系人
+  /// v2.0：不再调用 createSession，直接创建本地联系人对象。
+  /// 会话将在发送第一条消息时由后端自动创建。
   Future<String?> addContact(int targetUserId) async {
     if (_myUserId == null) return '请先登录';
     if (targetUserId == _myUserId) return '不能添加自己';
-    PrivateChatLogger.log('Provider', '创建会话 targetUserId=$targetUserId');
+    PrivateChatLogger.log('Provider', '添加联系人 targetUserId=$targetUserId');
 
+    // 检查是否已存在该联系人
     final existing =
         _contacts.where((c) => c.userId == targetUserId).toList();
     if (existing.isNotEmpty) {
-      PrivateChatLogger.log('Provider', '会话已存在，直接选中');
-      await selectContact(existing.first);
+      PrivateChatLogger.log('Provider', '联系人已存在，直接选中');
       return null;
     }
 
+    // 创建本地联系人对象（暂无 sessionId，发消息后后端会返回）
+    final contact = PrivateChatContact(
+      userId: targetUserId,
+      username: '用户 $targetUserId',
+    );
+    _contacts.insert(0, contact);
+    PrivateChatLogger.log('Provider', '✅ 本地联系人已创建（待发消息后自动创建会话）');
+    notifyListeners();
+    // 异步获取该用户的资料
+    _fetchAndApplyUserProfile(contact);
+    return null;
+  }
+
+  /// 删除会话
+  /// 调用后端 session/delete 接口，成功后从本地列表移除该联系人
+  Future<String?> deleteSessionFromList(int sessionId) async {
     try {
-      final result = await PrivateChatService.createSession(targetUserId);
-      if (result.isSuccess && result.data != null) {
-        final contact = PrivateChatContact(
-          userId: targetUserId,
-          username: '用户 $targetUserId',
-          sessionId: result.data['sessionId'],
-        );
-        _contacts.insert(0, contact);
-        PrivateChatLogger.log('Provider', '✅ 会话创建成功 sessionId=${contact.sessionId}');
+      final result = await PrivateChatService.deleteSession(sessionId);
+      if (result.isSuccess) {
+        _contacts.removeWhere((c) => c.sessionId == sessionId);
+        // 如果删除的是当前聊天对象，清空聊天内容
+        if (_currentContact?.sessionId == sessionId) {
+          _currentContact = null;
+          _currentMessages = [];
+        }
         notifyListeners();
-        // 异步获取该用户的资料
-        _fetchAndApplyUserProfile(contact);
+        PrivateChatLogger.log('Provider', '✅ 删除会话成功 sessionId=$sessionId');
         return null;
-      } else {
-        PrivateChatLogger.log('Provider', '❌ 创建会话失败: ${result.msg}');
-        return result.msg;
       }
+      return result.msg;
     } catch (e) {
-      PrivateChatLogger.log('Provider', '❌ 创建会话异常: $e');
-      return '创建会话失败: $e';
+      PrivateChatLogger.log('Provider', '❌ 删除会话异常: $e');
+      return '删除会话失败: $e';
     }
   }
 
   /// 选择联系人并加载聊天记录
+  /// 进入聊天界面时调用，同时标记对方消息为已读
   Future<void> selectContact(PrivateChatContact contact) async {
     _currentContact = contact;
     contact.unreadCount = 0;
     _currentMessages = [];
     notifyListeners();
 
-    if (contact.sessionId != null) {
-      try {
-        await PrivateChatService.markAsRead(contact.sessionId!);
-      } catch (_) {}
-    }
+    // v2.0：使用 targetUserId 标记已读，无需 sessionId
+    try {
+      await PrivateChatService.markAsRead(contact.userId);
+    } catch (_) {}
 
     await loadHistory();
   }
@@ -175,8 +190,9 @@ class PrivateChatProvider extends ChangeNotifier {
   }
 
   /// 加载聊天记录
+  /// v2.0：使用 targetUserId 查询，无需提前知道 sessionId
   Future<void> loadHistory({int page = 1, int pageSize = 50}) async {
-    if (_currentContact == null || _currentContact!.sessionId == null) {
+    if (_currentContact == null) {
       _currentMessages = [];
       notifyListeners();
       return;
@@ -184,8 +200,7 @@ class PrivateChatProvider extends ChangeNotifier {
 
     try {
       final result = await PrivateChatService.getChatHistory(
-        sessionId: _currentContact!.sessionId!,
-        userIdB: _currentContact!.userId,
+        targetUserId: _currentContact!.userId,
         page: page,
         pageSize: pageSize,
       );
@@ -289,9 +304,9 @@ class PrivateChatProvider extends ChangeNotifier {
         }
       }
     } else {
-      // 当前正在和对方聊天，自动已读
-      if (msg.senderId != _myUserId && _currentContact!.sessionId != null) {
-        PrivateChatService.markAsRead(_currentContact!.sessionId!);
+      // 当前正在和对方聊天，自动标记已读（v2.0 使用 targetUserId）
+      if (msg.senderId != _myUserId) {
+        PrivateChatService.markAsRead(_currentContact!.userId);
       }
     }
 

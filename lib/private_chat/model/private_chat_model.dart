@@ -1,6 +1,10 @@
 /// 私聊功能数据模型
+///
+/// 数据格式说明：
+///   - 所有 JSON Key 统一使用 snake_case（msg_id, sender_id, send_time 等）
 
 /// 统一 API 响应结果
+/// 后端所有接口返回的 Result 包装结构
 class PrivateChatApiResult {
   final int code;
   final String msg;
@@ -20,6 +24,10 @@ class PrivateChatApiResult {
 }
 
 /// 私信消息 VO
+/// 对应后端的 PrivateChatMsgVO 结构，REST API 返回与 WebSocket 推送统一使用此结构。
+///
+/// msg_status 含义：
+///   0 = 未读，1 = 已读，2 = 已撤回
 class PrivateChatMsgVO {
   final int? msgId;
   final int? senderId;
@@ -42,11 +50,9 @@ class PrivateChatMsgVO {
   });
 
   factory PrivateChatMsgVO.fromJson(Map<String, dynamic> json) {
-    // 兼容处理 sendTime：
-    //   REST API 返回字符串 "yyyy-MM-dd HH:mm:ss"
-    //   WebSocket 推送返回时间戳数字
+    // 处理 send_time：支持字符串或数字时间戳
     String? sendTime;
-    final rawTime = json['sendTime'];
+    final rawTime = json['send_time'];
     if (rawTime is String) {
       sendTime = rawTime;
     } else if (rawTime is int) {
@@ -57,14 +63,14 @@ class PrivateChatMsgVO {
     }
 
     return PrivateChatMsgVO(
-      msgId: json['msgId'] is int ? json['msgId'] : null,
-      senderId: json['senderId'] is int ? json['senderId'] : null,
-      receiverId: json['receiverId'] is int ? json['receiverId'] : null,
-      content: json['content']?.toString(),
-      msgType: json['msgType'] is int ? json['msgType'] : null,
+      msgId: (json['msg_id'] as int?),
+      senderId: (json['sender_id'] as int?),
+      receiverId: (json['receiver_id'] as int?),
+      content: (json['content'] as String?),
+      msgType: (json['msg_type'] as int?),
       sendTime: sendTime,
-      sessionId: json['sessionId'] is int ? json['sessionId'] : null,
-      msgStatus: json['msgStatus'] is int ? json['msgStatus'] : null,
+      sessionId: (json['session_id'] as int?),
+      msgStatus: (json['msg_status'] as int?),
     );
   }
 
@@ -90,6 +96,8 @@ class PrivateChatMsgVO {
 }
 
 /// 聊天会话实体
+/// 对应后端的 PrivateChatSession 结构
+/// 约定 userId1 < userId2
 class ChatSession {
   final int sessionId;
   final int userId1;
@@ -109,12 +117,12 @@ class ChatSession {
 
   factory ChatSession.fromJson(Map<String, dynamic> json) {
     return ChatSession(
-      sessionId: json['sessionId'] ?? 0,
-      userId1: json['userId1'] ?? 0,
-      userId2: json['userId2'] ?? 0,
-      lastMsg: json['lastMsg'],
-      lastMsgTime: json['lastMsgTime'],
-      unreadCount: json['unreadCount'] ?? 0,
+      sessionId: (json['session_id'] as int?) ?? 0,
+      userId1: (json['user_id1'] as int?) ?? 0,
+      userId2: (json['user_id2'] as int?) ?? 0,
+      lastMsg: json['last_msg'] as String?,
+      lastMsgTime: json['last_msg_time'] as String?,
+      unreadCount: (json['unread_count'] as int?) ?? 0,
     );
   }
 
@@ -125,6 +133,7 @@ class ChatSession {
 }
 
 /// 联系人（前端展示用）
+/// 由 ChatSession + 用户资料 组合生成，不直接对应后端接口
 class PrivateChatContact {
   final int userId;
   String username;
@@ -165,6 +174,7 @@ class PrivateChatContact {
 }
 
 /// 用户私信设置
+/// 对应后端的 PrivateChatUserSetting 结构
 class PrivateChatUserSetting {
   final int userId;
   int isEnable;
@@ -180,10 +190,10 @@ class PrivateChatUserSetting {
 
   factory PrivateChatUserSetting.fromJson(Map<String, dynamic> json) {
     return PrivateChatUserSetting(
-      userId: json['userId'] ?? 0,
-      isEnable: json['isEnable'] ?? 1,
-      isAcceptStranger: json['isAcceptStranger'] ?? 1,
-      blockUserIds: json['blockUserIds'] ?? '',
+      userId: (json['user_id'] as int?) ?? 0,
+      isEnable: (json['is_enable'] as int?) ?? 1,
+      isAcceptStranger: (json['is_accept_stranger'] as int?) ?? 1,
+      blockUserIds: (json['block_user_ids'] as String?) ?? '',
     );
   }
 

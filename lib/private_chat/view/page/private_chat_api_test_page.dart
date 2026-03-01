@@ -114,16 +114,16 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                       _callApi('获取会话列表', PrivateChatService.getSessions),
                 ),
                 _ApiButton(
-                  icon: Icons.add_comment,
-                  title: '创建会话',
-                  subtitle: 'POST /session/create?targetUserId=?',
+                  icon: Icons.delete_sweep,
+                  title: '删除会话',
+                  subtitle: 'POST /session/delete?session_id=?',
                   onTap: () => _showInputDialog(
                     context,
-                    '创建会话',
-                    '目标用户ID',
+                    '删除会话',
+                    '会话 ID (session_id)',
                     (val) => _callApi(
-                      '创建会话(targetUserId=$val)',
-                      () => PrivateChatService.createSession(int.parse(val)),
+                      '删除会话(session_id=$val)',
+                      () => PrivateChatService.deleteSession(int.parse(val)),
                     ),
                   ),
                 ),
@@ -138,19 +138,19 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.history,
                   title: '获取聊天记录',
-                  subtitle: 'GET /message/history?sessionId=&userIdB=',
+                  subtitle: 'GET /message/history?target_user_id=',
                   onTap: () => _showHistoryDialog(context),
                 ),
                 _ApiButton(
                   icon: Icons.done_all,
                   title: '标记已读',
-                  subtitle: 'POST /message/read?sessionId=?',
+                  subtitle: 'POST /message/read?target_user_id=?',
                   onTap: () => _showInputDialog(
                     context,
                     '标记已读',
-                    '会话ID (sessionId)',
+                    '对方用户ID (target_user_id)',
                     (val) => _callApi(
-                      '标记已读(sessionId=$val)',
+                      '标记已读(target_user_id=$val)',
                       () => PrivateChatService.markAsRead(int.parse(val)),
                     ),
                   ),
@@ -158,13 +158,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.undo,
                   title: '撤回消息',
-                  subtitle: 'POST /message/recall?msgId=?',
+                  subtitle: 'POST /message/recall?msg_id=?',
                   onTap: () => _showInputDialog(
                     context,
                     '撤回消息',
-                    '消息ID (msgId)',
+                    '消息ID (msg_id)',
                     (val) => _callApi(
-                      '撤回消息(msgId=$val)',
+                      '撤回消息(msg_id=$val)',
                       () => PrivateChatService.recallMessage(int.parse(val)),
                     ),
                   ),
@@ -172,13 +172,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.delete,
                   title: '删除消息',
-                  subtitle: 'POST /message/delete?msgId=?',
+                  subtitle: 'POST /message/delete?msg_id=?',
                   onTap: () => _showInputDialog(
                     context,
                     '删除消息',
-                    '消息ID (msgId)',
+                    '消息ID (msg_id)',
                     (val) => _callApi(
-                      '删除消息(msgId=$val)',
+                      '删除消息(msg_id=$val)',
                       () => PrivateChatService.deleteMessage(int.parse(val)),
                     ),
                   ),
@@ -195,13 +195,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.toggle_on,
                   title: '更新私信开关',
-                  subtitle: 'POST /setting/enable?isEnable=0|1',
+                  subtitle: 'POST /setting/enable?is_enable=0|1',
                   onTap: () => _showSelectDialog(
                     context,
                     '更新私信开关',
                     {'开启 (1)': '1', '关闭 (0)': '0'},
                     (val) => _callApi(
-                      '更新私信开关(isEnable=$val)',
+                      '更新私信开关(is_enable=$val)',
                       () => PrivateChatService.updateEnable(int.parse(val)),
                     ),
                   ),
@@ -209,13 +209,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.person_off,
                   title: '更新陌生人策略',
-                  subtitle: 'POST /setting/stranger?isAcceptStranger=0|1',
+                  subtitle: 'POST /setting/stranger?is_accept_stranger=0|1',
                   onTap: () => _showSelectDialog(
                     context,
                     '更新陌生人策略',
                     {'接收 (1)': '1', '不接收 (0)': '0'},
                     (val) => _callApi(
-                      '更新陌生人策略(isAcceptStranger=$val)',
+                      '更新陌生人策略(is_accept_stranger=$val)',
                       () =>
                           PrivateChatService.updateStranger(int.parse(val)),
                     ),
@@ -224,13 +224,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.block,
                   title: '拉黑用户',
-                  subtitle: 'POST /setting/block?blockUserId=?',
+                  subtitle: 'POST /setting/block?block_user_id=?',
                   onTap: () => _showInputDialog(
                     context,
                     '拉黑用户',
-                    '要拉黑的用户ID',
+                    '要拉黑的用户ID (block_user_id)',
                     (val) => _callApi(
-                      '拉黑用户(blockUserId=$val)',
+                      '拉黑用户(block_user_id=$val)',
                       () => PrivateChatService.blockUser(int.parse(val)),
                     ),
                   ),
@@ -238,13 +238,13 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 _ApiButton(
                   icon: Icons.person_add,
                   title: '取消拉黑',
-                  subtitle: 'POST /setting/unblock?unblockUserId=?',
+                  subtitle: 'POST /setting/unblock?unblock_user_id=?',
                   onTap: () => _showInputDialog(
                     context,
                     '取消拉黑',
-                    '要取消拉黑的用户ID',
+                    '要取消拉黑的用户ID (unblock_user_id)',
                     (val) => _callApi(
-                      '取消拉黑(unblockUserId=$val)',
+                      '取消拉黑(unblock_user_id=$val)',
                       () =>
                           PrivateChatService.unblockUser(int.parse(val)),
                     ),
@@ -415,7 +415,7 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
               controller: receiverCtrl,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: '接收者ID (receiverId)',
+                labelText: '接收者ID (receiver_id)',
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r)),
               ),
@@ -461,9 +461,9 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
     );
   }
 
+  /// v2.1：获取聊天记录只需 target_user_id，无需 session_id
   void _showHistoryDialog(BuildContext context) {
-    final sessionCtrl = TextEditingController();
-    final userBCtrl = TextEditingController();
+    final targetUserCtrl = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -471,29 +471,15 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
             borderRadius: BorderRadius.circular(12.r)),
         title: Text('获取聊天记录',
             style: TextUtil.base.bold.sp(16).label(context)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: sessionCtrl,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: '会话ID (sessionId)',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r)),
-              ),
-            ),
-            SizedBox(height: 12.h),
-            TextField(
-              controller: userBCtrl,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: '对方用户ID (userIdB)',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r)),
-              ),
-            ),
-          ],
+        content: TextField(
+          controller: targetUserCtrl,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: '对方用户ID (target_user_id)',
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.r)),
+          ),
+          autofocus: true,
         ),
         actions: [
           TextButton(
@@ -502,18 +488,16 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
           ),
           FilledButton(
             onPressed: () {
-              final sessionId = int.tryParse(sessionCtrl.text.trim());
-              final userIdB = int.tryParse(userBCtrl.text.trim());
-              if (sessionId == null || userIdB == null) {
-                ToastProvider.error('请完整填写');
+              final targetUserId = int.tryParse(targetUserCtrl.text.trim());
+              if (targetUserId == null) {
+                ToastProvider.error('请输入用户ID');
                 return;
               }
               Navigator.pop(ctx);
               _callApi(
-                '获取聊天记录(sessionId=$sessionId, userIdB=$userIdB)',
+                '获取聊天记录(target_user_id=$targetUserId)',
                 () => PrivateChatService.getChatHistory(
-                  sessionId: sessionId,
-                  userIdB: userIdB,
+                  targetUserId: targetUserId,
                 ),
               );
             },

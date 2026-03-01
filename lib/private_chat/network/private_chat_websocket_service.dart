@@ -24,12 +24,14 @@ class PrivateChatWebSocketService {
 
   /// WebSocket 连接地址
   String get _wsUrl {
-    // 线上地址（部署后切换到这个）
+    // 线上地址（部署后切换）：
     // final baseWs = EnvConfig.QNHD.replaceFirst('http', 'ws');
     // return '${baseWs}ws/private-chat?userId=$_userId';
 
     // 本地调试地址（Android 模拟器用 10.0.2.2 访问宿主机 localhost）
-    return 'ws://10.0.2.2:8081/ws/private-chat?userId=$_userId';
+    // 注意：端口需与后端保持一致；userId 参数仅调试模式使用，
+    // 线上应替换为 token 参数传递 JWT
+    return 'ws://10.0.2.2:8092/ws/private-chat?userId=$_userId';
   }
 
   /// 建立 WebSocket 连接
