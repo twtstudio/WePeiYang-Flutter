@@ -229,7 +229,10 @@ class _PrivateChatConversationPageState
         return Scaffold(
           backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           appBar: AppBar(
-            title: Text(widget.contact.username, style: TextUtil.base.bold.sp(17).label(context)),
+            title: Text(
+              provider.currentContact?.username ?? widget.contact.username,
+              style: TextUtil.base.bold.sp(17).label(context),
+            ),
             centerTitle: true,
             backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             elevation: 0.5,

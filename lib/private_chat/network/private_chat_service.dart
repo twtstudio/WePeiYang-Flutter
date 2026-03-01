@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 
 /// ======================== 私聊日志记录器 ========================
@@ -34,9 +35,7 @@ class PrivateChatLogger {
 /// 所有私聊相关的 HTTP 请求统一通过此 Dio 实例发送。
 /// baseUrl 对应后端的私聊模块根路径。
 ///
-/// 鉴权方式：
-///   - 开发调试：通过 X-Test-User-Id 请求头传递用户 ID
-///   - 线上环境：通过 Authorization: Bearer {token} 传递 JWT（需切换拦截器）
+/// 鉴权方式：通过 token 请求头传递 JWT（与其他模块一致）
 class PrivateChatDio extends DioAbstract {
   // ========== 地址配置 ==========
   // 线上地址（部署后切换）：
@@ -52,13 +51,12 @@ class PrivateChatDio extends DioAbstract {
   @override
   List<Interceptor> interceptors = [
     InterceptorsWrapper(
-      onRequest: (options, handler) {
-        // 开发阶段：使用 X-Test-User-Id 头代替 JWT 鉴权
-        final userId = CommonPreferences.lakeUid.value;
-        options.headers['X-Test-User-Id'] = userId;
+      onRequest: (options, handler) async {
+        // 使用 LakeTokenManager 获取 JWT token（与 message_service 等模块一致）
+        options.headers['token'] = await LakeTokenManager().token;
         PrivateChatLogger.log(
           'HTTP',
-          '→ ${options.method} ${options.path} [userId=$userId]',
+          '→ ${options.method} ${options.path}',
         );
         return handler.next(options);
       },
@@ -359,18 +357,24 @@ class PrivateChatService {
 
   /// 获取用户资料（昵称、头像）
   ///
-  /// GET /user/profile?userId=
-  /// - 用于获取对方的昵称和头像以展示在 UI 中
-  /// - 注意：文档中此接口路径为 /api/v1/f/user/profile，
-  ///   若后端未在 private-chat 模块下暴露此接口，
-  ///   需要创建独立的 Dio 实例访问
+  /// GET /api/v1/f/user/profile?user_id=
+  /// - 注意：此接口不在 private-chat 模块下，使用独立 Dio 实例访问
+  /// - 返回结构：{ code: 200, data: { user_info: { nickname, avatar, ... } } }
   static Future<PrivateChatApiResult> getUserProfile(int userId) async {
     try {
-      final response = await privateChatDio.get(
+      final response = await _userProfileDio.get(
         'user/profile',
-        queryParameters: {'userId': userId},
+        queryParameters: {'user_id': userId},
       );
-      return PrivateChatApiResult.fromJson(response.data);
+      // 提取 user_info 层级，让调用方直接获取 nickname / avatar
+      final data = response.data;
+      final code = data['code'] ?? 0;
+      final msg = data['msg'] ?? '';
+      if (code == 200 && data['data'] != null) {
+        final userInfo = data['data']['user_info'];
+        return PrivateChatApiResult(code: 200, msg: msg, data: userInfo);
+      }
+      return PrivateChatApiResult(code: code, msg: msg.isNotEmpty ? msg : '获取用户资料失败');
     } on DioException catch (e) {
       return PrivateChatApiResult(
         code: -1,
@@ -378,4 +382,24 @@ class PrivateChatService {
       );
     }
   }
+}
+
+/// 用于访问 /api/v1/f/user/profile 等非 private-chat 模块接口的 Dio 实例
+final _userProfileDio = _UserProfileDio();
+
+class _UserProfileDio extends DioAbstract {
+  // 线上地址（部署后切换）：
+  // String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
+  @override
+  String baseUrl = 'http://10.0.2.2:8092/api/v1/f/';
+
+  @override
+  List<Interceptor> interceptors = [
+    InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        options.headers['token'] = await LakeTokenManager().token;
+        return handler.next(options);
+      },
+    ),
+  ];
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/network/private_chat_service.dart';
 
@@ -10,7 +11,6 @@ class PrivateChatWebSocketService {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   Timer? _reconnectTimer;
-  final int _userId;
 
   /// 新消息回调
   void Function(PrivateChatMsgVO msg)? onMessageReceived;
@@ -20,25 +20,25 @@ class PrivateChatWebSocketService {
 
   bool get isConnected => _isConnected;
 
-  PrivateChatWebSocketService({required int userId}) : _userId = userId;
+  PrivateChatWebSocketService();
 
-  /// WebSocket 连接地址
-  String get _wsUrl {
+  /// 获取 WebSocket 连接地址（使用 JWT token 鉴权）
+  Future<String> _getWsUrl() async {
+    final token = await LakeTokenManager().token;
     // 线上地址（部署后切换）：
     // final baseWs = EnvConfig.QNHD.replaceFirst('http', 'ws');
-    // return '${baseWs}ws/private-chat?userId=$_userId';
+    // return '${baseWs}ws/private-chat?token=$token';
 
     // 本地调试地址（Android 模拟器用 10.0.2.2 访问宿主机 localhost）
-    // 注意：端口需与后端保持一致；userId 参数仅调试模式使用，
-    // 线上应替换为 token 参数传递 JWT
-    return 'ws://10.0.2.2:8092/ws/private-chat?userId=$_userId';
+    return 'ws://10.0.2.2:8092/ws/private-chat?token=$token';
   }
 
   /// 建立 WebSocket 连接
-  void connect() {
-    PrivateChatLogger.log('WS', '尝试连接 $_wsUrl');
+  void connect() async {
+    final wsUrl = await _getWsUrl();
+    PrivateChatLogger.log('WS', '尝试连接 $wsUrl');
     try {
-      _channel = WebSocketChannel.connect(Uri.parse(_wsUrl));
+      _channel = WebSocketChannel.connect(Uri.parse(wsUrl));
 
       _channel!.stream.listen(
         (data) {

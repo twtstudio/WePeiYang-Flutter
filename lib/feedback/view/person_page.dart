@@ -151,24 +151,27 @@ class _PersonPageState extends State<PersonPage> {
       }
     }
 
-    // 创建或获取与该用户的会话
-    final error = await provider.addContact(uid!);
-    if (error != null && mounted) {
-      ToastProvider.error(error);
+    if (uid == provider.myUserId && mounted) {
+      ToastProvider.error('不能和自己私聊');
       return;
     }
 
-    // 找到刚创建/已存在的联系人
-    final contact = provider.contacts
+    // 查找已有会话，如果没有则创建临时联系人对象（不加入会话列表）
+    var contact = provider.contacts
         .where((c) => c.userId == uid)
         .firstOrNull;
-    if (contact == null && mounted) {
-      ToastProvider.error('创建会话失败');
-      return;
+    if (contact == null) {
+      // 创建临时联系人，但不添加到会话列表
+      // 只有发送第一条消息后才会出现在消息中心
+      contact = PrivateChatContact(
+        userId: uid!,
+        username: nickName ?? '用户 $uid',
+        avatar: avatar ?? '',
+      );
     }
 
     // 选中该联系人并跳转到聊天页面
-    await provider.selectContact(contact!);
+    await provider.selectContact(contact);
     if (mounted) {
       Navigator.pushNamed(
         context,

@@ -55,7 +55,7 @@ class PrivateChatProvider extends ChangeNotifier {
     _myUserId = uid;
     PrivateChatLogger.log('Provider', '✅ myUserId=$uid');
 
-    _wsService = PrivateChatWebSocketService(userId: uid);
+    _wsService = PrivateChatWebSocketService();
     _wsService!.onMessageReceived = _onWsMessage;
     _wsService!.onConnectionChanged = (connected) {
       _isConnected = connected;
@@ -114,32 +114,12 @@ class PrivateChatProvider extends ChangeNotifier {
     }
   }
 
-  /// 添加新联系人
-  /// v2.0：不再调用 createSession，直接创建本地联系人对象。
-  /// 会话将在发送第一条消息时由后端自动创建。
-  Future<String?> addContact(int targetUserId) async {
+  /// 添加新联系人（仅校验，不插入会话列表）
+  /// v2.1：点击私信按钮时不创建会话，只有发送消息后会话才出现在消息中心。
+  /// 返回错误信息（null 表示无错误）
+  String? validateContact(int targetUserId) {
     if (_myUserId == null) return '请先登录';
     if (targetUserId == _myUserId) return '不能添加自己';
-    PrivateChatLogger.log('Provider', '添加联系人 targetUserId=$targetUserId');
-
-    // 检查是否已存在该联系人
-    final existing =
-        _contacts.where((c) => c.userId == targetUserId).toList();
-    if (existing.isNotEmpty) {
-      PrivateChatLogger.log('Provider', '联系人已存在，直接选中');
-      return null;
-    }
-
-    // 创建本地联系人对象（暂无 sessionId，发消息后后端会返回）
-    final contact = PrivateChatContact(
-      userId: targetUserId,
-      username: '用户 $targetUserId',
-    );
-    _contacts.insert(0, contact);
-    PrivateChatLogger.log('Provider', '✅ 本地联系人已创建（待发消息后自动创建会话）');
-    notifyListeners();
-    // 异步获取该用户的资料
-    _fetchAndApplyUserProfile(contact);
     return null;
   }
 
@@ -173,6 +153,9 @@ class PrivateChatProvider extends ChangeNotifier {
     contact.unreadCount = 0;
     _currentMessages = [];
     notifyListeners();
+
+    // 异步获取用户资料（昵称、头像），获取后自动更新 UI
+    _fetchAndApplyUserProfile(contact);
 
     // v2.0：使用 targetUserId 标记已读，无需 sessionId
     try {

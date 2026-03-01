@@ -227,12 +227,18 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
               final id = int.tryParse(controller.text.trim());
               if (id == null || id <= 0) { ToastProvider.error('请输入有效的用户ID'); return; }
               Navigator.pop(ctx);
-              final error = await provider.addContact(id);
+              final error = provider.validateContact(id);
               if (error != null && context.mounted) {
                 ToastProvider.error(error);
               } else {
-                final contact = provider.contacts.where((c) => c.userId == id).firstOrNull;
-                if (contact != null && context.mounted) _openConversation(context, provider, contact);
+                var contact = provider.contacts.where((c) => c.userId == id).firstOrNull;
+                if (contact == null) {
+                  contact = PrivateChatContact(userId: id, username: '用户 $id');
+                }
+                if (context.mounted) {
+                  await provider.selectContact(contact);
+                  _openConversation(context, provider, contact);
+                }
               }
             },
             style: FilledButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
