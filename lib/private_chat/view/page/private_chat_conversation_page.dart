@@ -49,7 +49,7 @@ class _PrivateChatConversationPageState
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        0, // reverse: true 时，0 是最底部
+        _scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
       );
@@ -191,10 +191,9 @@ class _PrivateChatConversationPageState
 
   /// 判断是否需要显示时间分割线（与上一条消息间隔 > 5 分钟）
   bool _shouldShowTime(List<PrivateChatMsgVO> messages, int index) {
-    // 注意：列表是反转的（最新消息在 index=0），所以上一条是 index+1
-    if (index == messages.length - 1) return true; // 最早的消息始终显示时间
+    if (index == 0) return true; // 最早的消息始终显示时间
     final current = messages[index].sendDateTime;
-    final prev = messages[index + 1].sendDateTime;
+    final prev = messages[index - 1].sendDateTime;
     if (current == null || prev == null) return false;
     return current.difference(prev).inMinutes.abs() > 5;
   }
@@ -304,15 +303,17 @@ class _PrivateChatConversationPageState
                             ],
                           ),
                         )
-                      : ListView.builder(
+                      : Builder(builder: (context) {
+                          // 消息按时间正序排列（旧消息在上，新消息在下）
+                          final displayMessages = provider.currentMessages.reversed.toList();
+                          return ListView.builder(
                           controller: _scrollController,
-                          reverse: true,
                           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                          itemCount: provider.currentMessages.length,
+                          itemCount: displayMessages.length,
                           itemBuilder: (context, index) {
-                            final msg = provider.currentMessages[index];
+                            final msg = displayMessages[index];
                             final isMine = msg.senderId == provider.myUserId;
-                            final showTime = _shouldShowTime(provider.currentMessages, index);
+                            final showTime = _shouldShowTime(displayMessages, index);
 
                             return Column(
                               children: [
@@ -343,7 +344,8 @@ class _PrivateChatConversationPageState
                               ],
                             );
                           },
-                        ),
+                        );
+                        }),
                 ),
               ),
               // 输入区域
@@ -393,8 +395,14 @@ class _ChatBubble extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 3.h),
       child: Row(
         mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // 自己的消息：已读指示器在气泡左侧
+          if (isMine) ...[
+            _buildReadStatusIndicator(context),
+            SizedBox(width: 6.w),
+          ],
+
           // 气泡
           Flexible(
             child: GestureDetector(
@@ -432,9 +440,9 @@ class _ChatBubble extends StatelessWidget {
             ),
           ),
 
-          // 已读/未读状态指示器（仅我发的消息显示）
-          if (isMine) ...[
-            SizedBox(width: 4.w),
+          // 对方的消息：已读指示器在气泡右侧
+          if (!isMine) ...[
+            SizedBox(width: 6.w),
             _buildReadStatusIndicator(context),
           ],
         ],
@@ -442,13 +450,12 @@ class _ChatBubble extends StatelessWidget {
     );
   }
 
-  /// 已读/未读状态指示器
+  /// 已读/未读状态指示器（圆心与气泡中心线对齐）
   Widget _buildReadStatusIndicator(BuildContext context) {
     final isRead = msg.msgStatus == 1;
     return Container(
-      width: 8.w,
-      height: 8.w,
-      margin: EdgeInsets.only(bottom: 4.h),
+      width: 14.w,
+      height: 14.w,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isRead ? const Color(0xFF5B8CFF) : Colors.transparent,

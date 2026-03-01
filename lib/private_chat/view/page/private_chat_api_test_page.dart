@@ -85,7 +85,7 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                 Text('当前测试身份',
                     style: TextUtil.base.bold.sp(14).label(context)),
                 SizedBox(height: 4.h),
-                Text('X-Test-User-Id: $userId',
+                Text('lakeUid: $userId (JWT token 鉴权)',
                     style: TextStyle(
                         fontSize: 13.sp,
                         fontFamily: 'monospace',

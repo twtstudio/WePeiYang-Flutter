@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/network/private_chat_service.dart';
 import 'package:we_pei_yang_flutter/private_chat/network/private_chat_websocket_service.dart';
@@ -55,6 +56,11 @@ class PrivateChatProvider extends ChangeNotifier {
     _myUserId = uid;
     PrivateChatLogger.log('Provider', '✅ myUserId=$uid');
 
+    // 预热 token，避免后续并发请求重复刷新
+    try {
+      await LakeTokenManager().token;
+    } catch (_) {}
+
     _wsService = PrivateChatWebSocketService();
     _wsService!.onMessageReceived = _onWsMessage;
     _wsService!.onConnectionChanged = (connected) {
@@ -63,7 +69,8 @@ class PrivateChatProvider extends ChangeNotifier {
     };
     _wsService!.connect();
 
-    await fetchContacts();
+    // 不阻塞，后台加载会话列表
+    fetchContacts();
     notifyListeners();
   }
 
@@ -93,9 +100,12 @@ class PrivateChatProvider extends ChangeNotifier {
         _contacts = (result.data as List).map((json) {
           final session = ChatSession.fromJson(json);
           final otherId = session.getOtherUserId(_myUserId!);
+          // 优先从缓存获取昵称和头像
+          final cached = _userProfileCache[otherId];
           return PrivateChatContact(
             userId: otherId,
-            username: '用户 $otherId',
+            username: cached?['nickname'] ?? '用户 $otherId',
+            avatar: cached?['avatar'] ?? '',
             sessionId: session.sessionId,
             lastMsg: session.lastMsg ?? '',
             lastMsgTime: session.lastMsgTime,
@@ -104,7 +114,7 @@ class PrivateChatProvider extends ChangeNotifier {
         }).toList();
         PrivateChatLogger.log('Provider', '✅ 获取到 ${_contacts.length} 个会话');
         notifyListeners();
-        // 异步获取所有联系人的用户资料（昵称、头像）
+        // 异步获取缺失的用户资料
         _fetchUserProfilesForContacts();
       } else {
         PrivateChatLogger.log('Provider', '❌ 获取会话失败: ${result.msg}');
@@ -147,25 +157,18 @@ class PrivateChatProvider extends ChangeNotifier {
   }
 
   /// 选择联系人并加载聊天记录
-  /// 进入聊天界面时调用，同时标记对方消息为已读
   Future<void> selectContact(PrivateChatContact contact) async {
     _currentContact = contact;
     contact.unreadCount = 0;
     _currentMessages = [];
     notifyListeners();
 
-    // 异步获取用户资料（昵称、头像），获取后自动更新 UI
     _fetchAndApplyUserProfile(contact);
-
-    // v2.0：使用 targetUserId 标记已读，无需 sessionId
-    try {
-      await PrivateChatService.markAsRead(contact.userId);
-    } catch (_) {}
-
+    await PrivateChatService.markAsRead(contact.userId).catchError((_) {});
     await loadHistory();
   }
 
-  /// 退出聊天界面时清除当前联系人
+  /// 退出聊天界面时保存并清除当前联系人
   void clearCurrentContact() {
     _currentContact = null;
     _currentMessages = [];
@@ -470,21 +473,51 @@ class PrivateChatProvider extends ChangeNotifier {
 
   // ======== 用户资料获取 ========
 
-  /// 为所有联系人异步获取用户资料
+  /// 为所有联系人并行获取用户资料，完成后统一通知 UI
   Future<void> _fetchUserProfilesForContacts() async {
-    for (final contact in _contacts) {
-      await _fetchAndApplyUserProfile(contact);
+    // 只获取尚未缓存的用户资料
+    final needFetch = _contacts
+        .where((c) => !_userProfileCache.containsKey(c.userId))
+        .toList();
+    if (needFetch.isEmpty) return;
+    await Future.wait(
+      needFetch.map((contact) => _fetchUserProfileSilent(contact)),
+    );
+    // 批量完成后只通知一次
+    notifyListeners();
+  }
+
+  /// 静默获取用户资料（不调用 notifyListeners）
+  Future<void> _fetchUserProfileSilent(PrivateChatContact contact) async {
+    try {
+      final result = await PrivateChatService.getUserProfile(contact.userId);
+      if (result.isSuccess && result.data != null) {
+        final nickname = result.data['nickname']?.toString() ?? '';
+        final avatar = result.data['avatar']?.toString() ?? '';
+        _userProfileCache[contact.userId] = {
+          'nickname': nickname,
+          'avatar': avatar,
+        };
+        if (nickname.isNotEmpty) contact.username = nickname;
+        if (avatar.isNotEmpty) contact.avatar = avatar;
+      }
+    } catch (_) {}
+  }
+
+  /// 同步应用缓存中的用户资料（不触发网络请求，不调 notifyListeners）
+  void _applyUserProfileFromCache(PrivateChatContact contact) {
+    final cached = _userProfileCache[contact.userId];
+    if (cached != null) {
+      contact.username = cached['nickname'] ?? contact.username;
+      contact.avatar = cached['avatar'] ?? '';
     }
   }
 
   /// 获取单个用户资料并应用到联系人
   Future<void> _fetchAndApplyUserProfile(PrivateChatContact contact) async {
-    // 先查缓存
+    // 缓存命中：静默应用，不触发重建
     if (_userProfileCache.containsKey(contact.userId)) {
-      final cached = _userProfileCache[contact.userId]!;
-      contact.username = cached['nickname'] ?? contact.username;
-      contact.avatar = cached['avatar'] ?? '';
-      notifyListeners();
+      _applyUserProfileFromCache(contact);
       return;
     }
 
@@ -493,7 +526,6 @@ class PrivateChatProvider extends ChangeNotifier {
       if (result.isSuccess && result.data != null) {
         final nickname = result.data['nickname']?.toString() ?? '';
         final avatar = result.data['avatar']?.toString() ?? '';
-        // 存入缓存
         _userProfileCache[contact.userId] = {
           'nickname': nickname,
           'avatar': avatar,

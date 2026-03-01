@@ -173,11 +173,12 @@ class _PersonPageState extends State<PersonPage> {
     // 选中该联系人并跳转到聊天页面
     await provider.selectContact(contact);
     if (mounted) {
-      Navigator.pushNamed(
+      await Navigator.pushNamed(
         context,
         'private_chat/conversation',
         arguments: contact,
       );
+      provider.clearCurrentContact();
     }
   }
 
