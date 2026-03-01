@@ -36,6 +36,10 @@ class _PrivateChatConversationPageState
         Future.delayed(const Duration(milliseconds: 300), _scrollToBottom);
       }
     });
+    // 加载用户设置（拉黑状态），以便菜单正确显示
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PrivateChatProvider>().loadSetting();
+    });
   }
 
   @override
@@ -70,12 +74,15 @@ class _PrivateChatConversationPageState
     }
   }
 
-  void _showBlockConfirmDialog(BuildContext context, PrivateChatProvider provider) {
+  void _showBlockConfirmDialog(BuildContext context, PrivateChatProvider provider, bool isBlocked) {
     showDialog(
       context: context,
       builder: (c) => AlertDialog(
-        title: Text('拉黑用户', style: TextUtil.base.bold.sp(16).label(context)),
-        content: Text('确定要拉黑 ${widget.contact.username} 吗？拉黑后将无法收到对方的消息。',
+        title: Text(isBlocked ? '解除拉黑' : '拉黑用户', style: TextUtil.base.bold.sp(16).label(context)),
+        content: Text(
+            isBlocked
+                ? '确定要解除对 ${widget.contact.username} 的拉黑吗？'
+                : '确定要拉黑 ${widget.contact.username} 吗？拉黑后将无法收到对方的消息。',
             style: TextUtil.base.regular.sp(14).label(context)),
         actions: [
           TextButton(
@@ -84,17 +91,20 @@ class _PrivateChatConversationPageState
           FilledButton(
             onPressed: () async {
               Navigator.pop(c);
-              final error = await provider.blockUser(widget.contact.userId);
+              final error = isBlocked
+                  ? await provider.unblockUser(widget.contact.userId)
+                  : await provider.blockUser(widget.contact.userId);
               if (error != null && mounted) {
                 ToastProvider.error(error);
               } else if (mounted) {
-                ToastProvider.success('已拉黑');
-                Navigator.pop(context);
+                ToastProvider.success(isBlocked ? '已解除拉黑' : '已拉黑');
               }
             },
             style: FilledButton.styleFrom(
-                backgroundColor: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
-            child: const Text('拉黑'),
+                backgroundColor: isBlocked
+                    ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                    : WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
+            child: Text(isBlocked ? '解除拉黑' : '拉黑'),
           ),
         ],
       ),
@@ -246,42 +256,58 @@ class _PrivateChatConversationPageState
                       ToastProvider.success('分享功能开发中');
                       break;
                     case 'block':
-                      _showBlockConfirmDialog(context, provider);
+                      final isBlocked = provider.userSetting?.blockList
+                              .contains(widget.contact.userId.toString()) ??
+                          false;
+                      _showBlockConfirmDialog(context, provider, isBlocked);
                       break;
                     case 'report':
                       ToastProvider.success('举报功能开发中');
                       break;
                   }
                 },
-                itemBuilder: (ctx) => [
-                  PopupMenuItem(
-                    value: 'share',
-                    child: Row(children: [
-                      Icon(Icons.share_outlined, size: 20.sp,
-                          color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
-                      SizedBox(width: 8.w),
-                      Text('分享个人名片', style: TextUtil.base.regular.sp(14).label(context)),
-                    ]),
-                  ),
-                  PopupMenuItem(
-                    value: 'block',
-                    child: Row(children: [
-                      Icon(Icons.block_outlined, size: 20.sp,
-                          color: WpyTheme.of(context).get(WpyColorKey.warningColor)),
-                      SizedBox(width: 8.w),
-                      Text('拉黑当前用户', style: TextUtil.base.regular.sp(14).label(context)),
-                    ]),
-                  ),
-                  PopupMenuItem(
-                    value: 'report',
-                    child: Row(children: [
-                      Icon(Icons.flag_outlined, size: 20.sp,
-                          color: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
-                      SizedBox(width: 8.w),
-                      Text('举报当前用户', style: TextUtil.base.regular.sp(14).label(context)),
-                    ]),
-                  ),
-                ],
+                itemBuilder: (ctx) {
+                  final isBlocked = provider.userSetting?.blockList
+                          .contains(widget.contact.userId.toString()) ??
+                      false;
+                  return [
+                    PopupMenuItem(
+                      value: 'share',
+                      child: Row(children: [
+                        Icon(Icons.share_outlined, size: 20.sp,
+                            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
+                        SizedBox(width: 8.w),
+                        Text('分享个人名片', style: TextUtil.base.regular.sp(14).label(context)),
+                      ]),
+                    ),
+                    PopupMenuItem(
+                      value: 'block',
+                      child: Row(children: [
+                        Icon(
+                          isBlocked ? Icons.person_add_outlined : Icons.block_outlined,
+                          size: 20.sp,
+                          color: isBlocked
+                              ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                              : WpyTheme.of(context).get(WpyColorKey.warningColor),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          isBlocked ? '解除拉黑' : '拉黑当前用户',
+                          style: TextUtil.base.regular.sp(14).label(context),
+                        ),
+                      ]),
+                    ),
+                    PopupMenuItem(
+                      value: 'report',
+                      child: Row(children: [
+                        Icon(Icons.flag_outlined, size: 20.sp,
+                            color: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
+                        SizedBox(width: 8.w),
+                        Text('举报当前用户', style: TextUtil.base.regular.sp(14).label(context)),
+                      ]),
+                    ),
+                  ];
+                },
               ),
             ],
           ),
@@ -395,12 +421,12 @@ class _ChatBubble extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 3.h),
       child: Row(
         mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // 自己的消息：已读指示器在气泡左侧
+          // 自己的消息：已读指示器在气泡左下方
           if (isMine) ...[
             _buildReadStatusIndicator(context),
-            SizedBox(width: 6.w),
+            SizedBox(width: 4.w),
           ],
 
           // 气泡
@@ -440,31 +466,45 @@ class _ChatBubble extends StatelessWidget {
             ),
           ),
 
-          // 对方的消息：已读指示器在气泡右侧
-          if (!isMine) ...[
-            SizedBox(width: 6.w),
-            _buildReadStatusIndicator(context),
-          ],
+          // 对方的消息不显示已读状态
         ],
       ),
     );
   }
 
-  /// 已读/未读状态指示器（圆心与气泡中心线对齐）
+  /// 已读/未读状态指示器
   Widget _buildReadStatusIndicator(BuildContext context) {
     final isRead = msg.msgStatus == 1;
-    return Container(
-      width: 14.w,
-      height: 14.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isRead ? const Color(0xFF5B8CFF) : Colors.transparent,
-        border: Border.all(
-          color: isRead ? const Color(0xFF5B8CFF) : Colors.grey[400]!,
-          width: 1.5,
+    if (isRead) {
+      // 已读：绿色实心圆 + 白色对勾
+      return Container(
+        width: 16.w,
+        height: 16.w,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Color(0xFF4CAF50),
         ),
-      ),
-    );
+        child: Icon(
+          Icons.check,
+          size: 11.w,
+          color: Colors.white,
+        ),
+      );
+    } else {
+      // 未读：灰色空心圆
+      return Container(
+        width: 16.w,
+        height: 16.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.transparent,
+          border: Border.all(
+            color: Colors.grey[400]!,
+            width: 1.5,
+          ),
+        ),
+      );
+    }
   }
 }
 
