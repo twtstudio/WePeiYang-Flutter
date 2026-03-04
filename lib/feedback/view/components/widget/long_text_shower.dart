@@ -76,6 +76,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                     text,
                     defaultTextStyle: style,
                   ),
+                  textAlign: TextAlign.justify,
                 )
               else
                 LinkText(style: style, text: text, maxLine: maxLines)
