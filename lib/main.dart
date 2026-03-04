@@ -371,10 +371,10 @@ class WePeiYangAppState extends State<WePeiYangApp>
         context.read<RemoteConfig>().getRemoteConfig();
 
         //TODO:每年春节都判断一次
-        if(!CommonPreferences.happenSpring.value) {
-          globalTheme.value = RedScheme();
-          CommonPreferences.happenSpring.value = true;
-        }
+        // if(!CommonPreferences.happenSpring.value) {
+        //   globalTheme.value = RedScheme();
+        //   CommonPreferences.happenSpring.value = true;
+        // }
 
         return ListenableBuilder(
             listenable: globalTheme,
