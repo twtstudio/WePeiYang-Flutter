@@ -9,12 +9,12 @@ class RedScheme extends WpyThemeData {
       : super(
           meta: BuiltInThemeMetaData(
             themeId: "builtin_red_theme",
-            name: "春节红",
+            name: "夕阳红",
             description: "默认 红 主题",
             brightness: Brightness.light,
             darkThemeId: "builtin_dark",
             representativeColor: Color(0xff9c2525),
-            address: "com.twt.service.ICONSpring"
+            address: "com.twt.service.ICONRed"
           ),
           data: WpyThemeDetail(
             redSchemeDetail,

@@ -89,7 +89,7 @@ class ClassesService {
   /// 检查办公网连通
   static Future<bool> check({Duration? timeout}) async {
     try {
-      var response = await spiderDio.get('http://classes.tju.edu.cn',
+      var response = await spiderDio.get('https://classes.tju.edu.cn',
           options: Options(sendTimeout: timeout));
       if (response.data.toString().contains('只允许校内访问')) return false;
       return true;
@@ -165,7 +165,7 @@ class ClassesService {
   static Future<void> _getIdentity() async {
     late Response<dynamic> ret;
     bool redirect = false;
-    String url = 'http://classes.tju.edu.cn/eams/dataQuery.action';
+    String url = 'https://classes.tju.edu.cn/eams/dataQuery.action';
     while (true) {
       if (!redirect) {
         ret = await spiderDio.post(
@@ -205,7 +205,7 @@ class ClassesService {
     hasMinor = ret.data.toString().contains('辅修');
 
     ret = await spiderDio.post(
-      'http://classes.tju.edu.cn/eams/dataQuery.action',
+      'https://classes.tju.edu.cn/eams/dataQuery.action',
       data: {"dataType": "semesterCalendar"},
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );

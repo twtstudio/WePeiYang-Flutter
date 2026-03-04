@@ -121,20 +121,20 @@ class ScheduleService {
       _log('STEP 3: GET index.action?projectId=$projectId');
 
       await ClassesService.spiderDio.get(
-          "http://classes.tju.edu.cn/eams/courseTableForStd!index.action?projectId=$projectId");
+          "https://classes.tju.edu.cn/eams/courseTableForStd!index.action?projectId=$projectId");
 
       await Future.delayed(Duration(milliseconds: 100));
       _log('STEP 4: GET innerIndex.action?projectId=$projectId');
 
       res = await ClassesService.spiderDio.get(
-          "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=$projectId");
+          "https://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=$projectId");
     }
     // 如果是研究生
     else {
       _log('STEP 3: GET innerIndex.action for master student...');
 
       res = await ClassesService.spiderDio.get(
-          "http://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
+          "https://classes.tju.edu.cn/eams/courseTableForStd!innerIndex.action?projectId=22");
     }
     _log('STEP 5: Received response. Checking session...');
 
@@ -147,7 +147,7 @@ class ScheduleService {
 
     // 获取课表
     res = await ClassesService.spiderDio.post(
-      'http://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
+      'https://classes.tju.edu.cn/eams/courseTableForStd!courseTable.action',
       data: {
         "ignoreHead": "1",
         "setting.kind": "std",
@@ -291,7 +291,7 @@ class ScheduleService {
     _log('Starting to fetch exam...');
     try {
       var response = await ClassesService.spiderDio
-          .get("http://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
+          .get("https://classes.tju.edu.cn/eams/stdExamTable!examTable.action");
       _log('Exam data received. Checking session...');
 
       if (response.data.toString().contains('统一认证系统')) {

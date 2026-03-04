@@ -99,10 +99,10 @@ class Experiment {
 
 class ExperimentService {
   static final _requestTarget =
-      "http://classes.tju.edu.cn/eams/exp/std-elect-lesson-item!electedList.action";
+      "https://classes.tju.edu.cn/eams/exp/std-elect-lesson-item!electedList.action";
 
   static final _searchTarget =
-      "http://classes.tju.edu.cn/eams/exp/std-elect-lesson-item!search.action";
+      "https://classes.tju.edu.cn/eams/exp/std-elect-lesson-item!search.action";
 
   static Future<void> refreshExperiment(CourseProvider courseProvider) async {
     final expList = await _getExperimentRawData();

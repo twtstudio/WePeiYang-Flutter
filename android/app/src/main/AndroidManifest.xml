@@ -65,7 +65,7 @@
         android:name=".WBYApplication"
         android:allowBackup="false"
         android:extractNativeLibs="true"
-        android:icon="@mipmap/ic_launcher_spring"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/label"
         android:usesCleartextTraffic="true"
         tools:replace="android:label,android:allowBackup"

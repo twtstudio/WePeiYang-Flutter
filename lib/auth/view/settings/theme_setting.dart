@@ -461,7 +461,7 @@ class _ThemeSettingState extends State<ThemeSetting>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('应用图标颜色跟随主题变动'), SizedBox(height: 3.h), Text('切换后请稍等片刻')],
+              children: [Text('应用图标颜色跟随主题变动(仅安卓)'), SizedBox(height: 3.h), Text('切换后请稍等片刻')],
             ),
           ),
           Switch(
