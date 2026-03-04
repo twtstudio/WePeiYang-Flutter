@@ -13,11 +13,11 @@ class GPAService {
 
       // 如果是研究生，切换至研究生成绩
       await ClassesService.spiderDio.get(
-        'http://classes.tju.edu.cn/eams/courseTableForStd!index.action',
+        'https://classes.tju.edu.cn/eams/courseTableForStd!index.action',
         queryParameters: {'projectId': isMaster ? '22' : '1'},
       );
       var response = await ClassesService.spiderDio.get(
-          "http://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
+          "https://classes.tju.edu.cn/eams/teach/grade/course/person!historyCourseGrade.action?projectType=MAJOR");
       onResult(_data2GPABean(response.data.toString(), isMaster));
     } on DioException catch (e) {
       onFailure(e);

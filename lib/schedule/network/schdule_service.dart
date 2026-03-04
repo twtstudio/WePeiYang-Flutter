@@ -143,6 +143,10 @@ class ScheduleService {
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
+    print("++++++++IDS++++++++++");
+    print(res.data);
+    print(ids);
+    print("++++++++++++++++++++++++++++++");
     _log('STEP 6: IDs found. Sending POST request for courseTable.action...');
 
     // 获取课表
@@ -158,6 +162,9 @@ class ScheduleService {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     _log('STEP 7: Course table data received. Starting to parse HTML...');
+    print("++++++++RES++++++++++");
+    print(res.data.toString());
+    print("++++++++++++++++++++++++++++++");
     return _parseCourseHTML(res.data.toString());
   }
 

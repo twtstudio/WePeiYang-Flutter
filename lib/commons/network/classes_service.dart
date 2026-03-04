@@ -212,12 +212,19 @@ class ClassesService {
     final allSemester = ret.data.toString().findArrays(
         "id:([0-9]+),schoolYear:\"([0-9]+)-([0-9]+)\",name:\"(1|2)\"");
 
+    print("++++++++ALL SEMESTER++++++++++");
+    print(allSemester);
+    print("++++++++++++++++++++++++++++++");
+
     for (var arr in allSemester) {
       if ("${arr[1]}-${arr[2]} ${arr[3]}" == _currentSemester) {
         semesterId = arr[0];
         break;
       }
     }
+    print("++++++++SEMESTER ID++++++++++");
+    print(semesterId);
+    print("++++++++++++++++++++++++++++++");
   }
 
   static String get _currentSemester {

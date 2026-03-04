@@ -56,7 +56,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
       ToastProvider.error('请连接校园网或连接VPN!');
     } else {
       if (jump) {
-        String url = 'http://classes.tju.edu.cn/';
+        String url = 'https://classes.tju.edu.cn/';
         await launchUrl(Uri.parse(url));
       } else {
         ToastProvider.success('网络检查通过!');

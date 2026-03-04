@@ -6,7 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # 请保证
 # 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.5.0+178
+version: 4.5.1+179
 
 # Build:
 # flutter build apk \
