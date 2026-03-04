@@ -81,14 +81,20 @@ class _PostCardNormalState extends State<PostCardNormal> {
         Clipboard.setData(ClipboardData(text: post.content));
         ToastProvider.success('复制评论成功');
       },
-      child: ExpandableText(
-        text: post.content,
-        maxLines: 8,
-        style: TextUtil.base.NotoSansSC.w400.sp(14).primary(context).h(1.6),
-        expand: widget.expandAll,
-        buttonIsShown: true,
-        isHTML: false,
-      ),
+      child: Padding(
+        padding: EdgeInsets.only(top: 15.h),
+        child: ExpandableText(
+          text: post.content,
+          maxLines: 8,
+          style: TextUtil.base.NotoSansSC.w400.sp(15).primary(context).h(1.7).copyWith(
+              letterSpacing: 0.7,
+            wordSpacing: 2.0
+          ),
+          expand: widget.expandAll,
+          buttonIsShown: true,
+          isHTML: false,
+        ),
+      )
     );
   }
 
@@ -188,7 +194,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           post.title,
           maxLines: widget.outer ? 1 : 10,
           overflow: TextOverflow.ellipsis,
-          style: TextUtil.base.w400.NotoSansSC.sp(18).primary(context).bold,
+          style: TextUtil.base.w400.NotoSansSC.sp(20).primary(context).bold,
         ),
       )
     ]);
