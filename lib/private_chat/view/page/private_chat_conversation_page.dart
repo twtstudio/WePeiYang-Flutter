@@ -508,7 +508,7 @@ class _ChatBubble extends StatelessWidget {
   }
 }
 
-/// 聊天输入栏（微信风格）
+/// 聊天输入栏
 class _ChatInputBar extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;

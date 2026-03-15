@@ -13,7 +13,7 @@ import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_settings
 import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_log_page.dart';
 import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_api_test_page.dart';
 
-/// 私聊主页 — 微信风格会话列表
+/// 私聊主页
 class PrivateChatHomePage extends StatefulWidget {
   const PrivateChatHomePage({super.key});
 
@@ -146,7 +146,7 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
         itemCount: provider.contacts.length,
         itemBuilder: (context, index) {
           final contact = provider.contacts[index];
-          return _WeChatStyleContactTile(
+          return _ContactTile(
             contact: contact,
             onTap: () => _openConversation(context, provider, contact),
             onLongPress: () => _showContactActions(context, contact),
@@ -162,11 +162,11 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
     PrivateChatContact contact,
   ) async {
     await provider.selectContact(contact);
-    if (context.mounted) {
-      await Navigator.push(context,
-          MaterialPageRoute(builder: (_) => PrivateChatConversationPage(contact: contact)));
-      provider.clearCurrentContact();
-    }
+    if (!context.mounted) return;
+    await Navigator.push(context,
+        MaterialPageRoute(builder: (_) => PrivateChatConversationPage(contact: contact)),
+    );
+    provider.clearCurrentContact();
   }
 
   void _showContactActions(BuildContext context, PrivateChatContact contact) {
@@ -236,7 +236,6 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
                   contact = PrivateChatContact(userId: id, username: '用户 $id');
                 }
                 if (context.mounted) {
-                  await provider.selectContact(contact);
                   _openConversation(context, provider, contact);
                 }
               }
@@ -250,13 +249,13 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
   }
 }
 
-/// 微信风格会话列表项
-class _WeChatStyleContactTile extends StatelessWidget {
+/// 会话列表项
+class _ContactTile extends StatelessWidget {
   final PrivateChatContact contact;
   final VoidCallback onTap;
   final VoidCallback? onLongPress;
 
-  const _WeChatStyleContactTile({required this.contact, required this.onTap, this.onLongPress});
+  const _ContactTile({required this.contact, required this.onTap, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
