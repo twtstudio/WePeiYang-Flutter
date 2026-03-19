@@ -22,6 +22,7 @@ import 'package:we_pei_yang_flutter/feedback/view/reply_detail_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/lake_email.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
+import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
 
 import '../commons/themes/wpy_theme.dart';
 import '../commons/widgets/w_button.dart';
@@ -76,6 +77,16 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
               currentIndex.value = _tabController.index;
             }
           });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final chatProvider = context.read<PrivateChatProvider>();
+      if (chatProvider.myUserId == null) {
+        chatProvider.init();
+      } else {
+        chatProvider.refreshTotalUnreadCount();
+      }
+    });
+
     //240529考古,表示点赞/评论/校务回复/湖底通知tab
     // 考古,红点type来自此处
     tb = types.map((t) {
@@ -245,11 +256,14 @@ class _MessageTabState extends State<MessageTab> {
         },
       );
 
-      //count 来自于以下
-      //由type 进行调用
-      //type 来自常量map
-      int count = context.select((MessageProvider messageProvider) =>
-          messageProvider.getMessageCount(type: widget.type));
+      int count;
+      if (widget.type == MessageType.privateChat) {
+        count = context.select(
+            (PrivateChatProvider provider) => provider.totalUnreadCount);
+      } else {
+        count = context.select((MessageProvider messageProvider) =>
+            messageProvider.getMessageCount(type: widget.type));
+      }
 
       return Tab(
           child: Row(

@@ -107,6 +107,24 @@ extension DioRequests on DioAbstract {
     );
   }
 
+  /// 不带重试的请求方法，适用于私信系统发送消息
+  Future<Response<dynamic>> postNoRetry(String path,
+      {Map<String, dynamic>? queryParameters,
+      FormData? formData,
+      data,
+      Options? options,
+      bool debug = false}) {
+    return (debug ? _dio_debug : _dio)
+        .post(path,
+            queryParameters: queryParameters,
+            data: formData ?? data,
+            options: options)
+        .catchError((error, stack) {
+      Logger.reportError(error, stack);
+      throw error;
+    });
+  }
+
   Future<Response<dynamic>> put(String path,
       {Map<String, dynamic>? queryParameters, bool debug = false}) {
     return retry(

@@ -50,13 +50,31 @@ class PrivateChatMsgVO {
   });
 
   factory PrivateChatMsgVO.fromJson(Map<String, dynamic> json) {
-    // 处理 send_time：支持字符串或数字时间戳
+    // 处理 send_time：支持字符串或数字时间戳,如果是数字时间戳则转换为 "YYYY-MM-DD HH:MM:SS" 格式的字符串
     String? sendTime;
-    final rawTime = json['send_time'];
+    final rawTime = json['send_time'] ?? json['sendTime'] ?? json['send_time_ms'] ?? json['send_time_millis'];
     if (rawTime is String) {
-      sendTime = rawTime;
+      final numeric = rawTime.trim();
+      final numericValue = double.tryParse(numeric);
+      if (numericValue != null) {
+        // 如果是数字字符串，判断是秒还是毫秒（小于 1e12 认为是秒），然后转换为 DateTime
+        final ms = numericValue < 1e12 ? (numericValue * 1000).toInt() : numericValue.toInt();
+        final dt = DateTime.fromMillisecondsSinceEpoch(ms);
+        sendTime =
+            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+      } else {
+        sendTime = rawTime;
+      }
     } else if (rawTime is int) {
-      final dt = DateTime.fromMillisecondsSinceEpoch(rawTime);
+      final ms = rawTime < 1000000000000 ? rawTime * 1000 : rawTime;
+      final dt = DateTime.fromMillisecondsSinceEpoch(ms);
+      sendTime =
+          '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+    } else if (rawTime is double) {
+      final ms = rawTime < 1e12 ? (rawTime * 1000).toInt() : rawTime.toInt();
+      final dt = DateTime.fromMillisecondsSinceEpoch(ms);
       sendTime =
           '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
           '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
@@ -81,6 +99,7 @@ class PrivateChatMsgVO {
   DateTime? get sendDateTime {
     if (sendTime == null) return null;
     try {
+      // 后端返回的时间格式是 "YYYY-MM-DD HH:MM:SS"，需要替换为"YYYY-MM-DDTHH:MM:SS"，
       return DateTime.parse(sendTime!.replaceFirst(' ', 'T'));
     } catch (_) {
       return null;
@@ -104,6 +123,9 @@ class ChatSession {
   final int userId2;
   final String? lastMsg;
   final String? lastMsgTime;
+  final int? user1Unread;
+  final int? user2Unread;
+  final int? isDeleted;
   int unreadCount;
 
   ChatSession({
@@ -112,16 +134,24 @@ class ChatSession {
     required this.userId2,
     this.lastMsg,
     this.lastMsgTime,
+    this.user1Unread,
+    this.user2Unread,
+    this.isDeleted,
     this.unreadCount = 0,
   });
 
   factory ChatSession.fromJson(Map<String, dynamic> json) {
+    final user1Unread = json['user1_unread'] as int?;
+    final user2Unread = json['user2_unread'] as int?;
     return ChatSession(
       sessionId: (json['session_id'] as int?) ?? 0,
       userId1: (json['user_id1'] as int?) ?? 0,
       userId2: (json['user_id2'] as int?) ?? 0,
       lastMsg: json['last_msg'] as String?,
       lastMsgTime: json['last_msg_time'] as String?,
+      user1Unread: user1Unread,
+      user2Unread: user2Unread,
+      isDeleted: (json['is_deleted'] as int?),
       unreadCount: (json['unread_count'] as int?) ?? 0,
     );
   }
@@ -129,6 +159,13 @@ class ChatSession {
   /// 获取对方的用户 ID
   int getOtherUserId(int myUserId) {
     return userId1 == myUserId ? userId2 : userId1;
+  }
+
+  /// 获取当前用户的未读数（优先使用 user1_unread/user2_unread）
+  int getUnreadCountForUser(int myUserId) {
+    if (myUserId == userId1 && user1Unread != null) return user1Unread!;
+    if (myUserId == userId2 && user2Unread != null) return user2Unread!;
+    return unreadCount;
   }
 }
 

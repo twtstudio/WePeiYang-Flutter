@@ -39,8 +39,6 @@ class MessageBubbleWidget extends StatelessWidget {
             isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isMine) _buildAvatar(context, '${msg.senderId ?? '?'}'),
-          if (!isMine) SizedBox(width: 8.w),
           Flexible(
             child: GestureDetector(
               onLongPress: onLongPress,
@@ -123,35 +121,7 @@ class MessageBubbleWidget extends StatelessWidget {
               ),
             ),
           ),
-          if (isMine) SizedBox(width: 8.w),
-          if (isMine) _buildMyAvatar(context),
         ],
-      ),
-    );
-  }
-
-  Widget _buildAvatar(BuildContext context, String idStr) {
-    final displayStr =
-        idStr.length > 2 ? idStr.substring(idStr.length - 2) : idStr;
-    return CircleAvatar(
-      radius: 16.r,
-      backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor),
-      child: Text(
-        displayStr,
-        style: TextUtil.base.regular.sp(11).reverse(context),
-      ),
-    );
-  }
-
-  Widget _buildMyAvatar(BuildContext context) {
-    return CircleAvatar(
-      radius: 16.r,
-      backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
-      child: Text(
-        '我',
-        style: TextUtil.base.regular.sp(12).reverse(context),
       ),
     );
   }

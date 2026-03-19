@@ -16,6 +16,7 @@ class PrivateChatProvider extends ChangeNotifier {
   PrivateChatContact? _currentContact;
   List<PrivateChatMsgVO> _currentMessages = [];
   PrivateChatUserSetting? _userSetting;
+  int? _totalUnreadCount;
 
   /// 用户资料缓存 { userId: { 'nickname': ..., 'avatar': ... } }
   final Map<int, Map<String, String>> _userProfileCache = {};
@@ -32,9 +33,9 @@ class PrivateChatProvider extends ChangeNotifier {
   PrivateChatUserSetting? get userSetting => _userSetting;
   int get messageVersion => _messageVersion;
 
-  /// 总未读消息数
+  /// 总未读消息数（优先使用后端统计接口）
   int get totalUnreadCount =>
-      _contacts.fold(0, (sum, c) => sum + c.unreadCount);
+      _totalUnreadCount ?? _contacts.fold(0, (sum, c) => sum + c.unreadCount);
 
   // ======== 初始化/连接 ========
 
@@ -84,6 +85,7 @@ class PrivateChatProvider extends ChangeNotifier {
     _currentContact = null;
     _currentMessages = [];
     _userSetting = null;
+    _totalUnreadCount = null;
     notifyListeners();
   }
 
@@ -94,14 +96,30 @@ class PrivateChatProvider extends ChangeNotifier {
   Future<void> fetchContacts() async {
     if (_myUserId == null) return;
     PrivateChatLogger.log('Provider', '获取会话列表...');
+    final previousByUserId = {
+      for (final contact in _contacts) contact.userId: contact,
+    };
     try {
       final result = await PrivateChatService.getSessions();
       if (result.isSuccess && result.data != null) {
         _contacts = (result.data as List).map((json) {
           final session = ChatSession.fromJson(json);
           final otherId = session.getOtherUserId(_myUserId!);
-          // 优先从缓存获取昵称和头像
           final cached = _userProfileCache[otherId];
+          final hasUserUnread =
+              json.containsKey('user1_unread') || json.containsKey('user2_unread');
+          final hasUnreadCount = json.containsKey('unread_count');
+          final previousUnread = previousByUserId[otherId]?.unreadCount ?? 0;
+          final serverUnread = hasUserUnread
+              ? session.getUnreadCountForUser(_myUserId!)
+              : hasUnreadCount
+                  ? session.unreadCount
+                  : null;
+          final unreadCount = serverUnread == null
+              ? previousUnread
+              : serverUnread >= previousUnread
+                  ? serverUnread
+                  : previousUnread;
           return PrivateChatContact(
             userId: otherId,
             username: cached?['nickname'] ?? '用户 $otherId',
@@ -109,13 +127,13 @@ class PrivateChatProvider extends ChangeNotifier {
             sessionId: session.sessionId,
             lastMsg: session.lastMsg ?? '',
             lastMsgTime: session.lastMsgTime,
-            unreadCount: session.unreadCount,
+            unreadCount: unreadCount,
           );
         }).toList();
         PrivateChatLogger.log('Provider', '✅ 获取到 ${_contacts.length} 个会话');
         notifyListeners();
-        // 异步获取缺失的用户资料
         _fetchUserProfilesForContacts();
+        refreshTotalUnreadCount();
       } else {
         PrivateChatLogger.log('Provider', '❌ 获取会话失败: ${result.msg}');
       }
@@ -146,6 +164,7 @@ class PrivateChatProvider extends ChangeNotifier {
           _currentMessages = [];
         }
         notifyListeners();
+        refreshTotalUnreadCount();
         PrivateChatLogger.log('Provider', '✅ 删除会话成功 sessionId=$sessionId');
         return null;
       }
@@ -161,10 +180,15 @@ class PrivateChatProvider extends ChangeNotifier {
     _currentContact = contact;
     contact.unreadCount = 0;
     _currentMessages = [];
+    _totalUnreadCount =
+        _contacts.fold<int>(0, (sum, c) => sum + c.unreadCount);
     notifyListeners();
 
     _fetchAndApplyUserProfile(contact);
-    await PrivateChatService.markAsRead(contact.userId).catchError((_) {});
+    try {
+      await PrivateChatService.markAsRead(contact.userId);
+    } catch (_) {}
+    refreshTotalUnreadCount();
     await loadHistory();
   }
 
@@ -177,7 +201,7 @@ class PrivateChatProvider extends ChangeNotifier {
 
   /// 加载聊天记录
   /// v2.0：使用 targetUserId 查询，无需提前知道 sessionId
-  Future<void> loadHistory({int page = 1, int pageSize = 50}) async {
+  Future<void> loadHistory({int page = 1, int pageSize = 20}) async {
     if (_currentContact == null) {
       _currentMessages = [];
       notifyListeners();
@@ -287,12 +311,17 @@ class PrivateChatProvider extends ChangeNotifier {
             _contacts.where((c) => c.userId == otherUserId).toList();
         if (matched.isNotEmpty) {
           matched.first.unreadCount++;
+          if (_totalUnreadCount != null) {
+            _totalUnreadCount = _totalUnreadCount! + 1;
+          }
         }
       }
     } else {
-      // 当前正在和对方聊天，自动标记已读（v2.0 使用 targetUserId）
       if (msg.senderId != _myUserId) {
         PrivateChatService.markAsRead(_currentContact!.userId);
+        _totalUnreadCount =
+            _contacts.fold<int>(0, (sum, c) => sum + c.unreadCount);
+        refreshTotalUnreadCount();
       }
     }
 
@@ -329,7 +358,7 @@ class PrivateChatProvider extends ChangeNotifier {
     } else {
       final contact = _contacts[contactIndex];
       contact.lastMsg = msg.content ?? '';
-      contact.lastMsgTime = msg.sendTime;
+      contact.lastMsgTime = msg.sendTime ?? contact.lastMsgTime;
       if (contact.sessionId == null) contact.sessionId = msg.sessionId;
       _contacts.removeAt(contactIndex);
       _contacts.insert(0, contact);
@@ -343,23 +372,13 @@ class PrivateChatProvider extends ChangeNotifier {
     }
   }
 
+  /// 更新消息列表中的某条消息（如撤回后状态变化）
   void _updateMessageInList(PrivateChatMsgVO msg) {
     final index = _currentMessages.indexWhere((m) => m.msgId == msg.msgId);
     if (index != -1) {
       _currentMessages[index] = msg;
     }
     _messageVersion++;
-    notifyListeners();
-  }
-
-  void _updateContactLastMsg(PrivateChatMsgVO msg, String lastMsg) {
-    final otherUserId =
-        msg.senderId == _myUserId ? msg.receiverId : msg.senderId;
-    final matched =
-        _contacts.where((c) => c.userId == otherUserId).toList();
-    if (matched.isNotEmpty) {
-      matched.first.lastMsg = lastMsg;
-    }
     notifyListeners();
   }
 
@@ -545,6 +564,22 @@ class PrivateChatProvider extends ChangeNotifier {
   /// 根据 userId 获取缓存的用户资料
   Map<String, String>? getUserProfileFromCache(int userId) {
     return _userProfileCache[userId];
+  }
+
+  /// 刷新后端总未读统计
+  Future<void> refreshTotalUnreadCount() async {
+    try {
+      final result = await PrivateChatService.getUnreadCount();
+      if (result.isSuccess && result.data is int) {
+        final serverCount = result.data as int;
+        final localCount = _contacts.fold(0, (sum, c) => sum + c.unreadCount);
+        final current = _totalUnreadCount ?? localCount;
+        final next = [serverCount, localCount, current].reduce(
+            (value, element) => value >= element ? value : element);
+        _totalUnreadCount = next;
+        notifyListeners();
+      }
+    } catch (_) {}
   }
 
   @override

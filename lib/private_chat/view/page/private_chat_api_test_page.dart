@@ -22,11 +22,9 @@ class PrivateChatApiTestPage extends StatefulWidget {
 
 class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
   String _lastResult = '';
-  bool _isLoading = false;
 
   Future<void> _callApi(String name, Future<dynamic> Function() fn) async {
     setState(() {
-      _isLoading = true;
       _lastResult = '⏳ 正在调用 $name...';
     });
     try {
@@ -42,12 +40,10 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
         display = '✅ $name\n$result';
       }
       setState(() {
-        _isLoading = false;
         _lastResult = display;
       });
     } catch (e) {
       setState(() {
-        _isLoading = false;
         _lastResult = '❌ $name 失败\n$e';
       });
     }

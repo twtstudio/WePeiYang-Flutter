@@ -1,41 +1,12 @@
-import 'dart:convert';
-
-import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
-
-/// ======================== 私聊日志记录器 ========================
-/// 用于在调试日志页面显示 HTTP / WebSocket 请求日志，
-/// 方便开发阶段排查问题。生产环境可关闭或限制日志量。
-class PrivateChatLogger {
-  static final List<String> _logs = [];
-  static const int _maxLogs = 500;
-
-  static List<String> get logs => List.unmodifiable(_logs);
-
-  /// 添加一条日志，自动附加时间戳
-  static void log(String tag, String message) {
-    final now = DateTime.now();
-    final timeStr =
-        '${now.hour.toString().padLeft(2, '0')}:'
-        '${now.minute.toString().padLeft(2, '0')}:'
-        '${now.second.toString().padLeft(2, '0')}.'
-        '${now.millisecond.toString().padLeft(3, '0')}';
-    final entry = '[$timeStr] [$tag] $message';
-    _logs.add(entry);
-    if (_logs.length > _maxLogs) _logs.removeAt(0);
-  }
-
-  static void clear() => _logs.clear();
-}
 
 /// ======================== 私聊 Dio 网络实例 ========================
 /// 所有私聊相关的 HTTP 请求统一通过此 Dio 实例发送。
 /// baseUrl 对应后端的私聊模块根路径。
 ///
-/// 鉴权方式：通过 token 请求头传递 JWT（与其他模块一致）
+/// 鉴权方式：通过 token 请求头传递 JWT
 class PrivateChatDio extends DioAbstract {
   // ========== 地址配置 ==========
   // 线上地址（部署后切换）：
@@ -93,10 +64,35 @@ class PrivateChatDio extends DioAbstract {
 
 final privateChatDio = PrivateChatDio();
 
+/// ======================== 私聊日志记录器 ========================
+/// 用于在调试日志页面显示 HTTP / WebSocket 请求日志，
+/// 方便开发阶段排查问题。生产环境可关闭或限制日志量。
+class PrivateChatLogger {
+  static final List<String> _logs = [];
+  static const int _maxLogs = 500;
+
+  static List<String> get logs => List.unmodifiable(_logs);
+
+  /// 添加一条日志，自动附加时间戳
+  static void log(String tag, String message) {
+    final now = DateTime.now();
+    final timeStr =
+        '${now.hour.toString().padLeft(2, '0')}:'
+        '${now.minute.toString().padLeft(2, '0')}:'
+        '${now.second.toString().padLeft(2, '0')}.'
+        '${now.millisecond.toString().padLeft(3, '0')}';
+    final entry = '[$timeStr] [$tag] $message';
+    _logs.add(entry);
+    if (_logs.length > _maxLogs) _logs.removeAt(0);
+  }
+
+  static void clear() => _logs.clear();
+}
+
 /// ======================== 私聊网络请求服务 ========================
 /// 封装所有私聊模块的 HTTP API 调用。
 ///
-/// 接口文档版本：v2.0
+/// 接口文档版本：v2.3
 ///   - 会话在首次发送消息时自动创建（移除了 session/create 接口）
 ///   - 聊天记录和已读接口改用 targetUserId 参数
 class PrivateChatService {
@@ -114,13 +110,17 @@ class PrivateChatService {
     int msgType = 1,
   }) async {
     try {
-      final response = await privateChatDio.post(
+      final response = await privateChatDio.postNoRetry(
         'message/send',
         data: {
           'receiver_id': receiverId,
           'content': content,
           'msg_type': msgType,
         },
+        options: Options(
+          sendTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
       );
       return PrivateChatApiResult.fromJson(response.data);
     } on DioException catch (e) {
@@ -212,6 +212,21 @@ class PrivateChatService {
         'message/delete',
         queryParameters: {'msg_id': msgId},
       );
+      return PrivateChatApiResult.fromJson(response.data);
+    } on DioException catch (e) {
+      return PrivateChatApiResult(
+        code: -1,
+        msg: e.error?.toString() ?? '网络请求失败',
+      );
+    }
+  }
+
+  /// 统计所有会话未读消息数
+  ///
+  /// GET /message/unread-count
+  static Future<PrivateChatApiResult> getUnreadCount() async {
+    try {
+      final response = await privateChatDio.get('message/unread-count');
       return PrivateChatApiResult.fromJson(response.data);
     } on DioException catch (e) {
       return PrivateChatApiResult(
@@ -375,6 +390,24 @@ class PrivateChatService {
         return PrivateChatApiResult(code: 200, msg: msg, data: userInfo);
       }
       return PrivateChatApiResult(code: code, msg: msg.isNotEmpty ? msg : '获取用户资料失败');
+    } on DioException catch (e) {
+      return PrivateChatApiResult(
+        code: -1,
+        msg: e.error?.toString() ?? '网络请求失败',
+      );
+    }
+  }
+
+  /// 获取调试 Token（开发环境）
+  ///
+  /// GET /api/v1/f/auth/chat-debug-token?userId=
+  static Future<PrivateChatApiResult> getChatDebugToken(int userId) async {
+    try {
+      final response = await _userProfileDio.get(
+        'auth/chat-debug-token',
+        queryParameters: {'userId': userId},
+      );
+      return PrivateChatApiResult.fromJson(response.data);
     } on DioException catch (e) {
       return PrivateChatApiResult(
         code: -1,
