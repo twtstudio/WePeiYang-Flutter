@@ -197,7 +197,7 @@ class openHistory extends StatelessWidget {
         width: 28.r,
         height: 28.r,
         colorFilter: ColorFilter.mode(
-          WpyTheme.of(context).primary!,
+          WpyTheme.of(context).primary??Colors.blue,
           BlendMode.srcIn,
         ),
       ),
