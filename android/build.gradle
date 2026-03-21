@@ -9,10 +9,11 @@ buildscript {
     repositories {
         // 核心：Flutter 仓库置顶（优先下载 flutter_embedding 核心依赖）
         maven { url "https://download.flutter.io" }
-        // 阿里云镜像（国内访问加速）
+        // 阿里云镜像（国内访问加速 - 已更新为最新地址）
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://storage.flutter-io.cn/download.flutter.io' }
         // 华为官方仓库（AGConnect 依赖唯一来源）
         maven { url 'https://developer.huawei.com/repo/' }
         // 荣耀仓库
@@ -20,8 +21,6 @@ buildscript {
         // 官方仓库（兜底）
         google()
         mavenCentral()
-        // 友盟仓库（按需保留）
-        maven { url 'https://repo1.maven.org/maven2/' }
     }
 
     dependencies {
@@ -35,10 +34,11 @@ allprojects {
     repositories {
         // 核心：Flutter 仓库置顶
         maven { url "https://download.flutter.io" }
-        // 阿里云镜像
+        // 阿里云镜像（已更新为最新地址）
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        maven { url 'https://maven.aliyun.com/nexus/content/groups/public' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://storage.flutter-io.cn/download.flutter.io' }
         // 厂商仓库
         maven { url 'https://developer.huawei.com/repo/' }
         maven { url 'https://developer.hihonor.com/repo/' }
@@ -55,6 +55,11 @@ allprojects {
         // 官方仓库兜底
         google()
         mavenCentral()
+
+        configurations.all {
+            resolutionStrategy.cacheDynamicVersionsFor 365, 'days' // 动态版本不检查更新
+            resolutionStrategy.cacheChangingModulesFor 365, 'days' // 变化模块不检查更新
+        }
     }
 }
 
