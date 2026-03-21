@@ -30,7 +30,7 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
     final current = saved.isNotEmpty ? saved : privateChatDio.baseUrl;
     _baseUrlController.text = current;
     if (current.isNotEmpty) {
-      privateChatDio.baseUrl = current;
+      updatePrivateChatBaseUrl(current);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSettings();
@@ -318,7 +318,7 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
       return;
     }
     CommonPreferences.privateChatBaseUrl.value = value;
-    privateChatDio.baseUrl = value;
+    updatePrivateChatBaseUrl(value);
     ToastProvider.success('已切换 baseUrl（测试用）');
   }
 

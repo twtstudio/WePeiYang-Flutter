@@ -2,6 +2,8 @@ import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 
+const String _privateChatBaseHost = 'http://50aec387.r1.cpolar.top';
+
 /// ======================== 私聊 Dio 网络实例 ========================
 /// 所有私聊相关的 HTTP 请求统一通过此 Dio 实例发送。
 /// baseUrl 对应后端的私聊模块根路径。
@@ -20,7 +22,7 @@ class PrivateChatDio extends DioAbstract {
   //Android 模拟器访问宿主机 localhost 的特殊地址
   //String baseUrl = 'http://10.0.2.2:8092/api/v1/f/private-chat/';
   //真机测试地址（内网穿透）
-  String baseUrl = 'http://50aec387.r1.cpolar.top/api/v1/f/private-chat/';
+  String baseUrl = '$_privateChatBaseHost/api/v1/f/private-chat/';
 
   @override
   List<Interceptor> interceptors = [
@@ -390,14 +392,17 @@ class PrivateChatService {
 
   /// 获取用户资料（昵称、头像）
   ///
-  /// GET /api/v1/f/user/profile?user_id=
-  /// - 注意：此接口不在 private-chat 模块下，使用独立 Dio 实例访问
+  /// GET /api/v1/f/user/profile?userId=
+  /// - 与私信接口同域名，请求走 privateChatDio
   /// - 返回结构：{ code: 200, data: { user_info: { nickname, avatar, ... } } }
   static Future<PrivateChatApiResult> getUserProfile(int userId) async {
     try {
-      final response = await _userProfileDio.get(
-        'user/profile',
-        queryParameters: {'user_id': userId},
+      final response = await privateChatDio.get(
+        '$_privateChatBaseHost/api/v1/f/user/profile',
+        queryParameters: {
+          'userId': userId,
+          'user_id': userId,
+        },
       );
       // 提取 user_info 层级，让调用方直接获取 nickname / avatar
       final data = response.data;
