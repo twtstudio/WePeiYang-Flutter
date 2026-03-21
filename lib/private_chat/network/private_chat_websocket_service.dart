@@ -30,7 +30,14 @@ class PrivateChatWebSocketService {
     // return '${baseWs}ws/private-chat?token=$token';
 
     // 本地调试地址（Android 模拟器用 10.0.2.2 访问宿主机 localhost）
-    return 'ws://10.0.2.2:8092/ws/private-chat?token=$token';
+    //return 'ws://10.0.2.2:8092/ws/private-chat?token=$token';
+    final base = privateChatDio.baseUrl;
+    final wsBase = base.replaceFirst(RegExp(r'^http'), 'ws');
+    final wsUrl = wsBase.replaceFirst(
+      RegExp(r'/api/v1/f/private-chat/?$'),
+      '/ws/private-chat',
+    );
+    return '$wsUrl?token=$token';
   }
 
   /// 建立 WebSocket 连接

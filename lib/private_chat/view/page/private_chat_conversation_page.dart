@@ -8,6 +8,8 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
+import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_log_page.dart';
+import 'package:we_pei_yang_flutter/private_chat/view/page/private_chat_settings_page.dart';
 
 /// 聊天详情页 — 气泡消息 + 自动滚动
 class PrivateChatConversationPage extends StatefulWidget {
@@ -26,6 +28,7 @@ class _PrivateChatConversationPageState
   final _scrollController = ScrollController();
   final _focusNode = FocusNode();
   int _lastVersion = -1;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -39,7 +42,15 @@ class _PrivateChatConversationPageState
     // 加载用户设置（拉黑状态），以便菜单正确显示
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PrivateChatProvider>().loadSetting();
+      _loadConversation();
     });
+  }
+
+  Future<void> _loadConversation() async {
+    setState(() => _isLoading = true);
+    await context.read<PrivateChatProvider>().selectContact(widget.contact);
+    if (!mounted) return;
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -246,6 +257,22 @@ class _PrivateChatConversationPageState
             backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             elevation: 0.5,
             actions: [
+              IconButton(
+                icon: Icon(Icons.settings_outlined,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const PrivateChatSettingsPage())),
+                tooltip: '私信设置',
+              ),
+              IconButton(
+                icon: Icon(Icons.bug_report_outlined,
+                    color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                    size: 22.sp),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const PrivateChatLogPage())),
+                tooltip: '调试日志',
+              ),
               PopupMenuButton<String>(
                 icon: Icon(Icons.more_vert,
                     color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
@@ -273,38 +300,18 @@ class _PrivateChatConversationPageState
                   return [
                     PopupMenuItem(
                       value: 'share',
-                      child: Row(children: [
-                        Icon(Icons.share_outlined, size: 20.sp,
-                            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
-                        SizedBox(width: 8.w),
-                        Text('分享个人名片', style: TextUtil.base.regular.sp(14).label(context)),
-                      ]),
+                      child: Text('分享名片',
+                          style: TextUtil.base.regular.sp(14).label(context)),
                     ),
                     PopupMenuItem(
                       value: 'block',
-                      child: Row(children: [
-                        Icon(
-                          isBlocked ? Icons.person_add_outlined : Icons.block_outlined,
-                          size: 20.sp,
-                          color: isBlocked
-                              ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
-                              : WpyTheme.of(context).get(WpyColorKey.warningColor),
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          isBlocked ? '解除拉黑' : '拉黑当前用户',
-                          style: TextUtil.base.regular.sp(14).label(context),
-                        ),
-                      ]),
+                      child: Text(isBlocked ? '解除拉黑' : '拉黑用户',
+                          style: TextUtil.base.regular.sp(14).label(context)),
                     ),
                     PopupMenuItem(
                       value: 'report',
-                      child: Row(children: [
-                        Icon(Icons.flag_outlined, size: 20.sp,
-                            color: WpyTheme.of(context).get(WpyColorKey.dangerousRed)),
-                        SizedBox(width: 8.w),
-                        Text('举报当前用户', style: TextUtil.base.regular.sp(14).label(context)),
-                      ]),
+                      child: Text('举报该用户',
+                          style: TextUtil.base.regular.sp(14).label(context)),
                     ),
                   ];
                 },
@@ -317,61 +324,63 @@ class _PrivateChatConversationPageState
               Expanded(
                 child: GestureDetector(
                   onTap: () => _focusNode.unfocus(),
-                  child: provider.currentMessages.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.chat_outlined, size: 56.sp,
-                                  color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor).withOpacity(0.4)),
-                              SizedBox(height: 12.h),
-                              Text('发送第一条消息吧！', style: TextUtil.base.regular.sp(14).secondary(context)),
-                            ],
-                          ),
-                        )
-                      : Builder(builder: (context) {
-                          // 消息按时间正序排列（旧消息在上，新消息在下）
-                          final displayMessages = provider.currentMessages.reversed.toList();
-                          return ListView.builder(
-                          controller: _scrollController,
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-                          itemCount: displayMessages.length,
-                          itemBuilder: (context, index) {
-                            final msg = displayMessages[index];
-                            final isMine = msg.senderId == provider.myUserId;
-                            final showTime = _shouldShowTime(displayMessages, index);
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : provider.currentMessages.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.chat_outlined, size: 56.sp,
+                                      color: WpyTheme.of(context).get(WpyColorKey.secondaryTextColor).withOpacity(0.4)),
+                                  SizedBox(height: 12.h),
+                                  Text('发送第一条消息吧！', style: TextUtil.base.regular.sp(14).secondary(context)),
+                                ],
+                              ),
+                            )
+                          : Builder(builder: (context) {
+                              // 消息按时间正序排列（旧消息在上，新消息在下）
+                              final displayMessages = provider.currentMessages.reversed.toList();
+                              return ListView.builder(
+                              controller: _scrollController,
+                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+                              itemCount: displayMessages.length,
+                              itemBuilder: (context, index) {
+                                final msg = displayMessages[index];
+                                final isMine = msg.senderId == provider.myUserId;
+                                final showTime = _shouldShowTime(displayMessages, index);
 
-                            return Column(
-                              children: [
-                                // 时间分割线
-                                if (showTime && msg.sendDateTime != null)
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.06),
-                                        borderRadius: BorderRadius.circular(4.r),
+                                return Column(
+                                  children: [
+                                    // 时间分割线
+                                    if (showTime && msg.sendDateTime != null)
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.06),
+                                            borderRadius: BorderRadius.circular(4.r),
+                                          ),
+                                          child: Text(
+                                            _formatTimeLabel(msg.sendDateTime!),
+                                            style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
+                                          ),
+                                        ),
                                       ),
-                                      child: Text(
-                                        _formatTimeLabel(msg.sendDateTime!),
-                                        style: TextStyle(fontSize: 11.sp, color: Colors.grey[600]),
-                                      ),
+                                    // 消息气泡
+                                    _ChatBubble(
+                                      msg: msg,
+                                      isMine: isMine,
+                                      onLongPress: () {
+                                        if (!msg.isRecalled) _showMessageActions(context, msg);
+                                      },
                                     ),
-                                  ),
-                                // 消息气泡
-                                _ChatBubble(
-                                  msg: msg,
-                                  isMine: isMine,
-                                  onLongPress: () {
-                                    if (!msg.isRecalled) _showMessageActions(context, msg);
-                                  },
-                                ),
-                              ],
+                                  ],
+                                );
+                              },
                             );
-                          },
-                        );
-                        }),
+                            }),
                 ),
               ),
               // 输入区域

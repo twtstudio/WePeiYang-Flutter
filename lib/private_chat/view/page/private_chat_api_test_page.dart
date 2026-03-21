@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
-import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
 import 'package:we_pei_yang_flutter/private_chat/network/private_chat_service.dart';
 
 /// API 接口测试页面 — 可手动调用所有私聊后端 API 并查看响应
@@ -179,6 +177,15 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                     ),
                   ),
                 ),
+                _ApiButton(
+                  icon: Icons.mark_chat_unread,
+                  title: '统计未读消息数',
+                  subtitle: 'GET /message/unread-count',
+                  onTap: () => _callApi(
+                    '统计未读消息数',
+                    PrivateChatService.getUnreadCount,
+                  ),
+                ),
 
                 _SectionTitle('用户设置'),
                 _ApiButton(
@@ -243,6 +250,21 @@ class _PrivateChatApiTestPageState extends State<PrivateChatApiTestPage> {
                       '取消拉黑(unblock_user_id=$val)',
                       () =>
                           PrivateChatService.unblockUser(int.parse(val)),
+                    ),
+                  ),
+                ),
+                _SectionTitle('调试接口'),
+                _ApiButton(
+                  icon: Icons.bug_report,
+                  title: '获取调试 Token',
+                  subtitle: 'GET /auth/chat-debug-token?user_id=?',
+                  onTap: () => _showInputDialog(
+                    context,
+                    '获取调试 Token',
+                    '用户ID (user_id)',
+                    (val) => _callApi(
+                      '获取调试 Token(user_id=$val)',
+                      () => PrivateChatService.getChatDebugToken(int.parse(val)),
                     ),
                   ),
                 ),

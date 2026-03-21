@@ -111,6 +111,10 @@ class CommonPreferences {
   static final appDarkThemeId =
       PrefsBean<String>('appDarkThemeId', 'builtin_dark');
 
+  /// 私信模块调试地址（测试用）
+  static final privateChatBaseUrl =
+      PrefsBean<String>('privateChatBaseUrl', '');
+
   /// 0 light 1 dark 2 auto
   static final usingDarkTheme = PrefsBean<int>('usingDarkTheme', 0);
 

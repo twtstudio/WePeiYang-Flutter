@@ -92,13 +92,12 @@ class _PrivateChatSessionListWidgetState
     PrivateChatProvider provider,
     PrivateChatContact contact,
   ) async {
-    await provider.selectContact(contact);
     if (!context.mounted) return;
     await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (_) =>
-                PrivateChatConversationPage(contact: contact)),
+      context,
+      MaterialPageRoute(
+          builder: (_) =>
+              PrivateChatConversationPage(contact: contact)),
     );
     provider.clearCurrentContact();
   }

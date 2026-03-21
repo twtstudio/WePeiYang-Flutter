@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
+import 'package:we_pei_yang_flutter/private_chat/network/private_chat_service.dart';
 
 /// 私信设置页面 — 私信开关、陌生人策略、拉黑管理
 class PrivateChatSettingsPage extends StatefulWidget {
@@ -19,10 +21,17 @@ class PrivateChatSettingsPage extends StatefulWidget {
 class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
   bool _isLoading = false;
   final _blockController = TextEditingController();
+  final _baseUrlController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    final saved = CommonPreferences.privateChatBaseUrl.value;
+    final current = saved.isNotEmpty ? saved : privateChatDio.baseUrl;
+    _baseUrlController.text = current;
+    if (current.isNotEmpty) {
+      privateChatDio.baseUrl = current;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSettings();
     });
@@ -31,6 +40,7 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
   @override
   void dispose() {
     _blockController.dispose();
+    _baseUrlController.dispose();
     super.dispose();
   }
 
@@ -154,6 +164,58 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
           ),
           SizedBox(height: 16.h),
 
+          // 测试用：私信连接地址
+          _buildSectionCard(
+            context: context,
+            title: '🧪 测试用：私信连接地址',
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 12.h),
+                child: TextField(
+                  controller: _baseUrlController,
+                  decoration: InputDecoration(
+                    labelText: '私信 baseUrl',
+                    hintText: '例如：http://10.0.2.2:8092/api/v1/f/private-chat/',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    isDense: true,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+                child: Wrap(
+                  spacing: 8.w,
+                  runSpacing: 8.h,
+                  children: [
+                    _buildBaseUrlChip(
+                      context,
+                      '模拟器地址',
+                      'http://10.0.2.2:8092/api/v1/f/private-chat/',
+                    ),
+                    _buildBaseUrlChip(
+                      context,
+                      '当前地址',
+                      privateChatDio.baseUrl,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton(
+                    onPressed: _applyBaseUrl,
+                    child: const Text('应用'),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+
           // 拉黑名单卡片
           _buildSectionCard(
             context: context,
@@ -248,6 +310,18 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
     );
   }
 
+  // 应用新的 baseUrl 设置（测试用）
+  void _applyBaseUrl() {
+    final value = _baseUrlController.text.trim();
+    if (value.isEmpty) {
+      ToastProvider.error('请输入有效的 baseUrl');
+      return;
+    }
+    CommonPreferences.privateChatBaseUrl.value = value;
+    privateChatDio.baseUrl = value;
+    ToastProvider.success('已切换 baseUrl（测试用）');
+  }
+
   Widget _buildSectionCard({
     required BuildContext context,
     required String title,
@@ -271,6 +345,36 @@ class _PrivateChatSettingsPageState extends State<PrivateChatSettingsPage> {
           ),
           ...children,
         ],
+      ),
+    );
+  }
+
+  // 快速设置 baseUrl 的选项卡, 仅供测试使用
+  Widget _buildBaseUrlChip(
+    BuildContext context,
+    String label,
+    String url,
+  ) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10.r),
+      onTap: () {
+        setState(() => _baseUrlController.text = url);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          color: WpyTheme.of(context)
+              .get(WpyColorKey.secondaryBackgroundColor),
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: WpyTheme.of(context)
+                .get(WpyColorKey.lightBorderColor),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextUtil.base.regular.sp(13).label(context),
+        ),
       ),
     );
   }

@@ -161,7 +161,6 @@ class _PrivateChatHomePageState extends State<PrivateChatHomePage> {
     PrivateChatProvider provider,
     PrivateChatContact contact,
   ) async {
-    await provider.selectContact(contact);
     if (!context.mounted) return;
     await Navigator.push(context,
         MaterialPageRoute(builder: (_) => PrivateChatConversationPage(contact: contact)),

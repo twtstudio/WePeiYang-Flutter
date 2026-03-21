@@ -17,7 +17,10 @@ class PrivateChatDio extends DioAbstract {
   //   - iOS 模拟器直接用 localhost
   //   - 真机测试需替换为电脑局域网 IP
   @override
-  String baseUrl = 'http://10.0.2.2:8092/api/v1/f/private-chat/';
+  //Android 模拟器访问宿主机 localhost 的特殊地址
+  //String baseUrl = 'http://10.0.2.2:8092/api/v1/f/private-chat/';
+  //真机测试地址（内网穿透）
+  String baseUrl = 'http://50aec387.r1.cpolar.top/api/v1/f/private-chat/';
 
   @override
   List<Interceptor> interceptors = [
@@ -63,6 +66,21 @@ class PrivateChatDio extends DioAbstract {
 }
 
 final privateChatDio = PrivateChatDio();
+
+String _deriveUserProfileBaseUrl(String privateChatBaseUrl) {
+  final normalized = privateChatBaseUrl.endsWith('/')
+      ? privateChatBaseUrl
+      : '$privateChatBaseUrl/';
+  if (normalized.contains('/private-chat/')) {
+    return normalized.replaceFirst('private-chat/', '');
+  }
+  return normalized;
+}
+
+void updatePrivateChatBaseUrl(String baseUrl) {
+  privateChatDio.baseUrl = baseUrl;
+  _userProfileDio.baseUrl = _deriveUserProfileBaseUrl(baseUrl);
+}
 
 /// ======================== 私聊日志记录器 ========================
 /// 用于在调试日志页面显示 HTTP / WebSocket 请求日志，
@@ -386,7 +404,10 @@ class PrivateChatService {
       final code = data['code'] ?? 0;
       final msg = data['msg'] ?? '';
       if (code == 200 && data['data'] != null) {
-        final userInfo = data['data']['user_info'];
+        final rawData = data['data'];
+        final userInfo = rawData is Map && rawData['user_info'] is Map
+            ? rawData['user_info']
+            : rawData;
         return PrivateChatApiResult(code: 200, msg: msg, data: userInfo);
       }
       return PrivateChatApiResult(code: code, msg: msg.isNotEmpty ? msg : '获取用户资料失败');
@@ -400,12 +421,12 @@ class PrivateChatService {
 
   /// 获取调试 Token（开发环境）
   ///
-  /// GET /api/v1/f/auth/chat-debug-token?userId=
+  /// GET /api/v1/f/auth/chat-debug-token?user_id=
   static Future<PrivateChatApiResult> getChatDebugToken(int userId) async {
     try {
       final response = await _userProfileDio.get(
         'auth/chat-debug-token',
-        queryParameters: {'userId': userId},
+        queryParameters: {'user_id': userId},
       );
       return PrivateChatApiResult.fromJson(response.data);
     } on DioException catch (e) {
