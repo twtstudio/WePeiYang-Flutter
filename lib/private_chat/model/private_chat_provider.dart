@@ -17,6 +17,7 @@ class PrivateChatProvider extends ChangeNotifier {
   List<PrivateChatMsgVO> _currentMessages = [];
   PrivateChatUserSetting? _userSetting;
   int? _totalUnreadCount;
+  bool _contactsReady = false;
 
   /// 用户资料缓存 { userId: { 'nickname': ..., 'avatar': ... } }
   final Map<int, Map<String, String>> _userProfileCache = {};
@@ -32,6 +33,7 @@ class PrivateChatProvider extends ChangeNotifier {
   List<PrivateChatMsgVO> get currentMessages => _currentMessages;
   PrivateChatUserSetting? get userSetting => _userSetting;
   int get messageVersion => _messageVersion;
+  bool get contactsReady => _contactsReady;
 
   /// 总未读消息数（优先使用后端统计接口）
   int get totalUnreadCount =>
@@ -86,6 +88,7 @@ class PrivateChatProvider extends ChangeNotifier {
     _currentMessages = [];
     _userSetting = null;
     _totalUnreadCount = null;
+    _contactsReady = false;
     notifyListeners();
   }
 
@@ -95,6 +98,8 @@ class PrivateChatProvider extends ChangeNotifier {
   /// 调用后端 sessions 接口，将返回的 ChatSession 映射为本地 PrivateChatContact 列表
   Future<void> fetchContacts() async {
     if (_myUserId == null) return;
+    _contactsReady = false;
+    notifyListeners();
     final savedBaseUrl = CommonPreferences.privateChatBaseUrl.value;
     if (savedBaseUrl.isNotEmpty) {
       updatePrivateChatBaseUrl(savedBaseUrl);
@@ -143,13 +148,20 @@ class PrivateChatProvider extends ChangeNotifier {
           );
         }).toList();
         PrivateChatLogger.log('Provider', '✅ 获取到 ${_contacts.length} 个会话');
+        if (_contacts.isNotEmpty) {
+          await _fetchUserProfilesForContacts();
+        }
+        _contactsReady = true;
         notifyListeners();
-        _fetchUserProfilesForContacts();
         refreshTotalUnreadCount();
       } else {
+        _contactsReady = true;
+        notifyListeners();
         PrivateChatLogger.log('Provider', '❌ 获取会话失败: ${result.msg}');
       }
     } catch (e) {
+      _contactsReady = true;
+      notifyListeners();
       PrivateChatLogger.log('Provider', '❌ 获取会话异常: $e');
     }
   }

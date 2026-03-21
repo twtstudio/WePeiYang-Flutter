@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_model.dart';
 import 'package:we_pei_yang_flutter/private_chat/model/private_chat_provider.dart';
@@ -58,6 +57,13 @@ class _PrivateChatSessionListWidgetState
     super.build(context);
     return Consumer<PrivateChatProvider>(
       builder: (context, provider, _) {
+        if (!provider.contactsReady) {
+          return RefreshIndicator(
+            key: _refreshKey,
+            onRefresh: () => provider.fetchContacts(),
+            child: _buildSkeletonList(context),
+          );
+        }
         if (provider.contacts.isEmpty) {
           return RefreshIndicator(
             key: _refreshKey,
@@ -101,6 +107,55 @@ class _PrivateChatSessionListWidgetState
                 onTap: () => _openConversation(context, provider, contact),
               );
             },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSkeletonList(BuildContext context) {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: 8,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          child: Row(
+            children: [
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 120.w,
+                      height: 14.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.16),
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Container(
+                      width: 180.w,
+                      height: 12.h,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.14),
+                        borderRadius: BorderRadius.circular(6.r),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
