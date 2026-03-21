@@ -325,7 +325,7 @@ class _PrivateChatConversationPageState
                 child: GestureDetector(
                   onTap: () => _focusNode.unfocus(),
                   child: _isLoading
-                      ? const Center(child: CircularProgressIndicator())
+                      ? _buildSkeletonList()
                       : provider.currentMessages.isEmpty
                           ? Center(
                               child: Column(
@@ -391,6 +391,77 @@ class _PrivateChatConversationPageState
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSkeletonBubble(bool isMine, double width) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.w),
+      child: Row(
+        mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          if (!isMine) ...[
+            Container(
+              width: 28.w,
+              height: 28.w,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.18),
+                shape: BoxShape.circle,
+              ),
+            ),
+            SizedBox(width: 8.w),
+          ],
+          Container(
+            width: width,
+            height: 18.h,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+          ),
+          if (isMine) ...[
+            SizedBox(width: 6.w),
+            Container(
+              width: 12.w,
+              height: 12.w,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.18),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonList() {
+    final widths = <double>[160.w, 120.w, 200.w, 140.w, 180.w];
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 12.h),
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        final isMine = index % 2 == 0;
+        final width = widths[index % widths.length];
+        return Column(
+          children: [
+            if (index % 3 == 0)
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h),
+                child: Container(
+                  width: 90.w,
+                  height: 12.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
+                ),
+              ),
+            _buildSkeletonBubble(isMine, width),
+          ],
         );
       },
     );

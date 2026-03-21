@@ -343,7 +343,8 @@ class _ContactTile extends StatelessWidget {
   String _formatTime(String? rawTime) {
     if (rawTime == null || rawTime.isEmpty) return '';
     try {
-      final dt = DateTime.parse(rawTime.replaceFirst(' ', 'T'));
+      final normalized = normalizePrivateChatTime(rawTime) ?? rawTime;
+      final dt = DateTime.parse(normalized.replaceFirst(' ', 'T')).toLocal();
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final msgDay = DateTime(dt.year, dt.month, dt.day);

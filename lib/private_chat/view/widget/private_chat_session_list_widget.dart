@@ -22,6 +22,10 @@ class PrivateChatSessionListWidget extends StatefulWidget {
 class _PrivateChatSessionListWidgetState
     extends State<PrivateChatSessionListWidget>
     with AutomaticKeepAliveClientMixin {
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
+  bool _autoRefreshTriggered = false;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -35,6 +39,17 @@ class _PrivateChatSessionListWidgetState
       } else {
         provider.fetchContacts();
       }
+      _triggerInitialRefreshIfNeeded(provider);
+    });
+  }
+
+  void _triggerInitialRefreshIfNeeded(PrivateChatProvider provider) {
+    if (_autoRefreshTriggered) return;
+    if (provider.contacts.isNotEmpty) return;
+    _autoRefreshTriggered = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _refreshKey.currentState?.show();
     });
   }
 
@@ -44,26 +59,30 @@ class _PrivateChatSessionListWidgetState
     return Consumer<PrivateChatProvider>(
       builder: (context, provider, _) {
         if (provider.contacts.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          return RefreshIndicator(
+            key: _refreshKey,
+            onRefresh: () => provider.fetchContacts(),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
               children: [
-                Icon(Icons.chat_bubble_outline_rounded,
-                    size: 56.sp,
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.secondaryTextColor)
-                        .withOpacity(0.4)),
-                SizedBox(height: 12.h),
-                Text('暂无私信',
-                    style: TextUtil.base.w600.sp(15).secondary(context)),
-                SizedBox(height: 6.h),
-                Text('从用户主页发起私信',
-                    style: TextUtil.base.regular.sp(13).secondary(context)),
-                SizedBox(height: 20.h),
-                TextButton.icon(
-                  onPressed: () => provider.fetchContacts(),
-                  icon: Icon(Icons.refresh, size: 18.sp),
-                  label: Text('刷新', style: TextUtil.base.regular.sp(14)),
+                SizedBox(height: 100.h),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat_bubble_outline_rounded,
+                          size: 56.sp,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.secondaryTextColor)
+                              .withOpacity(0.4)),
+                      SizedBox(height: 12.h),
+                      Text('暂无私信',
+                          style: TextUtil.base.w600.sp(15).secondary(context)),
+                      SizedBox(height: 6.h),
+                      Text('从用户主页发起私信',
+                          style: TextUtil.base.regular.sp(13).secondary(context)),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -71,6 +90,7 @@ class _PrivateChatSessionListWidgetState
         }
 
         return RefreshIndicator(
+          key: _refreshKey,
           onRefresh: () => provider.fetchContacts(),
           child: ListView.builder(
             itemCount: provider.contacts.length,
@@ -247,7 +267,8 @@ class _SessionTile extends StatelessWidget {
   String _formatTime(String? rawTime) {
     if (rawTime == null || rawTime.isEmpty) return '';
     try {
-      final dt = DateTime.parse(rawTime.replaceFirst(' ', 'T'));
+      final normalized = normalizePrivateChatTime(rawTime) ?? rawTime;
+      final dt = DateTime.parse(normalized.replaceFirst(' ', 'T')).toLocal();
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final msgDay = DateTime(dt.year, dt.month, dt.day);

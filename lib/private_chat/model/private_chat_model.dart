@@ -53,31 +53,8 @@ class PrivateChatMsgVO {
     // 处理 send_time：支持字符串或数字时间戳,如果是数字时间戳则转换为 "YYYY-MM-DD HH:MM:SS" 格式的字符串
     String? sendTime;
     final rawTime = json['send_time'] ?? json['sendTime'] ?? json['send_time_ms'] ?? json['send_time_millis'];
-    if (rawTime is String) {
-      final numeric = rawTime.trim();
-      final numericValue = double.tryParse(numeric);
-      if (numericValue != null) {
-        // 如果是数字字符串，判断是秒还是毫秒（小于 1e12 认为是秒），然后转换为 DateTime
-        final ms = numericValue < 1e12 ? (numericValue * 1000).toInt() : numericValue.toInt();
-        final dt = DateTime.fromMillisecondsSinceEpoch(ms);
-        sendTime =
-            '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
-      } else {
-        sendTime = rawTime;
-      }
-    } else if (rawTime is int) {
-      final ms = rawTime < 1000000000000 ? rawTime * 1000 : rawTime;
-      final dt = DateTime.fromMillisecondsSinceEpoch(ms);
-      sendTime =
-          '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
-    } else if (rawTime is double) {
-      final ms = rawTime < 1e12 ? (rawTime * 1000).toInt() : rawTime.toInt();
-      final dt = DateTime.fromMillisecondsSinceEpoch(ms);
-      sendTime =
-          '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+    if (rawTime != null) {
+      sendTime = normalizePrivateChatTime(rawTime);
     }
 
     return PrivateChatMsgVO(
@@ -99,8 +76,9 @@ class PrivateChatMsgVO {
   DateTime? get sendDateTime {
     if (sendTime == null) return null;
     try {
-      // 后端返回的时间格式是 "YYYY-MM-DD HH:MM:SS"，需要替换为"YYYY-MM-DDTHH:MM:SS"，
-      return DateTime.parse(sendTime!.replaceFirst(' ', 'T'));
+      // 后端返回的时间格式是 "YYYY-MM-DD HH:MM:SS"，需要替换为"YYYY-MM-DDTHH:MM:SS"
+      final parsed = DateTime.parse(sendTime!.replaceFirst(' ', 'T'));
+      return parsed.toLocal();
     } catch (_) {
       return null;
     }
@@ -148,7 +126,7 @@ class ChatSession {
       userId1: (json['user_id1'] as int?) ?? 0,
       userId2: (json['user_id2'] as int?) ?? 0,
       lastMsg: json['last_msg'] as String?,
-      lastMsgTime: json['last_msg_time'] as String?,
+      lastMsgTime: normalizePrivateChatTime(json['last_msg_time'] ?? json['lastMsgTime']),
       user1Unread: user1Unread,
       user2Unread: user2Unread,
       isDeleted: (json['is_deleted'] as int?),
@@ -202,7 +180,8 @@ class PrivateChatContact {
   String get formattedLastMsgTime {
     if (lastMsgTime == null) return '';
     try {
-      final dt = DateTime.parse(lastMsgTime!.replaceFirst(' ', 'T'));
+      final normalized = normalizePrivateChatTime(lastMsgTime) ?? lastMsgTime!;
+      final dt = DateTime.parse(normalized.replaceFirst(' ', 'T')).toLocal();
       return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
     } catch (_) {
       return '';
@@ -238,4 +217,32 @@ class PrivateChatUserSetting {
     if (blockUserIds.trim().isEmpty) return [];
     return blockUserIds.split(',').where((s) => s.trim().isNotEmpty).toList();
   }
+}
+
+String? normalizePrivateChatTime(dynamic rawTime) {
+  if (rawTime == null) return null;
+  if (rawTime is String) {
+    final numeric = rawTime.trim();
+    final numericValue = double.tryParse(numeric);
+    if (numericValue != null) {
+      final ms = numericValue < 1e12 ? (numericValue * 1000).toInt() : numericValue.toInt();
+      final dt = DateTime.fromMillisecondsSinceEpoch(ms);
+      return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+          '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+    }
+    return rawTime;
+  }
+  if (rawTime is int) {
+    final ms = rawTime < 1000000000000 ? rawTime * 1000 : rawTime;
+    final dt = DateTime.fromMillisecondsSinceEpoch(ms);
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+  }
+  if (rawTime is double) {
+    final ms = rawTime < 1e12 ? (rawTime * 1000).toInt() : rawTime.toInt();
+    final dt = DateTime.fromMillisecondsSinceEpoch(ms);
+    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
+        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}:${dt.second.toString().padLeft(2, '0')}';
+  }
+  return rawTime.toString();
 }

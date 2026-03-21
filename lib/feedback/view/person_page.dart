@@ -142,16 +142,18 @@ class _PersonPageState extends State<PersonPage> {
     if (uid == null) return;
     final provider = context.read<PrivateChatProvider>();
 
-    // 确保私聊服务已初始化
+    // 触发私聊服务初始化，但不阻塞跳转
     if (provider.myUserId == null) {
-      await provider.init();
-      if (provider.myUserId == null && mounted) {
-        ToastProvider.error('私聊服务初始化失败，请检查登录状态');
-        return;
-      }
+      provider.init();
     }
 
-    if (uid == provider.myUserId && mounted) {
+    final myId = provider.myUserId ?? int.tryParse(CommonPreferences.lakeUid.value);
+    if (myId == null) {
+      if (mounted) ToastProvider.error('请先登录');
+      return;
+    }
+
+    if (uid == myId && mounted) {
       ToastProvider.error('不能和自己私聊');
       return;
     }
@@ -170,8 +172,6 @@ class _PersonPageState extends State<PersonPage> {
       );
     }
 
-    // 选中该联系人并跳转到聊天页面
-    await provider.selectContact(contact);
     if (mounted) {
       await Navigator.pushNamed(
         context,
