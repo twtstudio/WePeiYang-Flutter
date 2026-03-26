@@ -473,6 +473,7 @@ class _inputBoxState extends State<inputBox> {
                           height: 28.r,
                           colorFilter: ColorFilter.mode(
                             WpyTheme.of(context).primary ?? Colors.blue,
+
                             BlendMode.srcIn,
                           ),
                         ),
