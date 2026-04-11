@@ -16,6 +16,7 @@ import '../../../commons/widgets/colored_icon.dart';
 import '../../../commons/widgets/w_button.dart';
 import '../../../feedback/view/components/widget/long_text_shower.dart';
 import '../../../gpa/gpa_router.dart';
+import '../../../streak/streak_router.dart';
 import '../../../home/home_router.dart';
 import '../../../home/view/map_calendar_page.dart';
 import '../../../schedule/schedule_router.dart';
@@ -39,6 +40,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
+    CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '北洋圆', 'STREAK',
+        StreakRouter.streakPage),
     // CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
     //     HomeRouter.laf),
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
@@ -217,7 +220,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
             onPressed: () {
               setState(() {
                 CommonPreferences.displayedTool.value.clear();
-                CommonPreferences.displayOrder.value = "0,1,2,3,4,5";
+                CommonPreferences.displayOrder.value = "0,1,2,3,4,5,6";
                 CommonPreferences.displayedTool.value.addAll(peiYangTools);
               });
               ToastProvider.success("已重置！");

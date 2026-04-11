@@ -287,6 +287,7 @@ class SliverCardsWidget extends StatelessWidget {
     '新闻网',
     '地图·校历',
     '成绩',
+    '北洋圆',
     // '小游戏'
     // '失物招领'
   ];

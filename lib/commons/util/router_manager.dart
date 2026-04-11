@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/home/home_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/schedule/schedule_router.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_router.dart';
+import 'package:we_pei_yang_flutter/streak/streak_router.dart';
 
 export 'package:we_pei_yang_flutter/auth/auth_router.dart';
 export 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -31,6 +32,7 @@ class RouterManager {
       _routers.addAll(MessageRouter.routers);
       _routers.addAll(TestRouter.routers);
       _routers.addAll(LAFRouter.routers);
+      _routers.addAll(StreakRouter.routers);
     }
     return MaterialPageRoute(
         builder: (ctx) => _routers[settings.name]!(settings.arguments),

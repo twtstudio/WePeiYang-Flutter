@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import '../../gpa/gpa_router.dart';
 import '../../home/home_router.dart';
 import '../../schedule/schedule_router.dart';
+import '../../streak/streak_router.dart';
 
 class CommonPreferences {
   CommonPreferences._();
@@ -122,10 +123,11 @@ class CommonPreferences {
   static final happenSpring = PrefsBean<bool>('happenSpring', false);
 
   /// 首页工具栏的东西
-  static final displayOrder = PrefsBean<String>('displayOrder', "0,1,2,3,4,5");
+  static final displayOrder = PrefsBean<String>('displayOrder', "0,1,2,3,4,5,6");
   static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
+
     CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
         HomeRouter.casQR),
     CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
@@ -136,6 +138,8 @@ class CommonPreferences {
         'https://wiki.tjubot.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
+    CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '北洋圆', 'STREAK',
+        StreakRouter.streakPage),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
         HomeRouter.laf),
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
