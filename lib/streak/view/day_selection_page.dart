@@ -72,18 +72,7 @@ class _DaySelectionPageState extends State<DaySelectionPage> with TickerProvider
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: Padding(
-              padding: EdgeInsets.only(left: 15.w),
-              child: WButton(
-                  child: Icon(Icons.arrow_back,
-                      color:
-                      WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                      size: 32.r),
-                  onPressed: () => Navigator.pop(context)),
-            ),
-            title: Text('天数选择',
-                style: TextUtil.base.bold.sp(16).oldActionColor(context)),
-            centerTitle: true,
+            automaticallyImplyLeading: false,
           ),
           body: Center(
             child: Column(
@@ -132,7 +121,13 @@ class _DaySelectionPageState extends State<DaySelectionPage> with TickerProvider
                         child: Transform.translate(
                           offset: Offset(-55.w, 0),
                           child: GestureDetector(
-                            onTap: () { print('选择了 21 天'); },
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                StreakRouter.taskSelectionPage,
+                                arguments: 21,
+                              );
+                            },
                             child: Container(
                               color: Colors.transparent,
                               child: Column(
@@ -163,7 +158,13 @@ class _DaySelectionPageState extends State<DaySelectionPage> with TickerProvider
                         child: Transform.translate(
                           offset: Offset(55.w, 0),
                           child: GestureDetector(
-                            onTap: () { print('选择了 7 天'); },
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                StreakRouter.taskSelectionPage,
+                                arguments: 7,
+                              );
+                            },
                             child: Container(
                               color: Colors.transparent,
                               child: Column(
@@ -194,21 +195,21 @@ class _DaySelectionPageState extends State<DaySelectionPage> with TickerProvider
                   ),),
                 const Spacer(flex: 3),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20.h),
+                  padding: EdgeInsets.only(bottom: 30.h),
                   child: FadeTransition(
                     opacity: _textFadeAnimation,
-                    child: Column(
-                      children: [
-                        Text('选择天数页面',
-                            style: TextUtil.base.medium.sp(16).copyWith(
-                              color: Colors.grey,
-                            )),
-                        SizedBox(height: 2.h),
-                        Text('DAY SELECTION PAGE',
-                            style: TextUtil.base.regular.sp(10).copyWith(
-                              color: Colors.grey,
-                            )),
-                      ],
+                    child: WButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.chevron_left, color: Colors.grey, size: 20.r),
+                          Text(
+                            '返回上级',
+                            style: TextUtil.base.regular.sp(14).copyWith(color: Colors.grey),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
