@@ -174,7 +174,7 @@ class _StreakPageState extends State<StreakPage> with TickerProviderStateMixin {
                 ),
                 const Spacer(flex: 3),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20.h),
+                  padding: EdgeInsets.only(bottom: 30.h),
                   child: FadeTransition(
                     opacity: _textFadeAnimation,
                     child: Column(
