@@ -2,10 +2,13 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+
+import '../streak_router.dart';
 
 class TaskSelectionPage extends StatefulWidget {
   final int days;
@@ -22,24 +25,28 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
       'description': '每日唤醒身体第一步',
       'icon': Icons.water_drop,
       'enabled': false,
+      'isCustom': false, // 标记为内置
     },
     {
       'title': '专注阅读',
       'description': '每日读书20分钟',
       'icon': Icons.book,
       'enabled': false,
+      'isCustom': false,
     },
     {
       'title': '每日锻炼',
       'description': '20分钟体育运动',
       'icon': Icons.fitness_center,
       'enabled': false,
+      'isCustom': false,
     },
     {
       'title': '早睡早起',
       'description': '23:00前放下电子设备',
       'icon': Icons.nights_stay,
       'enabled': false,
+      'isCustom': false,
     },
   ];
 
@@ -55,6 +62,8 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
             .withOpacity(0.6),
       ],
     );
+    // 为底部保留设备导航栏高度，避免内容被遮挡
+    final double bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Stack(
       children: [
@@ -115,7 +124,7 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 30.h),
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 30.h + bottomPadding + 8.h),
                 child: Column(
                   children: [
                     WButton(
@@ -134,6 +143,16 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
                     SizedBox(height: 15.h),
                     WButton(
                       onPressed: () {
+                        // Only pass tasks that are enabled
+                        final enabledTasks = _tasks.where((t) => t['enabled'] == true).toList();
+                        Navigator.pushNamed(
+                          context,
+                          StreakRouter.dailyProgressPage,
+                          arguments: {
+                            'days': widget.days,
+                            'tasks': enabledTasks,
+                          },
+                        );
                         // 确认逻辑
                       },
                       child: Container(
@@ -210,6 +229,16 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
               ],
             ),
           ),
+          // 如果是自定义任务，则显示删除按钮
+          if (task['isCustom'] == true)
+            IconButton(
+              icon: Icon(Icons.delete_outline, color: Colors.red[300], size: 22.r),
+              onPressed: () {
+                setState(() {
+                  _tasks.removeAt(index);
+                });
+              },
+            ),
           CupertinoSwitch(
             value: task['enabled'],
             activeColor: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
@@ -282,128 +311,137 @@ class _TaskSelectionPageState extends State<TaskSelectionPage> {
           ],
         );
 
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.r),
-              topRight: Radius.circular(20.r),
+        return SafeArea(
+          top: false,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.r),
+                topRight: Radius.circular(20.r),
+              ),
             ),
-          ),
-          padding: EdgeInsets.fromLTRB(
-              25.w, 15.h, 25.w, MediaQuery.of(context).viewInsets.bottom + 30.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Handle
-              Center(
-                child: Container(
-                  width: 40.w,
-                  height: 4.h,
+            // only account for keyboard inset here; SafeArea will handle system bottom padding
+            padding: EdgeInsets.fromLTRB(
+              25.w,
+              15.h,
+              25.w,
+              MediaQuery.of(context).viewInsets.bottom + 30.h,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle
+                Center(
+                  child: Container(
+                    width: 40.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 25.h),
+                // Header
+                Text(
+                  '添加自定义习惯',
+                  style: TextUtil.base.bold.sp(22).copyWith(color: Colors.black87),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  '开始新的自律计划, 保持你的节奏',
+                  style:
+                      TextUtil.base.regular.sp(14).copyWith(color: Colors.black54),
+                ),
+                SizedBox(height: 30.h),
+                // Name Input
+                Text(
+                  '打卡任务名称',
+                  style:
+                      TextUtil.base.medium.sp(14).copyWith(color: Colors.black45),
+                ),
+                SizedBox(height: 10.h),
+                Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2.r),
+                    color: const Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(15.r),
+                  ),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      hintText: '例如: 每天喝八杯水',
+                      hintStyle: TextUtil.base.regular
+                          .sp(15)
+                          .copyWith(color: Colors.black26),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 25.h),
-              // Header
-              Text(
-                '添加自定义习惯',
-                style: TextUtil.base.bold.sp(22).copyWith(color: Colors.black87),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                '开始新的自律计划, 保持你的节奏',
-                style:
-                    TextUtil.base.regular.sp(14).copyWith(color: Colors.black54),
-              ),
-              SizedBox(height: 30.h),
-              // Name Input
-              Text(
-                '打卡任务名称',
-                style:
-                    TextUtil.base.medium.sp(14).copyWith(color: Colors.black45),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(15.r),
+                SizedBox(height: 20.h),
+                // Description Input
+                Text(
+                  '打卡任务描述',
+                  style:
+                      TextUtil.base.medium.sp(14).copyWith(color: Colors.black45),
                 ),
-                child: TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    hintText: '例如: 每天喝八杯水',
-                    hintStyle: TextUtil.base.regular
-                        .sp(15)
-                        .copyWith(color: Colors.black26),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                    border: InputBorder.none,
+                SizedBox(height: 10.h),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(15.r),
+                  ),
+                  child: TextField(
+                    controller: descController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: '给自己一点动力或说明执行细节...',
+                      hintStyle: TextUtil.base.regular
+                          .sp(15)
+                          .copyWith(color: Colors.black26),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20.h),
-              // Description Input
-              Text(
-                '打卡任务描述',
-                style:
-                    TextUtil.base.medium.sp(14).copyWith(color: Colors.black45),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(15.r),
-                ),
-                child: TextField(
-                  controller: descController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    hintText: '给自己一点动力或说明执行细节...',
-                    hintStyle: TextUtil.base.regular
-                        .sp(15)
-                        .copyWith(color: Colors.black26),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 40.h),
-              // Confirm Button
-              WButton(
-                onPressed: () {
-                  if (nameController.text.trim().isNotEmpty) {
-                    setState(() {
-                      _tasks.add({
-                        'title': nameController.text.trim(),
-                        'description': descController.text.trim(),
-                        'icon': Icons.stars, // 默认图标
-                        'enabled': true,
+                SizedBox(height: 40.h),
+                // Confirm Button
+                WButton(
+                  onPressed: () {
+                    if (nameController.text.trim().isNotEmpty) {
+                      setState(() {
+                        _tasks.add({
+                          'title': nameController.text.trim(),
+                          'description': descController.text.trim(),
+                          'icon': Icons.stars, // 默认图标
+                          'enabled': true,
+                          'isCustom': true,
+                        });
                       });
-                    });
-                    Navigator.pop(context);
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 55.h,
-                  decoration: BoxDecoration(
-                    gradient: primaryGradient,
-                    borderRadius: BorderRadius.circular(30.r),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '确认添加',
-                    style:
-                        TextUtil.base.bold.sp(18).copyWith(color: Colors.white),
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 55.h,
+                    decoration: BoxDecoration(
+                      gradient: primaryGradient,
+                      borderRadius: BorderRadius.circular(30.r),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '确认添加',
+                      style:
+                          TextUtil.base.bold.sp(18).copyWith(color: Colors.white),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
