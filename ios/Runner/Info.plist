@@ -48,6 +48,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>我们将使用您的相机权限以获取照片，照片仅用于帖子展示，否则您可以使用相册选取</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>我们需要使用您的麦克风来进行小天老师的语音输入</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>同意以允许网络请求</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
