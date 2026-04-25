@@ -59,14 +59,19 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     defaultConfig {
         applicationId "com.twt.service"
         multiDexEnabled true
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdkVersion 21 // flutter.minSdkVersion
+        targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
 
@@ -261,6 +266,7 @@ android {
             }
         }
     }
+
     namespace 'com.twt.service'
 }
 

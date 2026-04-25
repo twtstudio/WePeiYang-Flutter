@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+.codex/
 
 # IntelliJ related
 *.iml
@@ -53,3 +54,5 @@ ios/Podfile.lock
 ios/build/
 dev.keystore
 .fvmrc
+
+.codex

@@ -6,7 +6,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # 请保证
 # 'package:we_pei_yang_flutter/commons/environment/config.dart'
 # 中的 version 和 versionCode 保持一致
-version: 4.5.1+179
+version: 4.5.2+180
 
 # Build:
 # flutter build apk \
@@ -24,6 +24,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  miui_long_screenshot: ^0.1.0
 
   async: ^2.8.2
   numberpicker: ^2.1.2
@@ -119,7 +121,6 @@ dependencies:
   wechat_picker_library: 1.0.5
   wechat_assets_picker: any
   window_manager: ^0.3.8
-  photo_manager: ^3.3.1
 
   waterfall_flow: ^3.0.3
 
@@ -142,6 +143,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.1.2
+
+dependency_overrides:
+  photo_manager: 3.6.4
 
 # The following section is specific to Flutter.
 flutter:
@@ -193,4 +197,3 @@ flutter:
 #    - family: PingFangSC
 #      fonts:
 #        - asset: assets/fonts/zh/PingFangSC-SemiBold.ttf
-

@@ -116,6 +116,10 @@ class _WpyPicState extends State<WpyPic> {
         height: widget.height,
         fit: widget.fit,
         alignment: widget.alignment,
+        fadeInDuration: Duration.zero,
+        fadeOutDuration: Duration.zero,
+        memCacheWidth: _cachePixelDimension(widget.width),
+        memCacheHeight: _cachePixelDimension(widget.height),
         progressIndicatorBuilder: widget.withHolder
             ? (context, url, progress) {
                 return Container(
@@ -184,6 +188,17 @@ class _WpyPicState extends State<WpyPic> {
           fit: widget.fit,
         ),
       );
+
+  int? _cachePixelDimension(double? logicalValue) {
+    if (logicalValue == null || !logicalValue.isFinite || logicalValue <= 0) {
+      return null;
+    }
+    final mediaQuery = MediaQuery.maybeOf(context);
+    final devicePixelRatio = mediaQuery?.devicePixelRatio ??
+        // ignore: deprecated_member_use
+        WidgetsBinding.instance.window.devicePixelRatio;
+    return (logicalValue * devicePixelRatio).round();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -10,9 +10,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:miui_long_screenshot/miui_long_screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
@@ -305,47 +305,50 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   // 这里是Post的Listview, 需要监听Post刷新
                   listenable: pageController.postHolder,
                   builder: (context, oldChild) {
-                    return SmartRefresher(
-                      physics: BouncingScrollPhysics(),
-                      controller: pageController.refreshController,
-                      scrollController: pageController.scrollController,
-                      header: ClassicHeader(
-                        height: 5.h,
-                        completeDuration: Duration(milliseconds: 300),
-                        idleText: '下拉以刷新 (乀*･ω･)乀',
-                        releaseText: '下拉以刷新',
-                        refreshingText:
-                            topText[Random().nextInt(topText.length)],
-                        completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-                        failedText: '刷新失败（；´д｀）ゞ',
+                    return MiuiLongScreenshot(
+                      controller: pageController.scrollController,
+                      child: SmartRefresher(
+                        physics: BouncingScrollPhysics(),
+                        controller: pageController.refreshController,
+                        scrollController: pageController.scrollController,
+                        header: ClassicHeader(
+                          height: 5.h,
+                          completeDuration: Duration(milliseconds: 300),
+                          idleText: '下拉以刷新 (乀*･ω･)乀',
+                          releaseText: '下拉以刷新',
+                          refreshingText:
+                              topText[Random().nextInt(topText.length)],
+                          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+                          failedText: '刷新失败（；´д｀）ゞ',
+                        ),
+                        cacheExtent: 1.sh,
+                        enablePullDown: true,
+                        onRefresh: _onRefresh,
+                        footer: ClassicFooter(
+                          idleText: '下拉以刷新',
+                          noDataText: '无数据',
+                          loadingText: '加载中，请稍等  ;P',
+                          failedText: '加载失败（；´д｀）ゞ',
+                        ),
+                        enablePullUp: true,
+                        onLoading: _onLoading,
+                        child: isRefresh
+                            ? RefreshSkeleton()
+                            : ListView.builder(
+                                // 根据要求， Listview必须紧挨着SmartRefresher，
+                                // 不能包装任何东西
+                                // 所以不得已使用三元表达式
+                                key: PageStorageKey("$index,$loadFlag"),
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                // 4是因为前面有4个widget，
+                                // Welcome, 热榜， Banner, 排序选择器
+                                itemCount:
+                                    pageController.postHolder.postsList.length +
+                                        4,
+                                itemBuilder: _buildPostList,
+                              ),
                       ),
-                      cacheExtent: 11,
-                      enablePullDown: true,
-                      onRefresh: _onRefresh,
-                      footer: ClassicFooter(
-                        idleText: '下拉以刷新',
-                        noDataText: '无数据',
-                        loadingText: '加载中，请稍等  ;P',
-                        failedText: '加载失败（；´д｀）ゞ',
-                      ),
-                      enablePullUp: true,
-                      onLoading: _onLoading,
-                      child: isRefresh
-                          ? RefreshSkeleton()
-                          : ListView.builder(
-                              // 根据要求， Listview必须紧挨着SmartRefresher，
-                              // 不能包装任何东西
-                              // 所以不得已使用三元表达式
-                              key: PageStorageKey("$index,$loadFlag"),
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              // 4是因为前面有4个widget，
-                              // Welcome, 热榜， Banner, 排序选择器
-                              itemCount:
-                                  pageController.postHolder.postsList.length +
-                                      4,
-                              itemBuilder: _buildPostList,
-                            ),
                     );
                   },
                 ),
