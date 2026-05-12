@@ -111,7 +111,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
-                                  'assets/images/school_map/wjl.jpeg')))),
+                                  'assets/images/school_map/wjl_thumb.jpeg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -152,7 +152,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       .get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
                               image: AssetImage(
-                                  'assets/images/school_map/byy.jpeg')))),
+                                  'assets/images/school_map/byy_thumb.jpeg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -212,7 +212,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                       WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
                               image: AssetImage(
-                                  'assets/images/calender/first.jpg')))),
+                                  'assets/images/calender/first_thumb.jpg')))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -255,7 +255,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryLightestActionColor),
                             BlendMode.screen),
-                        image: AssetImage('assets/images/calender/second.jpg'),
+                        image: AssetImage('assets/images/calender/second_thumb.jpg'),
                       ))),
                   Positioned(
                     top: 20.h,

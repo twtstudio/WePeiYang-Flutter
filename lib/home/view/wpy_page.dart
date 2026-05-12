@@ -216,7 +216,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       children: [
         /// 功能跳转卡片
         SliverCardsWidget(CommonPreferences.displayedTool.value),
-        if (CommonPreferences.showMap.value) MapAndCalender(),
+        if (CommonPreferences.showMap.value) const MapAndCalender(),
         Padding(
           padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
           child: TabBar(

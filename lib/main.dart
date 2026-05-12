@@ -38,6 +38,7 @@ import 'commons/util/router_manager.dart';
 import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
+import 'commons/widgets/wpy_pic.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/post.dart';
 import 'gpa/model/gpa_notifier.dart';
@@ -81,6 +82,8 @@ void main() async {
         await windowManager.focus();
       });
     }
+    /// 清空图片缓存
+    await WpyPic.clearAllCache();
 
     /// 初始化sharedPreference
     await CommonPreferences.init();

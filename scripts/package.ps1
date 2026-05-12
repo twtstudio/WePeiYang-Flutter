@@ -33,12 +33,12 @@ function New-Apk {
 # 打包64位
 New-Apk -environment "RELEASE" -platforms "android-arm64"
 
-# ONLINE_TEST版 - 正式服务器 + com.twt.service + 注释
-# 仅打包64位
-New-Apk -environment "ONLINE_TEST" -platforms "android-arm64"
-
-# DEVELOP版 - 测试服务器 + com.twt.service.develop + 注释
-# 仅打包64位
-New-Apk -environment "DEVELOP" -platforms "android-arm64"
+# # ONLINE_TEST版 - 正式服务器 + com.twt.service + 注释
+# # 仅打包64位
+# New-Apk -environment "ONLINE_TEST" -platforms "android-arm64"
+#
+# # DEVELOP版 - 测试服务器 + com.twt.service.develop + 注释
+# # 仅打包64位
+# New-Apk -environment "DEVELOP" -platforms "android-arm64"
 
 tree $allApksPath /F
