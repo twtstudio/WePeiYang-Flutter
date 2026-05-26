@@ -10,6 +10,16 @@ buildscript {
         maven {
             url 'https://developer.hihonor.com/repo/'
         }
+        //pub get 镜像源
+        maven { 
+            url'https://maven.aliyun.com/repository/google' 
+        }
+        maven{
+            url 'https://maven.aliyun.com/repository/jcenter'
+        }
+        maven{
+            url 'http://maven.aliyun.com/nexus/content/groups/public'
+        }
     }
 
     dependencies {

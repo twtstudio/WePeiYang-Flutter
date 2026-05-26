@@ -62,6 +62,9 @@
 	<string>我们将使用您的相册权限以获取照片，照片仅用于帖子展示，如果不愿意您将无法上传图片</string>
 	<key>NSSiriUsageDescription</key>
 	<string>允许使用Siri以询问课表考表等</string>
+	<key>NSBonjourServices</key>
+	<array>
+	</array>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>ConfigurationIntent</string>
