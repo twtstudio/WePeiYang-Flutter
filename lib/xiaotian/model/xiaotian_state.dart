@@ -203,6 +203,19 @@ class xiaotianChatState extends ChangeNotifier {
     }
   }
 
+  void setLikeCount(String messageId, int like) {
+    for (var session in _sessions.values) {
+      try {
+        final message = session.firstWhere(
+          (m) => m.id == messageId && m is AiMessage,
+        ) as AiMessage;
+        message.likeCount = like;
+        notifyListeners();
+        return;
+      } catch (e) {}
+    }
+  }
+
   //检查已完成的流，缓存为text，防止重复监听流
   void completeMessageStream(String messageId, String finalText) {
     for (var session in _sessions.values) {

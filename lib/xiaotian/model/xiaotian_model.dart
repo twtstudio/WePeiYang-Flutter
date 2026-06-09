@@ -110,7 +110,7 @@ class UserMessage extends ChatMessage {
 
 class AiMessage extends ChatMessage {
   String? text;
-  final int likeCount;
+  int likeCount;
   final String? traceId;
 
   final Stream<ChatEvent>? stream;

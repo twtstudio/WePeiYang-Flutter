@@ -122,6 +122,26 @@ extension DioRequests on DioAbstract {
     );
   }
 
+  Future<Response<dynamic>> delete(String path,
+      {Map<String, dynamic>? queryParameters,
+      data,
+      Options? options,
+      bool debug = false}) {
+    return retry(
+      () => (debug ? _dio_debug : _dio)
+          .delete(path,
+              queryParameters: queryParameters,
+              data: data,
+              options: options)
+          .catchError((error, stack) {
+        Logger.reportError(error, stack);
+        throw error;
+      }),
+      retryIf: (e) => e is SocketException || e is TimeoutException,
+      maxAttempts: 3,
+    );
+  }
+
   Future<Response<dynamic>> download(String urlPath, String savePath,
       {ProgressCallback? onReceiveProgress,
       Options? options,

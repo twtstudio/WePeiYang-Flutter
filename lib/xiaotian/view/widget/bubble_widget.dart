@@ -37,6 +37,7 @@ class bubbleFromAi extends StatefulWidget {
     this.searchTime,
     this.searchType,
     this.headers,
+    this.likeCount = 0,
   });
 
   String? prompt;
@@ -46,6 +47,7 @@ class bubbleFromAi extends StatefulWidget {
   String? searchTime;
   String? searchType;
   Map<String, String>? headers;
+  final int likeCount;
   final String messageId;
   final String? text;
   final int index;
@@ -205,7 +207,7 @@ class _bubbleFromAiState extends State<bubbleFromAi>
             //   Text("⚠ $error", style: const TextStyle(color: Colors.red)),
             // 底部按钮
             if (_streamCompleted && text.isNotEmpty)
-              buttonForAI(text: text, index: widget.index, trace: _trace),
+              buttonForAI(text: text, index: widget.index, trace: _trace, messageId: widget.messageId, likeCount: widget.likeCount),
           ],
         ),
       ),
@@ -257,7 +259,7 @@ class bubbleFromAi_Text extends StatelessWidget {
             //AI声明
             aiDeclaration(context),
             //底部按钮
-            buttonForAI(text: text, index: index, trace: trace)
+            buttonForAI(text: text, index: index, trace: trace, messageId: messageId, likeCount: 0)
           ],
         ),
       ),
@@ -554,10 +556,12 @@ Widget aiDeclaration(BuildContext context) {
 }
 
 class buttonForAI extends StatelessWidget {
-  const buttonForAI({super.key,required this.text,required this.index,required this.trace});
+  const buttonForAI({super.key,required this.text,required this.index,required this.trace,required this.messageId, this.likeCount = 0});
   final text;
   final index;
   final trace;
+  final String messageId;
+  final int likeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -602,13 +606,16 @@ class buttonForAI extends StatelessWidget {
             width: 20.r,
             height: 20.r,
             colorFilter: ColorFilter.mode(
-              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+              likeCount == 1
+                  ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                  : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
               BlendMode.srcIn,
             ),
           ),
           onPressed: (){
             final fb = FeedBack(traceId: trace, likeCount: '1');
             feedBackPost(fb);
+            context.read<xiaotianChatState>().setLikeCount(messageId, 1);
             ToastProvider.success('点赞成功');
           },
         ),
@@ -620,7 +627,9 @@ class buttonForAI extends StatelessWidget {
             width: 20.r,
             height: 20.r,
             colorFilter: ColorFilter.mode(
-              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+              likeCount == 2
+                  ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
+                  : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
               BlendMode.srcIn,
             ),
           ),
@@ -634,6 +643,7 @@ class buttonForAI extends StatelessWidget {
             }
             final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result['text'],state: result['code']);
             feedBackPost(fb);
+            context.read<xiaotianChatState>().setLikeCount(messageId, 2);
             ToastProvider.success('反馈成功');
           },
         ),

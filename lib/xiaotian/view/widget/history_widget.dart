@@ -11,65 +11,75 @@ import '../../model/xiaotian_model.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class historyTab extends StatelessWidget {
-  const historyTab({super.key,required this.session});
+class HistoryListTile extends StatelessWidget {
+  const HistoryListTile({super.key, required this.session});
   final HistorySession session;
-
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final chatState = context.read<xiaotianChatState>();
-        Navigator.of(context).pop();
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+      child: Material(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(10.r),
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10.r),
+          splashColor: WpyTheme.of(context)
+              .get(WpyColorKey.primaryActionColor)
+              .withOpacity(0.15),
+          onTap: () async {
+            final chatState = context.read<xiaotianChatState>();
+            Navigator.of(context).pop();
 
-        chatState.isLoading(true);
+            chatState.isLoading(true);
 
-        try {
-          final hisMes = await AiService().getConversation(
-            sessionId: session.sessionId,
-            userId: CommonPreferences.userNumber.value,
-          );
+            try {
+              final hisMes = await AiService().getConversation(
+                sessionId: session.sessionId,
+                userId: CommonPreferences.userNumber.value,
+              );
 
-          final hisToCurMes = List.generate(
-            hisMes.length,
+              final hisToCurMes = List.generate(
+                hisMes.length,
                 (i) => chatState.fromHistoryToCurrent(hisMes[i]),
-          );
+              );
 
-          final sessions = await AiService().getAllSessions(
-            CommonPreferences.userNumber.value,
-          );
-          chatState
-            ..setSessionId(session.sessionId)
-            ..messageSet(hisToCurMes)
-            ..setHistorySession(sessions);
-        } finally {
-          chatState.isLoading(false);
-        }
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.r)
+              final sessions = await AiService().getAllSessions(
+                CommonPreferences.userNumber.value,
+              );
+              chatState
+                ..setSessionId(session.sessionId)
+                ..messageSet(hisToCurMes)
+                ..setHistorySession(sessions);
+            } finally {
+              chatState.isLoading(false);
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+            child: Text(
+              session.title,
+              style: TextUtil.base.label(context).PingFangSC.w400.sp(17),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
-        child: Text(session.title,style: TextUtil.base.label(context).PingFangSC.w400.sp(14),maxLines: 1,),
       ),
     );
   }
 }
 
-
-
 Widget drawerHeader(BuildContext context) {
   return Container(
-    // height: 100.h, // 控制整体高度
-    padding: EdgeInsets.only(left: 15.w, top: 22.h,bottom: 27.h),
+    padding: EdgeInsets.only(left: 15.w, top: 22.h, bottom: 27.h),
     child: RichText(
       text: TextSpan(
         style: TextUtil.base.label(context).w600.PingFangSC.sp(24),
         children: [
           WidgetSpan(
-            alignment: PlaceholderAlignment.middle, // 中线对齐
+            alignment: PlaceholderAlignment.middle,
             child: Padding(
               padding: EdgeInsets.only(right: 12.w),
               child: Image.asset(
@@ -82,10 +92,9 @@ Widget drawerHeader(BuildContext context) {
           TextSpan(text: '小天老师'),
         ],
       ),
-    )
+    ),
   );
 }
-
 
 class historyDrawer extends StatefulWidget {
   const historyDrawer({super.key});
@@ -95,94 +104,76 @@ class historyDrawer extends StatefulWidget {
 }
 
 class _historyDrawerState extends State<historyDrawer> {
-
   @override
   void initState() {
     super.initState();
-    ///加载history改成从保存的history中获取
-    // _loadHistory();
+  }
+
+  Future<void> _refreshHistory() async {
+    final chatState = context.read<xiaotianChatState>();
+    final sessions = await AiService().getAllSessions(
+      CommonPreferences.userNumber.value,
+    );
+    chatState.setHistorySession(sessions);
   }
 
   @override
   Widget build(BuildContext context) {
     final history = context.watch<xiaotianChatState>().historySession;
 
-    //时间从新到旧排序
     final sortedHistory = [...history]..sort((a, b) {
-      final da = DateTime.parse(a.creationTime);
-      final db = DateTime.parse(b.creationTime);
-      return db.compareTo(da);
-    });
+        final da = DateTime.parse(a.creationTime);
+        final db = DateTime.parse(b.creationTime);
+        return db.compareTo(da);
+      });
 
-    //日期分组
     final Map<String, List<HistorySession>> grouped = {};
     for (final tab in sortedHistory) {
       final date = DateTime.parse(tab.creationTime);
       final dateStr =
           "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-
       grouped.putIfAbsent(dateStr, () => []);
       grouped[dateStr]!.add(tab);
     }
 
-    //构建 children
-    final List<Widget> children = [];
-    children.add(drawerHeader(context));
-
+    final List<Widget> tiles = [];
     grouped.forEach((dateStr, tabs) {
-      children.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            // 日期标题
-            Padding(
-              padding: EdgeInsets.only(left: 25.w,bottom: 4.h,top: 4.h),
-              child: Text(
-                dateStr,
-                style: TextUtil.base.PingFangSC.label(context).bold.sp(14),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 8.h,left: 15.w,right: 15.w),
-              padding:EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor).withOpacity(0.05),
-                      blurRadius: 10.r,
-                      offset: Offset(0,4.h)
-                  )
-                ],
-                color: WpyTheme.of(context).get(WpyColorKey.skeletonEndBColor),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 当天的所有 tab
-                  ...tabs.map((tab) => historyTab(session: tab)),
-                ],
-              ),
-            ),
-          ],
-        )
+      tiles.add(
+        Padding(
+          padding: EdgeInsets.only(left: 20.w, top: 16.h, bottom: 4.h),
+          child: Text(
+            dateStr,
+            style: TextUtil.base.PingFangSC.label(context).bold.sp(15),
+          ),
+        ),
       );
+      for (int i = 0; i < tabs.length; i++) {
+        tiles.add(HistoryListTile(session: tabs[i]));
+      }
     });
 
     return Drawer(
-      backgroundColor: WpyTheme.of(context).get(WpyColorKey.lighterPrimaryBackGround),
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
       child: SafeArea(
         bottom: true,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: children,
+        child: Column(
+          children: [
+            drawerHeader(context),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refreshHistory,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: tiles,
+                ),
+              ),
+            ),
+          ],
         ),
-      )
+      ),
     );
   }
 }
@@ -198,13 +189,13 @@ class openHistory extends StatelessWidget {
         width: 28.r,
         height: 28.r,
         colorFilter: ColorFilter.mode(
-          WpyTheme.of(context).primary??Colors.blue,
+          WpyTheme.of(context).primary ?? Colors.blue,
           BlendMode.srcIn,
         ),
       ),
       onPressed: () {
         Scaffold.of(context).openDrawer();
       },
-    );;
+    );
   }
 }

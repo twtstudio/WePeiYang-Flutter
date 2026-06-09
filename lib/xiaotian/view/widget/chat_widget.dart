@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../commons/speech_to_text/model/record_controller.dart';
+import '../page/xiaotian_page.dart';
 import '../widget/bubble_widget.dart';
 import '../../model/xiaotian_state.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../commons/widgets/dialog/dialog_button.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../model/xiaotian_model.dart';
@@ -50,11 +53,14 @@ class Suggestion extends StatelessWidget {
   Widget build(BuildContext context) {
     return WButton(
         onPressed: () async {
+          final pageState = context.findAncestorStateOfType<AiPageState>();
+          pageState?.setAvoidBottomInset(false);
           final result = await showCustomInputDialog(
             context,
             title: '发送反馈',
             hint: '请输入你的意见',
           );
+          pageState?.setAvoidBottomInset(true);
           if(result == null) return;
           final fb = FeedBack(traceId: context.read<xiaotianChatState>().traceID, likeCount: '2',feedbackInformation: result,state: '');
           feedBackPost(fb);
@@ -255,6 +261,7 @@ class _ChatTileState extends State<ChatTile> {
                     key: key,
                     messageId: msg.id,
                     index: index,
+                    likeCount: msg.likeCount,
                     onFinished: (text) {
                       msg.setText(text);
                     },
@@ -337,9 +344,57 @@ class _inputBoxState extends State<inputBox> {
   }
 
   // 开始/停止录音的包装方法
-  void _toggleRecording() {
+  Future<void> _toggleRecording() async {
     final inputState = Provider.of<xiaotianInputState>(context, listen: false);
+
     if (!_recordController.isRecording) {
+      final status = await Permission.microphone.status;
+      if (status.isPermanentlyDenied) {
+        if (!mounted) return;
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.mic_off, size: 30),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      "小天老师需要麦克风权限\n请前往系统设置开启",
+                      style: TextUtil.base.normal,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  WbyDialogStandardTwoButton(
+                    firstText: "取消",
+                    secondText: "打开设置",
+                    first: () => Navigator.pop(context),
+                    second: () {
+                      Navigator.pop(context);
+                      openAppSettings();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        return;
+      }
+
       final controller = inputState.textController;
       final text = controller.text;
       final selection = controller.selection;
@@ -510,35 +565,44 @@ class WebSearch extends StatelessWidget {
     return Row(
       children: [
         WButton(
-          onPressed: () => inputState.changeOpenSearch(),
-          child:  SvgPicture.asset(
-            'assets/svg_pics/ai_icons/global.svg',
-            width: 24.r,
-            height: 24.r,
-            color: inputState.openSearch ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor) : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+          onPressed: () {
+            final next = SearchT.nextType(inputState.typeIndex);
+            inputState.changeType(next);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.oldSwitchBarColor)
+                  .withOpacity(0.6),
+            ),
+            child: Text(
+              SearchT.typeCh[inputState.typeIndex],
+              style: TextUtil.base.PingFangSC.normal.label(context).sp(12),
+            ),
           ),
         ),
-        if (inputState.openSearch)
-          Row(
-            children: [
-              SizedBox(width: 12.w),
-              WButton(
-                onPressed: () {
-                  final next = SearchT.nextTime(inputState.timeIndex);
-                  inputState.changeTime(next);
-                },
-                child: Text(SearchT.timeCh[inputState.timeIndex],style: TextUtil.base.PingFangSC.normal.label(context).sp(13),),
-              ),
-              SizedBox(width: 12.w),
-              WButton(
-                onPressed: () {
-                  final next = SearchT.nextType(inputState.typeIndex);
-                  inputState.changeType(next);
-                },
-                child: Text(SearchT.typeCh[inputState.typeIndex],style: TextUtil.base.PingFangSC.normal.label(context).sp(13),),
-              ),
-            ],
+        SizedBox(width: 8.w),
+        WButton(
+          onPressed: () {
+            final next = SearchT.nextTime(inputState.timeIndex);
+            inputState.changeTime(next);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.oldSwitchBarColor)
+                  .withOpacity(0.6),
+            ),
+            child: Text(
+              SearchT.timeCh[inputState.timeIndex],
+              style: TextUtil.base.PingFangSC.normal.label(context).sp(12),
+            ),
           ),
+        ),
       ],
     );
   }

@@ -18,10 +18,11 @@ class AiPage extends StatefulWidget {
   const AiPage({super.key});
 
   @override
-  State<AiPage> createState() => _AiPageState();
+  State<AiPage> createState() => AiPageState();
 }
+class AiPageState extends State<AiPage> {
+  final _avoidBottomInset = ValueNotifier(true);
 
-class _AiPageState extends State<AiPage> {
   @override
   void initState() {
     super.initState();
@@ -51,14 +52,27 @@ class _AiPageState extends State<AiPage> {
     }
   }
 
+  void setAvoidBottomInset(bool v) {
+    _avoidBottomInset.value = v;
+  }
+
+  @override
+  void dispose() {
+    _avoidBottomInset.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => xiaotianInputState(),
         child: WatermarkBg(
           text:  CommonPreferences.userNumber.value,
-          child:Scaffold(
-            backgroundColor: WpyTheme.of(context).get(WpyColorKey.lighterPrimaryBackGround),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _avoidBottomInset,
+            builder: (context, avoid, _) => Scaffold(
+            resizeToAvoidBottomInset: avoid,
+            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
@@ -75,16 +89,11 @@ class _AiPageState extends State<AiPage> {
               body: Stack(
                 children: [
                   PageControl(context),
-                  if(context.read<xiaotianChatState>().sessionId != '0')
-                    Positioned(
-                        bottom: 250.h,
-                        right: 16.w,
-                        child: const Suggestion()
-                    )
                 ],
-              )
-          )
-        )
+              ),
+          ),
+      ),
+    ),
     );
   }
 }
