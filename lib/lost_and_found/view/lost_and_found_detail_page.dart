@@ -890,11 +890,13 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
   @override
   Widget build(BuildContext context) {
     Completer<ui.Image> completer = Completer<ui.Image>();
+    final cacheWidth = (350.w * MediaQuery.of(context).devicePixelRatio).round();
     Image image = Image.network(
       widget.imageUrl,
       width: double.infinity,
       fit: BoxFit.fitWidth,
       alignment: Alignment.topCenter,
+      cacheWidth: cacheWidth,
     );
     if (!completer.isCompleted) {
       image.image
@@ -925,7 +927,13 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                                   arguments: ImageViewPageArgs(
                                       [widget.imageUrl], 1, 0, true),
                                 ),
-                            child: image),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 2,
+                              ),
+                              child: ClipRect(child: image),
+                            )),
                       ),
                       TextButton(
                           style: ButtonStyle(

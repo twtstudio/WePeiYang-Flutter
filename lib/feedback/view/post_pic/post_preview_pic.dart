@@ -28,12 +28,11 @@ class OuterSinglePostPic extends StatelessWidget {
                 WpyTheme.of(context).get(WpyColorKey.iconAnimationStartColor),
             //追踪首页帖子单图
             child: WpyPic(
-              picBaseUrl + 'thumb/' + imgUrl,
+              picBaseUrl + 'origin/' + imgUrl,
               fit: BoxFit.cover,
               withHolder: false,
               withCache: true,
               width: layout.maxWidth,
-              height: 150,
               alignment: Alignment.topCenter,
             ),
           ));
@@ -83,12 +82,13 @@ class OuterMultiPostPic extends StatelessWidget {
                     width: layout.maxWidth / imgUrls.length - padding * 2,
                     height: layout.maxWidth / imgUrls.length - padding * 2,
                     child: WpyPic(
-                      picBaseUrl + 'thumb/' + imgUrls[index],
+                      picBaseUrl + 'origin/' + imgUrls[index],
                       width: layout.maxWidth / imgUrls.length - padding * 2,
                       height: layout.maxWidth / imgUrls.length - padding * 2,
                       fit: BoxFit.cover,
                       withHolder: false,
                       withCache: true,
+                      alignment: Alignment.topCenter,
                     ),
                   ),
                 ),

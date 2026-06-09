@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
@@ -18,67 +18,94 @@ final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
 final radius = 4.r;
 
 //内侧的单张图片
-class InnerSinglePostPic extends StatelessWidget {
+class InnerSinglePostPic extends StatefulWidget {
   final String imgUrl;
-  final ValueNotifier<bool> isFullView = ValueNotifier(false);
 
   InnerSinglePostPic({required this.imgUrl});
+
+  @override
+  _InnerSinglePostPicState createState() => _InnerSinglePostPicState();
+}
+
+class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
+  late final CachedNetworkImageProvider _imageProvider;
+  ui.Image? _imageInfo;
+  bool _isLoading = true;
+  bool _hasError = false;
+  bool _isFullView = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _imageProvider = CachedNetworkImageProvider(
+      picBaseUrl + 'origin/' + widget.imgUrl,
+    );
+    _loadImageInfo();
+  }
+
+  void _loadImageInfo() {
+    _imageProvider
+        .resolve(ImageConfiguration())
+        .addListener(ImageStreamListener(
+      (info, syncCall) {
+        if (syncCall) {
+          _imageInfo = info.image;
+          _isLoading = false;
+        } else {
+          if (!mounted) return;
+          setState(() {
+            _imageInfo = info.image;
+            _isLoading = false;
+          });
+        }
+      },
+      onError: (error, stackTrace) {
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      },
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, layout) {
-        return ValueListenableBuilder(
-          valueListenable: isFullView,
-          builder: (context, bool isExpanded, child) {
-            // 加载图片并获取图片尺寸
-            Completer<ui.Image> completer = Completer<ui.Image>();
-            Image image = Image.network(
-              picBaseUrl + 'origin/' + imgUrl,
-              width: layout.maxWidth,
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-            );
+        if (_hasError) {
+          return _buildErrorHint(layout.maxWidth);
+        }
+        if (_isLoading || _imageInfo == null) {
+          return _buildPlaceholder(layout.maxWidth);
+        }
 
-            // 图片信息异步获取
-            if (!completer.isCompleted) {
-              image.image
-                  .resolve(ImageConfiguration())
-                  .addListener(ImageStreamListener((info, _) {
-                if (!completer.isCompleted) completer.complete(info.image);
-              }));
-            }
-
-            return FutureBuilder<ui.Image>(
-              future: completer.future.timeout(Duration(seconds: 3)),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return _buildErrorHint(layout.maxWidth);
-                }
-                // 处理加载状态
-                if (!snapshot.hasData) {
-                  return _buildPlaceholder(layout.maxWidth);
-                }
-
-                // 判断是否为长图
-                bool isLongImage =
-                    snapshot.data!.height / snapshot.data!.width > 2.0;
-
-                // 根据是否为长图和展开状态渲染不同的UI
-                if (isLongImage) {
-                  return AnimatedSize(
-                    duration: Duration(milliseconds: 250),
-                    child: isExpanded
-                        ? _buildExpandedImageView(context, image)
-                        : _buildCollapsedImageView(context, image),
-                  );
-                } else {
-                  return _buildRegularImageView(context, image);
-                }
-              },
-            );
-          },
+        final devicePixelRatio =
+            MediaQuery.of(context).devicePixelRatio;
+        final resizedProvider = ResizeImage(
+          _imageProvider,
+          width: (layout.maxWidth * devicePixelRatio).round(),
         );
+        final image = Image(
+          image: resizedProvider,
+          width: layout.maxWidth,
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.topCenter,
+        );
+
+        final isLongImage =
+            _imageInfo!.height / _imageInfo!.width > 2.0;
+
+        if (isLongImage) {
+          return AnimatedSize(
+            duration: Duration(milliseconds: 250),
+            child: _isFullView
+                ? _buildExpandedImageView(context, image)
+                : _buildCollapsedImageView(context, image),
+          );
+        } else {
+          return _buildRegularImageView(context, image);
+        }
       },
     );
   }
@@ -95,7 +122,8 @@ class InnerSinglePostPic extends StatelessWidget {
             ),
             baseColor:
                 WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor),
-            highlightColor: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
+            highlightColor:
+                WpyTheme.of(context).get(WpyColorKey.infoTextColor),
           );
         }));
   }
@@ -110,17 +138,23 @@ class InnerSinglePostPic extends StatelessWidget {
             onTap: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs([imgUrl], 1, 0, true),
+              arguments:
+                  ImageViewPageArgs([widget.imgUrl], 1, 0, true),
             ),
-            child: image,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 2,
+              ),
+              child: ClipRect(child: image),
+            ),
           ),
         ),
         TextButton(
-          onPressed: () => isFullView.value = false,
+          onPressed: () => setState(() => _isFullView = false),
           child: Text(
             '收起',
-            style:
-                TextUtil.base.textButtonPrimary(context).w600.NotoSansSC.sp(14),
+            style: TextUtil.base.textButtonPrimary(context).w600.NotoSansSC
+                .sp(14),
           ),
         ),
       ],
@@ -138,7 +172,8 @@ class InnerSinglePostPic extends StatelessWidget {
               onTap: () => Navigator.pushNamed(
                 context,
                 FeedbackRouter.imageView,
-                arguments: ImageViewPageArgs([imgUrl], 1, 0, true),
+                arguments:
+                    ImageViewPageArgs([widget.imgUrl], 1, 0, true),
               ),
               child: image,
             ),
@@ -150,7 +185,7 @@ class InnerSinglePostPic extends StatelessWidget {
             Align(
               alignment: Alignment.bottomCenter,
               child: InkWell(
-                onTap: () => isFullView.value = true,
+                onTap: () => setState(() => _isFullView = true),
                 child: Container(
                   height: 60,
                   width: double.infinity,
@@ -167,19 +202,25 @@ class InnerSinglePostPic extends StatelessWidget {
                       SizedBox(width: 10),
                       Text(
                         '点击展开\n',
-                        style: TextUtil.base.w600.bright(context).sp(14).h(0.6),
+                        style: TextUtil.base.w600
+                            .bright(context)
+                            .sp(14)
+                            .h(0.6),
                       ),
                       Spacer(),
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.black38,
-                          borderRadius:
-                              BorderRadius.only(topLeft: Radius.circular(16)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16)),
                         ),
-                        padding: EdgeInsets.fromLTRB(12, 4, 10, 6),
+                        padding:
+                            EdgeInsets.fromLTRB(12, 4, 10, 6),
                         child: Text(
                           '长图模式',
-                          style: TextUtil.base.w300.bright(context).sp(12),
+                          style: TextUtil.base.w300
+                              .bright(context)
+                              .sp(12),
                         ),
                       ),
                     ],
@@ -200,7 +241,8 @@ class InnerSinglePostPic extends StatelessWidget {
         onTap: () => Navigator.pushNamed(
           context,
           FeedbackRouter.imageView,
-          arguments: ImageViewPageArgs([imgUrl], 1, 0, false),
+          arguments:
+              ImageViewPageArgs([widget.imgUrl], 1, 0, false),
         ),
         child: image,
       ),
