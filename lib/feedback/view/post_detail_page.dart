@@ -233,6 +233,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         success = true;
         widget.post = result;
         rating = widget.post.rating;
+        if (!mounted) return;
         setState(() {});
       },
       onFailure: (e) {

@@ -139,6 +139,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
           if (_needFocus) {
             FocusManager.instance.primaryFocus?.unfocus(); // 需要先移除其他焦点
             Future.delayed(const Duration(milliseconds: 10), () {
+              if (!mounted) return;
               _focusNode.requestFocus(); // 这里加个delay保证输入框build出来
             });
             _needFocus = false;
@@ -287,6 +288,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
                       onTap: () {
                         context.read<EditProvider>().add();
                         Future.delayed(const Duration(milliseconds: 100), () {
+                          if (!mounted) return;
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
                             duration: const Duration(milliseconds: 200),

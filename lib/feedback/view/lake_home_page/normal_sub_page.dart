@@ -97,6 +97,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
     // 延迟100ms显示刷新动画
     final task = Timer(Duration(milliseconds: 280), () {
+      if (!mounted) return;
       setState(() {
         isRefresh = true;
       });
@@ -114,6 +115,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
     // 如果还没执行就不执行了
     if (task.isActive) task.cancel();
+    if (!mounted) return;
     setState(() {
       loadFlag++;
       isRefresh = false;

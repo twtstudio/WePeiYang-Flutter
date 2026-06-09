@@ -235,21 +235,20 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
+    if (!mounted) return;
     var mediaQueryData = MediaQuery.of(context);
 
-    // 判断屏幕状态
     bool isInnerScreen =
         (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
-    // 更新字体状态
     TextUtil.updateScreenState(isInnerScreen);
-    // 触发重新渲染
     setState(() {});
   }
 
-  void _onBrightnessChanged() async =>
-      await Future.delayed(Duration(milliseconds: 400)).then(
-        (_) => WpyTheme.updateAutoDarkTheme(context),
-      );
+  void _onBrightnessChanged() async {
+    await Future.delayed(Duration(milliseconds: 400));
+    if (!mounted) return;
+    WpyTheme.updateAutoDarkTheme(context);
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

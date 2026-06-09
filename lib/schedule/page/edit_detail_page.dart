@@ -267,6 +267,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
                       onTap: () {
                         context.read<EditProvider>().add();
                         Future.delayed(const Duration(milliseconds: 100), () {
+                          if (!mounted) return;
                           _scrollController.animateTo(
                             _scrollController.position.maxScrollExtent,
                             duration: const Duration(milliseconds: 200),

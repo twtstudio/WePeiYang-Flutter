@@ -25,26 +25,27 @@ class historyTab extends StatelessWidget {
 
         chatState.isLoading(true);
 
-        final hisMes = await AiService().getConversation(
-          sessionId: session.sessionId,
-          userId: CommonPreferences.userNumber.value,
-        );
+        try {
+          final hisMes = await AiService().getConversation(
+            sessionId: session.sessionId,
+            userId: CommonPreferences.userNumber.value,
+          );
 
-        final hisToCurMes = List.generate(
-          hisMes.length,
-              (i) => chatState.fromHistoryToCurrent(hisMes[i]),
-        );
+          final hisToCurMes = List.generate(
+            hisMes.length,
+                (i) => chatState.fromHistoryToCurrent(hisMes[i]),
+          );
 
-        final sessions = await AiService().getAllSessions(
-          CommonPreferences.userNumber.value,
-        );
+          final sessions = await AiService().getAllSessions(
+            CommonPreferences.userNumber.value,
+          );
           chatState
             ..setSessionId(session.sessionId)
             ..messageSet(hisToCurMes)
-            ..setHistorySession(sessions)
-            ..isLoading(false);
-
-
+            ..setHistorySession(sessions);
+        } finally {
+          chatState.isLoading(false);
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 4.h),

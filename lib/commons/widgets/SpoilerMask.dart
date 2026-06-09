@@ -16,12 +16,17 @@ class SpoilerMaskImage extends StatelessWidget {
       return SizedBox(
         width: constraints.maxWidth,
         height: constraints.maxHeight,
-        child: Stack(children: [
-          child,
-          SpoilerMask(
-            particleCount: particleCount,
-          )
-        ]),
+        child: Stack(
+          clipBehavior: Clip.hardEdge,
+          children: [
+            Positioned.fill(child: child),
+            Positioned.fill(
+              child: SpoilerMask(
+                particleCount: particleCount,
+              ),
+            ),
+          ],
+        ),
       );
     });
   }

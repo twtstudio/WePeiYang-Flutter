@@ -80,31 +80,30 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
           return _buildPlaceholder(layout.maxWidth);
         }
 
-        final devicePixelRatio =
-            MediaQuery.of(context).devicePixelRatio;
-        final resizedProvider = ResizeImage(
-          _imageProvider,
-          width: (layout.maxWidth * devicePixelRatio).round(),
-        );
-        final image = Image(
-          image: resizedProvider,
-          width: layout.maxWidth,
-          fit: BoxFit.fitWidth,
-          alignment: Alignment.topCenter,
-        );
-
         final isLongImage =
             _imageInfo!.height / _imageInfo!.width > 2.0;
+
+        final imageHeight =
+            _imageInfo!.height / _imageInfo!.width * layout.maxWidth;
+        final displayImage = WpyPic(
+          picBaseUrl + 'origin/' + widget.imgUrl,
+          width: layout.maxWidth,
+          height: imageHeight,
+          fit: BoxFit.fitWidth,
+          withHolder: true,
+          alignment: Alignment.topCenter,
+        );
 
         if (isLongImage) {
           return AnimatedSize(
             duration: Duration(milliseconds: 250),
+            alignment: Alignment.topCenter,
             child: _isFullView
-                ? _buildExpandedImageView(context, image)
-                : _buildCollapsedImageView(context, image),
+                ? _buildExpandedImageView(context, displayImage)
+                : _buildCollapsedImageView(context, displayImage),
           );
         } else {
-          return _buildRegularImageView(context, image);
+          return _buildRegularImageView(context, displayImage);
         }
       },
     );
@@ -128,7 +127,7 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
         }));
   }
 
-  Widget _buildExpandedImageView(BuildContext context, Image image) {
+  Widget _buildExpandedImageView(BuildContext context, Widget image) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -161,7 +160,7 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
     );
   }
 
-  Widget _buildCollapsedImageView(BuildContext context, Image image) {
+  Widget _buildCollapsedImageView(BuildContext context, Widget image) {
     return SizedBox(
       height: WePeiYangApp.screenWidth * 1.2,
       child: ClipRRect(
@@ -234,7 +233,7 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
     );
   }
 
-  Widget _buildRegularImageView(BuildContext context, Image image) {
+  Widget _buildRegularImageView(BuildContext context, Widget image) {
     return ClipRRect(
       borderRadius: BorderRadius.all(Radius.circular(radius)),
       child: GestureDetector(

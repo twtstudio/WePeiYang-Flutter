@@ -91,6 +91,7 @@ class WbyWebViewState extends State<WbyWebView> {
     }
     final url =
         await getInitialUrl(context).then((u) => u, onError: (_) => null);
+    if (!mounted) return;
     if (url != null) {
       setState(() {
         state = _PageState.initWebView;
