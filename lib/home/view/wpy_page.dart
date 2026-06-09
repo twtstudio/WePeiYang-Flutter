@@ -10,7 +10,6 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
-import 'package:we_pei_yang_flutter/commons/token/laf_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/time.util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -18,7 +17,6 @@ import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/scroll_synchronizer.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
-import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
@@ -46,6 +44,13 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   Future<NAcidInfo> acidInfo = AuthService.checkNuclearAcid();
   bool hasShow = false;
 
+  void _handleScroll() {
+    if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
+        showSchedule.value == true) showSchedule.value = false;
+    if (_sc.position.maxScrollExtent - _sc.offset > 20.1.h &&
+        showSchedule.value == false) showSchedule.value = true;
+  }
+
   void showActivityDialog() {
     showDialog(
       context: context,
@@ -67,6 +72,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tc = TabController(length: 3, vsync: this);
+    _sc.addListener(_handleScroll);
     //隐私政策部分挪到了app一打开就会显示的部分（login_page.dart里面
     // if (CommonPreferences.firstPrivacy.value == true) {
     //   rootBundle.loadString('privacy/privacy_content.md').then((str) {
@@ -86,6 +92,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       //   CommonPreferences.firstPrivacy.value = false;
       // }
       var info = await acidInfo;
+      if (!mounted) return;
       if (info.id != -1 &&
           hasShow == false &&
           info.endTime != null &&
@@ -111,14 +118,19 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _sc.addListener(() {
-      if (_sc.position.maxScrollExtent - _sc.offset < 20.h &&
-          showSchedule.value == true) showSchedule.value = false;
-      if (_sc.position.maxScrollExtent - _sc.offset > 20.1.h &&
-          showSchedule.value == false) showSchedule.value = true;
-    });
+  void dispose() {
+    _sc
+      ..removeListener(_handleScroll)
+      ..dispose();
+    _tc.dispose();
+    showSchedule.dispose();
+    useRound.dispose();
+    _now.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Provider<ScrollSynchronizer>(
       create: (_) => ScrollSynchronizer.fromExist(_sc),
       child: Stack(
@@ -291,8 +303,8 @@ class SliverCardsWidget extends StatelessWidget {
     // '失物招领'
   ];
 
-  SliverCardsWidget(this.cards) :
-    order = CommonPreferences.displayOrder.value.split(',').map((e) => int.parse(e)).toList();
+  SliverCardsWidget(this.cards)
+      : order = CommonPreferences.sanitizedDisplayOrder();
 
   @override
   Widget build(BuildContext context) {
@@ -306,33 +318,27 @@ class SliverCardsWidget extends StatelessWidget {
       clipBehavior: Clip.none,
       itemCount: order.length,
       itemBuilder: (context, i) {
-        final cardBean = CommonPreferences.displayedTool.value[order[i]];
-        if (!peiyangLabel
-            .contains(cardBean.label)) {
+        final cardBean = cards[order[i]];
+        if (!peiyangLabel.contains(cardBean.label)) {
           return WButton(
             key: ValueKey(cardBean.route),
             onPressed: () async {
-              if (await canLaunchUrl(
-                  Uri.parse(cardBean.route))) {
-                await launchUrl(
-                    Uri.parse(cardBean.route),
+              if (await canLaunchUrl(Uri.parse(cardBean.route))) {
+                await launchUrl(Uri.parse(cardBean.route),
                     mode: LaunchMode.externalApplication);
               } else {
                 ToastProvider.error('请检查网络状态');
               }
             },
-            child:
-                generateCard(context, cardBean),
+            child: generateCard(context, cardBean),
           );
         } else {
           return WButton(
             key: ValueKey(cardBean.route),
             onPressed: () {
-              Navigator.pushNamed(
-                  context, cardBean.route);
+              Navigator.pushNamed(context, cardBean.route);
             },
-            child:
-                generateCard(context, cardBean),
+            child: generateCard(context, cardBean),
           );
         }
       },
@@ -344,7 +350,6 @@ class SliverCardsWidget extends StatelessWidget {
         order.insert(newIndex, movedIndex);
 
         CommonPreferences.displayOrder.value = order.join(',');
-
       },
     );
 

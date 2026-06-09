@@ -82,6 +82,7 @@ void main() async {
         await windowManager.focus();
       });
     }
+
     /// 清空图片缓存
     await WpyPic.clearAllCache();
 
@@ -228,7 +229,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
       WePeiYangApp.screenWidth = mediaQueryData.size.width;
       WePeiYangApp.screenHeight = mediaQueryData.size.height;
       // 判断屏幕状态
-      bool isInnerScreen = (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
+      bool isInnerScreen =
+          (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
       TextUtil.updateScreenState(isInnerScreen);
 
       WbyFontLoader.initFonts();
@@ -249,13 +251,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
     var mediaQueryData = MediaQuery.of(context);
 
     // 判断屏幕状态
-    bool isInnerScreen = (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
+    bool isInnerScreen =
+        (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
     // 更新字体状态
     TextUtil.updateScreenState(isInnerScreen);
     // 触发重新渲染
     setState(() {});
   }
-
 
   void _onBrightnessChanged() async =>
       await Future.delayed(Duration(milliseconds: 400)).then(
@@ -323,7 +325,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
     });
   }
 
-
   showDialog(String content) {
     if (content.isNotEmpty) {
       showMessageDialog(
@@ -340,15 +341,15 @@ class WePeiYangAppState extends State<WePeiYangApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-       ChangeNotifierProvider(create: (_) => RemoteConfig()),
-       ChangeNotifierProvider(create: (_) => GPANotifier()),
-       ChangeNotifierProvider(create: (_) => PushManager()),
-       ChangeNotifierProvider(create: (_) => UpdateManager()),
-       ChangeNotifierProvider(create: (_) => AnimationProvider()),
-       ChangeNotifierProvider(create: (_) => xiaotianChatState()),
-       ...scheduleProviders,
-       ...studyroomProviders,
-       ...feedbackProviders,
+        ChangeNotifierProvider(create: (_) => RemoteConfig()),
+        ChangeNotifierProvider(create: (_) => GPANotifier()),
+        ChangeNotifierProvider(create: (_) => PushManager()),
+        ChangeNotifierProvider(create: (_) => UpdateManager()),
+        ChangeNotifierProvider(create: (_) => AnimationProvider()),
+        ChangeNotifierProvider(create: (_) => xiaotianChatState()),
+        ...scheduleProviders,
+        ...studyroomProviders,
+        ...feedbackProviders,
         ...lostAndFoundProviders,
         ChangeNotifierProvider(
           create: (context) {
@@ -463,12 +464,13 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   String? _iconPath;
+  bool _hasNavigated = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _appInitProcess(context);
+      _appInitProcess();
       _loadSplashIcon();
     });
   }
@@ -510,9 +512,10 @@ class _SplashScreenState extends State<SplashScreen> {
     Color? iconColor = WpyTheme.of(context).primary; // 适配主题
 
     // 如果还没加载完，显示占位/默认图
-    final displayIcon = _iconPath ?? (isDarkMode
-        ? 'assets/images/splash_screen_dark.png'
-        : 'assets/images/splash_screen.png');
+    final displayIcon = _iconPath ??
+        (isDarkMode
+            ? 'assets/images/splash_screen_dark.png'
+            : 'assets/images/splash_screen.png');
 
     return Container(
       color: backgroundColor,
@@ -526,10 +529,37 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-}
 
+  void _handleLaunchShortcut() {
+    final route = switch (_shortcutActionType) {
+      "com.twt.service.courses" => ScheduleRouter.course,
+      "com.twt.service.qr" => HomeRouter.casQR,
+      _ => null,
+    };
+    if (route == null) return;
+    _shortcutActionType = "";
+    _shortcutResumeActionType = "";
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      WePeiYangApp.navigatorState.currentState?.pushNamed(route);
+    });
+  }
 
-  void _appInitProcess(BuildContext context) {
+  void _navigateHome() {
+    if (!mounted || _hasNavigated) return;
+    _hasNavigated = true;
+    Navigator.pushNamedAndRemoveUntil(
+        context, HomeRouter.home, (route) => false);
+    if (Platform.isIOS) _handleLaunchShortcut();
+  }
+
+  void _navigateLogin() {
+    if (!mounted || _hasNavigated) return;
+    _hasNavigated = true;
+    Navigator.pushReplacementNamed(context, AuthRouter.login);
+  }
+
+  Future<void> _appInitProcess() async {
     // 检查更新
     context.read<UpdateManager>().checkUpdate();
 
@@ -541,7 +571,7 @@ class _SplashScreenState extends State<SplashScreen> {
       CommonPreferences.updateTime.value = "20221019";
     } else if (CommonPreferences.updateTime.value != "20221019") {
       CommonPreferences.clearAllPrefs();
-      Navigator.pushReplacementNamed(context, AuthRouter.login);
+      _navigateLogin();
       return;
     }
 
@@ -553,58 +583,25 @@ class _SplashScreenState extends State<SplashScreen> {
     /// 如果登录过，尝试刷新token
     if (CommonPreferences.isLogin.value &&
         CommonPreferences.token.value != '') {
-      Future.delayed(Duration(milliseconds: 0),).then(
-        (_) => AuthService.getInfo(
-          onSuccess: () {
-            if (Platform.isIOS) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, HomeRouter.home, (route) => false);
-              if (_shortcutActionType == "com.twt.service.courses") {
-                WePeiYangApp.navigatorState.currentState
-                    ?.pushNamed(ScheduleRouter.course);
-                _shortcutResumeActionType = "";
-              } else if (_shortcutActionType == "com.twt.service.qr") {
-                WePeiYangApp.navigatorState.currentState
-                    ?.pushNamed(HomeRouter.casQR);
-                _shortcutResumeActionType = "";
-              }
-            }
-            if (Platform.isAndroid) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, HomeRouter.home, (route) => false);
-            }
-          },
-          onFailure: (_) {
-            if (CommonPreferences.account.value != '' &&
-                CommonPreferences.password.value != '') {
-              /// 如果存过账密，尝试用账密刷新token，无论成功与否均进入主页
-              AuthService.pwLogin(CommonPreferences.account.value,
-                  CommonPreferences.password.value,
-                  onResult: (_) {}, onFailure: (_) {});
-            }
-            if (Platform.isIOS) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, HomeRouter.home, (route) => false);
-              if (_shortcutActionType == "com.twt.service.courses") {
-                WePeiYangApp.navigatorState.currentState
-                    ?.pushNamed(ScheduleRouter.course);
-                _shortcutResumeActionType = "";
-              } else if (_shortcutActionType == "com.twt.service.qr") {
-                WePeiYangApp.navigatorState.currentState
-                    ?.pushNamed(HomeRouter.casQR);
-                _shortcutResumeActionType = "";
-              }
-            }
-            if (Platform.isAndroid) {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, HomeRouter.home, (route) => false);
-            }
-          },
-        ),
+      await Future.delayed(Duration.zero);
+      if (!mounted || _hasNavigated) return;
+      AuthService.getInfo(
+        onSuccess: _navigateHome,
+        onFailure: (_) {
+          if (CommonPreferences.account.value != '' &&
+              CommonPreferences.password.value != '') {
+            /// 如果存过账密，尝试用账密刷新token，无论成功与否均进入主页
+            AuthService.pwLogin(CommonPreferences.account.value,
+                CommonPreferences.password.value,
+                onResult: (_) {}, onFailure: (_) {});
+          }
+          _navigateHome();
+        },
       );
     } else {
       /// 没登录过的话，多看一会的启动页再跳转到登录页
-      Future.delayed(const Duration(seconds: 1)).then(
-          (_) => Navigator.pushReplacementNamed(context, AuthRouter.login));
+      await Future.delayed(const Duration(seconds: 1));
+      _navigateLogin();
     }
+  }
 }

@@ -67,7 +67,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
 
   final _scrollController = ScrollController();
   final _gridViewKey = GlobalKey();
-  final List<int> order = CommonPreferences.displayOrder.value.split(',').map((e) => int.parse(e)).toList();
+  final List<int> order = CommonPreferences.sanitizedDisplayOrder();
 
   @override
   void initState() {
@@ -275,18 +275,17 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                     child: ReorderableBuilder(
                       dragChildBoxDecoration: BoxDecoration(),
                       children: [
-                        for (int i = 0;
-                            i < order.length;
-                            i++)
+                        for (int i = 0; i < order.length; i++)
                           WButton(
                             key: ValueKey(order[i]),
                             onPressed: () {
                               setState(() {
                                 if (order.length <= 2)
                                   ToastProvider.error("您保留的太少啦！最少两个哦");
-                                else{
+                                else {
                                   order.removeAt(i);
-                                  CommonPreferences.displayOrder.value = order.join(',');
+                                  CommonPreferences.displayOrder.value =
+                                      order.join(',');
                                 }
                               });
                             },
@@ -313,9 +312,12 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                       },
                       onReorder: (List<OrderUpdateEntity> orderUpdateEntities) {
                         for (final orderUpdateEntity in orderUpdateEntities) {
-                          final _displayTool = order.removeAt(orderUpdateEntity.oldIndex);
-                          order.insert(orderUpdateEntity.newIndex, _displayTool);
-                          CommonPreferences.displayOrder.value = order.join(',');
+                          final _displayTool =
+                              order.removeAt(orderUpdateEntity.oldIndex);
+                          order.insert(
+                              orderUpdateEntity.newIndex, _displayTool);
+                          CommonPreferences.displayOrder.value =
+                              order.join(',');
                         }
                       },
                     ),

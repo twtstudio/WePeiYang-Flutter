@@ -116,13 +116,16 @@ class CommonPreferences {
 
   /// 深色模式跟随系统
   static final autoDarkTheme = PrefsBean<bool>('notFollowSys', true);
+
   /// 应用图标跟随主题
   static final autoAppWithTheme = PrefsBean<bool>('notFollowTheme', true);
 
   static final happenSpring = PrefsBean<bool>('happenSpring', false);
 
   /// 首页工具栏的东西
-  static final displayOrder = PrefsBean<String>('displayOrder', "0,1,2,3,4,5");
+  static const defaultDisplayOrder = "0,1,2,3,4,5";
+  static final displayOrder =
+      PrefsBean<String>('displayOrder', defaultDisplayOrder);
   static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
@@ -142,6 +145,34 @@ class CommonPreferences {
     //     HomeRouter.game)
   ]);
   static final userTool = PrefsBean<List<CardBean>>('userTool', []);
+
+  static List<int> sanitizedDisplayOrder({int minCount = 2}) {
+    final toolsLength = displayedTool.value.length;
+    final rawOrder = displayOrder.value;
+    final order = <int>[];
+
+    for (final item in rawOrder.split(',')) {
+      final index = int.tryParse(item.trim());
+      if (index == null || index < 0 || index >= toolsLength) continue;
+      if (!order.contains(index)) order.add(index);
+    }
+
+    if (order.length < minCount) {
+      order
+        ..clear()
+        ..addAll(defaultDisplayOrder
+            .split(',')
+            .map((item) => int.tryParse(item))
+            .whereType<int>()
+            .where((index) => index >= 0 && index < toolsLength));
+    }
+
+    if (order.isEmpty && toolsLength > 0) order.add(0);
+
+    final sanitizedOrder = order.join(',');
+    if (sanitizedOrder != rawOrder) displayOrder.value = sanitizedOrder;
+    return order;
+  }
 
   /// 自习室
   static final loungeUpdateTime = PrefsBean<String>('loungeUpdateTime');
@@ -164,7 +195,7 @@ class CommonPreferences {
   static final firstClassesDialog = PrefsBean<bool>('firstClassesDialog', true);
 
   ///屏蔽词设置
-  static final shieldComment = PrefsBean<List<String>>('shieldComment',[]);
+  static final shieldComment = PrefsBean<List<String>>('shieldComment', []);
 
   //存储Image Expires
   static final mapExpires = PrefsBean<int>('mapExpires');
