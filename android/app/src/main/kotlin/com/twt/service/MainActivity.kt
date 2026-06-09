@@ -1,6 +1,7 @@
 package com.twt.service
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.widget.Toast
 import com.twt.service.cloud_config.WbyCloudConfigPlugin
@@ -103,10 +104,18 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
             .setMethodCallHandler { call, result ->
-                if (call.method == "switchIcon") {
-                    val target = call.argument<String>("target")!!
-                    switchIcon(target)
-                    result.success(null)
+                when (call.method) {
+                    "switchIcon" -> {
+                        val target = call.argument<String>("target")!!
+                        switchIcon(target)
+                        result.success(null)
+                    }
+
+                    "getCurrentIcon" -> result.success(getCurrentIcon())
+
+                    "restartApp" -> restartApp(result)
+
+                    else -> result.notImplemented()
                 }
             }
 
@@ -152,6 +161,30 @@ class MainActivity : FlutterActivity() {
                 state,
                 PackageManager.DONT_KILL_APP
             )
+        }
+    }
+
+    private fun getCurrentIcon(): String {
+        val pm = packageManager
+        return iconAliases.firstOrNull { alias ->
+            pm.getComponentEnabledSetting(ComponentName(this, alias)) ==
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        } ?: "com.twt.service.ICONBlue"
+    }
+
+    private fun restartApp(result: MethodChannel.Result) {
+        runCatching {
+            val component = packageManager.getLaunchIntentForPackage(packageName)?.component
+            if (component == null) {
+                result.error("NO_LAUNCH_INTENT", "Cannot find launch intent", "")
+                return
+            }
+            startActivity(Intent.makeRestartActivityTask(component))
+            Runtime.getRuntime().exit(0)
+        }.onFailure {
+            result.error("RESTART_FAILED", it.message, "")
+        }.onSuccess {
+            result.success(null)
         }
     }
 

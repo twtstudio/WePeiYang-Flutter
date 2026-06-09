@@ -7,14 +7,17 @@ class NetStatusListener {
 
   factory NetStatusListener() => _instance;
 
-  static Future<void> init() async {
-    _instance._status = await Connectivity().checkConnectivity();
-    Connectivity().onConnectivityChanged.listen((result) {
+  static void init() {
+    final connectivity = Connectivity();
+    connectivity.onConnectivityChanged.listen((result) {
       _instance._status = result;
     });
+    unawaited(connectivity.checkConnectivity().then((result) {
+      _instance._status = result;
+    }).catchError((_) {}));
   }
 
-  ConnectivityResult _status = ConnectivityResult.none;
+  ConnectivityResult? _status;
 
   bool get hasNetwork => _instance._status != ConnectivityResult.none;
 }

@@ -27,6 +27,7 @@ class _ColoredIconState extends State<ColoredIcon> {
     final ui.Codec codec =
         await ui.instantiateImageCodec(Uint8List.fromList(bytes));
     final ui.FrameInfo fi = await codec.getNextFrame();
+    if (!mounted) return;
     setState(() => _image = fi.image);
     _cache[assetPath] = fi.image;
   }

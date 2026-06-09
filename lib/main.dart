@@ -29,7 +29,6 @@ import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
-import 'commons/themes/scheme/red_scheme.dart';
 import 'commons/themes/wpy_theme.dart';
 import 'commons/update/update_manager.dart';
 import 'commons/util/logger.dart';
@@ -38,7 +37,6 @@ import 'commons/util/router_manager.dart';
 import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
-import 'commons/widgets/wpy_pic.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/post.dart';
 import 'gpa/model/gpa_notifier.dart';
@@ -57,13 +55,13 @@ void main() async {
 
     /// 初始化环境变量
     EnvConfig.init();
-    StorageUtil.init();
+    await StorageUtil.init();
 
     /// 高刷
-    try {
-      if (Platform.isAndroid) await FlutterDisplayMode.setHighRefreshRate();
-    } catch (e) {
-      print('[INFO]: This device isn\'t support high refresh rate');
+    if (Platform.isAndroid) {
+      unawaited(FlutterDisplayMode.setHighRefreshRate().catchError((_) {
+        print('[INFO]: This device isn\'t support high refresh rate');
+      }));
     }
 
     /// 设置桌面端窗口适配, 依赖为 window_manager
@@ -83,14 +81,11 @@ void main() async {
       });
     }
 
-    /// 清空图片缓存
-    await WpyPic.clearAllCache();
-
     /// 初始化sharedPreference
     await CommonPreferences.init();
 
     /// 初始化Connectivity
-    await NetStatusListener.init();
+    NetStatusListener.init();
 
     /// 初始化高德API 暂时干掉 之后重新启用
     // await AmapLocation.instance.updatePrivacyAgree(true);
@@ -98,22 +93,7 @@ void main() async {
     // await AmapLocation.instance
     //     .init(iosKey: '02b9aee6190b4afe20b0ddd7ec0eb374');
 
-    /// 设置桌面端窗口适配, 依赖为 window_manager
-    if (Platform.isWindows) {
-      await windowManager.ensureInitialized();
-
-      WindowOptions windowOptions = WindowOptions(
-        minimumSize: Size(640, 400),
-        center: true,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.normal,
-      );
-      windowManager.waitUntilReadyToShow(windowOptions, () async {
-        await windowManager.show();
-        await windowManager.focus();
-      });
-    }
+    WpyTheme.init();
 
     /// 设置哪天微北洋全部变灰
     var now = DateTime.now().toLocal();
@@ -136,8 +116,6 @@ void main() async {
     } else {
       runApp(_entry);
     }
-
-    WpyTheme.init();
 
     /// 设置沉浸式状态栏
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
@@ -171,6 +149,15 @@ void main() async {
 
 String _shortcutActionType = "";
 String _shortcutResumeActionType = "";
+
+String? _routeForShortcutAction(String actionType) {
+  return switch (actionType) {
+    "com.twt.service.courses" => ScheduleRouter.course,
+    "com.twt.service.qr" => HomeRouter.casQR,
+    _ => null,
+  };
+}
+
 //iOS快捷操作
 Future<void> _listenForShortcutActions() async {
   const methodChannel = MethodChannel('com.twt.service/shortcutItem');
@@ -268,12 +255,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _listenForShortcutActions();
-      if (_shortcutResumeActionType == "com.twt.service.courses") {
-        WePeiYangApp.navigatorState.currentState
-            ?.pushNamed(ScheduleRouter.course);
-        _shortcutResumeActionType = "";
-      } else if (_shortcutResumeActionType == "com.twt.service.qr") {
-        WePeiYangApp.navigatorState.currentState?.pushNamed(HomeRouter.casQR);
+      final shortcutRoute = _routeForShortcutAction(_shortcutResumeActionType);
+      if (shortcutRoute != null) {
+        WePeiYangApp.navigatorState.currentState?.pushNamed(shortcutRoute);
         _shortcutResumeActionType = "";
       }
       checkEventList();
@@ -341,7 +325,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RemoteConfig()),
+        ChangeNotifierProvider(
+            create: (_) => RemoteConfig()..getRemoteConfig()),
         ChangeNotifierProvider(create: (_) => GPANotifier()),
         ChangeNotifierProvider(create: (_) => PushManager()),
         ChangeNotifierProvider(create: (_) => UpdateManager()),
@@ -371,9 +356,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ),
       ],
       child: Builder(builder: (context) {
-        // 获取友盟在线参数
-        context.read<RemoteConfig>().getRemoteConfig();
-
         //TODO:每年春节都判断一次
         // if(!CommonPreferences.happenSpring.value) {
         //   globalTheme.value = RedScheme();
@@ -531,11 +513,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _handleLaunchShortcut() {
-    final route = switch (_shortcutActionType) {
-      "com.twt.service.courses" => ScheduleRouter.course,
-      "com.twt.service.qr" => HomeRouter.casQR,
-      _ => null,
-    };
+    final route = _routeForShortcutAction(_shortcutActionType);
     if (route == null) return;
     _shortcutActionType = "";
     _shortcutResumeActionType = "";
@@ -546,17 +524,25 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _navigateHome() {
-    if (!mounted || _hasNavigated) return;
-    _hasNavigated = true;
-    Navigator.pushNamedAndRemoveUntil(
-        context, HomeRouter.home, (route) => false);
-    if (Platform.isIOS) _handleLaunchShortcut();
+    final didNavigate = _navigateOnce(
+      (navigator) =>
+          navigator.pushNamedAndRemoveUntil(HomeRouter.home, (route) => false),
+    );
+    if (didNavigate && Platform.isIOS) _handleLaunchShortcut();
   }
 
   void _navigateLogin() {
-    if (!mounted || _hasNavigated) return;
+    _navigateOnce(
+        (navigator) => navigator.pushReplacementNamed(AuthRouter.login));
+  }
+
+  bool _navigateOnce(void Function(NavigatorState navigator) navigate) {
+    if (!mounted || _hasNavigated) return false;
+    final navigator = WePeiYangApp.navigatorState.currentState;
+    if (navigator == null) return false;
     _hasNavigated = true;
-    Navigator.pushReplacementNamed(context, AuthRouter.login);
+    navigate(navigator);
+    return true;
   }
 
   Future<void> _appInitProcess() async {

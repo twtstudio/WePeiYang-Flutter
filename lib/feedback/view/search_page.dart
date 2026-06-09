@@ -21,62 +21,89 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late final ValueNotifier<List<String>> _searchHistoryList;
-  late final SharedPreferences _prefs;
+  SharedPreferences? _prefs;
+  bool _historyChangedBeforePrefs = false;
 
   _addHistory() {
-    _prefs.setStringList('feedback_search_history', _searchHistoryList.value);
+    final prefs = _prefs;
+    if (prefs == null) {
+      _historyChangedBeforePrefs = true;
+      return;
+    }
+    prefs.setStringList('feedback_search_history', _searchHistoryList.value);
   }
 
   @override
   void initState() {
-    _searchHistoryList = ValueNotifier([])
-      ..addListener(() {
-        _addHistory();
-      });
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _prefs = await SharedPreferences.getInstance();
-      if (_prefs.getStringList('feedback_search_history') == null) {
-        _addHistory();
-      } else {
-        _searchHistoryList.value =
-            _prefs.getStringList('feedback_search_history')!;
-      }
-    });
     super.initState();
+    _searchHistoryList = ValueNotifier([])..addListener(_addHistory);
+    _initPrefs();
+  }
+
+  Future<void> _initPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    _prefs = prefs;
+    if (_historyChangedBeforePrefs) {
+      _addHistory();
+      return;
+    }
+    final history = prefs.getStringList('feedback_search_history');
+    if (history == null) {
+      _addHistory();
+    } else {
+      _searchHistoryList.value = history;
+    }
+  }
+
+  int? _postIdFromKeyword(String keyword) {
+    if (!keyword.startsWith('#MP')) return null;
+    return int.tryParse(keyword.substring(3));
+  }
+
+  void _openKeyword(String keyword, {required bool fromHistory}) {
+    final postId = _postIdFromKeyword(keyword);
+    if (postId != null) {
+      FeedbackService.getPostById(
+        id: postId,
+        onResult: (post) {
+          if (!fromHistory) _searchHistoryList.unequalAdd(keyword);
+          if (!mounted) return;
+          Navigator.popAndPushNamed(
+            context,
+            FeedbackRouter.detail,
+            arguments: post,
+          );
+        },
+        onFailure: (e) {
+          ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
+        },
+      );
+      return;
+    }
+
+    if (!fromHistory) _searchHistoryList.unequalAdd(keyword);
+    Navigator.pushNamed(
+      context,
+      FeedbackRouter.searchResult,
+      arguments: SearchResultPageArgs(keyword, '', '', '搜索结果', 0, 0),
+    ).then((_) {
+      if (mounted) Navigator.pop(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchHistoryList.removeListener(_addHistory);
+    _searchHistoryList.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var searchBar = wpySearchBar.SearchBar(
       onSubmitted: (text) {
-        if (text.startsWith('#MP') &&
-            RegExp(r'^-?[0-9]+').hasMatch(text.substring(3))) {
-          FeedbackService.getPostById(
-            id: int.parse(text.substring(3)),
-            onResult: (post) {
-              _searchHistoryList.unequalAdd(text);
-              Navigator.popAndPushNamed(
-                context,
-                FeedbackRouter.detail,
-                arguments: post,
-              );
-            },
-            onFailure: (e) {
-              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
-            },
-          );
-          return;
-        } else {
-          _searchHistoryList.unequalAdd(text);
-          Navigator.pushNamed(
-            context,
-            FeedbackRouter.searchResult,
-            arguments: SearchResultPageArgs(text, '', '', '搜索结果', 0, 0),
-          ).then((_) {
-            Navigator.pop(context);
-          });
-        }
+        _openKeyword(text, fromHistory: false);
       },
     );
 
@@ -149,31 +176,7 @@ class _SearchPageState extends State<SearchPage> {
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () {
-                if (searchArgument.keyword.startsWith('#MP') &&
-                    RegExp(r'^-?[0-9]+')
-                        .hasMatch(searchArgument.keyword.substring(3))) {
-                  FeedbackService.getPostById(
-                    id: int.parse(searchArgument.keyword.substring(3)),
-                    onResult: (post) {
-                      Navigator.popAndPushNamed(
-                        context,
-                        FeedbackRouter.detail,
-                        arguments: post,
-                      );
-                    },
-                    onFailure: (e) {
-                      ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
-                    },
-                  );
-                  return;
-                }
-                Navigator.pushNamed(
-                  context,
-                  FeedbackRouter.searchResult,
-                  arguments: searchArgument,
-                ).then((_) {
-                  Navigator.pop(context);
-                });
+                _openKeyword(searchArgument.keyword, fromHistory: true);
               },
               child: Chip(
                 shadowColor: WpyTheme.of(context)
@@ -204,7 +207,7 @@ class _SearchPageState extends State<SearchPage> {
                   setState(() {
                     list.removeAt(list.length - index - 1);
                   });
-                  _prefs.setStringList('feedback_search_history', list);
+                  _prefs?.setStringList('feedback_search_history', list);
                   ToastProvider.success("删除成功");
                 },
               ),

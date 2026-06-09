@@ -102,6 +102,48 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text('底栏显示小天老师', style: mainTextStyle),
+                          SizedBox(height: 3.h),
+                          Text('默认开启', style: hintTextStyle)
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: CommonPreferences.showXiaotianTab.value,
+                      onChanged: (value) {
+                        setState(() {
+                          CommonPreferences.showXiaotianTab.value = value;
+                          CommonPreferences.showXiaotianTabNotifier.value =
+                              value;
+                        });
+                      },
+                      activeColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      inactiveThumbColor:
+                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                      activeTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                      inactiveTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text('主页显示校园地图和校历', style: mainTextStyle),
                           SizedBox(height: 3.h),
                           Text('默认关闭', style: hintTextStyle)

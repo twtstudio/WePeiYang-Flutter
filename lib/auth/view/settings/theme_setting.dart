@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
+import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/schedule_background.dart';
@@ -26,6 +28,9 @@ class _ThemeSettingState extends State<ThemeSetting>
   late WpyThemeData shiftTheme;
   bool canMove = true;
   static const _channel = MethodChannel('icon_switch');
+  static final _appIconThemes = WpyThemeData.brightThemeList;
+
+  bool get _canSwitchAppIcon => defaultTargetPlatform == TargetPlatform.android;
 
   static Future<void> switchIcon(String alias) async {
     await _channel.invokeMethod('switchIcon', {
@@ -33,9 +38,78 @@ class _ThemeSettingState extends State<ThemeSetting>
     });
   }
 
+  static Future<String?> getCurrentIcon() async {
+    return _channel.invokeMethod<String>('getCurrentIcon');
+  }
+
+  static Future<void> restartApp() async {
+    await _channel.invokeMethod('restartApp');
+  }
+
+  Future<void> _selectAppIcon(WpyThemeData theme) async {
+    if (!_canSwitchAppIcon) return;
+
+    final alias = theme.meta.address;
+    if (alias == CommonPreferences.appIconAlias.value) return;
+
+    await _showRestartDialog(alias);
+  }
+
+  Future<void> _loadCurrentAppIcon() async {
+    if (!_canSwitchAppIcon) return;
+
+    try {
+      final alias = await getCurrentIcon();
+      if (!mounted || alias == null || alias.isEmpty) return;
+      setState(() => CommonPreferences.appIconAlias.value = alias);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _showRestartDialog(String alias) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return LakeDialogWidget(
+          title: '重启应用',
+          titleTextStyle:
+              TextUtil.base.normal.infoText(context).NotoSansSC.sp(22).w600,
+          content: Text(
+            '应用图标需要重启后才会完成切换，是否现在重启？',
+            style: TextStyle(
+              color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+            ),
+          ),
+          cancelText: '稍后',
+          cancelTextStyle:
+              TextUtil.base.normal.label(context).NotoSansSC.sp(16).w400,
+          cancelFun: () => Navigator.pop(context),
+          confirmText: '立即重启',
+          confirmTextStyle:
+              TextUtil.base.normal.bright(context).NotoSansSC.sp(16).w600,
+          confirmButtonColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor),
+          confirmFun: () async {
+            try {
+              await switchIcon(alias);
+              CommonPreferences.appIconAlias.value = alias;
+              await restartApp();
+            } catch (e) {
+              if (context.mounted) Navigator.pop(context);
+              ToastProvider.error('请手动重启应用');
+              print(e);
+            }
+          },
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadCurrentAppIcon();
   }
 
   shift() {
@@ -86,16 +160,6 @@ class _ThemeSettingState extends State<ThemeSetting>
               CommonPreferences.usingDarkTheme.value = 0;
               CommonPreferences.appThemeId.value = theme.meta.themeId;
               print(theme.meta.address);
-              if(CommonPreferences.autoAppWithTheme.value) {
-                try {
-                  await switchIcon(theme.meta.address);
-                }
-                catch (e) {
-                  ToastProvider.error('貌似切换失败了捏');
-                  print(e);
-                }
-              }
-
             },
             child: WpyThemeCard(
               name: theme.meta.name,
@@ -448,37 +512,48 @@ class _ThemeSettingState extends State<ThemeSetting>
       ),
     );
 
-    Widget autoAppWithThemeSelect = Container(
-      padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+    Widget appIconSelect = Container(
+      padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 16.h),
       margin: EdgeInsets.only(top: 3.h),
       decoration: BoxDecoration(
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('应用图标颜色跟随主题变动(仅安卓)'), SizedBox(height: 3.h), Text('切换后请稍等片刻')],
-            ),
+          Text(
+            '应用图标',
+            style: TextUtil.base.w600.sp(15),
           ),
-          Switch(
-            value: CommonPreferences.autoAppWithTheme.value,
-            onChanged: (value) {
-              setState(() {
-                CommonPreferences.autoAppWithTheme.value = value;
-              });
-            },
-            activeColor:
-            WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-            inactiveThumbColor:
-            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-            activeTrackColor:
-            WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-            inactiveTrackColor:
-            WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          SizedBox(height: 3.h),
+          Text(
+            '切换后请稍等片刻',
+            style: TextUtil.base.sp(12).copyWith(
+                color: WpyTheme.of(context).get(WpyColorKey.oldHintColor)),
+          ),
+          SizedBox(height: 12.h),
+          GridView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              childAspectRatio: 0.78,
+              crossAxisSpacing: 10.w,
+              mainAxisSpacing: 12.h,
+            ),
+            children: [
+              for (final theme in _appIconThemes)
+                GestureDetector(
+                  onTap: () => _selectAppIcon(theme),
+                  child: AppIconChoiceCard(
+                    name: theme.meta.name,
+                    assetPath: _appIconAssetPath(theme.meta.address),
+                    selected: CommonPreferences.appIconAlias.value ==
+                        theme.meta.address,
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -505,9 +580,103 @@ class _ThemeSettingState extends State<ThemeSetting>
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: ListView(
-          children: [layout, autoDarkThemeSelect,autoAppWithThemeSelect, gridView],
+          children: [
+            layout,
+            autoDarkThemeSelect,
+            gridView,
+            if (_canSwitchAppIcon) appIconSelect,
+          ],
         ));
   }
+}
+
+class AppIconChoiceCard extends StatelessWidget {
+  const AppIconChoiceCard({
+    super.key,
+    required this.name,
+    required this.assetPath,
+    this.selected = false,
+  });
+
+  final String name;
+  final String assetPath;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = selected
+        ? WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor)
+        : WpyTheme.of(context).get(WpyColorKey.oldHintColor).withOpacity(0.25);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: borderColor, width: selected ? 2 : 1),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 42.w,
+                height: 42.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Center(
+                  child: Image.asset(
+                    assetPath,
+                    width: 42.w,
+                    height: 42.w,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              if (selected)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Icon(
+                    Icons.check_circle,
+                    color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
+                    size: 16.w,
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 7.h),
+          Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextUtil.base.sp(12),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+String _appIconAssetPath(String alias) {
+  return switch (alias) {
+    'com.twt.service.ICONCyan' =>
+      'assets/images/app_icons/ic_launcher_cyan.png',
+    'com.twt.service.ICONGold' =>
+      'assets/images/app_icons/ic_launcher_gold.png',
+    'com.twt.service.ICONPink' =>
+      'assets/images/app_icons/ic_launcher_pink.png',
+    'com.twt.service.ICONPurple' =>
+      'assets/images/app_icons/ic_launcher_purple.png',
+    'com.twt.service.ICONRed' => 'assets/images/app_icons/ic_launcher_red.png',
+    'com.twt.service.ICONYellow' =>
+      'assets/images/app_icons/ic_launcher_yellow.png',
+    'com.twt.service.ICONSpring' =>
+      'assets/images/app_icons/ic_launcher_spring.png',
+    _ => 'assets/images/app_icons/ic_launcher.png',
+  };
 }
 
 class WpyThemeCard extends StatelessWidget {

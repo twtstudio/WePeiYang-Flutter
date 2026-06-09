@@ -157,6 +157,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/app_icons/
     - assets/images/ai/
     - assets/images/calender/
     - assets/images/school_map/

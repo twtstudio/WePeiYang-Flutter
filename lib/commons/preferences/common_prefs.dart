@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
@@ -14,6 +15,7 @@ class CommonPreferences {
   /// 初始化sharedPrefs，在运行app前被调用
   static Future<void> init() async {
     sharedPref = await SharedPreferences.getInstance();
+    showXiaotianTabNotifier.value = showXiaotianTab.value;
   }
 
   /// 天外天账号系统
@@ -104,6 +106,8 @@ class CommonPreferences {
   static final hideGPA = PrefsBean<bool>('hideGPA', true); // 首页不显示GPA
   static final hideExam = PrefsBean<bool>('hideExam'); // 首页不显示考表
   static final showMap = PrefsBean<bool>('showMap', false); // 首页不显示考表
+  static final showXiaotianTab = PrefsBean<bool>('showXiaotianTab', true);
+  static final showXiaotianTabNotifier = ValueNotifier<bool>(true);
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）
@@ -117,8 +121,9 @@ class CommonPreferences {
   /// 深色模式跟随系统
   static final autoDarkTheme = PrefsBean<bool>('notFollowSys', true);
 
-  /// 应用图标跟随主题
-  static final autoAppWithTheme = PrefsBean<bool>('notFollowTheme', true);
+  /// Android 应用图标
+  static final appIconAlias =
+      PrefsBean<String>('appIconAlias', 'com.twt.service.ICONBlue');
 
   static final happenSpring = PrefsBean<bool>('happenSpring', false);
 

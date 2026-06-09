@@ -5,15 +5,16 @@ abstract class TokenManagerAbstract {
     try {
       if (token == "") return false;
 
-      String payloadString = token.split('.')[1];
-      final payload = json.decode(utf8.decode(base64.decode(payloadString)));
-      int exp = payload['exp'];
-      if (DateTime.fromMillisecondsSinceEpoch(exp * 1000).isAfter(
-        DateTime.now().subtract(Duration(minutes: 5)),
-      ))
-        return true;
-      else
-        return false;
+      final segments = token.split('.');
+      if (segments.length != 3) return false;
+
+      final payloadString = base64Url.normalize(segments[1]);
+      final payload = json.decode(utf8.decode(base64Url.decode(payloadString)));
+      final exp = payload['exp'];
+      if (exp is! int) return false;
+
+      final expiresAt = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      return expiresAt.isAfter(DateTime.now().subtract(Duration(minutes: 5)));
     } catch (e) {
       print(e);
       return false;

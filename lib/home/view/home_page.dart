@@ -17,8 +17,6 @@ import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/xiaotian/view/page/xiaotian_page.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 
 import '../../auth/view/user/account_upgrade_dialog.dart';
 import '../../commons/themes/wpy_theme.dart';
@@ -33,33 +31,40 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+enum _HomeTabId { home, feedback, ai, profile }
+
+class _HomeTabItem {
+  const _HomeTabItem({
+    required this.id,
+    required this.page,
+    required this.activeIcon,
+    required this.inactiveIcon,
+    required this.iconWidth,
+  });
+
+  final _HomeTabId id;
+  final Widget page;
+  final String activeIcon;
+  final String inactiveIcon;
+  final double iconWidth;
+}
+
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   /// bottomNavigationBar对应的分页
-  List<Widget> pages = [];
+  late List<_HomeTabItem> _tabs;
   int _currentIndex = 0;
   DateTime? _lastPressedAt;
-  late final TabController _tabController;
+  late TabController _tabController;
   final feedbackKey = GlobalKey<FeedbackHomePageState>();
 
   @override
   void initState() {
     super.initState();
-    pages
-      ..add(WPYPage())
-      ..add(FeedbackHomePage(key: feedbackKey))
-      ..add(AiPage())
-      ..add(ProfilePage());
-    _tabController = TabController(
-      length: pages.length,
-      vsync: this,
-      initialIndex: 0,
-    )..addListener(() {
-        if (_tabController.index != _tabController.previousIndex) {
-          setState(() {
-            _currentIndex = _tabController.index;
-          });
-        }
-      });
+    _tabs = _buildTabs();
+    _currentIndex = _indexForLegacyPage(widget.page);
+    _tabController = _createTabController(_currentIndex);
+    CommonPreferences.showXiaotianTabNotifier
+        .addListener(_handleXiaotianTabVisibilityChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<PushManager>().initGeTuiSdk();
 
@@ -94,9 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 刷新自习室数据
       context.read<CampusProvider>().init();
     });
-    if (widget.page != null) {
-      _tabController.animateTo(widget.page!);
-    }
+    if (widget.page != null) _tabController.animateTo(_currentIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (CommonPreferences.accountUpgrade.value.isNotEmpty) {
         showDialog(
@@ -108,117 +111,95 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  List<_HomeTabItem> _buildTabs() {
+    return [
+      _HomeTabItem(
+        id: _HomeTabId.home,
+        page: WPYPage(),
+        activeIcon: 'assets/images/home.png',
+        inactiveIcon: 'assets/images/home_grey.png',
+        iconWidth: 24,
+      ),
+      _HomeTabItem(
+        id: _HomeTabId.feedback,
+        page: FeedbackHomePage(key: feedbackKey),
+        activeIcon: 'assets/images/lake.png',
+        inactiveIcon: 'assets/images/lake_grey.png',
+        iconWidth: 29,
+      ),
+      if (CommonPreferences.showXiaotianTab.value)
+        _HomeTabItem(
+          id: _HomeTabId.ai,
+          page: AiPage(),
+          activeIcon: 'assets/images/ai.png',
+          inactiveIcon: 'assets/images/ai_grey.png',
+          iconWidth: 24,
+        ),
+      _HomeTabItem(
+        id: _HomeTabId.profile,
+        page: ProfilePage(),
+        activeIcon: 'assets/images/my.png',
+        inactiveIcon: 'assets/images/my_grey.png',
+        iconWidth: 24,
+      ),
+    ];
+  }
+
+  TabController _createTabController(int initialIndex) {
+    late final TabController controller;
+    controller = TabController(
+      length: _tabs.length,
+      vsync: this,
+      initialIndex: initialIndex.clamp(0, _tabs.length - 1),
+    )..addListener(() {
+        if (controller.index != controller.previousIndex && mounted) {
+          setState(() {
+            _currentIndex = controller.index;
+          });
+        }
+      });
+    return controller;
+  }
+
+  int _indexForLegacyPage(int? page) {
+    final id = switch (page) {
+      1 => _HomeTabId.feedback,
+      2 => _HomeTabId.ai,
+      3 => _HomeTabId.profile,
+      _ => _HomeTabId.home,
+    };
+    return _indexForTabId(id);
+  }
+
+  int _indexForTabId(_HomeTabId id) {
+    final index = _tabs.indexWhere((tab) => tab.id == id);
+    return index == -1 ? 0 : index;
+  }
+
+  void _handleXiaotianTabVisibilityChanged() {
+    final currentTab = _tabs[_currentIndex.clamp(0, _tabs.length - 1)].id;
+    final oldController = _tabController;
+
+    setState(() {
+      _tabs = _buildTabs();
+      _currentIndex = _indexForTabId(currentTab);
+      _tabController = _createTabController(_currentIndex);
+    });
+
+    oldController.dispose();
+  }
+
+  @override
+  void dispose() {
+    CommonPreferences.showXiaotianTabNotifier
+        .removeListener(_handleXiaotianTabVisibilityChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
-    // 底部切换页面按钮
-    var homePage = SizedBox(
-      height: 70.h,
-
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: IconButton(
-          key: ValueKey(_currentIndex == 0),
-          splashRadius: 1,
-          icon: _currentIndex == 0
-              ? ColoredIcon(
-                  'assets/images/home.png',
-                  width: 24.h,
-                  color: WpyTheme.of(context).primary,
-                )
-              : ColoredIcon(
-                  'assets/images/home_grey.png',
-                  width: 24.h,
-                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon,)
-                ),
-          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(0),
-        ),
-      ),
-    );
-
-    var feedbackPage = SizedBox(
-      height: 70.h,
-
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: IconButton(
-          key: ValueKey(_currentIndex == 1),
-          splashRadius: 1,
-          icon: _currentIndex == 1
-              ? ColoredIcon(
-                  'assets/images/lake.png',
-                  width: 29.h,
-                  color: WpyTheme.of(context).primary,
-                )
-              : ColoredIcon(
-                  'assets/images/lake_grey.png',
-                  width: 29.h,
-                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-                ),
-          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () {
-            if (_currentIndex == 1) {
-              feedbackKey.currentState?.listToTop();
-              // 获取剪切板微口令
-              LakeUtil.getClipboardWeKoContents(context);
-            } else
-              _tabController.animateTo(1);
-          },
-        ),
-      ),
-    );
-
-    var aiPage = SizedBox(
-      height: 70.h,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: IconButton(
-          key: ValueKey(_currentIndex == 2),
-          splashRadius: 1,
-          icon: _currentIndex == 2
-              ? ColoredIcon(
-            'assets/images/ai.png',
-            width: 24.h,
-            color: WpyTheme.of(context).primary,
-          ) :
-          ColoredIcon(
-            'assets/images/ai_grey.png',
-            width: 24.h,
-            //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-          ),
-          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(2),
-        ),
-      ),
-    );
-
-    var selfPage = SizedBox(
-      height: 70.h,
-
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 300),
-        child: IconButton(
-          key: ValueKey(_currentIndex == 3),
-          splashRadius: 1,
-          icon: _currentIndex == 3
-              ? ColoredIcon(
-                  'assets/images/my.png',
-                  width: 24.h,
-                  color: WpyTheme.of(context).primary,
-                )
-              : ColoredIcon(
-                  'assets/images/my_grey.png',
-                  width: 24.h,
-                  //color: WpyTheme.of(context).get(WpyColorKey.unSelectedIcon),
-                ),
-          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () => _tabController.animateTo(3),
-        ),
-      ),
-    );
-
+    final currentTabId = _tabs[_currentIndex.clamp(0, _tabs.length - 1)].id;
     var bottomNavigationBar = Container(
       decoration: BoxDecoration(
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -234,16 +215,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         width: MediaQuery.of(context).size.width,
         child: SafeArea(
-
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[homePage, feedbackPage,aiPage, selfPage]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              for (var i = 0; i < _tabs.length; i++)
+                _buildBottomNavigationItem(_tabs[i], i),
+            ],
+          ),
         ),
       ),
     );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: (() {
-        if (_tabController.index == 1) {
+        if (currentTabId == _HomeTabId.feedback) {
           if (WpyTheme.of(context).brightness == Brightness.light)
             return SystemUiOverlayStyle.dark.copyWith(
                 systemNavigationBarColor: WpyTheme.of(context)
@@ -252,7 +237,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             return SystemUiOverlayStyle.light.copyWith(
                 systemNavigationBarColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor));
-        } else if (_tabController.index == 3) {
+        } else if (currentTabId == _HomeTabId.profile) {
           return SystemUiOverlayStyle.light.copyWith(
               systemNavigationBarColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor));
@@ -295,8 +280,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: TabBarView(
             controller: _tabController,
             physics: NeverScrollableScrollPhysics(), // 禁止用户手动滑动 Tab
-            children: pages, // 显示的页面
+            children: _tabs.map((tab) => tab.page).toList(growable: false),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationItem(_HomeTabItem tab, int index) {
+    final selected = _currentIndex == index;
+
+    return SizedBox(
+      height: 70.h,
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: IconButton(
+          key: ValueKey('${tab.id}-$selected'),
+          splashRadius: 1,
+          icon: ColoredIcon(
+            selected ? tab.activeIcon : tab.inactiveIcon,
+            width: tab.iconWidth.h,
+            color: selected ? WpyTheme.of(context).primary : null,
+          ),
+          color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          onPressed: () {
+            if (tab.id == _HomeTabId.feedback && selected) {
+              feedbackKey.currentState?.listToTop();
+              LakeUtil.getClipboardWeKoContents(context);
+              return;
+            }
+
+            _tabController.animateTo(index);
+          },
         ),
       ),
     );
