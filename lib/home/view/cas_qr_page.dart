@@ -132,6 +132,8 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
               width: 300,
               height: 300,
               child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 400),
+                switchInCurve: Curves.elasticOut,
                 transitionBuilder: (child, animation) {
                   return FadeTransition(
                     opacity: animation,
@@ -141,13 +143,14 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
                     ),
                   );
                 },
-                duration: Duration(milliseconds: 300),
                 child: qrContent == null
                     ? CircularProgressIndicator()
-                    : SfBarcodeGenerator(
+                    : RepaintBoundary(
                         key: ValueKey(qrContent),
-                        value: qrContent ?? '',
-                        symbology: QRCode(),
+                        child: SfBarcodeGenerator(
+                          value: qrContent ?? '',
+                          symbology: QRCode(),
+                        ),
                       ),
               ),
             ),
@@ -181,7 +184,9 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
 
     ToastProvider.running('正在刷新');
     final sid = CommonPreferences.userNumber.value;
-    qrContent = await CasService.getQRContent(sid);
+    if (mounted) setState(() => qrContent = null);
+    final content = await CasService.getQRContent(sid);
+    qrContent = content;
     lastRefresh = DateTime.now();
     if (mounted) setState(() {});
   }
