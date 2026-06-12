@@ -198,7 +198,7 @@ class _LostAndFoundSearchResultPageState
                     ),
                     onRefresh: _onRefresh,
                     onLoading: _onLoading,
-                    child: StaggeredGridView.countBuilder(
+                    child: MasonryGridView.count(
                       controller: _scrollController,
                       crossAxisCount: 2,
                       itemCount: postList.length,
@@ -333,8 +333,6 @@ class _LostAndFoundSearchResultPageState
                               ],
                             ),
                           )),
-                      staggeredTileBuilder: (int index) =>
-                          const StaggeredTile.fit(1),
                     ),
                   );
                 }),

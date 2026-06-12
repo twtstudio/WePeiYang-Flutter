@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reorderable_grid_view/entities/order_update_entity.dart';
+import 'package:flutter_reorderable_grid_view/entities/reorder_update_entity.dart';
 import 'package:flutter_reorderable_grid_view/widgets/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/auth/view/settings/edit_user_tool_bottom_sheet.dart';
@@ -310,7 +310,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                               crossAxisSpacing: 15.w,
                             ));
                       },
-                      onReorder: (List<OrderUpdateEntity> orderUpdateEntities) {
+                      onReorderPositions:
+                          (List<ReorderUpdateEntity> orderUpdateEntities) {
                         for (final orderUpdateEntity in orderUpdateEntities) {
                           final _displayTool =
                               order.removeAt(orderUpdateEntity.oldIndex);
