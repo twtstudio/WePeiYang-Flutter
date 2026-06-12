@@ -230,76 +230,83 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       children: [
         mainList,
         Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
-          return AnimatedSize(
-            clipBehavior: Clip.antiAlias,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOutSine,
-            child: Container(
-              margin: EdgeInsets.only(top: 4),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.iconAnimationStartColor),
-                        offset: Offset(0, -1),
-                        blurRadius: 2,
-                        spreadRadius: 3),
-                  ],
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.secondaryBackgroundColor)),
-              child: Column(
-                children: [
-                  Offstage(
-                      offstage: !value.inputFieldEnabled,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          inputField,
-                          SizedBox(height: 4),
-                          Row(
-                            children: [
-                              SizedBox(width: 4),
-                              Spacer(),
-                              checkButton,
-                              SizedBox(width: 16),
-                            ],
-                          ),
-                          SizedBox(height: 10)
-                        ],
-                      )),
-                  Offstage(
-                    offstage: value.inputFieldEnabled,
-                    child: WButton(
-                      onPressed: () {
-                        Provider.of<NewFloorProvider>(context, listen: false)
-                            .inputFieldOpenAndReplyTo(widget.floor[0].postId);
-                        FocusScope.of(context).requestFocus(
-                            Provider.of<NewFloorProvider>(context,
-                                    listen: false)
-                                .focusNode);
-                      },
-                      child: Container(
-                          height: 22,
-                          margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text('友善回复，真诚沟通',
-                                style: TextUtil.base.NotoSansSC.w500
-                                    .secondaryInfo(context)
-                                    .sp(12)),
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(11),
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.primaryBackgroundColor),
-                          )),
+          final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(context).bottom,
+            ),
+            child: AnimatedSize(
+              clipBehavior: Clip.antiAlias,
+              duration:
+                  keyboardVisible ? Duration.zero : Duration(milliseconds: 300),
+              curve: Curves.easeOutSine,
+              child: Container(
+                margin: EdgeInsets.only(top: 4),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.iconAnimationStartColor),
+                          offset: Offset(0, -1),
+                          blurRadius: 2,
+                          spreadRadius: 3),
+                    ],
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.secondaryBackgroundColor)),
+                child: Column(
+                  children: [
+                    Offstage(
+                        offstage: !value.inputFieldEnabled,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            inputField,
+                            SizedBox(height: 4),
+                            Row(
+                              children: [
+                                SizedBox(width: 4),
+                                Spacer(),
+                                checkButton,
+                                SizedBox(width: 16),
+                              ],
+                            ),
+                            SizedBox(height: 10)
+                          ],
+                        )),
+                    Offstage(
+                      offstage: value.inputFieldEnabled,
+                      child: WButton(
+                        onPressed: () {
+                          Provider.of<NewFloorProvider>(context, listen: false)
+                              .inputFieldOpenAndReplyTo(widget.floor[0].postId);
+                          FocusScope.of(context).requestFocus(
+                              Provider.of<NewFloorProvider>(context,
+                                      listen: false)
+                                  .focusNode);
+                        },
+                        child: Container(
+                            height: 22,
+                            margin: EdgeInsets.fromLTRB(16, 20, 16, 20),
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('友善回复，真诚沟通',
+                                  style: TextUtil.base.NotoSansSC.w500
+                                      .secondaryInfo(context)
+                                      .sp(12)),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11),
+                              color: WpyTheme.of(context)
+                                  .get(WpyColorKey.primaryBackgroundColor),
+                            )),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -377,6 +384,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
       //   return true;
       // },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         appBar: appBar,

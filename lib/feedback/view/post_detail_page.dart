@@ -24,6 +24,7 @@ import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -513,18 +514,13 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
         enablePullUp: true,
         onLoading: _onLoading,
-        child: ListenableBuilder(
-            listenable: screenshotting,
-            builder: (context, _) {
-              if (screenshotting.value)
-                return Screenshot(
-                    child: Container(
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.primaryBackgroundColor),
-                        child: contentList),
-                    controller: selectedScreenshotController);
-              return contentList;
-            }),
+        child: screenshotting.value
+            ? Screenshot(
+                child: Container(
+                    color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                    child: contentList),
+                controller: selectedScreenshotController)
+            : contentList,
       ),
       onNotification: (ScrollNotification scrollInfo) =>
           _onScrollNotification(scrollInfo),
@@ -593,6 +589,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       titleSpacing: 0,
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      surfaceTintColor: Colors.transparent,
       leading: IconButton(
         icon: Icon(
           (widget.split ?? false) ? Icons.clear : Icons.arrow_back,
@@ -642,6 +639,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                         : MediaQuery.of(context).padding.top)
                 : EdgeInsets.zero,
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               appBar: appBar,
@@ -1058,230 +1056,249 @@ class _PostDetailPageState extends State<PostDetailPage>
         children: [
           Spacer(),
           Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
-            return AnimatedSize(
-              clipBehavior: Clip.antiAlias,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOutSine,
-              child: Container(
-                margin: EdgeInsets.only(top: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24.r),
-                    topRight: Radius.circular(24.r),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: WpyTheme.of(context)
-                          .get(WpyColorKey.iconAnimationStartColor),
-                      offset: Offset(0, 1),
-                      blurRadius: 6,
-                      spreadRadius: 0,
+            final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(context).bottom,
+              ),
+              child: AnimatedSize(
+                clipBehavior: Clip.antiAlias,
+                duration: keyboardVisible
+                    ? Duration.zero
+                    : Duration(milliseconds: 300),
+                curve: Curves.easeOutSine,
+                child: Container(
+                  margin: EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.r),
+                      topRight: Radius.circular(24.r),
                     ),
-                  ],
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Offstage(
-                                offstage: !value.inputFieldEnabled,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CommentInputField(
-                                        postId: widget.post.id, key: launchKey),
-                                    ImageSelectAndView(key: imageSelectionKey),
-                                    SizedBox(height: SplitUtil.h * 4),
-                                    Row(
-                                      children: [
-                                        SizedBox(width: SplitUtil.h * 4),
-                                        if (value.images.isEmpty)
+                    boxShadow: [
+                      BoxShadow(
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.iconAnimationStartColor),
+                        offset: Offset(0, 1),
+                        blurRadius: 6,
+                        spreadRadius: 0,
+                      ),
+                    ],
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Offstage(
+                                  offstage: !value.inputFieldEnabled,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      CommentInputField(
+                                          postId: widget.post.id,
+                                          key: launchKey),
+                                      ImageSelectAndView(
+                                          key: imageSelectionKey),
+                                      SizedBox(height: SplitUtil.h * 4),
+                                      Row(
+                                        children: [
+                                          SizedBox(width: SplitUtil.h * 4),
+                                          if (value.images.isEmpty)
+                                            IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/lake_butt_icons/image.png',
+                                                width: SplitUtil.w * 24,
+                                                height: SplitUtil.w * 24,
+                                                color: WpyTheme.of(context).get(
+                                                    WpyColorKey.basicTextColor),
+                                              ),
+                                              onPressed: () => imageSelectionKey
+                                                  .currentState
+                                                  ?.loadAssets(),
+                                            ),
+                                          if (value.images.isEmpty)
+                                            IconButton(
+                                              icon: Image.asset(
+                                                'assets/images/lake_butt_icons/camera.png',
+                                                width: SplitUtil.w * 24,
+                                                height: SplitUtil.w * 24,
+                                                color: WpyTheme.of(context).get(
+                                                    WpyColorKey.basicTextColor),
+                                              ),
+                                              onPressed: () => imageSelectionKey
+                                                  .currentState
+                                                  ?.shotPic(),
+                                            ),
                                           IconButton(
                                             icon: Image.asset(
-                                              'assets/images/lake_butt_icons/image.png',
+                                              'assets/images/lake_butt_icons/paste.png',
                                               width: SplitUtil.w * 24,
                                               height: SplitUtil.w * 24,
                                               color: WpyTheme.of(context).get(
                                                   WpyColorKey.basicTextColor),
                                             ),
-                                            onPressed: () => imageSelectionKey
+                                            onPressed: () => launchKey
                                                 .currentState
-                                                ?.loadAssets(),
+                                                ?.getClipboardData(),
                                           ),
-                                        if (value.images.isEmpty)
-                                          IconButton(
-                                            icon: Image.asset(
-                                              'assets/images/lake_butt_icons/camera.png',
-                                              width: SplitUtil.w * 24,
-                                              height: SplitUtil.w * 24,
-                                              color: WpyTheme.of(context).get(
-                                                  WpyColorKey.basicTextColor),
-                                            ),
-                                            onPressed: () => imageSelectionKey
-                                                .currentState
-                                                ?.shotPic(),
-                                          ),
-                                        IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/lake_butt_icons/paste.png',
-                                            width: SplitUtil.w * 24,
-                                            height: SplitUtil.w * 24,
-                                            color: WpyTheme.of(context).get(
-                                                WpyColorKey.basicTextColor),
-                                          ),
-                                          onPressed: () => launchKey
-                                              .currentState
-                                              ?.getClipboardData(),
-                                        ),
-                                        // 录音按钮
-                                        // 使用 ListenableBuilder 监听 controller 状态变化来刷新按钮样式
-                                        ListenableBuilder(
-                                          listenable: _recordController,
-                                          builder: (context, child) {
-                                            bool isProcessing =
-                                                _recordController.state ==
-                                                    RecordState.processing;
-                                            bool isRecording =
-                                                _recordController.isRecording;
-                                            return WButton(
-                                              onPressed: isProcessing
-                                                  ? null
-                                                  : _toggleRecording,
-                                              child: isProcessing
-                                                  ? SizedBox(
-                                                      width: 24.r,
-                                                      height: 24.r,
-                                                      child: CircularProgressIndicator(
-                                                          strokeWidth: 2,
-                                                          color: WpyTheme.of(
-                                                                  context)
-                                                              .get(WpyColorKey
-                                                                  .primaryActionColor)),
-                                                    )
-                                                  : Icon(
-                                                      isRecording
-                                                          ? Icons.mic_rounded
-                                                          : Icons
-                                                              .mic_none, // todo 这里可以换成的 SVG 图片
-                                                      size: 24.r,
-                                                      // 录音时变色
-                                                      color: isRecording
-                                                          ? Colors.red
-                                                          : WpyTheme.of(context)
-                                                              .get(WpyColorKey
-                                                                  .labelTextColor),
-                                                      shadows: isRecording
-                                                          ? [
-                                                              Shadow(
-                                                                color: Colors
-                                                                    .red
-                                                                    .withValues(
-                                                                        alpha:
-                                                                            0.5),
-                                                                blurRadius: 3,
-                                                                offset: Offset(
-                                                                    2, 2),
-                                                              )
-                                                            ]
-                                                          : null,
-                                                    ),
-                                            );
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Image.asset(
-                                            'assets/images/lake_butt_icons/x.png',
-                                            width: SplitUtil.w * 24,
-                                            height: SplitUtil.w * 24,
-                                            color: WpyTheme.of(context).get(
-                                                WpyColorKey.basicTextColor),
-                                          ),
-                                          onPressed: () {
-                                            if (launchKey
-                                                .currentState!
-                                                .textEditingController
-                                                .text
-                                                .isNotEmpty) {
-                                              launchKey.currentState!
-                                                  .textEditingController
-                                                  .clear();
-                                              launchKey.currentState?.setState(
-                                                () {
-                                                  launchKey.currentState
-                                                          ?.commentLengthIndicator =
-                                                      '清空成功';
-                                                },
+                                          // 录音按钮
+                                          // 使用 ListenableBuilder 监听 controller 状态变化来刷新按钮样式
+                                          ListenableBuilder(
+                                            listenable: _recordController,
+                                            builder: (context, child) {
+                                              bool isProcessing =
+                                                  _recordController.state ==
+                                                      RecordState.processing;
+                                              bool isRecording =
+                                                  _recordController.isRecording;
+                                              return WButton(
+                                                onPressed: isProcessing
+                                                    ? null
+                                                    : _toggleRecording,
+                                                child: isProcessing
+                                                    ? SizedBox(
+                                                        width: 24.r,
+                                                        height: 24.r,
+                                                        child: CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                            color: WpyTheme.of(
+                                                                    context)
+                                                                .get(WpyColorKey
+                                                                    .primaryActionColor)),
+                                                      )
+                                                    : Icon(
+                                                        isRecording
+                                                            ? Icons.mic_rounded
+                                                            : Icons
+                                                                .mic_none, // todo 这里可以换成的 SVG 图片
+                                                        size: 24.r,
+                                                        // 录音时变色
+                                                        color: isRecording
+                                                            ? Colors.red
+                                                            : WpyTheme.of(
+                                                                    context)
+                                                                .get(WpyColorKey
+                                                                    .labelTextColor),
+                                                        shadows: isRecording
+                                                            ? [
+                                                                Shadow(
+                                                                  color: Colors
+                                                                      .red
+                                                                      .withValues(
+                                                                          alpha:
+                                                                              0.5),
+                                                                  blurRadius: 3,
+                                                                  offset:
+                                                                      Offset(
+                                                                          2, 2),
+                                                                )
+                                                              ]
+                                                            : null,
+                                                      ),
                                               );
-                                            } else {
-                                              value.clearAndClose();
-                                            }
-                                          },
-                                        ),
-                                        Spacer(),
-                                        checkButton,
-                                        SizedBox(width: SplitUtil.w * 16),
-                                      ],
-                                    ),
-                                    SizedBox(height: SplitUtil.h * 10),
-                                  ],
-                                ),
-                              ),
-                              Offstage(
-                                offstage: value.inputFieldEnabled,
-                                child: InkWell(
-                                  onTap: () {
-                                    context
-                                        .read<NewFloorProvider>()
-                                        .inputFieldEnabled = true;
-                                    value.inputFieldOpenAndReplyTo(0);
-                                    FocusScope.of(context)
-                                        .requestFocus(value.focusNode);
-                                  },
-                                  child: Container(
-                                    height: SplitUtil.h * 36,
-                                    margin: EdgeInsets.fromLTRB(SplitUtil.w * 8,
-                                        SplitUtil.h * 13, 0, SplitUtil.h * 13),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: SplitUtil.w * 8),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: widget.post.type == 1
-                                          ? Text(
-                                              '校务帖子为实名发言!!!',
-                                              style: TextUtil
-                                                  .base.NotoSansSC.w500
-                                                  .dangerousRed(context)
-                                                  .sp(12),
-                                            )
-                                          : Text(
-                                              '友善回复，真诚沟通',
-                                              style: TextUtil
-                                                  .base.NotoSansSC.w500
-                                                  .secondaryInfo(context)
-                                                  .sp(12),
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/x.png',
+                                              width: SplitUtil.w * 24,
+                                              height: SplitUtil.w * 24,
+                                              color: WpyTheme.of(context).get(
+                                                  WpyColorKey.basicTextColor),
                                             ),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(18.r),
-                                      color: WpyTheme.of(context).get(
-                                          WpyColorKey.secondaryBackgroundColor),
+                                            onPressed: () {
+                                              if (launchKey
+                                                  .currentState!
+                                                  .textEditingController
+                                                  .text
+                                                  .isNotEmpty) {
+                                                launchKey.currentState!
+                                                    .textEditingController
+                                                    .clear();
+                                                launchKey.currentState
+                                                    ?.setState(
+                                                  () {
+                                                    launchKey.currentState
+                                                            ?.commentLengthIndicator =
+                                                        '清空成功';
+                                                  },
+                                                );
+                                              } else {
+                                                value.clearAndClose();
+                                              }
+                                            },
+                                          ),
+                                          Spacer(),
+                                          checkButton,
+                                          SizedBox(width: SplitUtil.w * 16),
+                                        ],
+                                      ),
+                                      SizedBox(height: SplitUtil.h * 10),
+                                    ],
+                                  ),
+                                ),
+                                Offstage(
+                                  offstage: value.inputFieldEnabled,
+                                  child: InkWell(
+                                    onTap: () {
+                                      context
+                                          .read<NewFloorProvider>()
+                                          .inputFieldEnabled = true;
+                                      value.inputFieldOpenAndReplyTo(0);
+                                      FocusScope.of(context)
+                                          .requestFocus(value.focusNode);
+                                    },
+                                    child: Container(
+                                      height: SplitUtil.h * 36,
+                                      margin: EdgeInsets.fromLTRB(
+                                          SplitUtil.w * 8,
+                                          SplitUtil.h * 13,
+                                          0,
+                                          SplitUtil.h * 13),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: SplitUtil.w * 8),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: widget.post.type == 1
+                                            ? Text(
+                                                '校务帖子为实名发言!!!',
+                                                style: TextUtil
+                                                    .base.NotoSansSC.w500
+                                                    .dangerousRed(context)
+                                                    .sp(12),
+                                              )
+                                            : Text(
+                                                '友善回复，真诚沟通',
+                                                style: TextUtil
+                                                    .base.NotoSansSC.w500
+                                                    .secondaryInfo(context)
+                                                    .sp(12),
+                                              ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(18.r),
+                                        color: WpyTheme.of(context).get(
+                                            WpyColorKey
+                                                .secondaryBackgroundColor),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        if (!value.inputFieldEnabled)
-                          BottomLikeFavDislike(widget.post),
-                      ],
-                    ),
-                  ],
+                          if (!value.inputFieldEnabled)
+                            BottomLikeFavDislike(widget.post),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -1351,7 +1368,7 @@ class CommentInputField extends StatefulWidget {
 }
 
 class CommentInputFieldState extends State<CommentInputField> {
-  var textEditingController = TextEditingController();
+  var textEditingController = MaskTextEditingController();
   FocusNode _commentFocus = FocusNode();
   String commentLengthIndicator = '0/200';
 
@@ -1359,6 +1376,21 @@ class CommentInputFieldState extends State<CommentInputField> {
   void dispose() {
     textEditingController.dispose();
     super.dispose();
+  }
+
+  /// 把选中的文字用 <mask></mask> 包起来，评论渲染时显示为马赛克
+  void _wrapWithMask() {
+    final sel = textEditingController.selection;
+    if (!sel.isValid || sel.isCollapsed) return;
+    final text = textEditingController.text;
+    final wrapped = '$kMaskOpenTag${sel.textInside(text)}$kMaskCloseTag';
+    final newText = text.replaceRange(sel.start, sel.end, wrapped);
+    textEditingController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
+    );
+    setState(() =>
+        commentLengthIndicator = '${newText.characters.length}/200');
   }
 
   void send(bool isOfficial) {
@@ -1430,6 +1462,27 @@ class CommentInputFieldState extends State<CommentInputField> {
         },
         minLines: 1,
         maxLines: 10,
+        contextMenuBuilder: (context, editableState) {
+          final items = List<ContextMenuButtonItem>.of(
+              editableState.contextMenuButtonItems);
+          final sel = textEditingController.selection;
+          if (sel.isValid && !sel.isCollapsed) {
+            items.insert(
+              0,
+              ContextMenuButtonItem(
+                label: '马赛克',
+                onPressed: () {
+                  ContextMenuController.removeAny();
+                  _wrapWithMask();
+                },
+              ),
+            );
+          }
+          return AdaptiveTextSelectionToolbar.buttonItems(
+            anchors: editableState.contextMenuAnchors,
+            buttonItems: items,
+          );
+        },
       );
     });
 

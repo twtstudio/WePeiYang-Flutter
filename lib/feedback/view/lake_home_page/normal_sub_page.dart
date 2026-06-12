@@ -210,6 +210,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         LakeUtil.tabList[currentTab].id == index;
     if (_isCurrentTab) {
       pageController.attachControllers(_scrollController, _refreshController);
+    } else {
+      pageController.detachControllers(_scrollController, _refreshController);
     }
   }
 

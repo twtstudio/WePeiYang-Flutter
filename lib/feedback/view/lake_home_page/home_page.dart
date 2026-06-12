@@ -84,26 +84,52 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   bool get wantKeepAlive => true;
 
-  void listToTop() async {
-    // 页面还没加载完成， 无法滚动到顶部
-    if (tabController == null) return;
-    final controller = LakeUtil.currentController.scrollController;
-    if (controller == null || !controller.hasClients) return;
+  LakePageController? _currentPageController() {
+    if (tabController == null || LakeUtil.tabList.isEmpty) return null;
 
-    // 如果距离太大，直接跳转到1500， 防止动画太夸张
-    if (controller.offset > 1500) {
-      controller.jumpTo(1500.toDouble());
+    final currentIndex =
+        tabController!.index.clamp(0, LakeUtil.tabList.length - 1).toInt();
+    LakeUtil.currentTab.value = currentIndex;
+
+    final currentTabId = LakeUtil.tabList[currentIndex].id;
+    return LakeUtil.lakePageControllers[currentTabId];
+  }
+
+  void listToTop({bool retryAfterFrame = true}) async {
+    final pageController = _currentPageController();
+    final scrollController = pageController?.scrollController;
+    final refreshController = pageController?.refreshController;
+
+    if (scrollController == null ||
+        refreshController == null ||
+        !scrollController.hasClients) {
+      if (retryAfterFrame && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) listToTop(retryAfterFrame: false);
+        });
+      }
+      return;
     }
 
-    await controller.animateTo(
-      -85.toDouble(),
-      duration: Duration(milliseconds: 400),
+    // 如果距离太大，直接跳转到1500， 防止动画太夸张
+    if (scrollController.offset > 1500) {
+      scrollController.jumpTo(1500.toDouble());
+    }
+
+    if (scrollController.offset > 0) {
+      await scrollController.animateTo(
+        0.toDouble(),
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOutCirc,
+      );
+    }
+
+    if (!mounted || !scrollController.hasClients) return;
+
+    refreshController.requestRefresh(
+      duration: Duration(milliseconds: 350),
       curve: Curves.easeOutCirc,
     );
-    Future.delayed(Duration(milliseconds: 400), () {
-      if (!controller.hasClients) return;
-      controller.jumpTo(0.toDouble());
-    });
   }
 
   TabController? tabController;
