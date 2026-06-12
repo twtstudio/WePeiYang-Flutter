@@ -13,6 +13,7 @@ import 'package:we_pei_yang_flutter/commons/util/logger.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/SpoilerMask.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -999,13 +1000,14 @@ class ContentInputField extends StatefulWidget {
 
 class _ContentInputFieldState extends State<ContentInputField> {
   late final ValueNotifier<String> contentCounter;
-  late final TextEditingController _contentController;
+  late final MaskTextEditingController _contentController;
 
   @override
   void initState() {
     super.initState();
     var dataModel = Provider.of<NewPostProvider>(context, listen: false);
-    _contentController = TextEditingController(text: dataModel.content);
+    _contentController =
+        MaskTextEditingController(text: dataModel.content, hideMasked: true);
     contentCounter =
         ValueNotifier('${dataModel.content.characters.length}/1000')
           ..addListener(() {
@@ -1019,15 +1021,32 @@ class _ContentInputFieldState extends State<ContentInputField> {
     super.dispose();
   }
 
+  /// 把选中的文字用 <mask></mask> 包起来，发帖渲染时显示为马赛克
+  void _wrapWithMask() {
+    final sel = _contentController.selection;
+    if (!sel.isValid || sel.isCollapsed) return;
+    final text = _contentController.text;
+    final wrapped =
+        '$kMaskOpenTag${sel.textInside(text)}$kMaskCloseTag';
+    final newText = text.replaceRange(sel.start, sel.end, wrapped);
+    _contentController.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
+    );
+    contentCounter.value = '${newText.characters.length}/1000';
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget inputField = TextField(
+    final contentStyle =
+        TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label(context);
+    Widget textField = TextField(
       controller: _contentController,
       keyboardType: TextInputType.multiline,
       textInputAction: TextInputAction.newline,
       minLines: 1,
       maxLines: 100,
-      style: TextUtil.base.NotoSansSC.w400.sp(16).h(1.4).label(context),
+      style: contentStyle,
       decoration: InputDecoration.collapsed(
         hintStyle: TextUtil.base.NotoSansSC.w500.sp(16).infoText(context),
         hintText: '请添加正文',
@@ -1040,6 +1059,42 @@ class _ContentInputFieldState extends State<ContentInputField> {
         CustomizedLengthTextInputFormatter(1000),
       ],
       cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor),
+      contextMenuBuilder: (context, editableState) {
+        final items =
+            List<ContextMenuButtonItem>.of(editableState.contextMenuButtonItems);
+        final sel = _contentController.selection;
+        if (sel.isValid && !sel.isCollapsed) {
+          items.insert(
+            0,
+            ContextMenuButtonItem(
+              label: '马赛克',
+              onPressed: () {
+                ContextMenuController.removeAny();
+                _wrapWithMask();
+              },
+            ),
+          );
+        }
+        return AdaptiveTextSelectionToolbar.buttonItems(
+          anchors: editableState.contextMenuAnchors,
+          buttonItems: items,
+        );
+      },
+    );
+
+    // 在输入框上盖一层粒子，被 <mask> 包住的文字一边输入一边就被马赛克
+    Widget inputField = Stack(
+      children: [
+        textField,
+        Positioned.fill(
+          child: IgnorePointer(
+            child: MaskInputParticles(
+              controller: _contentController,
+              style: contentStyle,
+            ),
+          ),
+        ),
+      ],
     );
 
     Widget bottomTextCounter = ValueListenableBuilder(

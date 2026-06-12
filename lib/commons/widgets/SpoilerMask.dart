@@ -180,6 +180,9 @@ class ParticleSimulation extends StatefulWidget {
   final double width;
   final double height;
 
+  /// 粒子颜色，不传默认白色（图片马赛克用）
+  final Color? particleColor;
+
   ParticleSimulation({
     Key? key,
     required this.width,
@@ -188,6 +191,7 @@ class ParticleSimulation extends StatefulWidget {
     this.maxParticleSize = 4,
     this.minParticleSize = 1,
     this.maxParticleSpeed = 0.5,
+    this.particleColor,
   }) : super(key: key);
 
   @override
@@ -228,7 +232,8 @@ class _ParticleSimulationState extends State<ParticleSimulation>
       size: _random.nextDouble() * widget.maxParticleSize +
           widget.minParticleSize,
       // 粒子的大小
-      color: Colors.white.withValues(alpha: _random.nextDouble()),
+      color: (widget.particleColor ?? Colors.white)
+          .withValues(alpha: _random.nextDouble()),
     );
   }
 

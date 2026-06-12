@@ -17,6 +17,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_pic/post_detail_pic.dart';
@@ -71,10 +72,19 @@ class _PostCardNormalState extends State<PostCardNormal> {
       return VoteWidget(post: widget.post, interactive: !widget.outer);
 
     if (widget.outer) {
+      final previewStyle =
+          TextUtil.base.NotoSansSC.w400.sp(14).primary(context).h(1.4);
+      if (hasMask(post.content)) {
+        return MaskedRichText(
+          text: post.content,
+          style: previewStyle,
+          maxLine: 2,
+          fontSize: 14,
+          interactive: false,
+        );
+      }
       return Text(post.content,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: TextUtil.base.NotoSansSC.w400.sp(14).primary(context).h(1.4));
+          maxLines: 2, overflow: TextOverflow.ellipsis, style: previewStyle);
     }
     return GestureDetector(
         onLongPress: () {

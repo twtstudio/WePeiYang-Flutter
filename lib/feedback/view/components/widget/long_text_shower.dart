@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 
 import '../../../../commons/widgets/w_button.dart';
 
@@ -45,8 +46,10 @@ class _ExpandableTextState extends State<ExpandableText> {
 
   @override
   Widget build(BuildContext context) {
+    // mask 标签不参与排版，测量和字数统计时去掉
+    final plainText = stripMaskTags(text);
     return LayoutBuilder(builder: (context, size) {
-      final span = TextSpan(text: text, style: style);
+      final span = TextSpan(text: plainText, style: style);
       final tp = TextPainter(
           text: span, maxLines: maxLines, textDirection: TextDirection.ltr);
       tp.layout(maxWidth: size.maxWidth);
@@ -65,7 +68,9 @@ class _ExpandableTextState extends State<ExpandableText> {
                   textAlign: TextAlign.justify,
                 )
               else
-                LinkText(style: style, text: text)
+                hasMask(text)
+                    ? MaskedRichText(text: text, style: style)
+                    : LinkText(style: style, text: text)
             ] else ...[
               if (widget.isHTML)
                 RichText(
@@ -79,7 +84,10 @@ class _ExpandableTextState extends State<ExpandableText> {
                   textAlign: TextAlign.justify,
                 )
               else
-                LinkText(style: style, text: text, maxLine: maxLines)
+                hasMask(text)
+                    ? MaskedRichText(
+                        text: text, style: style, maxLine: maxLines)
+                    : LinkText(style: style, text: text, maxLine: maxLines)
             ],
             if (buttonIsShown)
               WButton(
@@ -101,7 +109,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                               .sp(16)),
                       SizedBox(width: 6),
                       if (!expand)
-                        Text('共${text.length}字',
+                        Text('共${plainText.length}字',
                             style: TextUtil.base
                                 .infoText(context)
                                 .w400
@@ -114,7 +122,9 @@ class _ExpandableTextState extends State<ExpandableText> {
           ],
         );
       } else {
-        return LinkText(style: style, text: text);
+        return hasMask(text)
+            ? MaskedRichText(text: text, style: style)
+            : LinkText(style: style, text: text);
       }
     });
   }
