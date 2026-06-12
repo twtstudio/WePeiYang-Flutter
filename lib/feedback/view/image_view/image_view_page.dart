@@ -17,7 +17,6 @@ import 'package:qr_code_tools/qr_code_tools.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
-import 'package:flutter/animation.dart';
 
 class ImageViewPageArgs {
   final List<String> urlList;
@@ -70,6 +69,19 @@ class _ImageViewPageState extends State<ImageViewPage>
     super.dispose();
   }
 
+  String _imageUrlAt(int index) {
+    final url = widget.args.urlList[index];
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return baseUrl + url;
+  }
+
+  String _imageFileNameAt(int index) {
+    final url = widget.args.urlList[index].split('#').first;
+    final name = Uri.tryParse(url)?.pathSegments.last ?? url;
+    if (name.contains('.') && name.split('.').last.length <= 5) return name;
+    return '$name.jpg';
+  }
+
   @override
   Widget build(BuildContext context) {
     timeDilation = 0.5;
@@ -99,8 +111,7 @@ class _ImageViewPageState extends State<ImageViewPage>
                   basePosition: widget.args.isLongPic
                       ? Alignment.topCenter
                       : Alignment.center,
-                  imageProvider:
-                      NetworkImage(baseUrl + widget.args.urlList[index]),
+                  imageProvider: NetworkImage(_imageUrlAt(index)),
                   maxScale: widget.args.isLongPic
                       ? PhotoViewComputedScale.contained * 20
                       : PhotoViewComputedScale.contained * 5.0,
@@ -218,10 +229,11 @@ class _ImageViewPageState extends State<ImageViewPage>
 
   void _checkQRCode() async {
     try {
-      final imageUrl = baseUrl + widget.args.urlList[indexNow];
+      final imageUrl = _imageUrlAt(indexNow);
       final imagePath = await StorageUtil.saveTempFileFromNetwork(imageUrl,
-          filename: widget.args.urlList[indexNow]);
+          filename: _imageFileNameAt(indexNow));
       String? qrResult = await QrCodeToolsPlugin.decodeFrom(imagePath);
+      if (!mounted) return;
       if (qrResult != null && qrResult.isNotEmpty) {
         setState(() {
           hasQRCode = true;
@@ -234,6 +246,7 @@ class _ImageViewPageState extends State<ImageViewPage>
         _animationController.reverse();
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         hasQRCode = false;
       });
@@ -243,25 +256,23 @@ class _ImageViewPageState extends State<ImageViewPage>
 
   void saveImage() async {
     ToastProvider.running('保存中');
-    await GallerySaver.saveImage(baseUrl + widget.args.urlList[indexNow],
-        albumName: "微北洋");
+    await GallerySaver.saveImage(_imageUrlAt(indexNow), albumName: "微北洋");
     ToastProvider.success('保存成功');
   }
 
   void showSaveImageBottomSheet() async {
     ToastProvider.running('请稍后');
-    final path = await StorageUtil.saveTempFileFromNetwork(
-        baseUrl + widget.args.urlList[indexNow],
-        filename: widget.args.urlList[indexNow]);
-    Share.shareXFiles([XFile(path)]);
+    final path = await StorageUtil.saveTempFileFromNetwork(_imageUrlAt(indexNow),
+        filename: _imageFileNameAt(indexNow));
+    Share.shareXFiles([XFile(path, mimeType: 'image/*')]);
   }
 
   void recognizeQRCode() async {
     ToastProvider.running('识别中');
     try {
-      final imageUrl = baseUrl + widget.args.urlList[indexNow];
+      final imageUrl = _imageUrlAt(indexNow);
       final imagePath = await StorageUtil.saveTempFileFromNetwork(imageUrl,
-          filename: widget.args.urlList[indexNow]);
+          filename: _imageFileNameAt(indexNow));
       String? qrResult = await QrCodeToolsPlugin.decodeFrom(imagePath);
       if (qrResult != null && qrResult.isNotEmpty) {
         if (await canLaunchUrl(Uri.parse(qrResult))) {

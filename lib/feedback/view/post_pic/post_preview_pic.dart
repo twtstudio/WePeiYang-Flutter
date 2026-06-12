@@ -33,6 +33,7 @@ class OuterSinglePostPic extends StatelessWidget {
               withHolder: false,
               withCache: true,
               width: layout.maxWidth,
+              height: 150,
               alignment: Alignment.topCenter,
             ),
           ));

@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -41,21 +41,33 @@ class WpyPic extends StatefulWidget {
   final bool hide;
 
   static get errorPlaceHolder => Builder(builder: (context) {
+        final background =
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+        final info = WpyTheme.of(context).get(WpyColorKey.infoTextColor);
+        final secondaryInfo =
+            WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor);
         return ColoredBox(
-          color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.broken_image_sharp,
-                color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
-              ),
-              SizedBox(height: 4),
-              Center(
-                child: Text('加载失败',
-                    style: TextUtil.base.infoText(context).w400.sp(12)),
-              ),
-            ],
+          color: background,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.image_not_supported_outlined,
+                  size: 22,
+                  color: secondaryInfo,
+                ),
+                SizedBox(height: 3),
+                Center(
+                  child: Text('加载失败',
+                      style: TextUtil.base
+                          .customColor(info)
+                          .w400
+                          .sp(11)),
+                ),
+              ],
+            ),
           ),
         );
       });
@@ -79,32 +91,32 @@ class WpyPic extends StatefulWidget {
 }
 
 class _WpyPicState extends State<WpyPic> {
-  Widget get asset {
+  Widget _buildAsset(double? width, double? height) {
     if (widget.imageUrl.endsWith('.svg')) {
       return SvgPicture.asset(
         widget.imageUrl,
-        width: widget.width,
-        height: widget.height,
+        width: width,
+        height: height,
         fit: widget.fit,
         alignment: widget.alignment,
       );
     } else {
       return Image.asset(
         widget.imageUrl,
-        width: widget.width,
-        height: widget.height,
+        width: width,
+        height: height,
         fit: widget.fit,
         alignment: widget.alignment,
       );
     }
   }
 
-  Widget get network {
+  Widget _buildNetwork(double? width, double? height) {
     if (widget.imageUrl.endsWith('.svg')) {
       return SvgPicture.network(
         widget.imageUrl,
-        width: widget.width,
-        height: widget.height,
+        width: width,
+        height: height,
         fit: widget.fit,
         alignment: widget.alignment,
         placeholderBuilder: widget.withHolder ? (_) => Loading() : null,
@@ -112,39 +124,26 @@ class _WpyPicState extends State<WpyPic> {
     } else {
       final imageWidget = CachedNetworkImage(
         imageUrl: widget.imageUrl,
-        width: widget.width,
-        height: widget.height,
+        width: width,
+        height: height,
         fit: widget.fit,
         alignment: widget.alignment,
         fadeInDuration: Duration.zero,
         fadeOutDuration: Duration.zero,
-        memCacheWidth: _cachePixelDimension(widget.width),
-        memCacheHeight: _cachePixelDimension(widget.height),
+        memCacheWidth: _cachePixelDimension(width),
         progressIndicatorBuilder: widget.withHolder
             ? (context, url, progress) {
-                return Container(
-                  width: widget.width ?? widget.holderHeight,
-                  height: widget.height ?? widget.holderHeight,
-                  color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
-                  child: Center(
-                    child: SizedBox(
-                        width: widget.width == null ? 20 : widget.width! * 0.25,
-                        height:
-                            widget.width == null ? 20 : widget.width! * 0.25,
-                        child: CircularProgressIndicator(
-                          value: progress.progress,
-                          color: WpyTheme.of(context).primary,
-                        )),
-                  ),
-                );
+                return _buildLoadingPlaceholder(width, height);
               }
             : null,
-        errorWidget: widget.withHolder
-            ? (context, exception, stacktrace) {
-                // Logger.reportError(exception, stacktrace);
-                return WpyPic.errorPlaceHolder;
-              }
-            : null,
+        errorWidget: (context, exception, stacktrace) {
+          // Logger.reportError(exception, stacktrace);
+          return SizedBox(
+            width: width ?? widget.holderHeight,
+            height: height ?? widget.holderHeight,
+            child: WpyPic.errorPlaceHolder,
+          );
+        },
       );
 
       final imageBuilder = () {
@@ -167,27 +166,13 @@ class _WpyPicState extends State<WpyPic> {
       final tags = widget.imageUrl.split('#')[1].split(',');
       if (tags.contains("masked")) {
         return SizedBox(
-            height: widget.height,
-            width: widget.width,
+            height: height,
+            width: width,
             child: SpoilerMaskImage(child: imageBuilder()));
       }
       return imageBuilder();
     }
   }
-
-  Widget get cachedNetwork => SizedBox(
-        width: widget.width,
-        height: widget.height,
-        child: CachedNetworkImage(
-          imageUrl: widget.imageUrl,
-          placeholder: (context, url) => CupertinoActivityIndicator(),
-          errorWidget: (context, url, error) {
-            print('v_image error: $error');
-            return Icon(Icons.error);
-          },
-          fit: widget.fit,
-        ),
-      );
 
   int? _cachePixelDimension(double? logicalValue) {
     if (logicalValue == null || !logicalValue.isFinite || logicalValue <= 0) {
@@ -200,14 +185,43 @@ class _WpyPicState extends State<WpyPic> {
     return (logicalValue * devicePixelRatio).round();
   }
 
+  Widget _buildLoadingPlaceholder(double? width, double? height) {
+    final background =
+        WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+    final highlight =
+        WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor);
+    return SizedBox(
+      width: width ?? widget.holderHeight,
+      height: height ?? widget.holderHeight,
+      child: Shimmer.fromColors(
+        baseColor: background,
+        highlightColor: highlight,
+        child: ColoredBox(color: background),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.imageUrl.startsWith('assets')) {
-      return Container(child: asset);
-      // } else if (widget.withCache) {
-      //   return cachedNetwork;
-    } else {
-      return Container(child: network);
-    }
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = widget.width ??
+          (constraints.hasTightWidth ? constraints.maxWidth : null);
+      final height = widget.height ??
+          (constraints.hasTightHeight ? constraints.maxHeight : null);
+
+      if (widget.imageUrl.trim().isEmpty) {
+        return SizedBox(
+          width: width ?? widget.holderHeight,
+          height: height ?? widget.holderHeight,
+          child: WpyPic.errorPlaceHolder,
+        );
+      }
+
+      if (widget.imageUrl.startsWith('assets')) {
+        return Container(child: _buildAsset(width, height));
+      } else {
+        return Container(child: _buildNetwork(width, height));
+      }
+    });
   }
 }

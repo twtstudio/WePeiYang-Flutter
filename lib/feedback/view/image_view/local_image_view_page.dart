@@ -16,11 +16,11 @@ class LocalImageViewPageArgs {
   final int indexNow;
 
   LocalImageViewPageArgs(
-      this.uriList,
-      this.assetList,
-      this.uriListLength,
-      this.indexNow,
-      );
+    this.uriList,
+    this.assetList,
+    this.uriListLength,
+    this.indexNow,
+  );
 }
 
 class LocalImageViewPage extends StatefulWidget {
@@ -34,6 +34,7 @@ class LocalImageViewPage extends StatefulWidget {
 
 class _LocalImageViewPageState extends State<LocalImageViewPage> {
   bool _loading = true;
+  bool _loadFailed = false;
   late int _index;
   late PageController _pageController;
   bool _didPrecache = false;
@@ -64,11 +65,22 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
       provider = AssetImage(widget.args.assetList[index]);
     }
 
-    await precacheImage(provider, context);
+    try {
+      await precacheImage(provider, context);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _loadFailed = true;
+        });
+      }
+      return;
+    }
 
     if (mounted) {
       setState(() {
         _loading = false;
+        _loadFailed = false;
       });
     }
   }
@@ -104,6 +116,18 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
       );
     }
 
+    if (_loadFailed) {
+      return Container(
+        color: Colors.black,
+        child: const Center(
+          child: Text(
+            '图片加载失败',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
+    }
+
     return WButton(
       onPressed: () => Navigator.pop(context),
       child: PhotoViewGallery.builder(
@@ -111,15 +135,12 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
         itemCount: widget.args.uriListLength,
         onPageChanged: _onPageChanged,
         backgroundDecoration: BoxDecoration(
-          color: WpyTheme.of(context)
-              .get(WpyColorKey.reverseBackgroundColor),
+          color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
         ),
         loadingBuilder: (context, event) {
-          final value = event == null ||
-              event.expectedTotalBytes == null
+          final value = event == null || event.expectedTotalBytes == null
               ? 0.0
-              : event.cumulativeBytesLoaded /
-              event.expectedTotalBytes!;
+              : event.cumulativeBytesLoaded / event.expectedTotalBytes!;
 
           return Center(
             child: SizedBox(
@@ -147,5 +168,11 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 }
