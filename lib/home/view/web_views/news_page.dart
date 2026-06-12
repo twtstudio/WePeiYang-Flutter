@@ -15,6 +15,9 @@ class NewsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(URL));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (CommonPreferences.showNewsNetwork.value &&
           !(await ClassesService.check(timeout: Duration(seconds: 1)))) {
@@ -54,12 +57,7 @@ class NewsPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebView(
-            initialUrl: URL,
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController controller) {
-              this._controller = controller;
-            }),
+        body: WebViewWidget(controller: _controller!),
       ),
     );
   }

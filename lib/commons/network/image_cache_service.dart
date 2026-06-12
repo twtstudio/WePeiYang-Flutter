@@ -6,6 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ImageCacheService {
+  final _sp = SharedPreferencesAsync();
+
   ImageCacheService._();
   static final ImageCacheService instance = ImageCacheService._();
 
@@ -129,16 +131,14 @@ class ImageCacheService {
   }
 
   Future<void> _saveExpires(String url, DateTime expires) async {
-    final sp = await SharedPreferences.getInstance();
-    final raw = sp.getString(_spKeyExpiresMap) ?? '{}';
+    final raw = await _sp.getString(_spKeyExpiresMap) ?? '{}';
     final Map<String, dynamic> map = _decodeJsonSafe(raw);
     map[url] = expires.millisecondsSinceEpoch;
-    await sp.setString(_spKeyExpiresMap, json.encode(map));
+    await _sp.setString(_spKeyExpiresMap, json.encode(map));
   }
 
   Future<DateTime?> _getExpires(String url) async {
-    final sp = await SharedPreferences.getInstance();
-    final raw = sp.getString(_spKeyExpiresMap) ?? '{}';
+    final raw = await _sp.getString(_spKeyExpiresMap) ?? '{}';
     final Map<String, dynamic> map = _decodeJsonSafe(raw);
     final v = map[url];
     if (v == null) return null;
@@ -164,8 +164,7 @@ class ImageCacheService {
       await cacheDir.delete(recursive: true);
       _dlog('[ImageCacheService] cleared cache dir ${cacheDir.path}');
     }
-    final sp = await SharedPreferences.getInstance();
-    await sp.remove(_spKeyExpiresMap);
+    await _sp.remove(_spKeyExpiresMap);
   }
 
   void _dlog(Object? o) {

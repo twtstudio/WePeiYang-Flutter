@@ -22,7 +22,7 @@ class LostAndFoundSearchPage extends StatefulWidget {
 
 class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
   late final ValueNotifier<List<String>> _foundSearchHistoryList;
-  late final SharedPreferences _prefs;
+  late final SharedPreferencesWithCache _prefs;
 
   _addHistory() {
     _prefs.setStringList(
@@ -66,7 +66,9 @@ class _LostAndFoundSearchPageState extends State<LostAndFoundSearchPage> {
       });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _prefs = await SharedPreferences.getInstance();
+      _prefs = await SharedPreferencesWithCache.create(
+        cacheOptions: const SharedPreferencesWithCacheOptions(),
+      );
       if (_prefs.getStringList('feedback_found_search_history') == null) {
         _addHistory();
       } else {

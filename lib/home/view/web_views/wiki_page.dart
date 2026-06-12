@@ -13,6 +13,9 @@ class WikiPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(URL));
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -41,12 +44,7 @@ class WikiPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebView(
-            initialUrl: URL,
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController controller) {
-              this._controller = controller;
-            }),
+        body: WebViewWidget(controller: _controller!),
       ),
     );
   }

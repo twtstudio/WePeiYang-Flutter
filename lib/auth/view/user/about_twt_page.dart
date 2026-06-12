@@ -11,6 +11,9 @@ class AboutTwtPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(URL));
     return Scaffold(
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -29,7 +32,7 @@ class AboutTwtPage extends StatelessWidget {
                 onPressed: () => Navigator.pop(context)),
           )),
       body:
-          WebView(initialUrl: URL, javascriptMode: JavascriptMode.unrestricted),
+          WebViewWidget(controller: controller),
     );
   }
 }

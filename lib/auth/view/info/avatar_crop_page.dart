@@ -47,31 +47,33 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         return;
       }
     }
-    File? croppedFile = await ImageCropper().cropImage(
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: file.path,
-        cropStyle: CropStyle.circle,
         aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: '裁剪',
-            toolbarColor:
-                WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
-            toolbarWidgetColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            activeControlsWidgetColor:
-                WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
-            dimmedLayerColor:
-                WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
-            statusBarColor:
-                WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true),
-        iosUiSettings: IOSUiSettings(
-          title: '裁剪',
-        ));
+        uiSettings: [
+          AndroidUiSettings(
+              toolbarTitle: '裁剪',
+              toolbarColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
+              toolbarWidgetColor:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              activeControlsWidgetColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
+              dimmedLayerColor:
+                  WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
+              statusBarLight: false,
+              backgroundColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+              initAspectRatio: CropAspectRatioPreset.square,
+              lockAspectRatio: true,
+              cropStyle: CropStyle.circle),
+          IOSUiSettings(
+            title: '裁剪',
+            cropStyle: CropStyle.circle,
+          ),
+        ]);
     if (croppedFile == null) return; // 取消裁剪图片的情况
-    List<File> update = [croppedFile];
+    List<File> update = [File(croppedFile.path)];
     // 弹出sheet
     Navigator.pop(context);
     FeedbackService.postPic(
@@ -87,7 +89,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           ToastProvider.error(e.error.toString());
         });
     setState(() {
-      this.file = croppedFile;
+      this.file = File(croppedFile.path);
     });
     if (!mounted) return;
   }
@@ -97,31 +99,33 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         await ImagePicker().pickImage(source: source, imageQuality: 50);
     if (image == null) return; // 取消选择图片的情况
     Navigator.pop(context);
-    File? croppedFile = await ImageCropper().cropImage(
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: image.path,
-        cropStyle: CropStyle.circle,
         aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: '裁剪',
-            toolbarColor:
-                WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
-            toolbarWidgetColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            activeControlsWidgetColor:
-                WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
-            dimmedLayerColor:
-                WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
-            statusBarColor:
-                WpyTheme.of(context).get(WpyColorKey.defaultActionColor),
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-            initAspectRatio: CropAspectRatioPreset.square,
-            lockAspectRatio: true),
-        iosUiSettings: IOSUiSettings(
-          title: '裁剪',
-        ));
+        uiSettings: [
+          AndroidUiSettings(
+              toolbarTitle: '裁剪',
+              toolbarColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldThirdActionColor),
+              toolbarWidgetColor:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              activeControlsWidgetColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldFurthActionColor),
+              dimmedLayerColor:
+                  WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
+              statusBarLight: false,
+              backgroundColor:
+                  WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
+              initAspectRatio: CropAspectRatioPreset.square,
+              lockAspectRatio: true,
+              cropStyle: CropStyle.circle),
+          IOSUiSettings(
+            title: '裁剪',
+            cropStyle: CropStyle.circle,
+          ),
+        ]);
     if (croppedFile == null) return; // 取消裁剪图片的情况
-    List<File> update = [croppedFile];
+    List<File> update = [File(croppedFile.path)];
     FeedbackService.postPic(
         images: update,
         onResult: (result) {
@@ -135,7 +139,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
           ToastProvider.error(e.error.toString());
         });
     setState(() {
-      this.file = croppedFile;
+      this.file = File(croppedFile.path);
     });
   }
 

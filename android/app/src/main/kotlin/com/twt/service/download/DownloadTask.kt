@@ -1,6 +1,5 @@
 package com.twt.service.download
 
-import android.os.Environment
 import androidx.annotation.Keep
 import java.io.File
 
@@ -65,12 +64,17 @@ fun DownloadTask.temporaryPath(): String {
     return "$path.temp"
 }
 
-fun DownloadTask.temporarySubPath(): String {
-    return temporaryPath().split("downloads" + File.separator).last()
+private fun String.relativeToDownloadDir(downloadDir: File): String {
+    val root = downloadDir.absolutePath.trimEnd(File.separatorChar) + File.separator
+    return File(this).absolutePath.removePrefix(root)
 }
 
-fun DownloadTask.subPath(): String {
-    return path.split("downloads" + File.separator).last()
+fun DownloadTask.temporarySubPath(downloadDir: File): String {
+    return temporaryPath().relativeToDownloadDir(downloadDir)
+}
+
+fun DownloadTask.subPath(downloadDir: File): String {
+    return path.relativeToDownloadDir(downloadDir)
 }
 
 fun DownloadTask.baseData(): MutableMap<String, Any> {

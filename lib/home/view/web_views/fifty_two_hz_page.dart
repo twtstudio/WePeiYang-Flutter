@@ -15,6 +15,9 @@ class FiftyTwoHzPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(url));
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -44,12 +47,7 @@ class FiftyTwoHzPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebView(
-            initialUrl: url,
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController controller) {
-              this._controller = controller;
-            }),
+        body: WebViewWidget(controller: _controller!),
       ),
     );
   }

@@ -128,18 +128,20 @@ class WbyDownloadPlugin : WbyPlugin() {
         // 本次加入到下载中的任务
         val startList = mutableListOf<Long>()
         runCatching {
+            val downloadDir = FileUtil.downloadDirectory(context)
+                ?: error("downloadDir == null")
             list.forEach {
                 // 创建请求
                 val request = DownloadManager.Request(Uri.parse(it.url)).apply {
-                    log(it.temporarySubPath())
+                    log(it.temporarySubPath(downloadDir))
                     setDestinationInExternalFilesDir(
                         context,
-                        "downloads",
-                        it.temporarySubPath(),
+                        Environment.DIRECTORY_DOWNLOADS,
+                        it.temporarySubPath(downloadDir),
                     )
 
                     println("download file info: ${it.url} ${it.fileName} ${it.showNotification} ${it.title} ${it.description}")
-                    println("download path info: ${it.path} ${it.temporarySubPath()} ${it.temporaryPath()}")
+                    println("download path info: ${it.path} ${it.temporarySubPath(downloadDir)} ${it.temporaryPath()}")
 
                     if (it.showNotification) {
                         setTitle(it.title)

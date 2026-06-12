@@ -10,11 +10,13 @@ import '../../schedule/schedule_router.dart';
 class CommonPreferences {
   CommonPreferences._();
 
-  static late SharedPreferences sharedPref;
+  static late SharedPreferencesWithCache sharedPref;
 
   /// 初始化sharedPrefs，在运行app前被调用
   static Future<void> init() async {
-    sharedPref = await SharedPreferences.getInstance();
+    sharedPref = await SharedPreferencesWithCache.create(
+      cacheOptions: const SharedPreferencesWithCacheOptions(),
+    );
     showXiaotianTabNotifier.value = showXiaotianTab.value;
   }
 
@@ -255,7 +257,7 @@ class PrefsBean<T> with PreferencesUtil<T> {
 }
 
 mixin PreferencesUtil<T> {
-  static SharedPreferences get pref => CommonPreferences.sharedPref;
+  static SharedPreferencesWithCache get pref => CommonPreferences.sharedPref;
 
   dynamic _getValue(String key) {
     if (T == List<String>) {

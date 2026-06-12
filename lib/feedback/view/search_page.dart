@@ -21,7 +21,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late final ValueNotifier<List<String>> _searchHistoryList;
-  SharedPreferences? _prefs;
+  SharedPreferencesWithCache? _prefs;
   bool _historyChangedBeforePrefs = false;
 
   _addHistory() {
@@ -41,7 +41,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _initPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferencesWithCache.create(
+      cacheOptions: const SharedPreferencesWithCacheOptions(),
+    );
     if (!mounted) return;
     _prefs = prefs;
     if (_historyChangedBeforePrefs) {

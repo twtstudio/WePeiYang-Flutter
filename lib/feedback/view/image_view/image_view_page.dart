@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:share_plus/share_plus.dart';
@@ -264,7 +264,7 @@ class _ImageViewPageState extends State<ImageViewPage>
     ToastProvider.running('请稍后');
     final path = await StorageUtil.saveTempFileFromNetwork(_imageUrlAt(indexNow),
         filename: _imageFileNameAt(indexNow));
-    Share.shareXFiles([XFile(path, mimeType: 'image/*')]);
+    await SharePlus.instance.share(ShareParams(files: [XFile(path, mimeType: 'image/*')]));
   }
 
   void recognizeQRCode() async {

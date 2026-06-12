@@ -1,13 +1,16 @@
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/remote_config_manager.dart';
+import 'package:we_pei_yang_flutter/commons/channel/remote_config/config/webview.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../themes/template/wpy_theme_data.dart';
 import '../themes/wpy_theme.dart';
@@ -18,29 +21,39 @@ class WbyWebView extends StatefulWidget {
   final bool fullPage;
   final WpyColorKey backgroundColor;
 
-  const WbyWebView(
-      {Key? key,
-      required this.page,
-      required this.fullPage,
-      required this.backgroundColor})
-      : super(key: key);
+  const WbyWebView({
+    super.key,
+    required this.page,
+    required this.fullPage,
+    required this.backgroundColor,
+  });
 
   @override
   WbyWebViewState createState() => WbyWebViewState();
 }
 
-enum _PageState { initUrl, initError, initWebView, showWebView }
+enum _PageState { initUrl, initError, loading, showWebView }
 
 class WbyWebViewState extends State<WbyWebView> {
   _PageState state = _PageState.initUrl;
-  WebViewController? _controller;
+  late final WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-    if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
-    }
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageStarted: (_) {
+            if (mounted) setState(() => state = _PageState.showWebView);
+          },
+          onWebResourceError: (_) {
+            ToastProvider.error('加载遇到了错误');
+          },
+        ),
+      );
+    WidgetsBinding.instance.addPostFrameCallback((_) => initUrl());
     UmengCommonSdk.onPageStart('webview/${widget.page}');
   }
 
@@ -72,52 +85,38 @@ class WbyWebViewState extends State<WbyWebView> {
       );
 
   Future<String?> getInitialUrl(BuildContext context) async {
-    return context.select(
-      (RemoteConfig config) => config.webViews[widget.page]?.url,
-    );
+    return context.read<RemoteConfig>().webViews[widget.page]?.url;
   }
 
-  List<JavascriptChannel>? getJsChannels() {
-    return context.select(
-      (RemoteConfig config) => config.webViews[widget.page]?.channels,
-    );
+  List<WebViewChannelConfig> getChannels(BuildContext context) {
+    return context.read<RemoteConfig>().webViews[widget.page]?.channels ?? [];
   }
 
+  @override
   Future<void> initUrl() async {
-    if (state == _PageState.initError) {
-      setState(() {
-        state = _PageState.initUrl;
-      });
-    }
-    final url =
-        await getInitialUrl(context).then((u) => u, onError: (_) => null);
-    if (!mounted) return;
-    if (url != null) {
-      setState(() {
-        state = _PageState.initWebView;
-        _controller?.loadUrl(url);
-      });
-    } else {
-      setState(() {
-        state = _PageState.initError;
-      });
+    if (state == _PageState.initError) setState(() => state = _PageState.initUrl);
+    try {
+      final url = await getInitialUrl(context);
+      if (!mounted) return;
+      if (url != null) {
+        for (final c in getChannels(context)) {
+          _controller.addJavaScriptChannel(c.name, onMessageReceived: c.onMessageReceived);
+        }
+        _controller.loadRequest(Uri.parse(url));
+        setState(() => state = _PageState.showWebView);
+      } else {
+        setState(() => state = _PageState.initError);
+      }
+    } catch (_) {
+      if (mounted) setState(() => state = _PageState.initError);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget top;
-
-    if (state == _PageState.initError) {
-      top = WButton(onPressed: initUrl, child: Text("遇到错误请重试"));
-    } else {
-      top = Loading();
-    }
-
-    top = Visibility(
-      visible: !(state == _PageState.showWebView),
-      child: top,
-    );
+    final topWidget = state == _PageState.initError
+        ? WButton(onPressed: initUrl, child: Text("遇到错误请重试"))
+        : Loading();
 
     final body = Stack(
       fit: StackFit.expand,
@@ -125,25 +124,12 @@ class WbyWebViewState extends State<WbyWebView> {
       children: [
         Opacity(
           opacity: state == _PageState.showWebView ? 1.0 : 0.0,
-          child: WebView(
-            onWebViewCreated: (controller) {
-              _controller = controller;
-              WidgetsBinding.instance.addPostFrameCallback((_) => initUrl());
-            },
-            javascriptMode: JavascriptMode.unrestricted,
-            gestureNavigationEnabled: true,
-            onPageStarted: (_) {
-              setState(() {
-                state = _PageState.showWebView;
-              });
-            },
-            onWebResourceError: (error) {
-              ToastProvider.error('加载遇到了错误');
-            },
-            javascriptChannels: (getJsChannels() ?? []).toSet(),
-          ),
+          child: WebViewWidget(controller: _controller),
         ),
-        top,
+        Visibility(
+          visible: state != _PageState.showWebView,
+          child: topWidget,
+        ),
       ],
     );
 

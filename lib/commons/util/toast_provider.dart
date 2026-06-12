@@ -43,7 +43,7 @@ class ToastProvider with AsyncTimer {
   ///       ],
   ///     ),
   ///   ),
-  ///   positionedToastBuilder: (context, child) {
+  ///   positionedToastBuilder: (context, child, gravity) {
   ///     return Positioned(
   ///       left: 16.0, // 左右填一样的值可以居中
   ///       right: 16.0,
@@ -129,7 +129,7 @@ class ToastProvider with AsyncTimer {
           ),
         );
       }),
-      positionedToastBuilder: (context, child) {
+      positionedToastBuilder: (context, child, gravity) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,
@@ -171,7 +171,7 @@ class ToastProvider with AsyncTimer {
           ),
         );
       }),
-      positionedToastBuilder: (context, child) {
+      positionedToastBuilder: (context, child, gravity) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,
@@ -213,7 +213,7 @@ class ToastProvider with AsyncTimer {
           ),
         );
       }),
-      positionedToastBuilder: (context, child) {
+      positionedToastBuilder: (context, child, gravity) {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,

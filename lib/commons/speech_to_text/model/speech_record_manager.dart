@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SpeechRecordManager {
-  final Record _recorder = Record();
+  final AudioRecorder _recorder = AudioRecorder();
 
   String? _currentRecordingPath;
 
@@ -52,11 +52,12 @@ class SpeechRecordManager {
 
     // 启动录音
     await _recorder.start(
+      RecordConfig(
+        encoder: AudioEncoder.pcm16bits,
+        sampleRate: 16000,
+        numChannels: 1,
+      ),
       path: path,
-      // 使用 pcm16bits 编码，以匹配 WAV 格式（在指定了 .wav 路径时通常可以生成 WAV 容器）
-      encoder: AudioEncoder.pcm16bit,
-      samplingRate: 16000,
-      numChannels: 1,
     );
 
     return path;

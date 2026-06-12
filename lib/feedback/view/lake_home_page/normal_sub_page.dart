@@ -12,7 +12,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:miui_long_screenshot/miui_long_screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
@@ -372,11 +371,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                             ),
                     );
                     if (!_isCurrentTab) return refresher;
-                    return MiuiLongScreenshot(
-                      key: ValueKey('lake-miui-long-screenshot-$index'),
-                      controller: _scrollController,
-                      child: refresher,
-                    );
+                    return refresher;
                   },
                 ),
               );

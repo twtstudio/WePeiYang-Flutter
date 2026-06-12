@@ -17,9 +17,9 @@ class NetStatusListener {
     }).catchError((_) {}));
   }
 
-  ConnectivityResult? _status;
+  List<ConnectivityResult>? _status;
 
-  bool get hasNetwork => _instance._status != ConnectivityResult.none;
+  bool get hasNetwork => _instance._status?.any((r) => r != ConnectivityResult.none) ?? false;
 }
 
 class NetCheckInterceptor extends InterceptorsWrapper {

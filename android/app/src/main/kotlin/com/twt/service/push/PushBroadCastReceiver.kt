@@ -62,7 +62,7 @@ class PushBroadCastReceiver(
     private fun showNotification(data: MessageData) {
         val notificationManager = NotificationManagerCompat.from(binding.activity)
         fun send(id: Int, title: String, content: String, intent: Intent) {
-            val pendingIntent = PendingIntent.getActivity(binding.activity, 0, intent, 0)
+            val pendingIntent = PendingIntent.getActivity(binding.activity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             val builder = NotificationCompat.Builder(binding.activity, "1")
                 .setSmallIcon(R.drawable.push_small)
                 .setContentTitle(title)
