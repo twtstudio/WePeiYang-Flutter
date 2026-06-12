@@ -6,22 +6,32 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 
-// ignore: must_be_immutable
-class WikiPage extends StatelessWidget {
+class WikiPage extends StatefulWidget {
   static const URL = "https://wiki.tjubot.cn/";
-  WebViewController? _controller;
+
+  @override
+  State<WikiPage> createState() => _WikiPageState();
+}
+
+class _WikiPageState extends State<WikiPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(WikiPage.URL));
+  }
 
   @override
   Widget build(BuildContext context) {
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(URL));
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await _controller?.canGoBack() ?? false)
-          _controller!.goBack();
+        if (await _controller.canGoBack())
+          _controller.goBack();
         else
           Navigator.pop(context);
       },
@@ -44,7 +54,7 @@ class WikiPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebViewWidget(controller: _controller!),
+        body: WebViewWidget(controller: _controller),
       ),
     );
   }

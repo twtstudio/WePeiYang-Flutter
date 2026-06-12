@@ -6,14 +6,26 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
-class AboutTwtPage extends StatelessWidget {
+class AboutTwtPage extends StatefulWidget {
   static const URL = "https://www.twt.edu.cn/";
 
   @override
-  Widget build(BuildContext context) {
-    final controller = WebViewController()
+  State<AboutTwtPage> createState() => _AboutTwtPageState();
+}
+
+class _AboutTwtPageState extends State<AboutTwtPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(URL));
+      ..loadRequest(Uri.parse(AboutTwtPage.URL));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -31,8 +43,7 @@ class AboutTwtPage extends StatelessWidget {
                     size: 32),
                 onPressed: () => Navigator.pop(context)),
           )),
-      body:
-          WebViewWidget(controller: controller),
+      body: WebViewWidget(controller: _controller),
     );
   }
 }

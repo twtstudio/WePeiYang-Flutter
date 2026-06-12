@@ -1,4 +1,3 @@
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -6,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/webview/javascript_channels/img_save_channel.dart';
 import 'package:we_pei_yang_flutter/commons/webview/wby_webview.dart';
 import 'package:we_pei_yang_flutter/commons/channel/remote_config/config/webview.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class FeedbackSummaryPage extends WbyWebView {
   FeedbackSummaryPage({Key? key, required BuildContext context})

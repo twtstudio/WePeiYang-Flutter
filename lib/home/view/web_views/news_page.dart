@@ -8,19 +8,26 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-// ignore: must_be_immutable
-class NewsPage extends StatelessWidget {
+class NewsPage extends StatefulWidget {
   static const URL = "https://news.twt.edu.cn/";
-  WebViewController? _controller;
 
   @override
-  Widget build(BuildContext context) {
+  State<NewsPage> createState() => _NewsPageState();
+}
+
+class _NewsPageState extends State<NewsPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(URL));
+      ..loadRequest(Uri.parse(NewsPage.URL));
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (CommonPreferences.showNewsNetwork.value &&
           !(await ClassesService.check(timeout: Duration(seconds: 1)))) {
+        if (!mounted) return;
         showDialog(
           context: context,
           barrierDismissible: true,
@@ -28,13 +35,16 @@ class NewsPage extends StatelessWidget {
         );
       }
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await _controller?.canGoBack() ?? false)
-          _controller!.goBack();
+        if (await _controller.canGoBack())
+          _controller.goBack();
         else
           Navigator.pop(context);
       },
@@ -57,7 +67,7 @@ class NewsPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebViewWidget(controller: _controller!),
+        body: WebViewWidget(controller: _controller),
       ),
     );
   }
@@ -68,7 +78,7 @@ class NewNetworkAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _roundShape = MaterialStateProperty.all<RoundedRectangleBorder>(
+    final _roundShape = WidgetStateProperty.all<RoundedRectangleBorder>(
       RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10), // 设置边框圆角为20
       ),
@@ -115,8 +125,8 @@ class NewNetworkAlertDialog extends StatelessWidget {
                       )),
                   ElevatedButton(
                     style: ButtonStyle(
-                      elevation: MaterialStateProperty.all<double>(3),
-                      backgroundColor: MaterialStateProperty.all<Color>(
+                      elevation: WidgetStateProperty.all<double>(3),
+                      backgroundColor: WidgetStateProperty.all<Color>(
                         WpyTheme.of(context)
                             .get(WpyColorKey.primaryActionColor),
                       ),

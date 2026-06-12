@@ -7,24 +7,33 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
-// ignore: must_be_immutable
-class FiftyTwoHzPage extends StatelessWidget {
-  final String url =
-      'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences.token.value}';
-  WebViewController? _controller;
+class FiftyTwoHzPage extends StatefulWidget {
+  @override
+  State<FiftyTwoHzPage> createState() => _FiftyTwoHzPageState();
+}
+
+class _FiftyTwoHzPageState extends State<FiftyTwoHzPage> {
+  late final WebViewController _controller;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    final url =
+        'https://52Hz.twt.edu.cn/#/?token=${CommonPreferences.token.value}';
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..loadRequest(Uri.parse(url));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        var flag = await _controller?.canGoBack() ?? false;
+        var flag = await _controller.canGoBack();
         if (flag)
-          _controller!.goBack();
+          _controller.goBack();
         else
           Navigator.pop(context);
       },
@@ -47,7 +56,7 @@ class FiftyTwoHzPage extends StatelessWidget {
                       size: 32),
                   onPressed: () => Navigator.pop(context)),
             )),
-        body: WebViewWidget(controller: _controller!),
+        body: WebViewWidget(controller: _controller),
       ),
     );
   }

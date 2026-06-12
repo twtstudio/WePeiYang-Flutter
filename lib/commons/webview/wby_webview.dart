@@ -1,6 +1,3 @@
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -46,6 +43,9 @@ class WbyWebViewState extends State<WbyWebView> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (_) {
+            if (mounted) setState(() => state = _PageState.loading);
+          },
+          onPageFinished: (_) {
             if (mounted) setState(() => state = _PageState.showWebView);
           },
           onWebResourceError: (_) {
@@ -92,18 +92,19 @@ class WbyWebViewState extends State<WbyWebView> {
     return context.read<RemoteConfig>().webViews[widget.page]?.channels ?? [];
   }
 
-  @override
   Future<void> initUrl() async {
-    if (state == _PageState.initError) setState(() => state = _PageState.initUrl);
+    if (state == _PageState.initError)
+      setState(() => state = _PageState.initUrl);
     try {
       final url = await getInitialUrl(context);
       if (!mounted) return;
       if (url != null) {
         for (final c in getChannels(context)) {
-          _controller.addJavaScriptChannel(c.name, onMessageReceived: c.onMessageReceived);
+          _controller.addJavaScriptChannel(c.name,
+              onMessageReceived: c.onMessageReceived);
         }
-        _controller.loadRequest(Uri.parse(url));
-        setState(() => state = _PageState.showWebView);
+        setState(() => state = _PageState.loading);
+        await _controller.loadRequest(Uri.parse(url));
       } else {
         setState(() => state = _PageState.initError);
       }
@@ -122,13 +123,16 @@ class WbyWebViewState extends State<WbyWebView> {
       fit: StackFit.expand,
       alignment: Alignment.center,
       children: [
-        Opacity(
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
           opacity: state == _PageState.showWebView ? 1.0 : 0.0,
           child: WebViewWidget(controller: _controller),
         ),
-        Visibility(
-          visible: state != _PageState.showWebView,
-          child: topWidget,
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: state == _PageState.showWebView
+              ? const SizedBox.shrink()
+              : Center(child: topWidget),
         ),
       ],
     );
