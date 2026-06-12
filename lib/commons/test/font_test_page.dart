@@ -1,138 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 import '../widgets/w_button.dart';
 
 class FontTestPage extends StatelessWidget {
-  const FontTestPage({Key? key}) : super(key: key);
+  const FontTestPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            WButton(
-                onPressed: () {
-                  WbyFontLoader.initFonts();
-                },
-                child: Text("点击下载字体")),
-            ...fontTests,
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      appBar: AppBar(
+        title: const Text('字体测试'),
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(height: 16),
+          Center(
+            child: WButton(
+              onPressed: () => WbyFontLoader.initFonts(),
+              child: const Text('下载字体'),
+            ),
+          ),
+          const Divider(),
+          ..._fontTests,
+        ],
       ),
     );
   }
 
-  static const type1 = 'PingFangSC';
-  static const type2 = 'NotoSansSC';
+  static const _type1 = 'PingFangSC';
+  static const _type2 = 'NotoSansSC';
 
-  List<Widget> get fontTests {
-    return [
-      Text(
-        "个人信息更改w100",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w100,
-        ),
-      ),
-      Text(
-        "个人信息更改w200",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w200,
-        ),
-      ),
-      Text(
-        "个人信息更改w300",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w300,
-        ),
-      ),
-      Text(
-        "个人信息更改w400",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-      Text(
-        "个人信息更改w500",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      Text(
-        "个人信息更改w600",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      Text(
-        "个人信息更改w700",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      Text(
-        "个人信息更改w800",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-      Text(
-        "个人信息更改w900",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
-      Text(
-        "个人信息更改w900",
-        style: TextStyle(
-          fontFamily: type1,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
-      Text(
-        "ABCDEFGabcdefg-w500-normal",
-        style: TextStyle(
-          fontFamily: type2,
-          fontWeight: FontWeight.w500,
-          fontStyle: FontStyle.normal,
-        ),
-      ),
-      Text(
-        "ABCDEFGabcdefg-w500-italic",
-        style: TextStyle(
-          fontFamily: type2,
-          fontWeight: FontWeight.w500,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-      Text(
-        "ABCDEFGabcdefg-w900-normal",
-        style: TextStyle(
-          fontFamily: type2,
-          fontWeight: FontWeight.w900,
-          fontStyle: FontStyle.normal,
-        ),
-      ),
-      Text(
-        "ABCDEFGabcdefg-w900-italic",
-        style: TextStyle(
-          fontFamily: type2,
-          fontWeight: FontWeight.w900,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
-    ];
+  static const _fontTests = [
+    _FontRow(family: _type1, weight: FontWeight.w100, label: 'W100'),
+    _FontRow(family: _type1, weight: FontWeight.w200, label: 'W200'),
+    _FontRow(family: _type1, weight: FontWeight.w300, label: 'W300'),
+    _FontRow(family: _type1, weight: FontWeight.w400, label: 'W400'),
+    _FontRow(family: _type1, weight: FontWeight.w500, label: 'W500'),
+    _FontRow(family: _type1, weight: FontWeight.w600, label: 'W600'),
+    _FontRow(family: _type1, weight: FontWeight.w700, label: 'W700'),
+    _FontRow(family: _type1, weight: FontWeight.w800, label: 'W800'),
+    _FontRow(family: _type1, weight: FontWeight.w900, label: 'W900'),
+    _FontRow(family: _type2, weight: FontWeight.w500, style: FontStyle.normal, label: 'w500 N'),
+    _FontRow(family: _type2, weight: FontWeight.w500, style: FontStyle.italic, label: 'w500 I'),
+    _FontRow(family: _type2, weight: FontWeight.w900, style: FontStyle.normal, label: 'w900 N'),
+    _FontRow(family: _type2, weight: FontWeight.w900, style: FontStyle.italic, label: 'w900 I'),
+  ];
+}
+
+class _FontRow extends StatelessWidget {
+  final String family;
+  final FontWeight weight;
+  final FontStyle? style;
+  final String label;
+
+  const _FontRow({required this.family, required this.weight, this.style, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text('个人信息更改 $label', style: TextStyle(fontFamily: family, fontWeight: weight, fontStyle: style)),
+      subtitle: Text('ABCDEFGabcdefg', style: TextStyle(fontFamily: family, fontWeight: weight, fontStyle: style)),
+    );
   }
 }
