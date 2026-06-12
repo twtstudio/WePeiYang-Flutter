@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,10 +23,11 @@ class ThemeSetting extends StatefulWidget {
 
 class _ThemeSettingState extends State<ThemeSetting>
     with SingleTickerProviderStateMixin {
-  late WpyThemeData shiftTheme;
-  bool canMove = true;
   static const _channel = MethodChannel('icon_switch');
   static final _appIconThemes = WpyThemeData.brightThemeList;
+
+  late AnimationController _animController;
+  late Animation<double> _clipAnim;
 
   bool get _canSwitchAppIcon => defaultTargetPlatform == TargetPlatform.android;
 
@@ -110,406 +109,416 @@ class _ThemeSettingState extends State<ThemeSetting>
   void initState() {
     super.initState();
     _loadCurrentAppIcon();
-  }
 
-  shift() {
-    setState(() {
-      CommonPreferences.autoDarkTheme.value = false;
-    });
-    shiftToLight();
-    shiftToDark();
-  }
-
-  shiftToLight() {
-    if (globalTheme.value.meta.brightness == Brightness.dark) {
-      globalTheme.value = shiftTheme;
-      CommonPreferences.appDarkThemeId.clear();
-      CommonPreferences.usingDarkTheme.value = 0;
+    _animController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+    double initialValue;
+    if (CommonPreferences.autoDarkTheme.value) {
+      initialValue = 0.5;
+    } else if (globalTheme.value.meta.brightness == Brightness.light) {
+      initialValue = 1.0;
+    } else {
+      initialValue = 0.0;
     }
-  }
-
-  shiftToDark() {
-    if (globalTheme.value.meta.brightness == Brightness.light) {
-      globalTheme.value = shiftTheme;
-      CommonPreferences.appDarkThemeId.value = shiftTheme.meta.darkThemeId;
-      CommonPreferences.usingDarkTheme.value = 1;
-    }
+    _animController.value = initialValue;
+    _clipAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeInOut),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
-    shiftTheme = WpyThemeData.themeList.firstWhere((element) {
-      return element.meta.themeId ==
-          (globalTheme.value.meta.brightness == Brightness.light
-              ? globalTheme.value.meta.darkThemeId
-              : CommonPreferences.appThemeId.value);
-    }, orElse: () => WpyThemeData.brightThemeList[0]);
-    Widget gridView = GridView(
-      //解决无限高度问题
-      shrinkWrap: true,
-      physics: new NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1.5,
-      ),
-      children: [
-        for (final theme in WpyThemeData.brightThemeList)
-          GestureDetector(
-            onTap: () async {
-              globalTheme.value = theme;
-              CommonPreferences.usingDarkTheme.value = 0;
-              CommonPreferences.appThemeId.value = theme.meta.themeId;
-              print(theme.meta.address);
-            },
-            child: WpyThemeCard(
-              name: theme.meta.name,
-              primaryColor: theme.meta.representativeColor,
-              hintTextColor: theme.meta.hintTextColor,
-              selected: theme.meta.themeId ==
-                  WpyTheme.of(context).themeData.meta.themeId,
-            ),
-          ),
-      ],
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  void _applyBrightness(Brightness brightness) {
+    CommonPreferences.autoDarkTheme.value = false;
+    WpyTheme.applyStoredTheme(brightness: brightness);
+    _animController.animateTo(brightness == Brightness.light ? 1.0 : 0.0);
+    setState(() {});
+  }
+
+  void _applyAutoMode() {
+    CommonPreferences.autoDarkTheme.value = true;
+    final brightness = MediaQuery.platformBrightnessOf(context);
+    WpyTheme.applyStoredTheme(brightness: brightness);
+    _animController.animateTo(0.5);
+    setState(() {});
+  }
+
+  void _selectLightTheme(WpyThemeData theme) {
+    CommonPreferences.appThemeId.value = theme.meta.themeId;
+    if (globalTheme.value.meta.brightness == Brightness.light) {
+      globalTheme.value = theme;
+    }
+    setState(() {});
+  }
+
+  void _selectDarkTheme(WpyThemeData theme) {
+    CommonPreferences.appDarkThemeId.value = theme.meta.themeId;
+    if (globalTheme.value.meta.brightness == Brightness.dark) {
+      globalTheme.value = theme;
+    }
+    setState(() {});
+  }
+
+  Widget _buildPreviewSection(BuildContext context) {
+    final lightTheme = WpyThemeData.themeList.firstWhere(
+      (e) => e.meta.themeId == CommonPreferences.appThemeId.value &&
+          e.meta.brightness == Brightness.light,
+      orElse: () => WpyThemeData.brightThemeList[0],
+    );
+    final darkTheme = WpyThemeData.themeList.firstWhere(
+      (e) => e.meta.themeId == CommonPreferences.appDarkThemeId.value &&
+          e.meta.brightness == Brightness.dark,
+      orElse: () => WpyThemeData.darkThemeList[0],
     );
 
-    Widget exampleCard = Container(
-      width: 150.w,
-      height: 80.h,
-      margin: EdgeInsets.fromLTRB(18.h, 2.h, 0, 16.h),
-      decoration: MapAndCalenderState().cardDecoration(context),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(width: 12.w),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Opacity(
-                opacity: 0.2,
-                child: Container(
-                  width: 48.w,
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: WpyTheme.of(context).get(
-                      WpyColorKey.beanLightColor,
-                    ),
-                  ),
-                ),
-              ),
-              ColoredIcon(
-                "assets/svg_pics/lake_butt_icons/daily.png",
-                width: 21.w,
-                color: WpyTheme.of(context).primary,
-              ),
-            ],
-          ),
-          SizedBox(width: 14.w),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 10.h,
-                width: 60.w,
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30.w),
-                  ),
-                ),
-              ),
-              SizedBox(height: 4.5.h),
-              Container(
-                height: 6.h,
-                width: 50.w,
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.unlabeledColor),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30.w),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-    Widget exampleCard2 = Container(
-      width: 150.w,
-      height: 80.h,
-      margin: EdgeInsets.fromLTRB(18.h, 2.h, 0, 16.h),
-      decoration: MapAndCalenderState().cardDecoration(context),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(width: 12.w),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Opacity(
-                opacity: 0.2,
-                child: Container(
-                  width: 48.w,
-                  height: 48.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: WpyTheme.of(context).get(
-                      WpyColorKey.beanLightColor,
-                    ),
-                  ),
-                ),
-              ),
-              ColoredIcon(
-                "assets/svg_pics/lake_butt_icons/lost_and_found.png",
-                width: 21.w,
-                color: WpyTheme.of(context).primary,
-              ),
-            ],
-          ),
-          SizedBox(width: 14.w),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 10.h,
-                width: 60.w,
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30.w),
-                  ),
-                ),
-              ),
-              SizedBox(height: 4.5.h),
-              Container(
-                height: 6.h,
-                width: 50.w,
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context).get(WpyColorKey.unlabeledColor),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(30.w),
-                  ),
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-
-    Widget layout = Stack(
-      children: [
-        InkWell(
-          onTap: () => shift(),
-          child: Opacity(
-            opacity: globalTheme.value.meta.brightness == Brightness.light
-                ? 0.9
-                : 0.5,
-            child: Container(
-              height: 0.74.sw,
-              width: 1.sw - 10.w,
-              clipBehavior: Clip.hardEdge,
-              margin: EdgeInsets.all(5.w),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10.w)),
-                  color: shiftTheme.meta.representativeColor),
-              child: Stack(
-                alignment: Alignment.centerLeft,
-                clipBehavior: Clip.hardEdge,
-                fit: StackFit.loose,
+    Widget exampleCard(String iconAsset, BuildContext ctx) => AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: 150.w,
+          height: 80.h,
+          margin: EdgeInsets.fromLTRB(18.h, 2.h, 0, 0),
+          decoration: MapAndCalenderState().cardDecoration(ctx),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 12.w),
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Positioned(
-                    left: 10,
-                    top: -0.09.sw,
-                    child: Text(
-                      shiftTheme.meta.name,
-                      overflow: TextOverflow.clip,
-                      style: TextUtil.base.w900
-                          .sp(80)
-                          .copyWith(color: Colors.white30),
+                  Opacity(
+                    opacity: 0.2,
+                    child: Container(
+                      width: 48.w,
+                      height: 48.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WpyTheme.of(ctx)
+                            .get(WpyColorKey.beanLightColor),
+                      ),
                     ),
                   ),
-                  Positioned(
-                    left: 20.w,
-                    top: 0.04.sw,
-                    child: Text(
-                      '切换至浅色主题',
-                      overflow: TextOverflow.clip,
-                      style: TextUtil.base.w400.sp(18).copyWith(
-                          color:
-                              shiftTheme.data.get(WpyColorKey.brightTextColor)),
+                  ColoredIcon(
+                    iconAsset,
+                    width: 21.w,
+                    color: WpyTheme.of(ctx).primary,
+                  ),
+                ],
+              ),
+              SizedBox(width: 14.w),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 10.h,
+                    width: 60.w,
+                    decoration: BoxDecoration(
+                      color: WpyTheme.of(ctx)
+                          .get(WpyColorKey.labelTextColor),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
-                  Positioned(
-                    left: 10,
-                    bottom: -0.09.sw,
-                    child: Text(
-                      shiftTheme.meta.name,
-                      overflow: TextOverflow.clip,
-                      style: TextUtil.base.whiteO60.w900
-                          .sp(80)
-                          .copyWith(color: Colors.white10),
-                    ),
-                  ),
-                  Positioned(
-                    left: 20.w,
-                    bottom: 0.04.sw,
-                    child: Text(
-                      '切换至深色主题',
-                      overflow: TextOverflow.clip,
-                      style: TextUtil.base.w400
-                          .sp(18)
-                          .copyWith(color: Colors.white60),
+                  SizedBox(height: 4.5.h),
+                  Container(
+                    height: 6.h,
+                    width: 50.w,
+                    decoration: BoxDecoration(
+                      color: WpyTheme.of(ctx)
+                          .get(WpyColorKey.unlabeledColor),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-        ),
-        GestureDetector(
-          onVerticalDragEnd: (e) {
-            if (canMove = true && e.velocity.pixelsPerSecond.distance > 10.w) {
-              if (CommonPreferences.autoDarkTheme.value) {
-                setState(() {
-                  CommonPreferences.autoDarkTheme.value = false;
-                });
-              }
+        );
 
-              if (e.velocity.pixelsPerSecond.direction < pi / 2) {
-                canMove = false;
-                shiftToLight();
-              } else {
-                canMove = false;
-                shiftToDark();
-              }
-            }
-          },
-          child: AnimatedContainer(
-            onEnd: () {
-              canMove = true;
-            },
-            clipBehavior: Clip.hardEdge,
-            margin: EdgeInsets.fromLTRB(
-                5.w,
-                globalTheme.value.meta.brightness == Brightness.light
-                    ? 5.w
-                    : 0.14.sw + 5.w,
-                5.w,
-                5.w),
-
-            // 这个删了会报错
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.w),
-                topRight: Radius.circular(10.w),
+    Widget exampleCard2(String iconAsset, BuildContext ctx) => AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: 150.w,
+          height: 80.h,
+          margin: EdgeInsets.fromLTRB(18.h, 2.h, 0, 0),
+          decoration: MapAndCalenderState().cardDecoration(ctx),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(width: 12.w),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Opacity(
+                    opacity: 0.2,
+                    child: Container(
+                      width: 48.w,
+                      height: 48.h,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: WpyTheme.of(ctx)
+                            .get(WpyColorKey.beanLightColor),
+                      ),
+                    ),
+                  ),
+                  ColoredIcon(
+                    iconAsset,
+                    width: 21.w,
+                    color: WpyTheme.of(ctx).primary,
+                  ),
+                ],
               ),
-            ),
+              SizedBox(width: 14.w),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 10.h,
+                    width: 60.w,
+                    decoration: BoxDecoration(
+                      color: WpyTheme.of(ctx)
+                          .get(WpyColorKey.labelTextColor),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(30.w)),
+                    ),
+                  ),
+                  SizedBox(height: 4.5.h),
+                  Container(
+                    height: 6.h,
+                    width: 50.w,
+                    decoration: BoxDecoration(
+                      color: WpyTheme.of(ctx)
+                          .get(WpyColorKey.unlabeledColor),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(30.w)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
 
-            height: 0.6.sw,
-            width: 1.sw - 10.w,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInCubic,
-            child: Stack(
+    String greeting = 'HELLO';
+    if (CommonPreferences.lakeNickname.value.isNotEmpty) {
+      greeting += ', ${CommonPreferences.lakeNickname.value}';
+    }
+
+    Widget buildLayout(WpyThemeData theme) {
+      final isLight = theme.meta.brightness == Brightness.light;
+      final watermarkText = theme.meta.name;
+      return WpyTheme(
+        themeData: theme,
+        child: Builder(
+          builder: (ctx) {
+            return Stack(
               children: [
-                ScheduleBackground(),
-                Column(
-                  children: [
-                    Container(
-                      height: 60.h,
-                      margin:
-                          EdgeInsets.only(left: 30.w, top: 10.h, bottom: 14.h),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextUtil.base.bright(context).w400.sp(22),
-                      ),
+                Positioned.fill(
+                  child: Opacity(
+                    opacity: isLight ? 0.9 : 0.5,
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      color: theme.meta.representativeColor,
                     ),
-                    Expanded(
-                      child: Container(
-                        width: 1.sw,
-                        decoration: BoxDecoration(
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.primaryBackgroundColor),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.w),
-                            topRight: Radius.circular(30.w),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Spacer(),
-                            Row(
-                              children: [exampleCard, exampleCard2],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                ),
+                Positioned.fill(
+                  top: 30.h,
+                  child: IgnorePointer(child: ScheduleBackground()),
                 ),
                 Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0.001.sw,
-                  child: Icon(
-                    Icons.drag_handle,
-                    color: Colors.black.withOpacity(0.3),
-                    size: 35.w,
+                  left: isLight ? 10 : null,
+                  right: isLight ? null : 10,
+                  top: -10.h,
+                  child: Text(
+                      watermarkText,
+                      overflow: TextOverflow.clip,
+                      textAlign: isLight ? TextAlign.left : TextAlign.right,
+                      style: TextUtil.base.w900
+                          .sp(35)
+                          .copyWith(color: Colors.white30),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(height: 30.h),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: 30.w, top: 5.h, bottom: 10.h),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          greeting,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextUtil.base.bright(ctx).w400.sp(22),
+                        ),
+                      ),
+                      Expanded(
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          padding: EdgeInsets.fromLTRB(0, 2.h, 0, 10.h),
+                          decoration: BoxDecoration(
+                            color: WpyTheme.of(ctx).get(
+                                WpyColorKey.primaryBackgroundColor),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40.r),
+                              topRight: Radius.circular(40.r),
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              exampleCard(
+                                  "assets/svg_pics/lake_butt_icons/daily.png",
+                                  ctx),
+                              exampleCard2(
+                                  "assets/svg_pics/lake_butt_icons/lost_and_found.png",
+                                  ctx),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
+            );
+          },
+        ),
+      );
+    }
+
+    return AnimatedBuilder(
+      animation: _clipAnim,
+      builder: (context, child) {
+        final clipValue = _clipAnim.value;
+        return Container(
+          height: 0.45.sw,
+          margin: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 8.h),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: Stack(
+              children: [
+                Positioned.fill(child: buildLayout(darkTheme)),
+                Positioned.fill(
+                  child: ClipPath(
+                    clipper: _AnimatedVerticalClipper(clipValue: clipValue),
+                    child: buildLayout(lightTheme),
+                  ),
+                ),
+                if (clipValue > 0.01 && clipValue < 0.99)
+                  CustomPaint(
+                    size: Size.infinite,
+                    painter: _AnimatedVerticalLinePainter(
+                      clipValue: clipValue,
+                      dividerColor: Colors.white30,
+                    ),
+                  ),
+              ],
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
+  }
 
-    Widget autoDarkThemeSelect = Container(
-      padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+  @override
+  Widget build(BuildContext context) {
+    Widget previewSection = _buildPreviewSection(context);
+
+    Widget modeSelect = Container(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
+      margin: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 8.h),
       decoration: BoxDecoration(
         color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text('深色模式跟随系统'), SizedBox(height: 3.h), Text('默认开启')],
-            ),
-          ),
-          Switch(
-            value: CommonPreferences.autoDarkTheme.value,
-            onChanged: (value) {
-              CommonPreferences.autoDarkTheme.value = value;
-              setState(() {
-                if (CommonPreferences.autoDarkTheme.value &&
-                    MediaQuery.platformBrightnessOf(context) ==
-                        Brightness.dark) {
-                  shiftToDark();
-                } else {
-                  shiftToLight();
-                }
-              });
-            },
-            activeColor:
-                WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor),
-            inactiveThumbColor:
-                WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-            activeTrackColor:
-                WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-            inactiveTrackColor:
-                WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
+          Text('外观模式', style: TextUtil.base.w600.sp(15).copyWith(
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
+          SizedBox(height: 12.h),
+          Row(
+            children: [
+              Expanded(
+                child: ThemeModeButton(
+                  title: '浅色',
+                  icon: Icons.light_mode,
+                  selected: !CommonPreferences.autoDarkTheme.value &&
+                      globalTheme.value.meta.brightness == Brightness.light,
+                  onTap: () => _applyBrightness(Brightness.light),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: ThemeModeButton(
+                  title: '深色',
+                  icon: Icons.dark_mode,
+                  selected: !CommonPreferences.autoDarkTheme.value &&
+                      globalTheme.value.meta.brightness == Brightness.dark,
+                  onTap: () => _applyBrightness(Brightness.dark),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: ThemeModeButton(
+                  title: '跟随系统',
+                  icon: Icons.brightness_auto,
+                  selected: CommonPreferences.autoDarkTheme.value,
+                  onTap: _applyAutoMode,
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+
+    Widget lightThemeGrid = ThemeSection(
+      title: '浅色主题',
+      children: [
+        for (final theme in WpyThemeData.brightThemeList)
+          GestureDetector(
+            onTap: () => _selectLightTheme(theme),
+            child: WpyThemeCard(
+              name: theme.meta.name,
+              primaryColor: theme.meta.representativeColor,
+              hintTextColor: theme.meta.hintTextColor,
+              selected:
+                  theme.meta.themeId == CommonPreferences.appThemeId.value,
+            ),
+          ),
+      ],
+    );
+
+    Widget darkThemeGrid = ThemeSection(
+      title: '深色主题',
+      children: [
+        for (final theme in WpyThemeData.darkThemeList)
+          GestureDetector(
+            onTap: () => _selectDarkTheme(theme),
+            child: WpyThemeCard(
+              name: theme.meta.name,
+              primaryColor: theme.meta.representativeColor,
+              hintTextColor: theme.meta.hintTextColor,
+              selected:
+                  theme.meta.themeId == CommonPreferences.appDarkThemeId.value,
+            ),
+          ),
+      ],
     );
 
     Widget appIconSelect = Container(
@@ -524,7 +533,8 @@ class _ThemeSettingState extends State<ThemeSetting>
         children: [
           Text(
             '应用图标',
-            style: TextUtil.base.w600.sp(15),
+            style: TextUtil.base.w600.sp(15).copyWith(
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
           ),
           SizedBox(height: 3.h),
           Text(
@@ -579,14 +589,143 @@ class _ThemeSettingState extends State<ThemeSetting>
         ),
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-        body: ListView(
+        body: Column(
           children: [
-            layout,
-            autoDarkThemeSelect,
-            gridView,
-            if (_canSwitchAppIcon) appIconSelect,
+            previewSection,
+            modeSelect,
+            Expanded(
+              child: ListView(
+                children: [
+                  AnimatedSize(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignment: Alignment.topCenter,
+                    child: (CommonPreferences.autoDarkTheme.value ||
+                            globalTheme.value.meta.brightness ==
+                                Brightness.light)
+                        ? lightThemeGrid
+                        : SizedBox.shrink(),
+                  ),
+                  AnimatedSize(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    alignment: Alignment.topCenter,
+                    child: (CommonPreferences.autoDarkTheme.value ||
+                            globalTheme.value.meta.brightness ==
+                                Brightness.dark)
+                        ? darkThemeGrid
+                        : SizedBox.shrink(),
+                  ),
+                  if (_canSwitchAppIcon) appIconSelect,
+                ],
+              ),
+            ),
           ],
         ));
+  }
+}
+
+class ThemeModeButton extends StatelessWidget {
+  const ThemeModeButton({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String title;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final action = WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
+    final background =
+        WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+    return WButton(
+      onPressed: onTap,
+        child: Container(
+          height: 40.h,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: background,
+            borderRadius: BorderRadius.circular(10.r),
+            border: Border.all(
+              color: selected
+                  ? action
+                  : WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16.r,
+                color: selected
+                    ? action
+                    : WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
+              ),
+              SizedBox(width: 4.w),
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              style: TextUtil.base.sp(12).copyWith(
+                    color: selected
+                        ? action
+                        : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ThemeSection extends StatelessWidget {
+  const ThemeSection({
+    super.key,
+    required this.title,
+    required this.children,
+  });
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 16.h),
+      margin: EdgeInsets.fromLTRB(12.w, 0, 12.w, 8.h),
+      decoration: BoxDecoration(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: TextUtil.base.w600.sp(15).copyWith(
+              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
+          SizedBox(height: 12.h),
+          GridView(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1.5,
+              crossAxisSpacing: 6.w,
+              mainAxisSpacing: 6.h,
+            ),
+            children: children,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -652,7 +791,8 @@ class AppIconChoiceCard extends StatelessWidget {
             name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextUtil.base.sp(12),
+            style: TextUtil.base.sp(12).copyWith(
+                color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
           ),
         ],
       ),
@@ -679,6 +819,57 @@ String _appIconAssetPath(String alias) {
   };
 }
 
+class _AnimatedVerticalClipper extends CustomClipper<Path> {
+  final double clipValue;
+
+  const _AnimatedVerticalClipper({required this.clipValue});
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final x = size.width * clipValue;
+    path.moveTo(0, 0);
+    path.lineTo(x, 0);
+    path.lineTo(x, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant _AnimatedVerticalClipper oldClipper) =>
+      oldClipper.clipValue != clipValue;
+}
+
+class _AnimatedVerticalLinePainter extends CustomPainter {
+  final double clipValue;
+  final Color dividerColor;
+
+  const _AnimatedVerticalLinePainter({
+    required this.clipValue,
+    required this.dividerColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = dividerColor
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    final x = size.width * clipValue;
+    canvas.drawLine(
+      Offset(x, 0),
+      Offset(x, size.height),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _AnimatedVerticalLinePainter oldDelegate) =>
+      oldDelegate.clipValue != clipValue;
+}
+
 class WpyThemeCard extends StatelessWidget {
   WpyThemeCard({
     super.key,
@@ -697,7 +888,7 @@ class WpyThemeCard extends StatelessWidget {
     if (!selected) return BorderSide.none;
 
     return BorderSide(
-      color: Colors.white60,
+      color: hintTextColor,
       width: 4,
     );
   }
@@ -749,7 +940,7 @@ class WpyThemeCard extends StatelessWidget {
             Center(
               child: Icon(
                 Icons.check_circle,
-                color: Colors.white60,
+                color: hintTextColor,
                 size: 30.w,
               ),
             )

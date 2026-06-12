@@ -1,26 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-
+import 'package:shimmer/shimmer.dart';
+import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 class historyLoading extends StatelessWidget {
   const historyLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Image.asset(
-              'assets/images/ai/history_loading.png',
-              width: 360.w,
-              height: 570.h,
-            ),
+    return const AiSkeletonPage();
+  }
+}
+
+class AiSkeletonPage extends StatelessWidget {
+  const AiSkeletonPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(28.w, 80.h, 28.w, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _SkeletonLine(width: 170.w, height: 26.h),
+          SizedBox(height: 42.h),
+          _SkeletonCard(height: 84.h),
+          SizedBox(height: 14.h),
+          _SkeletonCard(height: 84.h),
+          SizedBox(height: 14.h),
+          _SkeletonCard(height: 84.h),
+          SizedBox(height: 34.h),
+          Align(
+            alignment: Alignment.centerRight,
+            child: _SkeletonCard(width: 210.w, height: 58.h),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkeletonCard extends StatelessWidget {
+  const _SkeletonCard({this.width, required this.height});
+
+  final double? width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SkeletonBox(
+      width: width,
+      height: height,
+      radius: 14.r,
+    );
+  }
+}
+
+class _SkeletonLine extends StatelessWidget {
+  const _SkeletonLine({required this.width, required this.height});
+
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SkeletonBox(
+      width: width,
+      height: height,
+      radius: 8.r,
+    );
+  }
+}
+
+class _SkeletonBox extends StatelessWidget {
+  const _SkeletonBox({this.width, required this.height, required this.radius});
+
+  final double? width;
+  final double height;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+    final highlight =
+        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
+    return Shimmer.fromColors(
+      baseColor: base,
+      highlightColor: highlight,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: base,
+          borderRadius: BorderRadius.circular(radius),
         ),
-      ],
+      ),
     );
   }
 }
@@ -79,14 +154,14 @@ Widget holderBubble(BuildContext context, double width, double height,
           AnimatedBuilder(
             animation: controller,
             builder: (context, child) {
-              final opacity = 0.1 + 0.4 * controller.value; // 在 0.4~0.7 之间变动
               return Container(
                 width: width.w,
                 height: height.h,
                 margin: EdgeInsets.symmetric(vertical: 10.h),
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
                 decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(opacity), // 灰色闪烁
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.secondaryBackgroundColor),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
               );
@@ -99,11 +174,5 @@ Widget holderBubble(BuildContext context, double width, double height,
 }
 
 Widget mainLoad() {
-  return Center(
-    child: SizedBox(
-      width: 20.w,
-      height: 20.h,
-      child: CircularProgressIndicator(),
-    ),
-  );
+  return const AiSkeletonPage();
 }

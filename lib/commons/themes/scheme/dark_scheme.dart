@@ -6,19 +6,82 @@ class DarkScheme extends WpyThemeData {
   DarkScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_dark",
-            name: "北洋黑",
-            description: "深色模式, 适合在夜间使用",
-            brightness: Brightness.dark,
-            representativeColor: Color(0xFF1f1f1f),
-            hintTextColor: Color(0xFFeff4fa),
-            address: "com.twt.service.ICONBlue"
-          ),
+              themeId: "builtin_dark",
+              name: "北洋蓝",
+              description: "深色模式, 适合在夜间使用",
+              brightness: Brightness.dark,
+              representativeColor: Color(0xFF0d2137),
+              hintTextColor: Color(0xFFeff4fa),
+              address: "com.twt.service.ICONBlue"),
           data: WpyThemeDetail(
             darkSchemeDetail,
             gradient: colorSetsList,
           ),
         );
+}
+
+class TintedDarkScheme extends WpyThemeData {
+  TintedDarkScheme({
+    required String themeId,
+    required String name,
+    required String description,
+    required Color representativeColor,
+    required String address,
+  }) : super(
+          meta: BuiltInThemeMetaData(
+            themeId: themeId,
+            name: name,
+            description: description,
+            brightness: Brightness.dark,
+            representativeColor: representativeColor,
+            hintTextColor: Color(0xFFeff4fa),
+            address: address,
+          ),
+          data: _buildTintedDarkDetail(representativeColor),
+        );
+}
+
+WpyThemeDetail _buildTintedDarkDetail(Color representativeColor) {
+  final detail = Map<WpyColorKey, Color>.from(darkSchemeDetail);
+  final action = _darkTint(representativeColor, 0.58, 0.04);
+  final lightAction = _darkTint(representativeColor, 0.22, -0.04);
+  final textButton = _darkTint(representativeColor, 0.62, 0.08);
+
+  detail[WpyColorKey.defaultActionColor] = action;
+  detail[WpyColorKey.cursorColor] = action;
+  detail[WpyColorKey.primaryActionColor] = action;
+  detail[WpyColorKey.primaryLightActionColor] = lightAction;
+  detail[WpyColorKey.primaryTextButtonColor] = textButton;
+  detail[WpyColorKey.beanDarkColor] = action;
+  detail[WpyColorKey.beanLightColor] = textButton;
+  detail[WpyColorKey.lightPrimaryContainer] =
+      _darkTint(representativeColor, 0.38, -0.08);
+  detail[WpyColorKey.primaryLighterActionColor] = lightAction;
+  detail[WpyColorKey.primaryLightestActionColor] =
+      _darkTint(representativeColor, 0.46, -0.12).withOpacity(0.48);
+  detail[WpyColorKey.oldActionColor] = action;
+  detail[WpyColorKey.oldSecondaryActionColor] = action;
+  detail[WpyColorKey.oldThirdActionColor] = textButton;
+  detail[WpyColorKey.oldFurthActionColor] =
+      _darkTint(representativeColor, 0.34, -0.10);
+  detail[WpyColorKey.oldActionRippleColor] = action.withOpacity(0.5);
+  detail[WpyColorKey.loadPointA] = action;
+  detail[WpyColorKey.loadPointB] = lightAction;
+  detail[WpyColorKey.loadPointC] = textButton;
+
+  return WpyThemeDetail(
+    detail,
+    gradient: buildDarkColorSets(detail),
+    primaryColor: action,
+  );
+}
+
+Color _darkTint(Color source, double lightness, double saturationDelta) {
+  final hsl = HSLColor.fromColor(source);
+  return hsl
+      .withLightness(lightness.clamp(0, 1))
+      .withSaturation((hsl.saturation + saturationDelta).clamp(0, 1))
+      .toColor();
 }
 
 final Map<WpyColorKey, Color> darkSchemeDetail = {
@@ -174,76 +237,81 @@ final Map<WpyColorKey, Color> darkSchemeDetail = {
   WpyColorKey.scheduleOccupiedColor: Color.fromRGBO(255, 188, 107, 1),
 };
 
-final colorSetsList = {
+Map<WpyColorSetKey, dynamic> buildDarkColorSets(
+    Map<WpyColorKey, Color> detail) {
+  return {
 //level
-  WpyColorSetKey.levelColors: [
-    Color.fromRGBO(61, 123, 59, 1.0),
-    Color.fromRGBO(52, 86, 127, 1.0),
-    Color.fromRGBO(92, 61, 135, 1.0),
-    Color.fromRGBO(165, 88, 116, 1.0),
-    Color.fromRGBO(143, 110, 15, 1.0),
-    Color.fromRGBO(22, 60, 52, 1.0),
-    Color.fromRGBO(60, 61, 89, 1.0),
-    Color.fromRGBO(54, 27, 107, 1),
-    Color.fromRGBO(92, 15, 41, 1.0),
-    Color.fromRGBO(147, 70, 11, 1.0),
-  ],
+    WpyColorSetKey.levelColors: [
+      Color.fromRGBO(61, 123, 59, 1.0),
+      Color.fromRGBO(52, 86, 127, 1.0),
+      Color.fromRGBO(92, 61, 135, 1.0),
+      Color.fromRGBO(165, 88, 116, 1.0),
+      Color.fromRGBO(143, 110, 15, 1.0),
+      Color.fromRGBO(22, 60, 52, 1.0),
+      Color.fromRGBO(60, 61, 89, 1.0),
+      Color.fromRGBO(54, 27, 107, 1),
+      Color.fromRGBO(92, 15, 41, 1.0),
+      Color.fromRGBO(147, 70, 11, 1.0),
+    ],
 
 // gradient
 
-  WpyColorSetKey.primaryGradient: LinearGradient(
-    colors: [
-      darkSchemeDetail[WpyColorKey.primaryActionColor]!,
-      darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
+    WpyColorSetKey.primaryGradient: LinearGradient(
+      colors: [
+        detail[WpyColorKey.primaryActionColor]!,
+        detail[WpyColorKey.primaryLightActionColor]!,
 // 用来挡下面圆角左右的空
 //       darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
 // 在0.7停止同理
-    stops: [0, 0.7],
-  ),
+      stops: [0, 0.7],
+    ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
-    colors: [
-      darkSchemeDetail[WpyColorKey.primaryActionColor]!,
-      darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    stops: [0, 0.7],
-  ),
+    WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
+      colors: [
+        detail[WpyColorKey.primaryActionColor]!,
+        detail[WpyColorKey.primaryLightActionColor]!,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      stops: [0, 0.7],
+    ),
 
-  WpyColorSetKey.backgroundGradient: LinearGradient(
-    colors: [
-      darkSchemeDetail[WpyColorKey.primaryActionColor]!,
-      darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
+    WpyColorSetKey.backgroundGradient: LinearGradient(
+      colors: [
+        detail[WpyColorKey.primaryActionColor]!,
+        detail[WpyColorKey.primaryLightActionColor]!,
 // 用来挡下面圆角左右的空
-      darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
+        detail[WpyColorKey.primaryBackgroundColor]!,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
 // 在0.7停止同理
-    stops: [0, 0.23, 0.4],
-  ),
+      stops: [0, 0.23, 0.4],
+    ),
 
-  WpyColorSetKey.primaryGradientAllScreen: LinearGradient(
-    colors: [
-      darkSchemeDetail[WpyColorKey.primaryActionColor]!,
-      darkSchemeDetail[WpyColorKey.primaryLightActionColor]!,
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  ),
+    WpyColorSetKey.primaryGradientAllScreen: LinearGradient(
+      colors: [
+        detail[WpyColorKey.primaryActionColor]!,
+        detail[WpyColorKey.primaryLightActionColor]!,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    ),
 
-  WpyColorSetKey.gradientPrimaryBackground: LinearGradient(colors: [
-    darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
-    darkSchemeDetail[WpyColorKey.primaryBackgroundColor]!,
-  ]),
+    WpyColorSetKey.gradientPrimaryBackground: LinearGradient(colors: [
+      detail[WpyColorKey.primaryBackgroundColor]!,
+      detail[WpyColorKey.primaryBackgroundColor]!,
+    ]),
 
-  WpyColorSetKey.progressBarGradientSet: [
-    Color(0x2262677b),
-    Color(0x8862677b),
-    Color(0xff62677b),
-  ]
-};
+    WpyColorSetKey.progressBarGradientSet: [
+      Color(0x2262677b),
+      Color(0x8862677b),
+      Color(0xff62677b),
+    ]
+  };
+}
+
+final colorSetsList = buildDarkColorSets(darkSchemeDetail);

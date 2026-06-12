@@ -29,15 +29,55 @@ class WpyThemeData {
     YellowScheme(),
   ];
 
-  static final List<WpyThemeData> themeList = [
-    LightScheme(),
+  static final List<WpyThemeData> darkThemeList = [
     DarkScheme(),
-    RedScheme(),
-    PurpleScheme(),
-    OrangeScheme(),
-    GreenScheme(),
-    HaiTangScheme(),
-    YellowScheme(),
+    TintedDarkScheme(
+      themeId: 'builtin_red_dark_theme',
+      name: '夕阳红',
+      description: '夕阳红深色主题',
+      representativeColor: const Color(0xff9c2525),
+      address: 'com.twt.service.ICONRed',
+    ),
+    TintedDarkScheme(
+      themeId: 'builtin_purple_dark_theme',
+      name: '曼巴紫',
+      description: '曼巴紫深色主题',
+      representativeColor: const Color(0xFF921AFF),
+      address: 'com.twt.service.ICONPurple',
+    ),
+    TintedDarkScheme(
+      themeId: 'builtin_orange_dark_theme',
+      name: '高雅金',
+      description: '高雅金深色主题',
+      representativeColor: const Color(0xffe0ae57),
+      address: 'com.twt.service.ICONGold',
+    ),
+    TintedDarkScheme(
+      themeId: 'builtin_green_dark_theme',
+      name: '初音青',
+      description: '初音青深色主题',
+      representativeColor: const Color(0xFF39C5BB),
+      address: 'com.twt.service.ICONCyan',
+    ),
+    TintedDarkScheme(
+      themeId: 'builtin_HaiTang_dark_theme',
+      name: '海棠粉',
+      description: '海棠粉深色主题',
+      representativeColor: const Color(0xFFD983AE),
+      address: 'com.twt.service.ICONPink',
+    ),
+    TintedDarkScheme(
+      themeId: 'builtin_yellow_dark_theme',
+      name: '镜音黄',
+      description: '镜音黄深色主题',
+      representativeColor: const Color(0xffffe211),
+      address: 'com.twt.service.ICONYellow',
+    ),
+  ];
+
+  static final List<WpyThemeData> themeList = [
+    ...brightThemeList,
+    ...darkThemeList,
   ];
 
   factory WpyThemeData.light() => LightScheme();
