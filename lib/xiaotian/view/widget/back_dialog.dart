@@ -11,6 +11,7 @@ Future<Map<String, String>?> showFeedbackDialog(
 }) =>
     showModalBottomSheet<Map<String, String>>(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
         decoration: BoxDecoration(
@@ -53,7 +54,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
         left: 20.w,
         right: 20.w,
         top: 16.h,
-        bottom: 16.h,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 16.h,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -165,7 +166,7 @@ class _FeedbackSheetState extends State<_FeedbackSheet> {
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(height: 120.h),
+          SizedBox(height: 24.h),
           WButton(
             onPressed: () => _submit(),
             child: Container(

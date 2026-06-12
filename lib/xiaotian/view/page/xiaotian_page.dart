@@ -21,8 +21,6 @@ class AiPage extends StatefulWidget {
 }
 
 class AiPageState extends State<AiPage> {
-  final _avoidBottomInset = ValueNotifier(true);
-
   @override
   void initState() {
     super.initState();
@@ -53,15 +51,7 @@ class AiPageState extends State<AiPage> {
     }
   }
 
-  void setAvoidBottomInset(bool v) {
-    _avoidBottomInset.value = v;
-  }
-
-  @override
-  void dispose() {
-    _avoidBottomInset.dispose();
-    super.dispose();
-  }
+  void setAvoidBottomInset(bool v) {}
 
   @override
   Widget build(BuildContext context) {
@@ -69,33 +59,30 @@ class AiPageState extends State<AiPage> {
       create: (_) => xiaotianInputState(),
       child: WatermarkBg(
         text: CommonPreferences.userNumber.value,
-        child: ValueListenableBuilder<bool>(
-          valueListenable: _avoidBottomInset,
-          builder: (context, avoid, _) => Scaffold(
-            resizeToAvoidBottomInset: avoid,
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              title: Text(
-                '小天老师',
-                style: TextUtil.base.PingFangSC.label(context).w400.bold.sp(18),
-              ),
-              centerTitle: true,
-              leading: Builder(
-                builder: (context) {
-                  return openHistory();
-                },
-              ),
-              actions: [const openNewSession(), SizedBox(width: 15.w)],
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor:
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            title: Text(
+              '小天老师',
+              style: TextUtil.base.PingFangSC.label(context).w400.bold.sp(18),
             ),
-            drawer: const historyDrawer(),
-            body: Stack(
-              children: [
-                PageControl(context),
-              ],
+            centerTitle: true,
+            leading: Builder(
+              builder: (context) {
+                return openHistory();
+              },
             ),
+            actions: [const openNewSession(), SizedBox(width: 15.w)],
+          ),
+          drawer: const historyDrawer(),
+          body: Stack(
+            children: [
+              PageControl(context),
+            ],
           ),
         ),
       ),
@@ -121,29 +108,41 @@ class bodyPage extends StatelessWidget {
           ),
         ),
         //输入框
-        SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              inputBox(),
-              // 临时把字号调大/颜色调明显以便调试
-              Text(
-                '内容由 AI 生成，请仔细甄别',
-                style:
-                    TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
-                style:
-                    TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 4.h,
-              )
-            ],
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(context).bottom,
+          ),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                inputBox(),
+                // 临时把字号调大/颜色调明显以便调试
+                Text(
+                  '内容由 AI 生成，请仔细甄别',
+                  style: TextUtil.base
+                      .labelWithOp(context)
+                      .PingFangSC
+                      .normal
+                      .sp(10),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
+                  style: TextUtil.base
+                      .labelWithOp(context)
+                      .PingFangSC
+                      .normal
+                      .sp(10),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 4.h,
+                )
+              ],
+            ),
           ),
         )
       ],
