@@ -21,24 +21,18 @@ val keystoreProps = Properties()
 rootProject.file("local.properties").inputStream().use { s -> keystoreProps.load(s) }
 
 // 打印构建信息
-fun printTitledBox(title: String, content: List<String>) {
-    val maxLen = content.maxOfOrNull { it.length } ?: 0
+fun printTitledBox(title: String, content: List<String>, maxWidth: Int = 130) {
+    val truncated = content.map { if (it.length > maxWidth) it.take(maxWidth - 3) + "..." else it }
+    val maxLen = minOf(truncated.maxOfOrNull { it.length } ?: 0, maxWidth)
     val w = maxOf(maxLen, title.length) + 4
     val border = "+" + "-".repeat(w) + "+"
     println(border)
     println("| $title" + " ".repeat(w - title.length - 1) + "|")
     println("|" + " ".repeat(w) + "|")
-    content.forEach { println("| $it" + " ".repeat(w - it.length - 1) + "|") }
+    truncated.forEach { println("| $it" + " ".repeat(w - it.length - 1) + "|") }
     println("|" + " ".repeat(w) + "|")
     println(border)
 }
-printTitledBox("BuildInfo", listOf(
-    "Java Version: ${System.getProperty("java.version")}",
-    "Java Home: ${System.getProperty("java.home")}",
-    "OS: ${System.getProperty("os.name")} ${System.getProperty("os.version")}",
-    "OS Arch: ${System.getProperty("os.arch")}"
-))
-
 // 从 --dart-define 提取环境变量
 fun getDartDefines(): Map<String, String> {
     if (project.hasProperty("dart-defines")) {
@@ -201,6 +195,45 @@ android {
 flutter {
     source = "../.."
 }
+
+// 读取 Flutter SDK 版本 (FVM 下目录名即版本号，否则取 engine commit 前8位)
+val flutterSdkPath = localProperties.getProperty("flutter.sdk") ?: "unknown"
+val sdkDirName = file(flutterSdkPath).name
+val flutterVersion = if (sdkDirName.matches(Regex("\\d+\\.\\d+\\.\\d+"))) {
+    sdkDirName
+} else {
+    val engineFile = file("$flutterSdkPath/bin/internal/engine.version")
+    if (engineFile.exists()) engineFile.readText().trim().take(8) else "unknown"
+}
+
+val dartDefineEntries = getDartDefines()
+val dartDefineLines = if (dartDefineEntries.isNotEmpty()) {
+    listOf("Dart Defines:") + dartDefineEntries.map { "  ${it.key}=${it.value}" }
+} else {
+    listOf("Dart Defines: (none)")
+}
+
+val jvmMaxMemoryMB = Runtime.getRuntime().maxMemory() / 1024 / 1024
+
+printTitledBox("BuildInfo", listOf(
+    "App ID: ${android.namespace}",
+    "Version: $flutterVersionName (code: $flutterVersionCode)",
+    "Build Mode: ${localProperties.getProperty("flutter.buildMode") ?: "unknown"}",
+    "Flutter: $flutterVersion",
+    "Flutter SDK: $flutterSdkPath",
+    "Compile SDK: ${flutter.compileSdkVersion}",
+    "Min SDK: ${flutter.minSdkVersion}",
+    "Target SDK: ${flutter.targetSdkVersion}",
+    "NDK: ${flutter.ndkVersion}",
+    "Gradle: ${project.gradle.gradleVersion}",
+    "Kotlin: ${KotlinVersion.CURRENT}",
+    "Java: ${System.getProperty("java.version")}",
+    "Java Home: ${System.getProperty("java.home")}",
+    "OS: ${System.getProperty("os.name")} ${System.getProperty("os.version")}",
+    "OS Arch: ${System.getProperty("os.arch")}",
+    "CPUs: ${Runtime.getRuntime().availableProcessors()}",
+    "Max Memory: $jvmMaxMemoryMB MB",
+) + dartDefineLines)
 
 kotlin {
     compilerOptions {

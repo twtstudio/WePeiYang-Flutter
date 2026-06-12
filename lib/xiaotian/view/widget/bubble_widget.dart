@@ -91,14 +91,16 @@ class _bubbleFromAiState extends State<bubbleFromAi>
       });
     } else {
       // 否则主动发起流请求
-      _subscription = AiService().streamChat(
+      _subscription = AiService()
+          .streamChat(
         prompt: widget.prompt ?? '',
         sessionId: widget.sessionId ?? '',
         searchTime: widget.searchTime,
         searchType: widget.searchType,
         headers: widget.headers,
-      ).listen(
-            (event) {
+      )
+          .listen(
+        (event) {
           setState(() {
             switch (event.type) {
               case 'followup':
@@ -125,7 +127,6 @@ class _bubbleFromAiState extends State<bubbleFromAi>
                 error = event.data['message'];
                 _streamCompleted = true;
                 break;
-
             }
             scrollScreen(context.read<xiaotianInputState>().scrollController);
           });
@@ -165,35 +166,34 @@ class _bubbleFromAiState extends State<bubbleFromAi>
               constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.92,
               ),
-
               child: text.isEmpty
                   ? Baseline(
-                baseline: 20,
-                baselineType: TextBaseline.alphabetic,
-                child: SizedBox(
-                  width: 25.w,
-                  height: 25.h,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Loading(),
-                  ),
-                ),
-              )
+                      baseline: 20,
+                      baselineType: TextBaseline.alphabetic,
+                      child: SizedBox(
+                        width: 25.w,
+                        height: 25.h,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Loading(),
+                        ),
+                      ),
+                    )
                   : Markdown(
-                padding: EdgeInsets.symmetric(vertical: 4.h),
-                data: text,
-                selectable: true,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                styleSheet:
-                MarkdownStyleSheet.fromTheme(Theme.of(context))
-                    .copyWith(
-                  p: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ),
+                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                      data: text,
+                      selectable: true,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      styleSheet:
+                          MarkdownStyleSheet.fromTheme(Theme.of(context))
+                              .copyWith(
+                        p: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
             ),
 
-            if(_streamCompleted) aiDeclaration(context),
+            if (_streamCompleted) aiDeclaration(context),
             // 信息来源
             if (sources.isNotEmpty) CollapsibleSourceList(source: sources),
 
@@ -207,7 +207,12 @@ class _bubbleFromAiState extends State<bubbleFromAi>
             //   Text("⚠ $error", style: const TextStyle(color: Colors.red)),
             // 底部按钮
             if (_streamCompleted && text.isNotEmpty)
-              buttonForAI(text: text, index: widget.index, trace: _trace, messageId: widget.messageId, likeCount: widget.likeCount),
+              buttonForAI(
+                  text: text,
+                  index: widget.index,
+                  trace: _trace,
+                  messageId: widget.messageId,
+                  likeCount: widget.likeCount),
           ],
         ),
       ),
@@ -235,7 +240,7 @@ class bubbleFromAi_Text extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w,vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -251,22 +256,25 @@ class bubbleFromAi_Text extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   styleSheet:
-                  MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
                     p: Theme.of(context).textTheme.bodyMedium,
                   ),
-                )
-            ),
+                )),
             //AI声明
             aiDeclaration(context),
             //底部按钮
-            buttonForAI(text: text, index: index, trace: trace, messageId: messageId, likeCount: 0)
+            buttonForAI(
+                text: text,
+                index: index,
+                trace: trace,
+                messageId: messageId,
+                likeCount: 0)
           ],
         ),
       ),
     );
   }
 }
-
 
 //用户发言的气泡
 class bubbleFromUser extends StatelessWidget {
@@ -374,7 +382,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
           border: Border.all(
             color: WpyTheme.of(context)
                 .get(WpyColorKey.primaryActionColor)
-                .withOpacity(0.4),
+                .withValues(alpha: 0.4),
             width: 1.r,
           ),
           boxShadow: [
@@ -383,7 +391,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                 blurRadius: 10.r,
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.reverseBackgroundColor)
-                    .withOpacity(0.05))
+                    .withValues(alpha: 0.05))
           ]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +472,7 @@ class _CollapsibleSourceListState extends State<CollapsibleSourceList> {
                                         debugPrint('无法打开链接: $link');
                                       }
                                     },
-                              ),
+                                ),
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
@@ -508,7 +516,7 @@ Widget followUp(BuildContext context, String title, VoidCallback onTap) {
                   blurRadius: 10.r,
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.reverseBackgroundColor)
-                      .withOpacity(0.05))
+                      .withValues(alpha: 0.05))
             ]),
         child: RichText(
           text: TextSpan(
@@ -540,7 +548,7 @@ Widget aiDeclaration(BuildContext context) {
     padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 10.w),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(8.r),
-      // color: WpyTheme.of(context).get(WpyColorKey.elegantPostTagColor).withOpacity(0.7),
+      // color: WpyTheme.of(context).get(WpyColorKey.elegantPostTagColor).withValues(alpha: 0.7),
       color: Colors.transparent,
       border: Border.all(
         // color: WpyTheme.of(context).get(WpyColorKey.elegantLongPostTagColor),
@@ -556,7 +564,13 @@ Widget aiDeclaration(BuildContext context) {
 }
 
 class buttonForAI extends StatelessWidget {
-  const buttonForAI({super.key,required this.text,required this.index,required this.trace,required this.messageId, this.likeCount = 0});
+  const buttonForAI(
+      {super.key,
+      required this.text,
+      required this.index,
+      required this.trace,
+      required this.messageId,
+      this.likeCount = 0});
   final text;
   final index;
   final trace;
@@ -582,12 +596,11 @@ class buttonForAI extends StatelessWidget {
             onPressed: () {
               Clipboard.setData(ClipboardData(text: text));
               ToastProvider.success('复制成功');
-            }
-        ),
+            }),
         SizedBox(width: 12.w),
         //重新生成回答
         WButton(
-          child:  SvgPicture.asset(
+          child: SvgPicture.asset(
             'assets/svg_pics/ai_icons/resend.svg',
             width: 20.r,
             height: 20.r,
@@ -596,12 +609,12 @@ class buttonForAI extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          onPressed: () => reSendQuestion(context,index),
+          onPressed: () => reSendQuestion(context, index),
         ),
         SizedBox(width: 12.w),
         //点赞
         WButton(
-          child:  SvgPicture.asset(
+          child: SvgPicture.asset(
             'assets/svg_pics/ai_icons/like.svg',
             width: 20.r,
             height: 20.r,
@@ -612,7 +625,7 @@ class buttonForAI extends StatelessWidget {
               BlendMode.srcIn,
             ),
           ),
-          onPressed: (){
+          onPressed: () {
             final fb = FeedBack(traceId: trace, likeCount: '1');
             feedBackPost(fb);
             context.read<xiaotianChatState>().setLikeCount(messageId, 1);
@@ -622,7 +635,7 @@ class buttonForAI extends StatelessWidget {
         SizedBox(width: 12.w),
         //点踩
         WButton(
-          child:  SvgPicture.asset(
+          child: SvgPicture.asset(
             'assets/svg_pics/ai_icons/unlike.svg',
             width: 20.r,
             height: 20.r,
@@ -634,14 +647,18 @@ class buttonForAI extends StatelessWidget {
             ),
           ),
           onPressed: () async {
-            final  Map<String,String>? result = await showFeedbackDialog(
+            final Map<String, String>? result = await showFeedbackDialog(
               context,
               hint: '请输入你的意见',
             );
-            if(result == null) {
+            if (result == null) {
               return;
             }
-            final fb = FeedBack(traceId: trace, likeCount: '2',feedbackInformation: result['text'],state: result['code']);
+            final fb = FeedBack(
+                traceId: trace,
+                likeCount: '2',
+                feedbackInformation: result['text'],
+                state: result['code']);
             feedBackPost(fb);
             context.read<xiaotianChatState>().setLikeCount(messageId, 2);
             ToastProvider.success('反馈成功');
@@ -651,4 +668,3 @@ class buttonForAI extends StatelessWidget {
     );
   }
 }
-

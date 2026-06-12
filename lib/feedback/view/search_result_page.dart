@@ -97,36 +97,35 @@ class _SearchResultPageState extends State<SearchResultPage> {
     _refreshPost();
   }
 
-
   _onLoading() async {
-     if (currentPage != totalPage) {
-       currentPage++;
-       try {
-         final result = await FeedbackService.getPosts(
-             departmentId: departmentId,
-             type: '$type',
-             page: currentPage,
-             tagId: tagId,
-             keyword: keyword,
-             searchMode: searchMode);
-         final list = result.item1, page = result.item2;
-         totalPage = page;
-         print(currentPage);
-         print(totalPage);
-         setState(() => _list.addAll(list));
-         _refreshController.loadComplete();
-         if (list.isEmpty) _refreshController.loadNoData();
-       } catch (e) {
-         if (e is DioException) {
-           ToastProvider.error(e.error.toString());
-           _refreshController.loadFailed();
-         } else {
-           Logger.reportError(e, StackTrace.current);
-         }
-       }
-     } else {
-    _refreshController.loadNoData();
-     }
+    if (currentPage != totalPage) {
+      currentPage++;
+      try {
+        final result = await FeedbackService.getPosts(
+            departmentId: departmentId,
+            type: '$type',
+            page: currentPage,
+            tagId: tagId,
+            keyword: keyword,
+            searchMode: searchMode);
+        final list = result.item1, page = result.item2;
+        totalPage = page;
+        print(currentPage);
+        print(totalPage);
+        setState(() => _list.addAll(list));
+        _refreshController.loadComplete();
+        if (list.isEmpty) _refreshController.loadNoData();
+      } catch (e) {
+        if (e is DioException) {
+          ToastProvider.error(e.error.toString());
+          _refreshController.loadFailed();
+        } else {
+          Logger.reportError(e, StackTrace.current);
+        }
+      }
+    } else {
+      _refreshController.loadNoData();
+    }
   }
 
   @override
@@ -324,7 +323,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
     return PopScope(
       canPop: true,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         Navigator.pop(context, true);
       },

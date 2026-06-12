@@ -108,7 +108,7 @@ class CustomCoursesPage extends StatelessWidget {
               blurRadius: 10,
               color: WpyTheme.of(context)
                   .get(WpyColorKey.basicTextColor)
-                  .withOpacity(0.05),
+                  .withValues(alpha: 0.05),
             ),
           ],
         ),

@@ -229,7 +229,7 @@ class _RoomItem extends StatelessWidget {
         BoxShadow(
             color: WpyTheme.of(context)
                 .get(WpyColorKey.basicTextColor)
-                .withOpacity(0.1),
+                .withValues(alpha: 0.1),
             blurRadius: 4,
             offset: Offset(0, 2))
       ],

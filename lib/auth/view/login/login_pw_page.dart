@@ -140,7 +140,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                                     scaleY: 1.3,
                                     child: Checkbox(
                                       value: value,
-                                      side: MaterialStateBorderSide.resolveWith(
+                                      side: WidgetStateBorderSide.resolveWith(
                                         (_) => BorderSide(
                                             color: WpyTheme.of(context).get(
                                                 WpyColorKey.brightTextColor),
@@ -422,7 +422,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
         decoration: BoxDecoration(
           color: WpyTheme.of(context)
               .get(WpyColorKey.primaryBackgroundColor)
-              .withOpacity(0.4),
+              .withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(

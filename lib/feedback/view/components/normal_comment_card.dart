@@ -500,42 +500,87 @@ class _NCommentCardState extends State<NCommentCard>
           ? constraints.maxWidth
           : WePeiYangApp.screenWidth;
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        child: AnimatedSize(
-          duration: Duration(milliseconds: 150),
-          curve: Curves.decelerate,
-          child: widget.comment.content != ''
-              ? WButton(
-                  onPressed: () {
-                    setState(() {
-                      _picFullView = true;
-                    });
-                  },
-                  child: _picFullView
-                      ? WButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              FeedbackRouter.imageView,
-                              arguments: ImageViewPageArgs(
-                                  [widget.comment.imageUrl], 1, 0, false),
-                            );
-                          },
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight: WePeiYangApp.screenWidth * 2),
-                            child: WpyPic(
-                              picBaseUrl + 'origin/' + widget.comment.imageUrl,
-                              width: imageWidth,
-                              fit: BoxFit.fitWidth,
-                              withHolder: true,
-                              holderHeight: SplitUtil.w * 64,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: AnimatedSize(
+            duration: Duration(milliseconds: 150),
+            curve: Curves.decelerate,
+            child: widget.comment.content != ''
+                ? WButton(
+                    onPressed: () {
+                      setState(() {
+                        _picFullView = true;
+                      });
+                    },
+                    child: _picFullView
+                        ? WButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                FeedbackRouter.imageView,
+                                arguments: ImageViewPageArgs(
+                                    [widget.comment.imageUrl], 1, 0, false),
+                              );
+                            },
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: WePeiYangApp.screenWidth * 2),
+                              child: WpyPic(
+                                picBaseUrl +
+                                    'origin/' +
+                                    widget.comment.imageUrl,
+                                width: imageWidth,
+                                fit: BoxFit.fitWidth,
+                                withHolder: true,
+                                holderHeight: SplitUtil.w * 64,
+                              ),
                             ),
+                          )
+                        : Row(
+                            children: [
+                              ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
+                                  child: WpyPic(
+                                    '${picBaseUrl}thumb/${widget.comment.imageUrl}',
+                                    width: SplitUtil.w * 68,
+                                    height: SplitUtil.w * 68,
+                                    fit: BoxFit.cover,
+                                    withHolder: true,
+                                  )),
+                              Spacer()
+                            ],
+                          ))
+                : _picFullView
+                    ? WButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            FeedbackRouter.imageView,
+                            arguments: ImageViewPageArgs(
+                                [widget.comment.imageUrl], 1, 0, false),
+                          );
+                        },
+                        child: ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxHeight: SplitUtil.sh * 2),
+                          child: WpyPic(
+                            '${picBaseUrl}origin/${widget.comment.imageUrl}',
+                            width: imageWidth,
+                            fit: BoxFit.fitWidth,
+                            withHolder: true,
+                            holderHeight: SplitUtil.w * 64,
                           ),
-                        )
-                      : Row(
-                          children: [
-                            ClipRRect(
+                        ),
+                      )
+                    : Row(
+                        children: [
+                          WButton(
+                            onPressed: () {
+                              setState(() {
+                                _picFullView = true;
+                              });
+                            },
+                            child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(4)),
                                 child: WpyPic(
@@ -545,76 +590,33 @@ class _NCommentCardState extends State<NCommentCard>
                                   fit: BoxFit.cover,
                                   withHolder: true,
                                 )),
-                            Spacer()
-                          ],
-                        ))
-              : _picFullView
-                  ? WButton(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.imageView,
-                          arguments: ImageViewPageArgs(
-                              [widget.comment.imageUrl], 1, 0, false),
-                        );
-                      },
-                      child: ConstrainedBox(
-                        constraints:
-                            BoxConstraints(maxHeight: SplitUtil.sh * 2),
-                        child: WpyPic(
-                          '${picBaseUrl}origin/${widget.comment.imageUrl}',
-                          width: imageWidth,
-                          fit: BoxFit.fitWidth,
-                          withHolder: true,
-                          holderHeight: SplitUtil.w * 64,
-                        ),
+                          ),
+                          Expanded(
+                              child: WButton(
+                                  onPressed: () {
+                                    if (Provider.of<NewFloorProvider>(context,
+                                            listen: false)
+                                        .inputFieldEnabled) {
+                                      Provider.of<NewFloorProvider>(context,
+                                              listen: false)
+                                          .clearAndClose();
+                                    } else {
+                                      Provider.of<NewFloorProvider>(context,
+                                              listen: false)
+                                          .inputFieldOpenAndReplyTo(
+                                              widget.comment.id);
+                                      FocusScope.of(context).requestFocus(
+                                          Provider.of<NewFloorProvider>(context,
+                                                  listen: false)
+                                              .focusNode);
+                                    }
+                                  },
+                                  child: Container(
+                                      height: SplitUtil.w * 68,
+                                      color: Colors.transparent)))
+                        ],
                       ),
-                    )
-                  : Row(
-                      children: [
-                        WButton(
-                          onPressed: () {
-                            setState(() {
-                              _picFullView = true;
-                            });
-                          },
-                          child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(4)),
-                              child: WpyPic(
-                                '${picBaseUrl}thumb/${widget.comment.imageUrl}',
-                                width: SplitUtil.w * 68,
-                                height: SplitUtil.w * 68,
-                                fit: BoxFit.cover,
-                                withHolder: true,
-                              )),
-                        ),
-                        Expanded(
-                            child: WButton(
-                                onPressed: () {
-                                  if (Provider.of<NewFloorProvider>(context,
-                                          listen: false)
-                                      .inputFieldEnabled) {
-                                    Provider.of<NewFloorProvider>(context,
-                                            listen: false)
-                                        .clearAndClose();
-                                  } else {
-                                    Provider.of<NewFloorProvider>(context,
-                                            listen: false)
-                                        .inputFieldOpenAndReplyTo(
-                                            widget.comment.id);
-                                    FocusScope.of(context).requestFocus(
-                                        Provider.of<NewFloorProvider>(context,
-                                                listen: false)
-                                            .focusNode);
-                                  }
-                                },
-                                child: Container(
-                                    height: SplitUtil.w * 68,
-                                    color: Colors.transparent)))
-                      ],
-                    ),
-        ));
+          ));
     });
 
     var subFloor;
@@ -897,11 +899,10 @@ class AdminPopUpState extends State<AdminPopUp> {
                   adminTopFloor(widget.floorId, tc.text);
                 },
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(2),
-                  backgroundColor: MaterialStateProperty.all(
-                      WpyTheme.of(context)
-                          .get(WpyColorKey.secondaryBackgroundColor)),
-                  shape: MaterialStateProperty.all(
+                  elevation: WidgetStateProperty.all(2),
+                  backgroundColor: WidgetStateProperty.all(WpyTheme.of(context)
+                      .get(WpyColorKey.secondaryBackgroundColor)),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(100),
                     ),

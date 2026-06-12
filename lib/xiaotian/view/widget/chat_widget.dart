@@ -75,7 +75,7 @@ class Suggestion extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.r),
             color: WpyTheme.of(context)
                 .get(WpyColorKey.oldSwitchBarColor)
-                .withOpacity(0.9),
+                .withValues(alpha: 0.9),
           ),
           child: Column(
             children: [
@@ -168,7 +168,7 @@ class _NewChatTileState extends State<NewChatTile> {
             side: BorderSide(
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.beanDarkColor)
-                    .withOpacity(0.8),
+                    .withValues(alpha: 0.8),
                 width: 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
@@ -455,7 +455,7 @@ class _inputBoxState extends State<inputBox> {
             BoxShadow(
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.beanDarkColor)
-                    .withOpacity(0.6),
+                    .withValues(alpha: 0.6),
                 blurRadius: 8.r,
                 offset: Offset(0, 0))
           ],
@@ -538,8 +538,8 @@ class _inputBoxState extends State<inputBox> {
                                     shadows: isRecording
                                         ? [
                                             Shadow(
-                                              color:
-                                                  Colors.red.withOpacity(0.5),
+                                              color: Colors.red
+                                                  .withValues(alpha: 0.5),
                                               blurRadius: 3,
                                               offset: Offset(2, 2),
                                             )

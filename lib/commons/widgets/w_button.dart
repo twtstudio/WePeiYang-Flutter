@@ -17,7 +17,7 @@ class _WButtonState extends State<WButton> {
       child: widget.child!,
       onPressed: widget.onPressed,
       padding: EdgeInsets.zero,
-      minSize: 0,
+      minimumSize: Size.zero,
     );
   }
 }

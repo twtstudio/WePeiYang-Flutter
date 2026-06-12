@@ -45,17 +45,16 @@ class FindPwWidget extends StatelessWidget {
               child: Text('账号已绑定手机号',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
-                elevation: MaterialStateProperty.all(3),
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.pressed))
+                elevation: WidgetStateProperty.all(3),
+                overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(WidgetState.pressed))
                     return WpyTheme.of(context)
                         .get(WpyColorKey.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
                 }),
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                     WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
             ),
@@ -72,17 +71,16 @@ class FindPwWidget extends StatelessWidget {
               child: Text('账号未绑定手机号',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(
-                elevation: MaterialStateProperty.all(3),
-                overlayColor:
-                    MaterialStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(MaterialState.pressed))
+                elevation: WidgetStateProperty.all(3),
+                overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
+                  if (states.contains(WidgetState.pressed))
                     return WpyTheme.of(context)
                         .get(WpyColorKey.oldActionRippleColor);
                   return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
                 }),
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                     WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30))),
               ),
             ),
@@ -221,14 +219,14 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                         .sp(13)
                                         .oldThirdAction(context)),
                                 style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(5),
-                                  overlayColor: MaterialStateProperty.all(
+                                  elevation: WidgetStateProperty.all(5),
+                                  overlayColor: WidgetStateProperty.all(
                                       WpyTheme.of(context)
                                           .get(WpyColorKey.oldHintColor)),
-                                  backgroundColor: MaterialStateProperty.all(
+                                  backgroundColor: WidgetStateProperty.all(
                                       WpyTheme.of(context)
                                           .get(WpyColorKey.oldHintColor)),
-                                  shape: MaterialStateProperty.all(
+                                  shape: WidgetStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(30))),
@@ -242,20 +240,20 @@ class _FindPwByPhoneWidgetState extends State<FindPwByPhoneWidget> {
                                     .reverse(context)
                                     .sp(13)),
                             style: ButtonStyle(
-                              elevation: MaterialStateProperty.all(5),
+                              elevation: WidgetStateProperty.all(5),
                               overlayColor:
-                                  MaterialStateProperty.resolveWith<Color>(
+                                  WidgetStateProperty.resolveWith<Color>(
                                       (states) {
-                                if (states.contains(MaterialState.pressed))
+                                if (states.contains(WidgetState.pressed))
                                   return WpyTheme.of(context)
                                       .get(WpyColorKey.oldActionRippleColor);
                                 return WpyTheme.of(context)
                                     .get(WpyColorKey.oldActionColor);
                               }),
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.oldActionColor)),
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30))),
                             ),

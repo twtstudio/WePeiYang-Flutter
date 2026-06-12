@@ -58,13 +58,13 @@ WpyThemeDetail _buildTintedDarkDetail(Color representativeColor) {
       _darkTint(representativeColor, 0.38, -0.08);
   detail[WpyColorKey.primaryLighterActionColor] = lightAction;
   detail[WpyColorKey.primaryLightestActionColor] =
-      _darkTint(representativeColor, 0.46, -0.12).withOpacity(0.48);
+      _darkTint(representativeColor, 0.46, -0.12).withValues(alpha: 0.48);
   detail[WpyColorKey.oldActionColor] = action;
   detail[WpyColorKey.oldSecondaryActionColor] = action;
   detail[WpyColorKey.oldThirdActionColor] = textButton;
   detail[WpyColorKey.oldFurthActionColor] =
       _darkTint(representativeColor, 0.34, -0.10);
-  detail[WpyColorKey.oldActionRippleColor] = action.withOpacity(0.5);
+  detail[WpyColorKey.oldActionRippleColor] = action.withValues(alpha: 0.5);
   detail[WpyColorKey.loadPointA] = action;
   detail[WpyColorKey.loadPointB] = lightAction;
   detail[WpyColorKey.loadPointC] = textButton;

@@ -73,17 +73,17 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   }
 
   //categoryNotifier.value是string，网络请求参数为int，转换函数
-  _categoryValueChange(String value){
-    if(value=='生活日用'){
+  _categoryValueChange(String value) {
+    if (value == '生活日用') {
       return 0;
     }
-    if(value=='数码用品'){
+    if (value == '数码用品') {
       return 1;
     }
-    if(value=='钱包卡证'){
+    if (value == '钱包卡证') {
       return 2;
     }
-    if(value=='其他'){
+    if (value == '其他') {
       return 3;
     }
   }
@@ -109,14 +109,14 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
             if (dataModel.check) {
               LostAndFoundService.sendLostAndFoundPost(
                   tag: 1,
-                  type: typeNotifier.value==1?false:true,
+                  type: typeNotifier.value == 1 ? false : true,
                   category: categoryNotifier.value,
                   title: dataModel.title,
                   content: dataModel.content,
-                  campus:1,
+                  campus: 1,
                   location: dataModel.location,
                   phone: dataModel.phone,
-                  time:1,
+                  time: 1,
                   onSuccess: () {
                     ToastProvider.success('发布成功');
                     Navigator.pop(context);
@@ -136,11 +136,11 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
     } else {
       LostAndFoundService.sendLostAndFoundPost(
         tag: "",
-        type: typeNotifier.value==1?false:true,
-        category:  _categoryValueChange(categoryNotifier.value!),
+        type: typeNotifier.value == 1 ? false : true,
+        category: _categoryValueChange(categoryNotifier.value!),
         title: dataModel.title,
         content: dataModel.content,
-        campus:"",
+        campus: "",
         location: dataModel.location,
         phone: dataModel.phone,
         time: dataModel.date,
@@ -162,7 +162,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
             leading: IconButton(
@@ -198,7 +199,8 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                     ])),
               ),
             ],
-            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             centerTitle: true,
             elevation: 0),
         body: SingleChildScrollView(
@@ -232,12 +234,12 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
                       tag: 'add',
                       child: TextButton(
                           style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.primaryActionColor)),
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                   EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h)),
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(20.r)))),
@@ -475,7 +477,8 @@ class _LostAndFoundImagesGridViewState
       for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         final targetPath = '${file.path}_compressed.jpg';
         final r = await FlutterImageCompress.compressAndGetFile(
-            file.path, targetPath, quality: 80);
+            file.path, targetPath,
+            quality: 80);
         if (r != null) file = File(r.path);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
@@ -700,8 +703,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
     super.initState();
     var dataModel = context.read<NewLostAndFoundPostProvider>();
     _dateController = TextEditingController(text: dataModel.date);
-    contentCounter =
-    ValueNotifier('${dataModel.date.characters.length}/1000')
+    contentCounter = ValueNotifier('${dataModel.date.characters.length}/1000')
       ..addListener(() {
         dataModel.date = _dateController.text;
       });
@@ -730,8 +732,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
         style: TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
         decoration: InputDecoration.collapsed(
             hintStyle: TextUtil.base.NotoSansSC.w400.sp(14).infoText(context),
-            hintText:
-            isFocused ? "" : datetexts[widget.typeNotifier.value]),
+            hintText: isFocused ? "" : datetexts[widget.typeNotifier.value]),
         onChanged: (text) {
           contentCounter.value = '${text.characters.length}/26';
           if (contentCounter.value != '0/26') {
@@ -753,7 +754,7 @@ class _SelectDateFieldState extends State<SelectDateField> {
         scrollPhysics: NeverScrollableScrollPhysics(),
         inputFormatters: [CustomizedLengthTextInputFormatter(26)],
         cursorColor:
-        WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
+            WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor));
 
     return Container(
         width: 180.w,
@@ -769,13 +770,12 @@ class _SelectDateFieldState extends State<SelectDateField> {
                 : WpyTheme.of(context).get(WpyColorKey.infoTextColor),
           ),
           Container(
-            //textfeld类必须套在container等组件里
+              //textfeld类必须套在container等组件里
               width: 100.w,
               child: inputField)
         ]));
   }
-  }
-
+}
 
 class InputLocationField extends StatefulWidget {
   final ValueNotifier<int> typeNotifier;

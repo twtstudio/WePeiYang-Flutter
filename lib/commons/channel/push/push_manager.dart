@@ -39,7 +39,7 @@ class PushManager extends ChangeNotifier {
   void showRequestNotificationDialog() {
     SmartDialog.show(
       clickMaskDismiss: false,
-      backDismiss: false,
+      backType: SmartBackType.block,
       tag: Tag,
       builder: (BuildContext context) {
         return RequestPushDialog();

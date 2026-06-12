@@ -50,11 +50,11 @@ class _LostAndFoundSearchResultPageState
   void _onRefresh() async {
     context.read<LostAndFoundModel2>().clearByType(type);
     await context.read<LostAndFoundModel2>().getNext(
-      page: 1,
-      page_size: 10,
-      type: type,
-      // type: widget.type,
-      // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
+          page: 1,
+          page_size: 10,
+          type: type,
+          // type: widget.type,
+          // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
           success: () {
             context.read<LostAndFoundModel2>().lafSubStatus[type] =
                 LAFSubStatus.ready;
@@ -77,11 +77,11 @@ class _LostAndFoundSearchResultPageState
 
   void _onLoading() async {
     await context.read<LostAndFoundModel2>().getNext(
-      page: 1,
-      page_size: 10,
-      type: type,
-      // type: widget.type,
-      // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
+          page: 1,
+          page_size: 10,
+          type: type,
+          // type: widget.type,
+          // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
           success: () {
             context.read<LostAndFoundModel2>().lafSubStatus[type] =
                 LAFSubStatus.ready;
@@ -213,7 +213,7 @@ class _LostAndFoundSearchResultPageState
                             elevation: 3,
                             shadowColor: WpyTheme.of(context)
                                 .get(WpyColorKey.backgroundGradientEndColor)
-                                .withOpacity(0.1),
+                                .withValues(alpha: 0.1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                               side: const BorderSide(
@@ -285,7 +285,7 @@ class _LostAndFoundSearchResultPageState
                                         //     );
                                         //   },
                                         // )
-                                ),
+                                      ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.only(
                                       start: 12.w, end: 12.w),
@@ -308,8 +308,7 @@ class _LostAndFoundSearchResultPageState
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
                                       Text(
-                                        _timeAgo(
-                                            postList[index].time),
+                                        _timeAgo(postList[index].time),
                                         style: TextUtil.base.w400
                                             .infoText(context)
                                             .sp(10)

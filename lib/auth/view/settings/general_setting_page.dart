@@ -117,7 +117,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                               value;
                         });
                       },
-                      activeColor: WpyTheme.of(context)
+                      activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
                       inactiveThumbColor:
                           WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -155,7 +155,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       onChanged: (value) {
                         setState(() => CommonPreferences.showMap.value = value);
                       },
-                      activeColor: WpyTheme.of(context)
+                      activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
                       inactiveThumbColor:
                           WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -195,7 +195,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                             () => CommonPreferences.hideGPA.value = !value);
                         context.read<GPANotifier>().hideGPA = !value;
                       },
-                      activeColor: WpyTheme.of(context)
+                      activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
                       inactiveThumbColor:
                           WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -235,7 +235,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               //           globalTheme.value =
               //               value ? WpyThemeData.dark() : WpyThemeData.light();
               //         },
-              //         activeColor: WpyTheme.of(context)
+              //         activeThumbColor: WpyTheme.of(context)
               //             .get(WpyColorKey.oldSecondaryActionColor),
               //         inactiveThumbColor:
               //             WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -399,7 +399,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               //           Provider.of<GPANotifier>(context, listen: false).hideGPA =
               //               value;
               //         },
-              //         activeColor: Color.fromRGBO(105, 109, 127, 1),
+              //         activeThumbColor: Color.fromRGBO(105, 109, 127, 1),
               //         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
               //         activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
               //         inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
@@ -425,7 +425,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               //           Provider.of<ExamProvider>(context, listen: false).hideExam =
               //               value;
               //         },
-              //         activeColor: Color.fromRGBO(105, 109, 127, 1),
+              //         activeThumbColor: Color.fromRGBO(105, 109, 127, 1),
               //         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
               //         activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
               //         inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
@@ -465,7 +465,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               // //           setState(() =>
               // //               CommonPreferences.useClassesBackend.value = value);
               // //         },
-              // //         activeColor: WpyTheme.of(context)
+              // //         activeThumbColor: WpyTheme.of(context)
               // //             .get(WpyColorKey.oldSecondaryActionColor),
               // //         inactiveThumbColor:
               // //             WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -507,7 +507,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                                 listen: false)
                             .nightMode = value;
                       },
-                      activeColor: WpyTheme.of(context)
+                      activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
                       inactiveThumbColor:
                           WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -549,7 +549,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                                 listen: false)
                             .showExperiment = value;
                       },
-                      activeColor: WpyTheme.of(context)
+                      activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
                       inactiveThumbColor:
                           WpyTheme.of(context).get(WpyColorKey.oldHintColor),
@@ -640,7 +640,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                             });
                           }
                         },
-                        activeColor: WpyTheme.of(context)
+                        activeThumbColor: WpyTheme.of(context)
                             .get(WpyColorKey.oldSecondaryActionColor),
                         inactiveThumbColor:
                             WpyTheme.of(context).get(WpyColorKey.oldHintColor),

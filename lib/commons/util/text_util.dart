@@ -21,7 +21,6 @@ class TextUtil {
   }
 }
 
-
 extension TextStyleAttr on TextStyle {
   /// 粗细
   TextStyle get w100 =>
@@ -57,8 +56,8 @@ extension TextStyleAttr on TextStyle {
 
   TextStyle label(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.labelTextColor));
-  TextStyle labelWithOp(context) => this
-      .copyWith(color: WpyTheme.of(context).get(WpyColorKey.labelTextColorWithOp));
+  TextStyle labelWithOp(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyColorKey.labelTextColorWithOp));
 
   TextStyle unlabeled(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.unlabeledColor));
@@ -84,8 +83,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle infoText(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.infoTextColor));
 
-  TextStyle DecText(context) =>
-      this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.elegantLongPostTagColor));
+  TextStyle DecText(context) => this.copyWith(
+      color: WpyTheme.of(context).get(WpyColorKey.elegantLongPostTagColor));
 
   TextStyle oldHint(context) =>
       this.copyWith(color: WpyTheme.of(context).get(WpyColorKey.oldHintColor));
@@ -110,7 +109,8 @@ extension TextStyleAttr on TextStyle {
   TextStyle replySuffix(context) => this
       .copyWith(color: WpyTheme.of(context).get(WpyColorKey.replySuffixColor));
 
-  TextStyle get whiteO60 => this.copyWith(color: Colors.white.withOpacity(0.6));
+  TextStyle get whiteO60 =>
+      this.copyWith(color: Colors.white.withValues(alpha: 0.6));
 
   TextStyle secondaryInfo(context) => this.copyWith(
       color: WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor));
@@ -191,6 +191,7 @@ extension TextStyleAttr on TextStyle {
     double adjustedSize = TextUtil.isInnerScreen ? (s.sp - 10) : s.sp;
     return this.copyWith(fontSize: adjustedSize);
   }
+
   TextStyle h(double h) => this.copyWith(height: h);
 
   TextStyle space({double? wordSpacing, double? letterSpacing}) =>

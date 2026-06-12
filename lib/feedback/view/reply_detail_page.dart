@@ -447,7 +447,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
     return SafeArea(
       top: false,
       child: PopScope(
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
           context.read<NewFloorProvider>().clearAndClose();
           Navigator.pop(context);

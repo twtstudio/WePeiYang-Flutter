@@ -101,7 +101,7 @@ class TodayCoursesWidget extends StatelessWidget {
                             style: TextUtil.base.bold.sp(14).customColor(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.brightTextColor)
-                                      .withOpacity(0.5),
+                                      .withValues(alpha: 0.5),
                                 ),
                           ),
                           SizedBox(height: 4.h),

@@ -342,10 +342,7 @@ class SliverCardsWidget extends StatelessWidget {
           );
         }
       },
-      onReorder: (int oldIndex, int newIndex) {
-        if (newIndex > oldIndex) {
-          newIndex -= 1;
-        }
+      onReorderItem: (int oldIndex, int newIndex) {
         final int movedIndex = order.removeAt(oldIndex);
         order.insert(newIndex, movedIndex);
 

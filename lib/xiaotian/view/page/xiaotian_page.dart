@@ -13,13 +13,13 @@ import '../../../commons/preferences/common_prefs.dart';
 import '../widget/water_mark.dart';
 import 'package:shimmer/shimmer.dart';
 
-
 class AiPage extends StatefulWidget {
   const AiPage({super.key});
 
   @override
   State<AiPage> createState() => AiPageState();
 }
+
 class AiPageState extends State<AiPage> {
   final _avoidBottomInset = ValueNotifier(true);
 
@@ -29,22 +29,23 @@ class AiPageState extends State<AiPage> {
 
     final state = context.read<xiaotianChatState>();
 
-    if(state.firstLoad) {return;}
+    if (state.firstLoad) {
+      return;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-
       // state.isLoading(true);
       _loadHistory().then((_) {
         // state.isLoading(false);
         state.setSessionId('0');
         state.save();
       });
-
     });
-
   }
+
   Future<void> _loadHistory() async {
-    final sessions = await AiService().getAllSessions(CommonPreferences.userNumber.value);
+    final sessions =
+        await AiService().getAllSessions(CommonPreferences.userNumber.value);
 
     if (mounted) {
       Provider.of<xiaotianChatState>(context, listen: false)
@@ -65,40 +66,42 @@ class AiPageState extends State<AiPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => xiaotianInputState(),
-        child: WatermarkBg(
-          text:  CommonPreferences.userNumber.value,
-          child: ValueListenableBuilder<bool>(
-            valueListenable: _avoidBottomInset,
-            builder: (context, avoid, _) => Scaffold(
+      create: (_) => xiaotianInputState(),
+      child: WatermarkBg(
+        text: CommonPreferences.userNumber.value,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: _avoidBottomInset,
+          builder: (context, avoid, _) => Scaffold(
             resizeToAvoidBottomInset: avoid,
-            backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            backgroundColor:
+                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
-              title: Text('小天老师',style: TextUtil.base.PingFangSC.label(context).w400.bold.sp(18),),
+              title: Text(
+                '小天老师',
+                style: TextUtil.base.PingFangSC.label(context).w400.bold.sp(18),
+              ),
               centerTitle: true,
               leading: Builder(
                 builder: (context) {
                   return openHistory();
                 },
               ),
-              actions: [const openNewSession(),SizedBox(width: 15.w)],
+              actions: [const openNewSession(), SizedBox(width: 15.w)],
             ),
             drawer: const historyDrawer(),
-              body: Stack(
-                children: [
-                  PageControl(context),
-                ],
-              ),
+            body: Stack(
+              children: [
+                PageControl(context),
+              ],
+            ),
           ),
+        ),
       ),
-    ),
     );
   }
 }
-
-
 
 class bodyPage extends StatelessWidget {
   const bodyPage({super.key});
@@ -119,32 +122,34 @@ class bodyPage extends StatelessWidget {
         ),
         //输入框
         SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            inputBox(),
-            // 临时把字号调大/颜色调明显以便调试
-            Text(
-              '内容由 AI 生成，请仔细甄别',
-              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
-              style: TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 4.h,)
-          ],
-        ),)
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              inputBox(),
+              // 临时把字号调大/颜色调明显以便调试
+              Text(
+                '内容由 AI 生成，请仔细甄别',
+                style:
+                    TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
+                style:
+                    TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 4.h,
+              )
+            ],
+          ),
+        )
       ],
     );
   }
 }
-
-
-
 
 Widget PageControl(BuildContext context) {
   final chatState = context.watch<xiaotianChatState>();
@@ -160,8 +165,6 @@ Widget PageControl(BuildContext context) {
 
   return child;
 }
-
-
 
 class ShimmerOverlayIcon extends StatelessWidget {
   final Widget icon;
@@ -200,7 +203,7 @@ class ShimmerOverlayIcon extends StatelessWidget {
         IgnorePointer(
           child: Shimmer.fromColors(
             baseColor: Colors.transparent,
-            highlightColor: Colors.white.withOpacity(0.8),
+            highlightColor: Colors.white.withValues(alpha: 0.8),
             period: duration,
             child: stack,
           ),

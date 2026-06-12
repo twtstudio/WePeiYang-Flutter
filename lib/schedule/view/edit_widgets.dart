@@ -114,7 +114,7 @@ class TimeFrameWidget extends StatelessWidget {
                         barrierDismissible: true,
                         barrierColor: WpyTheme.of(context)
                             .get(WpyColorKey.primaryBackgroundColor)
-                            .withOpacity(0.1),
+                            .withValues(alpha: 0.1),
                         builder: (_) => WeekPicker(
                             index,
                             top,
@@ -161,7 +161,7 @@ class TimeFrameWidget extends StatelessWidget {
                         barrierDismissible: true,
                         barrierColor: WpyTheme.of(context)
                             .get(WpyColorKey.primaryBackgroundColor)
-                            .withOpacity(0.1),
+                            .withValues(alpha: 0.1),
                         builder: (_) => UnitPicker(
                             index, top, pvd.arrangeList[index].unitList),
                       ).then((_) => pvd.notify());
@@ -292,7 +292,7 @@ class CardWidget extends StatelessWidget {
               blurRadius: 10,
               color: WpyTheme.of(context)
                   .get(WpyColorKey.basicTextColor)
-                  .withOpacity(0.06),
+                  .withValues(alpha: 0.06),
             ),
           ],
         ),
@@ -323,7 +323,7 @@ class CardWidget extends StatelessWidget {
             blurRadius: 10,
             color: WpyTheme.of(context)
                 .get(WpyColorKey.basicTextColor)
-                .withOpacity(0.08),
+                .withValues(alpha: 0.08),
           ),
         ],
       ),

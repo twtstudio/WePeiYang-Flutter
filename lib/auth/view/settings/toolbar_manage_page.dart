@@ -151,7 +151,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                     decoration: BoxDecoration(
                       color: WpyTheme.of(context)
                           .get(WpyColorKey.oldSwitchBarColor)
-                          .withOpacity(0.8),
+                          .withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Text('关闭',
@@ -179,7 +179,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                     decoration: BoxDecoration(
                       color: WpyTheme.of(context)
                           .get(WpyColorKey.dangerousRed)
-                          .withOpacity(0.8),
+                          .withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     child: Text('删除',
@@ -229,7 +229,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                 decoration: BoxDecoration(
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.dangerousRed)
-                      .withOpacity(0.8),
+                      .withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text('重置',

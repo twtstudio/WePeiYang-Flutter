@@ -19,7 +19,6 @@ class ShieldSettingPage extends StatefulWidget {
 }
 
 class _ShieldSettingPageState extends State<ShieldSettingPage> {
-
   List<String> _shieldUserUid = [];
   List<String> _shieldComment = [];
 
@@ -47,7 +46,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
           systemNavigationBarColor:
-          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
+              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
       child: Scaffold(
         appBar: AppBar(
           title: Text('屏蔽设置',
@@ -55,7 +54,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
           elevation: 0,
           centerTitle: true,
           backgroundColor:
-          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
           leading: Padding(
             padding: EdgeInsets.only(left: 15.w),
             child: WButton(
@@ -68,8 +67,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
           systemOverlayStyle: SystemUiOverlayStyle.dark,
         ),
         backgroundColor:
-        WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-
+            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(child: SizedBox(height: 15.h)),
@@ -130,12 +128,13 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                     return Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.w, vertical: 12.h),
                           child: Row(
                             children: [
                               Expanded(child: Text(uid, style: mainTextStyle)),
                               WButton(
-                                onPressed:(){
+                                onPressed: () {
                                   // setState(() {
                                   //   _shieldUserUid.removeAt(index);
                                   // });
@@ -150,7 +149,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                                   // });
                                 },
                                 child: Icon(Icons.delete_rounded,
-                                    color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
+                                    color: WpyTheme.of(context)
+                                        .get(WpyColorKey.oldListActionColor),
                                     size: 22),
                               )
                             ],
@@ -161,7 +161,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                             height: 0.5,
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.oldHintColor)
-                                .withOpacity(1),
+                                .withValues(alpha: 1),
                             margin: EdgeInsets.symmetric(horizontal: 20.w),
                           ),
                       ],
@@ -182,13 +182,13 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                 ),
                 child: WButton(
                   onPressed: () async {
-                    final  String? word = await showShieldDialog(
+                    final String? word = await showShieldDialog(
                       context,
                       hint: '请输入屏蔽词(支持正则表达式)',
                       title: '添加屏蔽词',
-                      type:1,
+                      type: 1,
                     );
-                    if(word == null) {
+                    if (word == null) {
                       return;
                     }
                     _shieldComment.add(word);
@@ -221,20 +221,23 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                     return Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 30.w, vertical: 12.h),
                           child: Row(
                             children: [
                               Expanded(child: Text(uid, style: mainTextStyle)),
                               WButton(
-                                onPressed:(){
+                                onPressed: () {
                                   setState(() {
                                     _shieldComment.removeAt(index);
                                   });
-                                  CommonPreferences.shieldComment.value = _shieldComment;
+                                  CommonPreferences.shieldComment.value =
+                                      _shieldComment;
                                   ToastProvider.success('删除成功');
                                 },
                                 child: Icon(Icons.delete_rounded,
-                                    color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
+                                    color: WpyTheme.of(context)
+                                        .get(WpyColorKey.oldListActionColor),
                                     size: 22),
                               )
                             ],
@@ -245,7 +248,7 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
                             height: 0.5,
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.oldHintColor)
-                                .withOpacity(1),
+                                .withValues(alpha: 1),
                             margin: EdgeInsets.symmetric(horizontal: 20.w),
                           ),
                       ],
@@ -261,23 +264,19 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
   }
 }
 
-Future<String?> showShieldDialog(
-    BuildContext context, {
-      String? hint,
-      String? title,
-      int? type
-    }) =>
+Future<String?> showShieldDialog(BuildContext context,
+        {String? hint, String? title, int? type}) =>
     showDialog<String>(
       context: context,
       barrierDismissible: true,
-      builder: (_) => ShieldAddDialog(title: title,hint: hint,type:type),
+      builder: (_) => ShieldAddDialog(title: title, hint: hint, type: type),
     );
 
 class ShieldAddDialog extends StatefulWidget {
   final String? hint;
   final String? title;
   final int? type;
-  const ShieldAddDialog({this.hint,this.title,this.type});
+  const ShieldAddDialog({this.hint, this.title, this.type});
 
   @override
   State<ShieldAddDialog> createState() => _ShieldAddDialogState();
@@ -295,131 +294,135 @@ class _ShieldAddDialogState extends State<ShieldAddDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 30.w),
-      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-      child: Container(
-        decoration: BoxDecoration(
-        color: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-        borderRadius: BorderRadius.circular(16.r),
-        ),
-      child:
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 17.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text(widget.title ?? "   ",
-                    style: TextUtil.base.PingFangSC.w400.bold.label(context).sp(
-                        16)),
-              ),
-              SizedBox(height: 16.h),
-              /* 输入框 */
-              TextField(
-                controller: _ctrl,
-                autofocus: true,
-                maxLines: widget.type ==  0 ? 1 : 2,
-                maxLength: widget.type ==  0 ? 8 : 20,
-                keyboardType: widget.type ==  0 ? TextInputType.number : TextInputType.text,
-                textInputAction: TextInputAction.send,
-                cursorColor: WpyTheme.of(context).get(
-                    WpyColorKey.secondaryInfoTextColor),
-                style: TextUtil.base
-                    .label(context)
-                    .PingFangSC
-                    .normal
-                    .sp(14),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: WpyTheme.of(context).get(
-                      WpyColorKey.primaryBackgroundColor),
-                  hintText: widget.hint ?? '请输入',
-                  hintStyle: TextUtil.base
-                      .label(context)
-                      .PingFangSC
-                      .normal
-                      .sp(14)
-                      .copyWith(color: Colors.grey[500]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  contentPadding:
-                  EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              /* 按钮组 */
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  WButton(
-                    onPressed: () => Navigator.of(context).pop(null),
-                    child: Container(
-                        width: 82.w,
-                        height: 35.h,
-                        decoration: BoxDecoration(
-                          color: WpyTheme.of(context).get(
-                              WpyColorKey.primaryBackgroundColor),
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text('取消', style: TextUtil.base
-                              .label(context)
-                              .PingFangSC
-                              .bold
-                              .sp(14),),
-                        )
-                    ),
-                  ),
-                  WButton(
-                    onPressed: () {
-                      final text = _ctrl.text.trim();
-                      if (text.isEmpty) return;
-                      Navigator.of(context).pop(text);
-                    },
-                    child: Container(
-                        width: 82.w,
-                        height: 35.h,
-                        decoration: BoxDecoration(
-                          color: WpyTheme.of(context).get(
-                              WpyColorKey.primaryBackgroundColor),
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(
-                            color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text('确定', style: TextUtil.base
-                              .label(context)
-                              .PingFangSC
-                              .bold
-                              .sp(14),),
-                        )
-                    ),
-                  )
-                ],
-              ),
-            ],
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(horizontal: 30.w),
+        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+        child: Container(
+          decoration: BoxDecoration(
+            color:
+                WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+            borderRadius: BorderRadius.circular(16.r),
           ),
-        ),)
-    );
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 17.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(widget.title ?? "   ",
+                      style: TextUtil.base.PingFangSC.w400.bold
+                          .label(context)
+                          .sp(16)),
+                ),
+                SizedBox(height: 16.h),
+                /* 输入框 */
+                TextField(
+                  controller: _ctrl,
+                  autofocus: true,
+                  maxLines: widget.type == 0 ? 1 : 2,
+                  maxLength: widget.type == 0 ? 8 : 20,
+                  keyboardType: widget.type == 0
+                      ? TextInputType.number
+                      : TextInputType.text,
+                  textInputAction: TextInputAction.send,
+                  cursorColor: WpyTheme.of(context)
+                      .get(WpyColorKey.secondaryInfoTextColor),
+                  style: TextUtil.base.label(context).PingFangSC.normal.sp(14),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+                    hintText: widget.hint ?? '请输入',
+                    hintStyle: TextUtil.base
+                        .label(context)
+                        .PingFangSC
+                        .normal
+                        .sp(14)
+                        .copyWith(color: Colors.grey[500]),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                /* 按钮组 */
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    WButton(
+                      onPressed: () => Navigator.of(context).pop(null),
+                      child: Container(
+                          width: 82.w,
+                          height: 35.h,
+                          decoration: BoxDecoration(
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.primaryBackgroundColor),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: WpyTheme.of(context)
+                                  .get(WpyColorKey.oldListActionColor),
+                              width: 1,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '取消',
+                              style: TextUtil.base
+                                  .label(context)
+                                  .PingFangSC
+                                  .bold
+                                  .sp(14),
+                            ),
+                          )),
+                    ),
+                    WButton(
+                      onPressed: () {
+                        final text = _ctrl.text.trim();
+                        if (text.isEmpty) return;
+                        Navigator.of(context).pop(text);
+                      },
+                      child: Container(
+                          width: 82.w,
+                          height: 35.h,
+                          decoration: BoxDecoration(
+                            color: WpyTheme.of(context)
+                                .get(WpyColorKey.primaryBackgroundColor),
+                            borderRadius: BorderRadius.circular(8.r),
+                            border: Border.all(
+                              color: WpyTheme.of(context)
+                                  .get(WpyColorKey.oldListActionColor),
+                              width: 1,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '确定',
+                              style: TextUtil.base
+                                  .label(context)
+                                  .PingFangSC
+                                  .bold
+                                  .sp(14),
+                            ),
+                          )),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
-

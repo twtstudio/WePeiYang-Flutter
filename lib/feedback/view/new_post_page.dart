@@ -270,10 +270,10 @@ class _NewPostPageState extends State<NewPostPage> {
       tag: "addNewPost",
       child: ElevatedButton(
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0),
-          backgroundColor: MaterialStateProperty.all(
+          elevation: WidgetStateProperty.all(0),
+          backgroundColor: WidgetStateProperty.all(
               WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100),
             ),
@@ -448,16 +448,11 @@ class _NewVoteFormState extends State<NewVoteForm> {
                 return child;
               },
               physics: NeverScrollableScrollPhysics(),
-              onReorder: (oldIndex, newIndex) {
+              onReorderItem: (oldIndex, newIndex) {
                 // Check if the item is being dragged to the last position
                 if (newIndex >= options.length - 1) {
                   // If dragged to the last position, set it back to its original position
                   newIndex = oldIndex;
-                } else {
-                  // Adjust the newIndex if it’s moved to another position
-                  if (newIndex > oldIndex) {
-                    newIndex -= 1;
-                  }
                 }
 
                 // Perform the reorder if the newIndex is valid
@@ -1092,7 +1087,8 @@ class _ImagesGridViewState extends State<ImagesGridView> {
       for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         final targetPath = '${file.path}_compressed.jpg';
         final r = await FlutterImageCompress.compressAndGetFile(
-            file.path, targetPath, quality: 80);
+            file.path, targetPath,
+            quality: 80);
         if (r != null) file = File(r.path);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');

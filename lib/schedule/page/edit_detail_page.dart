@@ -167,7 +167,7 @@ class _EditDetailPageState extends State<EditDetailPage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
         bool? confirm = await _showDialog('是否保存修改内容?');
         if (confirm == true) {

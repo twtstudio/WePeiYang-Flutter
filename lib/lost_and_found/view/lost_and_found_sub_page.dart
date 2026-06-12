@@ -33,7 +33,6 @@ class LostAndFoundSubPage extends StatefulWidget {
 
 class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     with AutomaticKeepAliveClientMixin {
-
   @override
   void deactivate() {
     var bool = ModalRoute.of(context)?.isCurrent;
@@ -44,12 +43,12 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
 
   final ScrollController _scrollController = ScrollController();
   //用于页数
-  var curPage=1;
+  var curPage = 1;
   void _onRefresh() async {
-    curPage=1;
+    curPage = 1;
     context.read<LAFoundModel>().clearByType(widget.type);
     await context.read<LAFoundModel>().getNext(
-      type: widget.type,
+          type: widget.type,
           success: () {
             context.read<LAFoundModel>().lafSubStatus[widget.type] =
                 LAFSubStatus.ready;
@@ -67,14 +66,14 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                 ?.refreshFailed();
             ToastProvider.error(e.error.toString());
           },
-        page: curPage,
-        page_size: 10,
+          page: curPage,
+          page_size: 10,
         );
   }
 
   void _onLoading() async {
     await context.read<LAFoundModel>().getNext(
-      type: widget.type,
+          type: widget.type,
           success: () {
             context.read<LAFoundModel>().lafSubStatus[widget.type] =
                 LAFSubStatus.ready;
@@ -92,11 +91,11 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                 ?.loadFailed();
             ToastProvider.error(e.error.toString());
           },
-      page: ++curPage,
-      page_size: 10,
+          page: ++curPage,
+          page_size: 10,
 
-      // type: widget.type,
-      // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
+          // type: widget.type,
+          // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
         );
   }
 
@@ -185,7 +184,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
     );
 
     return Scaffold(
-        backgroundColor: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        backgroundColor:
+            WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -315,34 +315,38 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                 itemBuilder: (context, int idx) => InkWell(
                                     onTap: () {
                                       Tuple2 detailTuple = Tuple2(
-                                          tuple.item1[idx].id,
-                                          widget.findOwner,);
+                                        tuple.item1[idx].id,
+                                        widget.findOwner,
+                                      );
 
                                       Navigator.pushNamed(
                                           context, LAFRouter.lafDetailPage,
                                           arguments: detailTuple);
                                     },
-
                                     child: Container(
-                                      margin: EdgeInsets.symmetric(vertical: 2.w,horizontal: 2.h),
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: 2.w, horizontal: 2.h),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15.r),
-                                        color: Colors.white,
-                                        boxShadow: [BoxShadow(
-                                          color: WpyTheme.of(context)
-                                              .get(WpyColorKey.basicTextColor)
-                                              .withOpacity(0.05),
-                                          spreadRadius: 0.0,
-                                          offset: Offset(0, 4),
-                                          blurRadius: 8,
-                                        )]
-                                      ),
+                                          borderRadius:
+                                              BorderRadius.circular(15.r),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: WpyTheme.of(context)
+                                                  .get(WpyColorKey
+                                                      .basicTextColor)
+                                                  .withValues(alpha: 0.05),
+                                              spreadRadius: 0.0,
+                                              offset: Offset(0, 4),
+                                              blurRadius: 8,
+                                            )
+                                          ]),
 
                                       // elevation: 2,
                                       // shadowColor: WpyTheme.of(context)
                                       //     .get(WpyColorKey
                                       //         .backgroundGradientEndColor)
-                                      //     .withOpacity(0.1),
+                                      //     .withValues(alpha: 0.1),
                                       // shape: RoundedRectangleBorder(
                                       //   borderRadius:
                                       //       BorderRadius.circular(8.r),
@@ -355,7 +359,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                             CrossAxisAlignment.start,
                                         children: [
                                           //没有图片情况
-                                          if (tuple.item1[idx].imageUrls.isEmpty)
+                                          if (tuple
+                                              .item1[idx].imageUrls.isEmpty)
                                             Padding(
                                               padding:
                                                   EdgeInsetsDirectional.only(
@@ -371,7 +376,8 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                                           EdgeInsets.all(14.w),
                                                       // 设置所有方向的内边距为15个像素
                                                       child: Text(
-                                                          tuple.item1[idx].content,
+                                                          tuple.item1[idx]
+                                                              .content,
                                                           style: TextUtil
                                                               .base.w400
                                                               .infoText(context)
@@ -392,54 +398,55 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                                             )
                                           else
                                             Container(
-                                                padding:
-                                                    EdgeInsetsDirectional.only(
-                                                        start: 11.w,
-                                                        end: 11.w,
-                                                        bottom: 7.h,
-                                                        top: 7.h),
-                                                ///TODO 有图片情况
-                                                // child: LayoutBuilder(
-                                                //   builder: (ctx, cst) {
-                                                //     // final maxWidth =
-                                                //     //     cst.constrainWidth();
-                                                //     // final width = tuple
-                                                //     //         .item1[idx]
-                                                //     //         .coverPhotoSize
-                                                //     //         ?.width
-                                                //     //         .toDouble() ??
-                                                //     //     1.r;
-                                                //     // final height = tuple
-                                                //     //         .item1[idx]
-                                                //     //         .coverPhotoSize
-                                                //     //         ?.height
-                                                //     //         .toDouble() ??
-                                                //     //     0;
-                                                //     // return ClipRRect(
-                                                //     //   borderRadius: BorderRadius
-                                                //     //       .circular(10
-                                                //     //           .r), // 设置圆角半径为10.0
-                                                //     //   child: Container(
-                                                //     //     width: maxWidth,
-                                                //     //     child: WpyPic(
-                                                //     //       tuple.item1[idx]
-                                                //     //           .coverPhotoPath!,
-                                                //     //       withHolder: true,
-                                                //     //       holderHeight: height *
-                                                //     //           maxWidth /
-                                                //     //           width,
-                                                //     //       fit: BoxFit.fitWidth,
-                                                //     //     ),
-                                                //     //     height:
-                                                //     //         height >= 3 * width
-                                                //     //             ? 3 * maxWidth
-                                                //     //             : height *
-                                                //     //                 maxWidth /
-                                                //     //                 width,
-                                                //     //   ),
-                                                //     // );
-                                                //   },
-                                                // )
+                                              padding:
+                                                  EdgeInsetsDirectional.only(
+                                                      start: 11.w,
+                                                      end: 11.w,
+                                                      bottom: 7.h,
+                                                      top: 7.h),
+
+                                              ///TODO 有图片情况
+                                              // child: LayoutBuilder(
+                                              //   builder: (ctx, cst) {
+                                              //     // final maxWidth =
+                                              //     //     cst.constrainWidth();
+                                              //     // final width = tuple
+                                              //     //         .item1[idx]
+                                              //     //         .coverPhotoSize
+                                              //     //         ?.width
+                                              //     //         .toDouble() ??
+                                              //     //     1.r;
+                                              //     // final height = tuple
+                                              //     //         .item1[idx]
+                                              //     //         .coverPhotoSize
+                                              //     //         ?.height
+                                              //     //         .toDouble() ??
+                                              //     //     0;
+                                              //     // return ClipRRect(
+                                              //     //   borderRadius: BorderRadius
+                                              //     //       .circular(10
+                                              //     //           .r), // 设置圆角半径为10.0
+                                              //     //   child: Container(
+                                              //     //     width: maxWidth,
+                                              //     //     child: WpyPic(
+                                              //     //       tuple.item1[idx]
+                                              //     //           .coverPhotoPath!,
+                                              //     //       withHolder: true,
+                                              //     //       holderHeight: height *
+                                              //     //           maxWidth /
+                                              //     //           width,
+                                              //     //       fit: BoxFit.fitWidth,
+                                              //     //     ),
+                                              //     //     height:
+                                              //     //         height >= 3 * width
+                                              //     //             ? 3 * maxWidth
+                                              //     //             : height *
+                                              //     //                 maxWidth /
+                                              //     //                 width,
+                                              //     //   ),
+                                              //     // );
+                                              //   },
+                                              // )
                                             ),
                                           Padding(
                                             padding: EdgeInsetsDirectional.only(
@@ -533,7 +540,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
               .resetCategory(type: widget.type, category: widget.category);
           context.read<LAFoundModel>().clearByType(widget.type);
           await context.read<LAFoundModel>().getNext(
-            type: widget.type,
+                type: widget.type,
                 success: () {
                   context.read<LAFoundModel>().lafSubStatus[widget.type] =
                       LAFSubStatus.ready;
@@ -551,11 +558,11 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                       ?.refreshFailed();
                   ToastProvider.error(e.error.toString());
                 },
-            page: 1,
-            page_size: 10,
+                page: 1,
+                page_size: 10,
 
-            // type: widget.type,
-            // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
+                // type: widget.type,
+                // category: context.read<LAFoundModel>().currentCategory[widget.type]!,
               );
         },
         child: Container(
@@ -566,7 +573,7 @@ class LostAndFoundTagState extends State<LostAndFoundTag> {
                     context.read<LAFoundModel>().currentCategory[widget.type]
                 ? WpyTheme.of(context)
                     .get(WpyColorKey.primaryActionColor)
-                    .withOpacity(0.1)
+                    .withValues(alpha: 0.1)
                 : WpyTheme.of(context)
                     .get(WpyColorKey.secondaryBackgroundColor),
           ),

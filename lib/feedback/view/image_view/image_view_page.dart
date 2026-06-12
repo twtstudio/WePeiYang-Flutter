@@ -146,7 +146,7 @@ class _ImageViewPageState extends State<ImageViewPage>
                         decoration: BoxDecoration(
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.labelTextColor)
-                                .withOpacity(0.8),
+                                .withValues(alpha: 0.8),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(14.r))),
                         padding: EdgeInsets.fromLTRB(12.w, 10.w, 14.w, 10.w),
@@ -168,7 +168,7 @@ class _ImageViewPageState extends State<ImageViewPage>
                   decoration: BoxDecoration(
                       color: WpyTheme.of(context)
                           .get(WpyColorKey.labelTextColor)
-                          .withOpacity(0.7),
+                          .withValues(alpha: 0.7),
                       borderRadius: BorderRadius.all(Radius.circular(14.r))),
                   padding: EdgeInsets.fromLTRB(14.w, 10.w, 14.w, 14.w),
                   child: Row(
@@ -262,9 +262,11 @@ class _ImageViewPageState extends State<ImageViewPage>
 
   void showSaveImageBottomSheet() async {
     ToastProvider.running('请稍后');
-    final path = await StorageUtil.saveTempFileFromNetwork(_imageUrlAt(indexNow),
+    final path = await StorageUtil.saveTempFileFromNetwork(
+        _imageUrlAt(indexNow),
         filename: _imageFileNameAt(indexNow));
-    await SharePlus.instance.share(ShareParams(files: [XFile(path, mimeType: 'image/*')]));
+    await SharePlus.instance
+        .share(ShareParams(files: [XFile(path, mimeType: 'image/*')]));
   }
 
   void recognizeQRCode() async {

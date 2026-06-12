@@ -183,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
               child: Chip(
                 shadowColor: WpyTheme.of(context)
                     .get(WpyColorKey.secondaryBackgroundColor)
-                    .withOpacity(0.5),
+                    .withValues(alpha: 0.5),
                 visualDensity: VisualDensity.comfortable,
                 avatar: Icon(Icons.history,
                     color: WpyTheme.of(context)

@@ -206,7 +206,7 @@ class _EditBottomSheetState extends State<EditBottomSheet> {
 
     return PopScope(
       canPop: true,
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         context.read<EditProvider>().save(name, credit);
       },
       child: Container(

@@ -25,8 +25,6 @@ import '../../commons/themes/wpy_theme.dart';
 import '../../feedback/feedback_router.dart';
 import 'lost_and_found_notifier.dart';
 
-
-
 class LostAndFoundDetailAppBar extends LostAndFoundAppBar {
   LostAndFoundDetailAppBar({
     Key? key,
@@ -80,8 +78,6 @@ class LostAndFoundDetailPage extends StatefulWidget {
 }
 
 class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
-
-
   @override
   Widget build(BuildContext context) {
     final model = context
@@ -92,7 +88,8 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       future: fetchPost(widget.postId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return buildDetailUI(context, snapshot.data!, widget.findOwner, model);
+          return buildDetailUI(
+              context, snapshot.data!, widget.findOwner, model);
         } else {
           return Scaffold(
             backgroundColor: Colors.white,
@@ -170,20 +167,16 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
             onTap: () => Navigator.pushNamed(
               context,
               FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs(post.imageUrls,
-                  post.imageUrls.length, index, false),
+              arguments: ImageViewPageArgs(
+                  post.imageUrls, post.imageUrls.length, index, false),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
               child: WpyPic(post.imageUrls[index],
                   fit: BoxFit.cover,
-                  width: (1.sw -
-                          40.w -
-                          (post.imageUrls.length - 1) * 10.w) /
+                  width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
                       post.imageUrls.length,
-                  height: (1.sw -
-                          40.w -
-                          (post.imageUrls.length - 1) * 10.w) /
+                  height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
                       post.imageUrls.length,
                   withHolder: true),
             ),
@@ -191,10 +184,9 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
         ),
       );
 
-
   // 构建UI
-  Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner,LAFoundDetail model) {
-
+  Widget buildDetailUI(BuildContext context, LostAndFoundPost post, findOwner,
+      LAFoundDetail model) {
     //判断是否是自己的帖子，暂时只能用这个来判断了
     ///author暂时改为uid用于测试，后端接口没有author
     if (CommonPreferences.account.value.toString() == post.uid) {
@@ -210,137 +202,162 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return ListenableBuilder(listenable: model, builder: (context,child){
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              backgroundColor: Colors.white,
-              content: Container(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                    child: Image.asset(
-                      'assets/images/tip.png',
-                      width: 30.w,
-                      height: 30.h,
-                    ),
+          return ListenableBuilder(
+              listenable: model,
+              builder: (context, child) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  SizedBox(height: 15.h),
-                  Flexible(
-                    child: model.isLoading?
-                    Text("加载中...",
-                      style: TextUtil.base.sp(14),
-                      textAlign: TextAlign.center,
-                    ):Text(
-                      CommonPreferences.lafGetNum.value.length>=3 && !CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&todayStr==CommonPreferences.lafGetDate.value
-                          ? '今日已达上限了哦，明天再来吧'
-                          : (model.phoneNum!='')
-                          ? "联系方式为：" + "${model.phoneNum}" + '\n'
-                          : (findOwner
-                          ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
-                          : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
-                      style: TextUtil.base.sp(14),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all<Size>(
-                                Size(110.w, 40.h)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
+                  backgroundColor: Colors.white,
+                  content: Container(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      Container(
+                        child: Image.asset(
+                          'assets/images/tip.png',
+                          width: 30.w,
+                          height: 30.h,
+                        ),
+                      ),
+                      SizedBox(height: 15.h),
+                      Flexible(
+                        child: model.isLoading
+                            ? Text(
+                                "加载中...",
+                                style: TextUtil.base.sp(14),
+                                textAlign: TextAlign.center,
+                              )
+                            : Text(
+                                CommonPreferences.lafGetNum.value.length >= 3 &&
+                                        !CommonPreferences.lafGetNumId.value
+                                            .contains("${widget.postId}") &&
+                                        todayStr ==
+                                            CommonPreferences.lafGetDate.value
+                                    ? '今日已达上限了哦，明天再来吧'
+                                    : (model.phoneNum != '')
+                                        ? "联系方式为：" + "${model.phoneNum}" + '\n'
+                                        : (findOwner
+                                            ? '确定是你遗失的吗？\n每天最多只能获取三次联系方式哦'
+                                            : '确定找到了吗？\n每天最多只能获取三次联系方式哦'),
+                                style: TextUtil.base.sp(14),
+                                textAlign: TextAlign.center,
+                              ),
+                      ),
+                      SizedBox(height: 20.h),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              style: ButtonStyle(
+                                minimumSize: WidgetStateProperty.all<Size>(
+                                    Size(110.w, 40.h)),
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                '取消',
+                                style: TextUtil.base.bold.primary(context),
                               ),
                             ),
-                          ),
-                          child: Text(
-                            '取消',
-                            style: TextUtil.base.bold.primary(context),
-                          ),
-                        ),
-                        SizedBox(width: 20.h),
-                        ElevatedButton(
-                          onPressed:  () {
-                             DateTime today = DateTime.now();
-                             String currentTodayStr = "${today.year}-${today.month}-${today.day}";
-                             //已经加载出联系方式
-                              if(model.phoneNum!=''){
-                                Navigator.of(context).pop();
-                              }
-                              //超过访问次数，且不是已经存储的
-                              if(currentTodayStr==CommonPreferences.lafGetDate.value&&!CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&CommonPreferences.lafGetNum.value.length>=3){
-                                Navigator.of(context).pop();
-                              }
-                              else{
-                                if(CommonPreferences.lafGetNumId.value.contains("${widget.postId}")){
-                                  model.phoneNum=CommonPreferences.lafGetNum.value[CommonPreferences.lafGetNumId.value.indexOf("${widget.postId}")];
+                            SizedBox(width: 20.h),
+                            ElevatedButton(
+                              onPressed: () {
+                                DateTime today = DateTime.now();
+                                String currentTodayStr =
+                                    "${today.year}-${today.month}-${today.day}";
+                                //已经加载出联系方式
+                                if (model.phoneNum != '') {
+                                  Navigator.of(context).pop();
                                 }
-                                else{
-                                  model.isLoading=true;
-                                  LostAndFoundService.getRecordNum(
-                                    post_id: widget.postId,
-                                    onResult: (string){
-                                      if(string==null){
-                                      }
-                                      else{
-                                        CommonPreferences.lafGetDate.value =
-                                            currentTodayStr;
-                                        model.phoneNum=string;
-                                        if( CommonPreferences.lafGetNum.value.length>=3){
-                                          CommonPreferences.lafGetNum.value=<String>[];
-                                          CommonPreferences.lafGetNumId.value=<String>[];
+                                //超过访问次数，且不是已经存储的
+                                if (currentTodayStr ==
+                                        CommonPreferences.lafGetDate.value &&
+                                    !CommonPreferences.lafGetNumId.value
+                                        .contains("${widget.postId}") &&
+                                    CommonPreferences.lafGetNum.value.length >=
+                                        3) {
+                                  Navigator.of(context).pop();
+                                } else {
+                                  if (CommonPreferences.lafGetNumId.value
+                                      .contains("${widget.postId}")) {
+                                    model.phoneNum =
+                                        CommonPreferences.lafGetNum.value[
+                                            CommonPreferences.lafGetNumId.value
+                                                .indexOf("${widget.postId}")];
+                                  } else {
+                                    model.isLoading = true;
+                                    LostAndFoundService.getRecordNum(
+                                      post_id: widget.postId,
+                                      onResult: (string) {
+                                        if (string == null) {
+                                        } else {
+                                          CommonPreferences.lafGetDate.value =
+                                              currentTodayStr;
+                                          model.phoneNum = string;
+                                          if (CommonPreferences
+                                                  .lafGetNum.value.length >=
+                                              3) {
+                                            CommonPreferences.lafGetNum.value =
+                                                <String>[];
+                                            CommonPreferences
+                                                .lafGetNumId.value = <String>[];
+                                          }
+                                          List<String> currentList =
+                                              new List.from(CommonPreferences
+                                                  .lafGetNum.value);
+                                          currentList.add(string);
+                                          List<String> currentList1 =
+                                              new List.from(CommonPreferences
+                                                  .lafGetNumId.value);
+                                          currentList1.add("${widget.postId}");
+                                          CommonPreferences.lafGetNum.value =
+                                              currentList;
+                                          CommonPreferences.lafGetNumId.value =
+                                              currentList1;
                                         }
-                                        List<String> currentList = new List.from(CommonPreferences.lafGetNum.value);
-                                        currentList.add(string);
-                                        List<String> currentList1 = new List.from(CommonPreferences.lafGetNumId.value);
-                                        currentList1.add("${widget.postId}");
-                                        CommonPreferences.lafGetNum.value = currentList;
-                                        CommonPreferences.lafGetNumId.value=currentList1;
-                                      }
-                                      model.isLoading=false;
-                                    },
-                                    onFailure: (e) {
-                                      model.isLoading=false;
-                                    },
-                                  );
+                                        model.isLoading = false;
+                                      },
+                                      onFailure: (e) {
+                                        model.isLoading = false;
+                                      },
+                                    );
+                                  }
                                 }
-                              }
-                          },
-                          style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all<Size>(
-                                Size(110.w, 40.h)),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                WpyTheme.of(context)
-                                    .get(WpyColorKey.primaryActionColor)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
+                              },
+                              style: ButtonStyle(
+                                minimumSize: WidgetStateProperty.all<Size>(
+                                    Size(110.w, 40.h)),
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                    WpyTheme.of(context)
+                                        .get(WpyColorKey.primaryActionColor)),
+                                shape: WidgetStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                '确定',
+                                style: TextUtil.base.normal.reverse(context),
                               ),
                             ),
-                          ),
-                          child: Text(
-                            '确定',
-                            style: TextUtil.base.normal.reverse(context),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ]),
                   ),
-                ]),
-              ),
-            );
-          });
+                );
+              });
         },
       );
     }
@@ -384,10 +401,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             Navigator.of(context).pop();
                           },
                           style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all<Size>(
+                            minimumSize: WidgetStateProperty.all<Size>(
                                 Size(110.w, 40.h)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -406,7 +423,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             ToastProvider.running("删除中...");
                             LostAndFoundService.deleteLostAndFoundPost(
                                 id: post.id,
-                                onSuccess: ()  {
+                                onSuccess: () {
                                   ToastProvider.success('删除成功');
                                   //连续退出页面
                                   Navigator.of(context).popMultiple(3);
@@ -416,13 +433,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 });
                           },
                           style: ButtonStyle(
-                            minimumSize: MaterialStateProperty.all<Size>(
-                                Size(110, 40)),
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            minimumSize:
+                                WidgetStateProperty.all<Size>(Size(110, 40)),
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 WpyTheme.of(context)
                                     .get(WpyColorKey.primaryActionColor)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.r),
                               ),
@@ -465,7 +482,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                 child: Wrap(
                   children: <Widget>[
                     Card(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -536,7 +553,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       ),
                     ),
                     Card(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -899,7 +916,8 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
   @override
   Widget build(BuildContext context) {
     Completer<ui.Image> completer = Completer<ui.Image>();
-    final cacheWidth = (350.w * MediaQuery.of(context).devicePixelRatio).round();
+    final cacheWidth =
+        (350.w * MediaQuery.of(context).devicePixelRatio).round();
     Image image = Image.network(
       widget.imageUrl,
       width: double.infinity,
@@ -911,10 +929,11 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
       image.image
           .resolve(ImageConfiguration())
           .addListener(ImageStreamListener((ImageInfo info, bool _) {
-        if (!completer.isCompleted) completer.complete(info.image);
-      }, onError: (error, stackTrace) {
-        if (!completer.isCompleted) completer.completeError(error, stackTrace);
-      }));
+            if (!completer.isCompleted) completer.complete(info.image);
+          }, onError: (error, stackTrace) {
+            if (!completer.isCompleted)
+              completer.completeError(error, stackTrace);
+          }));
     }
 
     return FutureBuilder<ui.Image>(
@@ -949,10 +968,9 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                       TextButton(
                           style: ButtonStyle(
                               alignment: Alignment.topRight,
-                              padding:
-                                  MaterialStateProperty.all(EdgeInsets.zero),
-                              overlayColor: MaterialStateProperty.all(
-                                  Colors.transparent)),
+                              padding: WidgetStateProperty.all(EdgeInsets.zero),
+                              overlayColor:
+                                  WidgetStateProperty.all(Colors.transparent)),
                           onPressed: () {
                             setState(() {
                               _picFullView = false;

@@ -58,7 +58,7 @@ class WeekSelectWidget extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5.r),
                           splashColor: WpyTheme.of(context)
                               .get(WpyColorKey.primaryBackgroundColor)
-                              .withOpacity(0.4),
+                              .withValues(alpha: 0.4),
                           highlightColor: Colors.transparent,
                           onTap: () => provider.selectedWeek = i + 1,
                         ),
@@ -114,7 +114,8 @@ class WeekSelectWidget extends StatelessWidget {
             style: TextUtil.base.Swis.w900.sp(10).customColor(
                 WpyTheme.of(context)
                     .get(WpyColorKey.brightTextColor)
-                    .withOpacity((provider.selectedWeek == i + 1) ? 1.0 : 0.4)),
+                    .withValues(
+                        alpha: (provider.selectedWeek == i + 1) ? 1.0 : 0.4)),
           );
         })
       ],
@@ -134,8 +135,8 @@ class _WeekSelectPainter extends CustomPainter {
     required this.context,
   }) {
     if (!_selected) {
-      _cubePaint.color = _cubePaint.color.withOpacity(0.4);
-      _spacePaint.color = _spacePaint.color.withOpacity(0.4);
+      _cubePaint.color = _cubePaint.color.withValues(alpha: 0.4);
+      _spacePaint.color = _spacePaint.color.withValues(alpha: 0.4);
     }
   }
 

@@ -101,21 +101,21 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
                               .w400
                               .primaryAction(context))),
                       style: ButtonStyle(
-                        elevation: MaterialStateProperty.all(0),
+                        elevation: WidgetStateProperty.all(0),
                         //水波纹颜色暂时没确定
                         overlayColor:
-                            MaterialStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(MaterialState.pressed))
+                            WidgetStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(WidgetState.pressed))
                             return WpyTheme.of(context)
                                 .get(WpyColorKey.oldActionRippleColor);
                           return WpyTheme.of(context)
                               .get(WpyColorKey.oldThirdActionColor);
                         }),
                         //暂时把Mycolors.deepblue改成默认白色
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24))),
                       ),
                     ),
@@ -134,19 +134,19 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
                               .w400
                               .primaryAction(context))),
                       style: ButtonStyle(
-                        elevation: MaterialStateProperty.all(0),
+                        elevation: WidgetStateProperty.all(0),
                         overlayColor:
-                            MaterialStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(MaterialState.pressed))
+                            WidgetStateProperty.resolveWith<Color>((states) {
+                          if (states.contains(WidgetState.pressed))
                             return WpyTheme.of(context)
                                 .get(WpyColorKey.oldActionRippleColor);
                           return WpyTheme.of(context)
                               .get(WpyColorKey.oldThirdActionColor);
                         }),
-                        backgroundColor: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30))),
                       ),
                     ),

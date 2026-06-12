@@ -67,7 +67,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
             blurRadius: 8,
             color: WpyTheme.of(ctx)
                 .get(WpyColorKey.basicTextColor)
-                .withOpacity(0.05),
+                .withValues(alpha: 0.05),
           ),
         ],
       );
@@ -255,7 +255,8 @@ class MapAndCalenderState extends State<MapAndCalender> {
                             WpyTheme.of(context)
                                 .get(WpyColorKey.primaryLightestActionColor),
                             BlendMode.screen),
-                        image: AssetImage('assets/images/calender/second_thumb.jpg'),
+                        image: AssetImage(
+                            'assets/images/calender/second_thumb.jpg'),
                       ))),
                   Positioned(
                     top: 20.h,

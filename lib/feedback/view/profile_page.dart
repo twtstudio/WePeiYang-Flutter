@@ -426,7 +426,7 @@ class CustomCard extends StatelessWidget {
               blurRadius: 8,
               color: WpyTheme.of(context)
                   .get(WpyColorKey.basicTextColor)
-                  .withOpacity(0.1),
+                  .withValues(alpha: 0.1),
             ),
           ],
         ),

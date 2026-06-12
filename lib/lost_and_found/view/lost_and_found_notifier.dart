@@ -38,7 +38,7 @@ class LAFoundModel with ChangeNotifier {
   };
 
   //获取联系方式
-  Map<String , LAFoundDetail> detailmap={};
+  Map<String, LAFoundDetail> detailmap = {};
 
   bool _isLimited = false;
   bool get isLimited => _isLimited;
@@ -61,26 +61,26 @@ class LAFoundModel with ChangeNotifier {
 
   Future<void> getNext(
       {required int page,
-        required String type,
+      required String type,
       required OnSuccess success,
       required OnFailure failure,
       required int page_size,
       int? list}) async {
     await LostAndFoundService.getLostAndFoundPosts(
-    list: list,
-      page:page,
+      list: list,
+      page: page,
       page_size: page_size ?? 10,
       onSuccess: (list) async {
-        List<String> typechoose=['失物招领','寻物启事'];
+        List<String> typechoose = ['失物招领', '寻物启事'];
 
         if (list.isEmpty) {
           ToastProvider.cancelAll();
           ToastProvider.running('没有更多内容了');
         } else {
           for (LostAndFoundPost item in list) {
-            if(type==typechoose[item.type]){
+            if (type == typechoose[item.type]) {
               postList[typechoose[item.type]]?.add(item);
-              detailmap["${item.id}"]=new LAFoundDetail();
+              detailmap["${item.id}"] = new LAFoundDetail();
             }
 
             // if (item.coverPhotoPath != null) {
@@ -140,7 +140,7 @@ class LAFoundModel with ChangeNotifier {
                     onConfirm: () {
                       Clipboard.setData(ClipboardData(text: ''));
                       Navigator.pop(context, true);
-                    } ,
+                    },
                     onCancel: () => Navigator.pop(context, true),
                   );
                 },
@@ -231,19 +231,18 @@ class LAFWeKoDialog extends StatelessWidget {
               ElevatedButton(
                 onPressed: onConfirm,
                 style: ButtonStyle(
-                  elevation: MaterialStateProperty.all(3),
+                  elevation: WidgetStateProperty.all(3),
                   overlayColor:
-                      MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.pressed))
+                      WidgetStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(WidgetState.pressed))
                       return WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor);
                     return WpyTheme.of(context)
                         .get(WpyColorKey.secondaryBackgroundColor);
                   }),
-                  backgroundColor: MaterialStateProperty.all(
-                      WpyTheme.of(context)
-                          .get(WpyColorKey.secondaryBackgroundColor)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  backgroundColor: WidgetStateProperty.all(WpyTheme.of(context)
+                      .get(WpyColorKey.secondaryBackgroundColor)),
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.r))),
                 ),
                 child: Container(
@@ -263,7 +262,6 @@ class LAFWeKoDialog extends StatelessWidget {
     );
   }
 }
-
 
 class LAFoundDetail extends ChangeNotifier {
   bool _isMine = false;
@@ -293,10 +291,9 @@ class LAFoundDetail extends ChangeNotifier {
     _isLoading = value;
     notifyListeners();
   }
-
-
 }
 
-class LAFUtil{
-  static final RefreshController refreshControllerController = RefreshController();
+class LAFUtil {
+  static final RefreshController refreshControllerController =
+      RefreshController();
 }

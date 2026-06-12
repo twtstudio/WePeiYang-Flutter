@@ -181,6 +181,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   late final LakePageController pageController;
   late final RefreshController _refreshController;
   late final ScrollController _scrollController;
+  late Future<void> _postListFuture;
   bool _isCurrentTab = false;
 
   @override
@@ -190,9 +191,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     pageController = LakeUtil.lakePageControllers[index]!;
     _refreshController = RefreshController();
     _scrollController = ScrollController();
+    _postListFuture = LakeUtil.initPostList(index);
     _syncActiveControllers();
     _initializeProviders();
-    _initializeLakeArea();
   }
 
   @override
@@ -228,7 +229,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   Widget _buildErrorPage() {
     return HomeErrorContainer(
-      onRetry: () => setState(() {}),
+      onRetry: () => setState(() {
+        _postListFuture = LakeUtil.initPostList(index, forced: true);
+      }),
       errorText: "网络状况不佳，请重试",
     );
   }
@@ -307,7 +310,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     _syncActiveControllers();
 
     return FutureBuilder(
-        future: LakeUtil.initPostList(index),
+        future: _postListFuture,
         builder: (context, snapshot) {
           return AnimatedSwitcher(
             duration: Duration(milliseconds: 300),

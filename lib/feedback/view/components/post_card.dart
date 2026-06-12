@@ -77,25 +77,25 @@ class _PostCardNormalState extends State<PostCardNormal> {
           style: TextUtil.base.NotoSansSC.w400.sp(14).primary(context).h(1.4));
     }
     return GestureDetector(
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: post.content));
-        ToastProvider.success('复制评论成功');
-      },
-      child: Padding(
-        padding: EdgeInsets.only(top: 15.h),
-        child: ExpandableText(
-          text: post.content,
-          maxLines: 8,
-          style: TextUtil.base.NotoSansSC.w400.sp(15).primary(context).h(1.7).copyWith(
-              letterSpacing: 0.7,
-            wordSpacing: 2.0
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(text: post.content));
+          ToastProvider.success('复制评论成功');
+        },
+        child: Padding(
+          padding: EdgeInsets.only(top: 15.h),
+          child: ExpandableText(
+            text: post.content,
+            maxLines: 8,
+            style: TextUtil.base.NotoSansSC.w400
+                .sp(15)
+                .primary(context)
+                .h(1.7)
+                .copyWith(letterSpacing: 0.7, wordSpacing: 2.0),
+            expand: widget.expandAll,
+            buttonIsShown: true,
+            isHTML: false,
           ),
-          expand: widget.expandAll,
-          buttonIsShown: true,
-          isHTML: false,
-        ),
-      )
-    );
+        ));
   }
 
   @override
@@ -632,24 +632,24 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
   @override
   Widget build(BuildContext context) {
     final disableButtonStyle = ButtonStyle(
-        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 2)),
-        shape: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 2)),
+        shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-        backgroundColor: MaterialStateProperty.all(WpyTheme.of(context)
+        backgroundColor: WidgetStateProperty.all(WpyTheme.of(context)
             .get(WpyColorKey.secondaryInfoTextColor)
-            .withOpacity(0.3)));
+            .withValues(alpha: 0.3)));
 
     var disableButtonText =
         TextUtil.base.w400.NotoSansSC.sp(14).secondaryInfo(context).bold.h(1.6);
     final enableButtonText =
         TextUtil.base.w400.NotoSansSC.sp(14).bright(context).bold.h(1.6);
     final enableButtonStyle = ButtonStyle(
-        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 2)),
-        side: MaterialStateProperty.all(BorderSide(
+        padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 2)),
+        side: WidgetStateProperty.all(BorderSide(
             color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor))),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
             WpyTheme.of(context).get(WpyColorKey.primaryActionColor)));
 
     return Column(children: [
@@ -801,7 +801,7 @@ class VoteOptionWidget extends StatelessWidget {
                 value: value,
                 backgroundColor: WpyTheme.of(context)
                     .get(WpyColorKey.secondaryInfoTextColor)
-                    .withOpacity(0.5),
+                    .withValues(alpha: 0.5),
                 valueColor: AlwaysStoppedAnimation<Color>(WpyTheme.of(context)
                     .get(selected
                         ? WpyColorKey.successGreen

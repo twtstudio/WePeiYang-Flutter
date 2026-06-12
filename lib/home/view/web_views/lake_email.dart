@@ -135,9 +135,7 @@ class _LakeEmailPageState extends State<LakeEmailPage>
     } else {
       child = ListView.builder(
         itemBuilder: (c, i) {
-          return LakeMessageItem(
-            data:items[i]
-          );
+          return LakeMessageItem(data: items[i]);
         },
         itemCount: items.length,
       );
@@ -180,30 +178,29 @@ class _LakeEmailPageState extends State<LakeEmailPage>
 
 class LakeMessageItem extends StatelessWidget {
   final LakeEmailMessage data;
-  const LakeMessageItem({super.key,required this.data});
+  const LakeMessageItem({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15.w,vertical: 8.h),
-      padding: EdgeInsets.symmetric(horizontal: 20.w,vertical: 15.h),
+      margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
       decoration: BoxDecoration(
-        color: WpyTheme.of(context)
-            .get(WpyColorKey.primaryBackgroundColor),
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor).withOpacity(0.4),
+              color: WpyTheme.of(context)
+                  .get(WpyColorKey.labelTextColor)
+                  .withValues(alpha: 0.4),
               blurRadius: 8.r,
-              offset: Offset(0,0)
-          )
+              offset: Offset(0, 0))
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(data.title,
-            style: TextUtil.base.bold.sp(25).label(context)),
+          Text(data.title, style: TextUtil.base.bold.sp(25).label(context)),
           SizedBox(height: 8.h),
           Text(data.content,
               style: TextUtil.base.bold.sp(14).label(context).w400),

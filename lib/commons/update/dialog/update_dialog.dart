@@ -30,7 +30,7 @@ extension UpdateDialogExt on UpdateDialog {
     // 显示这个dialog
     SmartDialog.show(
       clickMaskDismiss: false,
-      backDismiss: false,
+      backType: SmartBackType.block,
       tag: tag,
       builder: (BuildContext context) {
         return dialog;

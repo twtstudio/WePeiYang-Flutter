@@ -27,7 +27,7 @@ class HistoryListTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(10.r),
           splashColor: WpyTheme.of(context)
               .get(WpyColorKey.primaryActionColor)
-              .withOpacity(0.15),
+              .withValues(alpha: 0.15),
           onTap: () async {
             final chatState = context.read<xiaotianChatState>();
             Navigator.of(context).pop();
@@ -153,7 +153,8 @@ class _historyDrawerState extends State<historyDrawer> {
     });
 
     return Drawer(
-      backgroundColor: WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),

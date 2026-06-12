@@ -130,7 +130,7 @@ class _TableCalenderState extends State<_TableCalender>
       selectedDecoration: BoxDecoration(
         color: WpyTheme.of(context)
             .get(WpyColorKey.primaryActionColor)
-            .withOpacity(0.5),
+            .withValues(alpha: 0.5),
         shape: BoxShape.circle,
       ),
       selectedTextStyle:
@@ -252,25 +252,25 @@ class _TimeItem extends StatelessWidget {
     final button = TextButton(
       onPressed: onclick,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           isChecked
               ? WpyTheme.of(context)
                   .get(WpyColorKey.primaryLightestActionColor)
-                  .withOpacity(0.5)
+                  .withValues(alpha: 0.5)
               : WpyTheme.of(context)
                   .get(WpyColorKey.primaryBackgroundColor)
-                  .withOpacity(0.1),
+                  .withValues(alpha: 0.1),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.w),
           ),
         ),
         overlayColor: WpyTheme.of(context).primary == null
             ? null
-            : MaterialStateColor.resolveWith(
-                (states) => WpyTheme.of(context).primary!.withOpacity(0.1)),
-        side: MaterialStateProperty.all(
+            : WidgetStateColor.resolveWith((states) =>
+                WpyTheme.of(context).primary!.withValues(alpha: 0.1)),
+        side: WidgetStateProperty.all(
           BorderSide(
             color: isChecked
                 ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)

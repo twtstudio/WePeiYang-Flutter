@@ -54,6 +54,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   double get tabBarHeight => 46.h;
 
   late final FbDepartmentsProvider _departmentsProvider;
+  late Future<void> _tabListFuture;
 
   initPage() {
     _departmentsProvider.initDepartments();
@@ -73,6 +74,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     super.initState();
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
+    _tabListFuture = LakeUtil.initTabList();
     LakeUtil.getClipboardWeKoContents(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       initPage();
@@ -190,8 +192,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   Widget _buildReloadPage() {
     return HomeErrorContainer(
-      // 直接重新Load 这个Widget,重新来FutureBuilder的Future
-      onRetry: () => setState(() {}),
+      onRetry: () => setState(() {
+        _tabListFuture = LakeUtil.initTabList();
+      }),
       errorText: "完全没有网络，论坛加载失败",
     );
   }
@@ -378,7 +381,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         // 给状态切换增加动画
         duration: Duration(milliseconds: 200),
         child: FutureBuilder(
-            future: LakeUtil.initTabList(),
+            future: _tabListFuture,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return _buildReloadPage();
@@ -697,7 +700,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
               child: Container(
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.reverseBackgroundColor)
-                    .withOpacity(0.45),
+                    .withValues(alpha: 0.45),
               ),
             )),
         Offstage(

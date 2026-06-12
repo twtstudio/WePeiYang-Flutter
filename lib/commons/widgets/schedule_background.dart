@@ -64,7 +64,7 @@ class ScheduleBackgroundPrinter extends CustomPainter {
 
     // Secondary White Background with 30% opacity
     Paint background30Paint = Paint()
-      ..color = primaryBackgroundColor.withOpacity(0.3);
+      ..color = primaryBackgroundColor.withValues(alpha: 0.3);
     canvas.drawRect(primaryBackground, background30Paint);
 
     // Three Circle with Blur Effect
@@ -96,7 +96,7 @@ class ScheduleBackgroundPrinter extends CustomPainter {
       blurPaint,
     );
 
-    blurPaint.color = primaryActionColor.withOpacity(0.5);
+    blurPaint.color = primaryActionColor.withValues(alpha: 0.5);
     canvas.drawOval(
       Rect.fromLTWH(
         -size.width * 0.32,
@@ -107,7 +107,7 @@ class ScheduleBackgroundPrinter extends CustomPainter {
       blurPaint,
     );
 
-    blurPaint.color = primaryActionColor.withOpacity(0.3);
+    blurPaint.color = primaryActionColor.withValues(alpha: 0.3);
     canvas.drawOval(
       Rect.fromLTWH(
         size.width * -0.4,

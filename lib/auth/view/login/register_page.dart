@@ -535,7 +535,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -552,7 +552,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -569,7 +569,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -586,7 +586,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -603,7 +603,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -620,7 +620,7 @@ class _RegisterPageTwoState extends State<RegisterPageTwo> {
                                   decoration: BoxDecoration(
                                     color: WpyTheme.of(context)
                                         .get(WpyColorKey.primaryBackgroundColor)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
@@ -955,21 +955,19 @@ class _RegisterPageThreeState extends State<RegisterPageThree> {
                                 .primaryAction(context))),
                         style: ButtonStyle(
                           overlayColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                                  (states) {
-                            if (states.contains(MaterialState.pressed))
+                              WidgetStateProperty.resolveWith<Color>((states) {
+                            if (states.contains(WidgetState.pressed))
                               return WpyTheme.of(context)
                                   .get(WpyColorKey.reverseBackgroundColor)
-                                  .withOpacity(0.1);
+                                  .withValues(alpha: 0.1);
                             return WpyTheme.of(context)
                                 .get(WpyColorKey.primaryBackgroundColor);
                           }),
-                          backgroundColor: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(
                               WpyTheme.of(context)
                                   .get(WpyColorKey.primaryBackgroundColor)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24))),
+                          shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24))),
                         ),
                       ),
                     ),

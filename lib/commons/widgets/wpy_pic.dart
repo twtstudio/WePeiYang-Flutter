@@ -61,10 +61,7 @@ class WpyPic extends StatefulWidget {
                 SizedBox(height: 3),
                 Center(
                   child: Text('加载失败',
-                      style: TextUtil.base
-                          .customColor(info)
-                          .w400
-                          .sp(11)),
+                      style: TextUtil.base.customColor(info).w400.sp(11)),
                 ),
               ],
             ),
@@ -150,7 +147,7 @@ class _WpyPicState extends State<WpyPic> {
         if (widget.reduce && WpyTheme.of(context).brightness == Brightness.dark)
           return ColorFiltered(
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度
+              Colors.black.withValues(alpha: 0.2), // 调整这个透明度值来控制降低亮度的程度
               BlendMode.darken, // 使用darken混合模式来降低亮度
             ),
             child: imageWidget,

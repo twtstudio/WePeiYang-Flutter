@@ -97,29 +97,8 @@ class _PostDetailPageState extends State<PostDetailPage>
     currentRefresher.value = _refreshController;
     super.initState();
     FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      /// 如果是从通知栏点进来的
-      if (widget.post.fromNotify) {
-        _initCommentsOnly(onSuccess: (comments) {
-          _commentList.addAll(comments);
-          setState(() {
-            status = DetailPageStatus.idle;
-          });
-        }, onFail: () {
-          setState(() {
-            status = DetailPageStatus.error;
-          });
-        });
-      } else {
-        _getOfficialComment();
-        _getComments(
-            onSuccess: (comments) {
-              _commentList.addAll(comments);
-            },
-            onFail: () {},
-            current: currentPage);
-        status = DetailPageStatus.idle;
-      }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _loadInitialData();
     });
     order.addListener(() {
       print("Oder changed to: ${order.value}");
@@ -128,7 +107,6 @@ class _PostDetailPageState extends State<PostDetailPage>
       // _refreshController.requestRefresh();
     });
     _getIOSShowBlock();
-    initWhileChangingPost();
 
     //初始化录音控制器
     _recordController = RecordController(
@@ -139,10 +117,29 @@ class _PostDetailPageState extends State<PostDetailPage>
     _recordController.addListener(_syncVoiceToInput);
   }
 
+  void _loadInitialData() {
+    if (widget.post.fromNotify) {
+      _initCommentsOnly(onSuccess: (comments) {
+        if (!mounted) return;
+        setState(() {
+          _commentList = comments;
+          status = DetailPageStatus.idle;
+        });
+      }, onFail: () {
+        if (!mounted) return;
+        setState(() {
+          status = DetailPageStatus.error;
+        });
+      });
+      return;
+    }
+    initWhileChangingPost();
+  }
+
   void initWhileChangingPost() {
     context.read<NewFloorProvider>().inputFieldEnabled = false;
     context.read<NewFloorProvider>().replyTo = 0;
-    _onRefresh(isInitial: true);
+    _onRefresh(isInitial: true, updatePageStatus: true);
   }
 
   /// iOS显示拉黑按钮
@@ -150,24 +147,30 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   _onRefresh({
     bool isInitial = false,
+    bool updatePageStatus = false,
   }) {
     currentPage = 1;
     _refreshController.resetNoData();
     setState(() {
       _showPostCard = isInitial;
+      _commentList.clear();
+      if (updatePageStatus) status = DetailPageStatus.loading;
     });
-    _commentList.clear();
     _initPostAndComments(
       onSuccess: (comments) {
+        if (!mounted) return;
         setState(() {
           _showPostCard = true;
+          _commentList = comments;
+          if (updatePageStatus) status = DetailPageStatus.idle;
         });
-        _commentList = comments;
         _refreshController.refreshCompleted();
       },
       onFail: () {
+        if (!mounted) return;
         setState(() {
           _showPostCard = true;
+          if (updatePageStatus) status = DetailPageStatus.error;
         });
         _refreshController.refreshFailed();
       },
@@ -203,13 +206,14 @@ class _PostDetailPageState extends State<PostDetailPage>
   // 逻辑有点问题
   _initPostAndComments(
       {required Function(List<Floor>) onSuccess, required Function onFail}) {
-    _initPost(onFail).then((success) {
+    _initPost(onFail, rebuild: false).then((success) {
       if (success) {
-        _getOfficialComment(onFail: onFail);
+        _getOfficialComment(onFail: onFail, rebuild: false);
         _getComments(
           onSuccess: onSuccess,
           onFail: onFail,
           current: 1,
+          rebuild: false,
         );
       }
     });
@@ -217,15 +221,16 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   _initCommentsOnly(
       {required Function(List<Floor>) onSuccess, required Function onFail}) {
-    _getOfficialComment(onFail: onFail);
+    _getOfficialComment(onFail: onFail, rebuild: false);
     _getComments(
       onSuccess: onSuccess,
       onFail: onFail,
       current: 1,
+      rebuild: false,
     );
   }
 
-  Future<bool> _initPost(Function onFail) async {
+  Future<bool> _initPost(Function onFail, {bool rebuild = true}) async {
     bool success = false;
     await FeedbackService.getPostById(
       id: widget.post.id,
@@ -234,7 +239,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         widget.post = result;
         rating = widget.post.rating;
         if (!mounted) return;
-        setState(() {});
+        if (rebuild) setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
@@ -252,7 +257,8 @@ class _PostDetailPageState extends State<PostDetailPage>
   _getComments(
       {required Function(List<Floor>) onSuccess,
       required Function onFail,
-      int? current}) {
+      int? current,
+      bool rebuild = true}) {
     FeedbackService.getComments(
       id: widget.post.id,
       page: current ?? currentPage,
@@ -260,7 +266,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       onlyOwner: onlyOwner.value,
       onSuccess: (comments, totalFloor) {
         onSuccess.call(comments);
-        setState(() {});
+        if (rebuild && mounted) setState(() {});
       },
       onFailure: (e) {
         ToastProvider.error(e.error.toString());
@@ -269,14 +275,14 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
   }
 
-  _getOfficialComment({Function? onFail}) {
+  _getOfficialComment({Function? onFail, bool rebuild = true}) {
     // 非官方贴不请求
     if (widget.post.type != 1) return;
     FeedbackService.getOfficialComment(
       id: widget.post.id,
       onSuccess: (floor) {
         _officialCommentList = floor;
-        setState(() {});
+        if (rebuild && mounted) setState(() {});
       },
       onFailure: (e) {
         onFail?.call();
@@ -443,7 +449,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         .get(WpyColorKey.oldSwitchBarColor),
                                     checkColor: WpyTheme.of(context)
                                         .get(WpyColorKey.reverseTextColor),
-                                    side: MaterialStateBorderSide.resolveWith(
+                                    side: WidgetStateBorderSide.resolveWith(
                                         (_) => BorderSide(
                                               color: WpyTheme.of(context).get(
                                                   WpyColorKey.infoTextColor),
@@ -476,83 +482,110 @@ class _PostDetailPageState extends State<PostDetailPage>
     }
   }
 
+  Widget _buildLoadedCommentList() {
+    final contentList = ListView.builder(
+      itemBuilder: _buildCommentCard,
+      controller: _controller,
+      itemCount: _showPostCard
+          ? _officialCommentList.length + _commentList.length + 1
+          : 5,
+    );
+
+    return NotificationListener<ScrollNotification>(
+      child: SmartRefresher(
+        physics: BouncingScrollPhysics(),
+        controller: _refreshController,
+        header: ClassicHeader(
+          completeDuration: Duration(milliseconds: 300),
+          idleText: '下拉以刷新 (乀*･ω･)乀',
+          releaseText: '下拉以刷新',
+          refreshingText: '正在刷新中，请稍等 (*￣3￣)/',
+          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+          failedText: '刷新失败（；´д｀）ゞ',
+        ),
+        enablePullDown: true,
+        onRefresh: _onRefresh,
+        footer: ClassicFooter(
+          idleText: '下拉以刷新',
+          noDataText: '这个冒泡到底啦 (*･ω･)',
+          loadingText: '加载中，请稍等  ;P',
+          failedText: '加载失败（；´д｀）ゞ',
+        ),
+        enablePullUp: true,
+        onLoading: _onLoading,
+        child: ListenableBuilder(
+            listenable: screenshotting,
+            builder: (context, _) {
+              if (screenshotting.value)
+                return Screenshot(
+                    child: Container(
+                        color: WpyTheme.of(context)
+                            .get(WpyColorKey.primaryBackgroundColor),
+                        child: contentList),
+                    controller: selectedScreenshotController);
+              return contentList;
+            }),
+      ),
+      onNotification: (ScrollNotification scrollInfo) =>
+          _onScrollNotification(scrollInfo),
+    );
+  }
+
+  Widget _buildPageContent() {
+    final Widget content = switch (status) {
+      DetailPageStatus.loading => _buildLoadingPlaceholder(context),
+      DetailPageStatus.idle => _buildLoadedCommentList(),
+      DetailPageStatus.error => Center(child: Text("error!")),
+    };
+
+    return SafeArea(
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  switchInCurve: Curves.easeOutCubic,
+                  switchOutCurve: Curves.easeOutCubic,
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                  child: KeyedSubtree(
+                    key: ValueKey(status),
+                    child: content,
+                  ),
+                ),
+              ),
+              SizedBox(height: SplitUtil.h * 60),
+            ],
+          ),
+          AnimatedOpacity(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            opacity: status == DetailPageStatus.idle ? 1 : 0,
+            child: IgnorePointer(
+              ignoring: status != DetailPageStatus.idle,
+              child: _buildBottomActionBar(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget body;
-
     if (preChangeId != (widget.changeId ?? preChangeId)) {
-      initWhileChangingPost();
       print("pre: $preChangeId, change: ${widget.changeId}");
       preChangeId = widget.changeId!;
-    }
-
-    if (status == DetailPageStatus.loading) {
-      body = _buildLoadingPlaceholder(context);
-    } else if (status == DetailPageStatus.idle) {
-      Widget contentList = ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: _buildCommentCard,
-        controller: _controller,
-        itemCount: _showPostCard
-            ? _officialCommentList.length + _commentList.length + 1
-            : 5,
-      );
-
-      Widget mainList = NotificationListener<ScrollNotification>(
-        child: SmartRefresher(
-          physics: BouncingScrollPhysics(),
-          controller: _refreshController,
-          header: ClassicHeader(
-            completeDuration: Duration(milliseconds: 300),
-            idleText: '下拉以刷新 (乀*･ω･)乀',
-            releaseText: '下拉以刷新',
-            refreshingText: '正在刷新中，请稍等 (*￣3￣)/',
-            completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-            failedText: '刷新失败（；´д｀）ゞ',
-          ),
-          enablePullDown: true,
-          onRefresh: _onRefresh,
-          footer: ClassicFooter(
-            idleText: '下拉以刷新',
-            noDataText: '这个冒泡到底啦 (*･ω･)',
-            loadingText: '加载中，请稍等  ;P',
-            failedText: '加载失败（；´д｀）ゞ',
-          ),
-          enablePullUp: true,
-          onLoading: _onLoading,
-          child: ListenableBuilder(
-              listenable: screenshotting,
-              builder: (context, _) {
-                if (screenshotting.value)
-                  return Screenshot(
-                      child: Container(
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.primaryBackgroundColor),
-                          child: contentList),
-                      controller: selectedScreenshotController);
-                return Container(child: contentList);
-              }),
-        ),
-        onNotification: (ScrollNotification scrollInfo) =>
-            _onScrollNotification(scrollInfo),
-      );
-
-      body = SafeArea(
-        child: Stack(
-          key: ValueKey("loaded"),
-          children: [
-            Column(
-              children: [
-                Expanded(child: mainList),
-                SizedBox(height: SplitUtil.h * 60),
-              ],
-            ),
-            _buildBottomActionBar(),
-          ],
-        ),
-      );
-    } else {
-      body = Center(child: Text("error!"));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) initWhileChangingPost();
+      });
     }
 
     var appBar = AppBar(
@@ -595,7 +628,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       })(),
       child: PopScope(
         canPop: true,
-        onPopInvoked: (didPop) {
+        onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
           Navigator.pop(context, widget.post);
         },
@@ -612,20 +645,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               backgroundColor:
                   WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
               appBar: appBar,
-              body: AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  if (child.key != ValueKey("loaded")) {
-                    return child;
-                  } else {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: child,
-                    );
-                  }
-                },
-                child: body,
-              ),
+              body: _buildPageContent(),
             ),
           ),
           onHorizontalDragUpdate: (DragUpdateDetails details) {
@@ -1160,8 +1180,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                                                               Shadow(
                                                                 color: Colors
                                                                     .red
-                                                                    .withOpacity(
-                                                                        0.5),
+                                                                    .withValues(
+                                                                        alpha:
+                                                                            0.5),
                                                                 blurRadius: 3,
                                                                 offset: Offset(
                                                                     2, 2),
@@ -1503,7 +1524,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
       final targetPath = '${file.path}_compressed.jpg';
       final r = await FlutterImageCompress.compressAndGetFile(
-          file.path, targetPath, quality: 80);
+          file.path, targetPath,
+          quality: 80);
       if (r != null) file = File(r.path);
       if (j == 10) {
         ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
@@ -1533,9 +1555,10 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       }
       for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
         final targetPath = '${file.path}_compressed.jpg';
-      final r = await FlutterImageCompress.compressAndGetFile(
-          file.path, targetPath, quality: 80);
-      if (r != null) file = File(r.path);
+        final r = await FlutterImageCompress.compressAndGetFile(
+            file.path, targetPath,
+            quality: 80);
+        if (r != null) file = File(r.path);
         if (j == 10) {
           ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
           return;
@@ -1676,7 +1699,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, _) {
         if (didPop) return;
         try {
           LakeUtil.currentController.refreshController?.requestRefresh();
@@ -2143,7 +2166,7 @@ class _SearchableDropdownDialogState extends State<SearchableDropdownDialog> {
             if (selectedItem.value == "") return old!;
             return ElevatedButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                     WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
               ),
               onPressed: () async {

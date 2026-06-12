@@ -65,7 +65,7 @@ class CasQRPage extends StatelessWidget {
             ),
             backgroundColor: WpyTheme.of(context)
                 .get(WpyColorKey.primaryLightActionColor)
-                .withOpacity(0.4),
+                .withValues(alpha: 0.4),
             body: Center(
               child: QRRegionWidget(),
             ),

@@ -146,7 +146,7 @@ class _DebugInfoPageState extends State<DebugInfoPage> {
                         style: TextStyle(
                           color: WpyTheme.of(context)
                               .get(WpyColorKey.secondaryTextColor)
-                              .withOpacity(0.8),
+                              .withValues(alpha: 0.8),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),

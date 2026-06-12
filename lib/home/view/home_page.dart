@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         bottomNavigationBar: bottomNavigationBar,
         body: PopScope(
           canPop: false,
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, _) {
             // 如果是通过系统返回键触发的 pop，且已经 pop，则直接返回
             if (didPop) return;
 

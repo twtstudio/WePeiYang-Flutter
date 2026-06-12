@@ -74,8 +74,8 @@ class _ColoredIconState extends State<ColoredIcon> {
           dh = bound.height - height;
         }
         Matrix4 matrix = Matrix4.identity()
-          ..scale(width / realWidth, height / realHeight)
-          ..translate(dw, dh);
+          ..scaleByDouble(width / realWidth, height / realHeight, 1.0, 1.0)
+          ..translateByDouble(dw, dh, 0.0, 1.0);
 
         return ImageShader(
           _image!,
@@ -96,7 +96,7 @@ class _ColoredIconState extends State<ColoredIcon> {
           if (WpyTheme.of(context).brightness == Brightness.light) return img;
           return ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度
+                Colors.black.withValues(alpha: 0.2), // 调整这个透明度值来控制降低亮度的程度
                 BlendMode.darken, // 使用darken混合模式来降低亮度
               ),
               child: img);

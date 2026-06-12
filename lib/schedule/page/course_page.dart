@@ -218,7 +218,7 @@ class _CourseAppBar extends StatelessWidget implements PreferredSizeWidget {
             size: 20.r,
             color: WpyTheme.of(context)
                 .get(WpyColorKey.brightTextColor)
-                .withOpacity(0.7),
+                .withValues(alpha: 0.7),
           ),
         ),
       ),

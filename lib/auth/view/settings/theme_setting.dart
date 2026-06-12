@@ -167,12 +167,14 @@ class _ThemeSettingState extends State<ThemeSetting>
 
   Widget _buildPreviewSection(BuildContext context) {
     final lightTheme = WpyThemeData.themeList.firstWhere(
-      (e) => e.meta.themeId == CommonPreferences.appThemeId.value &&
+      (e) =>
+          e.meta.themeId == CommonPreferences.appThemeId.value &&
           e.meta.brightness == Brightness.light,
       orElse: () => WpyThemeData.brightThemeList[0],
     );
     final darkTheme = WpyThemeData.themeList.firstWhere(
-      (e) => e.meta.themeId == CommonPreferences.appDarkThemeId.value &&
+      (e) =>
+          e.meta.themeId == CommonPreferences.appDarkThemeId.value &&
           e.meta.brightness == Brightness.dark,
       orElse: () => WpyThemeData.darkThemeList[0],
     );
@@ -198,8 +200,7 @@ class _ThemeSettingState extends State<ThemeSetting>
                       height: 48.h,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: WpyTheme.of(ctx)
-                            .get(WpyColorKey.beanLightColor),
+                        color: WpyTheme.of(ctx).get(WpyColorKey.beanLightColor),
                       ),
                     ),
                   ),
@@ -219,10 +220,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                     height: 10.h,
                     width: 60.w,
                     decoration: BoxDecoration(
-                      color: WpyTheme.of(ctx)
-                          .get(WpyColorKey.labelTextColor),
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(30.w)),
+                      color: WpyTheme.of(ctx).get(WpyColorKey.labelTextColor),
+                      borderRadius: BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
                   SizedBox(height: 4.5.h),
@@ -230,10 +229,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                     height: 6.h,
                     width: 50.w,
                     decoration: BoxDecoration(
-                      color: WpyTheme.of(ctx)
-                          .get(WpyColorKey.unlabeledColor),
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(30.w)),
+                      color: WpyTheme.of(ctx).get(WpyColorKey.unlabeledColor),
+                      borderRadius: BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
                 ],
@@ -242,7 +239,8 @@ class _ThemeSettingState extends State<ThemeSetting>
           ),
         );
 
-    Widget exampleCard2(String iconAsset, BuildContext ctx) => AnimatedContainer(
+    Widget exampleCard2(String iconAsset, BuildContext ctx) =>
+        AnimatedContainer(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           width: 150.w,
@@ -263,8 +261,7 @@ class _ThemeSettingState extends State<ThemeSetting>
                       height: 48.h,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: WpyTheme.of(ctx)
-                            .get(WpyColorKey.beanLightColor),
+                        color: WpyTheme.of(ctx).get(WpyColorKey.beanLightColor),
                       ),
                     ),
                   ),
@@ -284,10 +281,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                     height: 10.h,
                     width: 60.w,
                     decoration: BoxDecoration(
-                      color: WpyTheme.of(ctx)
-                          .get(WpyColorKey.labelTextColor),
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(30.w)),
+                      color: WpyTheme.of(ctx).get(WpyColorKey.labelTextColor),
+                      borderRadius: BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
                   SizedBox(height: 4.5.h),
@@ -295,10 +290,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                     height: 6.h,
                     width: 50.w,
                     decoration: BoxDecoration(
-                      color: WpyTheme.of(ctx)
-                          .get(WpyColorKey.unlabeledColor),
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(30.w)),
+                      color: WpyTheme.of(ctx).get(WpyColorKey.unlabeledColor),
+                      borderRadius: BorderRadius.all(Radius.circular(30.w)),
                     ),
                   ),
                 ],
@@ -340,12 +333,12 @@ class _ThemeSettingState extends State<ThemeSetting>
                   right: isLight ? null : 10,
                   top: -10.h,
                   child: Text(
-                      watermarkText,
-                      overflow: TextOverflow.clip,
-                      textAlign: isLight ? TextAlign.left : TextAlign.right,
-                      style: TextUtil.base.w900
-                          .sp(35)
-                          .copyWith(color: Colors.white30),
+                    watermarkText,
+                    overflow: TextOverflow.clip,
+                    textAlign: isLight ? TextAlign.left : TextAlign.right,
+                    style: TextUtil.base.w900
+                        .sp(35)
+                        .copyWith(color: Colors.white30),
                   ),
                 ),
                 Positioned.fill(
@@ -354,8 +347,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                     children: [
                       SizedBox(height: 30.h),
                       Container(
-                        margin: EdgeInsets.only(
-                            left: 30.w, top: 5.h, bottom: 10.h),
+                        margin:
+                            EdgeInsets.only(left: 30.w, top: 5.h, bottom: 10.h),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           greeting,
@@ -370,8 +363,8 @@ class _ThemeSettingState extends State<ThemeSetting>
                           curve: Curves.easeInOut,
                           padding: EdgeInsets.fromLTRB(0, 2.h, 0, 10.h),
                           decoration: BoxDecoration(
-                            color: WpyTheme.of(ctx).get(
-                                WpyColorKey.primaryBackgroundColor),
+                            color: WpyTheme.of(ctx)
+                                .get(WpyColorKey.primaryBackgroundColor),
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(40.r),
                               topRight: Radius.circular(40.r),
@@ -448,8 +441,9 @@ class _ThemeSettingState extends State<ThemeSetting>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('外观模式', style: TextUtil.base.w600.sp(15).copyWith(
-              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
+          Text('外观模式',
+              style: TextUtil.base.w600.sp(15).copyWith(
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
           SizedBox(height: 12.h),
           Row(
             children: [
@@ -646,34 +640,34 @@ class ThemeModeButton extends StatelessWidget {
         WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
     return WButton(
       onPressed: onTap,
-        child: Container(
-          height: 40.h,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: background,
-            borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(
+      child: Container(
+        height: 40.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: selected
+                ? action
+                : WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16.r,
               color: selected
                   ? action
-                  : WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
-              width: selected ? 1.5 : 1,
+                  : WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 16.r,
-                color: selected
-                    ? action
-                    : WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+            SizedBox(width: 4.w),
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextUtil.base.sp(12).copyWith(
                     color: selected
                         ? action
@@ -709,8 +703,9 @@ class ThemeSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextUtil.base.w600.sp(15).copyWith(
-              color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
+          Text(title,
+              style: TextUtil.base.w600.sp(15).copyWith(
+                  color: WpyTheme.of(context).get(WpyColorKey.labelTextColor))),
           SizedBox(height: 12.h),
           GridView(
             shrinkWrap: true,
@@ -745,7 +740,9 @@ class AppIconChoiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderColor = selected
         ? WpyTheme.of(context).get(WpyColorKey.oldSecondaryActionColor)
-        : WpyTheme.of(context).get(WpyColorKey.oldHintColor).withOpacity(0.25);
+        : WpyTheme.of(context)
+            .get(WpyColorKey.oldHintColor)
+            .withValues(alpha: 0.25);
 
     return Container(
       decoration: BoxDecoration(
@@ -921,7 +918,7 @@ class WpyThemeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.reverseBackgroundColor)
-                      .withOpacity(0.3),
+                      .withValues(alpha: 0.3),
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 alignment: Alignment.centerLeft,

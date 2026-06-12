@@ -71,14 +71,13 @@ class _ActivityCardState extends State<ActivityCard> {
                 context.read<FestivalProvider>().nonePopupList[index].title),
           );
         }
-
       },
       child: Stack(
         children: [
           if (WpyTheme.of(context).brightness == Brightness.dark)
             ColorFiltered(
               colorFilter: ColorFilter.mode(
-                Colors.black.withOpacity(0.2), // 调整这个透明度值来控制降低亮度的程度
+                Colors.black.withValues(alpha: 0.2), // 调整这个透明度值来控制降低亮度的程度
                 BlendMode.darken, // 使用darken混合模式来降低亮度
               ),
               child: banner,

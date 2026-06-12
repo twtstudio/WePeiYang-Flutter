@@ -381,14 +381,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
                             highlightColor: Colors.transparent,
                             brightness: WpyTheme.of(context).brightness,
                             primaryColor: WpyTheme.of(context).primary,
-                            useMaterial3: true,
                             switchTheme: SwitchThemeData(
-                              thumbColor: MaterialStateProperty.all(
+                              thumbColor: WidgetStateProperty.all(
                                   WpyTheme.of(context).primary),
-                              trackColor: MaterialStateProperty.all(
+                              trackColor: WidgetStateProperty.all(
                                   WpyTheme.of(context).primary),
-                              trackOutlineWidth: MaterialStateProperty.all(1),
-                              trackOutlineColor: MaterialStateProperty.all(
+                              trackOutlineWidth: WidgetStateProperty.all(1),
+                              trackOutlineColor: WidgetStateProperty.all(
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.oldHintColor)),
                             )),

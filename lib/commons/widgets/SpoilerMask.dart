@@ -85,7 +85,7 @@ class _SpoilerMaskState extends State<SpoilerMask>
           child: Stack(children: [
             BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: Colors.black.withOpacity(0.2)),
+              child: Container(color: Colors.black.withValues(alpha: 0.2)),
             ),
             ParticleSimulation(
               width: constraints.maxWidth,
@@ -228,7 +228,7 @@ class _ParticleSimulationState extends State<ParticleSimulation>
       size: _random.nextDouble() * widget.maxParticleSize +
           widget.minParticleSize,
       // 粒子的大小
-      color: Colors.white.withOpacity(_random.nextDouble()),
+      color: Colors.white.withValues(alpha: _random.nextDouble()),
     );
   }
 

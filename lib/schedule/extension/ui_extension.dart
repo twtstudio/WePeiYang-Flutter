@@ -55,7 +55,7 @@ class AnimatedActiveCourse extends StatelessWidget {
             blurRadius: 15,
             color: WpyTheme.of(context)
                 .get(WpyColorKey.basicTextColor)
-                .withOpacity(0.08),
+                .withValues(alpha: 0.08),
           ),
         ],
         borderRadius: BorderRadius.circular(5),
@@ -69,7 +69,7 @@ class AnimatedActiveCourse extends StatelessWidget {
           splashFactory: InkRipple.splashFactory,
           splashColor: WpyTheme.of(context)
               .get(WpyColorKey.brightTextColor)
-              .withOpacity(0.3),
+              .withValues(alpha: 0.3),
           child: _hide
               ? Container()
               : Padding(
