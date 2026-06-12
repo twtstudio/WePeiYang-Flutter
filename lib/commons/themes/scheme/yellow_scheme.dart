@@ -7,13 +7,13 @@ class YellowScheme extends WpyThemeData {
   YellowScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_yellow_theme",
-            name: "镜音黄",
-            description: "默认 黄 主题",
-            brightness: Brightness.light,
-            representativeColor: Color(0xffffe211),
-            address: "com.twt.service.ICONYellow"
-          ),
+              themeId: "builtin_yellow_theme",
+              name: "镜音黄",
+              description: "默认 黄 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_yellow_dark_theme",
+              representativeColor: Color(0xffffe211),
+              address: "com.twt.service.ICONYellow"),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
@@ -237,7 +237,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       yellowMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       yellowMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),

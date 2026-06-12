@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
@@ -274,9 +275,15 @@ class _AvatarListBuilderState extends State<AvatarListBuilder> {
                       .get(WpyColorKey.primaryBackgroundColor),
                 ),
         ],
-        image: DecorationImage(
-          image: NetworkImage('${avatarBox.addr}'),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(10.r)),
+        child: WpyPic(
+          avatarBox.addr,
+          width: 100.w,
+          height: 100.w,
           fit: BoxFit.cover,
+          withHolder: true,
         ),
       ),
     );

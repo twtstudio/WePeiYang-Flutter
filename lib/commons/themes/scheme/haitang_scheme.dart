@@ -7,13 +7,13 @@ class HaiTangScheme extends WpyThemeData {
   HaiTangScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_HaiTang_theme",
-            name: "海棠粉",
-            description: "默认 粉色 主题",
-            brightness: Brightness.light,
-            representativeColor: Color(0xFFD983AE),
-            address: "com.twt.service.ICONPink"
-          ),
+              themeId: "builtin_HaiTang_theme",
+              name: "海棠粉",
+              description: "默认 粉色 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_HaiTang_dark_theme",
+              representativeColor: Color(0xFFD983AE),
+              address: "com.twt.service.ICONPink"),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
@@ -238,7 +238,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       HaiTangMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       HaiTangMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),

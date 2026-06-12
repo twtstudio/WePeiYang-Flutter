@@ -7,14 +7,13 @@ class PurpleScheme extends WpyThemeData {
   PurpleScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_purple_theme",
-            name: "曼巴紫",
-            description: "默认 紫 主题",
-            brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xFF921AFF),
-            address: "com.twt.service.ICONPurple"
-          ),
+              themeId: "builtin_purple_theme",
+              name: "曼巴紫",
+              description: "默认 紫 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_purple_dark_theme",
+              representativeColor: Color(0xFF921AFF),
+              address: "com.twt.service.ICONPurple"),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
@@ -238,7 +237,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       purpleMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       purpleMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),

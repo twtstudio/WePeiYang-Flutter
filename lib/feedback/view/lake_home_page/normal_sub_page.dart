@@ -60,15 +60,13 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
-    final refreshController =
-        LakeUtil.lakePageControllers[index]!.refreshController;
     final pixels = scrollInfo.metrics.pixels;
     final maxScrollExtent = scrollInfo.metrics.maxScrollExtent;
     final threshold = 12.h + FeedbackHomePageState.searchBarHeight;
 
     // Check for refresh idle state and feedback conditions
-    if (refreshController.isRefresh && pixels >= 2) {
-      refreshController.refreshToIdle();
+    if (_refreshController.isRefresh && pixels >= 2) {
+      _refreshController.refreshToIdle();
     }
     if (pixels < threshold) {
       LakeUtil.showSearch.value = true;
@@ -131,11 +129,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   Future<void> _refreshPostList() async {
     await LakeUtil.initPostList(index, forced: true)
         .catchError((e) => _handlePostListFailure(e));
-    pageController.refreshController.refreshCompleted();
+    _refreshController.refreshCompleted();
   }
 
   void _handlePostListFailure(DioException e) {
-    final refresh = pageController.refreshController;
+    final refresh = _refreshController;
     if ([
       DioExceptionType.connectionTimeout,
       DioExceptionType.receiveTimeout,
@@ -150,7 +148,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     await LakeTokenManager().refreshToken();
     _onRefresh();
     ToastProvider.error("发生未知错误");
-    pageController.refreshController.refreshFailed();
+    _refreshController.refreshFailed();
   }
 
   void _initializeAdditionalProviders() {
@@ -159,7 +157,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   _onLoading() async {
-    final refresh = pageController.refreshController;
+    final refresh = _refreshController;
     await LakeUtil.getNextPage(index).catchError((e) => refresh.loadFailed());
     refresh.loadComplete();
   }
@@ -168,7 +166,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     setState(() {
       loadFlag++;
     });
-    final scroll = pageController.scrollController;
+    final scroll = _scrollController;
 
     if (scroll.offset > 1500) {
       scroll.jumpTo(1500);
@@ -182,14 +180,37 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   late final LakePageController pageController;
+  late final RefreshController _refreshController;
+  late final ScrollController _scrollController;
+  bool _isCurrentTab = false;
 
   @override
   void initState() {
     super.initState();
     print("==> init state for tab $index");
     pageController = LakeUtil.lakePageControllers[index]!;
+    _refreshController = RefreshController();
+    _scrollController = ScrollController();
+    _syncActiveControllers();
     _initializeProviders();
     _initializeLakeArea();
+  }
+
+  @override
+  void dispose() {
+    pageController.detachControllers(_scrollController, _refreshController);
+    _refreshController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _syncActiveControllers() {
+    final currentTab = LakeUtil.currentTab.value;
+    _isCurrentTab = currentTab < LakeUtil.tabList.length &&
+        LakeUtil.tabList[currentTab].id == index;
+    if (_isCurrentTab) {
+      pageController.attachControllers(_scrollController, _refreshController);
+    }
   }
 
   void _initializeProviders() {
@@ -284,6 +305,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    _syncActiveControllers();
 
     return FutureBuilder(
         future: LakeUtil.initPostList(index),
@@ -307,50 +329,53 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                   // 这里是Post的Listview, 需要监听Post刷新
                   listenable: pageController.postHolder,
                   builder: (context, oldChild) {
-                    return MiuiLongScreenshot(
-                      controller: pageController.scrollController,
-                      child: SmartRefresher(
-                        physics: BouncingScrollPhysics(),
-                        controller: pageController.refreshController,
-                        scrollController: pageController.scrollController,
-                        header: ClassicHeader(
-                          height: 5.h,
-                          completeDuration: Duration(milliseconds: 300),
-                          idleText: '下拉以刷新 (乀*･ω･)乀',
-                          releaseText: '下拉以刷新',
-                          refreshingText:
-                              topText[Random().nextInt(topText.length)],
-                          completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
-                          failedText: '刷新失败（；´д｀）ゞ',
-                        ),
-                        cacheExtent: 1.sh,
-                        enablePullDown: true,
-                        onRefresh: _onRefresh,
-                        footer: ClassicFooter(
-                          idleText: '下拉以刷新',
-                          noDataText: '无数据',
-                          loadingText: '加载中，请稍等  ;P',
-                          failedText: '加载失败（；´д｀）ゞ',
-                        ),
-                        enablePullUp: true,
-                        onLoading: _onLoading,
-                        child: isRefresh
-                            ? RefreshSkeleton()
-                            : ListView.builder(
-                                // 根据要求， Listview必须紧挨着SmartRefresher，
-                                // 不能包装任何东西
-                                // 所以不得已使用三元表达式
-                                key: PageStorageKey("$index,$loadFlag"),
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                // 4是因为前面有4个widget，
-                                // Welcome, 热榜， Banner, 排序选择器
-                                itemCount:
-                                    pageController.postHolder.postsList.length +
-                                        4,
-                                itemBuilder: _buildPostList,
-                              ),
+                    final refresher = SmartRefresher(
+                      physics: BouncingScrollPhysics(),
+                      controller: _refreshController,
+                      scrollController: _scrollController,
+                      header: ClassicHeader(
+                        height: 5.h,
+                        completeDuration: Duration(milliseconds: 300),
+                        idleText: '下拉以刷新 (乀*･ω･)乀',
+                        releaseText: '下拉以刷新',
+                        refreshingText:
+                            topText[Random().nextInt(topText.length)],
+                        completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
+                        failedText: '刷新失败（；´д｀）ゞ',
                       ),
+                      cacheExtent: 1.sh,
+                      enablePullDown: true,
+                      onRefresh: _onRefresh,
+                      footer: ClassicFooter(
+                        idleText: '下拉以刷新',
+                        noDataText: '无数据',
+                        loadingText: '加载中，请稍等  ;P',
+                        failedText: '加载失败（；´д｀）ゞ',
+                      ),
+                      enablePullUp: true,
+                      onLoading: _onLoading,
+                      child: isRefresh
+                          ? RefreshSkeleton()
+                          : ListView.builder(
+                              // 根据要求， Listview必须紧挨着SmartRefresher，
+                              // 不能包装任何东西
+                              // 所以不得已使用三元表达式
+                              key: PageStorageKey("$index,$loadFlag"),
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              // 4是因为前面有4个widget，
+                              // Welcome, 热榜， Banner, 排序选择器
+                              itemCount:
+                                  pageController.postHolder.postsList.length +
+                                      4,
+                              itemBuilder: _buildPostList,
+                            ),
+                    );
+                    if (!_isCurrentTab) return refresher;
+                    return MiuiLongScreenshot(
+                      key: ValueKey('lake-miui-long-screenshot-$index'),
+                      controller: _scrollController,
+                      child: refresher,
                     );
                   },
                 ),

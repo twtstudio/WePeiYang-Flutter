@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 import '../../../../commons/themes/template/wpy_theme_data.dart';
@@ -47,7 +48,7 @@ class WeKoDialog extends StatelessWidget {
                     style: TextUtil.base.label(context).bold.sp(17).NotoSansSC),
               ),
               if (post.imageUrls.isNotEmpty)
-                Image.network(
+                WpyPic(
                   baseUrl + post.imageUrls[0],
                   height: 150,
                   width: 150,

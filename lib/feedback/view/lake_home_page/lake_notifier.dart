@@ -266,8 +266,8 @@ class LakePosts extends ChangeNotifier {
 class LakePageController {
   final int index;
   final int tabId;
-  final ScrollController scrollController;
-  final RefreshController refreshController;
+  ScrollController? _scrollController;
+  RefreshController? _refreshController;
 
   final ValueNotifier<int> currentPage = ValueNotifier(1);
   final LakePosts postHolder = LakePosts();
@@ -275,15 +275,34 @@ class LakePageController {
   LakePageController({
     required this.index,
     required this.tabId,
-    required this.scrollController,
-    required this.refreshController,
-  });
+    ScrollController? scrollController,
+    RefreshController? refreshController,
+  })  : _scrollController = scrollController,
+        _refreshController = refreshController;
+
+  ScrollController? get scrollController => _scrollController;
+
+  RefreshController? get refreshController => _refreshController;
+
+  void attachControllers(
+      ScrollController scrollController, RefreshController refreshController) {
+    _scrollController = scrollController;
+    _refreshController = refreshController;
+  }
+
+  void detachControllers(
+      ScrollController scrollController, RefreshController refreshController) {
+    if (identical(_scrollController, scrollController)) {
+      _scrollController = null;
+    }
+    if (identical(_refreshController, refreshController)) {
+      _refreshController = null;
+    }
+  }
 
   LakePageController.empty(idx, tabId)
       : index = idx,
-        tabId = tabId,
-        scrollController = ScrollController(),
-        refreshController = RefreshController();
+        tabId = tabId;
 }
 
 class FestivalProvider extends ChangeNotifier {

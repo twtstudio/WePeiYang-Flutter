@@ -672,10 +672,12 @@ class _PostDetailPageState extends State<PostDetailPage>
               onPressed: () async {
                 screenshotSelecting.value = false;
                 screenshotting.value = true;
+                setState(() {});
                 //TODO:等待图片加载完成
                 await Future.delayed(Duration(milliseconds: 888));
                 await takeScreenshot(selectedScreenshotController);
                 screenshotting.value = false;
+                setState(() {});
                 screenshotList.empty();
               },
               icon: Icon(Icons.add_a_photo_outlined,
@@ -766,7 +768,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                     ),
                     CupertinoActionSheetAction(
                       onPressed: () async {
+                        screenshotting.value = true;
+                        setState(() {});
+                        await Future.delayed(Duration(milliseconds: 300));
                         await takeScreenshot(screenshotController);
+                        screenshotting.value = false;
+                        setState(() {});
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -812,7 +819,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 id: widget.post.id,
                                 onSuccess: () {
                                   LakeUtil.currentController.refreshController
-                                      .requestRefresh();
+                                      ?.requestRefresh();
                                   ToastProvider.success('删除成功');
                                   Navigator.of(context).popAndPushNamed(
                                       FeedbackRouter.home,
@@ -882,7 +889,8 @@ class _PostDetailPageState extends State<PostDetailPage>
               order.value = 1;
             } else {
               order.value = 0;
-            };
+            }
+            ;
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -953,7 +961,8 @@ class _PostDetailPageState extends State<PostDetailPage>
     final inputState = launchKey.currentState;
 
     // 只有在有结果时才更新
-    if (_recordController.state == RecordState.success &&_recordController.resultText.isNotEmpty) {
+    if (_recordController.state == RecordState.success &&
+        _recordController.resultText.isNotEmpty) {
       // 策略：将语音内容追加到光标处，或者直接覆盖
       // 获取当前的语音结果
       final voiceResult = _recordController.resultText;
@@ -972,8 +981,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       inputState?.setState(() {
         inputState.commentLengthIndicator = '${newText.length}/200';
       });
-    }
-    else if(_recordController.state == RecordState.error){
+    } else if (_recordController.state == RecordState.error) {
       ToastProvider.error(_recordController.errorMessage);
     }
   }
@@ -1115,31 +1123,52 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         ListenableBuilder(
                                           listenable: _recordController,
                                           builder: (context, child) {
-                                            bool isProcessing = _recordController.state == RecordState.processing;
-                                            bool isRecording = _recordController.isRecording;
+                                            bool isProcessing =
+                                                _recordController.state ==
+                                                    RecordState.processing;
+                                            bool isRecording =
+                                                _recordController.isRecording;
                                             return WButton(
-                                              onPressed: isProcessing ? null : _toggleRecording,
+                                              onPressed: isProcessing
+                                                  ? null
+                                                  : _toggleRecording,
                                               child: isProcessing
                                                   ? SizedBox(
-                                                width: 24.r,
-                                                height: 24.r,
-                                                child: CircularProgressIndicator(strokeWidth: 2, color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor)),
-                                              )
+                                                      width: 24.r,
+                                                      height: 24.r,
+                                                      child: CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                          color: WpyTheme.of(
+                                                                  context)
+                                                              .get(WpyColorKey
+                                                                  .primaryActionColor)),
+                                                    )
                                                   : Icon(
-                                                isRecording ? Icons.mic_rounded : Icons.mic_none, // todo 这里可以换成的 SVG 图片
-                                                size: 24.r,
-                                                // 录音时变色
-                                                color: isRecording
-                                                    ? Colors.red
-                                                    : WpyTheme.of(context).get(WpyColorKey.labelTextColor),
-                                                shadows: isRecording?[
-                                                  Shadow(
-                                                    color: Colors.red.withOpacity(0.5),
-                                                    blurRadius: 3,
-                                                    offset: Offset(2,2),
-                                                  )
-                                                ]:null,
-                                              ),
+                                                      isRecording
+                                                          ? Icons.mic_rounded
+                                                          : Icons
+                                                              .mic_none, // todo 这里可以换成的 SVG 图片
+                                                      size: 24.r,
+                                                      // 录音时变色
+                                                      color: isRecording
+                                                          ? Colors.red
+                                                          : WpyTheme.of(context)
+                                                              .get(WpyColorKey
+                                                                  .labelTextColor),
+                                                      shadows: isRecording
+                                                          ? [
+                                                              Shadow(
+                                                                color: Colors
+                                                                    .red
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                blurRadius: 3,
+                                                                offset: Offset(
+                                                                    2, 2),
+                                                              )
+                                                            ]
+                                                          : null,
+                                                    ),
                                             );
                                           },
                                         ),
@@ -1644,9 +1673,7 @@ class _ManagerPopUpState extends State<ManagerPopUp>
       onPopInvoked: (didPop) {
         if (didPop) return;
         try {
-          LakeUtil
-              .lakePageControllers[LakeUtil.currentTab.value]!.refreshController
-              .requestRefresh();
+          LakeUtil.currentController.refreshController?.requestRefresh();
         } catch (e) {}
         Navigator.pop(context);
       },
@@ -1902,9 +1929,7 @@ class _AnimatedOptionState extends State<AnimatedOption>
           reason: reason == "" ? null : reason,
           onSuccess: () {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              LakeUtil.lakePageControllers[LakeUtil.currentTab.value]!
-                  .refreshController
-                  .requestRefresh();
+              LakeUtil.currentController.refreshController?.requestRefresh();
             });
             ToastProvider.success('删除成功');
             Navigator.of(context).popMultiple(2);
@@ -1926,9 +1951,8 @@ class _AnimatedOptionState extends State<AnimatedOption>
             onSuccess: () => setState(() {
                   isSelected = false;
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    LakeUtil.lakePageControllers[LakeUtil.currentTab.value]!
-                        .refreshController
-                        .requestRefresh();
+                    LakeUtil.currentController.refreshController
+                        ?.requestRefresh();
                   });
                   Navigator.of(context).pop();
                   ToastProvider.running('成功');

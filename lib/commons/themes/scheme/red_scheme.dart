@@ -8,14 +8,13 @@ class RedScheme extends WpyThemeData {
   RedScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_red_theme",
-            name: "夕阳红",
-            description: "默认 红 主题",
-            brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xff9c2525),
-            address: "com.twt.service.ICONRed"
-          ),
+              themeId: "builtin_red_theme",
+              name: "夕阳红",
+              description: "默认 红 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_red_dark_theme",
+              representativeColor: Color(0xff9c2525),
+              address: "com.twt.service.ICONRed"),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
@@ -239,7 +238,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       redMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       redMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),

@@ -25,6 +25,7 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 
@@ -85,7 +86,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     // 页面还没加载完成， 无法滚动到顶部
     if (tabController == null) return;
     final controller = LakeUtil.currentController.scrollController;
-    if (!controller.hasClients) return;
+    if (controller == null || !controller.hasClients) return;
 
     // 如果距离太大，直接跳转到1500， 防止动画太夸张
     if (controller.offset > 1500) {
@@ -98,6 +99,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       curve: Curves.easeOutCirc,
     );
     Future.delayed(Duration(milliseconds: 400), () {
+      if (!controller.hasClients) return;
       controller.jumpTo(0.toDouble());
     });
   }
@@ -268,7 +270,10 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       controller: tabController!,
       children: List<Widget>.generate(
         tabs.length,
-        (i) => NSubPage(index: tabs[i].id),
+        (i) => NSubPage(
+          key: PageStorageKey('lake-tab-${tabs[i].id}'),
+          index: tabs[i].id,
+        ),
       ),
     );
   }
@@ -561,8 +566,16 @@ class BannerWidget extends StatelessWidget {
                   width: 60.r,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(100.r)),
-                    image: DecorationImage(
-                        image: NetworkImage(picUrl), fit: BoxFit.cover),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(100.r)),
+                    child: WpyPic(
+                      picUrl,
+                      width: 60.r,
+                      height: 60.r,
+                      fit: BoxFit.cover,
+                      withHolder: true,
+                    ),
                   ),
                 ),
                 onTap: () async {

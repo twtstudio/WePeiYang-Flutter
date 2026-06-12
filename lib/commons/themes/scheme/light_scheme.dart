@@ -6,14 +6,13 @@ class LightScheme extends WpyThemeData {
   LightScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_light",
-            name: "北洋蓝",
-            description: "默认的微北洋浅色主题, 适合日常使用",
-            brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xFF2C7EDF),
-            address: "com.twt.service.ICONBlue"
-          ),
+              themeId: "builtin_light",
+              name: "北洋蓝",
+              description: "默认的微北洋浅色主题, 适合日常使用",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_dark",
+              representativeColor: Color(0xFF2C7EDF),
+              address: "com.twt.service.ICONBlue"),
           data: WpyThemeDetail(
             lightSchemeDetail,
             gradient: colorSetsList,
@@ -225,7 +224,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!,
       lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!,

@@ -224,7 +224,6 @@ class MessageTab extends StatefulWidget {
 
 class _MessageTabState extends State<MessageTab> {
   late _FeedbackMessagePageState pageState;
-  double _tabPaddingWidth = 0;
 
   @override
   void didChangeDependencies() {
@@ -234,7 +233,6 @@ class _MessageTabState extends State<MessageTab> {
 
   @override
   Widget build(BuildContext context) {
-      _tabPaddingWidth = MediaQuery.of(context).size.width / 40;
       Widget tab = ValueListenableBuilder(
         valueListenable: pageState.currentIndex,
         builder: (_, int current, __) {
@@ -809,7 +807,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
                 uid: widget.data.floor.uid)
             : ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(100)),
-                child: Image.network(
+                child: WpyPic(
                   baseUrl + '${widget.data.floor.avatar}',
                   width: 30,
                   height: 30,
@@ -934,7 +932,7 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
             if (widget.data.post.imageUrls.length != 0)
               ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: Image.network(
+                child: WpyPic(
                   baseUrl + widget.data.post.imageUrls[0],
                   fit: BoxFit.cover,
                   height: 50,
@@ -1322,7 +1320,7 @@ class _ReplyMessageItemState extends State<ReplyMessageItem> {
             if (widget.data.post.imageUrls.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: Image.network(
+                child: WpyPic(
                   baseUrl + widget.data.post.imageUrls[0],
                   fit: BoxFit.cover,
                   height: 50,

@@ -495,7 +495,11 @@ class _NCommentCardState extends State<NCommentCard>
       ]);
     }
 
-    var commentImage = Padding(
+    var commentImage = LayoutBuilder(builder: (context, constraints) {
+      final imageWidth = constraints.maxWidth.isFinite
+          ? constraints.maxWidth
+          : WePeiYangApp.screenWidth;
+      return Padding(
         padding: EdgeInsets.symmetric(vertical: 10),
         child: AnimatedSize(
           duration: Duration(milliseconds: 150),
@@ -522,6 +526,8 @@ class _NCommentCardState extends State<NCommentCard>
                                 maxHeight: WePeiYangApp.screenWidth * 2),
                             child: WpyPic(
                               picBaseUrl + 'origin/' + widget.comment.imageUrl,
+                              width: imageWidth,
+                              fit: BoxFit.fitWidth,
                               withHolder: true,
                               holderHeight: SplitUtil.w * 64,
                             ),
@@ -557,6 +563,8 @@ class _NCommentCardState extends State<NCommentCard>
                             BoxConstraints(maxHeight: SplitUtil.sh * 2),
                         child: WpyPic(
                           '${picBaseUrl}origin/${widget.comment.imageUrl}',
+                          width: imageWidth,
+                          fit: BoxFit.fitWidth,
                           withHolder: true,
                           holderHeight: SplitUtil.w * 64,
                         ),
@@ -607,6 +615,7 @@ class _NCommentCardState extends State<NCommentCard>
                       ],
                     ),
         ));
+    });
 
     var subFloor;
     if (!widget.isSubFloor) {
@@ -738,26 +747,26 @@ class _NCommentCardState extends State<NCommentCard>
             commentContent,
             if (widget.comment.imageUrl != '') commentImage,
             if (_picFullView == true && widget.comment.imageUrl != '')
-              TextButton(
-                  style: ButtonStyle(
-                      alignment: Alignment.topRight,
-                      padding: MaterialStateProperty.all(EdgeInsets.zero)),
-                  onPressed: () {
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
                     setState(() {
                       _picFullView = false;
                     });
                   },
-                  child: Row(
-                    children: [
-                      Spacer(),
-                      Text('收起',
-                          style: TextUtil.base
-                              .infoText(context)
-                              .w800
-                              .NotoSansSC
-                              .sp(12)),
-                    ],
-                  ))
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                    child: Text('收起',
+                        style: TextUtil.base
+                            .infoText(context)
+                            .w800
+                            .NotoSansSC
+                            .sp(12)),
+                  ),
+                ),
+              )
             else
               SizedBox(height: SplitUtil.h * 8),
             bottomWidget,

@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -18,7 +17,6 @@ import 'package:we_pei_yang_flutter/feedback/view/image_view/image_view_page.dar
 import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/home/view/lost_and_found_home_page.dart';
-import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -86,12 +84,15 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var model=context.read<LAFoundModel>().detailmap["${widget.postId}"];
+    final model = context
+        .read<LAFoundModel>()
+        .detailmap
+        .putIfAbsent("${widget.postId}", () => LAFoundDetail());
     return FutureBuilder(
       future: fetchPost(widget.postId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return buildDetailUI(context, snapshot.data!, widget.findOwner,model!);
+          return buildDetailUI(context, snapshot.data!, widget.findOwner, model);
         } else {
           return Scaffold(
             backgroundColor: Colors.white,
@@ -130,6 +131,14 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
               ),
               title: Text(''),
             ),
+            body: snapshot.connectionState == ConnectionState.done
+                ? Center(
+                    child: Text(
+                      '加载失败',
+                      style: TextUtil.base.infoText(context).sp(14),
+                    ),
+                  )
+                : null,
           );
         }
       },
@@ -145,10 +154,10 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
             completer.complete(p);
           },
           onFailure: (e) {
-            // 处理错误
+            if (!completer.isCompleted) completer.complete(null);
           });
     } catch (e) {
-      // 处理错误
+      if (!completer.isCompleted) completer.complete(null);
     }
     return completer.future;
   }
@@ -189,14 +198,12 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     //判断是否是自己的帖子，暂时只能用这个来判断了
     ///author暂时改为uid用于测试，后端接口没有author
     if (CommonPreferences.account.value.toString() == post.uid) {
-      model?.isMine = true;
+      model.isMine = true;
     }
 
     ///判断逻辑要修改
 
     void _showConfirmationDialog() {
-      var now = DateTime.now();
-      var formatter = DateFormat('yyyyMMdd');
       DateTime today = DateTime.now();
       String todayStr = "${today.year}-${today.month}-${today.day}";
 
@@ -225,7 +232,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                       style: TextUtil.base.sp(14),
                       textAlign: TextAlign.center,
                     ):Text(
-                      CommonPreferences.lafGetNum.value.length>=3 && !CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&today==CommonPreferences.lafGetDate
+                      CommonPreferences.lafGetNum.value.length>=3 && !CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&todayStr==CommonPreferences.lafGetDate.value
                           ? '今日已达上限了哦，明天再来吧'
                           : (model.phoneNum!='')
                           ? "联系方式为：" + "${model.phoneNum}" + '\n'
@@ -265,13 +272,13 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                         ElevatedButton(
                           onPressed:  () {
                              DateTime today = DateTime.now();
-                             String todayStr = "${today.year}-${today.month}-${today.day}";
+                             String currentTodayStr = "${today.year}-${today.month}-${today.day}";
                              //已经加载出联系方式
                               if(model.phoneNum!=''){
                                 Navigator.of(context).pop();
                               }
                               //超过访问次数，且不是已经存储的
-                              if(todayStr==CommonPreferences.lafGetDate.value&&!CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&CommonPreferences.lafGetNum.value.length>=3){
+                              if(currentTodayStr==CommonPreferences.lafGetDate.value&&!CommonPreferences.lafGetNumId.value.contains("${widget.postId}")&&CommonPreferences.lafGetNum.value.length>=3){
                                 Navigator.of(context).pop();
                               }
                               else{
@@ -286,22 +293,25 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                       if(string==null){
                                       }
                                       else{
-                                        CommonPreferences.lafGetDate.value=todayStr;
+                                        CommonPreferences.lafGetDate.value =
+                                            currentTodayStr;
                                         model.phoneNum=string;
                                         if( CommonPreferences.lafGetNum.value.length>=3){
                                           CommonPreferences.lafGetNum.value=<String>[];
                                           CommonPreferences.lafGetNumId.value=<String>[];
                                         }
-                                        List<String> currentList = new List.from(CommonPreferences.lafGetNum.value ?? []);
+                                        List<String> currentList = new List.from(CommonPreferences.lafGetNum.value);
                                         currentList.add(string);
-                                        List<String> currentList1 = new List.from(CommonPreferences.lafGetNumId.value ?? []);
+                                        List<String> currentList1 = new List.from(CommonPreferences.lafGetNumId.value);
                                         currentList1.add("${widget.postId}");
                                         CommonPreferences.lafGetNum.value = currentList;
                                         CommonPreferences.lafGetNumId.value=currentList1;
                                       }
                                       model.isLoading=false;
                                     },
-                                    onFailure: (e) {},
+                                    onFailure: (e) {
+                                      model.isLoading=false;
+                                    },
                                   );
                                 }
                               }
@@ -337,7 +347,6 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
 
     // 删除弹窗
     void _showDeleteDialog() {
-      bool _isloading=false;
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -500,7 +509,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             padding: EdgeInsets.only(bottom: 5.h),
                             child: InkWell(
                               onTap: () {
-                                if (model!.isMine) {
+                                if (model.isMine) {
                                   _showDeleteDialog();
                                 } else {
                                   Navigator.pushNamed(
@@ -513,7 +522,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                                 height: 30.h,
                                 alignment: Alignment.center,
                                 child: Text(
-                                  model!.isMine ? '删除' : '举报',
+                                  model.isMine ? '删除' : '举报',
                                   style: TextStyle(
                                     fontSize: 15.h,
                                     fontWeight: FontWeight.bold,
@@ -804,7 +813,7 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
                             height: 40.h,
                             margin: EdgeInsets.only(left: 30.w),
                             decoration: BoxDecoration(
-                              color: model!.polished
+                              color: model.polished
                                   ? Colors.grey[200]
                                   : WpyTheme.of(context)
                                       .get(WpyColorKey.primaryBackgroundColor),
@@ -903,6 +912,8 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
           .resolve(ImageConfiguration())
           .addListener(ImageStreamListener((ImageInfo info, bool _) {
         if (!completer.isCompleted) completer.complete(info.image);
+      }, onError: (error, stackTrace) {
+        if (!completer.isCompleted) completer.completeError(error, stackTrace);
       }));
     }
 
@@ -1038,6 +1049,12 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                       child: image),
                 );
               }
+            } else if (snapshot.hasError) {
+              return SizedBox(
+                width: 350.w,
+                height: 120.h,
+                child: WpyPic.errorPlaceHolder,
+              );
             } else {
               return Icon(
                 Icons.refresh,

@@ -7,14 +7,13 @@ class GreenScheme extends WpyThemeData {
   GreenScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_green_theme",
-            name: "初音青",
-            description: "默认 绿 主题",
-            brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xFF39C5BB),
-            address: "com.twt.service.ICONCyan"
-          ),
+              themeId: "builtin_green_theme",
+              name: "初音青",
+              description: "默认 绿 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_green_dark_theme",
+              representativeColor: Color(0xFF39C5BB),
+              address: "com.twt.service.ICONCyan"),
           data: WpyThemeDetail(
             greenSchemeDetail,
             gradient: colorSetsList,
@@ -239,7 +238,7 @@ final colorSetsList = {
     stops: [0, 0.23, 0.4],
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       greenMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       greenMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),

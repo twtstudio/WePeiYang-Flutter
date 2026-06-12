@@ -7,14 +7,13 @@ class OrangeScheme extends WpyThemeData {
   OrangeScheme()
       : super(
           meta: BuiltInThemeMetaData(
-            themeId: "builtin_orange_theme",
-            name: "高雅金",
-            description: "默认 火热橙 主题",
-            brightness: Brightness.light,
-            darkThemeId: "builtin_dark",
-            representativeColor: Color(0xffe0ae57),
-            address: "com.twt.service.ICONGold"
-          ),
+              themeId: "builtin_orange_theme",
+              name: "高雅金",
+              description: "默认 火热橙 主题",
+              brightness: Brightness.light,
+              darkThemeId: "builtin_orange_dark_theme",
+              representativeColor: Color(0xffe0ae57),
+              address: "com.twt.service.ICONGold"),
           data: WpyThemeDetail(
             redSchemeDetail,
             gradient: colorSetsList,
@@ -238,7 +237,7 @@ final colorSetsList = {
     end: Alignment.bottomCenter,
   ),
 
-  WpyColorSetKey.lighterPrimaryGradient : LinearGradient(
+  WpyColorSetKey.lighterPrimaryGradient: LinearGradient(
     colors: [
       orangeMapper(lightSchemeDetail[WpyColorKey.lightPrimaryContainer]!),
       orangeMapper(lightSchemeDetail[WpyColorKey.lighterPrimaryBackGround]!),
