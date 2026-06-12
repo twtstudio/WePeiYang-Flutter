@@ -64,7 +64,7 @@ dependencies:
       ref: 79ec194fa6690e5caba58f5eca04e6748394bb6b
   flutter_markdown: ^0.6.22
   flutter_rating_bar: ^4.0.1
-  flutter_native_image: ^0.0.6+1
+  flutter_image_compress: ^2.3.0
   flutter_screenutil: ^5.9.0
   flutter_smart_dialog: ^4.9.8+2
   flutter_svg: ^2.0.10

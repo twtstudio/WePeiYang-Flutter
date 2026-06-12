@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -473,7 +473,10 @@ class _LostAndFoundImagesGridViewState
         return;
       }
       for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
-        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+        final targetPath = '${file.path}_compressed.jpg';
+        final r = await FlutterImageCompress.compressAndGetFile(
+            file.path, targetPath, quality: 80);
+        if (r != null) file = File(r.path);
         if (j == 10) {
           ToastProvider.error('您的图片 ${i + 1} 实在太大了，请自行压缩到2MB内再试吧');
           return;

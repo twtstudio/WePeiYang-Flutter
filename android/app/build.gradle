@@ -70,7 +70,7 @@ android {
     defaultConfig {
         applicationId "com.twt.service"
         multiDexEnabled true
-        minSdkVersion 21 // flutter.minSdkVersion
+        minSdkVersion flutter.minSdkVersion // flutter.minSdkVersion
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

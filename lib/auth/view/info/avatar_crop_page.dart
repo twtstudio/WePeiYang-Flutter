@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
@@ -38,7 +38,10 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
       return;
     }
     for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
-      file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+      final targetPath = '${file.path}_compressed.jpg';
+      final r = await FlutterImageCompress.compressAndGetFile(
+          file.path, targetPath, quality: 80);
+      if (r != null) file = File(r.path);
       if (j == 10) {
         ToastProvider.error('您的头像实在太大了，请自行压缩到2MB内再试吧');
         return;

@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -1501,7 +1501,10 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
     if (asset == null) return;
     File file = await File(asset.path);
     for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
-      file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+      final targetPath = '${file.path}_compressed.jpg';
+      final r = await FlutterImageCompress.compressAndGetFile(
+          file.path, targetPath, quality: 80);
+      if (r != null) file = File(r.path);
       if (j == 10) {
         ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
         return;
@@ -1529,7 +1532,10 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
         return;
       }
       for (int j = 0; file!.lengthSync() > 2000 * 1024 && j < 10; j++) {
-        file = await FlutterNativeImage.compressImage(file.path, quality: 80);
+        final targetPath = '${file.path}_compressed.jpg';
+      final r = await FlutterImageCompress.compressAndGetFile(
+          file.path, targetPath, quality: 80);
+      if (r != null) file = File(r.path);
         if (j == 10) {
           ToastProvider.error('您的图片实在太大了，请自行压缩到2MB内再试吧');
           return;
