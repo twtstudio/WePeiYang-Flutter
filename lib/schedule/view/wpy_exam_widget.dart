@@ -58,8 +58,32 @@ class WpyExamWidget extends StatelessWidget {
                 ))
             : Container(
                 height: 430.h,
-                alignment: Alignment.center,
-                child: Text(msg),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(15.r),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.event_busy_rounded,
+                          size: 48.r,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.secondaryTextColor)),
+                      SizedBox(height: 12.h),
+                      Text(msg,
+                          style: TextUtil.base.w400
+                              .secondary(context)
+                              .sp(14)),
+                      SizedBox(height: 6.h),
+                      Text('点击查看全部考试',
+                          style: TextUtil.base.w300
+                              .unlabeled(context)
+                              .sp(12)),
+                    ],
+                  ),
+                ),
               ),
       );
     }

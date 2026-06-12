@@ -319,8 +319,15 @@ class ScheduleService {
             .map((e) =>
                 e.contains('color') ? e.match(r'(?<=>)[^]*?(?=</font)') : e)
             .toList();
-        var ext = tdList[8] == '正常' ? '' : tdList[9];
-        exams.add(Exam(tdList[0], tdList[1], tdList[2], tdList[3], tdList[5],
+        if (tdList.length < 9) return;
+        var date = tdList[3];
+        if (date.isNotEmpty &&
+            date != '时间未安排' &&
+            DateTime.tryParse(date) == null) {
+          date = '时间未安排';
+        }
+        var ext = (tdList.length > 9 && tdList[8] != '正常') ? tdList[9] : '';
+        exams.add(Exam(tdList[0], tdList[1], tdList[2], date, tdList[5],
             tdList[6], tdList[7], tdList[8], ext));
       });
       onResult(exams);

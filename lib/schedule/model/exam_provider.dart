@@ -20,10 +20,11 @@ class ExamProvider with ChangeNotifier {
     _finished = [];
     _exams.forEach((e) {
       if (e.date == '时间未安排') return;
-      var target = DateTime.parse(e.date);
+      var target = DateTime.tryParse(e.date);
+      if (target == null) return;
       if (target.isBefore(realNow)) _finished.add(e);
     });
-    _finished.sort((a, b) => b.date.compareTo(a.date)); // 将`刚考完`的排在上面
+    _finished.sort((a, b) => b.date.compareTo(a.date));
 
     /// 未完成的考试，刚好为now这天或者在now之后（也包括未安排的考试）
     _unfinished = [];
@@ -31,25 +32,30 @@ class ExamProvider with ChangeNotifier {
     _exams.forEach((e) {
       if (e.date == '时间未安排') {
         tmp.add(e);
-      } else {
-        var target = DateTime.parse(e.date);
-        if (target.isAfter(realNow) || target.isAtSameMomentAs(realNow))
-          _unfinished.add(e);
+        return;
       }
+      var target = DateTime.tryParse(e.date);
+      if (target == null) {
+        tmp.add(e);
+        return;
+      }
+      if (target.isAfter(realNow) || target.isAtSameMomentAs(realNow))
+        _unfinished.add(e);
     });
 
-    _unfinished.sort((a, b) => a.date.compareTo(b.date)); // 将`刚要考`的排在上面
-    _unfinished.addAll(tmp); // 没有安排的考试排在最后
+    _unfinished.sort((a, b) => a.date.compareTo(b.date));
+    _unfinished.addAll(tmp);
 
     /// 未完成的、且有安排的考试，在[unfinished]的基础上滤去了时间未安排的课程
     _unscheduled = [];
     _exams.forEach((e) {
       if (e.date == '时间未安排') return;
-      var target = DateTime.parse(e.date);
+      var target = DateTime.tryParse(e.date);
+      if (target == null) return;
       if (target.isAfter(realNow) || target.isAtSameMomentAs(realNow))
         _unscheduled.add(e);
     });
-    _unscheduled.sort((a, b) => a.date.compareTo(b.date)); // 将`刚要考`的排在上面
+    _unscheduled.sort((a, b) => a.date.compareTo(b.date));
     notifyListeners();
   }
 
@@ -104,7 +110,9 @@ class ExamProvider with ChangeNotifier {
   }) {
     ScheduleService.fetchExam(onResult: (exams) {
       this.exams = exams;
-      CommonPreferences.examData.value = json.encode(ExamTable(_exams));
+      try {
+        CommonPreferences.examData.value = json.encode(ExamTable(_exams));
+      } catch (_) {}
       onSuccess?.call();
     }, onFailure: (e) {
       onFailure?.call(e);
@@ -114,8 +122,14 @@ class ExamProvider with ChangeNotifier {
   /// 从缓存中读考表的数据，进入主页之前调用
   void readPref() {
     if (CommonPreferences.examData.value == '') return;
-    this.exams =
-        ExamTable.fromJson(json.decode(CommonPreferences.examData.value)).exams;
+    try {
+      this.exams = ExamTable.fromJson(
+              json.decode(CommonPreferences.examData.value))
+          .exams;
+    } catch (_) {
+      CommonPreferences.examData.clear();
+      this.exams = [];
+    }
   }
 
   /// 办公网解绑时清除数据
