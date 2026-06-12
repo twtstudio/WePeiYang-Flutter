@@ -95,7 +95,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     return LakeUtil.lakePageControllers[currentTabId];
   }
 
-  void listToTop({bool retryAfterFrame = true}) async {
+  void listToTop({bool retryAfterFrame = true}) {
+    // 当前 tab 由 TabController.index 唯一决定，对应的控制器已在子页 initState
+    // 无条件挂上，这里直接取即可。
     final pageController = _currentPageController();
     final scrollController = pageController?.scrollController;
     final refreshController = pageController?.refreshController;
@@ -103,6 +105,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     if (scrollController == null ||
         refreshController == null ||
         !scrollController.hasClients) {
+      // 极少数情况：当前 tab 刚切过来还没 build 完，下一帧再试一次
       if (retryAfterFrame && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) listToTop(retryAfterFrame: false);
@@ -111,25 +114,33 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       return;
     }
 
-    // 如果距离太大，直接跳转到1500， 防止动画太夸张
+    void triggerRefresh() {
+      // 动画结束后才触发刷新；中途页面被切走/卸载就放弃，避免对已失活的
+      // ScrollController 继续操作导致崩溃
+      if (!mounted || !scrollController.hasClients) return;
+      if (refreshController.isRefresh) return;
+      refreshController.requestRefresh(
+        duration: Duration(milliseconds: 350),
+        curve: Curves.easeOutCirc,
+      );
+    }
+
+    // 距离太大先瞬移一段，避免动画太夸张
     if (scrollController.offset > 1500) {
       scrollController.jumpTo(1500.toDouble());
     }
 
     if (scrollController.offset > 0) {
-      await scrollController.animateTo(
-        0.toDouble(),
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOutCirc,
-      );
+      scrollController
+          .animateTo(
+            0.toDouble(),
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOutCirc,
+          )
+          .whenComplete(triggerRefresh);
+    } else {
+      triggerRefresh();
     }
-
-    if (!mounted || !scrollController.hasClients) return;
-
-    refreshController.requestRefresh(
-      duration: Duration(milliseconds: 350),
-      curve: Curves.easeOutCirc,
-    );
   }
 
   TabController? tabController;

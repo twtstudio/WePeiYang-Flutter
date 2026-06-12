@@ -161,28 +161,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     refresh.loadComplete();
   }
 
-  void listToTop() {
-    setState(() {
-      loadFlag++;
-    });
-    final scroll = _scrollController;
-
-    if (scroll.offset > 1500) {
-      scroll.jumpTo(1500);
-    }
-
-    scroll.animateTo(
-      -85,
-      duration: Duration(milliseconds: 400),
-      curve: Curves.easeOutCirc,
-    );
-  }
-
   late final LakePageController pageController;
   late final RefreshController _refreshController;
   late final ScrollController _scrollController;
   late Future<void> _postListFuture;
-  bool _isCurrentTab = false;
 
   @override
   void initState() {
@@ -192,7 +174,10 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     _refreshController = RefreshController();
     _scrollController = ScrollController();
     _postListFuture = LakeUtil.initPostList(index);
-    _syncActiveControllers();
+    // 每个 tab 与它的 LakePageController 一一对应，直接无条件挂上自己的控制器。
+    // 不再根据「是否当前 tab」来挂载——那套逻辑依赖 build 重跑，但 keepAlive 下
+    // 切 tab 不会重跑 build，导致当前 tab 的控制器挂不上、底栏刷新拿到的是空/旧控制器。
+    pageController.attachControllers(_scrollController, _refreshController);
     _initializeProviders();
   }
 
@@ -202,17 +187,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     _refreshController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _syncActiveControllers() {
-    final currentTab = LakeUtil.currentTab.value;
-    _isCurrentTab = currentTab < LakeUtil.tabList.length &&
-        LakeUtil.tabList[currentTab].id == index;
-    if (_isCurrentTab) {
-      pageController.attachControllers(_scrollController, _refreshController);
-    } else {
-      pageController.detachControllers(_scrollController, _refreshController);
-    }
   }
 
   void _initializeProviders() {
@@ -309,7 +283,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    _syncActiveControllers();
 
     return FutureBuilder(
         future: _postListFuture,
@@ -375,7 +348,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                               itemBuilder: _buildPostList,
                             ),
                     );
-                    if (!_isCurrentTab) return refresher;
                     return refresher;
                   },
                 ),
