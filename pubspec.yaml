@@ -25,24 +25,24 @@ dependencies:
   flutter:
     sdk: flutter
 
-  async: ^2.8.2
+  async: ^2.13.1
   numberpicker: ^2.1.2
   
   #  amap_location_fluttify: ^0.22.0
 
-  pointycastle: ^3.1.1
-  xml: ^6.5.0
+  pointycastle: ^4.0.0
+  xml: ^6.6.1
   # 显示二维码
-  syncfusion_flutter_barcodes: ^25.1.42
+  syncfusion_flutter_barcodes: ^33.2.12
 
-  badges: ^3.1.1
+  badges: ^3.2.0
 
   connectivity_plus: ^7.1.1
-  cached_network_image: ^3.4.0
+  cached_network_image: ^3.4.1
   card_swiper: ^3.0.1
 
   dio: ^5.4.1
-  dio_smart_retry: ^6.0.0
+  dio_smart_retry: ^7.0.1
   dio_cookie_caching_handler:
     path: ./lib/commons/network/dio_cookie_cached_handler
 
@@ -51,21 +51,18 @@ dependencies:
   record: ^7.1.0
   #---
 
-  extended_tabs: ^4.1.0
-  extended_image: any
+  extended_tabs: ^5.0.0
+  extended_image: ^10.0.1
 
   shimmer: ^3.0.0
-  flutter_displaymode: ^0.6.0
-  flutter_html:
-    git:
-      url: https://github.com/Sub6Resources/flutter_html.git
-      ref: 79ec194fa6690e5caba58f5eca04e6748394bb6b
-  flutter_markdown: ^0.6.22
+  flutter_displaymode: ^0.7.0
+  flutter_html: ^3.0.0
+  flutter_markdown: ^0.7.7+1
   flutter_rating_bar: ^4.0.1
   flutter_image_compress: ^2.4.0
   flutter_screenutil: ^5.9.0
-  flutter_smart_dialog: ^4.9.8+2
-  flutter_svg: ^2.0.10
+  flutter_smart_dialog: ^5.1.0
+  flutter_svg: ^2.3.0
 
   fluttertoast: ^9.1.0
 
@@ -74,7 +71,7 @@ dependencies:
   gallery_saver_plus: ^3.2.9
 
 
-  http_parser: ^4.0.2
+  http_parser: ^4.1.2
   glass_kit: any
   frosted_glass_effect: any
 
@@ -92,42 +89,42 @@ dependencies:
 
   path_provider: ^2.1.5
   permission_handler: ^12.0.3
-  photo_view: ^0.14.0
+  photo_view: ^0.15.0
   provider: ^6.1.2
   pull_to_refresh: ^2.0.0
 
   retry: ^3.1.2
-  flutter_reorderable_grid_view: ^4.0.0
+  flutter_reorderable_grid_view: ^5.7.0
 
   screenshot: ^3.0.0 # generate comment image
-  share_plus: ^12.0.2
+  share_plus: ^13.1.0
   shared_preferences: ^2.5.5
   simple_html_css: ^5.0.0
   simple_url_preview_v2:
     git:
       url: https://github.com/hxphieno/flutter-simple-url-preview_2.git
-  flutter_link_previewer: ^3.2.2
+  flutter_link_previewer: ^4.2.0
 
   table_calendar: ^3.0.9
 
   url_launcher: ^6.3.2
   uuid: ^4.3.3
 
-  webview_flutter: ^4.0.0
+  webview_flutter: ^4.14.0
   wechat_picker_library: ^1.0.7
   wechat_assets_picker: ^10.1.2
-  window_manager: ^0.3.8
+  window_manager: ^0.5.1
 
   waterfall_flow: ^3.0.3
 
   image_size_getter: ^2.1.2
   #  image_size_getter_http_input: ^2.0.0
-  flutter_staggered_grid_view: ^0.4.0
+  flutter_staggered_grid_view: ^0.7.0
 
   # 用于图片占位符
   transparent_image: ^2.0.1
 
-  package_info_plus: ^8.0.2
+  package_info_plus: ^10.1.0
   glass: any
   qr_code_tools: ^0.2.0
   flutter_plugin_android_lifecycle: ^2.0.28
@@ -142,7 +139,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.2
+  build_runner: ^2.15.0
 
 # The following section is specific to Flutter.
 flutter:
