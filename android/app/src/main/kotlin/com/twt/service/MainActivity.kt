@@ -7,6 +7,7 @@ import android.widget.Toast
 import com.twt.service.cloud_config.WbyCloudConfigPlugin
 import com.twt.service.common.ChangeDisplay
 import com.twt.service.common.LogUtil
+import com.twt.service.device_info.WbyDeviceInfoPlugin
 import com.twt.service.download.WbyDownloadPlugin
 import com.twt.service.hot_fix.HotFixPreference
 import com.twt.service.hot_fix.WbyFixPlugin
@@ -95,6 +96,8 @@ class MainActivity : FlutterActivity() {
                     WbyCloudConfigPlugin(),
                     // 本地设置
                     WbyLocalSettingPlugin(),
+                    // 设备信息调试
+                    WbyDeviceInfoPlugin(),
                 )
             )
         }.onFailure {

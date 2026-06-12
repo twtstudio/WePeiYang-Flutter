@@ -17,7 +17,9 @@ enum Channel: CaseIterable {
          // 小组件
          widget,
         // 深色模式主题
-         theme
+         theme,
+        // 设备信息
+         deviceInfo
 }
 
 struct WChannel {
@@ -33,6 +35,7 @@ extension Channel {
             .umengStatistics: "umeng_statistics",
             .widget: "widget",
             .theme: "theme",
+            .deviceInfo: "device_info",
         ]
     }
     
@@ -52,6 +55,8 @@ extension Channel {
             return widgetHandler()
         case .theme:
             return themeHandler()
+        case .deviceInfo:
+            return deviceInfoHandler()
         }
     }
 }
