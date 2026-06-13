@@ -2,9 +2,9 @@
 // Huawei AGConnect 插件要求 buildscript 中存在 AGP classpath
 buildscript {
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/google") }
         google()
         mavenCentral()
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
         maven { url = uri("https://developer.huawei.com/repo/") }
     }
     dependencies {
@@ -15,10 +15,10 @@ buildscript {
 
 allprojects {
     repositories {
-        maven { url = uri("https://maven.aliyun.com/repository/google") }
-        maven { url = uri("https://maven.aliyun.com/repository/public") }
         google()
         mavenCentral()
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
         // 个推
         maven { url = uri("https://mvn.getui.com/nexus/content/repositories/releases/") }
         // 友盟

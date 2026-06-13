@@ -1,0 +1,77 @@
+name: Flutter AutoPackage Android
+
+on:
+  push:
+    branches:
+      - "Flutter3.44"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.2'
+          cache: true
+
+      - uses: android-actions/setup-android@v4
+
+      - name: Extract version from pubspec.yaml
+        run: |
+          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "VERSION_NAME=${VERSION%+*}" >> $GITHUB_ENV
+          echo "VERSION_CODE=${VERSION#*+}" >> $GITHUB_ENV
+
+      - name: Prepare build version
+        run: echo "BUILD_VERSION=${VERSION_NAME}_$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE }}" | base64 --decode > /tmp/keystore.keystore
+
+      - name: Configure local.properties
+        run: |
+          echo "flutter.sdk=$FLUTTER_ROOT" >> android/local.properties
+          echo "jksPath=/tmp/keystore.keystore" >> android/local.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/local.properties
+          echo "keyAlias=${{ secrets.ALIAS }}" >> android/local.properties
+
+      - name: Build APK
+        run: |
+          flutter build apk --split-per-abi --release \
+            --dart-define=VERSION=$BUILD_VERSION \
+            --dart-define=VERSIONCODE=$VERSION_CODE \
+            --obfuscate --split-debug-info=build/symbols/$BUILD_VERSION \
+            --target-platform=android-arm,android-arm64
+
+      - name: Find APK paths
+        run: |
+          ARM64_APK=$(find build -name "*arm64-v8a-release.apk" -type f | head -1)
+          ARMV7_APK=$(find build -name "*armeabi-v7a-release.apk" -type f | head -1)
+          echo "ARM64_APK=$ARM64_APK" >> $GITHUB_ENV
+          echo "ARMV7_APK=$ARMV7_APK" >> $GITHUB_ENV
+
+      - name: Upload ARM64-v8a APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-arm64-v8a
+          path: ${{ env.ARM64_APK }}
+
+      - name: Upload ARMv7a APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK-${{ env.VERSION_NAME }}-${{ github.sha }}-armeabi-v7a
+          path: ${{ env.ARMV7_APK }}
+
+      - name: Upload debug symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: symbols-${{ env.BUILD_VERSION }}
+          path: build/symbols/
