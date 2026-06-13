@@ -21,7 +21,7 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == AppWidgetManager.ACTION_APPWIDGET_UPDATE || intent.action == "com.twt.appwidget.refresh") {
+        if (intent.action == "com.twt.appwidget.refresh") {
             log("on refreshing!!!")
             val name = ComponentName(context, ScheduleCardWidgetProvider::class.java)
             this@ScheduleCardWidgetProvider.onUpdate(context, AppWidgetManager.getInstance(context), AppWidgetManager.getInstance(context).getAppWidgetIds(name))
@@ -60,14 +60,14 @@ class ScheduleCardWidgetProvider : AppWidgetProvider() {
     }
 
     private fun getEmptyView(): Int {
-        val now = Calendar.HOUR
+        val now = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         return if (now in 6..18) R.id.widget_empty_view_day else R.id.widget_empty_view_night
     }
 
     private fun getWeek(): Int {
         val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
-        val cDay = arrayOf(R.drawable.sunday, R.drawable.monday, R.drawable.tuesday, R.drawable.wednesday, R.drawable.thursday, R.drawable.friday, R.drawable.saturday, R.drawable.sunday)
-        return if (today == Calendar.SUNDAY) cDay[7] else cDay[today - 1]
+        val cDay = arrayOf(R.drawable.sunday, R.drawable.monday, R.drawable.tuesday, R.drawable.wednesday, R.drawable.thursday, R.drawable.friday, R.drawable.saturday)
+        return cDay[today - 1]
     }
 
     companion object {

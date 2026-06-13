@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import com.twt.service.MainActivity
@@ -16,6 +17,7 @@ import com.twt.service.push.BASEURL
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,22 +61,28 @@ class EntryQrWidgetProvider : AppWidgetProvider() {
             }
 
             CoroutineScope(Dispatchers.IO).launch {
-                runCatching {
+                try {
                     val sid = EntryQrService.readSid(context)
+                    Log.d(TAG, "SID: ${sid.take(3)}***")
                     val content = EntryQrService.fetchQrContent(sid)
-                    EntryQrService.createQrBitmap(content)
-                }.onSuccess { bitmap ->
-                    val timeText = "更新于 ${timeFormat.format(Date())}"
-                    ids.forEach { id ->
-                        manager.updateAppWidget(id, createContentViews(context, bitmap, timeText))
+                    Log.d(TAG, "QR content length: ${content.length}")
+                    val bitmap = EntryQrService.createQrBitmap(content)
+                    Log.d(TAG, "QR bitmap created: ${bitmap.width}x${bitmap.height}")
+                    withContext(Dispatchers.Main) {
+                        val timeText = "更新于 ${timeFormat.format(Date())}"
+                        ids.forEach { id ->
+                            manager.updateAppWidget(id, createContentViews(context, bitmap, timeText))
+                        }
                     }
-                }.onFailure { error ->
-                    LogUtil.e(TAG, error)
-                    ids.forEach { id ->
-                        manager.updateAppWidget(
-                            id,
-                            createLoadingViews(context, error.message ?: "刷新失败"),
-                        )
+                } catch (e: Exception) {
+                    Log.e(TAG, "refresh failed", e)
+                    withContext(Dispatchers.Main) {
+                        ids.forEach { id ->
+                            manager.updateAppWidget(
+                                id,
+                                createLoadingViews(context, e.message ?: "刷新失败"),
+                            )
+                        }
                     }
                 }
             }

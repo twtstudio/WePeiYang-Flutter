@@ -131,8 +131,13 @@ class XMLSerializerInterceptor extends InterceptorsWrapper {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final data = response.data;
     if (data is String) {
-      final xml = XmlDocument.parse(data);
-      response.data = parseXml(xml.rootElement);
+      final trimmed = data.trim();
+      if (trimmed.startsWith('{')) {
+        response.data = jsonDecode(trimmed);
+      } else {
+        final xml = XmlDocument.parse(trimmed);
+        response.data = parseXml(xml.rootElement);
+      }
     }
     return handler.next(response);
   }
@@ -152,11 +157,26 @@ class CasDio extends DioAbstract {
 final casDio = CasDio();
 
 class CasService {
+  static String? _findMessage(Map<String, dynamic> map) {
+    if (map.containsKey('message')) return map['message']?.toString();
+    for (final v in map.values) {
+      if (v is Map<String, dynamic>) {
+        final msg = _findMessage(v);
+        if (msg != null) return msg;
+      }
+    }
+    return null;
+  }
+
   static Future<String> getQRContent(String sid) async {
     final response = await casDio.get(
       "getAccountQRcodeInfo",
       queryParameters: {"ID_NUMBER": sid},
     );
-    return response.data["message"];
+    final data = response.data;
+    if (data is Map<String, dynamic>) {
+      return _findMessage(data) ?? (throw Exception('未获取到二维码'));
+    }
+    return data.toString();
   }
 }

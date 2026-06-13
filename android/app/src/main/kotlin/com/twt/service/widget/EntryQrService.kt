@@ -10,6 +10,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.security.GeneralSecurityException
@@ -48,7 +49,6 @@ object EntryQrService {
 
         val request = Request.Builder()
             .url(url)
-            .header("Content-Type", "application/json;charset=UTF-8")
             .header("Accept", "application/json;charset=UTF-8")
             .header("Host", "f.tju.edu.cn")
             .header("Connection", "Keep-Alive")
@@ -58,11 +58,11 @@ object EntryQrService {
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) error("刷新失败 ${response.code}")
             val body = response.body?.string().orEmpty()
-            return parseMessage(body).ifBlank { error("未获取到二维码") }
+            return extractQrContent(body).ifBlank { error("未获取到二维码") }
         }
     }
 
-    fun createQrBitmap(content: String, size: Int = 360): Bitmap {
+    fun createQrBitmap(content: String, size: Int = 512): Bitmap {
         val hints = mapOf(
             EncodeHintType.CHARACTER_SET to "UTF-8",
             EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M,
@@ -81,7 +81,28 @@ object EntryQrService {
         }
     }
 
-    private fun parseMessage(xml: String): String {
+    private fun extractQrContent(body: String): String {
+        val trimmed = body.trim()
+        if (trimmed.startsWith("{")) {
+            return parseJsonMessage(trimmed)
+        }
+        return parseXmlMessage(trimmed)
+    }
+
+    private fun parseJsonMessage(json: String): String {
+        return try {
+            val root = JSONObject(json)
+            root.optString("message", "").ifEmpty {
+                root.keys().asSequence()
+                    .map { root.optJSONObject(it)?.optString("message", "") }
+                    .firstOrNull { it?.isNotEmpty() == true } ?: ""
+            }
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
+    private fun parseXmlMessage(xml: String): String {
         val parser = XmlPullParserFactory.newInstance().newPullParser()
         parser.setInput(xml.reader())
         var eventType = parser.eventType

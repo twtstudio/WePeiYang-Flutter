@@ -48,7 +48,7 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
 
     private fun handleIntent(intent: Intent): Boolean {
         log("WbyWidgetPlugin handle intent :" + intent.dataString)
-        if (intent.data?.host?.equals("weipeiyang.app") == true) {
+        if (intent.data?.host?.equals("wpy.app") == true) {
             intent.data?.let {
                 when (it.path) {
                     "/schedule" -> {
