@@ -11,16 +11,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/xiaotian/model/xiaotian_state.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'auth/network/auth_service.dart';
 import 'auth/network/message_service.dart';
-import 'auth/network/screen_splash_service.dart';
+import 'auth/network/splash_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
@@ -443,7 +445,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String? _iconPath;
+  /// 远程开屏图地址；为空时显示本地默认 logo。
+  String? _remoteUrl;
   bool _hasNavigated = false;
 
   @override
@@ -455,57 +458,63 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  /// 远程开屏图：复用 haitang 的 banner 接口，取第一张 picUrl。
+  /// 拉不到 / 未配置 / 网络环境不可达（如校园网外）都属预期内 ——
+  /// 静默保留本地默认图，不上报、不阻塞启动。
   Future<void> _loadSplashIcon() async {
-    bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
-
-    // 默认本地图片
-    String iconPath = isDarkMode
-        ? 'assets/images/splash_screen_dark.png'
-        : 'assets/images/splash_screen.png';
-
     try {
-      final remotePath = isDarkMode
-          ? await SplashService.getSplashDark()
-          : await SplashService.getSplashLight();
+      final banners = await SplashService.getBanner()
+          .timeout(const Duration(seconds: 3));
+      if (!mounted || banners.isEmpty) return;
 
-      if (remotePath != "" && remotePath.isNotEmpty) {
-        iconPath = remotePath;
-      }
-    } catch (e, st) {
-      print('ERROR$e\n$st');
-    }
+      final url = banners.first.picUrl.trim();
+      if (url.isEmpty) return;
 
-    // 更新状态刷新UI
-    if (mounted) {
-      setState(() {
-        _iconPath = iconPath;
-      });
+      // 先把网络图预缓存好再切换，避免开屏先闪一下占位图。
+      await precacheImage(CachedNetworkImageProvider(url), context);
+      if (!mounted) return;
+      setState(() => _remoteUrl = url);
+    } catch (_) {
+      // 忽略：保持本地默认开屏图。
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
+    final isDarkMode = WpyTheme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
 
-    // 背景色
-    Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
-    Color? iconColor = WpyTheme.of(context).primary; // 适配主题
-
-    // 如果还没加载完，显示占位/默认图
-    final displayIcon = _iconPath ??
-        (isDarkMode
-            ? 'assets/images/splash_screen_dark.png'
-            : 'assets/images/splash_screen.png');
-
-    return Container(
-      color: backgroundColor,
-      padding: EdgeInsets.all(30),
-      constraints: BoxConstraints.expand(),
-      child: Center(
-        child: ColoredIcon(
-          displayIcon,
-          color: iconColor,
+    final Widget content;
+    if (_remoteUrl != null) {
+      // 远程开屏图：整屏铺满，保留原图配色（不做主题着色）。
+      content = WpyPic(
+        _remoteUrl!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        withHolder: false,
+      );
+    } else {
+      // 本地默认 logo：居中、随主题色着色。
+      final asset = isDarkMode
+          ? 'assets/images/splash_screen_dark.png'
+          : 'assets/images/splash_screen.png';
+      content = Padding(
+        padding: const EdgeInsets.all(30),
+        child: Center(
+          child: ColoredIcon(asset, color: WpyTheme.of(context).primary),
         ),
+      );
+    }
+
+    // 本地图 → 远程图之间用淡入过渡，配合上面的预缓存，切换不闪。
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 350),
+      child: Container(
+        key: ValueKey(_remoteUrl ?? 'local'),
+        color: backgroundColor,
+        constraints: const BoxConstraints.expand(),
+        child: content,
       ),
     );
   }

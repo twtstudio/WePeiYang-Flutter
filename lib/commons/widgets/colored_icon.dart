@@ -97,7 +97,10 @@ class _ColoredIconState extends State<ColoredIcon> {
           return ColorFiltered(
               colorFilter: ColorFilter.mode(
                 Colors.black.withValues(alpha: 0.2), // 调整这个透明度值来控制降低亮度的程度
-                BlendMode.darken, // 使用darken混合模式来降低亮度
+                // 用 srcATop 而非 darken：srcATop 只在目标已有像素处叠加、不改变 alpha，
+                // 透明区域仍透明。darken 会把完全透明的像素抬成 alpha=0.2 的黑，配合外层
+                // ShaderMask(dstIn) 会在抗锯齿边缘留下一圈淡淡的暗色描边（深色模式下可见）。
+                BlendMode.srcATop,
               ),
               child: img);
         },
