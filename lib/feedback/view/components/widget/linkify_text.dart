@@ -1,5 +1,5 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:linkfy_text/linkfy_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -8,6 +8,9 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+
+final RegExp _linkReg =
+    RegExp(r'(#MP-?\d+)|(https?:\/\/[^\s<]+)|(#[^\s#<]+)');
 
 class LinkText extends StatefulWidget {
   final TextStyle style;
@@ -27,28 +30,41 @@ class _LinkTextState extends State<LinkText> {
 
   @override
   Widget build(BuildContext context) {
-    return LinkifyText(
-      widget.text,
+    final textStyle = widget.style.NotoSansSC.w400.sp(16);
+    final linkStyle = widget.style.link(context).w500.sp(16);
+
+    final spans = <InlineSpan>[];
+    int last = 0;
+    for (final m in _linkReg.allMatches(widget.text)) {
+      if (m.start > last) {
+        spans.add(
+            TextSpan(text: widget.text.substring(last, m.start), style: textStyle));
+      }
+      final value = m.group(0)!;
+      final rec = TapGestureRecognizer()..onTap = () => _onTap(value);
+      spans.add(TextSpan(text: value, style: linkStyle, recognizer: rec));
+      last = m.end;
+    }
+    if (last < widget.text.length) {
+      spans.add(TextSpan(text: widget.text.substring(last), style: textStyle));
+    }
+
+    return RichText(
+      text: TextSpan(style: textStyle, children: spans),
       maxLines: widget.maxLine,
-      linkTypes: [LinkType.url, LinkType.hashTag],
       overflow: TextOverflow.ellipsis,
-      textStyle: widget.style.NotoSansSC.w400.sp(16),
-      linkStyle: widget.style.link(context).w500.sp(16),
-      onTap: (link) async {
-        // 粗暴地解决了，但是肯定不是个长久之计
-        if (link.value!.startsWith('#MP') &&
-            RegExp(r'^-?[0-9]+').hasMatch(link.value!.substring(3))) {
-          checkPostId(link.value!.substring(3));
-        } else if (link.type == LinkType.url) {
-          var url = link.value!.startsWith('http')
-              ? link.value!
-              : 'https://${link.value}';
-          checkUrl(url);
-        } else {
-          ToastProvider.error('无效的帖子编号！');
-        }
-      },
     );
+  }
+
+  void _onTap(String value) {
+    if (value.startsWith('#MP') &&
+        RegExp(r'^-?[0-9]+').hasMatch(value.substring(3))) {
+      checkPostId(value.substring(3));
+    } else if (value.startsWith('http')) {
+      checkUrl(value);
+    } else {
+      ToastProvider.error('无效的帖子编号！');
+    }
   }
 
   checkPostId(String id) {

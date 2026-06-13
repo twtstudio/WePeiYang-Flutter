@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -139,12 +140,37 @@ class _NewChatTileState extends State<NewChatTile> {
     }
   }
 
-  Widget _buildTopicChips() {
-    // 加载动画
-    if (_isLoading) {
-      return const CircularProgressIndicator(strokeWidth: 2.0);
-    }
-    //如果没有热门话题
+  // 加载占位：用骨架条代替旋转圈，和首屏骨架屏风格统一
+  Widget _buildSkeleton() {
+    final base = WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor);
+    final highlight =
+        WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(3, (i) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 4.h),
+          child: Shimmer.fromColors(
+            baseColor: base,
+            highlightColor: highlight,
+            child: Container(
+              width: (200 - i * 30).w,
+              height: 32.h,
+              decoration: BoxDecoration(
+                color: base,
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  // 真实内容：用轻量的 Container + WButton 代替 ActionChip，
+  // 构建成本远低于 Material 的 Chip，避免出现时一次性构建造成掉帧
+  Widget _buildContent() {
     if (_hotTopics.isEmpty) {
       return const Text(
         "暂时没有热门话题哦~",
@@ -152,31 +178,29 @@ class _NewChatTileState extends State<NewChatTile> {
       );
     }
 
+    final textStyle =
+        TextUtil.base.normal.PingFangSC.textButtonPrimary(context).sp(14);
+    final bg = WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor);
+    final borderColor =
+        WpyTheme.of(context).get(WpyColorKey.beanDarkColor).withValues(alpha: 0.8);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: _hotTopics.map((hotTopic) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 1.0),
-          child: ActionChip(
-            label: Text(hotTopic.topic,
-                style: TextUtil.base.normal.PingFangSC
-                    .textButtonPrimary(context)
-                    .sp(14)),
-            backgroundColor:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-            side: BorderSide(
-                color: WpyTheme.of(context)
-                    .get(WpyColorKey.beanDarkColor)
-                    .withValues(alpha: 0.8),
-                width: 1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+          padding: EdgeInsets.symmetric(vertical: 4.h),
+          child: WButton(
+            onPressed: () => sendAMessage(hotTopic.topic, context),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: BorderRadius.circular(10.r),
+                border: Border.all(color: borderColor, width: 1),
+              ),
+              child: Text(hotTopic.topic, style: textStyle),
             ),
-            onPressed: () {
-              print('点击了话题: ${hotTopic.topic}');
-              sendAMessage(hotTopic.topic, context);
-            },
           ),
         );
       }).toList(),
@@ -186,7 +210,10 @@ class _NewChatTileState extends State<NewChatTile> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SingleChildScrollView(
+      child: ScrollConfiguration(
+        behavior:
+            ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -234,11 +261,28 @@ class _NewChatTileState extends State<NewChatTile> {
               padding: EdgeInsets.symmetric(horizontal: 25.w),
               child: Align(
                 alignment: Alignment.centerLeft, // 让chips靠左
-                child: _buildTopicChips(),
+                // 骨架条与真实话题用 AnimatedCrossFade 过渡：它预先构建两边、
+                // 只 lerp 已测量好的尺寸并做淡入淡出，不会像 AnimatedSize 那样
+                // 每帧重新测量子树，配合轻量话题卡片，加载完成时不再掉帧。
+                child: RepaintBoundary(
+                  child: AnimatedCrossFade(
+                    firstChild: _buildSkeleton(),
+                    secondChild: _buildContent(),
+                    crossFadeState: _isLoading
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 300),
+                    sizeCurve: Curves.easeInOut,
+                    firstCurve: Curves.easeOut,
+                    secondCurve: Curves.easeOut,
+                    alignment: Alignment.topLeft,
+                  ),
+                ),
               ),
             ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -271,7 +315,10 @@ class _ChatTileState extends State<ChatTile> {
   Widget build(BuildContext context) {
     return Consumer2<xiaotianChatState, xiaotianInputState>(
         builder: (context, chatState, inputState, _) {
-      return ListView.builder(
+      return ScrollConfiguration(
+          behavior:
+              ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: ListView.builder(
           controller: inputState.scrollController,
           itemCount: chatState.messages.length,
           itemBuilder: (context, index) {
@@ -299,7 +346,7 @@ class _ChatTileState extends State<ChatTile> {
             } else {
               return const SizedBox.shrink();
             }
-          });
+          }));
     });
   }
 }

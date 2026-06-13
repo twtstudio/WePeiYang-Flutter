@@ -2,7 +2,7 @@ import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_util.dart';
 import 'package:we_pei_yang_flutter/commons/update/version_data.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 
 class UpdateDio extends DioAbstract {}
 
@@ -18,7 +18,7 @@ class UpdateService with AsyncTimer {
       var response = await updateDio.get(p.join(BASEURL, "check/$code"));
       return VersionData.fromJson(response.data).data;
     } catch (error, stack) {
-      Logger.reportError(error, stack);
+      Log.e(error, stack);
       return null;
     }
   }
@@ -30,7 +30,7 @@ class UpdateService with AsyncTimer {
           await updateDio.get("https://upgrade.twt.edu.cn/iosupdate/check");
       return VersionData.fromJson(response.data, iOS: true).data;
     } catch (error, stack) {
-      Logger.reportError(error, stack);
+      Log.e(error, stack);
       return null;
     }
   }

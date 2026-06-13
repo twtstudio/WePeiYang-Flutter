@@ -54,41 +54,35 @@ class _ExpandableTextState extends State<ExpandableText> {
           text: span, maxLines: maxLines, textDirection: TextDirection.ltr);
       tp.layout(maxWidth: size.maxWidth);
       if (tp.didExceedMaxLines) {
+        final Widget content = expand
+            ? (widget.isHTML
+                ? RichText(
+                    text: HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    textAlign: TextAlign.justify,
+                  )
+                : hasMask(text)
+                    ? MaskedRichText(text: text, style: style)
+                    : LinkText(style: style, text: text))
+            : (widget.isHTML
+                ? RichText(
+                    overflow: TextOverflow.clip,
+                    maxLines: maxLines,
+                    text: HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    textAlign: TextAlign.justify,
+                  )
+                : hasMask(text)
+                    ? MaskedRichText(text: text, style: style, maxLine: maxLines)
+                    : LinkText(style: style, text: text, maxLine: maxLines));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (expand) ...[
-              if (widget.isHTML)
-                RichText(
-                  text: HTML.toTextSpan(
-                    context,
-                    text,
-                    defaultTextStyle: style,
-                  ),
-                  textAlign: TextAlign.justify,
-                )
-              else
-                hasMask(text)
-                    ? MaskedRichText(text: text, style: style)
-                    : LinkText(style: style, text: text)
-            ] else ...[
-              if (widget.isHTML)
-                RichText(
-                  overflow: TextOverflow.clip,
-                  maxLines: maxLines,
-                  text: HTML.toTextSpan(
-                    context,
-                    text,
-                    defaultTextStyle: style,
-                  ),
-                  textAlign: TextAlign.justify,
-                )
-              else
-                hasMask(text)
-                    ? MaskedRichText(
-                        text: text, style: style, maxLine: maxLines)
-                    : LinkText(style: style, text: text, maxLine: maxLines)
-            ],
+            // 展开/收起时让高度平滑过渡，而不是瞬间跳变
+            AnimatedSize(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: content,
+            ),
             if (buttonIsShown)
               WButton(
                 onPressed: () {

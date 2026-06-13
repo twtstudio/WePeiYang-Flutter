@@ -28,7 +28,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -79,6 +78,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
+  bool _managerDialogVisible = false;
 
   int preChangeId = 0;
 
@@ -517,7 +517,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         child: screenshotting.value
             ? Screenshot(
                 child: Container(
-                    color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
                     child: contentList),
                 controller: selectedScreenshotController)
             : contentList,
@@ -1056,10 +1057,13 @@ class _PostDetailPageState extends State<PostDetailPage>
         children: [
           Spacer(),
           Consumer<NewFloorProvider>(builder: (BuildContext context, value, _) {
-            final keyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
+            final keyboardInset = _managerDialogVisible
+                ? 0.0
+                : MediaQuery.viewInsetsOf(context).bottom;
+            final keyboardVisible = keyboardInset > 0;
             return Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.viewInsetsOf(context).bottom,
+                bottom: keyboardInset,
               ),
               child: AnimatedSize(
                 clipBehavior: Clip.antiAlias,
@@ -1309,15 +1313,31 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   Future<bool?> _showManageDialog() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final inputProvider = context.read<NewFloorProvider>();
+    if (inputProvider.inputFieldEnabled) {
+      inputProvider.inputFieldClose();
+    }
+    final fixedMediaQuery =
+        MediaQuery.of(context).removeViewInsets(removeBottom: true);
+    setState(() => _managerDialogVisible = true);
     return showDialog<bool>(
         context: context,
+        useSafeArea: false,
         builder: (context) {
-          return Stack(
-            children: [
-              ManagerPopUp(post: widget.post),
-            ],
+          return MediaQuery(
+            data: fixedMediaQuery,
+            child: RepaintBoundary(
+              child: Stack(
+                children: [
+                  ManagerPopUp(post: widget.post),
+                ],
+              ),
+            ),
           );
-        });
+        }).whenComplete(() {
+      if (mounted) setState(() => _managerDialogVisible = false);
+    });
   }
 
   Future<bool?> _showDeleteConfirmDialog(String quote) {
@@ -1389,8 +1409,7 @@ class CommentInputFieldState extends State<CommentInputField> {
       text: newText,
       selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
     );
-    setState(() =>
-        commentLengthIndicator = '${newText.characters.length}/200');
+    setState(() => commentLengthIndicator = '${newText.characters.length}/200');
   }
 
   void send(bool isOfficial) {
@@ -1775,65 +1794,178 @@ class _ManagerPopUpState extends State<ManagerPopUp>
       //   }
       //   return true;
       // },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        margin: EdgeInsets.all(WePeiYangApp.screenWidth / 10),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SizedBox(height: 4),
-              Text(
-                ' 帖子：' + widget.post.title,
-                style: TextUtil.base.ProductSans.label(context).medium.sp(18),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 440),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              color:
+                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.18),
+                  blurRadius: 24,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 标题栏
+                  Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryActionColor)
+                              .withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.admin_panel_settings_rounded,
+                          size: 22,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.primaryActionColor),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        '帖子管理',
+                        style:
+                            TextUtil.base.label(context).NotoSansSC.w600.sp(19),
+                      ),
+                      const Spacer(),
+                      WButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 22,
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.secondaryInfoTextColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // 帖子信息卡片
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      color: WpyTheme.of(context)
+                          .get(WpyColorKey.secondaryBackgroundColor),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.post.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextUtil.base
+                              .label(context)
+                              .NotoSansSC
+                              .w600
+                              .sp(15),
+                        ),
+                        const SizedBox(height: 10),
+                        _infoRow('楼主昵称', widget.post.nickname),
+                        _infoRow('楼主 ID', '${widget.post.uid}'),
+                        _infoRow('帖子 ID', '${widget.post.id}'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  AnimatedOption(
+                    origin: originTag == 0,
+                    id: widget.post.id,
+                    color1: WpyTheme.of(context)
+                        .get(WpyColorKey.pinedPostTagBColor),
+                    color2: WpyTheme.of(context)
+                        .get(WpyColorKey.pinedPostTagCColor),
+                    icon: Icons.push_pin_rounded,
+                    title: '置顶帖子',
+                    subtitle: '将帖子固定在版块顶部',
+                    activeLabel: '已置顶',
+                    action: 0,
+                  ),
+                  AnimatedOption(
+                    origin: originTag == 1,
+                    id: widget.post.id,
+                    color1: WpyTheme.of(context)
+                        .get(WpyColorKey.elegantPostTagBColor),
+                    color2: WpyTheme.of(context)
+                        .get(WpyColorKey.elegantPostTagCColor),
+                    icon: Icons.auto_awesome_rounded,
+                    title: '精华帖子',
+                    subtitle: '标记为优质精华内容',
+                    activeLabel: '已加精',
+                    action: 1,
+                  ),
+                  AnimatedOption(
+                    origin: originTag == 2,
+                    id: widget.post.id,
+                    color1: WpyTheme.of(context)
+                        .get(WpyColorKey.activityPostBColor),
+                    color2: WpyTheme.of(context)
+                        .get(WpyColorKey.activityPostTagCColor),
+                    icon: Icons.celebration_rounded,
+                    title: '活动帖子',
+                    subtitle: '标记为活动相关帖子',
+                    activeLabel: '活动中',
+                    action: 2,
+                  ),
+                  AnimatedOption(
+                    origin: false,
+                    id: widget.post.id,
+                    color1:
+                        WpyTheme.of(context).get(WpyColorKey.deletePostAColor),
+                    color2:
+                        WpyTheme.of(context).get(WpyColorKey.deletePostBColor),
+                    icon: Icons.delete_outline_rounded,
+                    title: '删除帖子',
+                    subtitle: '永久删除该帖，需填写原因',
+                    activeLabel: '',
+                    action: 100,
+                  ),
+                ],
               ),
-              Text(
-                ' 楼主昵称：${widget.post.nickname}\n 楼主id：${widget.post.uid}\n 帖子id：${widget.post.id}',
-                style: TextUtil.base.ProductSans.label(context).medium.sp(18),
-              ),
-              AnimatedOption(
-                origin: originTag == 0,
-                id: widget.post.id,
-                color1:
-                    WpyTheme.of(context).get(WpyColorKey.pinedPostTagBColor),
-                color2:
-                    WpyTheme.of(context).get(WpyColorKey.pinedPostTagCColor),
-                title: originTag == 0 ? '× 已置顶' : '将此帖置顶',
-                action: 0,
-              ),
-              AnimatedOption(
-                  origin: originTag == 1,
-                  id: widget.post.id,
-                  color1: WpyTheme.of(context)
-                      .get(WpyColorKey.elegantPostTagBColor),
-                  color2: WpyTheme.of(context)
-                      .get(WpyColorKey.elegantPostTagCColor),
-                  title: originTag == 1 ? '× 已加精' : '加入精华帖',
-                  action: 1),
-              AnimatedOption(
-                  origin: originTag == 2,
-                  id: widget.post.id,
-                  color1:
-                      WpyTheme.of(context).get(WpyColorKey.activityPostBColor),
-                  color2: WpyTheme.of(context)
-                      .get(WpyColorKey.activityPostTagCColor),
-                  title: originTag == 2 ? '× 正在活动状态' : '变为活动帖',
-                  action: 2),
-              AnimatedOption(
-                  origin: false,
-                  id: widget.post.id,
-                  color1:
-                      WpyTheme.of(context).get(WpyColorKey.deletePostAColor),
-                  color2:
-                      WpyTheme.of(context).get(WpyColorKey.deletePostBColor),
-                  title: '⚠ 删帖',
-                  action: 100),
-            ]),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color:
-                WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String key, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 64,
+            child: Text(
+              key,
+              style: TextUtil.base.secondary(context).NotoSansSC.w400.sp(12),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextUtil.base.label(context).NotoSansSC.w400.sp(12),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1843,19 +1975,25 @@ class AnimatedOption extends StatefulWidget {
   final bool origin;
   final Color color1;
   final Color color2;
+  final IconData icon;
   final String title;
+  final String subtitle;
+  final String activeLabel;
   final int id;
   final int? action;
 
-  const AnimatedOption(
-      {Key? key,
-      required this.origin,
-      this.action,
-      required this.color1,
-      required this.color2,
-      required this.title,
-      required this.id})
-      : super(key: key);
+  const AnimatedOption({
+    Key? key,
+    required this.origin,
+    this.action,
+    required this.color1,
+    required this.color2,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.activeLabel,
+    required this.id,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AnimatedOptionState(origin);
@@ -1865,97 +2003,254 @@ class _AnimatedOptionState extends State<AnimatedOption>
     with SingleTickerProviderStateMixin {
   bool isSelected = false;
   bool origin;
-  TextEditingController tc = TextEditingController();
+  final TextEditingController tc = TextEditingController();
+  late final AnimationController _expandController;
+  late final Animation<double> _expandAnimation;
 
   _AnimatedOptionState(this.origin);
 
   @override
+  void initState() {
+    super.initState();
+    _expandController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 260),
+      reverseDuration: const Duration(milliseconds: 180),
+    );
+    _expandAnimation = CurvedAnimation(
+      parent: _expandController,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+  }
+
+  @override
+  void dispose() {
+    _expandController.dispose();
+    tc.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() => isSelected = !isSelected);
+    if (isSelected) {
+      _expandController.forward();
+    } else {
+      FocusManager.instance.primaryFocus?.unfocus();
+      _expandController.reverse();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return WButton(
-      onPressed: () {
-        setState(() {
-          isSelected = !isSelected;
-        });
-      },
-      child: AnimatedSize(
-        duration: Duration(milliseconds: 400),
-        curve: Curves.easeOutQuad,
-        child: Container(
+    final isDelete = widget.action == 100;
+    final accent =
+        isDelete ? widget.color1 : (origin ? widget.color2 : widget.color1);
+    final reverseColor = WpyTheme.of(context).get(WpyColorKey.reverseTextColor);
+    final secondaryColor =
+        WpyTheme.of(context).get(WpyColorKey.secondaryInfoTextColor);
+
+    return RepaintBoundary(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _toggle,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
           width: double.infinity,
-          padding: EdgeInsets.symmetric(
-              horizontal: 20, vertical: isSelected ? 12 : 20),
-          margin: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.fromLTRB(14, 13, 14, isSelected ? 14 : 13),
+          margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment(0.4, 1.6),
-              colors: [widget.color1, widget.color2],
+            borderRadius: BorderRadius.circular(16),
+            color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+            border: Border.all(
+              color: accent.withValues(alpha: origin ? 0.42 : 0.22),
+              width: origin ? 1.2 : 0.8,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: accent.withValues(alpha: 0.08),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.title,
-                style: TextUtil.base.reverse(context).medium.sp(20),
-              ),
-              // 置顶动作
-              if (isSelected && widget.action == 0 && !widget.origin)
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        '0为取消置顶，只能为0~30000',
-                        style: TextUtil.base.reverse(context).medium.sp(10),
+              Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [widget.color1, widget.color2],
                       ),
                     ),
-                    TextField(
-                      controller: tc,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelStyle: TextUtil.base
-                            .bright(context)
-                            .NotoSansSC
-                            .w400
-                            .sp(16),
-                        hintStyle: TextUtil.base
-                            .bright(context)
-                            .NotoSansSC
-                            .w800
-                            .sp(16),
-                        hintText: '置顶数值',
-                        contentPadding: const EdgeInsets.all(0),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                      style: TextUtil.base.bright(context).medium.sp(16),
+                    child: Icon(
+                      widget.icon,
+                      size: 22,
+                      color: reverseColor,
                     ),
-                    Container(
-                        height: 1.5,
-                        width: double.infinity,
-                        color: WpyTheme.of(context)
-                            .get(WpyColorKey.primaryBackgroundColor)),
-                  ],
-                ),
-              if (isSelected)
-                WButton(
-                  onPressed: _inkWellOnTap,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Row(
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Spacer(),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                widget.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextUtil.base
+                                    .label(context)
+                                    .NotoSansSC
+                                    .w600
+                                    .sp(15),
+                              ),
+                            ),
+                            if (origin && widget.activeLabel.isNotEmpty) ...[
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 2),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  color: accent.withValues(alpha: 0.14),
+                                ),
+                                child: Text(
+                                  widget.activeLabel,
+                                  style: TextUtil.base.normal.NotoSansSC.w500
+                                      .sp(10)
+                                      .customColor(accent),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                        const SizedBox(height: 4),
                         Text(
-                          origin ? '取消' : '确认',
-                          style: TextUtil.base.reverse(context).medium.sp(18),
+                          widget.subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextUtil.base
+                              .secondary(context)
+                              .NotoSansSC
+                              .w400
+                              .sp(12),
                         ),
                       ],
                     ),
                   ),
-                )
+                  AnimatedRotation(
+                    duration: const Duration(milliseconds: 220),
+                    turns: isSelected ? 0.5 : 0,
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 24,
+                      color: secondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              SizeTransition(
+                sizeFactor: _expandAnimation,
+                alignment: Alignment.topLeft,
+                child: FadeTransition(
+                  opacity: _expandAnimation,
+                  child: IgnorePointer(
+                    ignoring: !isSelected,
+                    child: Column(
+                      children: [
+                        if (widget.action == 0 && !widget.origin) ...[
+                          const SizedBox(height: 12),
+                          Divider(
+                            height: 1,
+                            color: secondaryColor.withValues(alpha: 0.18),
+                          ),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: tc,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              hintText: '置顶数值',
+                              helperText: '0 为取消置顶，支持 0~30000',
+                              hintStyle: TextUtil.base
+                                  .secondary(context)
+                                  .NotoSansSC
+                                  .w400
+                                  .sp(13),
+                              helperStyle: TextUtil.base
+                                  .secondary(context)
+                                  .NotoSansSC
+                                  .w400
+                                  .sp(11),
+                              filled: true,
+                              fillColor: accent.withValues(alpha: 0.08),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: accent.withValues(alpha: 0.2),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: accent.withValues(alpha: 0.2),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: accent),
+                              ),
+                            ),
+                            style: TextUtil.base.label(context).medium.sp(15),
+                          ),
+                        ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: WButton(
+                            onPressed: _inkWellOnTap,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [widget.color1, widget.color2],
+                                ),
+                              ),
+                              child: Text(
+                                origin
+                                    ? '取消当前状态'
+                                    : (isDelete ? '确认删除' : '确认设置'),
+                                textAlign: TextAlign.center,
+                                style: TextUtil.base
+                                    .customColor(reverseColor)
+                                    .NotoSansSC
+                                    .w600
+                                    .sp(14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

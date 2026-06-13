@@ -23,7 +23,11 @@ import com.twt.service.widget.WbyWidgetPlugin
 import io.flutter.embedding.engine.FlutterShellArgs
 import android.os.Build
 import android.os.Bundle
+import android.net.Uri
 import androidx.core.view.WindowCompat
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import android.content.ComponentName
 import android.content.pm.PackageManager
 import io.flutter.embedding.android.FlutterActivity
@@ -62,6 +66,7 @@ class MainActivity : FlutterActivity() {
 
         super.onCreate(savedInstanceState)
 
+        publishLauncherShortcuts()
 //        enableLauncherForDebug()
     }
 
@@ -173,6 +178,34 @@ class MainActivity : FlutterActivity() {
             pm.getComponentEnabledSetting(ComponentName(this, alias)) ==
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED
         } ?: "com.twt.service.ICONBlue"
+    }
+
+    private fun publishLauncherShortcuts() {
+        val shortcuts = listOf(
+            ShortcutInfoCompat.Builder(this, "shortcut_schedule")
+                .setShortLabel("课程表")
+                .setLongLabel("课程表")
+                .setIcon(IconCompat.createWithResource(this, R.drawable.schedule))
+                .setIntent(
+                    Intent(this, MainActivity::class.java).apply {
+                        action = Intent.ACTION_VIEW
+                        data = Uri.parse("wpy://wpy.app/schedule")
+                    }
+                )
+                .build(),
+            ShortcutInfoCompat.Builder(this, "shortcut_entry_qr")
+                .setShortLabel("入校码")
+                .setLongLabel("入校码")
+                .setIcon(IconCompat.createWithResource(this, R.drawable.entry_qr_shortcut))
+                .setIntent(
+                    Intent(this, MainActivity::class.java).apply {
+                        action = Intent.ACTION_VIEW
+                        data = Uri.parse("wpy://wpy.app/entryQr")
+                    }
+                )
+                .build(),
+        )
+        ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
     }
 
     private fun restartApp(result: MethodChannel.Result) {

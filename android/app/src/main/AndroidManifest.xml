@@ -277,6 +277,21 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/schedule_widget_card_provider" />
         </receiver>
+        <receiver
+            android:name=".widget.EntryQrWidgetProvider"
+            android:exported="false"
+            android:label="@string/entry_qr_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.twt.entry_qr_widget.refresh" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/entry_qr_widget_provider" />
+        </receiver>
         <service
             android:name=".widget.WidgetCardService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />

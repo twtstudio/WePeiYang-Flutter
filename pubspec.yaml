@@ -46,6 +46,10 @@ dependencies:
   dio_cookie_caching_handler:
     path: ./lib/commons/network/dio_cookie_cached_handler
 
+  # 日志系统：分级日志 + 现成查看器 + dio 网络拦截
+  talker_flutter: ^5.1.17
+  talker_dio_logger: ^5.1.17
+
   #语音交互用到的
   #---
   record: ^7.1.0

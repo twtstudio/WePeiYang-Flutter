@@ -19,6 +19,7 @@ class RefreshNotifier extends ChangeNotifier {
 }
 
 final refreshNotifier = RefreshNotifier();
+const _widgetChannel = MethodChannel('com.twt.service/widget');
 
 class CasQRPage extends StatelessWidget {
   const CasQRPage({super.key});
@@ -183,6 +184,7 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
         DateTime.now().difference(lastRefresh!) < Duration(seconds: 1)) return;
 
     ToastProvider.running('正在刷新');
+    _refreshEntryQrWidget();
     final sid = CommonPreferences.userNumber.value;
     if (mounted) setState(() => qrContent = null);
     final content = await CasService.getQRContent(sid);
@@ -209,5 +211,10 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
     super.initState();
     refreshNotifier.addListener(() => _refresh());
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _refresh());
+  }
+
+  void _refreshEntryQrWidget() {
+    if (Theme.of(context).platform != TargetPlatform.android) return;
+    _widgetChannel.invokeMethod('refreshEntryQrWidget').catchError((_) {});
   }
 }

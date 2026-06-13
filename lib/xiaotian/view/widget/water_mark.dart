@@ -14,7 +14,7 @@ class WatermarkBg extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = WpyTheme.of(context)
         .get(WpyColorKey.labelTextColor)
-        .withValues(alpha: 0.04);
+        .withValues(alpha: 0.02);
     return Stack(
       children: [
         child, // 你的正常页面

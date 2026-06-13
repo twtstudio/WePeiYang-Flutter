@@ -65,4 +65,5 @@ enum class IntentEvent(val type: Int) {
     MailBox(3),
     SchedulePage(4),
     Update(5),
+    EntryQrPage(6),
 }

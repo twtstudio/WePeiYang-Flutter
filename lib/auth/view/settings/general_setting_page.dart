@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
+import 'package:we_pei_yang_flutter/commons/font/font_reload_sheet.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
@@ -75,12 +75,20 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: WButton(
-                  onPressed: () {
-                    WbyFontLoader.initFonts(hint: true);
-                  },
+                  onPressed: () => showFontReloadSheet(context),
                   child: Row(
                     children: [
-                      Expanded(child: Text('重新加载字体文件', style: mainTextStyle)),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('重新加载字体文件', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('查看下载进度与文件位置', style: hintTextStyle),
+                          ],
+                        ),
+                      ),
                       arrow,
                       SizedBox(width: 15.w),
                     ],

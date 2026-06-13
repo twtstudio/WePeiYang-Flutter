@@ -5,7 +5,7 @@ import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
@@ -48,7 +48,7 @@ class ClassesBackendService {
       await AuthService.getSemesterInfo();
       return Tuple3(courses, exams, gpaBean);
     } on DioException catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return null;
     }
   }

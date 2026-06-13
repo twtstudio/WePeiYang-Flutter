@@ -50,7 +50,19 @@ abstract class DioAbstract {
     // };
     _dio.interceptors.addAll([
       NetCheckInterceptor(),
-      LogInterceptor(requestBody: true),
+      // 精简网络日志：默认一行（method + url + status + 耗时），出错才带 error 详情。
+      TalkerDioLogger(
+        talker: appTalker,
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: false,
+          printResponseHeaders: false,
+          printRequestData: false,
+          printResponseData: false,
+          printResponseMessage: false,
+          printErrorData: true,
+          printResponseTime: true,
+        ),
+      ),
       ...interceptors,
       errorInterceptor ?? ErrorInterceptor()
     ]);
@@ -58,7 +70,17 @@ abstract class DioAbstract {
     _dio_debug = Dio(options);
     _dio_debug.interceptors.addAll([
       NetCheckInterceptor(),
-      LogInterceptor(requestBody: true, responseBody: true),
+      // 调试用 dio：打全量 request / response body 与 headers。
+      TalkerDioLogger(
+        talker: appTalker,
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: true,
+          printResponseHeaders: true,
+          printRequestData: true,
+          printResponseData: true,
+          printResponseTime: true,
+        ),
+      ),
       ...interceptors,
       errorInterceptor ?? ErrorInterceptor()
     ]);
@@ -76,7 +98,7 @@ extension DioRequests on DioAbstract {
       () => (debug ? _dio_debug : _dio)
           .get(path, queryParameters: queryParameters, options: options)
           .catchError((error, stack) {
-        Logger.reportError(error, stack);
+        Log.e(error, stack);
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -98,7 +120,7 @@ extension DioRequests on DioAbstract {
               data: formData ?? data,
               options: options)
           .catchError((error, stack) {
-        Logger.reportError(error, stack);
+        Log.e(error, stack);
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -113,7 +135,7 @@ extension DioRequests on DioAbstract {
       () => (debug ? _dio_debug : _dio)
           .put(path, queryParameters: queryParameters)
           .catchError((error, stack) {
-        Logger.reportError(error, stack);
+        Log.e(error, stack);
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -134,7 +156,7 @@ extension DioRequests on DioAbstract {
               data: data,
               options: options)
           .catchError((error, stack) {
-        Logger.reportError(error, stack);
+        Log.e(error, stack);
         throw error;
       }),
       retryIf: (e) => e is SocketException || e is TimeoutException,
@@ -151,7 +173,7 @@ extension DioRequests on DioAbstract {
           .download(urlPath, savePath,
               onReceiveProgress: onReceiveProgress, options: options)
           .catchError((error, stack) {
-        Logger.reportError(error, stack);
+        Log.e(error, stack);
         throw error;
       }),
       // Retry on SocketException or TimeoutException

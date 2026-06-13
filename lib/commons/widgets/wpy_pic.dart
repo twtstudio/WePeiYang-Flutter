@@ -134,7 +134,7 @@ class _WpyPicState extends State<WpyPic> {
               }
             : null,
         errorWidget: (context, exception, stacktrace) {
-          // Logger.reportError(exception, stacktrace);
+          // Log.e(exception, stacktrace);
           return SizedBox(
             width: width ?? widget.holderHeight,
             height: height ?? widget.holderHeight,

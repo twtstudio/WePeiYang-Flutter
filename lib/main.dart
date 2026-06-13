@@ -185,6 +185,7 @@ class IntentEvent {
   static const WBYMailBox = 3;
   static const SchedulePage = 4;
   static const UpdateDialog = 5;
+  static const EntryQrPage = 6;
   static const NoSuchEvent = -1;
 }
 
@@ -304,6 +305,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
           // final fixCode = data['fixCode'] ?? 0;
           // final url = data['url'] ?? "";
           // TODO
+          break;
+        case IntentEvent.EntryQrPage:
+          if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
+            Navigator.pushNamed(baseContext, HomeRouter.casQR);
+          }
           break;
         default:
       }
@@ -463,8 +469,8 @@ class _SplashScreenState extends State<SplashScreen> {
   /// 静默保留本地默认图，不上报、不阻塞启动。
   Future<void> _loadSplashIcon() async {
     try {
-      final banners = await SplashService.getBanner()
-          .timeout(const Duration(seconds: 3));
+      final banners =
+          await SplashService.getBanner().timeout(const Duration(seconds: 3));
       if (!mounted || banners.isEmpty) return;
 
       final url = banners.first.picUrl.trim();

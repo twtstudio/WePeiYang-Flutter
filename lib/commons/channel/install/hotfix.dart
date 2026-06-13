@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 class HotFixManager {
@@ -31,7 +31,7 @@ class HotFixManager {
         {"name": fileName},
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return false;
     }
   }

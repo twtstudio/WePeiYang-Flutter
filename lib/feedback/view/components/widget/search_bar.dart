@@ -68,9 +68,7 @@ class _SearchBarState extends State<SearchBar>
             FeedbackRouter.searchResult,
             arguments: SearchResultPageArgs('', '${tagUtil[total].id}', '',
                 '搜索结果 #${tagUtil[total].name}', 0, 0),
-          ).then((_) {
-            Navigator.pop(context);
-          });
+          );
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),

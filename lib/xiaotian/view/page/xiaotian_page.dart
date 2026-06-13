@@ -90,62 +90,52 @@ class AiPageState extends State<AiPage> {
   }
 }
 
-class bodyPage extends StatelessWidget {
-  const bodyPage({super.key});
+// 底部常驻的输入框区域。
+// 注意：它包含 TextField，绝不能被放进 AnimatedSwitcher 的 FadeTransition 里，
+// 否则文本选择浮层的 CompositedTransformFollower 会在 layout 阶段无法计算变换而报错。
+Widget _inputArea(BuildContext context) {
+  return Padding(
+    padding: EdgeInsets.only(
+      bottom: MediaQuery.viewInsetsOf(context).bottom,
+    ),
+    child: SafeArea(
+      top: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          inputBox(),
+          Text(
+            '内容由 AI 生成，请仔细甄别',
+            style:
+                TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
+            style:
+                TextUtil.base.labelWithOp(context).PingFangSC.normal.sp(10),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 4.h),
+        ],
+      ),
+    ),
+  );
+}
+
+// 内容区：根据消息选择 新会话页 / 聊天页
+class _ChatContent extends StatelessWidget {
+  const _ChatContent();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Consumer<xiaotianChatState>(
-            builder: (context, chatState, _) {
-              return chatState.sessionId == '0'
-                  ? const NewChatTile()
-                  : const ChatTile();
-            },
-          ),
-        ),
-        //输入框
-        Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.viewInsetsOf(context).bottom,
-          ),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                inputBox(),
-                // 临时把字号调大/颜色调明显以便调试
-                Text(
-                  '内容由 AI 生成，请仔细甄别',
-                  style: TextUtil.base
-                      .labelWithOp(context)
-                      .PingFangSC
-                      .normal
-                      .sp(10),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  '向 “小天老师” 发送消息即表示，您同意我们的用户条款并已阅读我们的隐私协议。',
-                  style: TextUtil.base
-                      .labelWithOp(context)
-                      .PingFangSC
-                      .normal
-                      .sp(10),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 4.h,
-                )
-              ],
-            ),
-          ),
-        )
-      ],
+    return Consumer<xiaotianChatState>(
+      builder: (context, chatState, _) {
+        return chatState.sessionId == '0'
+            ? const NewChatTile()
+            : const ChatTile();
+      },
     );
   }
 }
@@ -153,16 +143,34 @@ class bodyPage extends StatelessWidget {
 Widget PageControl(BuildContext context) {
   final chatState = context.watch<xiaotianChatState>();
 
-  Widget child;
+  // 仅对“内容区”做骨架屏 → 历史骨架 → 真实内容 的淡入淡出，
+  // 输入框常驻在下方、不参与切换动画（见 _inputArea 说明）。
+  Widget content;
   if (!chatState.firstLoad) {
-    child = mainLoad();
+    content =
+        const KeyedSubtree(key: ValueKey('skeleton'), child: AiSkeletonPage());
   } else if (chatState.historyLoading) {
-    child = HistoryState();
+    content =
+        const KeyedSubtree(key: ValueKey('history'), child: HistoryState());
   } else {
-    child = bodyPage();
+    content = const KeyedSubtree(key: ValueKey('content'), child: _ChatContent());
   }
 
-  return child;
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Expanded(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 350),
+          switchInCurve: Curves.easeOut,
+          switchOutCurve: Curves.easeIn,
+          child: content,
+        ),
+      ),
+      // 首屏骨架阶段还没有真实结构，等加载完成再显示输入框
+      if (chatState.firstLoad) _inputArea(context),
+    ],
+  );
 }
 
 class ShimmerOverlayIcon extends StatelessWidget {

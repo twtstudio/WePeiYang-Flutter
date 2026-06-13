@@ -4,6 +4,7 @@
     <!--    gradle中修改-->
     <!--    <string name="label">微北洋</string>-->
     <string name="widget_label">课程表</string>
+    <string name="entry_qr_widget_label">入校码</string>
 
     <!--    shortcuts string-->
 

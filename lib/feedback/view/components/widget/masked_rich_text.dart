@@ -434,6 +434,65 @@ class MaskTextEditingController extends TextEditingController {
   MaskTextEditingController({super.text, this.hideMasked = false});
 
   @override
+  set value(TextEditingValue newValue) {
+    super.value = _repairMaskEdit(value, newValue);
+  }
+
+  /// 把 <mask>…</mask> 当作一个整体处理：当一次删除“吃”到了不可见的标签字符上
+  /// （例如在马赛克块边缘退格），就把整段 mask 一起删掉，而不是留下半个损坏的
+  /// 标签。这样用户感知到的就是「mask 被整体删除」。块内文字的正常增删不受影响。
+  TextEditingValue _repairMaskEdit(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final oldText = oldValue.text;
+    final newText = newValue.text;
+    // 文本未变（仅移动光标）、原文没有 mask、或正在输入法组词时，直接放行
+    if (newText == oldText ||
+        !hasMask(oldText) ||
+        !newValue.composing.isCollapsed) {
+      return newValue;
+    }
+
+    // 计算 old→new 的最小改动区间：old[start, oldEnd) 被替换为 new[start, newEnd)
+    final minLen =
+        oldText.length < newText.length ? oldText.length : newText.length;
+    int start = 0;
+    while (start < minLen && oldText[start] == newText[start]) start++;
+    int oldEnd = oldText.length;
+    int newEnd = newText.length;
+    while (oldEnd > start &&
+        newEnd > start &&
+        oldText[oldEnd - 1] == newText[newEnd - 1]) {
+      oldEnd--;
+      newEnd--;
+    }
+
+    // 只处理“纯删除”：插入/替换（含输入法上屏）保持原生行为
+    if (newEnd != start) return newValue;
+
+    // 改动区间是否吃到了某个 mask 块的标签字符；若是，整块一起删
+    int delStart = start, delEnd = oldEnd;
+    bool touchedTag = false;
+    for (final m in _maskReg.allMatches(oldText)) {
+      final openEnd = m.start + kMaskOpenTag.length;
+      final closeStart = m.end - kMaskCloseTag.length;
+      final hitOpen = m.start < oldEnd && start < openEnd;
+      final hitClose = closeStart < oldEnd && start < m.end;
+      if (hitOpen || hitClose) {
+        touchedTag = true;
+        if (m.start < delStart) delStart = m.start;
+        if (m.end > delEnd) delEnd = m.end;
+      }
+    }
+    if (!touchedTag) return newValue;
+
+    final repaired = oldText.substring(0, delStart) + oldText.substring(delEnd);
+    return TextEditingValue(
+      text: repaired,
+      selection: TextSelection.collapsed(offset: delStart),
+    );
+  }
+
+  @override
   TextSpan buildTextSpan(
       {required BuildContext context,
       TextStyle? style,

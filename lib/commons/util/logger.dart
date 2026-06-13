@@ -9,13 +9,16 @@ class Logger {
   static List<String> logs = [];
 
   static void reportPrint(ZoneDelegate parent, Zone zone, String str) {
-    String line = _getFormatTime() + ' | ' + str;
+    final prefix = _getFormatTime() + ' | ';
+    final lines = str.split('\n').map((line) => prefix + line).toList();
     // 如果是测试版，就打印方便随时调试
     if (EnvConfig.isTest) {
-      parent.print(zone, line);
+      for (final line in lines) {
+        parent.print(zone, line);
+      }
     }
     checkList();
-    logs.add(line);
+    logs.addAll(lines);
   }
 
   static void reportError(Object error, StackTrace? stack) {

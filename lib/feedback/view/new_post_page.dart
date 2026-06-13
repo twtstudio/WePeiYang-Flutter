@@ -9,7 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/SpoilerMask.dart';
@@ -345,7 +345,7 @@ class VoteFormController {
     } on DioException catch (e) {
       ToastProvider.error('发布失败: ${e.error.toString()}');
     } catch (e) {
-      Logger.reportError(e, StackTrace.current);
+      Log.e(e, StackTrace.current);
       ToastProvider.error('未知错误: ${e.toString()}');
     }
   }

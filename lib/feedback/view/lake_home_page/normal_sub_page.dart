@@ -68,20 +68,36 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       _refreshController.refreshToIdle();
     }
     if (pixels < threshold) {
-      LakeUtil.showSearch.value = true;
+      _setShowSearch(true);
     }
 
     // Toggle feedback based on scroll direction
     if (_shouldToggleSearchbar(scrollInfo, pixels, maxScrollExtent)) {
-      if (pixels <= _previousOffset) {
-        LakeUtil.showSearch.value = true;
-      } else {
-        LakeUtil.showSearch.value = false;
-      }
+      _setShowSearch(pixels <= _previousOffset);
       _previousOffset = pixels;
     }
 
     return true;
+  }
+
+  bool _showSearchScheduled = false;
+  bool _showSearchTarget = true;
+
+  // 滚动通知可能在 SmartRefresher 的 header(LayoutBuilder) 正在 layout 时派发
+  // （尤其下拉刷新回弹那一帧），此时直接写 LakeUtil.showSearch 会让监听它的
+  // ValueListenableBuilder 在 layout 阶段 setState —— Flutter 3.44 会抛
+  // "Build scheduled during frame" 断言并打断这一帧，导致刷新过渡动画丢失。
+  // 这里把写入去抖并延后到帧末执行，避免在布局期间触发重建。
+  void _setShowSearch(bool value) {
+    _showSearchTarget = value;
+    if (_showSearchScheduled) return;
+    if (LakeUtil.showSearch.value == value) return;
+    _showSearchScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showSearchScheduled = false;
+      if (!mounted) return;
+      LakeUtil.showSearch.value = _showSearchTarget;
+    });
   }
 
   double _previousOffset = 0;
@@ -92,13 +108,18 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     //            - 刷新结束但动画还没开始（网太快了）
     //            - 取消动画 （不播放了）-  结束刷新
 
-    // 延迟100ms显示刷新动画
-    final task = Timer(Duration(milliseconds: 280), () {
-      if (!mounted) return;
-      setState(() {
-        isRefresh = true;
+    Timer? task;
+    if (!_sortRefreshRequested) {
+      task = Timer(Duration(milliseconds: 250), () {
+        if (!mounted) return;
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(0);
+        }
+        setState(() {
+          _fullRefreshSkeleton = true;
+        });
       });
-    });
+    }
     // 刷新
     try {
       _initializeHotTagsIfNeeded();
@@ -111,12 +132,23 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     }
 
     // 如果还没执行就不执行了
-    if (task.isActive) task.cancel();
+    if (task?.isActive ?? false) task!.cancel();
     if (!mounted) return;
+    final wasFullSkeleton = _fullRefreshSkeleton;
     setState(() {
-      loadFlag++;
-      isRefresh = false;
+      // 不再改 ListView 的 key —— 数据通过 postHolder 的 ListenableBuilder 流入并
+      // 由 Flutter 增量 diff，换 key 会整树销毁重建（卡顿）并丢失滚动位置（跳回顶部）。
+      _listVersion++;
+      _fullRefreshSkeleton = false;
+      _postRefreshSkeleton = false;
+      _sortRefreshRequested = false;
     });
+    if (wasFullSkeleton) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_scrollController.hasClients) return;
+        _scrollController.jumpTo(0);
+      });
+    }
   }
 
   void _initializeHotTagsIfNeeded() {
@@ -165,6 +197,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   late final RefreshController _refreshController;
   late final ScrollController _scrollController;
   late Future<void> _postListFuture;
+  int _listVersion = 0;
 
   @override
   void initState() {
@@ -198,8 +231,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     LakeUtil.initPostList(index);
   }
 
-  int loadFlag = 0;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -212,17 +243,27 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  bool isRefresh = false;
+  bool _fullRefreshSkeleton = false;
+  bool _postRefreshSkeleton = false;
+  bool _sortRefreshRequested = false;
+
+  void _changeSortAndRefresh(int sortSeq) {
+    setState(() {
+      _postRefreshSkeleton = true;
+      _sortRefreshRequested = true;
+    });
+    if (LakeUtil.sortSeq.value == sortSeq) {
+      _refreshController.requestRefresh();
+      return;
+    }
+    LakeUtil.sortSeq.value = sortSeq;
+    _refreshController.requestRefresh();
+  }
 
   Row _buildSortSelection() {
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       WButton(
-        onPressed: () {
-          setState(() {
-            LakeUtil.sortSeq.value = 1;
-            _onRefresh();
-          });
-        },
+        onPressed: () => _changeSortAndRefresh(1),
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 14.h, 5.w, 6.h),
           child: ValueListenableBuilder(
@@ -237,12 +278,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         ),
       ),
       WButton(
-        onPressed: () {
-          setState(() {
-            LakeUtil.sortSeq.value = 0;
-            _onRefresh();
-          });
-        },
+        onPressed: () => _changeSortAndRefresh(0),
         child: Padding(
           padding: EdgeInsets.fromLTRB(5.w, 14.h, 10.w, 6.h),
           child: ValueListenableBuilder(
@@ -275,9 +311,41 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     if (ind == 0) return _buildSortSelection();
     ind--;
 
+    if (_postRefreshSkeleton) return PostSkeleton();
+
     // Post
     final post = pageController.postHolder.postsList[ind];
-    return PostCardNormal(post);
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 260),
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (currentChild, previousChildren) {
+        return Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            ...previousChildren,
+            if (currentChild != null) currentChild,
+          ],
+        );
+      },
+      transitionBuilder: (child, animation) {
+        final offsetAnimation = Tween<Offset>(
+          begin: const Offset(0, 0.025),
+          end: Offset.zero,
+        ).animate(animation);
+        return FadeTransition(
+          opacity: animation,
+          child: SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          ),
+        );
+      },
+      child: PostCardNormal(
+        post,
+        key: ValueKey('${LakeUtil.sortSeq.value}-$_listVersion-${post.id}'),
+      ),
+    );
   }
 
   @override
@@ -331,20 +399,20 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                       ),
                       enablePullUp: true,
                       onLoading: _onLoading,
-                      child: isRefresh
-                          ? RefreshSkeleton()
+                      child: _fullRefreshSkeleton
+                          ? RefreshSkeleton(initialScrollOffset: false)
                           : ListView.builder(
-                              // 根据要求， Listview必须紧挨着SmartRefresher，
-                              // 不能包装任何东西
-                              // 所以不得已使用三元表达式
-                              key: PageStorageKey("$index,$loadFlag"),
+                              // 根据要求， Listview必须紧挨着SmartRefresher，不能包装任何东西
+                              key: PageStorageKey("$index"),
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               // 4是因为前面有4个widget，
                               // Welcome, 热榜， Banner, 排序选择器
-                              itemCount:
-                                  pageController.postHolder.postsList.length +
-                                      4,
+                              itemCount: (_postRefreshSkeleton
+                                      ? 5
+                                      : pageController
+                                          .postHolder.postsList.length) +
+                                  4,
                               itemBuilder: _buildPostList,
                             ),
                     );
@@ -359,14 +427,18 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 }
 
 class RefreshSkeleton extends StatelessWidget {
-  const RefreshSkeleton({super.key});
+  const RefreshSkeleton({super.key, this.initialScrollOffset = true});
+
+  final bool initialScrollOffset;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       physics: NeverScrollableScrollPhysics(),
-      controller: ScrollController(
-          initialScrollOffset: FeedbackHomePageState.searchBarHeight / 2),
+      controller: initialScrollOffset
+          ? ScrollController(
+              initialScrollOffset: FeedbackHomePageState.searchBarHeight / 2)
+          : null,
       children: [
         AnnouncementBannerWidget(),
         BannerSkeleton(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -40,7 +40,7 @@ class DownloadManager {
           file.deleteSync();
           debugPrint("delete file: ${file.path}");
         } catch (e, s) {
-          Logger.reportError(e, s);
+          Log.e(e, s);
         }
       }
     }
@@ -91,7 +91,7 @@ class DownloadManager {
             break;
         }
       } catch (e, s) {
-        Logger.reportError(e, s);
+        Log.e(e, s);
       }
     }
   }
@@ -149,7 +149,7 @@ class DownloadManager {
         {"downloadList": DownloadList(tasks).toJson()},
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       (startError ?? defaultStartErrorCallback).call();
     }
   }

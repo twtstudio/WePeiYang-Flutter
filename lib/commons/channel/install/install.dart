@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 
 class InstallManager {
   static const _channel = MethodChannel('com.twt.service/install');
@@ -15,7 +15,7 @@ class InstallManager {
     try {
       await _channel.invokeMethod<bool>("goToMarket");
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
     }
   }
 
@@ -24,7 +24,7 @@ class InstallManager {
       canGoToMarket =
           await _channel.invokeMethod<bool>("canGoToMarket") ?? false;
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
     }
   }
 }

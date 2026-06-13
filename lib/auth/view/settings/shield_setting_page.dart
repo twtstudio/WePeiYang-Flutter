@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +8,6 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
 import '../../../commons/util/toast_provider.dart';
 import '../../../commons/widgets/w_button.dart';
-import '../../network/blocklist_service.dart';
 
 class ShieldSettingPage extends StatefulWidget {
   const ShieldSettingPage({super.key});
@@ -19,26 +17,46 @@ class ShieldSettingPage extends StatefulWidget {
 }
 
 class _ShieldSettingPageState extends State<ShieldSettingPage> {
-  List<String> _shieldUserUid = [];
   List<String> _shieldComment = [];
 
   @override
   void initState() {
-    // _loadShield();
     _shieldComment = CommonPreferences.shieldComment.value;
     super.initState();
   }
 
-  // void _loadShield() async {
-  //   _shieldUserUid = await BlockListService.getBlockList(onFailure: (e){
-  //     print(e);
-  //     ToastProvider.error('获取屏蔽用户失败');
-  //   });
-  //   _shieldComment = CommonPreferences.shieldComment.value;
-  // }
+  Future<void> _addShieldWord() async {
+    final String? word = await showShieldDialog(
+      context,
+      hint: '请输入屏蔽词(支持正则表达式)',
+      title: '添加屏蔽词',
+      type: 1,
+    );
+    if (word == null) return;
+    setState(() => _shieldComment.add(word));
+    CommonPreferences.shieldComment.value = _shieldComment;
+    ToastProvider.success('屏蔽词添加成功');
+  }
+
+  void _removeShieldWord(int index) {
+    setState(() => _shieldComment.removeAt(index));
+    CommonPreferences.shieldComment.value = _shieldComment;
+    ToastProvider.success('删除成功');
+  }
+
+  Widget _divider() => Container(
+        height: 0.5,
+        color: WpyTheme.of(context)
+            .get(WpyColorKey.oldHintColor)
+            .withValues(alpha: 1),
+        margin: EdgeInsets.symmetric(horizontal: 20.w),
+      );
 
   @override
   Widget build(BuildContext context) {
+    final titleTextStyle =
+        TextUtil.base.bold.sp(14).oldListGroupTitle(context);
+    final hintTextStyle = TextUtil.base.regular.sp(12).oldHint(context);
     final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
     final add = Icon(Icons.add,
         color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
@@ -68,196 +86,76 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
         ),
         backgroundColor:
             WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: 15.h)),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () {
-                    ToastProvider.success('正在开发哦');
-                    // final  String? uid = await showShieldDialog(
-                    //   context,
-                    //   hint: '请输入屏蔽用户uid',
-                    //   title: '添加uid',
-                    //   type:0,
-                    // );
-                    // if(uid == null) {
-                    //   return;
-                    // }
-                    // BlockListService.addBlock(uid, onSuccess: () {
-                    //   ToastProvider.success('添加成功');
-                    //   setState(() {
-                    //     _loadShield();
-                    //   });
-                    // }, onFailure: (e){
-                    //   print(e);
-                    //   ToastProvider.success('添加失败');
-                    // });
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(child: Text('添加屏蔽用户uid', style: mainTextStyle)),
-                      add,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
+        body: SafeArea(
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            children: [
+              SizedBox(height: 15.h),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('屏蔽评论词', style: titleTextStyle),
               ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 8.h)),
-            SliverToBoxAdapter(
-              child: Container(
+              SizedBox(height: 8.h),
+              Text('命中下列关键词（支持正则表达式）的评论将被自动隐藏', style: hintTextStyle),
+              SizedBox(height: 12.h),
+              Container(
                 decoration: BoxDecoration(
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
-                // padding: EdgeInsets.symmetric(vertical: 10.h),
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Column(
-                  children: List.generate(_shieldUserUid.length, (index) {
-                    final uid = _shieldUserUid[index];
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30.w, vertical: 12.h),
-                          child: Row(
-                            children: [
-                              Expanded(child: Text(uid, style: mainTextStyle)),
-                              WButton(
-                                onPressed: () {
-                                  // setState(() {
-                                  //   _shieldUserUid.removeAt(index);
-                                  // });
-                                  // BlockListService.deleteBlock(uid, onSuccess: (){
-                                  //   ToastProvider.success('删除成功');
-                                  //   setState(() {
-                                  //     _loadShield();
-                                  //   });
-                                  // }, onFailure: (e){
-                                  //   print(e);
-                                  //   ToastProvider.error('删除失败');
-                                  // });
-                                },
-                                child: Icon(Icons.delete_rounded,
-                                    color: WpyTheme.of(context)
-                                        .get(WpyColorKey.oldListActionColor),
-                                    size: 22),
-                              )
-                            ],
-                          ),
+                  children: [
+                    WButton(
+                      onPressed: _addShieldWord,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20.w, 18.h, 15.w, 18.h),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child:
+                                    Text('添加屏蔽评论词', style: mainTextStyle)),
+                            add,
+                            SizedBox(width: 15.w),
+                          ],
                         ),
-                        if (index != _shieldUserUid.length - 1)
-                          Container(
-                            height: 0.5,
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.oldHintColor)
-                                .withValues(alpha: 1),
-                            margin: EdgeInsets.symmetric(horizontal: 20.w),
-                          ),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 30.h)),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () async {
-                    final String? word = await showShieldDialog(
-                      context,
-                      hint: '请输入屏蔽词(支持正则表达式)',
-                      title: '添加屏蔽词',
-                      type: 1,
-                    );
-                    if (word == null) {
-                      return;
-                    }
-                    _shieldComment.add(word);
-                    CommonPreferences.shieldComment.value = _shieldComment;
-                    ToastProvider.success('屏蔽词添加成功');
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(child: Text('添加屏蔽评论词', style: mainTextStyle)),
-                      add,
-                      SizedBox(width: 15.w),
+                      ),
+                    ),
+                    for (int index = 0;
+                        index < _shieldComment.length;
+                        index++) ...[
+                      _divider(),
+                      Padding(
+                        padding:
+                            EdgeInsets.fromLTRB(20.w, 12.h, 15.w, 12.h),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(_shieldComment[index],
+                                    style: mainTextStyle)),
+                            WButton(
+                              onPressed: () => _removeShieldWord(index),
+                              child: Icon(Icons.delete_rounded,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyColorKey.oldListActionColor),
+                                  size: 22),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
               ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: 8.h)),
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
+              if (_shieldComment.isEmpty) ...[
+                SizedBox(height: 40.h),
+                Center(
+                  child: Text('还没有屏蔽词，点击上方添加吧~', style: hintTextStyle),
                 ),
-                // padding: EdgeInsets.symmetric(vertical: 10.h),
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  children: List.generate(_shieldComment.length, (index) {
-                    final uid = _shieldComment[index];
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30.w, vertical: 12.h),
-                          child: Row(
-                            children: [
-                              Expanded(child: Text(uid, style: mainTextStyle)),
-                              WButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _shieldComment.removeAt(index);
-                                  });
-                                  CommonPreferences.shieldComment.value =
-                                      _shieldComment;
-                                  ToastProvider.success('删除成功');
-                                },
-                                child: Icon(Icons.delete_rounded,
-                                    color: WpyTheme.of(context)
-                                        .get(WpyColorKey.oldListActionColor),
-                                    size: 22),
-                              )
-                            ],
-                          ),
-                        ),
-                        if (index != _shieldComment.length - 1)
-                          Container(
-                            height: 0.5,
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.oldHintColor)
-                                .withValues(alpha: 1),
-                            margin: EdgeInsets.symmetric(horizontal: 20.w),
-                          ),
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            ),
-          ],
+              ],
+              SizedBox(height: 30.h),
+            ],
+          ),
         ),
       ),
     );

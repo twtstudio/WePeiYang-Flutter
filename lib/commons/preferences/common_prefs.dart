@@ -151,7 +151,12 @@ class CommonPreferences {
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
     //     HomeRouter.game)
   ]);
-  static final userTool = PrefsBean<List<CardBean>>('userTool', []);
+  static final userTool = PrefsBean<List<CardBean>>('userTool', [
+    CardBean('assets/svg_pics/lake_butt_icons/sample1.png', 24.w, '图书馆',
+        'Library', 'https://ic.lib.tju.edu.cn/'),
+    CardBean('assets/svg_pics/lake_butt_icons/sample2.png', 24.w, '教务系统',
+        'EAMS', 'https://classes.tju.edu.cn/'),
+  ]);
 
   static List<int> sanitizedDisplayOrder({int minCount = 2}) {
     final toolsLength = displayedTool.value.length;

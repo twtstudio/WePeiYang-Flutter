@@ -8,7 +8,7 @@ import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'dialog/update_dialog.dart';
@@ -224,7 +224,7 @@ class UpdateManager extends UpdateStatusListener {
         // 加载成功则弹窗通知重启应用
         UpdateDialog.hotfix.show();
       } catch (e, s) {
-        Logger.reportError(e, s);
+        Log.e(e, s);
         _updateByHotfixError();
       }
     };

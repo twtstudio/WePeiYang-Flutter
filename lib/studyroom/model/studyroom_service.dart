@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_models.dart';
 import 'package:we_pei_yang_flutter/studyroom/util/session_util.dart';
 
@@ -34,14 +34,14 @@ class _StudyroomDio extends DioAbstract {
 
 class _StyApiInterceptor extends InterceptorsWrapper {
   @override
-  onResponse(response, handler) async {
+  void onResponse(response, handler) {
     final data = response.data;
     var respData = _BuildingResponse.fromJson(data);
     if (respData.success) {
       response.data = respData.data;
-      return handler.resolve(response);
+      handler.resolve(response);
     } else {
-      return handler.reject(
+      handler.reject(
         DioException(
           error: respData.data as String? ?? "未知错误",
           requestOptions: response.requestOptions,
@@ -88,7 +88,7 @@ class StudyroomService {
       );
       return true;
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return false;
     }
   }
@@ -102,7 +102,7 @@ class StudyroomService {
       );
       return true;
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return false;
     }
   }
@@ -114,7 +114,7 @@ class StudyroomService {
         response.data.map((e) => Campus.fromJson(e)),
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return [];
     }
   }
@@ -126,7 +126,7 @@ class StudyroomService {
         response.data.map((e) => Building.fromJson(e)),
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return [];
     }
   }
@@ -146,7 +146,7 @@ class StudyroomService {
         response.data.map((e) => Room.fromJson(e)),
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return [];
     }
   }
@@ -158,7 +158,7 @@ class StudyroomService {
         response.data.map((e) => Occupy.fromJson(e)),
       );
     } catch (e, s) {
-      Logger.reportError(e, s);
+      Log.e(e, s);
       return [];
     }
   }

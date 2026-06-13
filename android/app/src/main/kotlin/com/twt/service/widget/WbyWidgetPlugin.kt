@@ -22,6 +22,11 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
         when (call.method) {
             "refreshScheduleWidget" -> {
                 updateWidget()
+                result.success(null)
+            }
+            "refreshEntryQrWidget" -> {
+                EntryQrWidgetProvider.refreshAll(context)
+                result.success(null)
             }
             else -> result.notImplemented()
         }
@@ -51,6 +56,15 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
                             Event(
                                 IntentEvent.SchedulePage.type,
                                 "go to schedule page without data"
+                            )
+                        )
+                        return true
+                    }
+                    "/entryQr" -> {
+                        WBYApplication.eventList.add(
+                            Event(
+                                IntentEvent.EntryQrPage.type,
+                                "go to entry qr page"
                             )
                         )
                         return true

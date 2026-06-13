@@ -89,9 +89,7 @@ class _SearchPageState extends State<SearchPage> {
       context,
       FeedbackRouter.searchResult,
       arguments: SearchResultPageArgs(keyword, '', '', '搜索结果', 0, 0),
-    ).then((_) {
-      if (mounted) Navigator.pop(context);
-    });
+    );
   }
 
   @override

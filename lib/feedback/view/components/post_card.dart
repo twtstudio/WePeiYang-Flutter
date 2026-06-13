@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/logger.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
@@ -33,10 +32,12 @@ class PostCardNormal extends StatefulWidget {
   /// 考古,需要分解其中图片的逻辑
 
   PostCardNormal(this.post,
-      {this.outer = true,
+      {Key? key,
+      this.outer = true,
       this.screenshotController,
       this.expandAll = false,
-      this.avatarClickable = true});
+      this.avatarClickable = true})
+      : super(key: key);
 
   final bool expandAll;
   final Post post;
@@ -58,6 +59,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
   _PostCardNormalState(this.post);
 
+  @override
+  void didUpdateWidget(covariant PostCardNormal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.post, widget.post)) {
+      post = widget.post;
+    }
+  }
+
   /// 通过分区编号获取分区名称 by pushInl
   String getTypeName(int type) {
     Map<int, String> typeName = {};
@@ -68,8 +77,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
   }
 
   Widget _buildMainContent() {
-    if (widget.post.variant == PostVariant.Vote)
-      return VoteWidget(post: widget.post, interactive: !widget.outer);
+    if (post.variant == PostVariant.Vote)
+      return VoteWidget(post: post, interactive: !widget.outer);
 
     if (widget.outer) {
       final previewStyle =
@@ -223,7 +232,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
     List<Widget> head = [
       avatarAndSolve,
       if (post.variant != PostVariant.Vote) eTagAndTitle,
-      if (post.content.isNotEmpty) content,
+      if (post.variant == PostVariant.Vote || post.content.isNotEmpty) content,
       // 行数的区别在内部判断
       SizedBox(height: SplitUtil.h * 10)
     ];
@@ -479,13 +488,13 @@ class VoteWidget extends StatefulWidget {
 
 class _VoteWidgetState extends State<VoteWidget> {
   late bool showResult = !widget.interactive ||
-      widget.post.voteDetail!.options.any((e) => e.selected);
+      (widget.post.voteDetail?.options.any((e) => e.selected) ?? false);
 
   late Post displayPost = widget.post;
 
   _reloadPost() {
     setState(() {
-      displayPost.voteDetail!.options.forEach((element) {
+      displayPost.voteDetail?.options.forEach((element) {
         element.count = 0;
       });
     });
@@ -728,7 +737,7 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
                       ToastProvider.error(e.error.toString());
                     else {
                       ToastProvider.error("投票失败, 未知错误");
-                      Logger.reportError(e, StackTrace.current);
+                      Log.e(e, StackTrace.current);
                     }
                   }
                   setState(() {
@@ -778,25 +787,37 @@ class VoteOptionWidget extends StatelessWidget {
     return Column(
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 5.w),
-              width: 230.h,
-              child: Wrap(children: [
-                Text(
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: 5.w, right: 8.w),
+                child: Text(
                   option.content + (selected ? " (已选)" : ""),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: TextUtil.base.w400.NotoSansSC
                       .sp(14)
                       .primary(context)
                       .h(1.6),
                 ),
-              ]),
+              ),
             ),
-            Spacer(),
-            Text(
-              "${option.count.toString()} 票 (${formatPercent(percent)}%)",
-              style:
-                  TextUtil.base.w400.NotoSansSC.sp(12).infoText(context).h(1.6),
+            Flexible(
+              flex: 0,
+              child: Padding(
+                padding: EdgeInsets.only(top: 5.w),
+                child: Text(
+                  "${option.count.toString()} 票 (${formatPercent(percent)}%)",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: TextUtil.base.w400.NotoSansSC
+                      .sp(12)
+                      .infoText(context)
+                      .h(1.6),
+                ),
+              ),
             ),
           ],
         ),

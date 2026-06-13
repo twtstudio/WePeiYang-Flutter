@@ -46,13 +46,44 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
   ];
   List<CardBean> userTools = CommonPreferences.userTool.value;
 
+  /// 该工具当前是否展示在首页工具栏。
+  /// 判断依据是「是否在 order 引用的索引集合里」，而不是「是否存在于工具池
+  /// displayedTool」——这样从首页移除后还能正确显示“+”以重新添加，
+  /// 避免此前“移除即锁死、只能重置”的问题。
   bool isDisplayed(CardBean bean) {
-    //根据label检索
-    for (int e = 0; e < CommonPreferences.displayedTool.value.length; e++) {
-      if (CommonPreferences.displayedTool.value[e].label == bean.label)
-        return true;
+    final pool = CommonPreferences.displayedTool.value;
+    return order.any((idx) =>
+        idx >= 0 && idx < pool.length && pool[idx].label == bean.label);
+  }
+
+  /// 在工具池中按 label 查找索引，找不到返回 -1。
+  int _poolIndexOf(CardBean bean) => CommonPreferences.displayedTool.value
+      .indexWhere((t) => t.label == bean.label);
+
+  /// 把工具加入首页工具栏（最多 8 个）。
+  /// 若池中已有同名工具则复用其索引，避免池无限增长或出现重复 key。
+  void _addToHome(CardBean bean) {
+    if (order.length >= 8) {
+      ToastProvider.error("会不会太多了呢？最多8个喵~");
+      return;
     }
-    return false;
+    var idx = _poolIndexOf(bean);
+    if (idx == -1) {
+      CommonPreferences.displayedTool.value.add(bean);
+      idx = CommonPreferences.displayedTool.value.length - 1;
+    }
+    if (!order.contains(idx)) order.add(idx);
+    CommonPreferences.displayOrder.value = order.join(',');
+  }
+
+  /// 从首页工具栏移除（至少保留 2 个）。只动 order，不动工具池。
+  void _removeFromHome(int orderPos) {
+    if (order.length <= 2) {
+      ToastProvider.error("您保留的太少啦！最少两个哦");
+      return;
+    }
+    order.removeAt(orderPos);
+    CommonPreferences.displayOrder.value = order.join(',');
   }
 
   Future<dynamic> showDetailDialog(BuildContext context, int i) {
@@ -216,9 +247,14 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
           WButton(
             onPressed: () {
               setState(() {
-                CommonPreferences.displayedTool.value.clear();
-                CommonPreferences.displayOrder.value = "0,1,2,3,4,5";
-                CommonPreferences.displayedTool.value.addAll(peiYangTools);
+                CommonPreferences.displayedTool.value
+                  ..clear()
+                  ..addAll(peiYangTools);
+                // 同步刷新本地 order，否则首页工具栏区域仍显示旧顺序
+                order
+                  ..clear()
+                  ..addAll(List.generate(peiYangTools.length, (idx) => idx));
+                CommonPreferences.displayOrder.value = order.join(',');
               });
               ToastProvider.success("已重置！");
             },
@@ -277,18 +313,12 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                       children: [
                         for (int i = 0; i < order.length; i++)
                           WButton(
-                            key: ValueKey(order[i]),
-                            onPressed: () {
-                              setState(() {
-                                if (order.length <= 2)
-                                  ToastProvider.error("您保留的太少啦！最少两个哦");
-                                else {
-                                  order.removeAt(i);
-                                  CommonPreferences.displayOrder.value =
-                                      order.join(',');
-                                }
-                              });
-                            },
+                            // flutter_reorderable_grid_view 内部用 ValueKey.value 作为
+                            // Map<String,...> 的键，key 必须是 String，否则会抛
+                            // 'int is not a subtype of String'
+                            key: ValueKey(order[i].toString()),
+                            onPressed: () =>
+                                setState(() => _removeFromHome(i)),
                             child: generateSelectCard(
                                 context,
                                 CommonPreferences.displayedTool.value[order[i]],
@@ -351,17 +381,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                             ? generateSelectCard(
                                 context, peiYangTools[i], false, true)
                             : WButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (CommonPreferences
-                                            .displayedTool.value.length >=
-                                        8)
-                                      ToastProvider.error("会不会太多了呢？最多8个喵~");
-                                    else
-                                      CommonPreferences.displayedTool.value
-                                          .add(peiYangTools[i]);
-                                  });
-                                },
+                                onPressed: () => setState(
+                                    () => _addToHome(peiYangTools[i])),
                                 child: generateSelectCard(
                                     context, peiYangTools[i], false, false),
                               )
@@ -462,20 +483,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                                           true),
                                     )
                                   : GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (CommonPreferences
-                                                  .displayedTool.value.length >=
-                                              8)
-                                            ToastProvider.error(
-                                                "会不会太多了呢？最多8个喵~");
-                                          else
-                                            CommonPreferences
-                                                .displayedTool.value
-                                                .add(CommonPreferences
-                                                    .userTool.value[i]);
-                                        });
-                                      },
+                                      onTap: () => setState(() => _addToHome(
+                                          CommonPreferences.userTool.value[i])),
                                       onLongPress: () {
                                         showDetailDialog(context, i);
                                       },
