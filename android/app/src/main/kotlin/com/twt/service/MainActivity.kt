@@ -69,6 +69,9 @@ class MainActivity : FlutterActivity() {
         EventDispatcher.enqueueShortcutIntent(intent)
         super.onCreate(savedInstanceState)
 
+        // 迁移修复：旧版本 switchIcon 会持久化禁用 MainActivity，导致升级后
+        // wpy:// deeplink/shortcut 仍解析不到。这里把它治回启用状态。
+        ensureMainActivityEnabled()
         publishLauncherShortcuts()
 //        enableLauncherForDebug()
     }
@@ -157,17 +160,28 @@ class MainActivity : FlutterActivity() {
 //        }
 //    }
 
+    // 确保 MainActivity 组件处于启用状态（修复旧版本遗留的禁用状态）。
+    // 即使被持久化为 DISABLED，应用仍可经启用的图标 alias 启动到这里，故可自愈。
+    private fun ensureMainActivityEnabled() {
+        val pm = packageManager
+        val comp = ComponentName(this, MainActivity::class.java)
+        if (pm.getComponentEnabledSetting(comp) ==
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+        ) {
+            pm.setComponentEnabledSetting(
+                comp,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        }
+    }
+
     //应用图标切换
     private fun switchIcon(target: String) {
         val pm = packageManager
 
-        // 禁用 MainActivity launcher
-        pm.setComponentEnabledSetting(
-            ComponentName(this, "com.twt.service.MainActivity"),
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP
-        )
-
+        // 桌面图标只在各 alias 之间切换；MainActivity 不再参与（它没有 LAUNCHER，
+        // 永远保持启用），否则会把挂在它身上的 wpy:// deeplink 一起禁掉。
         iconAliases.forEach { alias ->
             val state = if (alias == target)
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED
@@ -191,7 +205,8 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun publishLauncherShortcuts() {
-        val launcherComponent = getCurrentLauncherComponent()
+        // shortcut 固定指向常驻的 MainActivity（始终启用），不依赖当前启用的图标 alias。
+        val targetComponent = ComponentName(this, MainActivity::class.java)
         val shortcuts = listOf(
             ShortcutInfoCompat.Builder(this, "shortcut_schedule")
                 .setShortLabel("课程表")
@@ -199,7 +214,7 @@ class MainActivity : FlutterActivity() {
                 .setIcon(IconCompat.createWithResource(this, R.drawable.schedule))
                 .setIntent(
                     Intent().apply {
-                        component = launcherComponent
+                        component = targetComponent
                         action = Intent.ACTION_VIEW
                         data = Uri.parse("wpy://wpy.app/schedule")
                     }
@@ -211,7 +226,7 @@ class MainActivity : FlutterActivity() {
                 .setIcon(IconCompat.createWithResource(this, R.drawable.entry_qr_shortcut))
                 .setIntent(
                     Intent().apply {
-                        component = launcherComponent
+                        component = targetComponent
                         action = Intent.ACTION_VIEW
                         data = Uri.parse("wpy://wpy.app/entryQr")
                     }
@@ -219,14 +234,6 @@ class MainActivity : FlutterActivity() {
                 .build(),
         )
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
-    }
-
-    private fun getCurrentLauncherComponent(): ComponentName {
-        val enabledAlias = iconAliases.firstOrNull { alias ->
-            packageManager.getComponentEnabledSetting(ComponentName(this, alias)) ==
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-        }
-        return ComponentName(this, enabledAlias ?: "com.twt.service.MainActivity")
     }
 
     private fun restartApp(result: MethodChannel.Result) {

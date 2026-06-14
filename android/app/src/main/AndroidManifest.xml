@@ -102,11 +102,9 @@
             <!--            <meta-data-->
             <!--                android:name="io.flutter.embedding.android.SplashScreenDrawable"-->
             <!--                android:resource="@drawable/launch_background" />-->
-            <!--        应用主入口    -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--  应用主入口 / 桌面图标由各 activity-alias 提供（默认 .ICONBlue），
+                  MainActivity 自身不再持有 LAUNCHER，从而永不会被图标切换禁用，
+                  保证 wpy:// deeplink、shortcut、友盟校验等始终可用。  -->
             <!--        桌面快捷方式    -->
             <meta-data
                 android:name="android.app.shortcuts"
@@ -150,7 +148,7 @@
         <!-- 北洋蓝 -->
         <activity-alias
             android:name=".ICONBlue"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="true"
             android:icon="@mipmap/ic_launcher"
             android:targetActivity=".MainActivity">
