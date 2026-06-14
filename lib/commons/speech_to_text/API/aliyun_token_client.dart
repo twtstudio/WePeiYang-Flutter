@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -119,10 +120,10 @@ class AliyunTokenClient {
 
         return _cachedToken;
       }
-      print("token获取失败：$data");
+      Log.e('阿里云语音 token 获取失败: $data', null, 'speech');
       return null;
     } catch (e) {
-      print("token请求失败：$e");
+      Log.e(e, null, 'speech');
       return null;
     }
   }

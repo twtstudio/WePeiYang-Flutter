@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -102,7 +103,6 @@ class LibraryService {
 
   static Future<bool> login(String username, String password) async {
     try {
-      print("loging in with $username, $password");
       // # Step0, get JSESSIONID Cookie
       // # Get Login URL
       final loginUrl =
@@ -147,15 +147,13 @@ class LibraryService {
       });
 
       // check login status
-      final res = icDio.get("/ic-web/auth/userInfo");
-      print(res);
+      icDio.get("/ic-web/auth/userInfo");
       return true;
     } on LibRequestException catch (e) {
       ToastProvider.error(e.message);
     } catch (e, stacktrace) {
       ToastProvider.error("未知错误");
-      print(e);
-      print(stacktrace);
+      Log.e(e, stacktrace, 'library');
     }
     return false;
   }

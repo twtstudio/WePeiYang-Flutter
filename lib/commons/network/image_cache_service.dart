@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -168,11 +169,6 @@ class ImageCacheService {
   }
 
   void _dlog(Object? o) {
-    final now = DateTime.now();
-    final hh = now.hour.toString().padLeft(2, '0');
-    final mm = now.minute.toString().padLeft(2, '0');
-    final ss = now.second.toString().padLeft(2, '0');
-    // ignore: avoid_print
-    print('$hh:$mm:$ss | $o');
+    Log.d('$o', tag: 'imgcache');
   }
 }

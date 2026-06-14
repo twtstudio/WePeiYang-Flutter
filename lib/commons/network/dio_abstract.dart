@@ -98,7 +98,7 @@ extension DioRequests on DioAbstract {
       () => (debug ? _dio_debug : _dio)
           .get(path, queryParameters: queryParameters, options: options)
           .catchError((error, stack) {
-        Log.e(error, stack);
+        Log.e(error, stack, 'network');
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -120,7 +120,7 @@ extension DioRequests on DioAbstract {
               data: formData ?? data,
               options: options)
           .catchError((error, stack) {
-        Log.e(error, stack);
+        Log.e(error, stack, 'network');
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -135,7 +135,7 @@ extension DioRequests on DioAbstract {
       () => (debug ? _dio_debug : _dio)
           .put(path, queryParameters: queryParameters)
           .catchError((error, stack) {
-        Log.e(error, stack);
+        Log.e(error, stack, 'network');
         throw error;
       }),
       // Retry on SocketException or TimeoutException
@@ -156,7 +156,7 @@ extension DioRequests on DioAbstract {
               data: data,
               options: options)
           .catchError((error, stack) {
-        Log.e(error, stack);
+        Log.e(error, stack, 'network');
         throw error;
       }),
       retryIf: (e) => e is SocketException || e is TimeoutException,
@@ -173,7 +173,7 @@ extension DioRequests on DioAbstract {
           .download(urlPath, savePath,
               onReceiveProgress: onReceiveProgress, options: options)
           .catchError((error, stack) {
-        Log.e(error, stack);
+        Log.e(error, stack, 'network');
         throw error;
       }),
       // Retry on SocketException or TimeoutException

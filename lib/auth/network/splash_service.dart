@@ -37,7 +37,7 @@ class SplashService with AsyncTimer {
       });
       return list;
     } catch (e, stack) {
-      Log.e(e, stack);
+      Log.e(e, stack, 'splash');
       return [];
     }
   }
@@ -48,7 +48,7 @@ class SplashService with AsyncTimer {
       var result = response.data['result'];
       return KeyPair.fromJson(result);
     } catch (e, stack) {
-      Log.e(e, stack);
+      Log.e(e, stack, 'splash');
       return null;
     }
   }

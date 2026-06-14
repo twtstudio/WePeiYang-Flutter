@@ -99,7 +99,6 @@ class EncryptedPathInterceptor extends InterceptorsWrapper {
 
     options.path = getEncryptedString(source_string);
     options.queryParameters = {};
-    print("encrypted_path: ${options.path}");
     return handler.next(options);
   }
 

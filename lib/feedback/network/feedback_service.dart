@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -1157,7 +1158,7 @@ class FeedbackService with AsyncTimer {
       avatarBoxList.clear();
       avatarBoxList.addAll(list.avatarFrameList);
     } on DioException catch (e) {
-      print(e.error);
+      Log.e(e, null, 'feedback');
     }
     return avatarBoxList;
   }
@@ -1171,7 +1172,7 @@ class FeedbackService with AsyncTimer {
       avatarBoxList.clear();
       avatarBoxList.addAll(list.avatarFrameList);
     } on DioException catch (e) {
-      print(e.error);
+      Log.e(e, null, 'feedback');
     }
     return avatarBoxList;
   }
@@ -1188,7 +1189,7 @@ class FeedbackService with AsyncTimer {
       }
     } on DioException catch (e) {
       ToastProvider.error('坏耶!头像框设置失败!');
-      print(e.error);
+      Log.e(e, null, 'feedback');
     }
   }
 
@@ -1223,7 +1224,6 @@ class FeedbackService with AsyncTimer {
       formData.fields.addAll([MapEntry('options', element)]);
     });
     final res = await feedbackDio.post('post/vote/new', formData: formData);
-    print("==> d ${res.data}");
     if (res.data['code'] == 200) {
       return;
     }

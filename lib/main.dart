@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' show PlatformDispatcher;
 
-import 'package:flutter/foundation.dart'
-    show DiagnosticsTreeStyle, TextTreeRenderer;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +32,7 @@ import 'commons/network/wpy_dio.dart';
 import 'commons/preferences/common_prefs.dart';
 import 'commons/themes/wpy_theme.dart';
 import 'commons/update/update_manager.dart';
-import 'commons/util/logger.dart';
+import 'commons/util/log/log.dart';
 import 'commons/util/navigator_observers.dart';
 import 'commons/util/router_manager.dart';
 import 'commons/util/storage_util.dart';
@@ -59,10 +58,13 @@ void main() async {
     EnvConfig.init();
     await StorageUtil.init();
 
+    /// 初始化日志文件持久化（重启不丢、可导出）
+    await initAppLogger();
+
     /// 高刷
     if (Platform.isAndroid) {
       unawaited(FlutterDisplayMode.setHighRefreshRate().catchError((_) {
-        print('[INFO]: This device isn\'t support high refresh rate');
+        Log.i('设备不支持高刷新率', tag: 'app');
       }));
     }
 
@@ -125,28 +127,21 @@ void main() async {
       statusBarBrightness: Brightness.light,
     ));
 
-    /// 修改debugPrint
-    debugPrint = (message, {wrapWidth}) => print(message);
+    /// Flutter framework 的同步错误 → 统一汇入 talker
+    FlutterError.onError = (FlutterErrorDetails details) {
+      appTalker.handle(
+          details.exception, details.stack, details.summary.toString());
+    };
 
-    /// 程序中的同步（sync）错误交给zone处理
-    FlutterError.onError = (FlutterErrorDetails details) async {
-      // 生成错误信息
-      String text = TextTreeRenderer(
-              wrapWidth: FlutterError.wrapWidth,
-              wrapWidthProperties: FlutterError.wrapWidth,
-              maxDescendentsTruncatableNode: 5)
-          .render(details.toDiagnosticsNode(style: DiagnosticsTreeStyle.flat))
-          .trimRight();
-      Zone.current.handleUncaughtError(text, details.stack ?? StackTrace.empty);
+    /// engine / 平台层的异步错误（zone 兜不住的那部分）
+    PlatformDispatcher.instance.onError = (error, stack) {
+      appTalker.handle(error, stack);
+      return true;
     };
   }, (Object error, StackTrace stack) {
-    /// 这里是处理所有 unhandled sync & async error 的地方
-    Logger.reportError(error, stack);
-  }, zoneSpecification: ZoneSpecification(
-      print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
-    /// 覆盖zone中的所有[print]，统一日志格式
-    Logger.reportPrint(parent, zone, line);
-  }));
+    /// 所有未捕获的 sync & async 错误都到这里
+    appTalker.handle(error, stack);
+  });
 }
 
 String _shortcutActionType = "";
@@ -171,7 +166,7 @@ Future<void> _listenForShortcutActions() async {
         _shortcutResumeActionType = call.arguments;
         break;
       default:
-        print('No action for ${call.method}');
+        Log.w('未处理的 shortcut 方法: ${call.method}', tag: 'app');
     }
   });
 }
@@ -187,6 +182,55 @@ class IntentEvent {
   static const UpdateDialog = 5;
   static const EntryQrPage = 6;
   static const NoSuchEvent = -1;
+}
+
+Future<void> checkEventList(BuildContext context) async {
+  if (Platform.isIOS) return;
+  var baseContext =
+      WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
+  await _messageChannel.invokeMethod<Map>("getLastEvent").then((eventMap) {
+    if (eventMap == null) {
+      return;
+    }
+    switch (eventMap['event']) {
+      case IntentEvent.FeedbackPostPage:
+        Navigator.pushNamed(
+          baseContext,
+          FeedbackRouter.detail,
+          arguments: Post.nullExceptId(eventMap['data']),
+        );
+        break;
+      case IntentEvent.FeedbackSummaryPage:
+        Navigator.pushNamed(baseContext, FeedbackRouter.summary);
+        break;
+      case IntentEvent.WBYMailBox:
+        final data = eventMap['data'] as Map;
+        Navigator.pushNamed(
+          baseContext,
+          MessageRouter.mailPage,
+          arguments: UserMail.fromJson(data),
+        );
+        break;
+      case IntentEvent.SchedulePage:
+        if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
+          Navigator.pushNamed(baseContext, ScheduleRouter.course);
+        }
+        break;
+      case IntentEvent.UpdateDialog:
+        // final data = eventMap['data'] as Map;
+        // final versionCode = data['versionCode'] ?? 0;
+        // final fixCode = data['fixCode'] ?? 0;
+        // final url = data['url'] ?? "";
+        // TODO
+        break;
+      case IntentEvent.EntryQrPage:
+        if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
+          Navigator.pushNamed(baseContext, HomeRouter.casQR);
+        }
+        break;
+      default:
+    }
+  });
 }
 
 class WePeiYangApp extends StatefulWidget {
@@ -262,58 +306,9 @@ class WePeiYangAppState extends State<WePeiYangApp>
         WePeiYangApp.navigatorState.currentState?.pushNamed(shortcutRoute);
         _shortcutResumeActionType = "";
       }
-      checkEventList();
+      checkEventList(context);
       WpyTheme.updateAutoDarkTheme(context);
     }
-  }
-
-  checkEventList() async {
-    if (Platform.isIOS) return;
-    var baseContext =
-        WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
-    await _messageChannel.invokeMethod<Map>("getLastEvent").then((eventMap) {
-      if (eventMap == null) {
-        return;
-      }
-      switch (eventMap['event']) {
-        case IntentEvent.FeedbackPostPage:
-          Navigator.pushNamed(
-            baseContext,
-            FeedbackRouter.detail,
-            arguments: Post.nullExceptId(eventMap['data']),
-          );
-          break;
-        case IntentEvent.FeedbackSummaryPage:
-          Navigator.pushNamed(baseContext, FeedbackRouter.summary);
-          break;
-        case IntentEvent.WBYMailBox:
-          final data = eventMap['data'] as Map;
-          Navigator.pushNamed(
-            baseContext,
-            MessageRouter.mailPage,
-            arguments: UserMail.fromJson(data),
-          );
-          break;
-        case IntentEvent.SchedulePage:
-          if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
-            Navigator.pushNamed(baseContext, ScheduleRouter.course);
-          }
-          break;
-        case IntentEvent.UpdateDialog:
-          // final data = eventMap['data'] as Map;
-          // final versionCode = data['versionCode'] ?? 0;
-          // final fixCode = data['fixCode'] ?? 0;
-          // final url = data['url'] ?? "";
-          // TODO
-          break;
-        case IntentEvent.EntryQrPage:
-          if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
-            Navigator.pushNamed(baseContext, HomeRouter.casQR);
-          }
-          break;
-        default:
-      }
-    });
   }
 
   showDialog(String content) {
@@ -541,7 +536,15 @@ class _SplashScreenState extends State<SplashScreen> {
       (navigator) =>
           navigator.pushNamedAndRemoveUntil(HomeRouter.home, (route) => false),
     );
-    if (didNavigate && Platform.isIOS) _handleLaunchShortcut();
+    if (!didNavigate) return;
+    if (Platform.isIOS) {
+      _handleLaunchShortcut();
+    } else if (Platform.isAndroid) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        checkEventList(context);
+      });
+    }
   }
 
   void _navigateLogin() {

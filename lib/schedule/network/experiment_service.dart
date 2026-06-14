@@ -119,7 +119,6 @@ class ExperimentService {
     for (var exp in expList) {
       classIdSet.add(exp.classId);
     }
-    print("$classIdSet");
     for (var i = 0; i < courseList.length; i++) {
       var course = courseList[i];
       if (classIdSet.contains(course.classId)) {

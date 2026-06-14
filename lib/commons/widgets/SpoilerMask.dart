@@ -62,7 +62,6 @@ class _SpoilerMaskState extends State<SpoilerMask>
   double _maxRadius = 0.0;
 
   void _onTapDown(TapDownDetails details) {
-    print("Tap at: ${details.localPosition}");
     _tapPosition = details.localPosition;
     _waveRadius = 0.0;
     _controller.forward();

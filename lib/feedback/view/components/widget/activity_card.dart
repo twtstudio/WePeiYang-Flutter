@@ -103,7 +103,6 @@ class _ActivityCardState extends State<ActivityCard> {
           builder: (BuildContext context, value, Widget? child) {
         final length = context.read<FestivalProvider>().nonePopupList.length;
         bool canSwipe = length > 1;
-        print("==> length: $length, canSwipe: $canSwipe");
         return ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(8.r)),
             clipBehavior: Clip.hardEdge,

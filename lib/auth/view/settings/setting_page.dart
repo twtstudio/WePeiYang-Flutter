@@ -221,7 +221,6 @@ class _SettingPageState extends State<SettingPage> {
                 Navigator.pushNamed(context, AuthRouter.debugInfo);
               },
               onTap: () {
-                print("tab");
                 context.read<UpdateManager>().checkUpdate(
                       auto: false,
                     );

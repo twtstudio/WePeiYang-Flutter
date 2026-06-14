@@ -102,7 +102,6 @@ class _PostDetailPageState extends State<PostDetailPage>
       _loadInitialData();
     });
     order.addListener(() {
-      print("Oder changed to: ${order.value}");
       _refreshController.requestRefresh();
       CommonPreferences.feedbackFloorSortType.value = order.value;
       // _refreshController.requestRefresh();
@@ -318,7 +317,6 @@ class _PostDetailPageState extends State<PostDetailPage>
     ToastProvider.running("生成截图中");
     ui.Image? image = await _controller.captureAsUiImage(pixelRatio: 4.0);
     double? photoWidth = image?.width.toDouble();
-    print(photoWidth);
     await _controller
         .captureFromLongWidget(Column(
       children: [
@@ -578,7 +576,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   Widget build(BuildContext context) {
     if (preChangeId != (widget.changeId ?? preChangeId)) {
-      print("pre: $preChangeId, change: ${widget.changeId}");
       preChangeId = widget.changeId!;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) initWhileChangingPost();

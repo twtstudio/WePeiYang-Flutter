@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,7 +63,7 @@ class _ThemeSettingState extends State<ThemeSetting>
       if (!mounted || alias == null || alias.isEmpty) return;
       setState(() => CommonPreferences.appIconAlias.value = alias);
     } catch (e) {
-      print(e);
+      Log.e(e, null, 'theme');
     }
   }
 
@@ -97,7 +98,7 @@ class _ThemeSettingState extends State<ThemeSetting>
             } catch (e) {
               if (context.mounted) Navigator.pop(context);
               ToastProvider.error('请手动重启应用');
-              print(e);
+              Log.e(e, null, 'theme');
             }
           },
         );

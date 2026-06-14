@@ -48,7 +48,7 @@ class ClassesBackendService {
       await AuthService.getSemesterInfo();
       return Tuple3(courses, exams, gpaBean);
     } on DioException catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'network');
       return null;
     }
   }

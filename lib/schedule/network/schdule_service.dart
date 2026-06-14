@@ -143,10 +143,6 @@ class ScheduleService {
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
-    print("++++++++IDS++++++++++");
-    print(res.data);
-    print(ids);
-    print("++++++++++++++++++++++++++++++");
     _log('STEP 6: IDs found. Sending POST request for courseTable.action...');
 
     // 获取课表
@@ -162,9 +158,6 @@ class ScheduleService {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     _log('STEP 7: Course table data received. Starting to parse HTML...');
-    print("++++++++RES++++++++++");
-    print(res.data.toString());
-    print("++++++++++++++++++++++++++++++");
     return _parseCourseHTML(res.data.toString());
   }
 
@@ -255,7 +248,6 @@ class ScheduleService {
           /// 不能用courseName.contains(arrange.courseName)来判断，否则就会把"机器学习"和"机器学习综合实践"这样的课算在一起
           if (courseName != arrange.name &&
               !_judgeSubtitle(courseName, arrange.name!)) return;
-          print("draw $arrange");
 
           /// 有些个别课没有教室信息，此时roomList.length = 2
           if (roomList.length > roomIndex) {

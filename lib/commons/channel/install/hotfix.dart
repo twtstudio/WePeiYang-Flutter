@@ -31,7 +31,7 @@ class HotFixManager {
         {"name": fileName},
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'install');
       return false;
     }
   }

@@ -82,7 +82,7 @@ class WbyFontLoader {
           }
         });
       } catch (e, s) {
-        Log.e(e, s);
+        Log.e(e, s, 'font');
       }
     }
   }

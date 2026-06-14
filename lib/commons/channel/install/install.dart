@@ -7,7 +7,6 @@ class InstallManager {
 
   static void install(String apkName) {
     var argument = {'path': apkName};
-    print(apkName);
     _channel.invokeMethod('install', argument);
   }
 
@@ -15,7 +14,7 @@ class InstallManager {
     try {
       await _channel.invokeMethod<bool>("goToMarket");
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'install');
     }
   }
 
@@ -24,7 +23,7 @@ class InstallManager {
       canGoToMarket =
           await _channel.invokeMethod<bool>("canGoToMarket") ?? false;
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'install');
     }
   }
 }

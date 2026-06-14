@@ -202,7 +202,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    print("==> init state for tab $index");
     pageController = LakeUtil.lakePageControllers[index]!;
     _refreshController = RefreshController();
     _scrollController = ScrollController();

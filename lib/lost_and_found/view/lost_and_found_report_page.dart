@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -74,8 +75,7 @@ class LostAndFoundReportPage extends StatelessWidget {
             ),
           ));
     } catch (e, stacktrace) {
-      print(e);
-      print(stacktrace);
+      Log.e(e, stacktrace, 'laf');
       return Container();
     }
   }

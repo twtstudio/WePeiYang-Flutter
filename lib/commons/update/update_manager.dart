@@ -50,7 +50,6 @@ class UpdateManager extends UpdateStatusListener {
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
-        print("get here");
         // 无事发生就检查更新
         setGetVersion();
         // 获取最新版本
@@ -120,7 +119,6 @@ class UpdateManager extends UpdateStatusListener {
       case UpdateStatus.getVersion:
         // 正在请求检查更新接口，弹窗告诉他不要急
         if (!auto) {
-          print("获取到这里");
           ToastProvider.running("正在请求最新版本信息");
         }
         break;
@@ -224,7 +222,7 @@ class UpdateManager extends UpdateStatusListener {
         // 加载成功则弹窗通知重启应用
         UpdateDialog.hotfix.show();
       } catch (e, s) {
-        Log.e(e, s);
+        Log.e(e, s, 'update');
         _updateByHotfixError();
       }
     };

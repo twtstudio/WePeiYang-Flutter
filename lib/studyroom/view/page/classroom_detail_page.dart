@@ -255,7 +255,6 @@ class _CourseDisplayWidget extends StatelessWidget {
       var index = 1;
 
       final dayPlan = plan[date];
-      print(date.toString());
       d++;
       if (dayPlan == null) continue;
       // dayPlan.removeAt(4);

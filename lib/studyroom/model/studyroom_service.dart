@@ -88,7 +88,7 @@ class StudyroomService {
       );
       return true;
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return false;
     }
   }
@@ -102,7 +102,7 @@ class StudyroomService {
       );
       return true;
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return false;
     }
   }
@@ -114,7 +114,7 @@ class StudyroomService {
         response.data.map((e) => Campus.fromJson(e)),
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return [];
     }
   }
@@ -126,7 +126,7 @@ class StudyroomService {
         response.data.map((e) => Building.fromJson(e)),
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return [];
     }
   }
@@ -146,7 +146,7 @@ class StudyroomService {
         response.data.map((e) => Room.fromJson(e)),
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return [];
     }
   }
@@ -158,7 +158,7 @@ class StudyroomService {
         response.data.map((e) => Occupy.fromJson(e)),
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'studyroom');
       return [];
     }
   }

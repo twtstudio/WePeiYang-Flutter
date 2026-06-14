@@ -30,7 +30,6 @@ class AuthDio extends DioAbstract {
   InterceptorsWrapper? get errorInterceptor =>
       InterceptorsWrapper(onRequest: (options, handler) {
         options.headers['token'] = CommonPreferences.token.value;
-        print("token: " + CommonPreferences.token.value);
         return handler.next(options);
       }, onResponse: (response, handler) {
         var code = response.data['error_code'] ?? -1;

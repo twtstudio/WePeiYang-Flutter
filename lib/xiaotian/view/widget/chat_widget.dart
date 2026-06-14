@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -135,7 +136,7 @@ class _NewChatTileState extends State<NewChatTile> {
         setState(() {
           _isLoading = false;
         });
-        print("在UI层捕获到错误: $e");
+        Log.e(e, null, 'xiaotian');
       }
     }
   }

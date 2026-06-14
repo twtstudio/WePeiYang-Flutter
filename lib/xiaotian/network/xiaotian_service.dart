@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -204,15 +205,15 @@ class AiService {
 
         return topics;
       } else {
-        print('获取热榜业务失败或数据格式不正确: ${response.data}');
+        Log.w('获取热榜数据格式不正确: ${response.data}', tag: 'xiaotian');
         return [];
       }
     } on DioException catch (e) {
-      print("获取热榜请求失败: ${e.response?.data ?? e.message}");
+      Log.e('获取热榜请求失败: ${e.response?.data ?? e.message}', null, 'xiaotian');
       return []; // 请求失败时，返回一个空列表
     } catch (e) {
       // 捕获其他可能的异常，比如数据解析错误
-      print('获取热榜时发生未知错误: $e');
+      Log.e(e, null, 'xiaotian');
       return []; // 同样返回空列表
     }
   }
@@ -238,7 +239,7 @@ class AiService {
       );
       return response;
     } on DioException catch (e) {
-      print("请求失败: ${e.response?.data ?? e.message}");
+      Log.e('xiaotian 请求失败: ${e.response?.data ?? e.message}', null, 'xiaotian');
       rethrow;
     }
   }

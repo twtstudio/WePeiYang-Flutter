@@ -91,7 +91,6 @@ class _LostAndFoundPostPageState extends State<LostAndFoundPostPage> {
   _submit() async {
     var dataModel = context.read<NewLostAndFoundPostProvider>();
     if (!dataModel.check) {
-      print(dataModel.date);
       ToastProvider.error("请检查内容是否填写完整！");
       return;
     }

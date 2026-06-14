@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'dart:convert';
 
 abstract class TokenManagerAbstract {
@@ -16,7 +17,7 @@ abstract class TokenManagerAbstract {
       final expiresAt = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
       return expiresAt.isAfter(DateTime.now().subtract(Duration(minutes: 5)));
     } catch (e) {
-      print(e);
+      Log.e(e, null, 'token');
       return false;
     }
   }

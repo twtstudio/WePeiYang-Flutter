@@ -93,7 +93,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    print(CommonPreferences.curLevelPoint.value.toDouble());
     var postLists = (List.generate(
       _postList.length,
       (index) {

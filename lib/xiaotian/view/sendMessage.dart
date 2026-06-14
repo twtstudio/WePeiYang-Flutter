@@ -1,3 +1,4 @@
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../network/xiaotian_service.dart';
@@ -49,9 +50,6 @@ void sendAMessage(String text, BuildContext context) {
     searchTime: _inputState.searchTime,
     searchType: _inputState.searchType,
   );
-  print('ai_ans.stream - start');
-  print(ai_ans.stream);
-  print('ai_ans.stream - end');
   chatState.messageAdd(ai_ans);
 
   _inputState.clear();
@@ -74,13 +72,12 @@ void scrollScreen(ScrollController controller) {
 
 void feedBackPost(FeedBack fb) async {
   try {
-    final response = await AiService().updateLikeStatus(
+    await AiService().updateLikeStatus(
         traceId: fb.traceId,
         likeCount: fb.likeCount,
         state: fb.state ?? '',
         feedbackInformation: fb.feedbackInformation ?? '');
-    print("请求成功: ${response.data}");
   } catch (e) {
-    print('error:$e');
+    Log.e(e, null, 'xiaotian');
   }
 }

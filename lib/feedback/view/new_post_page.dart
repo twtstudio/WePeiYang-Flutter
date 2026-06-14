@@ -345,7 +345,7 @@ class VoteFormController {
     } on DioException catch (e) {
       ToastProvider.error('发布失败: ${e.error.toString()}');
     } catch (e) {
-      Log.e(e, StackTrace.current);
+      Log.e(e, StackTrace.current, 'feedback');
       ToastProvider.error('未知错误: ${e.toString()}');
     }
   }
@@ -1245,7 +1245,6 @@ class _ImagesGridViewState extends State<ImagesGridView> {
                   ),
                   onTap: () {
                     Navigator.pop(context);
-                    print(data.masked);
                     if (data.masked.contains(index))
                       data.masked.remove(index);
                     else

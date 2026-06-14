@@ -40,7 +40,7 @@ class DownloadManager {
           file.deleteSync();
           debugPrint("delete file: ${file.path}");
         } catch (e, s) {
-          Log.e(e, s);
+          Log.e(e, s, 'download');
         }
       }
     }
@@ -91,7 +91,7 @@ class DownloadManager {
             break;
         }
       } catch (e, s) {
-        Log.e(e, s);
+        Log.e(e, s, 'download');
       }
     }
   }
@@ -149,7 +149,7 @@ class DownloadManager {
         {"downloadList": DownloadList(tasks).toJson()},
       );
     } catch (e, s) {
-      Log.e(e, s);
+      Log.e(e, s, 'download');
       (startError ?? defaultStartErrorCallback).call();
     }
   }

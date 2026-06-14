@@ -18,7 +18,7 @@ class UpdateService with AsyncTimer {
       var response = await updateDio.get(p.join(BASEURL, "check/$code"));
       return VersionData.fromJson(response.data).data;
     } catch (error, stack) {
-      Log.e(error, stack);
+      Log.e(error, stack, 'update');
       return null;
     }
   }
@@ -30,7 +30,7 @@ class UpdateService with AsyncTimer {
           await updateDio.get("https://upgrade.twt.edu.cn/iosupdate/check");
       return VersionData.fromJson(response.data, iOS: true).data;
     } catch (error, stack) {
-      Log.e(error, stack);
+      Log.e(error, stack, 'update');
       return null;
     }
   }

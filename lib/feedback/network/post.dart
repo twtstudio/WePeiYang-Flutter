@@ -31,7 +31,6 @@ class VoteDetail {
   });
 
   factory VoteDetail.fromJson(Map<String, dynamic> json) {
-    print(json);
     return VoteDetail(
       id: json["id"],
       options: json["options"]

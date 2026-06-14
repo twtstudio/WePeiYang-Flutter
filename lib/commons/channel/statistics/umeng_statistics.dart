@@ -43,5 +43,5 @@ class UmengCommonSdk {
     _channel.invokeMethod('onProfileSignOff').catchError(printError);
   }
 
-  static void printError(e, s) => Log.e(e, s);
+  static void printError(e, s) => Log.e(e, s, 'umeng');
 }

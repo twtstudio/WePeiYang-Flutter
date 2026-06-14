@@ -91,7 +91,7 @@ class FontReloadController extends ChangeNotifier {
         final f = File(e.task.path);
         if (f.existsSync()) f.deleteSync();
       } catch (err, s) {
-        Log.e(err, s);
+        Log.e(err, s, 'font');
       }
     }
 
@@ -164,7 +164,7 @@ class FontReloadController extends ChangeNotifier {
         _notify();
         await _loadFromBytes(e, data);
       } catch (err, s) {
-        Log.e(err, s);
+        Log.e(err, s, 'font');
         e
           ..status = FontLoadStatus.failed
           ..reason = '$err';
@@ -179,7 +179,7 @@ class FontReloadController extends ChangeNotifier {
       final list = await File(e.task.path).readAsBytes();
       await _loadFromBytes(e, list);
     } catch (err, s) {
-      Log.e(err, s);
+      Log.e(err, s, 'font');
       e
         ..status = FontLoadStatus.failed
         ..reason = '$err';

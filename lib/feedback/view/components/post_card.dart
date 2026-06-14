@@ -737,7 +737,7 @@ class _VoteFormWidgetState extends State<VoteFormWidget> {
                       ToastProvider.error(e.error.toString());
                     else {
                       ToastProvider.error("投票失败, 未知错误");
-                      Log.e(e, StackTrace.current);
+                      Log.e(e, StackTrace.current, 'feedback');
                     }
                   }
                   setState(() {
