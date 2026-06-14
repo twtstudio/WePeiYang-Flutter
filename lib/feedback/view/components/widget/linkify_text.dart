@@ -8,9 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-
-final RegExp _linkReg =
-    RegExp(r'(#MP-?\d+)|(https?:\/\/[^\s<]+)|(#[^\s#<]+)');
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 
 class LinkText extends StatefulWidget {
   final TextStyle style;
@@ -24,44 +22,79 @@ class LinkText extends StatefulWidget {
 }
 
 class _LinkTextState extends State<LinkText> {
+  final List<TapGestureRecognizer> _recognizers = [];
+
   bool checkBili(String url) {
     return url.contains('b23.tv') || url.contains('bilibili.com');
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.text.contains('@uid:'))
+      MentionNames.instance.addListener(_onMentionNames);
+  }
+
+  @override
+  void didUpdateWidget(covariant LinkText old) {
+    super.didUpdateWidget(old);
+    if (old.text != widget.text) {
+      final had = old.text.contains('@uid:');
+      final has = widget.text.contains('@uid:');
+      if (had != has) {
+        if (has) {
+          MentionNames.instance.addListener(_onMentionNames);
+        } else {
+          MentionNames.instance.removeListener(_onMentionNames);
+        }
+      }
+    }
+  }
+
+  void _onMentionNames() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    MentionNames.instance.removeListener(_onMentionNames);
+    for (final r in _recognizers) r.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    for (final r in _recognizers) r.dispose();
+    _recognizers.clear();
+
     final textStyle = widget.style.NotoSansSC.w400.sp(16);
     final linkStyle = widget.style.link(context).w500.sp(16);
+    final mentionStyle = textStyle.copyWith(
+        color: WpyTheme.of(context).primary ?? linkStyle.color,
+        fontWeight: FontWeight.w600);
 
-    final spans = <InlineSpan>[];
-    int last = 0;
-    for (final m in _linkReg.allMatches(widget.text)) {
-      if (m.start > last) {
-        spans.add(
-            TextSpan(text: widget.text.substring(last, m.start), style: textStyle));
-      }
-      final value = m.group(0)!;
-      final rec = TapGestureRecognizer()..onTap = () => _onTap(value);
-      spans.add(TextSpan(text: value, style: linkStyle, recognizer: rec));
-      last = m.end;
-    }
-    if (last < widget.text.length) {
-      spans.add(TextSpan(text: widget.text.substring(last), style: textStyle));
-    }
+    final res = PostRichText.build(context, widget.text,
+        baseStyle: textStyle,
+        linkStyle: linkStyle,
+        mentionStyle: mentionStyle,
+        recognizers: _recognizers,
+        onLink: _onTap,
+        onMention: (uid) => PostRichText.openPerson(context, uid));
 
     return RichText(
-      text: TextSpan(style: textStyle, children: spans),
+      text: TextSpan(style: textStyle, children: res.spans),
       maxLines: widget.maxLine,
       overflow: TextOverflow.ellipsis,
     );
   }
 
   void _onTap(String value) {
-    if (value.startsWith('#MP') &&
-        RegExp(r'^-?[0-9]+').hasMatch(value.substring(3))) {
-      checkPostId(value.substring(3));
+    if (PostRichText.isPostRef(value)) {
+      checkPostId(PostRichText.postRefId(value));
     } else if (value.startsWith('http')) {
       checkUrl(value);
+    } else if (value.startsWith('#')) {
+      PostRichText.openTagSearch(context, value);
     } else {
       ToastProvider.error('无效的帖子编号！');
     }

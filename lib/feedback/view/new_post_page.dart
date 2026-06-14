@@ -465,21 +465,26 @@ class _NewVoteFormState extends State<NewVoteForm> {
               },
               itemBuilder: (context, index) {
                 final e = options[index];
+                final isLast = index == options.length - 1;
+                final showClose = (options.length > 1 && !isLast) ||
+                    (index == 7 && options.last.text.isNotEmpty);
                 return GestureDetector(
                   key: ValueKey(index),
-                  onLongPress: index != options.length - 1
-                      ? null
-                      : () => HapticFeedback.mediumImpact(),
+                  onLongPress:
+                      isLast ? () => HapticFeedback.mediumImpact() : null,
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(
                           e.text.isEmpty
                               ? Icons.add
                               : Icons.check_box_outline_blank,
                           size: 18,
+                          color:
+                              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
                         ),
                         SizedBox(width: 10),
                         Expanded(
@@ -488,55 +493,65 @@ class _NewVoteFormState extends State<NewVoteForm> {
                             minLines: 1,
                             maxLines: 2,
                             onChanged: (text) {
-                              if (text.isEmpty && index != options.length - 1) {
+                              if (text.isEmpty && !isLast) {
                                 options.removeAt(index);
                                 setState(() {});
                                 return;
                               }
-                              if (index == options.length - 1 &&
+                              if (isLast &&
                                   text.isNotEmpty &&
                                   options.length < 8) {
                                 options.add(TextEditingController());
-                                setState(() {});
                               }
                               setState(() {});
                             },
                             decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 4),
                               counterText: e.text.length > 20
                                   ? '${e.text.length}/50'
                                   : '',
-                              suffixIcon: options.length > 1 &&
-                                          index != options.length - 1 ||
-                                      index == 7 && options.last.text.isNotEmpty
-                                  ? IconButton(
-                                      icon: Icon(Icons.close),
-                                      onPressed: () {
-                                        if (index == 7) {
-                                          options.removeAt(index);
-                                          options.add(TextEditingController());
-                                          setState(() {});
-                                          return;
-                                        }
-                                        options.removeAt(index);
-                                        widget.controller.maxSelect = min(
-                                            widget.controller.maxSelect,
-                                            options.length - 1);
-                                        setState(() {});
-                                      },
-                                    )
-                                  : null,
                               hintText: '选项',
                               hintStyle: TextUtil.base.NotoSansSC.w500
                                   .sp(14)
-                                  .infoText(context)
-                                  .h(1.4),
+                                  .infoText(context),
                               border: InputBorder.none,
                             ),
                             style: TextUtil.base.NotoSansSC.w500
                                 .sp(14)
-                                .label(context),
+                                .label(context)
+                                .h(1.3),
                           ),
                         ),
+                        if (showClose)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: WButton(
+                              onPressed: () {
+                                if (index == 7) {
+                                  options.removeAt(index);
+                                  options.add(TextEditingController());
+                                  setState(() {});
+                                  return;
+                                }
+                                options.removeAt(index);
+                                widget.controller.maxSelect = min(
+                                    widget.controller.maxSelect,
+                                    options.length - 1);
+                                setState(() {});
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Icon(
+                                  Icons.close,
+                                  size: 18,
+                                  color: WpyTheme.of(context)
+                                      .get(WpyColorKey.secondaryInfoTextColor),
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

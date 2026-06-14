@@ -11,6 +11,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/SpoilerMask.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 
 /// 文字马赛克标签，发帖时用它包裹要打码的文字
 const String kMaskOpenTag = '<mask>';
@@ -18,9 +19,8 @@ const String kMaskCloseTag = '</mask>';
 
 final RegExp _maskReg = RegExp(r'<mask>(.*?)</mask>', dotAll: true);
 
-/// 普通文本里识别 帖子编号(#MP123) / 链接(http(s)) / 话题(#xxx)
-final RegExp _linkReg =
-    RegExp(r'(#MP-?\d+)|(https?:\/\/[^\s<]+)|(#[^\s#<]+)');
+/// 输入框里识别 @uid:123 提及，用于「未编辑时按渲染样式显示」。
+final RegExp _mentionUidReg = RegExp(r'@uid:\d+');
 
 /// 去掉 mask 标签，用于测量行数和统计字数
 String stripMaskTags(String text) =>
@@ -90,6 +90,23 @@ class _MaskedRichTextState extends State<MaskedRichText>
           });
         }
       });
+    _syncMentionListener(null);
+  }
+
+  /// 含 @uid: 提及时才监听昵称解析，解析到后重渲染把 uid 换成昵称
+  void _syncMentionListener(String? oldText) {
+    final had = oldText?.contains('@uid:') ?? false;
+    final has = widget.text.contains('@uid:');
+    if (had == has) return;
+    if (has) {
+      MentionNames.instance.addListener(_onMentionNames);
+    } else {
+      MentionNames.instance.removeListener(_onMentionNames);
+    }
+  }
+
+  void _onMentionNames() {
+    if (mounted) setState(() {});
   }
 
   @override
@@ -100,6 +117,7 @@ class _MaskedRichTextState extends State<MaskedRichText>
       _revealed.clear();
       if (_revealCtrl.isAnimating) _revealCtrl.stop();
       _resetAnim();
+      _syncMentionListener(old.text);
     }
   }
 
@@ -112,6 +130,7 @@ class _MaskedRichTextState extends State<MaskedRichText>
 
   @override
   void dispose() {
+    MentionNames.instance.removeListener(_onMentionNames);
     _revealCtrl.dispose();
     _disposeRecognizers();
     super.dispose();
@@ -145,6 +164,9 @@ class _MaskedRichTextState extends State<MaskedRichText>
 
     final style = widget.style.NotoSansSC.w400.sp(widget.fontSize);
     final linkStyle = widget.style.link(context).w500.sp(widget.fontSize);
+    final mentionStyle = style.copyWith(
+        color: WpyTheme.of(context).primary ?? linkStyle.color,
+        fontWeight: FontWeight.w600);
 
     // 把正文拆成真实的 TextSpan（遮罩段也是真实文字，只是上面会盖一层），
     // 同时记录每个遮罩段在纯文本里的字符区间，供 getBoxesForSelection 用。
@@ -156,8 +178,16 @@ class _MaskedRichTextState extends State<MaskedRichText>
     for (final m in _maskReg.allMatches(widget.text)) {
       if (m.start > last) {
         final chunk = widget.text.substring(last, m.start);
-        _appendLinkified(chunk, style, linkStyle, spans);
-        plain += chunk.length;
+        final res = PostRichText.build(context, chunk,
+            baseStyle: style,
+            linkStyle: linkStyle,
+            mentionStyle: mentionStyle,
+            recognizers: _recognizers,
+            onLink: _onTapLink,
+            onMention: (uid) => PostRichText.openPerson(context, uid));
+        spans.addAll(res.spans);
+        // 用渲染后长度推进，保证 mask 区间下标与实际渲染文本对齐
+        plain += res.renderedLength;
       }
       final inner = m.group(1) ?? '';
       // 被遮住时文字不渲染（透明），点开或正在揭开的那一段才显示真实文字
@@ -172,8 +202,15 @@ class _MaskedRichTextState extends State<MaskedRichText>
     }
     if (last < widget.text.length) {
       final chunk = widget.text.substring(last);
-      _appendLinkified(chunk, style, linkStyle, spans);
-      plain += chunk.length;
+      final res = PostRichText.build(context, chunk,
+          baseStyle: style,
+          linkStyle: linkStyle,
+          mentionStyle: mentionStyle,
+          recognizers: _recognizers,
+          onLink: _onTapLink,
+          onMention: (uid) => PostRichText.openPerson(context, uid));
+      spans.addAll(res.spans);
+      plain += res.renderedLength;
     }
 
     final rootSpan = TextSpan(style: style, children: spans);
@@ -268,30 +305,13 @@ class _MaskedRichTextState extends State<MaskedRichText>
     return (area / 28).round().clamp(16, 320);
   }
 
-  void _appendLinkified(String text, TextStyle style, TextStyle linkStyle,
-      List<InlineSpan> out) {
-    int last = 0;
-    for (final m in _linkReg.allMatches(text)) {
-      if (m.start > last) {
-        out.add(TextSpan(text: text.substring(last, m.start), style: style));
-      }
-      final value = m.group(0)!;
-      final rec = TapGestureRecognizer()..onTap = () => _onTapLink(value);
-      _recognizers.add(rec);
-      out.add(TextSpan(text: value, style: linkStyle, recognizer: rec));
-      last = m.end;
-    }
-    if (last < text.length) {
-      out.add(TextSpan(text: text.substring(last), style: style));
-    }
-  }
-
   void _onTapLink(String value) {
-    if (value.startsWith('#MP') &&
-        RegExp(r'^-?[0-9]+').hasMatch(value.substring(3))) {
-      _checkPostId(value.substring(3));
+    if (PostRichText.isPostRef(value)) {
+      _checkPostId(PostRichText.postRefId(value));
     } else if (value.startsWith('http')) {
       _checkUrl(value);
+    } else if (value.startsWith('#')) {
+      PostRichText.openTagSearch(context, value);
     } else {
       ToastProvider.error('无效的帖子编号！');
     }
@@ -435,7 +455,43 @@ class MaskTextEditingController extends TextEditingController {
 
   @override
   set value(TextEditingValue newValue) {
-    super.value = _repairMaskEdit(value, newValue);
+    final old = value;
+    var v = _repairMaskEdit(old, newValue);
+    v = _autoExpandMention(old, v);
+    super.value = v;
+  }
+
+  /// 在输入框里键入「@」时，自动展开成「@uid:」，让用户接着输入 uid。
+  /// 只在行首或空白后触发，避免邮箱等被误展开。删除时按字符逐个删，
+  /// 所以用户可以退格回单独的「@」、或删干净「不 @」。
+  TextEditingValue _autoExpandMention(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final oldText = oldValue.text;
+    final newText = newValue.text;
+    if (!newValue.composing.isCollapsed) return newValue;
+    // 仅处理「插入了单个字符」且为 @ 的情况
+    if (newText.length != oldText.length + 1) return newValue;
+    final sel = newValue.selection;
+    if (!sel.isCollapsed) return newValue;
+    final caret = sel.baseOffset;
+    if (caret <= 0 || caret > newText.length) return newValue;
+    if (newText[caret - 1] != '@') return newValue;
+    // 确认是「插入」而非替换：去掉这个 @ 后应与旧文本一致
+    final without =
+        newText.substring(0, caret - 1) + newText.substring(caret);
+    if (without != oldText) return newValue;
+    // 只在行首/空白后触发
+    if (caret - 1 > 0) {
+      final prev = newText[caret - 2];
+      if (prev != ' ' && prev != '\n' && prev != '\t') return newValue;
+    }
+    const insert = '@uid:';
+    final expanded =
+        newText.substring(0, caret - 1) + insert + newText.substring(caret);
+    return TextEditingValue(
+      text: expanded,
+      selection: TextSelection.collapsed(offset: caret - 1 + insert.length),
+    );
   }
 
   /// 把 <mask>…</mask> 当作一个整体处理：当一次删除“吃”到了不可见的标签字符上
@@ -533,7 +589,8 @@ class MaskTextEditingController extends TextEditingController {
     int last = 0;
     for (final m in _maskReg.allMatches(t)) {
       if (m.start > last) {
-        spans.add(TextSpan(text: t.substring(last, m.start), style: base));
+        _appendMentionStyled(
+            t.substring(last, m.start), last, base, tagStyle, cursor, context, spans);
       }
       final active = cursor != null && cursor >= m.start && cursor <= m.end;
       spans.add(TextSpan(text: kMaskOpenTag, style: tagStyle));
@@ -543,9 +600,40 @@ class MaskTextEditingController extends TextEditingController {
       last = m.end;
     }
     if (last < t.length) {
-      spans.add(TextSpan(text: t.substring(last), style: base));
+      _appendMentionStyled(
+          t.substring(last), last, base, tagStyle, cursor, context, spans);
     }
     return TextSpan(style: base, children: spans);
+  }
+
+  /// 在非 mask 文本里把 @uid:123 按「渲染样式」显示：未编辑时 uid: 隐藏、整体变色
+  /// （看起来像 @123 的提及）；光标落在其中时还原成可编辑的 @uid:123。
+  /// 不改变字符数量，保证 TextField 光标定位正确（与 mask 同理）。
+  void _appendMentionStyled(String chunk, int chunkStart, TextStyle base,
+      TextStyle tagStyle, int? cursor, BuildContext context, List<InlineSpan> out) {
+    final mentionStyle = base.copyWith(
+        color: WpyTheme.of(context).primary ?? base.color,
+        fontWeight: FontWeight.w600);
+    int last = 0;
+    for (final m in _mentionUidReg.allMatches(chunk)) {
+      if (m.start > last) {
+        out.add(TextSpan(text: chunk.substring(last, m.start), style: base));
+      }
+      final gStart = chunkStart + m.start;
+      final gEnd = chunkStart + m.end;
+      final active = cursor != null && cursor >= gStart && cursor <= gEnd;
+      if (active) {
+        out.add(TextSpan(text: m.group(0), style: base));
+      } else {
+        out.add(TextSpan(text: '@', style: mentionStyle));
+        out.add(TextSpan(text: 'uid:', style: tagStyle));
+        out.add(TextSpan(text: m.group(0)!.substring(5), style: mentionStyle));
+      }
+      last = m.end;
+    }
+    if (last < chunk.length) {
+      out.add(TextSpan(text: chunk.substring(last), style: base));
+    }
   }
 }
 

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_pei_yang_flutter/auth/model/banner_pic.dart';
 import 'package:we_pei_yang_flutter/auth/model/nacid_info.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/auth/network/splash_service.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -51,11 +53,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         showSchedule.value == false) showSchedule.value = true;
   }
 
-  void showActivityDialog() {
-    showDialog(
+  Future<void> showActivityDialog(List<BannerPic> banners) async {
+    if (!mounted || banners.isEmpty) return;
+    await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ActivityDialog(),
+      builder: (context) => ActivityDialog(banners: banners),
     );
   }
 
@@ -102,9 +105,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       }
 
       var _show = () {
-        showActivityDialog();
-        CommonPreferences.lastActivityDialogShownDate.value =
-            DateTime.now().toString();
+        unawaited(_loadAndShowActivityDialog());
       };
 
       try {
@@ -115,6 +116,20 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         _show();
       }
     });
+  }
+
+  Future<void> _loadAndShowActivityDialog() async {
+    try {
+      final banners =
+          await SplashService.getBanner().timeout(const Duration(seconds: 3));
+      if (!mounted || banners.isEmpty) return;
+      await showActivityDialog(banners);
+      if (!mounted) return;
+      CommonPreferences.lastActivityDialogShownDate.value =
+          DateTime.now().toString();
+    } catch (_) {
+      // 开屏活动拉取失败时保持首页正常展示，不弹加载态或错误态。
+    }
   }
 
   @override

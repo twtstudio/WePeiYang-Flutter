@@ -181,13 +181,15 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun publishLauncherShortcuts() {
+        val launcherComponent = getCurrentLauncherComponent()
         val shortcuts = listOf(
             ShortcutInfoCompat.Builder(this, "shortcut_schedule")
                 .setShortLabel("课程表")
                 .setLongLabel("课程表")
                 .setIcon(IconCompat.createWithResource(this, R.drawable.schedule))
                 .setIntent(
-                    Intent(this, MainActivity::class.java).apply {
+                    Intent().apply {
+                        component = launcherComponent
                         action = Intent.ACTION_VIEW
                         data = Uri.parse("wpy://wpy.app/schedule")
                     }
@@ -198,7 +200,8 @@ class MainActivity : FlutterActivity() {
                 .setLongLabel("入校码")
                 .setIcon(IconCompat.createWithResource(this, R.drawable.entry_qr_shortcut))
                 .setIntent(
-                    Intent(this, MainActivity::class.java).apply {
+                    Intent().apply {
+                        component = launcherComponent
                         action = Intent.ACTION_VIEW
                         data = Uri.parse("wpy://wpy.app/entryQr")
                     }
@@ -206,6 +209,14 @@ class MainActivity : FlutterActivity() {
                 .build(),
         )
         ShortcutManagerCompat.setDynamicShortcuts(this, shortcuts)
+    }
+
+    private fun getCurrentLauncherComponent(): ComponentName {
+        val enabledAlias = iconAliases.firstOrNull { alias ->
+            packageManager.getComponentEnabledSetting(ComponentName(this, alias)) ==
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+        }
+        return ComponentName(this, enabledAlias ?: "com.twt.service.MainActivity")
     }
 
     private fun restartApp(result: MethodChannel.Result) {

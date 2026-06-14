@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
 
       // 检查当前是否有未处理的事件
-      context.findAncestorStateOfType<WePeiYangAppState>()?.checkEventList();
+      checkEventList(context);
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据

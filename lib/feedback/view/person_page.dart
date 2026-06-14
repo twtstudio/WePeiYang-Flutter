@@ -70,37 +70,52 @@ class _PersonPageState extends State<PersonPage> {
         });
   }
 
+  /// 是否「仅凭 uid」进入（如从正文 @uid:123 点进来）：没有可用的帖子/楼层 id，
+  /// 此时不去按 id 拉头部资料，改为从加载到的帖子里取作者信息。
+  bool get _uidOnly => widget.args.postOrCommentId <= 0;
+
   //刷新
   _onRefresh() {
-    if (widget.args.fromPostCard)
-      FeedbackService.getPostById(
-          id: widget.args.postOrCommentId,
-          onResult: (post) {
-            uid = post.uid;
-            avatar = post.avatar;
-            nickName = post.nickname;
-            level = post.level.toString();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
-    else
-      FeedbackService.getFloorById(
-          id: widget.args.postOrCommentId,
-          onResult: (floor) {
-            uid = floor.uid;
-            avatar = floor.avatar;
-            nickName = floor.nickname;
-            level = floor.level.toString();
-          },
-          onFailure: (e) {
-            ToastProvider.error(e.error.toString());
-          });
+    if (!_uidOnly) {
+      if (widget.args.fromPostCard)
+        FeedbackService.getPostById(
+            id: widget.args.postOrCommentId,
+            onResult: (post) {
+              uid = post.uid;
+              avatar = post.avatar;
+              nickName = post.nickname;
+              level = post.level.toString();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
+      else
+        FeedbackService.getFloorById(
+            id: widget.args.postOrCommentId,
+            onResult: (floor) {
+              uid = floor.uid;
+              avatar = floor.avatar;
+              nickName = floor.nickname;
+              level = floor.level.toString();
+            },
+            onFailure: (e) {
+              ToastProvider.error(e.error.toString());
+            });
+    }
     _postList.clear();
     currentPage = 1;
     _refreshController.resetNoData();
     _getAnyonePosts(onSuccess: (list) {
       _postList.addAll(list);
+      // 仅 uid 进入且头部信息为空时，从首条帖子补全头像/昵称/等级
+      if (_uidOnly &&
+          (nickName == null || nickName!.isEmpty) &&
+          list.isNotEmpty) {
+        final p = list.first;
+        avatar = p.avatar;
+        nickName = p.nickname;
+        level = p.level.toString();
+      }
       _refreshController.refreshCompleted();
     }, onFail: () {
       _refreshController.refreshFailed();
@@ -183,7 +198,9 @@ class _PersonPageState extends State<PersonPage> {
                       height: 100.h,
                       child: Center(
                         child: Text(
-                          nickName!.substring(0, 1),
+                          (nickName != null && nickName!.isNotEmpty)
+                              ? nickName!.substring(0, 1)
+                              : '?',
                           style: TextUtil.base.w600.NotoSansSC.sp(40),
                         ),
                       ),
