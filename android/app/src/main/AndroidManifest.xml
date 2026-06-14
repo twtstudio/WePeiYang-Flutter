@@ -124,6 +124,17 @@
                     android:pathPrefix="/open"
                     android:scheme="wpy" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="wpy.app"
+                    android:pathPrefix="/post"
+                    android:scheme="wpy" />
+            </intent-filter>
             <!--        友盟卖点验证  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

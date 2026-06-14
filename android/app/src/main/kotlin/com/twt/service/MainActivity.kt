@@ -15,6 +15,7 @@ import com.twt.service.image.WbyImageSavePlugin
 import com.twt.service.install.WbyInstallPlugin
 import com.twt.service.local_setting.WbyLocalSettingPlugin
 import com.twt.service.location.WbyLocationPlugin
+import com.twt.service.message.EventDispatcher
 import com.twt.service.message.WbyMessagePlugin
 import com.twt.service.push.WbyPushPlugin
 import com.twt.service.share.WbySharePlugin
@@ -64,10 +65,19 @@ class MainActivity : FlutterActivity() {
             splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
         }
 
+        log("onCreate action=${intent?.action} data=${intent?.dataString} component=${intent?.component}")
+        EventDispatcher.enqueueShortcutIntent(intent)
         super.onCreate(savedInstanceState)
 
         publishLauncherShortcuts()
 //        enableLauncherForDebug()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        log("onNewIntent action=${intent.action} data=${intent.dataString} component=${intent.component}")
+        EventDispatcher.enqueueShortcutIntent(intent)
     }
 
     // 加入微北洋使用的所有自己写的 plugin

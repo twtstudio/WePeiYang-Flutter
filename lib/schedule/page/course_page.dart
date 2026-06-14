@@ -41,6 +41,11 @@ class _CoursePageState extends State<CoursePage> {
   _CoursePageState() {
     var provider =
         WePeiYangApp.navigatorState.currentContext!.read<CourseProvider>();
+    // 经 shortcut/小组件等入口可能早于启动流程的 readPref 进入本页，
+    // 此时 provider 还是空的，这里幂等地补读一次本地缓存，避免课表空白。
+    if (provider.schoolCourses.isEmpty) {
+      provider.readPref();
+    }
     provider.quietResetWeek();
     provider.refreshCustomCourse();
   }

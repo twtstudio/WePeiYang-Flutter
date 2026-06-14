@@ -7,7 +7,7 @@ import '../themes/wpy_theme.dart';
 class TextUtil {
   TextUtil._();
 
-  static late TextStyle base;
+  static TextStyle base = const TextStyle(fontFamily: 'Swis');
   static bool isInnerScreen = false; // 标记是否为内屏
 
   static init(BuildContext context) {

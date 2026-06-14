@@ -11,10 +11,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.PushManager
 import com.twt.service.BuildConfig
 import com.twt.service.MainActivity
-import com.twt.service.WBYApplication
 import com.twt.service.common.FlutterSharePreference
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
+import com.twt.service.message.EventDispatcher
 import com.twt.service.push.model.Event
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -363,32 +363,24 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         log("WbyPushPlugin handle intent : $intent")
 
         // 走 url scheme 打开微北洋
-        when (intent.data?.getQueryParameter("page")) {
-            "qslt_summary" -> {
-                log("jump from url")
-                WBYApplication.eventList.add(
-                    Event(IntentEvent.FeedbackSummaryPage.type, "null")
-                )
+        intent.data?.let { uri ->
+            if (handleUrlScheme(uri)) {
                 return true
             }
         }
 
         // 下面是走intent打开微北洋的拦截
         when (intent.getStringExtra("type")) {
-            "qslt" -> {
+            "qslt", "feedback" -> {
                 // 通过问题id打开页面
                 intent.getIntExtra("question_id", -1).takeIf { it != -1 }?.let { id ->
                     log("question_id : $id")
-                    WBYApplication.eventList.add(
-                        Event(IntentEvent.FeedbackPostPage.type, id)
-                    )
+                    EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackPostPage.type, id))
                     return true
                 }
                 // 进入年度总结页面
                 intent.getStringExtra("page")?.takeIf { it == "summary" }?.let {
-                    WBYApplication.eventList.add(
-                        Event(IntentEvent.FeedbackSummaryPage.type, "null")
-                    )
+                    EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
                     return true
                 }
                 // TODO：通过评论id进入相应页面
@@ -408,20 +400,48 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                     "createdAt" to createdAt,
                     "content" to content
                 )
-                WBYApplication.eventList.add(
-                    Event(IntentEvent.MailBox.type, data)
-                )
+                EventDispatcher.enqueueEvent(Event(IntentEvent.MailBox.type, data))
                 return true
             }
             "update" -> {
                 // 升级
-                WBYApplication.eventList.add(
-                    Event(IntentEvent.Update.type, "update")
-                )
+                EventDispatcher.enqueueEvent(Event(IntentEvent.Update.type, "update"))
                 return true
             }
         }
         return false
+    }
+
+    private fun handleUrlScheme(uri: Uri): Boolean {
+        if (uri.scheme != "wpy" || uri.host != "wpy.app") {
+            return false
+        }
+
+        if (uri.path == "/post" || uri.getQueryParameter("page") in setOf("post", "qslt_post")) {
+            val id = uri.postIdQuery()
+            if (id == null) {
+                log("post url missing id: $uri")
+                return true
+            }
+            log("jump to feedback post from url, id=$id")
+            EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackPostPage.type, id))
+            return true
+        }
+
+        when (uri.getQueryParameter("page")) {
+            "qslt_summary" -> {
+                log("jump to feedback summary from url")
+                EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun Uri.postIdQuery(): Int? {
+        return getQueryParameter("id")?.toIntOrNull()
+            ?: getQueryParameter("post_id")?.toIntOrNull()
+            ?: getQueryParameter("question_id")?.toIntOrNull()
     }
 
     /**
@@ -491,7 +511,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     private fun getIntentUri(call: MethodCall, result: MethodChannel.Result) {
 
         when (call.argument<String>("type")) {
-            "qslt" -> {
+            "qslt", "feedback" -> {
                 // 跳转问题详情页面
                 call.argument<Int>("question_id")?.let { id ->
                     val intentUri = IntentUtil.getQsltQuestionUri(id, context)

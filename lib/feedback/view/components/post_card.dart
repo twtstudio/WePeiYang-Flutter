@@ -19,6 +19,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_sh
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
+import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_pic/post_detail_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_pic/post_preview_pic.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -119,6 +120,10 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
   @override
   Widget build(BuildContext context) {
+    if (post.fromNotify && post.createAt == null) {
+      return PostSkeleton();
+    }
+
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
         height: SplitUtil.w * 32 > SplitUtil.h * 56
@@ -175,8 +180,10 @@ class _PostCardNormalState extends State<PostCardNormal> {
                       ),
                       SizedBox(height: SplitUtil.h * 4),
                       Text(
-                        DateFormat('yyyy-MM-dd HH:mm:ss')
-                            .format(post.createAt!.toLocal()),
+                        post.createAt == null
+                            ? ''
+                            : DateFormat('yyyy-MM-dd HH:mm:ss')
+                                .format(post.createAt!.toLocal()),
                         textAlign: TextAlign.left,
                         style: TextUtil.base
                             .secondary(context)
@@ -307,6 +314,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
   }
 
   Row _buildTagFooter() {
+    final campus = post.campus;
+    final hasCampus = campus > 0 && campus < 3;
     return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,14 +324,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
             TagShowWidget(
                 post.tag!.name,
                 (SplitUtil.sw - SplitUtil.w * 24) / 2 -
-                    (post.campus > 0 ? SplitUtil.w * 100 : SplitUtil.w * 60),
+                    (hasCampus ? SplitUtil.w * 100 : SplitUtil.w * 60),
                 post.type,
                 post.tag!.id,
                 0,
                 post.type),
           if (post.tag != null) SizedBox(width: SplitUtil.w * 8),
           TagShowWidget(getTypeName(post.type), 100, 0, 0, post.type, 0),
-          if (post.campus != 0)
+          if (hasCampus)
             Container(
               height: 14,
               width: 14,
@@ -335,12 +344,12 @@ class _PostCardNormalState extends State<PostCardNormal> {
               child: SvgPicture.asset(
                   "assets/svg_pics/lake_butt_icons/hashtag.svg"),
             ),
-          if (post.campus != 0) SizedBox(width: SplitUtil.w * 2),
-          if (post.campus != 0)
+          if (hasCampus) SizedBox(width: SplitUtil.w * 2),
+          if (hasCampus)
             ConstrainedBox(
               constraints: BoxConstraints(),
               child: Text(
-                const ['', '卫津路', '北洋园'][post.campus],
+                const ['', '卫津路', '北洋园'][campus],
                 style:
                     TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
                 textAlign: TextAlign.center,

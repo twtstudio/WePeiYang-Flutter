@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -18,9 +19,12 @@ class LocalImageViewPageArgs {
   LocalImageViewPageArgs(
     this.uriList,
     this.assetList,
-    this.uriListLength,
-    this.indexNow,
-  );
+    int countOrIndex, [
+    int? indexNow,
+  ])  : uriListLength = countOrIndex,
+        indexNow = indexNow ?? countOrIndex;
+
+  int get imageCount => uriList.isNotEmpty ? uriList.length : assetList.length;
 }
 
 class LocalImageViewPage extends StatefulWidget {
@@ -42,7 +46,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
   @override
   void initState() {
     super.initState();
-    _index = widget.args.indexNow;
+    _index = _clampIndex(widget.args.indexNow);
     _pageController = PageController(initialPage: _index);
   }
 
@@ -53,17 +57,33 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
     if (_didPrecache) return;
     _didPrecache = true;
 
-    _preloadImage(_index);
+    if (widget.args.imageCount == 0) {
+      _loading = false;
+      _loadFailed = true;
+      return;
+    }
+
+    unawaited(_preloadImage(_index));
+  }
+
+  int _clampIndex(int index) {
+    final imageCount = widget.args.imageCount;
+    if (imageCount <= 0 || index < 0) return 0;
+    if (index >= imageCount) return imageCount - 1;
+    return index;
+  }
+
+  ImageProvider _imageProviderAt(int index) {
+    final safeIndex = _clampIndex(index);
+    if (widget.args.uriList.isNotEmpty) {
+      return FileImage(widget.args.uriList[safeIndex]);
+    }
+    return AssetImage(widget.args.assetList[safeIndex]);
   }
 
   Future<void> _preloadImage(int index) async {
-    ImageProvider provider;
-
-    if (widget.args.uriList.isNotEmpty) {
-      provider = FileImage(widget.args.uriList[index]);
-    } else {
-      provider = AssetImage(widget.args.assetList[index]);
-    }
+    if (widget.args.imageCount == 0) return;
+    final provider = _imageProviderAt(index);
 
     try {
       await precacheImage(provider, context);
@@ -86,8 +106,8 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
   }
 
   void _onPageChanged(int index) {
-    _index = index;
-    _preloadImage(index);
+    _index = _clampIndex(index);
+    unawaited(_preloadImage(_index));
   }
 
   @override
@@ -132,7 +152,7 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
       onPressed: () => Navigator.pop(context),
       child: PhotoViewGallery.builder(
         pageController: _pageController,
-        itemCount: widget.args.uriListLength,
+        itemCount: widget.args.imageCount,
         onPageChanged: _onPageChanged,
         backgroundDecoration: BoxDecoration(
           color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
@@ -151,16 +171,8 @@ class _LocalImageViewPageState extends State<LocalImageViewPage> {
           );
         },
         builder: (BuildContext context, int index) {
-          ImageProvider image;
-
-          if (widget.args.uriList.isNotEmpty) {
-            image = FileImage(widget.args.uriList[index]);
-          } else {
-            image = AssetImage(widget.args.assetList[index]);
-          }
-
           return PhotoViewGalleryPageOptions(
-            imageProvider: image,
+            imageProvider: _imageProviderAt(index),
             minScale: PhotoViewComputedScale.contained,
             maxScale: PhotoViewComputedScale.contained * 5.0,
             initialScale: PhotoViewComputedScale.contained,

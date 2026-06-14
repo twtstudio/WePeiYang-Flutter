@@ -116,18 +116,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   void _loadInitialData() {
     if (widget.post.fromNotify) {
-      _initCommentsOnly(onSuccess: (comments) {
-        if (!mounted) return;
-        setState(() {
-          _commentList = comments;
-          status = DetailPageStatus.idle;
-        });
-      }, onFail: () {
-        if (!mounted) return;
-        setState(() {
-          status = DetailPageStatus.error;
-        });
-      });
+      _onRefresh(isInitial: false, updatePageStatus: true);
       return;
     }
     initWhileChangingPost();

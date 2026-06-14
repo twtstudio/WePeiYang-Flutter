@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
@@ -32,8 +33,49 @@ class RouterManager {
       _routers.addAll(TestRouter.routers);
       _routers.addAll(LAFRouter.routers);
     }
+    final routeName = settings.name;
+    final builder = routeName == null ? null : _routers[routeName];
+    if (builder != null) {
+      return MaterialPageRoute(
+          builder: (ctx) => builder(settings.arguments), settings: settings);
+    }
+
+    if (!_isExternalEntryRoute(routeName)) {
+      debugPrint('Unknown route: $routeName');
+      return MaterialPageRoute(
+          builder: (_) => _UnknownRoutePage(routeName: routeName),
+          settings: settings);
+    }
+
+    final fallbackName =
+        CommonPreferences.isLogin.value ? HomeRouter.home : AuthRouter.login;
+    debugPrint('Unknown external route: $routeName, fallback to $fallbackName');
     return MaterialPageRoute(
-        builder: (ctx) => _routers[settings.name]!(settings.arguments),
-        settings: settings);
+        builder: (ctx) => _routers[fallbackName]!(null),
+        settings: RouteSettings(name: fallbackName));
+  }
+
+  static bool _isExternalEntryRoute(String? routeName) {
+    if (routeName == null) return false;
+    final uri = Uri.tryParse(routeName);
+    if (uri?.scheme == 'wpy' && uri?.host == 'wpy.app') {
+      return true;
+    }
+    return routeName.startsWith('/open') || routeName.startsWith('/post');
+  }
+}
+
+class _UnknownRoutePage extends StatelessWidget {
+  const _UnknownRoutePage({required this.routeName});
+
+  final String? routeName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Unknown route: ${routeName ?? 'null'}'),
+      ),
+    );
   }
 }

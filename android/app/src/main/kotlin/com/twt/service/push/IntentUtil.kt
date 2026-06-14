@@ -30,7 +30,7 @@ object IntentUtil {
 
     fun getQsltQuestionUri(id: Int, context: Context): String {
         return getBaseIntent(context).apply {
-            data = Uri.parse("${BASEURL}open?")
+            data = Uri.parse("${BASEURL}post?id=$id")
             putExtra("question_id", id)
             putExtra("type", "qslt")
         }.toUri(Intent.URI_INTENT_SCHEME)

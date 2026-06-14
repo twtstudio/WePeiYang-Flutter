@@ -58,6 +58,16 @@ class MapAndCalender extends StatefulWidget {
 }
 
 class MapAndCalenderState extends State<MapAndCalender> {
+  static const _campusMapAssets = [
+    'assets/images/school_map/map_wei_jin.jpg',
+    'assets/images/school_map/map_pei_yang_new.jpg',
+  ];
+  static const _calendarAssets = [
+    'assets/images/calender/first.jpg',
+    'assets/images/calender/second.jpg',
+  ];
+  static const _previewDecodeWidth = 900;
+
   BoxDecoration cardDecoration(ctx) => BoxDecoration(
         color: WpyTheme.of(ctx).get(WpyColorKey.primaryBackgroundColor),
         borderRadius: BorderRadius.circular(15),
@@ -91,10 +101,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
             WButton(
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: LocalImageViewPageArgs([], [
-                      'assets/images/school_map/wjl.jpeg',
-                      'assets/images/school_map/byy.jpeg'
-                    ], 2, 0));
+                    arguments: LocalImageViewPageArgs([], _campusMapAssets, 0));
               },
               child: Stack(
                 children: [
@@ -110,8 +117,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                   WpyTheme.of(context).get(
                                       WpyColorKey.primaryLightestActionColor),
                                   BlendMode.screen),
-                              image: AssetImage(
-                                  'assets/images/school_map/wjl_thumb.jpeg')))),
+                              image: ResizeImage(
+                                  AssetImage(
+                                      'assets/images/school_map/map_wei_jin.jpg'),
+                                  width: _previewDecodeWidth)))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -132,10 +141,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
             WButton(
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: LocalImageViewPageArgs([], [
-                      'assets/images/school_map/wjl.jpeg',
-                      'assets/images/school_map/byy.jpeg'
-                    ], 2, 1));
+                    arguments: LocalImageViewPageArgs([], _campusMapAssets, 1));
               },
               child: Stack(
                 children: [
@@ -151,8 +157,10 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                   WpyTheme.of(context)
                                       .get(WpyColorKey.beiyangCampusMaskColor),
                                   BlendMode.hardLight),
-                              image: AssetImage(
-                                  'assets/images/school_map/byy_thumb.jpeg')))),
+                              image: ResizeImage(
+                                  AssetImage(
+                                      'assets/images/school_map/map_pei_yang_new.jpg'),
+                                  width: _previewDecodeWidth)))),
                   Positioned(
                     top: 20.h,
                     left: 14.h,
@@ -191,10 +199,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
-                  arguments: LocalImageViewPageArgs([], [
-                    'assets/images/calender/first.jpg',
-                    'assets/images/calender/second.jpg'
-                  ], 2, 0),
+                  arguments: LocalImageViewPageArgs([], _calendarAssets, 0),
                 );
               },
               child: Stack(
@@ -235,10 +240,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
-                  arguments: LocalImageViewPageArgs([], [
-                    'assets/images/calender/first.jpg',
-                    'assets/images/calender/second.jpg'
-                  ], 2, 1),
+                  arguments: LocalImageViewPageArgs([], _calendarAssets, 1),
                 );
               },
               child: Stack(

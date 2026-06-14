@@ -155,8 +155,9 @@ String? _routeForShortcutAction(String actionType) {
   };
 }
 
-//iOS快捷操作
-Future<void> _listenForShortcutActions() async {
+// iOS 快捷操作；Android 桌面长按入口走原生 Intent -> eventList。
+Future<void> _listenForIosShortcutActions() async {
+  if (!Platform.isIOS) return;
   const methodChannel = MethodChannel('com.twt.service/shortcutItem');
   // Dart端的方法监听
   methodChannel.setMethodCallHandler((MethodCall call) async {
@@ -174,6 +175,22 @@ Future<void> _listenForShortcutActions() async {
 final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
+void _listenForNativeEvents(BuildContext context) {
+  if (!Platform.isAndroid) return;
+  _messageChannel.setMethodCallHandler((call) async {
+    switch (call.method) {
+      case 'eventChanged':
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          checkEventList(context);
+        });
+        break;
+      default:
+        print('No action for ${call.method}');
+    }
+  });
+}
+
 class IntentEvent {
   static const FeedbackPostPage = 1;
   static const FeedbackSummaryPage = 2;
@@ -186,34 +203,36 @@ class IntentEvent {
 
 Future<void> checkEventList(BuildContext context) async {
   if (Platform.isIOS) return;
-  var baseContext =
-      WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
-  await _messageChannel.invokeMethod<Map>("getLastEvent").then((eventMap) {
+  final navigator = WePeiYangApp.navigatorState.currentState;
+  if (navigator == null) return;
+
+  try {
+    final eventMap =
+        await _messageChannel.invokeMapMethod<String, dynamic>("getLastEvent");
     if (eventMap == null) {
       return;
     }
     switch (eventMap['event']) {
       case IntentEvent.FeedbackPostPage:
-        Navigator.pushNamed(
-          baseContext,
+        navigator.pushNamed(
           FeedbackRouter.detail,
           arguments: Post.nullExceptId(eventMap['data']),
         );
         break;
       case IntentEvent.FeedbackSummaryPage:
-        Navigator.pushNamed(baseContext, FeedbackRouter.summary);
+        navigator.pushNamed(FeedbackRouter.summary);
         break;
       case IntentEvent.WBYMailBox:
-        final data = eventMap['data'] as Map;
-        Navigator.pushNamed(
-          baseContext,
+        final data = eventMap['data'];
+        if (data is! Map) return;
+        navigator.pushNamed(
           MessageRouter.mailPage,
           arguments: UserMail.fromJson(data),
         );
         break;
       case IntentEvent.SchedulePage:
         if (!PageStackObserver.pageStack.contains(ScheduleRouter.course)) {
-          Navigator.pushNamed(baseContext, ScheduleRouter.course);
+          navigator.pushNamed(ScheduleRouter.course);
         }
         break;
       case IntentEvent.UpdateDialog:
@@ -225,12 +244,14 @@ Future<void> checkEventList(BuildContext context) async {
         break;
       case IntentEvent.EntryQrPage:
         if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
-          Navigator.pushNamed(baseContext, HomeRouter.casQR);
+          navigator.pushNamed(HomeRouter.casQR);
         }
         break;
       default:
     }
-  });
+  } catch (error, stack) {
+    appTalker.handle(error, stack, 'checkEventList failed');
+  }
 }
 
 class WePeiYangApp extends StatefulWidget {
@@ -276,7 +297,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
     });
     SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
         _onBrightnessChanged;
-    _listenForShortcutActions();
+    _listenForIosShortcutActions();
+    _listenForNativeEvents(context);
   }
 
   @override
@@ -300,11 +322,13 @@ class WePeiYangAppState extends State<WePeiYangApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _listenForShortcutActions();
-      final shortcutRoute = _routeForShortcutAction(_shortcutResumeActionType);
-      if (shortcutRoute != null) {
-        WePeiYangApp.navigatorState.currentState?.pushNamed(shortcutRoute);
-        _shortcutResumeActionType = "";
+      if (Platform.isIOS) {
+        final shortcutRoute =
+            _routeForShortcutAction(_shortcutResumeActionType);
+        if (shortcutRoute != null) {
+          WePeiYangApp.navigatorState.currentState?.pushNamed(shortcutRoute);
+          _shortcutResumeActionType = "";
+        }
       }
       checkEventList(context);
       WpyTheme.updateAutoDarkTheme(context);
@@ -539,11 +563,6 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!didNavigate) return;
     if (Platform.isIOS) {
       _handleLaunchShortcut();
-    } else if (Platform.isAndroid) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        checkEventList(context);
-      });
     }
   }
 

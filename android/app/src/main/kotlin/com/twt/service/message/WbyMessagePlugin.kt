@@ -3,6 +3,7 @@ package com.twt.service.message
 import com.twt.service.WBYApplication
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
@@ -12,25 +13,32 @@ class WbyMessagePlugin : WbyPlugin() {
     override val name: String
         get() = "com.twt.service/message"
 
+    override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        super.onAttachedToEngine(binding)
+        channelRef = channel
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        if (channelRef == channel) channelRef = null
+        super.onDetachedFromEngine(binding)
+    }
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getLastEvent" -> {
-                with(WBYApplication.eventList) {
-                    val event = last()
-                    if (size > 1) {
-                        removeLast()
-                    }
-                    log("WBYApplication.eventList: $this")
-                    if (event.type != -1) {
-                        log(event.toString())
-                        result.success(
-                            mapOf(
-                                "event" to event.type,
-                                "data" to event.data
-                            )
-                        )
-                    }
+                val event = EventDispatcher.nextEvent()
+                if (event == null) {
+                    result.success(null)
+                    return
                 }
+                log("WBYApplication.eventList: ${WBYApplication.eventList}")
+                log(event.toString())
+                result.success(
+                    mapOf(
+                        "event" to event.type,
+                        "data" to event.data
+                    )
+                )
             }
             else -> result.notImplemented()
         }
@@ -38,6 +46,12 @@ class WbyMessagePlugin : WbyPlugin() {
 
     companion object {
         const val TAG = "MESSAGE"
+        private var channelRef: MethodChannel? = null
         fun log(message: String) = LogUtil.d(TAG, message)
+
+        fun notifyEventChanged() {
+            log("notifyEventChanged")
+            channelRef?.invokeMethod("eventChanged", null)
+        }
     }
 }

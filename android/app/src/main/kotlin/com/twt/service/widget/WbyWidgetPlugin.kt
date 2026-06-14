@@ -1,11 +1,9 @@
 package com.twt.service.widget
 
 import android.content.Intent
-import com.twt.service.WBYApplication
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
-import com.twt.service.push.IntentEvent
-import com.twt.service.push.model.Event
+import com.twt.service.message.EventDispatcher
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
@@ -48,30 +46,8 @@ class WbyWidgetPlugin : WbyPlugin(), ActivityAware, PluginRegistry.NewIntentList
 
     private fun handleIntent(intent: Intent): Boolean {
         log("WbyWidgetPlugin handle intent :" + intent.dataString)
-        if (intent.data?.host?.equals("wpy.app") == true) {
-            intent.data?.let {
-                when (it.path) {
-                    "/schedule" -> {
-                        WBYApplication.eventList.add(
-                            Event(
-                                IntentEvent.SchedulePage.type,
-                                "go to schedule page without data"
-                            )
-                        )
-                        return true
-                    }
-                    "/entryQr" -> {
-                        WBYApplication.eventList.add(
-                            Event(
-                                IntentEvent.EntryQrPage.type,
-                                "go to entry qr page"
-                            )
-                        )
-                        return true
-                    }
-                    else -> {}
-                }
-            }
+        if (EventDispatcher.enqueueShortcutIntent(intent)) {
+            return true
         }
 
         return false

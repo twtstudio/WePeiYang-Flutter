@@ -71,12 +71,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final manager = context.read<PushManager>();
       final cid = (await manager.getCid()) ?? '';
       final now = DateTime.now();
-      DateTime lastTime;
-      try {
-        lastTime = DateTime.tryParse(CommonPreferences.pushTime.value)!;
-      } catch (_) {
-        lastTime = now.subtract(Duration(days: 3));
-      }
+      final lastTime = DateTime.tryParse(CommonPreferences.pushTime.value) ??
+          now.subtract(Duration(days: 3));
       if (cid != CommonPreferences.pushCid.value ||
           CommonPreferences.userNumber.value !=
               CommonPreferences.pushUser.value ||
