@@ -44,8 +44,6 @@ enum DetailPageStatus {
   error,
 }
 
-final currentRefresher = ValueNotifier<RefreshController?>(null);
-
 // ignore: must_be_immutable
 class PostDetailPage extends StatefulWidget {
   Post post;
@@ -95,7 +93,6 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   @override
   void initState() {
-    currentRefresher.value = _refreshController;
     super.initState();
     FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -190,6 +187,18 @@ class _PostDetailPageState extends State<PostDetailPage>
     }, onFail: () {
       _refreshController.loadFailed();
       currentPage--;
+    });
+  }
+
+  void _refreshAfterCommentSent() {
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          _refreshController.isRefresh ||
+          _refreshController.isLoading) {
+        return;
+      }
+      _refreshController.requestRefresh();
     });
   }
 
@@ -1101,10 +1110,11 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         CrossAxisAlignment.start,
                                     children: [
                                       CommentInputField(
-                                          postId: widget.post.id,
-                                          key: launchKey),
-                                      ImageSelectAndView(
-                                          key: imageSelectionKey),
+                                        postId: widget.post.id,
+                                        onCommentSent: _refreshAfterCommentSent,
+                                        key: launchKey,
+                                      ),
+                                      ImageSelectAndView(key: imageSelectionKey),
                                       SizedBox(height: SplitUtil.h * 4),
                                       Row(
                                         children: [
@@ -1377,8 +1387,13 @@ class _PostDetailPageState extends State<PostDetailPage>
 
 class CommentInputField extends StatefulWidget {
   final int postId;
+  final VoidCallback? onCommentSent;
 
-  const CommentInputField({Key? key, required this.postId}) : super(key: key);
+  const CommentInputField({
+    Key? key,
+    required this.postId,
+    this.onCommentSent,
+  }) : super(key: key);
 
   @override
   CommentInputFieldState createState() => CommentInputFieldState();
@@ -1521,7 +1536,6 @@ class CommentInputFieldState extends State<CommentInputField> {
   }
 
   _sendFloor(List<String> list) {
-    ToastProvider.running('创建楼层中 q(≧▽≦q)');
     FeedbackService.sendFloor(
       id: widget.postId.toString(),
       content: textEditingController.text,
@@ -1531,8 +1545,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<NewFloorProvider>().clearAndClose();
         textEditingController.text = '';
-        currentRefresher.value?.requestRefresh();
-        ToastProvider.success("评论成功 (❁´◡`❁)");
+        widget.onCommentSent?.call();
       },
       onFailure: (e) => ToastProvider.error(
         '好像出错了(っ °Д °;)っ...错误信息：' + e.error.toString(),
@@ -1541,7 +1554,6 @@ class CommentInputFieldState extends State<CommentInputField> {
   }
 
   _replyFloor(List<String> list, bool isOfficial) {
-    ToastProvider.running('回复中 q(≧▽≦)/');
     if (isOfficial == false) {
       FeedbackService.replyFloor(
         id: context.read<NewFloorProvider>().replyTo.toString(),
@@ -1552,7 +1564,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           FocusManager.instance.primaryFocus?.unfocus();
           context.read<NewFloorProvider>().clearAndClose();
           textEditingController.text = '';
-          ToastProvider.success("回复成功 (❁´3`❁)");
+          widget.onCommentSent?.call();
         },
         onFailure: (e) => ToastProvider.error(
           '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
@@ -1568,7 +1580,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           FocusManager.instance.primaryFocus?.unfocus();
           context.read<NewFloorProvider>().clearAndClose();
           textEditingController.text = '';
-          ToastProvider.success("回复成功 (❁´3`❁)");
+          widget.onCommentSent?.call();
         },
         onFailure: (e) => ToastProvider.error(
           '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),

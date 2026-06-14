@@ -85,6 +85,18 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
         page: currentPage);
   }
 
+  void _refreshAfterReplySent() {
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          _refreshController.isRefresh ||
+          _refreshController.isLoading) {
+        return;
+      }
+      _refreshController.requestRefresh();
+    });
+  }
+
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     if (context.read<NewFloorProvider>().inputFieldEnabled == true &&
         scrollInfo.metrics.pixels - _previousOffset >= 20) {
@@ -145,9 +157,6 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
       onPressed: () {
         // 这里是普通楼层详情页，所以这里一定是普通楼层的回复
         launchKey.currentState?.send(false);
-        setState(() {
-          _onRefresh();
-        });
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 18.0, bottom: 12.0),
@@ -226,8 +235,11 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
       ),
     );
 
-    var inputField =
-        CommentInputField(postId: widget.args.floor.postId, key: launchKey);
+    var inputField = CommentInputField(
+      postId: widget.args.floor.postId,
+      onCommentSent: _refreshAfterReplySent,
+      key: launchKey,
+    );
 
     final body = ColoredBox(
       // background color
