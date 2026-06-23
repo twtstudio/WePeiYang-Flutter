@@ -5,7 +5,11 @@ import android.util.Log
 import com.twt.service.WBYApplication
 import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
+import com.twt.service.BuildConfig
+import com.twt.service.R
 import com.umeng.analytics.MobclickAgent
+import com.umeng.cconfig.RemoteConfigSettings
+import com.umeng.cconfig.UMRemoteConfig
 import com.umeng.commonsdk.UMConfigure
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -37,6 +41,16 @@ class WbyStatisticsPlugin : WbyPlugin() {
     private fun initCommon() {
 
 //        val buildContext = WBYApplication.context?.get() ?: return
+        if (BuildConfig.LOG_OUTPUT) {
+            UMConfigure.setLogEnabled(true)
+        }
+        UMRemoteConfig.getInstance().apply {
+            setDefaults(R.xml.cloud_config_parms)
+            setConfigSettings(
+                RemoteConfigSettings.Builder().setAutoUpdateModeEnabled(true).build()
+            )
+        }
+        UMConfigure.preInit(context, "60464782b8c8d45c1390e7e3", Build.BRAND)
         UMConfigure.init(
             context,
             "60464782b8c8d45c1390e7e3",
