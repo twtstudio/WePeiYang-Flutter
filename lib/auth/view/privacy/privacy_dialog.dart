@@ -76,6 +76,7 @@ class PrivacyDialog extends Dialog {
   }
 
   Widget _detail(BuildContext context) {
+
     /// 退出 APP
     void _Quit() async {
       await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
@@ -87,7 +88,7 @@ class PrivacyDialog extends Dialog {
         children: [
           WButton(
             onPressed: () {
-              Navigator.pop(context);
+              _Quit();
             },
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围
@@ -106,7 +107,7 @@ class PrivacyDialog extends Dialog {
               padding: const EdgeInsets.all(16),
               child: Text('同意',
                   style:
-                      TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
+                  TextUtil.base.bold.noLine.sp(16).oldThirdAction(context)),
             ),
           ),
         ],
