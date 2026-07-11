@@ -87,7 +87,7 @@ class PrivacyDialog extends Dialog {
         children: [
           WButton(
             onPressed: () {
-              Navigator.pop(context);
+              _Quit();
             },
             child: Container(
               decoration: BoxDecoration(), // 加个这个扩大点击事件范围

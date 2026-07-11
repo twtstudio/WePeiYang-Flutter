@@ -41,7 +41,9 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
             });
         CommonPreferences.firstPrivacy.value = false;
       }
-      UmengCommonSdk.initCommon();
+      if (CommonPreferences.firstPrivacy.value == false) {
+        UmengCommonSdk.initCommon();
+      }
     });
   }
 
