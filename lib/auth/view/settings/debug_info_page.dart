@@ -45,97 +45,7 @@ const _kTwtEndpoints = [
 
 const _kEndpointDefs = [..._kTjuEndpoints, ..._kTwtEndpoints];
 
-const _cpuNameMap = <String, String>{
-  'mt6899': '天玑 9300',
-  'mt6897': '天玑 9200+',
-  'mt6896': '天玑 9200',
-  'mt6895': '天玑 9000+/天玑 9200',
-  'mt6893': '天玑 9000',
-  'mt6891': '天玑 1100/1200',
-  'mt6889': '天玑 1000+',
-  'mt6885': '天玑 1000L',
-  'mt6877': '天玑 900/920',
-  'mt6875': '天玑 820',
-  'mt6873': '天玑 800/820',
-  'mt6855': '天玑 930',
-  'mt6853': '天玑 720/800U',
-  'mt6833': '天玑 700/810/6080',
-  'mt6789': 'Helio G99',
-  'mt6785': 'Helio G90T',
-  'mt6779': 'Helio P90',
-  'mt6771': 'Helio P70',
-  'mt6799': 'Helio X30',
-  'mt6797': 'Helio X20/X25',
-  'mt6768': 'Helio P65/G85',
-  'mt6765': 'Helio P35/G35',
-  'mt6762': 'Helio P22/G25',
-  'mt6761': 'Helio A22',
-  'sm8650': '骁龙 8 Gen 3',
-  'sm8550': '骁龙 8 Gen 2',
-  'sm8475': '骁龙 8+ Gen 1',
-  'sm8450': '骁龙 8 Gen 1',
-  'sm8350': '骁龙 888',
-  'sm8325': '骁龙 8cx Gen 2',
-  'sm8250': '骁龙 865/870',
-  'sm8150': '骁龙 855/860',
-  'sm7450': '骁龙 7 Gen 3',
-  'sm7550': '骁龙 7 Gen 3',
-  'sm7475': '骁龙 7+ Gen 2',
-  'sm7350': '骁龙 780G',
-  'sm7325': '骁龙 778G',
-  'sm7250': '骁龙 765G',
-  'sm7150': '骁龙 730/730G',
-  'sm7125': '骁龙 720G',
-  'sm6375': '骁龙 695',
-  'sm6225': '骁龙 680',
-  'sm4450': '骁龙 4 Gen 1',
-  's5e9945': 'Exynos 2400',
-  's5e9935': 'Exynos 2300',
-  's5e9925': 'Exynos 2200',
-  's5e9840': 'Exynos 2100',
-  's5e9830': 'Exynos 990',
-  's5e9825': 'Exynos 9825',
-  's5e9820': 'Exynos 9820',
-  's5e9810': 'Exynos 9810',
-  's5e8895': 'Exynos 8895',
-  's5e8890': 'Exynos 8890',
-  'universal9925': 'Exynos 2200',
-  'universal9840': 'Exynos 2100',
-  'universal9830': 'Exynos 990',
-  'universal9825': 'Exynos 9825',
-  'universal9820': 'Exynos 9820',
-  'universal9810': 'Exynos 9810',
-  'universal8895': 'Exynos 8895',
-  'universal8890': 'Exynos 8890',
-  'exynos9925': 'Exynos 2200',
-  'exynos9840': 'Exynos 2100',
-  'exynos9830': 'Exynos 990',
-  'exynos9825': 'Exynos 9825',
-  'exynos9820': 'Exynos 9820',
-  'exynos9810': 'Exynos 9810',
-  'exynos8895': 'Exynos 8895',
-  'exynos8890': 'Exynos 8890',
-  'kirin9000': '麒麟 9000',
-  'kirin990': '麒麟 990',
-  'kirin980': '麒麟 980',
-  'kirin970': '麒麟 970',
-  'kirin960': '麒麟 960',
-  't8120': 'Apple A18 Pro',
-  't8112': 'Apple A16',
-  't8110': 'Apple A15',
-  't8101': 'Apple A14',
-  't8030': 'Apple A13',
-  't8020': 'Apple A12',
-  't8015': 'Apple A11',
-  't8010': 'Apple A10',
-};
 
-String _cpuDisplayName(String raw) {
-  final lower = raw.toLowerCase().trim();
-  final known = _cpuNameMap[lower] ?? _cpuNameMap[raw.trim()];
-  if (known != null) return '$known ($raw)';
-  return raw;
-}
 
 class DebugInfoPage extends StatefulWidget {
   const DebugInfoPage({super.key});
@@ -360,7 +270,7 @@ class _DebugInfoPageState extends State<DebugInfoPage> with SingleTickerProvider
                       _buildDivider(),
                       _buildInfoRow('型号', _nativeInfo['model']?.toString() ?? 'Unknown'),
                       _buildDivider(),
-                      _buildInfoRow('硬件', _cpuDisplayName(_nativeInfo['hardware']?.toString() ?? 'Unknown')),
+                      _buildInfoRow('SOC', _nativeInfo['hardware']?.toString() ?? 'Unknown'),
                       _buildDivider(),
                       _buildInfoRow('构建类型', '${_nativeInfo['type']} / ${_nativeInfo['tags']}'),
                       _buildDivider(),
@@ -388,7 +298,7 @@ class _DebugInfoPageState extends State<DebugInfoPage> with SingleTickerProvider
                     title: '屏幕信息',
                     accentColor: accentColor,
                     children: [
-                      _buildInfoRow('分辨率', '${MediaQuery.of(context).size.width.round()} × ${MediaQuery.of(context).size.height.round()}'),
+                      _buildInfoRow('分辨率', '${(MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).round()} × ${(MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).round()}'),
                       _buildDivider(),
                       _buildInfoRow('像素比', MediaQuery.of(context).devicePixelRatio.toStringAsFixed(2)),
                       _buildDivider(),
@@ -718,19 +628,19 @@ class _DebugInfoPageState extends State<DebugInfoPage> with SingleTickerProvider
   Widget _buildRamStorageRow(dynamic ramRaw, dynamic storageRaw) {
     final ram = ramRaw is Map<String, dynamic> ? ramRaw : <String, dynamic>{};
     final storage = storageRaw is Map<String, dynamic> ? storageRaw : <String, dynamic>{};
-    final ramTotal = ram['totalRam'] ?? '?';
-    final ramAvail = ram['availRam'] ?? '?';
+    final ramTotal = double.tryParse(ram['totalRam']?.toString() ?? '') ?? 0;
+    final ramAvail = double.tryParse(ram['availRam']?.toString() ?? '') ?? 0;
     final lowMem = ram['lowMemory']?.toString() == 'true';
-    final storageTotal = storage['storageTotal'] ?? '?';
-    final storageAvail = storage['storageAvail'] ?? '?';
+    final storageTotal = double.tryParse(storage['storageTotal']?.toString() ?? '') ?? 0;
+    final storageAvail = double.tryParse(storage['storageAvail']?.toString() ?? '') ?? 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
-          _memItem(Icons.memory, 'RAM', '$ramAvail / $ramTotal GB', lowMem ? '低' : '', lowMem ? const Color(0xFFE53935) : null),
+          _memItem(Icons.memory, 'RAM', '${(ramTotal - ramAvail).toStringAsFixed(1)} / ${ramTotal.toStringAsFixed(1)} MB', lowMem ? '低' : '', lowMem ? const Color(0xFFE53935) : null),
           const SizedBox(width: 12),
-          _memItem(Icons.sd_storage_outlined, '存储', '$storageAvail / $storageTotal GB', '', null),
+          _memItem(Icons.sd_storage_outlined, '存储', '${(storageTotal - storageAvail).toInt()} / ${storageTotal.toInt()} GB', '', null),
         ],
       ),
     );
