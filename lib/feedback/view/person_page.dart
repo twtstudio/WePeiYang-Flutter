@@ -220,7 +220,7 @@ class _PersonPageState extends State<PersonPage> {
             children: [
               SizedBox(
                 width: 1.sw - 140.w,
-                child: Text('${nickName}',
+                child: Text('${nickName ?? ''}',
                     textAlign: TextAlign.start,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
