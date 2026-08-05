@@ -191,13 +191,14 @@ class PostRichText {
       rendered += s.length;
     }
 
+    // 26.8.6 暂时注释 Markdown 相关（与屏蔽词相关功能冲突，等待后端协调 --26.8.6）：
     // 粗体/斜体/删除线内部可能再含 @提及、表情、链接，递归处理
-    void recurse(String inner, TextStyle style) {
-      final r = _scan(inner, style, linkStyle, mentionStyle, codeStyle,
-          recognizers, onLink, onMention);
-      spans.addAll(r.spans);
-      rendered += r.renderedLength;
-    }
+    // void recurse(String inner, TextStyle style) {
+    //   final r = _scan(inner, style, linkStyle, mentionStyle, codeStyle,
+    //       recognizers, onLink, onMention);
+    //   spans.addAll(r.spans);
+    //   rendered += r.renderedLength;
+    // }
 
     void addLink(String value) {
       final rec = TapGestureRecognizer()..onTap = () => onLink(value);
@@ -210,13 +211,18 @@ class PostRichText {
       if (m.start > last) addText(text.substring(last, m.start), base);
       String? g;
       if ((g = m.namedGroup('bold')) != null) {
-        recurse(g!, base.copyWith(fontWeight: FontWeight.bold));
+        // 26.8.6 暂时注释部分 Markdown 渲染（与屏蔽词相关功能冲突，等待后端协调 --26.8.6）：
+        // recurse(g!, base.copyWith(fontWeight: FontWeight.bold));
+        addText(m.group(0)!, base);
       } else if ((g = m.namedGroup('strike')) != null) {
-        recurse(g!, base.copyWith(decoration: TextDecoration.lineThrough));
+        // recurse(g!, base.copyWith(decoration: TextDecoration.lineThrough));
+        addText(m.group(0)!, base);
       } else if ((g = m.namedGroup('ital')) != null) {
-        recurse(g!, base.copyWith(fontStyle: FontStyle.italic));
+        // recurse(g!, base.copyWith(fontStyle: FontStyle.italic));
+        addText(m.group(0)!, base);
       } else if ((g = m.namedGroup('code')) != null) {
-        addText(g!, codeStyle);
+        // addText(g!, codeStyle);
+        addText(m.group(0)!, base);
       } else if ((g = m.namedGroup('postref')) != null) {
         addLink(g!);
       } else if ((g = m.namedGroup('url')) != null) {
@@ -224,13 +230,14 @@ class PostRichText {
       } else if ((g = m.namedGroup('topic')) != null) {
         addLink(g!);
       } else if ((g = m.namedGroup('mentionuid')) != null) {
-        // @uid:123 → 显示 @123（或解析出的昵称），可点击跳转用户主页
-        final uid = g!.substring(5); // 去掉 '@uid:'
-        final label = mentionLabel(uid);
-        final rec = TapGestureRecognizer()..onTap = () => onMention(uid);
-        recognizers.add(rec);
-        spans.add(TextSpan(text: label, style: mentionStyle, recognizer: rec));
-        rendered += label.length;
+        // 26.8.6 暂时注释 @提及 渲染（缺少相关接口，等待后端协调 --26.8.6）：
+        // final uid = g!.substring(5); // 去掉 '@uid:'
+        // final label = mentionLabel(uid);
+        // final rec = TapGestureRecognizer()..onTap = () => onMention(uid);
+        // recognizers.add(rec);
+        // spans.add(TextSpan(text: label, style: mentionStyle, recognizer: rec));
+        // rendered += label.length;
+        addText(g!, base);
       } else if ((g = m.namedGroup('emoji')) != null) {
         addText(emojis[g] ?? g!, base);
       }

@@ -20,7 +20,8 @@ const String kMaskCloseTag = '</mask>';
 final RegExp _maskReg = RegExp(r'<mask>(.*?)</mask>', dotAll: true);
 
 /// 输入框里识别 @uid:123 提及，用于「未编辑时按渲染样式显示」。
-final RegExp _mentionUidReg = RegExp(r'@uid:\d+');
+/// 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
+// final RegExp _mentionUidReg = RegExp(r'@uid:\d+');
 
 /// 去掉 mask 标签，用于测量行数和统计字数
 String stripMaskTags(String text) =>
@@ -457,42 +458,44 @@ class MaskTextEditingController extends TextEditingController {
   set value(TextEditingValue newValue) {
     final old = value;
     var v = _repairMaskEdit(old, newValue);
-    v = _autoExpandMention(old, v);
+    // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
+    // v = _autoExpandMention(old, v);
     super.value = v;
   }
 
+  // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
   /// 在输入框里键入「@」时，自动展开成「@uid:」，让用户接着输入 uid。
   /// 只在行首或空白后触发，避免邮箱等被误展开。删除时按字符逐个删，
   /// 所以用户可以退格回单独的「@」、或删干净「不 @」。
-  TextEditingValue _autoExpandMention(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final oldText = oldValue.text;
-    final newText = newValue.text;
-    if (!newValue.composing.isCollapsed) return newValue;
-    // 仅处理「插入了单个字符」且为 @ 的情况
-    if (newText.length != oldText.length + 1) return newValue;
-    final sel = newValue.selection;
-    if (!sel.isCollapsed) return newValue;
-    final caret = sel.baseOffset;
-    if (caret <= 0 || caret > newText.length) return newValue;
-    if (newText[caret - 1] != '@') return newValue;
-    // 确认是「插入」而非替换：去掉这个 @ 后应与旧文本一致
-    final without =
-        newText.substring(0, caret - 1) + newText.substring(caret);
-    if (without != oldText) return newValue;
-    // 只在行首/空白后触发
-    if (caret - 1 > 0) {
-      final prev = newText[caret - 2];
-      if (prev != ' ' && prev != '\n' && prev != '\t') return newValue;
-    }
-    const insert = '@uid:';
-    final expanded =
-        newText.substring(0, caret - 1) + insert + newText.substring(caret);
-    return TextEditingValue(
-      text: expanded,
-      selection: TextSelection.collapsed(offset: caret - 1 + insert.length),
-    );
-  }
+  // TextEditingValue _autoExpandMention(
+  //     TextEditingValue oldValue, TextEditingValue newValue) {
+  //   final oldText = oldValue.text;
+  //   final newText = newValue.text;
+  //   if (!newValue.composing.isCollapsed) return newValue;
+  //   // 仅处理「插入了单个字符」且为 @ 的情况
+  //   if (newText.length != oldText.length + 1) return newValue;
+  //   final sel = newValue.selection;
+  //   if (!sel.isCollapsed) return newValue;
+  //   final caret = sel.baseOffset;
+  //   if (caret <= 0 || caret > newText.length) return newValue;
+  //   if (newText[caret - 1] != '@') return newValue;
+  //   // 确认是「插入」而非替换：去掉这个 @ 后应与旧文本一致
+  //   final without =
+  //       newText.substring(0, caret - 1) + newText.substring(caret);
+  //   if (without != oldText) return newValue;
+  //   // 只在行首/空白后触发
+  //   if (caret - 1 > 0) {
+  //     final prev = newText[caret - 2];
+  //     if (prev != ' ' && prev != '\n' && prev != '\t') return newValue;
+  //   }
+  //   const insert = '@uid:';
+  //   final expanded =
+  //       newText.substring(0, caret - 1) + insert + newText.substring(caret);
+  //   return TextEditingValue(
+  //     text: expanded,
+  //     selection: TextSelection.collapsed(offset: caret - 1 + insert.length),
+  //   );
+  // }
 
   /// 把 <mask>…</mask> 当作一个整体处理：当一次删除“吃”到了不可见的标签字符上
   /// （例如在马赛克块边缘退格），就把整段 mask 一起删掉，而不是留下半个损坏的
@@ -589,8 +592,8 @@ class MaskTextEditingController extends TextEditingController {
     int last = 0;
     for (final m in _maskReg.allMatches(t)) {
       if (m.start > last) {
-        _appendMentionStyled(
-            t.substring(last, m.start), last, base, tagStyle, cursor, context, spans);
+        // 26.8.6 暂时注释 @提及 渲染（缺少相关接口，等待后端协调 --26.8.6），按普通文本渲染
+        spans.add(TextSpan(text: t.substring(last, m.start), style: base));
       }
       final active = cursor != null && cursor >= m.start && cursor <= m.end;
       spans.add(TextSpan(text: kMaskOpenTag, style: tagStyle));
@@ -600,41 +603,42 @@ class MaskTextEditingController extends TextEditingController {
       last = m.end;
     }
     if (last < t.length) {
-      _appendMentionStyled(
-          t.substring(last), last, base, tagStyle, cursor, context, spans);
+      // 26.8.6 暂时注释 @提及 渲染（缺少相关接口，等待后端协调 --26.8.6），按普通文本渲染
+      spans.add(TextSpan(text: t.substring(last), style: base));
     }
     return TextSpan(style: base, children: spans);
   }
 
+  // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
   /// 在非 mask 文本里把 @uid:123 按「渲染样式」显示：未编辑时 uid: 隐藏、整体变色
   /// （看起来像 @123 的提及）；光标落在其中时还原成可编辑的 @uid:123。
   /// 不改变字符数量，保证 TextField 光标定位正确（与 mask 同理）。
-  void _appendMentionStyled(String chunk, int chunkStart, TextStyle base,
-      TextStyle tagStyle, int? cursor, BuildContext context, List<InlineSpan> out) {
-    final mentionStyle = base.copyWith(
-        color: WpyTheme.of(context).primary ?? base.color,
-        fontWeight: FontWeight.w600);
-    int last = 0;
-    for (final m in _mentionUidReg.allMatches(chunk)) {
-      if (m.start > last) {
-        out.add(TextSpan(text: chunk.substring(last, m.start), style: base));
-      }
-      final gStart = chunkStart + m.start;
-      final gEnd = chunkStart + m.end;
-      final active = cursor != null && cursor >= gStart && cursor <= gEnd;
-      if (active) {
-        out.add(TextSpan(text: m.group(0), style: base));
-      } else {
-        out.add(TextSpan(text: '@', style: mentionStyle));
-        out.add(TextSpan(text: 'uid:', style: tagStyle));
-        out.add(TextSpan(text: m.group(0)!.substring(5), style: mentionStyle));
-      }
-      last = m.end;
-    }
-    if (last < chunk.length) {
-      out.add(TextSpan(text: chunk.substring(last), style: base));
-    }
-  }
+  // void _appendMentionStyled(String chunk, int chunkStart, TextStyle base,
+  //     TextStyle tagStyle, int? cursor, BuildContext context, List<InlineSpan> out) {
+  //   final mentionStyle = base.copyWith(
+  //       color: WpyTheme.of(context).primary ?? base.color,
+  //       fontWeight: FontWeight.w600);
+  //   int last = 0;
+  //   for (final m in _mentionUidReg.allMatches(chunk)) {
+  //     if (m.start > last) {
+  //       out.add(TextSpan(text: chunk.substring(last, m.start), style: base));
+  //     }
+  //     final gStart = chunkStart + m.start;
+  //     final gEnd = chunkStart + m.end;
+  //     final active = cursor != null && cursor >= gStart && cursor <= gEnd;
+  //     if (active) {
+  //       out.add(TextSpan(text: m.group(0), style: base));
+  //     } else {
+  //       out.add(TextSpan(text: '@', style: mentionStyle));
+  //       out.add(TextSpan(text: 'uid:', style: tagStyle));
+  //       out.add(TextSpan(text: m.group(0)!.substring(5), style: mentionStyle));
+  //     }
+  //     last = m.end;
+  //   }
+  //   if (last < chunk.length) {
+  //     out.add(TextSpan(text: chunk.substring(last), style: base));
+  //   }
+  // }
 }
 
 /// 盖在输入框上的粒子层：跟随 [controller] 的文字，实时在 <mask> 区间画粒子，
