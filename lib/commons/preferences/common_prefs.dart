@@ -18,6 +18,7 @@ class CommonPreferences {
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
     showXiaotianTabNotifier.value = showXiaotianTab.value;
+    predictiveBackNotifier.value = predictiveBack.value;
   }
 
   /// 天外天账号系统
@@ -114,6 +115,8 @@ class CommonPreferences {
   static final showMap = PrefsBean<bool>('showMap', false); // 首页不显示考表
   static final showXiaotianTab = PrefsBean<bool>('showXiaotianTab', true);
   static final showXiaotianTabNotifier = ValueNotifier<bool>(true);
+  static final predictiveBack = PrefsBean<bool>('predictiveBack', false);
+  static final predictiveBackNotifier = ValueNotifier<bool>(false);
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）

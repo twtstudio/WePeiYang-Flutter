@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' show PlatformDispatcher;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -389,7 +390,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
         // }
 
         return ListenableBuilder(
-            listenable: globalTheme,
+            listenable: Listenable.merge(
+                [globalTheme, CommonPreferences.predictiveBackNotifier]),
             builder: (context, _) {
               return WpyTheme(
                 themeData: globalTheme.value,
@@ -408,6 +410,22 @@ class WePeiYangAppState extends State<WePeiYangApp>
                             highlightColor: Colors.transparent,
                             brightness: WpyTheme.of(context).brightness,
                             primaryColor: WpyTheme.of(context).primary,
+                            pageTransitionsTheme: PageTransitionsTheme(
+                              builders: {
+                                TargetPlatform.android:
+                                    CommonPreferences.predictiveBack.value
+                                        ? const PredictiveBackPageTransitionsBuilder()
+                                        : const ZoomPageTransitionsBuilder(),
+                                TargetPlatform.iOS:
+                                    const CupertinoPageTransitionsBuilder(),
+                                TargetPlatform.macOS:
+                                    const CupertinoPageTransitionsBuilder(),
+                                TargetPlatform.windows:
+                                    const ZoomPageTransitionsBuilder(),
+                                TargetPlatform.linux:
+                                    const ZoomPageTransitionsBuilder(),
+                              },
+                            ),
                             switchTheme: SwitchThemeData(
                               thumbColor: WidgetStateProperty.all(
                                   WpyTheme.of(context).primary),
