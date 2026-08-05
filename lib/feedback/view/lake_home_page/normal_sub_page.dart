@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/post_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/activity_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_card.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/main.dart';
@@ -260,6 +261,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   Row _buildSortSelection() {
+    final hasTop = pageController.postHolder.postsList
+        .any((p) => p.eTag == 'top');
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       WButton(
         onPressed: () => _changeSortAndRefresh(1),
@@ -290,6 +293,27 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
               }),
         ),
       ),
+      if (hasTop) ...[
+        Spacer(),
+        Padding(
+          padding: EdgeInsets.fromLTRB(5.w, 14.h, 12.w, 6.h),
+          child: ValueListenableBuilder(
+            valueListenable: LakeUtil.collapsedTopTabs,
+            builder: (context, collapsed, _) {
+              final isCollapsed = collapsed.contains('$index');
+              // 折叠后隐藏开关，仅保留横栏的展开入口
+              if (isCollapsed) return SizedBox.shrink();
+              return WButton(
+                onPressed: () => LakeUtil.toggleCollapsedTop(index),
+                child: Text(
+                  '折叠置顶帖',
+                  style: TextUtil.base.label(context).w400.sp(14),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     ]);
   }
 
@@ -313,7 +337,16 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     if (_postRefreshSkeleton) return PostSkeleton();
 
     // Post
-    final post = pageController.postHolder.postsList[ind];
+    final postsList = pageController.postHolder.postsList;
+    final post = postsList[ind];
+    final isTop = post.eTag == 'top';
+    final collapsed = isTop &&
+        LakeUtil.collapsedTopTabs.value.contains('$index');
+    if (collapsed) {
+      // 置顶帖连续排前：仅首个置顶帖位置渲染"展开置顶帖"栏，其余置顶帖留空
+      final isFirstTop = postsList.take(ind).every((p) => p.eTag != 'top');
+      return isFirstTop ? _buildCollapsedTopBar(index) : const SizedBox.shrink();
+    }
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 260),
       switchInCurve: Curves.easeOutCubic,
@@ -347,6 +380,45 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
+  /// 折叠置顶帖后的统一"展开置顶帖"栏（不显示任何标题，极简）
+  Widget _buildCollapsedTopBar(int tabId) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.h, vertical: 4),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        alignment: Alignment.topCenter,
+        child: InkWell(
+          onTap: () => LakeUtil.toggleCollapsedTop(tabId),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.lightBorderColor),
+                    width: 1.h),
+              ),
+            ),
+            child: Row(
+              children: [
+                ETagWidget(entry: 'top', full: false),
+                SizedBox(width: 8),
+                Text('展开置顶帖',
+                    style: TextUtil.base.NotoSansSC.w400.sp(14).primary(context)),
+                Spacer(),
+                Icon(Icons.keyboard_arrow_down,
+                    size: 22,
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.secondaryTextColor)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -371,7 +443,9 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                     _onScrollNotification(scrollInfo),
                 child: ListenableBuilder(
                   // 这里是Post的Listview, 需要监听Post刷新
-                  listenable: pageController.postHolder,
+                  // 同时监听折叠状态，切换折叠时重建列表
+                  listenable: Listenable.merge(
+                      [pageController.postHolder, LakeUtil.collapsedTopTabs]),
                   builder: (context, oldChild) {
                     final refresher = SmartRefresher(
                       physics: BouncingScrollPhysics(),

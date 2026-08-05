@@ -56,6 +56,10 @@ class CommonPreferences {
       PrefsBean<String>('feedbackLastWeKo');
   static final avatarBoxMyUrl = PrefsBean<String>('avatarBoxMyUrl');
 
+  /// 已折叠置顶帖的分区 id 集合（跨会话记忆）
+  static final collapsedTopTabs =
+      PrefsBean<List<String>>('collapsedTopTabs', []);
+
   /// 求实论坛--等级系统
   static final levelPoint = PrefsBean<int>('levelPoint');
   static final levelName = PrefsBean<String>('levelName');

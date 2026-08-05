@@ -109,6 +109,21 @@ class LakeUtil {
   static final ValueNotifier<bool> showSearch = ValueNotifier(true);
   static final ValueNotifier<int> sortSeq = ValueNotifier(1);
 
+  /// 已折叠置顶帖的分区 id 集合（分区级，折叠后整组置顶帖隐藏）
+  static final ValueNotifier<Set<String>> collapsedTopTabs = ValueNotifier({});
+
+  static void toggleCollapsedTop(int tabId) {
+    final key = '$tabId';
+    final s = Set<String>.from(collapsedTopTabs.value);
+    s.contains(key) ? s.remove(key) : s.add(key);
+    collapsedTopTabs.value = s;
+    CommonPreferences.collapsedTopTabs.value = s.toList();
+  }
+
+  static void loadCollapsedTopTabs() =>
+      collapsedTopTabs.value =
+          Set.from(CommonPreferences.collapsedTopTabs.value);
+
   static final Map<int, LakePageController> lakePageControllers = {};
 
   static int get currentTabId => tabList[currentTab.value].id;
@@ -133,6 +148,7 @@ class LakeUtil {
       lakePageControllers[list[i].id] =
           LakePageController.empty(tabIndex, list[i].id);
     }
+    loadCollapsedTopTabs();
   }
 
   static Future<void> initPostList(int index, {forced = false}) async {
