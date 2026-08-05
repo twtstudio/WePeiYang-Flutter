@@ -59,8 +59,8 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   static const _campusMapAssets = [
-    'assets/images/school_map/map_wei_jin.jpg',
-    'assets/images/school_map/map_pei_yang_new.jpg',
+    'assets/images/school_map/wjl.jpeg',
+    'assets/images/school_map/byy.jpeg',
   ];
   static const _calendarAssets = [
     'assets/images/calender/first.jpg',
@@ -119,7 +119,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                   BlendMode.screen),
                               image: ResizeImage(
                                   AssetImage(
-                                      'assets/images/school_map/map_wei_jin.jpg'),
+                                      'assets/images/school_map/wjl_thumb.jpeg'),
                                   width: _previewDecodeWidth)))),
                   Positioned(
                     top: 20.h,
@@ -159,7 +159,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                                   BlendMode.hardLight),
                               image: ResizeImage(
                                   AssetImage(
-                                      'assets/images/school_map/map_pei_yang_new.jpg'),
+                                      'assets/images/school_map/byy_thumb.jpeg'),
                                   width: _previewDecodeWidth)))),
                   Positioned(
                     top: 20.h,
@@ -224,7 +224,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '25-26第一学期',
+                        '26-27第一学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900
@@ -266,7 +266,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                     child: Opacity(
                       opacity: 0.34,
                       child: Text(
-                        '25-26第二学期',
+                        '26-27第二学期',
                         style: TextUtil.base.PingFangSC
                             .infoText(context)
                             .w900
