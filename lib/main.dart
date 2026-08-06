@@ -10,6 +10,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -402,7 +403,15 @@ class WePeiYangAppState extends State<WePeiYangApp>
                     minTextAdapt: true,
                     child: SplashScreen(),
                     builder: ((context, child) {
-                      return MaterialApp(
+                      return RefreshConfiguration(
+                        // https://docs.fluttercn.cn/release/breaking-changes/spring-description-underdamped
+                        // Flutter 3.32 修复了欠阻尼弹簧公式(issue#163858/PR#165017)，
+                        // 使 pull_to_refresh 默认弹簧(mass2.2/stiff150/damping16)松手后出现
+                        // 明显过冲回弹（3.19 无此效果）。用官方迁移公式恢复 3.19 手感：
+                        //   new_m=1, new_c=c*m=35.2, new_k=(4(k/m)-(c/m)^2+(c*m)^2)/4=364.72
+                        springDescription: const SpringDescription(
+                            mass: 1.0, stiffness: 364.72, damping: 35.2),
+                        child: MaterialApp(
                         debugShowCheckedModeBanner: false,
                         color: WpyTheme.of(context).primary,
                         theme: ThemeData(
@@ -456,6 +465,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                         // ),
                         builder: FlutterSmartDialog.init(builder: _builder),
                         // builder: FToastBuilder(),
+                        ),
                       );
                     })),
               );
