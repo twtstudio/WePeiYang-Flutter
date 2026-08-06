@@ -312,6 +312,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
     bool isInnerScreen =
         (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
     TextUtil.updateScreenState(isInnerScreen);
+    // 触发重新渲染
     setState(() {});
   }
 
@@ -384,6 +385,11 @@ class WePeiYangAppState extends State<WePeiYangApp>
         ),
       ],
       child: Builder(builder: (context) {
+        // 获取友盟在线参数
+        if (CommonPreferences.firstPrivacy.value == false) {
+          context.read<RemoteConfig>().getRemoteConfig();
+        }
+
         //TODO:每年春节都判断一次
         // if(!CommonPreferences.happenSpring.value) {
         //   globalTheme.value = RedScheme();
