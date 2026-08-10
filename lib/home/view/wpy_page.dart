@@ -312,6 +312,7 @@ class SliverCardsWidget extends StatelessWidget {
     '课程表',
     '入校码',
     '新闻网',
+    '课评网',
     '地图·校历',
     '成绩',
     // '小游戏'

@@ -5,6 +5,7 @@ import 'package:we_pei_yang_flutter/home/view/cas_qr_page.dart';
 import 'view/home_page.dart';
 import 'view/lost_and_found_home_page.dart';
 import 'view/map_calendar_page.dart';
+import 'view/web_views/course_review_page.dart';
 import 'view/web_views/fifty_two_hz_page.dart';
 import 'view/web_views/game_page.dart';
 import 'view/web_views/news_page.dart';
@@ -19,6 +20,7 @@ class HomeRouter {
   static String restartGame = 'home/restartGame';
   static String laf = 'home/laf'; //'home/laf' 现在还不能上线
   static String news = 'home/news';
+  static String courseReview = 'home/courseReview';
   static String casQR = 'home/casQR';
   static String game = ''; //'home/game'(虚空索引一下.jpg
   static final Map<String, Widget Function(dynamic arguments)> routers = {
@@ -28,6 +30,7 @@ class HomeRouter {
     hz: (_) => FiftyTwoHzPage(),
     laf: (_) => LostAndFoundHomePage(),
     news: (_) => NewsPage(),
+    courseReview: (_) => CourseReviewPage(),
     game: (_) => GamePage(),
     casQR: (_) => CasQRPage(),
   };
