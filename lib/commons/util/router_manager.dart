@@ -61,7 +61,9 @@ class RouterManager {
     if (uri?.scheme == 'wpy' && uri?.host == 'wpy.app') {
       return true;
     }
-    return routeName.startsWith('/open') || routeName.startsWith('/post');
+    return routeName.startsWith('/open') ||
+        routeName.startsWith('/post') ||
+        routeName.startsWith('/entryQr');
   }
 }
 

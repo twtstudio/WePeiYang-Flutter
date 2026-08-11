@@ -56,3 +56,5 @@ dev.keystore
 .fvmrc
 
 .codex
+linux/flutter/generated_plugins.cmake
+macos/Flutter/GeneratedPluginRegistrant.swift
