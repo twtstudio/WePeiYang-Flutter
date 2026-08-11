@@ -1,5 +1,6 @@
 name: we_pei_yang_flutter
 description: A new Flutter project.
+license: GPL-3.0-or-later
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 

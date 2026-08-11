@@ -3,6 +3,7 @@
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/twtstudio/WePeiYang-Flutter?color=green)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/twtstudio/WePeiYang-Flutter?color=blue)
 ![GitHub Repo stars](https://img.shields.io/github/stars/twtstudio/WePeiYang-Flutter?logo=star&color=yellow)
+![GitHub](https://img.shields.io/github/license/twtstudio/WePeiYang-Flutter)
 
 ## 项目背景
 
@@ -109,6 +110,14 @@
 [ WePeiYang-iOS-Everest 微北洋（IOS版本）](https://github.com/twtstudio/WePeiYang-iOS-Everest)
 
 ## 版权声明
+
+本项目采用 [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)（GPL-3.0-or-later）开源许可。
+
+- 本软件为自由软件：您可以自由地使用、复制、修改、分发，并可在遵守许可证条款的前提下将其用于商业用途。
+- 任何对本软件的修改或衍生作品，必须同样以 GPL 许可证发布，并向使用者公开源代码。
+- 本软件按"原样"提供，不附带任何明示或暗示的担保，包括但不限于适销性和特定用途适用性的担保。详情请参阅 [LICENSE](./LICENSE) 文件。
+
+Copyright (C) 天津大学天外天工作室（移动组）。
 
 ## Star History
 
