@@ -137,18 +137,28 @@ class CommonPreferences {
   static final happenSpring = PrefsBean<bool>('happenSpring', false);
 
   /// 首页工具栏的东西
-  static const defaultDisplayOrder = "0,1,2,3,4,5";
+  static const defaultDisplayOrder = "0,1,2,3,4,5,6";
+
+  /// 课评网加入前的旧默认顺序。旧用户未自定义过时本地存的是这个值，
+  /// 首次识别到后一次性迁移到新的默认顺序（补上新增索引）。
+  static const _legacyDefaultDisplayOrder = "0,1,2,3,4,5";
+
   static final displayOrder =
       PrefsBean<String>('displayOrder', defaultDisplayOrder);
+
+  /// 是否已完成课评网加入后的工具栏默认顺序迁移。
+  /// 置位后即使 displayOrder 被用户改回旧默认值也不会再次迁移。
+  static final toolbarOrderMigrated = PrefsBean<bool>('toolbarOrderMigrated', false);
+
   static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
     CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
         HomeRouter.casQR),
-    CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
-        HomeRouter.news),
     CardBean('assets/images/account/comment.png', 24.w, '课评网', 'Course\nReview',
         HomeRouter.courseReview),
+    CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
+        HomeRouter.news),
     CardBean('assets/images/schedule/add.png', 24.w, '地图·校历', 'Map-\nCalendar',
         HomeRouter.mapCalenderPage),
     CardBean('assets/svg_pics/lake_butt_icons/wiki.png', 24.w, '北洋维基', 'Wiki',
@@ -170,9 +180,18 @@ class CommonPreferences {
   static List<int> sanitizedDisplayOrder({int minCount = 2}) {
     final toolsLength = displayedTool.value.length;
     final rawOrder = displayOrder.value;
+
+    // 旧用户未自定义时本地存的是旧默认顺序（不含新增索引），
+    // 首次识别到后一次性迁移到新的默认顺序并置位标记，
+    // 避免之后用户主动改回旧默认顺序时被再次迁移。
+    final effectiveOrder = (!toolbarOrderMigrated.value &&
+            rawOrder == _legacyDefaultDisplayOrder)
+        ? defaultDisplayOrder
+        : rawOrder;
+
     final order = <int>[];
 
-    for (final item in rawOrder.split(',')) {
+    for (final item in effectiveOrder.split(',')) {
       final index = int.tryParse(item.trim());
       if (index == null || index < 0 || index >= toolsLength) continue;
       if (!order.contains(index)) order.add(index);
@@ -192,6 +211,7 @@ class CommonPreferences {
 
     final sanitizedOrder = order.join(',');
     if (sanitizedOrder != rawOrder) displayOrder.value = sanitizedOrder;
+    if (effectiveOrder != rawOrder) toolbarOrderMigrated.value = true;
     return order;
   }
 
