@@ -64,7 +64,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
 
   /// 把工具加入首页工具栏（最多 8 个）。
   /// 若池中已有同名工具则复用其索引，避免池无限增长或出现重复 key。
-  void _addToHome(CardBean bean) {
+  Future<void> _addToHome(CardBean bean) async {
     if (order.length >= 8) {
       ToastProvider.error("会不会太多了呢？最多8个喵~");
       return;
@@ -73,6 +73,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
     if (idx == -1) {
       CommonPreferences.displayedTool.value.add(bean);
       idx = CommonPreferences.displayedTool.value.length - 1;
+      await CommonPreferences.displayedTool.save();
     }
     if (!order.contains(idx)) order.add(idx);
     CommonPreferences.displayOrder.value = order.join(',');
@@ -193,7 +194,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                 ),
               ),
               WButton(
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     //加一个判定防止有人卡bug 加到display但是把本地删了然后再加（
                     if (isDisplayed(CommonPreferences.userTool.value[i])) {
@@ -203,6 +204,8 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                       ToastProvider.success("已删除！");
                     }
                   });
+                  await CommonPreferences.userTool.save();
+                  if (!mounted) return;
                   Navigator.pop(context);
                 },
                 child: Padding(
@@ -247,7 +250,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
         ),
         actions: [
           WButton(
-            onPressed: () {
+            onPressed: () async {
               setState(() {
                 CommonPreferences.displayedTool.value
                   ..clear()
@@ -258,6 +261,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                   ..addAll(List.generate(peiYangTools.length, (idx) => idx));
                 CommonPreferences.displayOrder.value = order.join(',');
               });
+              await CommonPreferences.displayedTool.save();
               ToastProvider.success("已重置！");
             },
             child: Padding(
@@ -319,8 +323,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                             // Map<String,...> 的键，key 必须是 String，否则会抛
                             // 'int is not a subtype of String'
                             key: ValueKey(order[i].toString()),
-                            onPressed: () =>
-                                setState(() => _removeFromHome(i)),
+                            onPressed: () => setState(() => _removeFromHome(i)),
                             child: generateSelectCard(
                                 context,
                                 CommonPreferences.displayedTool.value[order[i]],
@@ -383,8 +386,10 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                             ? generateSelectCard(
                                 context, peiYangTools[i], false, true)
                             : WButton(
-                                onPressed: () => setState(
-                                    () => _addToHome(peiYangTools[i])),
+                                onPressed: () async {
+                                  await _addToHome(peiYangTools[i]);
+                                  if (mounted) setState(() {});
+                                },
                                 child: generateSelectCard(
                                     context, peiYangTools[i], false, false),
                               )
@@ -485,8 +490,11 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
                                           true),
                                     )
                                   : GestureDetector(
-                                      onTap: () => setState(() => _addToHome(
-                                          CommonPreferences.userTool.value[i])),
+                                      onTap: () async {
+                                        await _addToHome(CommonPreferences
+                                            .userTool.value[i]);
+                                        if (mounted) setState(() {});
+                                      },
                                       onLongPress: () {
                                         showDetailDialog(context, i);
                                       },

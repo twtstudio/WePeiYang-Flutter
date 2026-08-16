@@ -38,6 +38,7 @@ class _EditUserToolBottomSheetState extends State<EditUserToolBottomSheet> {
             eng,
             url));
       });
+      await CommonPreferences.userTool.save();
       await Future.delayed(Duration(seconds: 1));
       ToastProvider.success("创建成功喵~");
       WidgetsBinding.instance.addPostFrameCallback((_) {

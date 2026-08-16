@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -148,9 +150,10 @@ class CommonPreferences {
 
   /// 是否已完成课评网加入后的工具栏默认顺序迁移。
   /// 置位后即使 displayOrder 被用户改回旧默认值也不会再次迁移。
-  static final toolbarOrderMigrated = PrefsBean<bool>('toolbarOrderMigrated', false);
+  static final toolbarOrderMigrated =
+      PrefsBean<bool>('toolbarOrderMigrated', false);
 
-  static final displayedTool = PrefsBean<List<CardBean>>('displayedTool', [
+  static final displayedTool = CardBeanListPrefs('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
     CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
@@ -170,7 +173,7 @@ class CommonPreferences {
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
     //     HomeRouter.game)
   ]);
-  static final userTool = PrefsBean<List<CardBean>>('userTool', [
+  static final userTool = CardBeanListPrefs('userTool', [
     CardBean('assets/svg_pics/lake_butt_icons/sample1.png', 24.w, '图书馆',
         'Library', 'https://ic.lib.tju.edu.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/sample2.png', 24.w, '教务系统',
@@ -184,10 +187,10 @@ class CommonPreferences {
     // 旧用户未自定义时本地存的是旧默认顺序（不含新增索引），
     // 首次识别到后一次性迁移到新的默认顺序并置位标记，
     // 避免之后用户主动改回旧默认顺序时被再次迁移。
-    final effectiveOrder = (!toolbarOrderMigrated.value &&
-            rawOrder == _legacyDefaultDisplayOrder)
-        ? defaultDisplayOrder
-        : rawOrder;
+    final effectiveOrder =
+        (!toolbarOrderMigrated.value && rawOrder == _legacyDefaultDisplayOrder)
+            ? defaultDisplayOrder
+            : rawOrder;
 
     final order = <int>[];
 
@@ -288,6 +291,41 @@ class PrefsBean<T> with PreferencesUtil<T> {
   void set value(T newValue) => _setValue(newValue, _key);
 
   void clear() => _clearValue(_key);
+}
+
+/// SharedPreferences不能直接保存List<CardBean>
+/// CardBean转成JSON，以String形式存储
+class CardBeanListPrefs {
+  CardBeanListPrefs(this._key, List<CardBean> defaultValue)
+      : _defaultValue = List<CardBean>.unmodifiable(defaultValue);
+
+  final String _key;
+  final List<CardBean> _defaultValue;
+  List<CardBean>? _cachedValue;
+
+  List<CardBean> get value => _cachedValue ??= _read();
+
+  Future<void> save() async {
+    await CommonPreferences.sharedPref.setString(
+      _key,
+      jsonEncode(value.map((tool) => tool.toJson()).toList()),
+    );
+  }
+
+  List<CardBean> _read() {
+    final rawValue = CommonPreferences.sharedPref.getString(_key);
+    if (rawValue == null) return List<CardBean>.from(_defaultValue);
+
+    try {
+      final decoded = jsonDecode(rawValue) as List<dynamic>;
+      return decoded
+          .map((item) => CardBean.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+    } catch (_) {
+      // 缓存损坏时回退到默认工具，避免启动应用失败。
+      return List<CardBean>.from(_defaultValue);
+    }
+  }
 }
 
 mixin PreferencesUtil<T> {
