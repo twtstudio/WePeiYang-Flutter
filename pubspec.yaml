@@ -26,6 +26,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  miui_long_screenshot:
+    git:
+      url: https://github.com/MuRongPIG/Flutter_MIUI_LongScreenShot.git
+      ref: main
+
   async: ^2.13.1
   numberpicker: ^2.1.2
   

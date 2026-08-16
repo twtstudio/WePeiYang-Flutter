@@ -57,6 +57,9 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 
+# miui_long_screenshot: 静态方法由 JNI 通过 GetStaticMethodID 反射调用，R8 无法感知，需保留
+-keep class io.github.steven12138.miui_long_screenshot.** { *; }
+
 -dontwarn com.yalantis.ucrop.**
 -keep class com.yalantis.ucrop.** { *; }
 -keep interface com.yalantis.ucrop.** { *; }

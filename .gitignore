@@ -3,12 +3,19 @@
 *.log
 *.pyc
 *.swp
+*.orig
+*.rej
+*.tmp
+*.bak
+*.old
 .DS_Store
 .atom/
 .buildlog/
 .history
 .svn/
 .codex/
+CMakeCache.txt
+CMakeFiles/
 
 # IntelliJ related
 *.iml
