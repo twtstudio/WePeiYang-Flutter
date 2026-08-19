@@ -2,5 +2,5 @@
 <paths>
     <external-files-path
         name="Download"
-        path="downloads/apk/" />
+        path="Download/apk/" />
 </paths>
