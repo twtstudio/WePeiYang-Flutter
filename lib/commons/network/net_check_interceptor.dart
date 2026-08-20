@@ -19,7 +19,8 @@ class NetStatusListener {
 
   List<ConnectivityResult>? _status;
 
-  bool get hasNetwork => _instance._status?.any((r) => r != ConnectivityResult.none) ?? false;
+  bool get hasNetwork =>
+      _instance._status?.any((r) => r != ConnectivityResult.none) ?? true;
 }
 
 class NetCheckInterceptor extends InterceptorsWrapper {

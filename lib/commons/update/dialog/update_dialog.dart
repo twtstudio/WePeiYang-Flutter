@@ -32,6 +32,7 @@ extension UpdateDialogExt on UpdateDialog {
       clickMaskDismiss: false,
       backType: SmartBackType.block,
       tag: tag,
+      bindPage: false,
       builder: (BuildContext context) {
         return dialog;
       },
