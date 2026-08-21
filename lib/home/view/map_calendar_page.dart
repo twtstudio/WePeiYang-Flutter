@@ -59,12 +59,8 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   static const _campusMapAssets = [
-    'assets/images/school_map/wjl.png',
-    'assets/images/school_map/byy.png',
-  ];
-  static const _campusMapPreviewAssets = [
-    'assets/images/school_map/wjl_preview.png',
-    'assets/images/school_map/byy_preview.png',
+    'assets/images/school_map/wjl.jpeg',
+    'assets/images/school_map/byy.jpeg',
   ];
   static const _calendarAssets = [
     'assets/images/calender/first.jpg',
@@ -107,7 +103,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs.withSaving(
                       [],
-                      _campusMapPreviewAssets,
+                      _campusMapAssets,
                       0,
                       saveAssetList: _campusMapAssets,
                     ));
@@ -152,7 +148,7 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
                     arguments: LocalImageViewPageArgs.withSaving(
                       [],
-                      _campusMapPreviewAssets,
+                      _campusMapAssets,
                       1,
                       saveAssetList: _campusMapAssets,
                     ));
