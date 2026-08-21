@@ -9,15 +9,21 @@ import java.io.File
 
 object ImageSave {
     fun savePictureToAlbum(context: Context, filePath: String) {
+        val file = File(filePath)
+        val mimeType = if (file.extension.equals("png", ignoreCase = true)) {
+            "image/png"
+        } else {
+            "image/jpeg"
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Android Q把文件插入到系统图库
             val values = ContentValues()
-            val file = File(filePath)
             WbyImageSavePlugin.log("path : $filePath")
             values.put(MediaStore.Images.Media.DESCRIPTION, "This is an qr image")
             values.put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            values.put(MediaStore.Images.Media.TITLE, "Image.jpg")
+            values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+            values.put(MediaStore.Images.Media.TITLE, file.nameWithoutExtension)
             values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/微北洋")
 
             val external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -36,7 +42,7 @@ object ImageSave {
             MediaScannerConnection(context, null).apply {
                 connect()
                 if (isConnected) {
-                    scanFile(filePath, "image/jpeg")
+                    scanFile(filePath, mimeType)
                 }
             }
         }

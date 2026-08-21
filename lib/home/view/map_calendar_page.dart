@@ -59,8 +59,12 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   static const _campusMapAssets = [
-    'assets/images/school_map/wjl.jpeg',
-    'assets/images/school_map/byy.jpeg',
+    'assets/images/school_map/wjl.png',
+    'assets/images/school_map/byy.png',
+  ];
+  static const _campusMapPreviewAssets = [
+    'assets/images/school_map/wjl_preview.png',
+    'assets/images/school_map/byy_preview.png',
   ];
   static const _calendarAssets = [
     'assets/images/calender/first.jpg',
@@ -101,7 +105,12 @@ class MapAndCalenderState extends State<MapAndCalender> {
             WButton(
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: LocalImageViewPageArgs([], _campusMapAssets, 0));
+                    arguments: LocalImageViewPageArgs.withSaving(
+                      [],
+                      _campusMapPreviewAssets,
+                      0,
+                      saveAssetList: _campusMapAssets,
+                    ));
               },
               child: Stack(
                 children: [
@@ -141,7 +150,12 @@ class MapAndCalenderState extends State<MapAndCalender> {
             WButton(
               onPressed: () {
                 Navigator.pushNamed(context, FeedbackRouter.localImageView,
-                    arguments: LocalImageViewPageArgs([], _campusMapAssets, 1));
+                    arguments: LocalImageViewPageArgs.withSaving(
+                      [],
+                      _campusMapPreviewAssets,
+                      1,
+                      saveAssetList: _campusMapAssets,
+                    ));
               },
               child: Stack(
                 children: [
@@ -199,7 +213,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
-                  arguments: LocalImageViewPageArgs([], _calendarAssets, 0),
+                  arguments: LocalImageViewPageArgs.withSaving(
+                      [], _calendarAssets, 0,
+                      saveAssetList: _calendarAssets),
                 );
               },
               child: Stack(
@@ -240,7 +256,9 @@ class MapAndCalenderState extends State<MapAndCalender> {
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.localImageView,
-                  arguments: LocalImageViewPageArgs([], _calendarAssets, 1),
+                  arguments: LocalImageViewPageArgs.withSaving(
+                      [], _calendarAssets, 1,
+                      saveAssetList: _calendarAssets),
                 );
               },
               child: Stack(
