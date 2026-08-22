@@ -496,7 +496,7 @@ class _NCommentCardState extends State<NCommentCard>
     }
 
     var commentImage = LayoutBuilder(builder: (context, constraints) {
-      final imageWidth = constraints.maxWidth.isFinite
+      final imageWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
           ? constraints.maxWidth
           : WePeiYangApp.screenWidth;
       return Padding(

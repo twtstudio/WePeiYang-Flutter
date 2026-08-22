@@ -201,9 +201,9 @@ class _WpyPicState extends State<WpyPic> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final width = widget.width ??
+      double? width = widget.width ??
           (constraints.hasTightWidth ? constraints.maxWidth : null);
-      final height = widget.height ??
+      double? height = widget.height ??
           (constraints.hasTightHeight ? constraints.maxHeight : null);
 
       if (widget.imageUrl.trim().isEmpty) {
@@ -212,6 +212,12 @@ class _WpyPicState extends State<WpyPic> {
           height: height ?? widget.holderHeight,
           child: WpyPic.errorPlaceHolder,
         );
+      }
+
+      // 接受null自动缩放 但是不应该接受0
+      if (width == 0 || height == 0) {
+        width = widget.holderHeight;
+        height = widget.holderHeight;
       }
 
       if (widget.imageUrl.startsWith('assets')) {
