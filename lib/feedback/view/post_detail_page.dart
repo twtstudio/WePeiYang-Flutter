@@ -166,7 +166,14 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   _onLoading() {
     currentPage++;
-    _getComments(onSuccess: (comments) {
+    final int loadingPage = currentPage;
+    _getComments(
+      onSuccess: (comments) {
+      // 如果 currentPage 已被重置，则丢弃旧结果
+      // 偶发竞态只可能在这里发生
+      if (loadingPage != currentPage) {
+        return;
+      }
       if (comments.length == 0) {
         _refreshController.loadNoData();
         currentPage--;

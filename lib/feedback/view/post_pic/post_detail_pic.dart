@@ -73,21 +73,28 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, layout) {
+        // 为saveWidth兜底 减去24逻辑像素是因为每个post_card有左右12像素padding
+        final saveWidth = (layout.maxWidth.isFinite && layout.maxWidth > 0)
+                          ? layout.maxWidth
+                          : MediaQuery.of(context).size.width - 2*12;
         if (_hasError) {
-          return _buildErrorHint(layout.maxWidth);
+          return _buildErrorHint(saveWidth);
         }
-        if (_isLoading || _imageInfo == null) {
-          return _buildPlaceholder(layout.maxWidth);
+        if (_isLoading) {
+          return _buildPlaceholder(saveWidth);
+        }
+        if (_imageInfo == null || _imageInfo!.height <= 0 || _imageInfo!.width <= 0) {
+          return _buildErrorHint(saveWidth);
         }
 
         final isLongImage =
             _imageInfo!.height / _imageInfo!.width > 2.0;
 
         final imageHeight =
-            _imageInfo!.height / _imageInfo!.width * layout.maxWidth;
+            _imageInfo!.height / _imageInfo!.width * saveWidth;
         final displayImage = WpyPic(
           picBaseUrl + 'origin/' + widget.imgUrl,
-          width: layout.maxWidth,
+          width: saveWidth,
           height: imageHeight,
           fit: BoxFit.fitWidth,
           withHolder: true,
@@ -162,7 +169,7 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
 
   Widget _buildCollapsedImageView(BuildContext context, Widget image) {
     return SizedBox(
-      height: WePeiYangApp.screenWidth * 1.2,
+      height: (WePeiYangApp.screenWidth * 1.2).clamp(100.0, double.infinity),
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(radius)),
         child: Stack(
