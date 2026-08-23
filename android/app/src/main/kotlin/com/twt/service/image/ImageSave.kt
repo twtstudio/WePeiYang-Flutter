@@ -5,18 +5,22 @@ import android.content.Context
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.provider.MediaStore
+import android.webkit.MimeTypeMap
 import java.io.File
 
 object ImageSave {
     fun savePictureToAlbum(context: Context, filePath: String) {
+        val file = File(filePath)
+        val mimeType = MimeTypeMap.getSingleton()
+            .getMimeTypeFromExtension(file.extension.lowercase()) ?: "image/jpeg"
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Android Q把文件插入到系统图库
             val values = ContentValues()
-            val file = File(filePath)
             WbyImageSavePlugin.log("path : $filePath")
             values.put(MediaStore.Images.Media.DESCRIPTION, "This is an qr image")
             values.put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
             values.put(MediaStore.Images.Media.TITLE, file.nameWithoutExtension)
             values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/微北洋")
 
@@ -36,7 +40,7 @@ object ImageSave {
             MediaScannerConnection(context, null).apply {
                 connect()
                 if (isConnected) {
-                    scanFile(filePath, "image/jpeg")
+                    scanFile(filePath, mimeType)
                 }
             }
         }

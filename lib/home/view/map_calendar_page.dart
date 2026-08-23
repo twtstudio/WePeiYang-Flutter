@@ -59,8 +59,8 @@ class MapAndCalender extends StatefulWidget {
 
 class MapAndCalenderState extends State<MapAndCalender> {
   static const _campusMapAssets = [
-    'assets/images/school_map/wjl.jpeg',
-    'assets/images/school_map/byy.jpeg',
+    'assets/images/school_map/wjl.png',
+    'assets/images/school_map/byy.png',
   ];
   static const _calendarAssets = [
     'assets/images/calender/first.jpg',
