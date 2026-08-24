@@ -137,6 +137,9 @@ class FeedbackService with AsyncTimer {
     return false;
   }
 
+  static List<Floor> filterBlockedFloors(Iterable<Floor> floors) => floors
+      .where((item) => !CommentBlockCheck(item))
+      .toList();
 
   static getTokenByPw(
     String user,
@@ -511,7 +514,7 @@ class FeedbackService with AsyncTimer {
         },
       );
       final floor = FloorList.fromJson(response.data['data']);
-      onResult(floor.list);
+      onResult(filterBlockedFloors(floor.list));
     } on DioException catch (e) {
       onFailure(e);
     }
@@ -560,7 +563,7 @@ class FeedbackService with AsyncTimer {
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         officialCommentList.add(Floor.fromJson(json));
       }
-      onSuccess(officialCommentList);
+      onSuccess(filterBlockedFloors(officialCommentList));
     } on DioException catch (e) {
       onFailure(e);
     }
