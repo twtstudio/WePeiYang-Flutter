@@ -66,6 +66,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   List<Floor> _officialCommentList = [];
   bool _showPostCard = true;
   int currentPage = 1;
+  bool _hasReachedLastCommentPage = false;
   int rating = 0;
   final onlyOwner = ValueNotifier<int>(0);
   final order =
@@ -137,6 +138,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     bool updatePageStatus = false,
   }) {
     currentPage = 1;
+    _hasReachedLastCommentPage = false;
     _refreshController.resetNoData();
     setState(() {
       _showPostCard = isInitial;
@@ -144,13 +146,18 @@ class _PostDetailPageState extends State<PostDetailPage>
       if (updatePageStatus) status = DetailPageStatus.loading;
     });
     _initPostAndComments(
-      onSuccess: (comments) {
+      onSuccess: (comments, lastPage, hasReachedEnd) {
         if (!mounted) return;
         setState(() {
           _showPostCard = true;
           _commentList = comments;
+          currentPage = lastPage;
+          _hasReachedLastCommentPage = hasReachedEnd;
           if (updatePageStatus) status = DetailPageStatus.idle;
         });
+        if (hasReachedEnd) {
+          _refreshController.loadNoData();
+        }
         _refreshController.refreshCompleted();
       },
       onFail: () {
@@ -165,26 +172,30 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   _onLoading() {
-    currentPage++;
-    final int loadingPage = currentPage;
-    _getComments(
-      onSuccess: (comments) {
-      // 如果 currentPage 已被重置，则丢弃旧结果
-      // 偶发竞态只可能在这里发生
-      if (loadingPage != currentPage) {
-        return;
-      }
-      if (comments.length == 0) {
-        _refreshController.loadNoData();
-        currentPage--;
-      } else {
-        _commentList.addAll(comments);
-        _refreshController.loadComplete();
-      }
-    }, onFail: () {
-      _refreshController.loadFailed();
-      currentPage--;
-    });
+    if (_hasReachedLastCommentPage) {
+      _refreshController.loadNoData();
+      return;
+    }
+
+    final loadingPage = currentPage + 1;
+    _loadVisibleComments(
+      startPage: loadingPage,
+      minimumCount: 1,
+      onSuccess: (comments, lastPage, hasReachedEnd) {
+        if (!mounted || loadingPage != currentPage + 1) return;
+        setState(() {
+          _commentList.addAll(comments);
+          currentPage = lastPage;
+          _hasReachedLastCommentPage = hasReachedEnd;
+        });
+        if (hasReachedEnd) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.loadComplete();
+        }
+      },
+      onFail: _refreshController.loadFailed,
+    );
   }
 
   void _refreshAfterCommentSent() {
@@ -209,27 +220,59 @@ class _PostDetailPageState extends State<PostDetailPage>
     return true;
   }
 
-  // 逻辑有点问题
   _initPostAndComments(
-      {required Function(List<Floor>) onSuccess, required Function onFail}) {
+      {required Function(List<Floor>, int, bool) onSuccess,
+      required Function onFail}) {
     _initPost(onFail, rebuild: false).then((success) {
-      if (success) {
-        _getOfficialComment(onFail: onFail, rebuild: false);
-        _getComments(
+      if (!success) return;
+
+      _getOfficialComment(onFail: onFail, rebuild: false);
+      _loadVisibleComments(
+        startPage: 1,
+        minimumCount: 10,
+        onSuccess: onSuccess,
+        onFail: onFail,
+      );
+    });
+  }
+
+  _loadVisibleComments({
+    required int startPage,
+    required int minimumCount,
+    required Function(List<Floor>, int, bool) onSuccess,
+    required Function onFail,
+    List<Floor>? loadedComments,
+  }) {
+    final comments = loadedComments ?? <Floor>[];
+    _getComments(
+      current: startPage,
+      rebuild: false,
+      onSuccess: (pageComments, totalFloor) {
+        comments.addAll(pageComments);
+        final hasReachedEnd = startPage >= totalFloor;
+
+        if (comments.length >= minimumCount || hasReachedEnd) {
+          onSuccess.call(comments, startPage, hasReachedEnd);
+          return;
+        }
+
+        _loadVisibleComments(
+          startPage: startPage + 1,
+          minimumCount: minimumCount,
           onSuccess: onSuccess,
           onFail: onFail,
-          current: 1,
-          rebuild: false,
+          loadedComments: comments,
         );
-      }
-    });
+      },
+      onFail: onFail,
+    );
   }
 
   _initCommentsOnly(
       {required Function(List<Floor>) onSuccess, required Function onFail}) {
     _getOfficialComment(onFail: onFail, rebuild: false);
     _getComments(
-      onSuccess: onSuccess,
+      onSuccess: (comments, _) => onSuccess.call(comments),
       onFail: onFail,
       current: 1,
       rebuild: false,
@@ -261,7 +304,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   ScreenshotController selectedScreenshotController = ScreenshotController();
 
   _getComments(
-      {required Function(List<Floor>) onSuccess,
+      {required Function(List<Floor>, int) onSuccess,
       required Function onFail,
       int? current,
       bool rebuild = true}) {
@@ -271,7 +314,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       order: order.value,
       onlyOwner: onlyOwner.value,
       onSuccess: (comments, totalFloor) {
-        onSuccess.call(comments);
+        onSuccess.call(comments, totalFloor);
         if (rebuild && mounted) setState(() {});
       },
       onFailure: (e) {
