@@ -18,8 +18,9 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-
-        let controller = window.rootViewController as! FlutterViewController
+        guard let controller = window?.rootViewController as? FlutterViewController else {
+            return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        }
         configureChannels(controller: controller)
 
         // 友盟sdk
@@ -56,7 +57,10 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {
-        let controller = window.rootViewController as! FlutterViewController
+        guard let controller = window?.rootViewController as? FlutterViewController else {
+            completionHandler(false)
+            return
+        }
         handleShortcutItem(shortcutItem, controller: controller)
         completionHandler(true)
     }
