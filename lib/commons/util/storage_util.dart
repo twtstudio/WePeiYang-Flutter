@@ -47,4 +47,20 @@ class StorageUtil {
     final file = await File("${dir.path}/$filename").writeAsBytes(res.data);
     return file.path;
   }
+
+  /// 清除应用临时缓存。返回false表示有文件正在使用，未能完全清除。
+  static Future<bool> clearTemporaryCache() async {
+    final cacheDir = await getTemporaryDirectory();
+    if (!await cacheDir.exists()) return true;
+
+    var cleared = true;
+    await for (final entity in cacheDir.list(followLinks: false)) {
+      try {
+        await entity.delete(recursive: true);
+      } catch (_) {
+        cleared = false;
+      }
+    }
+    return cleared;
+  }
 }
