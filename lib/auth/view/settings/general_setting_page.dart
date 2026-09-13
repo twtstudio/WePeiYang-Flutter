@@ -24,6 +24,25 @@ class GeneralSettingPage extends StatefulWidget {
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
+  late Future<int> _cacheSize;
+
+  @override
+  void initState() {
+    super.initState();
+    _cacheSize = StorageUtil.getTemporaryCacheSize();
+  }
+
+  String _formatCacheSize(int bytes) {
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    var size = bytes.toDouble();
+    var unit = 0;
+    while (size >= 1024 && unit < units.length - 1) {
+      size /= 1024;
+      unit++;
+    }
+    return '${size.toStringAsFixed(unit == 0 ? 0 : 1)} ${units[unit]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
@@ -340,6 +359,12 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       }
                     } catch (e) {
                       ToastProvider.error("清除缓存失败: $e");
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          _cacheSize = StorageUtil.getTemporaryCacheSize();
+                        });
+                      }
                     }
                   },
                   child: Row(
@@ -355,6 +380,16 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           ],
                         ),
                       ),
+                      FutureBuilder<int>(
+                        future: _cacheSize,
+                        builder: (context, snapshot) {
+                          final text = snapshot.hasData
+                              ? _formatCacheSize(snapshot.data!)
+                              : '—';
+                          return Text(text, style: hintTextStyle);
+                        },
+                      ),
+                      SizedBox(width: 8.w),
                       arrow,
                       SizedBox(width: 15.w),
                     ],

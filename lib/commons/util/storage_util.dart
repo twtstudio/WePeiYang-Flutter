@@ -48,6 +48,21 @@ class StorageUtil {
     return file.path;
   }
 
+  /// 统计临时缓存目录中文件的总字节数
+  static Future<int> getTemporaryCacheSize() async {
+    final cacheDir = await getTemporaryDirectory();
+    if (!await cacheDir.exists()) return 0;
+
+    var totalBytes = 0;
+    await for (final entity
+        in cacheDir.list(recursive: true, followLinks: false)) {
+      if (entity is File) {
+        totalBytes += await entity.length();
+      }
+    }
+    return totalBytes;
+  }
+
   /// 清除应用临时缓存。返回false表示有文件正在使用，未能完全清除。
   static Future<bool> clearTemporaryCache() async {
     final cacheDir = await getTemporaryDirectory();
