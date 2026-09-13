@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemNavigator, SystemUiOverlayStyle;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
@@ -66,27 +64,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     CommonPreferences.showXiaotianTabNotifier
         .addListener(_handleXiaotianTabVisibilityChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<PushManager>().initGeTuiSdk();
-
       final manager = context.read<PushManager>();
-      final cid = (await manager.getCid()) ?? '';
-      final now = DateTime.now();
-      final lastTime = DateTime.tryParse(CommonPreferences.pushTime.value) ??
-          now.subtract(Duration(days: 3));
-      if (cid != CommonPreferences.pushCid.value ||
-          CommonPreferences.userNumber.value !=
-              CommonPreferences.pushUser.value ||
-          now.difference(lastTime).inDays >= 3) {
-        AuthService.updateCid(cid, onResult: (_) {
-          debugPrint('cid $cid 更新成功');
-          CommonPreferences.pushCid.value = cid;
-          CommonPreferences.pushUser.value = CommonPreferences.userNumber.value;
-          CommonPreferences.pushTime.value =
-              DateFormat('yyyy-MM-dd').format(now);
-        }, onFailure: (_) {
-          debugPrint('cid $cid 更新失败');
-        });
-      }
+      await manager.initGeTuiSdk();
+
+      // The native callback/WorkManager path owns registration. Waiting here
+      // only ensures vendor channels have time to produce a CID before the
+      // rest of the home page starts loading.
+      if (manager.openPush) await manager.waitForCid();
 
       // 检查当前是否有未处理的事件
       checkEventList(context);

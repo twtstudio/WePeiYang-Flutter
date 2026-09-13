@@ -72,6 +72,13 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInt()
         versionName = flutterVersionName
+        // Keep the profile variant (which has no explicit buildType block)
+        // valid and default it to the production push application.
+        resValue("string", "label", "微北洋")
+        manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+        buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+        buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
+        buildConfigField("Boolean", "LOG_OUTPUT", "false")
         manifestPlaceholders.putAll(mapOf(
             "HUAWEI_APP_ID" to "103402255",
             "XIAOMI_APP_ID" to "2882303761517785783",
@@ -112,6 +119,8 @@ android {
             when (environment) {
                 "ONLINE_TEST" -> {
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"ONLINE_TEST\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     resValue("string", "label", "微北洋$environment")
                     isMinifyEnabled = false
@@ -119,6 +128,8 @@ android {
                 }
                 "DEVELOP" -> {
                     manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+                    buildConfigField("String", "PUSH_APP_ID", "\"bj16oBtQ3VAvqPbGtEHB69\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"DEVELOP\"")
                     applicationIdSuffix = ".develop"
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     resValue("string", "label", "微北洋$environment")
@@ -127,6 +138,11 @@ android {
                 }
                 "PREVIEW" -> {
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    // opencenter currently accepts RELEASE/ONLINE_TEST/DEVELOP;
+                    // preview uses the online-test selector until it gets its
+                    // own server-side environment.
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"ONLINE_TEST\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     applicationIdSuffix = ".preview"
                     resValue("string", "label", "微北洋Preview")
@@ -140,6 +156,8 @@ android {
                 else -> {
                     environment = "RELEASE"
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     resValue("string", "label", "微北洋")
                     isMinifyEnabled = true
@@ -181,11 +199,15 @@ android {
                 "RELEASE" -> {
                     resValue("string", "label", "微北洋DEBUG_RELEASE")
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
                 }
                 else -> {
                     applicationIdSuffix = ".develop"
                     resValue("string", "label", "微北洋DEBUG_DEVELOP")
                     manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+                    buildConfigField("String", "PUSH_APP_ID", "\"bj16oBtQ3VAvqPbGtEHB69\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"DEVELOP\"")
                 }
             }
         }

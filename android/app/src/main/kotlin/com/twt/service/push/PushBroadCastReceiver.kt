@@ -7,13 +7,11 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.*
 import com.twt.service.MainActivity
 import com.twt.service.R
 import com.twt.service.push.model.FeedbackMessage
 import com.twt.service.push.model.MailBoxMessage
 import com.twt.service.push.model.MessageData
-import com.twt.service.push.server.PushCIdWorker
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 // TODO: 当应用与个推服务器连接，且处于后台时，若发送透传，需要转换成notification
@@ -36,19 +34,12 @@ class PushBroadCastReceiver(
 //                    }
 //                }
                 WbyPushPlugin.CID -> {
-                    val cId = intent.getStringExtra("cid")
+                    val cId = intent.getStringExtra("cid")?.trim()?.takeIf { it.isNotEmpty() }
                     WbyPushPlugin.log("PushBroadCastReceiver receive cid :" + (cId ?: "no data"))
-                    val workManager = WorkManager.getInstance(binding.activity.applicationContext)
-                    val constraints = Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .setRequiresStorageNotLow(true)
-                        .build()
-                    val task = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
-                        .addTag("1")
-                        .setInputData(workDataOf("cid" to cId))
-                        .setConstraints(constraints)
-                        .build()
-                    workManager.enqueueUniqueWork("download", ExistingWorkPolicy.KEEP, task)
+                    cId?.let {
+                        PushCidStore.save(binding.activity.applicationContext, it)
+                        PushCidSync.enqueue(binding.activity.applicationContext, it)
+                    }
                 }
                 else -> {}
             }

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.PushManager
@@ -51,6 +53,8 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
     // 个推推送服务单例
     private val pushManager by lazy { PushManager.getInstance() }
+    private val cidHandler = Handler(Looper.getMainLooper())
+    private var cidPollAttempts = 0
 
     // 请求通知权限回调
     private var goToPushPermissionPage = false
@@ -67,6 +71,11 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         runCatching(::initSdkWhenOpenApp).onFailure {
             log("init GE TUI SDK when open app failure : $it")
         }
+    }
+
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        cidHandler.removeCallbacksAndMessages(null)
+        super.onDetachedFromEngine(binding)
     }
 
     /**
@@ -105,6 +114,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         FlutterSharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
             ?.apply {
                 pushManager.initialize(context)
+                scheduleCidRefresh()
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
@@ -128,6 +138,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             if (goToPushPermissionPage) {
                 goToPushPermissionPage = false
                 checkAndTurnOnPushService { result ->
+                    PushCidSync.cancel(context)
                     FlutterSharePreference.canPush = CanPushType.Not
                     result.success("refuse open push")
                     log("don't allow permission")
@@ -138,6 +149,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             // TODO：1.看看在左滑通知关闭权限是否也有效  2.告知用户推送的重要性
             if (FlutterSharePreference.canPush == CanPushType.Want && !isNotificationEnabled) {
                 FlutterSharePreference.canPush = CanPushType.Not
+                PushCidSync.cancel(context)
                 channel.invokeMethod("refreshPushPermission", null)
             }
         }.onFailure {
@@ -173,13 +185,50 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      * 所以如果返回 null，则代表广义未成功初始化推送
      */
     private fun getCid(result: MethodChannel.Result) {
-        if (pushManager.isPushTurnedOn(context)) {
-            pushManager.getClientid(context)
+        val pushEnabled = pushManager.isPushTurnedOn(context)
+        val cid = if (pushEnabled) {
+            pushManager.getClientid(context)?.trim()?.takeIf { it.isNotEmpty() }
+                ?: PushCidStore.get(context)
         } else {
             null
-        }.let {
-            result.success(it)
         }
+        if (pushEnabled) cid?.let {
+            PushCidStore.save(context, it)
+            PushCidSync.enqueue(context, it)
+        }
+        result.success(cid)
+    }
+
+    /**
+     * Some vendor channels deliver the CID asynchronously and may not invoke
+     * the callback until several seconds after initialize(). Poll the SDK as a
+     * fallback, while keeping the callback path as the primary source.
+     */
+    private fun scheduleCidRefresh() {
+        cidPollAttempts = 0
+        cidHandler.removeCallbacksAndMessages(null)
+        val poll = object : Runnable {
+            override fun run() {
+                if (!pushManager.isPushTurnedOn(context)) {
+                    log("CID sync skipped because push is disabled")
+                    return
+                }
+                val cid = pushManager.getClientid(context)?.trim()
+                    ?.takeIf { it.isNotEmpty() }
+                if (cid != null) {
+                    PushCidStore.save(context, cid)
+                    PushCidSync.enqueue(context, cid)
+                    log("CID ready")
+                    return
+                }
+                if (cidPollAttempts++ < 12) {
+                    cidHandler.postDelayed(this, 1000L)
+                } else {
+                    log("CID unavailable after SDK initialization")
+                }
+            }
+        }
+        cidHandler.post(poll)
     }
 
     /**
@@ -206,6 +255,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
             runCatching {
                 pushManager.initialize(context)
+                scheduleCidRefresh()
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
@@ -233,6 +283,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             if (pushManager.isPushTurnedOn(context)) {
                 pushManager.turnOffPush(context)
             }
+            PushCidSync.cancel(context)
             FlutterSharePreference.canPush = CanPushType.Not
         }.onSuccess {
             log("turn off push service success")
@@ -251,6 +302,12 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             pushManager.turnOnPush(context)
         }
         FlutterSharePreference.canPush = CanPushType.Want
+        // Permission may have been granted after the initial SDK callback.
+        // Re-read/poll the CID so enabling push also repairs a missed upload.
+        pushManager.getClientid(context)?.trim()?.takeIf { it.isNotEmpty() }?.let {
+            PushCidStore.save(context, it)
+            PushCidSync.enqueue(context, it)
+        } ?: scheduleCidRefresh()
     }
 
     /**

@@ -25,7 +25,8 @@ object FlutterSharePreference {
      */
     val authToken: String?
         get() = flutterSharedPreferences?.getString(authTokenKey, null).also {
-            LogUtil.d(TAG, "authToken : $it")
+            // Never write the bearer token itself to logs (including debug logs).
+            LogUtil.d(TAG, "authToken available: ${!it.isNullOrEmpty()}")
         }
 
     /**

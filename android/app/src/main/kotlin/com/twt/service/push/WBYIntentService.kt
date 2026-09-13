@@ -23,8 +23,16 @@ class WBYIntentService : GTIntentService() {
      */
     override fun onReceiveClientId(p0: Context?, clientid: String?) {
         Log.e(WbyPushPlugin.TAG, "onReceiveClientId -> clientid = $clientid")
-        if (!clientid.isNullOrEmpty()) {
-            val intent = IntentUtil.cid(clientid)
+        val normalizedCid = clientid?.trim()?.takeIf { it.isNotEmpty() }
+        if (normalizedCid != null) {
+            // The callback may arrive before the Flutter activity registers its
+            // local receiver. Persist first so the next foreground sync can
+            // still upload the CID.
+            PushCidStore.save(this, normalizedCid)
+            // Schedule directly from the SDK callback. The Flutter activity
+            // may not have registered the local broadcast receiver yet.
+            PushCidSync.enqueue(this, normalizedCid)
+            val intent = IntentUtil.cid(normalizedCid)
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
     }

@@ -186,6 +186,18 @@ class PushManager extends ChangeNotifier {
     }
   }
 
+  /// Wait briefly for vendor push channels that return the CID asynchronously.
+  Future<String?> waitForCid(
+      {Duration timeout = const Duration(seconds: 15)}) async {
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      final cid = await getCid();
+      if (cid != null && cid.trim().isNotEmpty) return cid.trim();
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    return await getCid();
+  }
+
   Future<void> cancelNotification(
       int id, Function success, Function error) async {
     try {
