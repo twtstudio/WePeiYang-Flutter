@@ -88,8 +88,16 @@ void main() async {
       });
     }
 
-    /// 清空图片缓存
-    await WpyPic.clearAllCache();
+    /// 临时缓存超过1GB时，打开应用自动清理缓存
+    const maxCacheSize = 1024 * 1024 * 1024;
+    try {
+      final cacheSize = await StorageUtil.getTemporaryCacheSize();
+      if (cacheSize > maxCacheSize) {
+        await StorageUtil.clearTemporaryCache();
+      }
+    } catch (e, stack) {
+      Log.e(e, stack, 'cache');
+    }
 
     /// 初始化sharedPreference
     await CommonPreferences.init();
