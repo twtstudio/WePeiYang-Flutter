@@ -933,8 +933,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         GestureDetector(
             onTap: () {
               if (order.value != 2) {
+                //order 监听器已负责刷新，避免重复 requestRefresh
                 order.value = 2;
-                _refreshController.requestRefresh();
               }
             },
             child: ValueListenableBuilder<int>(
