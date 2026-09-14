@@ -1,7 +1,6 @@
 package com.twt.service.push
 
 import android.content.Context
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.GTIntentService
 import com.igexin.sdk.PushConsts
@@ -22,7 +21,6 @@ class WBYIntentService : GTIntentService() {
      * 成功获取cid回调
      */
     override fun onReceiveClientId(p0: Context?, clientid: String?) {
-        Log.e(WbyPushPlugin.TAG, "onReceiveClientId -> clientid = $clientid")
         val normalizedCid = clientid?.trim()?.takeIf { it.isNotEmpty() }
         if (normalizedCid != null) {
             // The callback may arrive before the Flutter activity registers its
@@ -43,26 +41,13 @@ class WBYIntentService : GTIntentService() {
      * 暂时不用透传，不过先写到这里，因为一些重要通知肯定要透传
      */
     override fun onReceiveMessageData(context: Context?, msg: GTTransmitMessage?) {
-        val appid = msg?.appid
         val taskid = msg?.taskId
         val messageid = msg?.messageId
-        val payload = msg?.payload
-        val pkg = msg?.pkgName
-        val cid = msg?.clientId
 
         // 第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
         // val result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001)
         // Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
-        WbyPushPlugin.log(
-            """
-            onReceiveMessageData -> appid = $appid
-            taskid = $taskid
-            messageid = $messageid
-            payload = $payload
-            pkg = $pkg
-            cid = $cid
-             """.trimIndent()
-        )
+        WbyPushPlugin.log("push transmission received taskPresent=${!taskid.isNullOrBlank()} messagePresent=${!messageid.isNullOrBlank()}")
 
 //        if (payload == null) {
 //            Log.e(WbyPushPlugin.TAG, "receiver payload = null")
@@ -82,7 +67,7 @@ class WBYIntentService : GTIntentService() {
 
     override fun onReceiveCommandResult(context: Context?, cmdMessage: GTCmdMessage?) {
         // TODO: 命令回执
-        WbyPushPlugin.log("onReceiveCommandResult -> $cmdMessage")
+        WbyPushPlugin.log("push command result action=${cmdMessage?.action}, present=${cmdMessage != null}")
         /* action 结果值说明
        10009：设置标签的结果回执
        10010：绑定别名的结果回执
@@ -108,32 +93,15 @@ class WBYIntentService : GTIntentService() {
      * 通知到达时回调该接口（仅支持个推 SDK 通道下发的通知）
      */
     override fun onNotificationMessageArrived(p0: Context?, message: GTNotificationMessage?) {
-        WbyPushPlugin.log(
-            "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
-        )
+        WbyPushPlugin.log("notification arrived taskPresent=${!message?.taskId.isNullOrBlank()}")
     }
 
     /**
      * 通知点击回调接口（仅支持个推 SDK 通道下发的通知）
      */
     override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
-        WbyPushPlugin.log(
-            "onNotificationMessageArrived -> "
-                    + "appid = " + message?.appid
-                    + "\ntaskid = " + message?.taskId
-                    + "\nmessageid = " + message?.messageId
-                    + "\npkg = " + message?.pkgName
-                    + "\ncid = " + message?.clientId
-                    + "\ncontent = " + message?.content
-                    + "\ntitle = " + message?.title
-        )
+        PushClickReporter.report(p0, message?.taskId, message?.messageId, message?.clientId)
+        WbyPushPlugin.log("notification click reported taskPresent=${!message?.taskId.isNullOrBlank()}")
     }
 
     /**

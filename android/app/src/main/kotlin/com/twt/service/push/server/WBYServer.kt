@@ -52,6 +52,19 @@ interface WBYServerAPI {
         @Field("installId") installId: String,
     ): WBYBaseData<Any>
 
+    @FormUrlEncoded
+    @POST("notification/delivery/click")
+    suspend fun reportPushClick(
+        @Header("token") token: String,
+        @Field("cid") cid: String,
+        @Field("taskId") taskId: String,
+        @Field("messageId") messageId: String,
+        @Field("appId") appId: String,
+        @Field("environment") environment: String,
+        @Field("platform") platform: String,
+        @Field("installId") installId: String,
+    ): WBYBaseData<Any>
+
     @POST("notification/cid")
     suspend fun pushCId(
             @Query("cid") cid: String,

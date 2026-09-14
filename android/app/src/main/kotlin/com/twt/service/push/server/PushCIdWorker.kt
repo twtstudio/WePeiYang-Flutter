@@ -33,13 +33,17 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
                 registerDevice(cid)
             }
             WbyPushPlugin.log("CID registration response code=${response.error_code}")
-            return if (response.error_code == 0) Result.success() else Result.failure()
+            return when {
+                response.error_code == 0 -> Result.success()
+                response.error_code in 40000..49999 -> Result.failure()
+                else -> retryOrFailure()
+            }
         } catch (e: retrofit2.HttpException) {
             WbyPushPlugin.log("CID registration HTTP ${e.code()}")
-            return if (e.code() in 400..499) Result.failure() else Result.retry()
+            return if (e.code() in 400..499) Result.failure() else retryOrFailure()
         } catch (e: java.io.IOException) {
             WbyPushPlugin.log("CID registration network error")
-            return Result.retry()
+            return retryOrFailure()
         } catch (e: Exception) {
             WbyPushPlugin.log("CID registration failed: ${e.javaClass.simpleName}")
             // Unknown/serialization errors are not expected to recover by
@@ -47,6 +51,10 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
             // enqueue a fresh request.
             return Result.failure()
         }
+    }
+
+    private fun retryOrFailure(): Result {
+        return if (runAttemptCount < MAX_ATTEMPTS) Result.retry() else Result.failure()
     }
 
     private suspend fun registerDevice(cid: String): WBYBaseData<Any> {
@@ -74,5 +82,9 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
             WbyPushPlugin.log("new CID registration endpoint unavailable; using legacy endpoint")
             WBYServerAPI.pushCId(cid)
         }
+    }
+
+    companion object {
+        private const val MAX_ATTEMPTS = 5
     }
 }

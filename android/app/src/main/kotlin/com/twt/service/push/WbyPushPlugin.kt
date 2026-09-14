@@ -514,7 +514,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      * false: 未拦截到对应事件
      */
     private fun handleIntent(intent: Intent): Boolean {
-        log("WbyPushPlugin handle intent : $intent")
+        log("WbyPushPlugin handle intent action=${intent.action}, dataPresent=${intent.data != null}")
 
         // 走 url scheme 打开微北洋
         intent.data?.let { uri ->
@@ -669,7 +669,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 // 跳转问题详情页面
                 call.argument<Int>("question_id")?.let { id ->
                     val intentUri = IntentUtil.getQsltQuestionUri(id, context)
-                    log("get feedback intent success : $intentUri")
+                    log("get feedback intent success")
                     result.success(intentUri)
                     return
                 }
@@ -677,7 +677,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 call.argument<String>("page")?.takeIf { it == "summary" }?.let {
                     val intentUri = IntentUtil.getQsltSummaryUri(context)
 
-                    log("get feedback intent success : $intentUri")
+                    log("get feedback intent success")
                     result.success(intentUri)
                     return
                 }
@@ -703,7 +703,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                     putExtra("type", "mailbox")
                 }.toUri(Intent.URI_INTENT_SCHEME)
 
-                log("get mailbox intent success : $intentUri")
+                log("get mailbox intent success")
                 result.success(intentUri)
             }
             "update" -> {

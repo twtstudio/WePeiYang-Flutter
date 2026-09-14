@@ -20,7 +20,7 @@ class PushBroadCastReceiver(
 ) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         kotlin.runCatching {
-            WbyPushPlugin.log("PushBroadCastReceiver receive intent :  ${intent?.extras}")
+            WbyPushPlugin.log("PushBroadCastReceiver action=${intent?.action}")
 
             when (intent?.action) {
                 // 透传消息收到后发送通知，现在不走透传了，所以暂时没用
@@ -35,7 +35,7 @@ class PushBroadCastReceiver(
 //                }
                 WbyPushPlugin.CID -> {
                     val cId = intent.getStringExtra("cid")?.trim()?.takeIf { it.isNotEmpty() }
-                    WbyPushPlugin.log("PushBroadCastReceiver receive cid :" + (cId ?: "no data"))
+                    WbyPushPlugin.log("PushBroadCastReceiver cidPresent=${cId != null}")
                     cId?.let {
                         PushCidStore.save(binding.activity.applicationContext, it)
                         PushCidSync.enqueue(binding.activity.applicationContext, it)
