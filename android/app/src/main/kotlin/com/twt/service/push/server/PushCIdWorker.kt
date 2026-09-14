@@ -8,6 +8,7 @@ import com.twt.service.common.WBYBaseData
 import com.twt.service.common.FlutterSharePreference
 import com.twt.service.push.CanPushType
 import com.twt.service.push.PushCidStore
+import com.twt.service.push.PushCidSync
 import com.twt.service.push.WbyPushPlugin
 
 class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
@@ -19,12 +20,18 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
                 WbyPushPlugin.log("CID registration skipped because push is disabled")
                 return Result.success()
             }
+            if (!PushCidStore.isRegistrationAllowed(context)) {
+                WbyPushPlugin.log("CID registration skipped by lifecycle state")
+                return Result.success()
+            }
             val token = FlutterSharePreference.authToken
             if (token.isNullOrEmpty()) {
                 WbyPushPlugin.log("CID registration postponed until login")
                 return if (runAttemptCount < 5) Result.retry() else Result.failure()
             }
-            val response = registerDevice(cid)
+            val response = PushCidSync.withLifecycleLock {
+                registerDevice(cid)
+            }
             WbyPushPlugin.log("CID registration response code=${response.error_code}")
             return if (response.error_code == 0) Result.success() else Result.failure()
         } catch (e: retrofit2.HttpException) {

@@ -18,12 +18,19 @@ import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
 import com.twt.service.message.EventDispatcher
 import com.twt.service.push.model.Event
+import com.twt.service.push.server.WBYServerAPI
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // 和产品商量后不获取这两个权限：WRITE_EXTERNAL_STORAGE , READ_PHONE_STATE
 //    sd卡权限不要可能cid会变化
@@ -55,6 +62,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     private val pushManager by lazy { PushManager.getInstance() }
     private val cidHandler = Handler(Looper.getMainLooper())
     private var cidPollAttempts = 0
+    private val lifecycleScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     // 请求通知权限回调
     private var goToPushPermissionPage = false
@@ -121,7 +129,10 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 log("init push sdk success when open app")
                 if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
                     canPush = CanPushType.Not
+                    PushCidStore.setRegistrationAllowed(context, false)
+                    PushCidSync.cancel(context)
                     pushManager.turnOffPush(context)
+                    disablePushDeviceInBackground("push disabled during app initialization")
                     log("don't allow push ,so turn off push service")
                 }
             }
@@ -140,6 +151,8 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 checkAndTurnOnPushService { result ->
                     PushCidSync.cancel(context)
                     FlutterSharePreference.canPush = CanPushType.Not
+                    PushCidStore.setRegistrationAllowed(context, false)
+                    disablePushDeviceInBackground("notification permission refused")
                     result.success("refuse open push")
                     log("don't allow permission")
                 }
@@ -150,6 +163,8 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             if (FlutterSharePreference.canPush == CanPushType.Want && !isNotificationEnabled) {
                 FlutterSharePreference.canPush = CanPushType.Not
                 PushCidSync.cancel(context)
+                PushCidStore.setRegistrationAllowed(context, false)
+                disablePushDeviceInBackground("notification permission revoked")
                 channel.invokeMethod("refreshPushPermission", null)
             }
         }.onFailure {
@@ -170,6 +185,10 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 "canReceivePush" -> pushManager.areNotificationsEnabled(context)
                 // 获取个推 cid
                 "getCid" -> getCid(result)
+                // 获取当前安装实例 ID
+                "getInstallId" -> result.success(PushCidStore.getOrCreateInstallId(context))
+                // 禁用当前安装实例的服务端推送记录
+                "disablePushDevice" -> disablePushDevice(result)
                 // 获取个推需要跳转到指定页面的 uri
                 "getIntentUri" -> getIntentUri(call, result)
                 else -> result.notImplemented()
@@ -285,6 +304,8 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             }
             PushCidSync.cancel(context)
             FlutterSharePreference.canPush = CanPushType.Not
+            PushCidStore.setRegistrationAllowed(context, false)
+            disablePushDeviceInBackground("push setting disabled")
         }.onSuccess {
             log("turn off push service success")
             result.success("")
@@ -295,9 +316,85 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     }
 
     /**
+     * Best-effort lifecycle update.  Turning off a setting should not be held
+     * hostage by a transient network failure, so this path only logs errors.
+     */
+    private fun disablePushDeviceInBackground(reason: String) {
+        val token = FlutterSharePreference.authToken?.trim()?.takeIf { it.isNotEmpty() }
+        val appId = BuildConfig.PUSH_APP_ID.trim()
+        if (token == null || appId.isEmpty()) {
+            log("disable push device skipped: missing auth or app metadata ($reason)")
+            return
+        }
+        val installId = PushCidStore.getOrCreateInstallId(context)
+        lifecycleScope.launch {
+            val disabled = PushCidSync.withLifecycleLock {
+                disableRequestWithRetry(token, appId, installId)
+            }
+            if (disabled) {
+                log("push device disabled ($reason)")
+            } else {
+                log("push device disable failed after retries ($reason)")
+            }
+        }
+    }
+
+    /**
+     * Awaitable variant used by logout/account-switch flows. The caller may
+     * apply its own short timeout; the captured token is independent of later
+     * Flutter preference cleanup.
+     */
+    private fun disablePushDevice(result: MethodChannel.Result) {
+        PushCidSync.cancel(context)
+        PushCidStore.setRegistrationAllowed(context, false)
+        val token = FlutterSharePreference.authToken?.trim()?.takeIf { it.isNotEmpty() }
+        val appId = BuildConfig.PUSH_APP_ID.trim()
+        if (token == null || appId.isEmpty()) {
+            result.success(false)
+            return
+        }
+        val installId = PushCidStore.getOrCreateInstallId(context)
+        lifecycleScope.launch {
+            val disabled = PushCidSync.withLifecycleLock {
+                disableRequestWithRetry(token, appId, installId)
+            }
+            withContext(Dispatchers.Main) { result.success(disabled) }
+        }
+    }
+
+    private suspend fun disableRequestWithRetry(
+        token: String,
+        appId: String,
+        installId: String,
+    ): Boolean {
+        var lastError: Throwable? = null
+        repeat(3) { attempt ->
+            try {
+                val response = WBYServerAPI.disablePushDevice(token, appId, installId)
+                if (response.error_code == 0) return true
+                // Authentication and validation errors will not be repaired by
+                // retrying; transient server/network errors are retried below.
+                if (response.error_code in 40000..49999) {
+                    log("push device disable rejected code=${response.error_code}")
+                    return false
+                }
+                lastError = IllegalStateException("business code=${response.error_code}")
+            } catch (e: Exception) {
+                lastError = e
+            }
+            if (attempt < 2) delay(300L * (attempt + 1))
+        }
+        lastError?.let {
+            log("push device disable retry exhausted: ${it::class.java.simpleName}")
+        }
+        return false
+    }
+
+    /**
      * 开启推送，并且设置 [FlutterSharePreference.canPush] = [CanPushType.Want]
      */
     private fun turnOnPushService() {
+        PushCidStore.setRegistrationAllowed(context, true)
         if (!pushManager.isPushTurnedOn(context)) {
             pushManager.turnOnPush(context)
         }

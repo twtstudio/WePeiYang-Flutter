@@ -7,6 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
@@ -40,6 +41,14 @@ interface WBYServerAPI {
         @Field("environment") environment: String,
         @Field("packageName") packageName: String,
         @Field("platform") platform: String,
+        @Field("installId") installId: String,
+    ): WBYBaseData<Any>
+
+    @FormUrlEncoded
+    @POST("notification/device/disable")
+    suspend fun disablePushDevice(
+        @Header("token") token: String,
+        @Field("appId") appId: String,
         @Field("installId") installId: String,
     ): WBYBaseData<Any>
 

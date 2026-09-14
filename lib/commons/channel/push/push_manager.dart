@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 
 import 'push_intent.dart';
 import 'request_push_dialog.dart';
@@ -183,6 +184,36 @@ class PushManager extends ChangeNotifier {
       return await _pushChannel.invokeMethod<String>("getCid");
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Returns the stable ID for this app installation (Android only).
+  Future<String?> getInstallId() async {
+    if (!Platform.isAndroid) return null;
+    try {
+      return await _pushChannel.invokeMethod<String>('getInstallId');
+    } catch (e, stack) {
+      Log.e(e, stack, 'push');
+      return null;
+    }
+  }
+
+  /// Disables this installation in the server-side push registry.
+  ///
+  /// A short timeout keeps logout/account switching responsive when the
+  /// network is unavailable. The native side captures the current token before
+  /// the caller clears local credentials.
+  Future<bool> disablePushDevice(
+      {Duration timeout = const Duration(seconds: 3)}) async {
+    if (!Platform.isAndroid) return false;
+    try {
+      final result = await _pushChannel
+          .invokeMethod<bool>('disablePushDevice')
+          .timeout(timeout);
+      return result == true;
+    } catch (e, stack) {
+      Log.e(e, stack, 'push.disable');
+      return false;
     }
   }
 

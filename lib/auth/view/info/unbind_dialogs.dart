@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -193,11 +194,12 @@ class EmailUnbindDialog extends Dialog {
 class LogoffDialog extends Dialog {
   final textController = TextEditingController();
 
-  void _logoff() {
+  Future<void> _logoff(BuildContext context) async {
     if (textController.text != "我确认进行账号注销") {
       ToastProvider.error("输入错误");
       return;
     }
+    await context.read<PushManager>().disablePushDevice();
     AuthService.logoff(onSuccess: () {
       ToastProvider.success("注销账号成功");
       UmengCommonSdk.onProfileSignOff();
@@ -310,7 +312,7 @@ class LogoffDialog extends Dialog {
                   ),
                   SizedBox(width: 30),
                   WButton(
-                    onPressed: _logoff,
+                    onPressed: () => _logoff(context),
                     child: Container(
                       margin: const EdgeInsets.all(10),
                       child: Text("确认注销",

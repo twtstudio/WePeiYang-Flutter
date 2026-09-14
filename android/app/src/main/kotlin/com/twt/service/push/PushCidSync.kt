@@ -9,11 +9,14 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.twt.service.push.server.PushCIdWorker
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
 
 /** Enqueues one replaceable CID registration task for the current install. */
 internal object PushCidSync {
     private const val WORK_NAME = "register_push_device"
+    private val lifecycleMutex = Mutex()
 
     fun enqueue(context: Context, cid: String?) {
         val normalizedCid = cid?.trim()?.takeIf { it.isNotEmpty() } ?: return
@@ -44,5 +47,9 @@ internal object PushCidSync {
         }.onFailure {
             WbyPushPlugin.log("CID registration task cancellation unavailable")
         }
+    }
+
+    suspend fun <T> withLifecycleLock(block: suspend () -> T): T {
+        return lifecycleMutex.withLock { block() }
     }
 }

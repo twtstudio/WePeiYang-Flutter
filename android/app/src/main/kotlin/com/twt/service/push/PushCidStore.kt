@@ -11,6 +11,7 @@ internal object PushCidStore {
     private const val PREFERENCES = "wby_push_state"
     private const val CID_KEY = "cid"
     private const val INSTALL_ID_KEY = "install_id"
+    private const val REGISTRATION_ALLOWED_KEY = "registration_allowed"
 
     fun save(context: Context, cid: String) {
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
@@ -43,5 +44,17 @@ internal object PushCidStore {
         // that may start as soon as the SDK callback schedules registration.
         preferences.edit().putString(INSTALL_ID_KEY, installId).commit()
         return installId
+    }
+
+    fun isRegistrationAllowed(context: Context): Boolean {
+        return context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .getBoolean(REGISTRATION_ALLOWED_KEY, true)
+    }
+
+    fun setRegistrationAllowed(context: Context, allowed: Boolean) {
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(REGISTRATION_ALLOWED_KEY, allowed)
+            .commit()
     }
 }
