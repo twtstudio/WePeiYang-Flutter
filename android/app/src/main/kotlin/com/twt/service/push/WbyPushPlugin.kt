@@ -122,14 +122,20 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         FlutterSharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
             ?.apply {
                 pushManager.initialize(context)
-                scheduleCidRefresh()
+                val registrationAllowed =
+                    canPush == CanPushType.Want && isNotificationEnabled
+                PushCidStore.setRegistrationAllowed(context, registrationAllowed)
+                if (registrationAllowed) {
+                    scheduleCidRefresh()
+                } else {
+                    cidHandler.removeCallbacksAndMessages(null)
+                }
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
                 log("init push sdk success when open app")
-                if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
+                if (!registrationAllowed) {
                     canPush = CanPushType.Not
-                    PushCidStore.setRegistrationAllowed(context, false)
                     PushCidSync.cancel(context)
                     pushManager.turnOffPush(context)
                     disablePushDeviceInBackground("push disabled during app initialization")
@@ -274,7 +280,13 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
             runCatching {
                 pushManager.initialize(context)
-                scheduleCidRefresh()
+                val registrationAllowed = isNotificationEnabled
+                PushCidStore.setRegistrationAllowed(context, registrationAllowed)
+                if (registrationAllowed) {
+                    scheduleCidRefresh()
+                } else {
+                    cidHandler.removeCallbacksAndMessages(null)
+                }
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
@@ -284,6 +296,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 if (isNotificationEnabled) {
                     result.success("open push service success")
                 } else {
+                    PushCidStore.setRegistrationAllowed(context, false)
                     pushManager.turnOffPush(context)
                     requestPushPermissionBy(result) {
                         // canPush = CanPushType.Want 但是没有通知权限，
