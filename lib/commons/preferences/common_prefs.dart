@@ -174,7 +174,7 @@ class CommonPreferences {
     //     HomeRouter.game)
   ]);
   static final userTool = CardBeanListPrefs('userTool', [
-    CardBean('assets/svg_pics/lake_butt_icons/sample1.png', 24.w, '图书馆',
+    CardBean('assets/images/account/building.png', 24.w, '图书馆',
         'Library', 'https://ic.lib.tju.edu.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/sample2.png', 24.w, '教务系统',
         'EAMS', 'https://classes.tju.edu.cn/'),
