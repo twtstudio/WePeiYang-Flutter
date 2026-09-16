@@ -68,11 +68,13 @@ dependencies:
   flutter_displaymode: ^0.7.0
   flutter_html: ^3.0.0
   flutter_markdown: ^0.7.7+1
+  flutter_math_fork: ^0.7.4
   flutter_rating_bar: ^4.0.1
   flutter_image_compress: ^2.4.0
   flutter_screenutil: ^5.9.0
   flutter_smart_dialog: ^5.1.0
   flutter_svg: ^2.3.0
+  markdown: ^7.3.1
 
   fluttertoast: ^9.1.0
 

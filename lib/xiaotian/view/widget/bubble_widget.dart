@@ -17,9 +17,11 @@ import '../../../commons/widgets/w_button.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:markdown/markdown.dart' show ExtensionSet;
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'dart:async';
 import '../sendMessage.dart';
+import 'ai_markdown_latex.dart';
 import 'back_dialog.dart';
 
 class bubbleFromAi extends StatefulWidget {
@@ -179,18 +181,7 @@ class _bubbleFromAiState extends State<bubbleFromAi>
                         ),
                       ),
                     )
-                  : Markdown(
-                      padding: EdgeInsets.symmetric(vertical: 4.h),
-                      data: text,
-                      selectable: true,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      styleSheet:
-                          MarkdownStyleSheet.fromTheme(Theme.of(context))
-                              .copyWith(
-                        p: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
+                  : _AiMarkdown(text),
             ),
 
             if (_streamCompleted) aiDeclaration(context),
@@ -249,17 +240,7 @@ class bubbleFromAi_Text extends StatelessWidget {
                 constraints: BoxConstraints(
                   maxWidth: MediaQuery.of(context).size.width * 0.92,
                 ),
-                child: Markdown(
-                  padding: EdgeInsets.symmetric(vertical: 4.h),
-                  data: text,
-                  selectable: true,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  styleSheet:
-                      MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                    p: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                )),
+                child: _AiMarkdown(text)),
             //AI声明
             aiDeclaration(context),
             //底部按钮
@@ -271,6 +252,40 @@ class bubbleFromAi_Text extends StatelessWidget {
                 likeCount: 0)
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AiMarkdown extends StatelessWidget {
+  const _AiMarkdown(this.data);
+
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyMedium;
+    return Markdown(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      data: data,
+      selectable: true,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      builders: {
+        'latex': AiLatexElementBuilder(textStyle: textStyle),
+      },
+      extensionSet: ExtensionSet(
+        [
+          AiLatexBlockSyntax(),
+          ...ExtensionSet.gitHubFlavored.blockSyntaxes,
+        ],
+        [
+          AiLatexInlineSyntax(),
+          ...ExtensionSet.gitHubFlavored.inlineSyntaxes,
+        ],
+      ),
+      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+        p: textStyle,
       ),
     );
   }
