@@ -81,12 +81,57 @@ class PostRichText {
     r'|(~~(?=\S)(?<strike>.+?)(?<=\S)~~)' // ~~删除线~~
     r'|(`(?<code>[^`]+?)`)' // `代码`
     r'|(?<postref>#[Mm][Pp]-?\d+)' // #MP123 帖子号（大小写无关）
-    r'|(?<url>https?://[^\s<]+)' // 链接
+    r'''|(?<url>https?://[^\s<>"'，。！？；：、”’」』》〉]+)''' // 链接
     r'|(\*(?=\S)(?<ital>[^*\n]+?)(?<=\S)\*)' // *斜体*
     r'|(?<mentionuid>@uid:\d+)' // @uid:123 可跳转提及（只有它会变色）
     r'|(?<emoji>\[[^\[\]\s]{1,12}\])' // [表情]
     r'|(?<topic>#[^\s#<]+)', // #话题
   );
+
+  /// 从正则命中的候选串中裁掉句末标点和未配对的右括号
+  static String _normalizeUrl(String candidate) {
+    const opening = {'(': ')', '[': ']', '{': '}', '（': '）', '【': '】', '《': '》'};
+    const closing = {')': '(', ']': '[', '}': '{', '）': '（', '】': '【', '》': '《'};
+    final brackets = <String>[];
+    var end = candidate.length;
+
+    for (var i = 0; i < candidate.length; i++) {
+      final char = candidate[i];
+      if (opening.containsKey(char)) {
+        brackets.add(char);
+      } else if (closing.containsKey(char)) {
+        if (brackets.isEmpty || brackets.last != closing[char]) {
+          end = i;
+          break;
+        }
+        brackets.removeLast();
+      }
+    }
+
+    // 普通域名后直接连接中文正文时，在首个中文字符前结束链接；中文路径仍然允许。
+    final authorityStart = candidate.indexOf('://') + 3;
+    final separator = candidate.indexOf(RegExp(r'[/#?]'), authorityStart);
+    final authorityEnd = separator < 0 ? candidate.length : separator;
+    final Chinese = RegExp(r'[\u3400-\u9fff]')
+        .firstMatch(candidate.substring(authorityStart, authorityEnd));
+    if (Chinese != null) {
+      final ChineseStart = authorityStart + Chinese.start;
+      if (ChineseStart < end) end = ChineseStart;
+    }
+
+    const trailingPunctuation = '.,!?;:';
+    while (end > 0 && trailingPunctuation.contains(candidate[end - 1])) {
+      end--;
+    }
+    return candidate.substring(0, end);
+  }
+
+  static bool _isValidUrl(String value) {
+    final uri = Uri.tryParse(value);
+    if (uri == null || uri.host.isEmpty) return false;
+    final scheme = uri.scheme.toLowerCase();
+    return scheme == 'http' || scheme == 'https';
+  }
 
   /// @uid:123 的展示文本：解析到昵称就显示 @昵称，否则暂时显示 @uid
   /// （解析完成后 [MentionNames] 会通知监听者重渲染）。
@@ -226,7 +271,14 @@ class PostRichText {
       } else if ((g = m.namedGroup('postref')) != null) {
         addLink(g!);
       } else if ((g = m.namedGroup('url')) != null) {
-        addLink(g!);
+        final candidate = g!;
+        final url = _normalizeUrl(candidate);
+        if (_isValidUrl(url)) {
+          addLink(url);
+          addText(candidate.substring(url.length), base);
+        } else {
+          addText(candidate, base);
+        }
       } else if ((g = m.namedGroup('topic')) != null) {
         addLink(g!);
       } else if ((g = m.namedGroup('mentionuid')) != null) {
