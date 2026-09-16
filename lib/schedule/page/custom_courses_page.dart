@@ -12,6 +12,7 @@ import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
+import '../view/day_override_sheet.dart';
 import '../view/edit_bottom_sheet.dart';
 
 class CustomCoursesPage extends StatelessWidget {
@@ -84,14 +85,70 @@ class CustomCoursesPage extends StatelessWidget {
                 secondaryHeaderColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor)),
             child: ListView.builder(
-              itemCount: customCourses.length,
+              itemCount: customCourses.length + 1,
               itemBuilder: (context, index) {
-                return _item(context, customCourses[index], index);
+                if (index == 0) return _dayOverrideItem(context);
+                return _item(
+                    context, customCourses[index - 1], index - 1);
               },
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _dayOverrideItem(BuildContext context) {
+    final theme = WpyTheme.of(context);
+    final action = theme.get(WpyColorKey.primaryActionColor);
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+      child: Material(
+        color: theme.get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: BorderRadius.circular(10.r),
+        child: InkWell(
+          onTap: () => showDayOverrideSheet(context),
+          borderRadius: BorderRadius.circular(10.r),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+            child: Row(
+              children: [
+                Container(
+                  width: 38.r,
+                  height: 38.r,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: action.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Icon(Icons.calendar_month_outlined,
+                      size: 21.r, color: action),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('课程日期调整',
+                          style: TextUtil.base.PingFangSC.bold
+                              .label(context)
+                              .sp(15)),
+                      SizedBox(height: 3.h),
+                      Text('设置某天休息，或使用其他日期的课表喵',
+                          style: TextUtil.base.PingFangSC.normal
+                              .secondary(context)
+                              .sp(11)),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right,
+                    size: 22.r,
+                    color: theme.get(WpyColorKey.secondaryInfoTextColor)),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

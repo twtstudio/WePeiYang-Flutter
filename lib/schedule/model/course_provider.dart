@@ -1,4 +1,5 @@
 import 'dart:convert' show json;
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
@@ -9,10 +10,72 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_day_rules.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schdule_service.dart';
 
 class CourseProvider with ChangeNotifier {
+  ScheduleDayRules get dayRules => ScheduleDayRules.restore(
+      CommonPreferences.scheduleDayOverrides.value,
+      DateTime.fromMillisecondsSinceEpoch(CommonPreferences.termStart.value * 1000),
+      weekCount,
+      CommonPreferences.termName.value,
+      CommonPreferences.tjuuname.value);
+
+  List<Course> schoolCoursesForWeek(int week) =>
+      dayRules.schoolCoursesForWeek(week, _schoolCourses);
+
+  List<Course> coursesForWeek(int week) => [
+        ...schoolCoursesForWeek(week),
+        ..._customCourses,
+      ];
+
+  List<Pair<Course, int>> coursesForDate(DateTime date) {
+    final rules = dayRules;
+    if (!rules.contains(date)) return [];
+    final week = rules.weekOf(date);
+    final pairs = <Pair<Course, int>>[];
+    for (final course in coursesForWeek(week)) {
+      for (var i = 0; i < course.arrangeList.length; i++) {
+        final arrange = course.arrangeList[i];
+        if (arrange.weekday == date.weekday && arrange.weekList.contains(week)) {
+          if (course.type == 1) course.index = _customCourses.indexOf(course);
+          pairs.add(Pair(course, i));
+        }
+      }
+    }
+    return pairs;
+  }
+
+  Future<void> setDayOverride(DateTime date, ScheduleDayOverride? rule) async {
+    final rules = dayRules;
+    if (!rules.contains(date)) throw ArgumentError('请选择本学期内的日期');
+    if (rule?.sourceDate != null &&
+        (scheduleDate(rule!.sourceDate!) == scheduleDate(date) ||
+            !rules.hasOriginalCourses(rule.sourceDate!, _schoolCourses))) {
+      throw ArgumentError('请选择另一个有学校课程的日期');
+    }
+    final key = scheduleDateKey(date);
+    if (rule == null) {
+      rules.days.remove(key);
+    } else {
+      rules.days[key] = rule;
+    }
+    final saved = await CommonPreferences.sharedPref.setString(
+        'scheduleDayOverrides',
+        rules.encode(CommonPreferences.termName.value, CommonPreferences.tjuuname.value));
+    if (!saved) throw StateError('日期调整保存失败');
+    notifyListeners();
+    if (Platform.isAndroid) {
+      try {
+        await _widgetChannel.invokeMethod('refreshScheduleWidget');
+      } catch (e, stack) {
+        Log.e(e, stack, 'schedule');
+      }
+    }
+  }
+
   /// 学校课程
   List<Course> _schoolCourses = [];
 

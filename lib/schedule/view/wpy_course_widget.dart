@@ -28,29 +28,9 @@ class TodayCoursesWidget extends StatelessWidget {
   /// 获取今天（夜猫子则是明天）的课程列表
   List<Pair<Course, int>> _getTodayPairs(
       CourseProvider provider, bool nightMode) {
-    /// 如果学期还没开始，则不显示
-    if (isOneDayBeforeTermStart) return [];
-
-    List<Pair<Course, int>> todayPairs = [];
-    int today = DateTime.now().weekday;
-    if (DateTime.now().hour < 21) nightMode = false;
-    bool flag;
-    provider.totalCourses.forEach((course) {
-      for (int i = 0; i < course.arrangeList.length; i++) {
-        if (nightMode) {
-          flag = judgeActiveTomorrow(
-              isBeforeTermStart ? 0 : provider.currentWeek,
-              today,
-              provider.weekCount,
-              course.arrangeList[i]);
-        } else {
-          flag = judgeActiveInDay(isBeforeTermStart ? 0 : provider.currentWeek,
-              today, provider.weekCount, course.arrangeList[i]);
-        }
-        if (flag) todayPairs.add(Pair(course, i));
-      }
-    });
-    return todayPairs;
+    final now = DateTime.now();
+    final offset = nightMode && now.hour >= 21 ? 1 : 0;
+    return provider.coursesForDate(DateTime(now.year, now.month, now.day + offset));
   }
 
   /// 返回首页显示课程的widget

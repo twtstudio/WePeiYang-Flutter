@@ -93,6 +93,7 @@ class Arrange {
   /// 以下属性不需要缓存，临时存储
   int showMode = 0; // 0->正常, 1->“漂浮”显示, 2->不显示内容
   bool isExperiment = false; // 是否是实验课
+  DateTime? sourceDate; // 仅展示用：调课来源日期，不写回原始课表
 
   /// 爬课表用，构造后需要补上location属性
   Arrange.spider(

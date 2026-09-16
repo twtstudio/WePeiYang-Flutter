@@ -73,6 +73,8 @@ class CommonPreferences {
   /// 办公网
   static final gpaData = PrefsBean<String>('gpaData');
   static final courseData = PrefsBean<String>('courseData');
+  static final scheduleDayOverrides =
+      PrefsBean<String>('scheduleDayOverrides', '{}');
   static final examData = PrefsBean<String>('examData');
   static final customUpdatedAt =
       PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
@@ -266,6 +268,7 @@ class CommonPreferences {
 
   /// 清除办公网缓存
   static void clearTjuPrefs() {
+    scheduleDayOverrides.clear();
     gpaData.clear();
     courseData.clear();
     examData.clear();
