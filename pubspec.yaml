@@ -153,6 +153,11 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.15.0
 
+# Keep Flutter 3.44 compatible until the SDK is upgraded.
+dependency_overrides:
+  material_ui: 1.2.0
+  cupertino_ui: 1.0.0
+
 # The following section is specific to Flutter.
 flutter:
   # The following line ensures that the Material Icons font is
