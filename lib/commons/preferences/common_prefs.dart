@@ -63,6 +63,11 @@ class CommonPreferences {
   static final collapsedTopTabs =
       PrefsBean<List<String>>('collapsedTopTabs', []);
 
+  /// 求实论坛分区的自定义顺序，仅保存后端分区 id；空列表表示跟随后端默认顺序。
+  /// 客户端生成的“精华”分区固定在首位.
+  static final feedbackTabOrder =
+      PrefsBean<List<String>>('feedbackTabOrder', []);
+
   /// 求实论坛--等级系统
   static final levelPoint = PrefsBean<int>('levelPoint');
   static final levelName = PrefsBean<String>('levelName');

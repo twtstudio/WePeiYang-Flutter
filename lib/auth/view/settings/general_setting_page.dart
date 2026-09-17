@@ -122,6 +122,37 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       .get(WpyColorKey.primaryBackgroundColor),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
+                child: WButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AuthRouter.feedbackTabOrder);
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('论坛分区顺序', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('拖动调整湖底、校务等分区', style: hintTextStyle),
+                          ],
+                        ),
+                      ),
+                      arrow,
+                      SizedBox(width: 15.w),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
                 child: Row(
                   children: [
                     Expanded(
