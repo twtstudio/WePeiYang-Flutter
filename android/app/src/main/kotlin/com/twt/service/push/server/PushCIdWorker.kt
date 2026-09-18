@@ -61,27 +61,16 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
         val appId = BuildConfig.PUSH_APP_ID.trim()
         val environment = BuildConfig.PUSH_ENVIRONMENT.trim()
         if (appId.isEmpty() || environment.isEmpty()) {
-            WbyPushPlugin.log("CID registration skipped because build metadata is missing")
-            return WBYServerAPI.pushCId(cid)
+            throw IllegalStateException("push registration metadata missing")
         }
-
-        return try {
-            WBYServerAPI.registerPushDevice(
-                cid = cid,
-                appId = appId,
-                environment = environment,
-                packageName = context.packageName,
-                platform = "ANDROID",
-                installId = PushCidStore.getOrCreateInstallId(context),
-            )
-        } catch (e: retrofit2.HttpException) {
-            // Keep old clients and deployments working while opencenter rolls
-            // out /notification/device/register. Do not hide auth or server
-            // failures behind the legacy endpoint.
-            if (e.code() != 404 && e.code() != 405) throw e
-            WbyPushPlugin.log("new CID registration endpoint unavailable; using legacy endpoint")
-            WBYServerAPI.pushCId(cid)
-        }
+        return WBYServerAPI.registerPushDevice(
+            cid = cid,
+            appId = appId,
+            environment = environment,
+            packageName = context.packageName,
+            platform = "ANDROID",
+            installId = PushCidStore.getOrCreateInstallId(context),
+        )
     }
 
     companion object {

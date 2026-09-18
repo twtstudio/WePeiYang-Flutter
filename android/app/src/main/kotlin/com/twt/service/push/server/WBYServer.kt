@@ -9,12 +9,11 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
 import retrofit2.http.POST
-import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 private object WBYServer : BaseServer(baseUrl = "https://api.twt.edu.cn/api/") {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        // HEADERS would include the JWT/ticket and the legacy CID query.
+        // Headers include the JWT/ticket; request bodies never enter logs.
         // Registration already emits a redacted status log in the worker.
         level = HttpLoggingInterceptor.Level.NONE
     }
@@ -50,24 +49,6 @@ interface WBYServerAPI {
         @Header("token") token: String,
         @Field("appId") appId: String,
         @Field("installId") installId: String,
-    ): WBYBaseData<Any>
-
-    @FormUrlEncoded
-    @POST("notification/delivery/click")
-    suspend fun reportPushClick(
-        @Header("token") token: String,
-        @Field("cid") cid: String,
-        @Field("taskId") taskId: String,
-        @Field("messageId") messageId: String,
-        @Field("appId") appId: String,
-        @Field("environment") environment: String,
-        @Field("platform") platform: String,
-        @Field("installId") installId: String,
-    ): WBYBaseData<Any>
-
-    @POST("notification/cid")
-    suspend fun pushCId(
-            @Query("cid") cid: String,
     ): WBYBaseData<Any>
 
     companion object : WBYServerAPI by WBYServer()

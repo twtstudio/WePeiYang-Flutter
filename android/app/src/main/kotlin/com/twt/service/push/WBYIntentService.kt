@@ -1,7 +1,6 @@
 package com.twt.service.push
 
 import android.content.Context
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.GTIntentService
 import com.igexin.sdk.PushConsts
 import com.igexin.sdk.message.GTCmdMessage
@@ -23,15 +22,10 @@ class WBYIntentService : GTIntentService() {
     override fun onReceiveClientId(p0: Context?, clientid: String?) {
         val normalizedCid = clientid?.trim()?.takeIf { it.isNotEmpty() }
         if (normalizedCid != null) {
-            // The callback may arrive before the Flutter activity registers its
-            // local receiver. Persist first so the next foreground sync can
-            // still upload the CID.
+            // The callback may arrive before the Flutter activity starts.
+            // Persist first so the next foreground sync can still upload it.
             PushCidStore.save(this, normalizedCid)
-            // Schedule directly from the SDK callback. The Flutter activity
-            // may not have registered the local broadcast receiver yet.
             PushCidSync.enqueue(this, normalizedCid)
-            val intent = IntentUtil.cid(normalizedCid)
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
         }
     }
 
@@ -49,15 +43,6 @@ class WBYIntentService : GTIntentService() {
         // Log.d(TAG, "call sendFeedbackMessage = " + if (result) "success" else "failed")
         WbyPushPlugin.log("push transmission received taskPresent=${!taskid.isNullOrBlank()} messagePresent=${!messageid.isNullOrBlank()}")
 
-//        if (payload == null) {
-//            Log.e(WbyPushPlugin.TAG, "receiver payload = null")
-//        } else {
-//            val data = String(payload)
-//            WbyPushPlugin.log("receiver payload = $data")
-//            val intent = IntentUtil.messageData(data)
-//            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-//        }
-//        WbyPushPlugin.log("----------------------------------------------------------------------------------------------")
     }
 
     /**
@@ -100,8 +85,10 @@ class WBYIntentService : GTIntentService() {
      * 通知点击回调接口（仅支持个推 SDK 通道下发的通知）
      */
     override fun onNotificationMessageClicked(p0: Context?, message: GTNotificationMessage?) {
-        PushClickReporter.report(p0, message?.taskId, message?.messageId, message?.clientId)
-        WbyPushPlugin.log("notification click reported taskPresent=${!message?.taskId.isNullOrBlank()}")
+        // Standard Getui notifications are opened by the normal intent path.
+        // Delivery/click facts are intentionally not persisted in a separate
+        // push table; the existing notification history remains authoritative.
+        WbyPushPlugin.log("notification clicked taskPresent=${!message?.taskId.isNullOrBlank()}")
     }
 
     /**

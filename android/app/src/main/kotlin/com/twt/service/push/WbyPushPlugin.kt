@@ -1,15 +1,11 @@
 package com.twt.service.push
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.igexin.sdk.PushManager
 import com.twt.service.BuildConfig
 import com.twt.service.MainActivity
@@ -54,8 +50,6 @@ import kotlinx.coroutines.withContext
  * @date 2022/3/25
  */
 class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAware {
-    // 个推服务初始化成功，拿到cId后，通过 LocalBroadcast 广播后，发送到服务器
-    private lateinit var receiver: PushBroadCastReceiver
     private lateinit var binding: ActivityPluginBinding
 
     // 个推推送服务单例
@@ -73,8 +67,6 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         super.onAttachedToEngine(binding)
-        // 从 Android 8.0（API 26）开始，所有的 Notification 都要指定 Channel
-        createNotificationChannel()
         // 如果用户同意了条款，并且打开通知权限，就初始化个推 sdk
         runCatching(::initSdkWhenOpenApp).onFailure {
             log("init GE TUI SDK when open app failure : $it")
@@ -84,33 +76,6 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         cidHandler.removeCallbacksAndMessages(null)
         super.onDetachedFromEngine(binding)
-    }
-
-    /**
-     * 创建通知 channel
-     * TODO：暂时不知道是否有自定义通知的需要，因为现在的推送全部走个推推送
-     */
-    private fun createNotificationChannel() {
-        runCatching {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = "通知"
-                val des = "横幅，锁屏"
-                //不同的重要程度会影响通知显示的方式
-                val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel = NotificationChannel("1", name, importance).apply {
-                    description = des
-                    // 声音
-                    setSound(null, null)
-                    // 是否震动
-                    enableVibration(true)
-                    vibrationPattern = longArrayOf(0, 1000, 500, 1000)
-                }
-                val notificationManager = context.getSystemService(NotificationManager::class.java)
-                notificationManager.createNotificationChannel(channel)
-            }
-        }.onFailure {
-            log("创建 Notification Channel 失败")
-        }
     }
 
     /**
@@ -627,14 +592,11 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         // 添加 intent 拦截
         binding.addOnNewIntentListener(this)
         this.binding = binding
-        // 初始化 LocalBroadcast
-        initBroadcast()
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
         runCatching {
             binding.removeOnNewIntentListener(this)
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
         }
     }
 
@@ -642,34 +604,9 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         binding.addOnNewIntentListener(this)
         this.binding = binding
-        // 初始化 LocalBroadcast
-        initBroadcast()
-    }
-
-    /**
-     * 初始化本地广播
-     *
-     * 每次 [binding] 修改后，都需要重新注册广播
-     */
-    private fun initBroadcast() {
-        // 初始化 LocalBroadcast
-        runCatching {
-            receiver = PushBroadCastReceiver(binding)
-            val intentFilter = IntentFilter().apply {
-//                addAction(DATA)
-                addAction(CID)
-                addDataScheme("wpy")
-            }
-            LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
-            log("init local broadcast success")
-        }
     }
 
     override fun onDetachedFromActivity() {
-        // 注销 LocalBroadcast
-        kotlin.runCatching {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
-        }
     }
 
     /**
@@ -730,9 +667,6 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     }
 
     companion object {
-        //        const val DATA = "com.twt.service.PUSH_DATA"
-        const val CID = "com.twt.service.PUSH_TOKEN"
-
         const val REQUEST_NOTIFICATION_PERMISSION = 303
 
         // TODO
