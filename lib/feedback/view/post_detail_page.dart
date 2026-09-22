@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,8 +16,10 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/speech_to_text/API/aliyun_isi_protocol.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -301,7 +304,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   ScreenshotController screenshotController = ScreenshotController();
-  ScreenshotController selectedScreenshotController = ScreenshotController();
+  bool _savingSelectedScreenshot = false;
 
   _getComments(
       {required Function(List<Floor>, int) onSuccess,
@@ -357,6 +360,173 @@ class _PostDetailPageState extends State<PostDetailPage>
   final screenshotList = ScreenshotNotifier();
   final screenshotSelecting = ValueNotifier(false);
   final screenshotting = ValueNotifier(false);
+
+  Future<void> _takeSelectedScreenshot() async {
+    if (_savingSelectedScreenshot) return;
+    final comments = _commentList
+        .where((comment) => screenshotList.list.contains(comment.id))
+        .toList();
+    if (comments.isEmpty) {
+      ToastProvider.error('请先选择要截图的评论');
+      return;
+    }
+
+    _savingSelectedScreenshot = true;
+    ToastProvider.running('生成截图中');
+    String? imagePath;
+    try {
+      final post = widget.post;
+      final theme = WpyTheme.of(context);
+      final mediaQuery = MediaQuery.of(context);
+      final width = context.size?.width ?? mediaQuery.size.width;
+      final footer = theme.brightness == Brightness.dark
+          ? 'assets/images/bottom_bar_black.png'
+          : 'assets/images/bottom_bar_white.png';
+      final officialComments = _officialCommentList.take(2).toList();
+      final imageUrls = <String>{
+        ...post.imageUrls,
+        for (final comment in [...officialComments, ...comments]) ...[
+          if (comment.imageUrl.isNotEmpty) comment.imageUrl,
+          for (final reply in comment.subFloors)
+            if (reply.imageUrl.isNotEmpty) reply.imageUrl,
+        ],
+      };
+      Future<void> precacheCommentImage(Floor comment, double cardWidth) async {
+        if (comment.imageUrl.isEmpty) return;
+        final imageWidth = cardWidth - 24 - 32 - 8;
+        await precacheImage(
+          ResizeImage.resizeIfNeeded(
+            (imageWidth * mediaQuery.devicePixelRatio).round(),
+            null,
+            CachedNetworkImageProvider(
+                '${EnvConfig.QNHDPIC}download/origin/${comment.imageUrl}'),
+          ),
+          context,
+        );
+      }
+
+      // 加载正文图片
+      await Future.wait([
+        precacheImage(AssetImage(footer), context),
+        for (final url in imageUrls)
+          precacheImage(
+            CachedNetworkImageProvider('${EnvConfig.QNHDPIC}download/origin/$url'),
+            context,
+          ),
+        for (final comment in comments) ...[
+          precacheCommentImage(comment, width),
+          for (final reply in comment.subFloors)
+            precacheCommentImage(reply, width - 44.w),
+        ],
+      ]).timeout(const Duration(seconds: 30));
+      if (!mounted) return;
+
+      // 独立布局完整内容
+      final content = InheritedTheme.captureAll(
+        context,
+        MediaQuery(
+          data: mediaQuery,
+          child: WpyTheme(
+            themeData: theme.themeData,
+            child: Material(
+              color: theme.get(WpyColorKey.primaryBackgroundColor),
+              child: SizedBox(
+                width: width,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    PostCardNormal(
+                      post,
+                      outer: false,
+                      expandAll: true,
+                      avatarClickable: false,
+                    ),
+                    for (var i = 0; i < officialComments.length; i++)
+                      if (i == 0)
+                        OfficialReplyCard.reply(
+                          tag: post.department?.name ?? '',
+                          comment: officialComments[i],
+                          ratings: post.rating,
+                          ancestorId: post.uid,
+                          placeAppeared: i,
+                        )
+                      else
+                        OfficialReplyCard.subFloor(
+                          comment: officialComments[i],
+                          ratings: post.rating,
+                          ancestorId: post.uid,
+                          placeAppeared: i,
+                        ),
+                    for (final comment in comments) ...[
+                      NCommentCard(
+                        comment: comment,
+                        uid: post.uid,
+                        ancestorUId: post.id,
+                        ancestorName: post.nickname,
+                        commentFloor: 0,
+                        type: post.type,
+                        isSubFloor: false,
+                        isFullView: true,
+                        expandAll: true,
+                      ),
+                      for (final reply in comment.subFloors)
+                        Padding(
+                          padding: EdgeInsets.only(left: 44.w),
+                          child: NCommentCard(
+                            comment: reply,
+                            uid: post.uid,
+                            ancestorUId: comment.id,
+                            ancestorName: comment.nickname,
+                            commentFloor: 0,
+                            type: post.type,
+                            isSubFloor: true,
+                            isFullView: true,
+                            expandAll: true,
+                          ),
+                        ),
+                    ],
+                    Image.asset(
+                      footer,
+                      height: width * 1220 / 5892,
+                      fit: BoxFit.fitWidth,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final bytes = await ScreenshotController().captureFromLongWidget(
+        content,
+        context: context,
+        pixelRatio: 2,
+        constraints: BoxConstraints.tightFor(width: width),
+      );
+      imagePath = await saveImageToPath(bytes);
+      if (imagePath == null ||
+          await GallerySaver.saveImage(imagePath, albumName: '微北洋') != true) {
+        throw StateError('图片保存失败');
+      }
+      if (!mounted) return;
+      screenshotSelecting.value = false;
+      screenshotList.empty();
+      ToastProvider.success('图片保存成功');
+    } catch (error, stackTrace) {
+      Log.e(error, stackTrace, 'screenshot');
+      if (mounted) ToastProvider.error('截图保存失败，请稍后重试或减少选中的评论');
+    } finally {
+      _savingSelectedScreenshot = false;
+      if (imagePath != null) {
+        try {
+          await File(imagePath).delete();
+        } on FileSystemException {
+          // 相册保存结束后尽力清理临时文件。
+        }
+      }
+    }
+  }
 
   Future<void> takeScreenshot(
     ScreenshotController _controller,
@@ -561,14 +731,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
         enablePullUp: true,
         onLoading: _onLoading,
-        child: screenshotting.value
-            ? Screenshot(
-                child: Container(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    child: contentList),
-                controller: selectedScreenshotController)
-            : contentList,
+        child: contentList,
       ),
       onNotification: (ScrollNotification scrollInfo) =>
           _onScrollNotification(scrollInfo),
@@ -739,17 +902,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       builder: (context, child) {
         if (screenshotSelecting.value)
           return IconButton(
-              onPressed: () async {
-                screenshotSelecting.value = false;
-                screenshotting.value = true;
-                setState(() {});
-                //TODO:等待图片加载完成
-                await Future.delayed(Duration(milliseconds: 888));
-                await takeScreenshot(selectedScreenshotController);
-                screenshotting.value = false;
-                setState(() {});
-                screenshotList.empty();
-              },
+              onPressed: _takeSelectedScreenshot,
               icon: Icon(Icons.add_a_photo_outlined,
                   color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)));
         ;
