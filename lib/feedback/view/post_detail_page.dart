@@ -140,6 +140,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     bool isInitial = false,
     bool updatePageStatus = false,
   }) {
+    screenshotList.empty();
     currentPage = 1;
     _hasReachedLastCommentPage = false;
     _refreshController.resetNoData();
@@ -372,6 +373,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     }
 
     _savingSelectedScreenshot = true;
+    final selectionRevision = screenshotList.revision;
     ToastProvider.running('生成截图中');
     String? imagePath;
     try {
@@ -510,8 +512,11 @@ class _PostDetailPageState extends State<PostDetailPage>
         throw StateError('图片保存失败');
       }
       if (!mounted) return;
-      screenshotSelecting.value = false;
-      screenshotList.empty();
+      // 保留导出期间用户做出的新选择。
+      if (screenshotList.revision == selectionRevision) {
+        screenshotSelecting.value = false;
+        screenshotList.empty();
+      }
       ToastProvider.success('图片保存成功');
     } catch (error, stackTrace) {
       Log.e(error, stackTrace, 'screenshot');

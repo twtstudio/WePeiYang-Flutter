@@ -33,15 +33,19 @@ class NewPostProvider {
 
 class ScreenshotNotifier extends ChangeNotifier {
   List<int> screenshotList = [];
+  int _revision = 0;
 
   List<int> get list => screenshotList;
+  int get revision => _revision;
 
   void empty() {
     screenshotList = [];
+    _revision++;
     notifyListeners();
   }
 
   void update() {
+    _revision++;
     notifyListeners();
   }
 }
