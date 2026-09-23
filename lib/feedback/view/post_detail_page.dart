@@ -362,6 +362,20 @@ class _PostDetailPageState extends State<PostDetailPage>
   final screenshotSelecting = ValueNotifier(false);
   final screenshotting = ValueNotifier(false);
 
+  void _toggleAllLoadedComments() {
+    final ids = _commentList.map((comment) => comment.id).toList();
+    if (ids.isEmpty) return;
+    final allSelected = ids.every(screenshotList.list.contains);
+    if (allSelected) {
+      screenshotList.list.removeWhere(ids.contains);
+    } else {
+      for (final id in ids) {
+        if (!screenshotList.list.contains(id)) screenshotList.list.add(id);
+      }
+    }
+    screenshotList.update();
+  }
+
   Future<void> _takeSelectedScreenshot() async {
     if (_savingSelectedScreenshot) return;
     final comments = _commentList
@@ -760,6 +774,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         children: [
           Column(
             children: [
+              _buildSelectionBar(),
               Expanded(
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
@@ -929,6 +944,39 @@ class _PostDetailPageState extends State<PostDetailPage>
               icon: Icon(Icons.cancel_outlined,
                   color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)));
         return SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildSelectionBar() {
+    return ValueListenableBuilder<bool>(
+      valueListenable: screenshotSelecting,
+      builder: (context, selecting, _) {
+        if (!selecting) return SizedBox.shrink();
+        return ListenableBuilder(
+          listenable: screenshotList,
+          builder: (context, _) {
+            final ids = _commentList.map((comment) => comment.id).toList();
+            final allSelected =
+                ids.isNotEmpty && ids.every(screenshotList.list.contains);
+            final theme = WpyTheme.of(context);
+            return Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.only(right: 12.w),
+                child: TextButton(
+                  onPressed: ids.isEmpty ? null : _toggleAllLoadedComments,
+                  style: TextButton.styleFrom(
+                    foregroundColor: theme.get(WpyColorKey.primaryActionColor),
+                    disabledForegroundColor:
+                        theme.get(WpyColorKey.infoTextColor),
+                  ),
+                  child: Text(allSelected ? '取消全选' : '全选已加载'),
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
