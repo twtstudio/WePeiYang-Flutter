@@ -230,7 +230,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     _initPost(onFail, rebuild: false).then((success) {
       if (!success) return;
 
-      _getOfficialComment(onFail: onFail, rebuild: false);
+      _getOfficialComment(onFail: onFail);
       _loadVisibleComments(
         startPage: 1,
         minimumCount: 10,
