@@ -960,19 +960,27 @@ class _PostDetailPageState extends State<PostDetailPage>
             final allSelected =
                 ids.isNotEmpty && ids.every(screenshotList.list.contains);
             final theme = WpyTheme.of(context);
-            return Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: EdgeInsets.only(right: 12.w),
-                child: TextButton(
-                  onPressed: ids.isEmpty ? null : _toggleAllLoadedComments,
-                  style: TextButton.styleFrom(
-                    foregroundColor: theme.get(WpyColorKey.primaryActionColor),
-                    disabledForegroundColor:
-                        theme.get(WpyColorKey.infoTextColor),
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              child: Row(
+                children: [
+                  Text(
+                    '已选择 ${screenshotList.list.length} 条评论',
+                    style: TextStyle(
+                        color: theme.get(WpyColorKey.labelTextColor)),
                   ),
-                  child: Text(allSelected ? '取消全选' : '全选已加载'),
-                ),
+                  Spacer(),
+                  TextButton(
+                    onPressed: ids.isEmpty ? null : _toggleAllLoadedComments,
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          theme.get(WpyColorKey.primaryActionColor),
+                      disabledForegroundColor:
+                          theme.get(WpyColorKey.infoTextColor),
+                    ),
+                    child: Text(allSelected ? '取消全选' : '全选已加载'),
+                  ),
+                ],
               ),
             );
           },
