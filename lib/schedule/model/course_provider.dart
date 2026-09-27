@@ -86,6 +86,14 @@ class CourseProvider with ChangeNotifier {
 
   List<Course> get customCourses => _customCourses;
 
+  bool get includeCustomCourseHours =>
+      CommonPreferences.includeCustomCourseHours.value;
+
+  set includeCustomCourseHours(bool value) {
+    CommonPreferences.includeCustomCourseHours.value = value;
+    notifyListeners();
+  }
+
   void addCustomCourse(Course course) {
     _customCourses.add(course);
     saveCustomCourseTable();

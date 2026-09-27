@@ -91,6 +91,8 @@ class CommonPreferences {
   static final customCourseToken = PrefsBean<String>('customCourseToken');
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
   static final isShowExperiment = PrefsBean<bool>('isShowExperiment', true);
+  static final includeCustomCourseHours =
+      PrefsBean<bool>('includeCustomCourseHours', false);
 
   /// 失物招领
   static final lafToken = PrefsBean<String>('lafToken');

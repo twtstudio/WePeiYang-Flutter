@@ -671,6 +671,38 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('自定义课程计入学时统计', style: mainTextStyle),
+                    ),
+                    Switch(
+                      value: context.watch<CourseProvider>()
+                          .includeCustomCourseHours,
+                      onChanged: (value) {
+                        context.read<CourseProvider>()
+                            .includeCustomCourseHours = value;
+                      },
+                      activeThumbColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      inactiveThumbColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                      activeTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                      inactiveTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
