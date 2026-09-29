@@ -72,7 +72,6 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   @override
   void initState() {
     super.initState();
-    LakeUtil.tabListRevision.addListener(_onTabListChanged);
     _departmentsProvider =
         Provider.of<FbDepartmentsProvider>(context, listen: false);
     _tabListFuture = LakeUtil.initTabList();
@@ -148,36 +147,8 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
   @override
   void dispose() {
-    LakeUtil.tabListRevision.removeListener(_onTabListChanged);
     tabController?.dispose();
     super.dispose();
-  }
-
-  void _onTabListChanged() {
-    if (!mounted || LakeUtil.tabList.isEmpty) return;
-
-    final oldController = tabController;
-    final selectedTabId = LakeUtil.tabIdToRestore;
-
-    if (oldController == null) {
-      setState(() {});
-      return;
-    }
-
-    var newIndex = selectedTabId == null
-        ? 0
-        : LakeUtil.tabList.indexWhere((tab) => tab.id == selectedTabId);
-    if (newIndex < 0) newIndex = 0;
-
-    oldController.removeListener(_onTabChange);
-    setState(() {
-      tabController = _createTabController(
-        LakeUtil.tabList.length,
-        initialIndex: newIndex,
-      );
-      LakeUtil.currentTab.value = newIndex;
-    });
-    oldController.dispose();
   }
 
   void _onTabChange() {
@@ -193,19 +164,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     }
   }
 
-  TabController _createTabController(int length, {int? initialIndex}) {
-    return TabController(
+  void _initializeTabController(int length) {
+    tabController = TabController(
       length: length,
       vsync: this,
-      initialIndex: min(max(0, length - 1),initialIndex ?? LakeUtil.currentTab.value,
-      ),
+      initialIndex: min(max(0, length - 1), LakeUtil.currentTab.value),
     )..addListener(() {
-      _onTabChange();
-  });
-  }
-
-  void _initializeTabController(int length) {
-    tabController = _createTabController(length);
+        _onTabChange();
+      });
   }
 
   Widget _buildSearchBar() {

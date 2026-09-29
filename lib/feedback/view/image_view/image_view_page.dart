@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -230,13 +228,10 @@ class _ImageViewPageState extends State<ImageViewPage>
   }
 
   void _checkQRCode() async {
-    String? imagePath;
     try {
       final imageUrl = _imageUrlAt(indexNow);
-      imagePath = await StorageUtil.saveTempFileFromNetwork(
-        imageUrl,
-        filename: _qrTempFileName(indexNow),
-      );
+      final imagePath = await StorageUtil.saveTempFileFromNetwork(imageUrl,
+          filename: _imageFileNameAt(indexNow));
       String? qrResult = await QrCodeToolsPlugin.decodeFrom(imagePath);
       if (!mounted) return;
       if (qrResult != null && qrResult.isNotEmpty) {
@@ -256,20 +251,7 @@ class _ImageViewPageState extends State<ImageViewPage>
         hasQRCode = false;
       });
       _animationController.reverse();
-    } finally {
-      await _deleteTempImage(imagePath);
     }
-  }
-
-  String _qrTempFileName(int index) =>
-      'wpy_qr_${DateTime.now().microsecondsSinceEpoch}_${_imageFileNameAt(index)}';
-
-  Future<void> _deleteTempImage(String? path) async {
-    if (path == null) return;
-    try {
-      final file = File(path);
-      if (await file.exists()) await file.delete();
-    } catch (_) {}
   }
 
   void saveImage() async {
@@ -289,13 +271,10 @@ class _ImageViewPageState extends State<ImageViewPage>
 
   void recognizeQRCode() async {
     ToastProvider.running('识别中');
-    String? imagePath;
     try {
       final imageUrl = _imageUrlAt(indexNow);
-      imagePath = await StorageUtil.saveTempFileFromNetwork(
-        imageUrl,
-        filename: _qrTempFileName(indexNow),
-      );
+      final imagePath = await StorageUtil.saveTempFileFromNetwork(imageUrl,
+          filename: _imageFileNameAt(indexNow));
       String? qrResult = await QrCodeToolsPlugin.decodeFrom(imagePath);
       if (qrResult != null && qrResult.isNotEmpty) {
         if (await canLaunchUrl(Uri.parse(qrResult))) {
@@ -381,8 +360,6 @@ class _ImageViewPageState extends State<ImageViewPage>
       } else {
         ToastProvider.error('识别失败');
       }
-    } finally {
-      await _deleteTempImage(imagePath);
     }
   }
 }

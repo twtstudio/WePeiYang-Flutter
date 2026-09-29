@@ -63,8 +63,7 @@ class RouterManager {
     }
     return routeName.startsWith('/open') ||
         routeName.startsWith('/post') ||
-        routeName.startsWith('/entryQr') ||
-        routeName.startsWith('/schedule');
+        routeName.startsWith('/entryQr');
   }
 }
 

@@ -1,10 +1,12 @@
 import '../../commons/environment/config.dart';
 import '../../commons/network/wpy_dio.dart';
 import '../../commons/token/lake_token_manager.dart';
+import '../model/block_list_item.dart';
 
 class BlockListDio extends DioAbstract {
   @override
-  String baseUrl = '${EnvConfig.QNHD}api/v1/f/blocklist';
+  ///与 FeedbackDio 保持一致：baseUrl 收在 /api/v1/f/，具体路径用相对写法
+  String baseUrl = '${EnvConfig.QNHD}api/v1/f/';
 
   @override
   List<Interceptor> interceptors = [
@@ -28,26 +30,29 @@ final blockListDio = BlockListDio();
 
 class BlockListService {
 
-  //TODO:还需要修改
-  //获取屏蔽用户人员名单
-  static Future<List<String>> getBlockList({
+  ///获取当前登录用户的完整黑名单。
+  ///接口不分页，最多 100 条，按加入时间倒序；
+  ///被屏蔽用户已注销或被删除时 user_info 返回占位信息。
+  static getBlockList({
+    required void Function(List<BlockListItem> list) onSuccess,
     required OnFailure onFailure,
-}) async {
+  }) async {
     try {
-      List<String> list = [];
-      var result = await blockListDio.get('list');
-      for (var json in result.data) {
-
+      var result = await blockListDio.get('blocklist');
+      List<BlockListItem> list = [];
+      for (Map<String, dynamic> json in result.data['data']['list']) {
+        list.add(BlockListItem.fromJson(json));
       }
-      return list;
+      onSuccess(list);
     } on DioException catch (e) {
       onFailure(e);
-      return [];
     }
   }
 
-  //添加屏蔽用户
-  static addBlock(String uid, {
+  ///添加屏蔽用户。
+  ///不能屏蔽自己、已注销或不存在以及受保护的用户；重复添加会失败；
+  ///每个用户最多屏蔽 100 人。具体原因由后端通过 msg 返回。
+  static addBlock(int uid, {
     required OnSuccess onSuccess,
     required OnFailure onFailure,
   }) async {
@@ -55,22 +60,22 @@ class BlockListService {
       var data = FormData.fromMap({
         'uid': uid,
       });
-      blockListDio.post('add', formData: data);
+      await blockListDio.post('blocklist/add', formData: data);
       onSuccess();
     } on DioException catch (e) {
       onFailure(e);
     }
   }
 
-  static deleteBlock(String uid, {
+  ///移除已屏蔽用户。后端当前实现使用 GET。
+  static deleteBlock(int uid, {
     required OnSuccess onSuccess,
     required OnFailure onFailure,
   }) async {
     try {
-      var data = FormData.fromMap({
+      await blockListDio.get('blocklist/delete', queryParameters: {
         'uid': uid,
       });
-      blockListDio.post('delete', formData: data);
       onSuccess();
     } on DioException catch (e) {
       onFailure(e);

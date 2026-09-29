@@ -28,9 +28,29 @@ class TodayCoursesWidget extends StatelessWidget {
   /// 获取今天（夜猫子则是明天）的课程列表
   List<Pair<Course, int>> _getTodayPairs(
       CourseProvider provider, bool nightMode) {
-    final now = DateTime.now();
-    final offset = nightMode && now.hour >= 21 ? 1 : 0;
-    return provider.coursesForDate(DateTime(now.year, now.month, now.day + offset));
+    /// 如果学期还没开始，则不显示
+    if (isOneDayBeforeTermStart) return [];
+
+    List<Pair<Course, int>> todayPairs = [];
+    int today = DateTime.now().weekday;
+    if (DateTime.now().hour < 21) nightMode = false;
+    bool flag;
+    provider.totalCourses.forEach((course) {
+      for (int i = 0; i < course.arrangeList.length; i++) {
+        if (nightMode) {
+          flag = judgeActiveTomorrow(
+              isBeforeTermStart ? 0 : provider.currentWeek,
+              today,
+              provider.weekCount,
+              course.arrangeList[i]);
+        } else {
+          flag = judgeActiveInDay(isBeforeTermStart ? 0 : provider.currentWeek,
+              today, provider.weekCount, course.arrangeList[i]);
+        }
+        if (flag) todayPairs.add(Pair(course, i));
+      }
+    });
+    return todayPairs;
   }
 
   /// 返回首页显示课程的widget
@@ -72,23 +92,22 @@ class TodayCoursesWidget extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextUtil.base.bold.sp(14).customColor(
-                                    WpyTheme.of(context)
-                                        .get(WpyColorKey.brightTextColor)
-                                        .withValues(alpha: 0.5),
-                                  ),
-                            ),
-                            SizedBox(height: 4.h),
-                            Text(
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
+                            style: TextUtil.base.bold.sp(14).customColor(
+                                  WpyTheme.of(context)
+                                      .get(WpyColorKey.brightTextColor)
+                                      .withValues(alpha: 0.5),
+                                ),
+                          ),
+                          SizedBox(height: 4.h),
+                          SizedBox(
+                            width: 1.sw - 125.w - 50.r,
+                            child: Text(
                               (todayPairs[i].arrange.isExperiment &
                                       CommonPreferences.isShowExperiment.value)
                                   ? "[实验] ${todayPairs[i].arrange.name!}"
@@ -100,10 +119,10 @@ class TodayCoursesWidget extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 10.w),
+                      Spacer(),
                       WButton(
                         onPressed: () =>
                             Navigator.pushNamed(context, ScheduleRouter.course),

@@ -297,13 +297,10 @@ class _HoursCounterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = context.watch<CourseProvider>();
-    final courses = provider.includeCustomCourseHours
-        ? provider.totalCourses
-        : provider.schoolCourses;
-    if (courses.isEmpty) return Container();
+    if (provider.schoolCourses.length == 0) return Container();
     int currentHours = getCurrentHours(
-        provider.currentWeek, DateTime.now().weekday, courses);
-    int totalHours = getTotalHours(courses);
+        provider.currentWeek, DateTime.now().weekday, provider.schoolCourses);
+    int totalHours = getTotalHours(provider.schoolCourses);
     double totalWidth = 1.sw - 2 * 15.w;
     double leftWidth = totalWidth * currentHours / totalHours;
     if (leftWidth > totalWidth) leftWidth = totalWidth;

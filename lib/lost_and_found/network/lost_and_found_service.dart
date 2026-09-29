@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 
 import '../../commons/preferences/common_prefs.dart';
+import '../../commons/util/shield_uid.dart';
 import '../../feedback/network/feedback_service.dart';
 
 class LostAndFoundDio extends DioAbstract {
@@ -108,7 +109,10 @@ class LostAndFoundService with AsyncTimer {
 
       List<LostAndFoundPost> list = [];
       for (Map<String, dynamic> json in res.data['result']) {
-        list.add(LostAndFoundPost.fromJson(json));
+        final item = LostAndFoundPost.fromJson(json);
+        //已被屏蔽的用户，其失物招领信息不展示
+        if (ShieldUid.isBlockedStr(item.uid)) continue;
+        list.add(item);
       }
       onSuccess(list);
     } on DioException catch (e) {

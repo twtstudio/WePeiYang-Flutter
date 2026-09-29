@@ -27,26 +27,25 @@ class ExpandableText extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ExpandableTextState();
+  State<StatefulWidget> createState() {
+    return _ExpandableTextState(text, maxLines, style, expand, buttonIsShown);
+  }
 }
 
 class _ExpandableTextState extends State<ExpandableText> {
-  /// 仅展开状态需跨 rebuild 保留；其余参数读 [widget]，否则主题切换后样式不更新。
-  late bool expand;
+  final String text;
+  final int maxLines;
+  final TextStyle style;
+  bool expand;
 
-  @override
-  void initState() {
-    super.initState();
-    expand = widget.expand;
-  }
+  /// 显示全文字样
+  bool buttonIsShown;
+
+  _ExpandableTextState(
+      this.text, this.maxLines, this.style, this.expand, this.buttonIsShown);
 
   @override
   Widget build(BuildContext context) {
-    // 每次 build 重新读取 widget，避免缓存旧值导致主题切换后样式不更新
-    final text = widget.text;
-    final style = widget.style;
-    final maxLines = widget.maxLines;
-    final buttonIsShown = widget.buttonIsShown;
     // mask 标签不参与排版，测量和字数统计时去掉
     final plainText = stripMaskTags(text);
     return LayoutBuilder(builder: (context, size) {
