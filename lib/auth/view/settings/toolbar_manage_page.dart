@@ -31,7 +31,7 @@ class _ToolbarManagePageState extends State<ToolbarManagePage> {
         'Schedule', ScheduleRouter.course),
     CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
         HomeRouter.casQR),
-    CardBean('assets/images/account/comment.png', 24.w, '课评网', 'Course\nReview',
+    CardBean('assets/svg_pics/lake_butt_icons/kpw.png', 24.w, '课评网', 'Course\nReview',
         HomeRouter.courseReview),
     CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
         HomeRouter.news),

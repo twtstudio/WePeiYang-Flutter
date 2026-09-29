@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/message/model/message_model.dart';
 
 import '../../commons/preferences/common_prefs.dart';
-import '../../commons/util/shield_uid.dart';
 
 class MessageService {
   static List<String> get shieldComment =>
@@ -62,8 +61,6 @@ class MessageService {
       });
       List<LikeMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
-        //点赞通知是聚合展示（「共计 N 名用户为你点赞」），
-        //后端不下发点赞人的 uid，因此无法按 uid 屏蔽，只能靠屏蔽词。
         list.add(LikeMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);
@@ -85,12 +82,11 @@ class MessageService {
       for (Map<String, dynamic> json in response.data['list']) {
 
         final item = FloorMessage.fromJson(json);
-        //已被屏蔽的用户，其评论通知不展示
-        if (ShieldUid.isBlocked(item.floor.uid)) continue;
         bool isBlocked = CommentBlockCheck(item);
         if (isBlocked) {
           item.floor.content = '**屏蔽内容**';
         }
+        //TODO:后端处理拉黑用户
         list.add(item);
       }
       onSuccess(list, response.data['total']);
@@ -130,8 +126,6 @@ class MessageService {
       });
       List<ReplyMessage> list = [];
       for (Map<String, dynamic> json in response.data['list']) {
-        //回复通知来自官方部门（reply.sender 是部门标识而非用户 uid），
-        //不参与用户屏蔽。
         list.add(ReplyMessage.fromJson(json));
       }
       onSuccess(list, response.data['total']);

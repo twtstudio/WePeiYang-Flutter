@@ -7,7 +7,6 @@ import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/shield_uid.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/type_util.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
@@ -126,6 +125,7 @@ class FeedbackService with AsyncTimer {
 
     //没匹配上，开始该评论的评论的匹配
     if(item.subFloors.isNotEmpty) {
+      final originalSubFloorCount = item.subFloors.length;
       List<Floor> subFloors = [];
       for (final subitem in item.subFloors) {
         if (!CommentBlockCheck(subitem)) {
@@ -133,17 +133,16 @@ class FeedbackService with AsyncTimer {
         }
       }
       item.subFloors = subFloors;
+      item.subFloorCnt -= originalSubFloorCount - subFloors.length;
+      if (item.subFloorCnt < 0) item.subFloorCnt = 0;
     }
 
     return false;
   }
 
-  ///该楼层是否应当被隐藏：命中屏蔽词，或作者已被屏蔽
-  static bool FloorBlockCheck(Floor item) =>
-      ShieldUid.isBlocked(item.uid) || CommentBlockCheck(item);
-
-  static List<Floor> filterBlockedFloors(Iterable<Floor> floors) =>
-      floors.where((item) => !FloorBlockCheck(item)).toList();
+  static List<Floor> filterBlockedFloors(Iterable<Floor> floors) => floors
+      .where((item) => !CommentBlockCheck(item))
+      .toList();
 
   static getTokenByPw(
     String user,
@@ -396,8 +395,6 @@ class FeedbackService with AsyncTimer {
     List<Post> list = [];
     for (Map<String, dynamic> json in response.data['data']['list']) {
       final item = Post.fromJson(json);
-      //已被屏蔽的用户，其帖子不展示
-      if (ShieldUid.isBlocked(item.uid)) continue;
       list.add(item);
     }
     return Tuple2(list, response.data['data']['total']);
@@ -447,10 +444,7 @@ class FeedbackService with AsyncTimer {
       );
       List<Post> list = [];
       for (Map<String, dynamic> json in response.data['data']['list']) {
-        final item = Post.fromJson(json);
-        //已被屏蔽的用户，其帖子不展示
-        if (ShieldUid.isBlocked(item.uid)) continue;
-        list.add(item);
+        list.add(Post.fromJson(json));
       }
       onResult(list);
     } on DioException catch (e) {
@@ -619,11 +613,10 @@ class FeedbackService with AsyncTimer {
 
       for (Map<String, dynamic> json in commentResponse.data['data']['list']) {
         final item = Floor.fromJson(json);
-        //已被屏蔽的用户，其评论不展示
-        if (ShieldUid.isBlocked(item.uid)) continue;
         //判断是否屏蔽
         bool isBlock = CommentBlockCheck(item);
         if (isBlock) continue;
+        //用户屏蔽由后端来做
         commentList.add(item);
       }
       onSuccess(commentList, commentResponse.data['data']['total']);

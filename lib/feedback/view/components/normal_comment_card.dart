@@ -7,13 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:we_pei_yang_flutter/auth/network/blocklist_service.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
 import 'package:we_pei_yang_flutter/commons/extension/extensions.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/level_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/shield_uid.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
@@ -21,7 +19,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/shield_feed_sync.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
@@ -53,9 +50,6 @@ class NCommentCard extends StatefulWidget {
   final bool showBlockButton;
   final bool expandAll;
 
-  ///拉黑成功后的回调，供外层把该评论立即从列表移除
-  final VoidCallback? onBlockSuccess;
-
   @override
   _NCommentCardState createState() => _NCommentCardState();
 
@@ -72,7 +66,6 @@ class NCommentCard extends StatefulWidget {
     this.type,
     this.showBlockButton = false,
     this.expandAll = false,
-    this.onBlockSuccess,
   });
 }
 
@@ -80,22 +73,6 @@ class _NCommentCardState extends State<NCommentCard>
     with SingleTickerProviderStateMixin {
   //final String picBaseUrl = 'https://qnhdpic.twt.edu.cn/download/';
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
-
-  ///拉黑评论作者：调用后端黑名单接口，成功后同步本地缓存并通知外层移除该评论
-  Future<void> _blockCommentAuthor() async {
-    await BlockListService.addBlock(
-      widget.comment.uid,
-      onSuccess: () {
-        ShieldUid.block(widget.comment.uid);
-        ShieldFeedSync.removeShieldedPosts();
-        ToastProvider.success('拉黑成功，TA 的内容将不再显示');
-        widget.onBlockSuccess?.call();
-      },
-      //「不能屏蔽自己」「该用户已被屏蔽」等具体原因由后端给出
-      onFailure: (e) => ToastProvider.error(e.error.toString()),
-    );
-  }
-
   bool _picFullView = false, _isDeleted = false;
 
   Future<bool?> _showDeleteConfirmDialog(String quote) {
@@ -215,9 +192,10 @@ class _NCommentCardState extends State<NCommentCard>
 
                     // 拉黑按钮
                     if (Platform.isIOS && widget.showBlockButton)
+                      // 分享按钮
                       CupertinoActionSheetAction(
                         onPressed: () {
-                          _blockCommentAuthor();
+                          ToastProvider.success('拉黑用户成功');
                           Navigator.pop(context);
                         },
                         child: Text(

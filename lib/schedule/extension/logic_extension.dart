@@ -40,7 +40,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
   // 整理出所有本周arrange
   List<Pair<Course, int>> pairList = [];
   // 先添加普通课程
-  provider.schoolCourses.forEach((course) {
+  provider.schoolCoursesForWeek(provider.selectedWeek).forEach((course) {
     for (int j = 0; j < course.arrangeList.length; j++) {
       course.arrangeList[j].showMode = 0; // 这里很坑，需要重置状态
       if (judgeActiveInWeek(
@@ -139,7 +139,7 @@ List<List<Pair<Course, int>>> getMergedActiveCourses(
     var start = pair.arrange.unitList.first;
     var end = pair.arrange.unitList.last;
     var day = pair.arrange.weekday - 1;
-    if (day > dayNumber) return;
+    if (day >= dayNumber) return;
     var needAppend = true; // `pair`是否需要外显
     for (int i = start; i <= end; i++) {
       if (unitCountMatrix[day][i - 1] == 2) {

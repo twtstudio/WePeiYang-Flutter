@@ -40,6 +40,7 @@ import 'commons/util/router_manager.dart';
 import 'commons/util/storage_util.dart';
 import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
+import 'commons/widgets/wpy_pic.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'feedback/network/post.dart';
 import 'gpa/model/gpa_notifier.dart';
@@ -85,6 +86,17 @@ void main() async {
         await windowManager.show();
         await windowManager.focus();
       });
+    }
+
+    /// 临时缓存超过1GB时，打开应用自动清理缓存
+    const maxCacheSize = 1024 * 1024 * 1024;
+    try {
+      final cacheSize = await StorageUtil.getTemporaryCacheSize();
+      if (cacheSize > maxCacheSize) {
+        await StorageUtil.clearTemporaryCache();
+      }
+    } catch (e, stack) {
+      Log.e(e, stack, 'cache');
     }
 
     /// 初始化sharedPreference

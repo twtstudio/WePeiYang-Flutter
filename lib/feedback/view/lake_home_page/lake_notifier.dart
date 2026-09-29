@@ -103,6 +103,18 @@ class ChangeablePost {
 class LakeUtil {
   // tabs
   static List<WPYTab> tabList = [];
+  static final List<WPYTab> _serverTabList = [];
+
+  /// 后端下发的默认分区顺序，不包含客户端生成的“精华”。
+  static List<WPYTab> get defaultTabList =>
+      List<WPYTab>.unmodifiable(_serverTabList);
+
+  /// 分区列表或顺序变化时递增，通知已缓存的论坛首页重建 TabController。
+  static final ValueNotifier<int> tabListRevision = ValueNotifier(0);
+  static int? _tabIdToRestore;
+
+  /// 列表更新后，论坛首页应继续展示的分区 id。
+  static int? get tabIdToRestore => _tabIdToRestore;
 
   // 当前tab 的index
   static final ValueNotifier<int> currentTab = ValueNotifier(1);
@@ -135,20 +147,99 @@ class LakeUtil {
     WPYTab oTab = WPYTab(id: 0, shortname: '精华', name: '精华');
     tabList.clear();
     tabList.add(oTab);
-    lakePageControllers[0] = LakePageController.empty(0, 0);
+    lakePageControllers.putIfAbsent(0, () => LakePageController.empty(0, 0));
   }
 
-  static Future<void> initTabList() async {
-    if (tabList.isNotEmpty) return;
-    final List<WPYTab> list = await FeedbackService.getTabList();
-    _addDefaultTab();
-    tabList.addAll(list);
-    for (int i = 0; i < list.length; i++) {
-      final tabIndex = i + 1;
-      lakePageControllers[list[i].id] =
-          LakePageController.empty(tabIndex, list[i].id);
+  /// 将用户保存的分区 id 顺序合并到后端列表。
+  ///
+  /// 无效、重复、已下线的 id 会被忽略；后端新增的分区按后端顺序追加。
+  static List<WPYTab> mergeTabOrder(
+    List<WPYTab> serverTabs,
+    List<String> savedOrder,
+  ) {
+    final tabsById = <int, WPYTab>{};
+    for (final tab in serverTabs) {
+      tabsById.putIfAbsent(tab.id, () => tab);
     }
+
+    final ordered = <WPYTab>[];
+    final addedIds = <int>{};
+    for (final rawId in savedOrder) {
+      final id = int.tryParse(rawId);
+      if (id == null || id == 0 || !addedIds.add(id)) continue;
+      final tab = tabsById[id];
+      if (tab != null) ordered.add(tab);
+    }
+
+    for (final tab in serverTabs) {
+      if (tab.id != 0 && addedIds.add(tab.id)) ordered.add(tab);
+    }
+    return ordered;
+  }
+
+  /// 依据当前本地配置重建展示列表，保留各分区原有对象和内容控制器。
+  static void applySavedTabOrder() {
+    _addDefaultTab();
+    tabList.addAll(
+      mergeTabOrder(_serverTabList, CommonPreferences.feedbackTabOrder.value),
+    );
+  }
+
+  static int? _selectedTabId() {
+    if (tabList.isEmpty) return null;
+    final index = currentTab.value.clamp(0, tabList.length - 1);
+    return tabList[index].id;
+  }
+
+  static void _notifyTabListChanged(int? selectedTabId) {
+    _tabIdToRestore = selectedTabId;
+    final newIndex = selectedTabId == null
+        ? -1
+        : tabList.indexWhere((tab) => tab.id == selectedTabId);
+    currentTab.value = newIndex < 0 ? 0 : newIndex;
+    tabListRevision.value++;
+  }
+
+  static void _reconcilePageControllers() {
+    final activeIds = tabList.map((tab) => tab.id).toSet();
+    lakePageControllers.removeWhere((id, _) => !activeIds.contains(id));
+    for (int i = 0; i < tabList.length; i++) {
+      final tab = tabList[i];
+      lakePageControllers.putIfAbsent(
+        tab.id,
+        () => LakePageController.empty(i, tab.id),
+      );
+    }
+  }
+
+  /// 保存用户顺序并立即更新已缓存的论坛首页。
+  static void setCustomTabOrder(Iterable<int> tabIds) {
+    final selectedTabId = _selectedTabId();
+    final normalized = <String>[];
+    final seen = <int>{};
+    for (final id in tabIds) {
+      if (id != 0 && seen.add(id)) normalized.add('$id');
+    }
+    CommonPreferences.feedbackTabOrder.value = normalized;
+    applySavedTabOrder();
+    _reconcilePageControllers();
+    _notifyTabListChanged(selectedTabId);
+  }
+
+  static void resetCustomTabOrder() => setCustomTabOrder(const []);
+
+  static Future<void> initTabList({bool forceRefresh = false}) async {
+    if (tabList.isNotEmpty && !forceRefresh) return;
+    final selectedTabId = _selectedTabId();
+    final hadTabs = tabList.isNotEmpty;
+    final List<WPYTab> list = await FeedbackService.getTabList();
+    _serverTabList
+      ..clear()
+      ..addAll(list);
+    applySavedTabOrder();
+    _reconcilePageControllers();
     loadCollapsedTopTabs();
+    if (hadTabs) _notifyTabListChanged(selectedTabId);
   }
 
   static Future<void> initPostList(int index, {forced = false}) async {
@@ -241,6 +332,8 @@ class LakeUtil {
 
   static void clearAll() {
     tabList.clear();
+    _serverTabList.clear();
+    _tabIdToRestore = null;
     lakePageControllers.clear();
     currentTab.value = 1;
     showSearch.value = true;

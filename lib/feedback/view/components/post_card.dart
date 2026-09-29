@@ -252,8 +252,6 @@ class _PostCardNormalState extends State<PostCardNormal> {
           if (widget.outer) {
             return GestureDetector(
               onTap: () {
-                FeedbackService.visitPost(
-                    id: widget.post.id, onFailure: (_) {});
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.detail,

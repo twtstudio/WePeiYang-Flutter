@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/font/font_reload_sheet.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
@@ -15,7 +16,6 @@ import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import '../../../commons/local/animation_provider.dart';
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
-import '../../../commons/widgets/wpy_pic.dart';
 import '../../../gpa/model/gpa_notifier.dart';
 
 class GeneralSettingPage extends StatefulWidget {
@@ -24,6 +24,25 @@ class GeneralSettingPage extends StatefulWidget {
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
+  late Future<int> _cacheSize;
+
+  @override
+  void initState() {
+    super.initState();
+    _cacheSize = StorageUtil.getTemporaryCacheSize();
+  }
+
+  String _formatCacheSize(int bytes) {
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    var size = bytes.toDouble();
+    var unit = 0;
+    while (size >= 1024 && unit < units.length - 1) {
+      size /= 1024;
+      unit++;
+    }
+    return '${size.toStringAsFixed(unit == 0 ? 0 : 1)} ${units[unit]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
@@ -86,6 +105,37 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                             Text('重新加载字体文件', style: mainTextStyle),
                             SizedBox(height: 3.h),
                             Text('查看下载进度与文件位置', style: hintTextStyle),
+                          ],
+                        ),
+                      ),
+                      arrow,
+                      SizedBox(width: 15.w),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: WButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AuthRouter.feedbackTabOrder);
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('论坛分区顺序', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('拖动调整湖底、校务等分区', style: hintTextStyle),
                           ],
                         ),
                       ),
@@ -332,10 +382,20 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   onPressed: () async {
                     ToastProvider.running("正在清除缓存...");
                     try {
-                      await WpyPic.clearAllCache();
-                      ToastProvider.success("图片缓存已清除");
+                      final cleared = await StorageUtil.clearTemporaryCache();
+                      if (cleared) {
+                        ToastProvider.success("应用缓存已清除");
+                      } else {
+                        ToastProvider.error("部分缓存正在使用，未能完全清除");
+                      }
                     } catch (e) {
                       ToastProvider.error("清除缓存失败: $e");
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          _cacheSize = StorageUtil.getTemporaryCacheSize();
+                        });
+                      }
                     }
                   },
                   child: Row(
@@ -345,12 +405,22 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('清除图片缓存', style: mainTextStyle),
+                            Text('清除应用缓存', style: mainTextStyle),
                             SizedBox(height: 3.h),
-                            Text('清除所有已缓存的图片文件', style: hintTextStyle)
+                            Text('清除所有临时缓存', style: hintTextStyle)
                           ],
                         ),
                       ),
+                      FutureBuilder<int>(
+                        future: _cacheSize,
+                        builder: (context, snapshot) {
+                          final text = snapshot.hasData
+                              ? _formatCacheSize(snapshot.data!)
+                              : '—';
+                          return Text(text, style: hintTextStyle);
+                        },
+                      ),
+                      SizedBox(width: 8.w),
                       arrow,
                       SizedBox(width: 15.w),
                     ],
@@ -599,6 +669,38 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                       SizedBox(width: 15.w),
                     ],
                   ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Container(
+                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                decoration: BoxDecoration(
+                  color: WpyTheme.of(context)
+                      .get(WpyColorKey.primaryBackgroundColor),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text('自定义课程计入学时统计', style: mainTextStyle),
+                    ),
+                    Switch(
+                      value: context.watch<CourseProvider>()
+                          .includeCustomCourseHours,
+                      onChanged: (value) {
+                        context.read<CourseProvider>()
+                            .includeCustomCourseHours = value;
+                      },
+                      activeThumbColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSecondaryActionColor),
+                      inactiveThumbColor:
+                      WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                      activeTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                      inactiveTrackColor: WpyTheme.of(context)
+                          .get(WpyColorKey.oldSwitchBarColor),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 15.h),
