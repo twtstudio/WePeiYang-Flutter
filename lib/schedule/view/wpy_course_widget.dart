@@ -72,22 +72,23 @@ class TodayCoursesWidget extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(35.w, 0, 25.w, 0),
                   child: Row(
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
-                            style: TextUtil.base.bold.sp(14).customColor(
-                                  WpyTheme.of(context)
-                                      .get(WpyColorKey.brightTextColor)
-                                      .withValues(alpha: 0.5),
-                                ),
-                          ),
-                          SizedBox(height: 4.h),
-                          SizedBox(
-                            width: 1.sw - 125.w - 50.r,
-                            child: Text(
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${getCourseTime(todayPairs[i].arrange.unitList)}   ${replaceBuildingWord(todayPairs[i].arrange.location)}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextUtil.base.bold.sp(14).customColor(
+                                    WpyTheme.of(context)
+                                        .get(WpyColorKey.brightTextColor)
+                                        .withValues(alpha: 0.5),
+                                  ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
                               (todayPairs[i].arrange.isExperiment &
                                       CommonPreferences.isShowExperiment.value)
                                   ? "[实验] ${todayPairs[i].arrange.name!}"
@@ -99,10 +100,10 @@ class TodayCoursesWidget extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      Spacer(),
+                      SizedBox(width: 10.w),
                       WButton(
                         onPressed: () =>
                             Navigator.pushNamed(context, ScheduleRouter.course),
