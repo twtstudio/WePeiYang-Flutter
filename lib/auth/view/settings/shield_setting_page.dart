@@ -9,6 +9,7 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/util/text_util.dart';
 import '../../../commons/util/toast_provider.dart';
 import '../../../commons/widgets/w_button.dart';
+import '../../../feedback/view/lake_home_page/lake_notifier.dart';
 import '../../model/block_list_item.dart';
 import '../../network/blocklist_service.dart';
 
@@ -81,6 +82,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
       final user = await BlockListService.addBlock(uid);
       if (!_isCurrentAccount) return;
       setState(() => _blockedUsers.insert(0, user));
+      LakeUtil.refreshAfterBlockChange().catchError(
+          (_) => ToastProvider.error('屏蔽列表已更新，请手动刷新帖子'));
       ToastProvider.success('屏蔽成功');
     } catch (error) {
       if (_isCurrentAccount) ToastProvider.error(_errorMessage(error));
@@ -118,6 +121,8 @@ class _ShieldSettingPageState extends State<ShieldSettingPage> {
       await BlockListService.deleteBlock(user.uid);
       if (!_isCurrentAccount) return;
       setState(() => _blockedUsers.removeWhere((item) => item.uid == user.uid));
+      LakeUtil.refreshAfterBlockChange().catchError(
+          (_) => ToastProvider.error('屏蔽列表已更新，请手动刷新帖子'));
       ToastProvider.success('已取消屏蔽喵');
     } catch (error) {
       if (_isCurrentAccount) ToastProvider.error(_errorMessage(error));

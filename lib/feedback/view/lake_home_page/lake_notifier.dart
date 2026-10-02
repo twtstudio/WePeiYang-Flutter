@@ -242,6 +242,18 @@ class LakeUtil {
     if (hadTabs) _notifyTabListChanged(selectedTabId);
   }
 
+  static Future<void> refreshAfterBlockChange() => Future.wait(
+        lakePageControllers.entries.map((entry) async {
+          final controller = entry.value;
+          final scroll = controller.scrollController;
+          if (scroll != null && scroll.hasClients) scroll.jumpTo(0);
+          controller.postHolder.resetPosts([]);
+          controller.currentPage.value = 0;
+          controller.refreshController?.resetNoData();
+          await initPostList(entry.key, forced: true);
+        }),
+      );
+
   static Future<void> initPostList(int index, {forced = false}) async {
     if (!forced &&
         LakeUtil.lakePageControllers[index]?.postHolder.postsList.isNotEmpty) {
