@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/post_search_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
 
@@ -47,11 +48,13 @@ class _SearchBarState extends State<SearchBar>
     super.initState();
     initSearchTag();
     _controller.addListener(() {
-      setState(() {});
-      _controller.text.startsWith('#')
-          ? _showSearch = true
-          : _showSearch = false;
-      if (_showSearch) refreshSearchTag(_controller.text.substring(1));
+      final keyword = _controller.text.trim();
+      setState(() {
+        _showSearch = keyword.startsWith('#') ||
+            keyword.toUpperCase() == 'MP' ||
+            parsePostSearchId(keyword) != null;
+      });
+      if (keyword.startsWith('#')) refreshSearchTag(keyword.substring(1));
     });
   }
 
@@ -107,9 +110,8 @@ class _SearchBarState extends State<SearchBar>
   }
 
   refreshSearchTag(String text) {
-    if (_controller.text != '#MP' &&
-        (!_controller.text.startsWith('#MP') ||
-            !RegExp(r'^-?[0-9]+').hasMatch(_controller.text.substring(3))))
+    final keyword = _controller.text.trim();
+    if (keyword.toUpperCase() != '#MP' && parsePostSearchId(keyword) == null)
       FeedbackService.searchTags(
           name: text,
           onResult: (list) {
@@ -124,6 +126,8 @@ class _SearchBarState extends State<SearchBar>
 
   @override
   Widget build(BuildContext context) {
+    final keyword = _controller.text.trim();
+    final postKeyword = normalizePostSearchKeyword(keyword);
     Widget searchInputField = ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: 30,
@@ -164,32 +168,9 @@ class _SearchBarState extends State<SearchBar>
                     ),
                     enabled: true,
                     onSubmitted: (content) {
-                      if (content.isNotEmpty) {
-                        if (_controller.text.startsWith('#MP') &&
-                            RegExp(r'^-?[0-9]+')
-                                .hasMatch(_controller.text.substring(3))) {
-                          FeedbackService.getPostById(
-                            id: int.parse(_controller.text.substring(3)),
-                            onResult: (post) {
-                              Navigator.popAndPushNamed(
-                                context,
-                                FeedbackRouter.detail,
-                                arguments: post,
-                              );
-                            },
-                            onFailure: (e) {
-                              ToastProvider.error('无法找到对应帖子，报错信息：${e.error}');
-                              return;
-                            },
-                          );
-                        } else if ((_controller.text.startsWith('#MP') &&
-                            RegExp(r'^-?[0-9]+')
-                                .hasMatch(_controller.text.substring(3)))) {
-                          _controller.text = '#MP';
-                          ToastProvider.error('后面跟数字啦！！！');
-                        } else {
-                          widget.onSubmitted.call(content);
-                        }
+                      final keyword = content.trim();
+                      if (keyword.isNotEmpty) {
+                        widget.onSubmitted.call(keyword);
                       } else {
                         Navigator.pushNamed(
                           context,
@@ -284,61 +265,42 @@ class _SearchBarState extends State<SearchBar>
                         ]),
                     child: Column(
                       children: [
-                        if (_controller.text.startsWith('#MP') ||
-                            _controller.text.startsWith('#'))
-                          WButton(
-                            onPressed: () {
-                              if (_controller.text.startsWith('#MP') &&
-                                  RegExp(r'^-?[0-9]+').hasMatch(
-                                      _controller.text.substring(3))) {
-                                FeedbackService.getPostById(
-                                  id: int.parse(_controller.text.substring(3)),
-                                  onResult: (post) {
-                                    Navigator.popAndPushNamed(
-                                      context,
-                                      FeedbackRouter.detail,
-                                      arguments: post,
-                                    );
-                                  },
-                                  onFailure: (e) {
-                                    ToastProvider.error(
-                                        '无法找到对应帖子，报错信息：${e.error}');
-                                    return;
-                                  },
-                                );
-                              } else {
-                                _controller.text = '#MP';
-                                ToastProvider.error('后面跟数字啦！！！');
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/svg_pics/lake_butt_icons/send.svg",
-                                    width: 14,
-                                  ),
-                                  SizedBox(width: 16),
-                                  Expanded(
-                                      child: Text(
-                                    _controller.text.length < 3
-                                        ? '按照MP号跳转'
-                                        : '跳转至：${_controller.text}',
-                                    style: TextUtil.base.w500.NotoSansSC
-                                        .sp(16)
-                                        .infoText(context),
-                                    overflow: TextOverflow.ellipsis,
-                                  )),
-                                  SizedBox(width: 4),
-                                ],
-                              ),
+                        WButton(
+                          onPressed: () {
+                            if (postKeyword != null) {
+                              widget.onSubmitted.call(postKeyword);
+                            } else {
+                              _controller.text = '#MP';
+                            ToastProvider.error('请输入1~6位帖子编号');
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 20, 4),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/svg_pics/lake_butt_icons/send.svg",
+                                  width: 14,
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                    child: Text(
+                                  postKeyword == null
+                                      ? '按照MP号跳转'
+                                      : '跳转至：$postKeyword',
+                                  style: TextUtil.base.w500.NotoSansSC
+                                      .sp(16)
+                                      .infoText(context),
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                                SizedBox(width: 4),
+                              ],
                             ),
                           ),
-                        if (_controller.text != '#MP' &&
-                            (!_controller.text.startsWith('#MP') ||
-                                !RegExp(r'^-?[0-9]+')
-                                    .hasMatch(_controller.text.substring(3))))
+                        ),
+                        if (keyword.startsWith('#') &&
+                            keyword.toUpperCase() != '#MP' &&
+                            postKeyword == null)
                           Column(children: tagList),
                       ],
                     ))

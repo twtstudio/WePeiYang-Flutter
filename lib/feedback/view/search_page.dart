@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/feedback/util/post_search_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/search_bar.dart'
     as wpySearchBar;
 import 'package:we_pei_yang_flutter/feedback/view/search_result_page.dart';
@@ -58,19 +59,17 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  int? _postIdFromKeyword(String keyword) {
-    if (!keyword.startsWith('#MP')) return null;
-    return int.tryParse(keyword.substring(3));
-  }
-
   void _openKeyword(String keyword, {required bool fromHistory}) {
-    final postId = _postIdFromKeyword(keyword);
+    keyword = keyword.trim();
+    final postId = parsePostSearchId(keyword, requirePrefix: true);
     if (postId != null) {
       FeedbackService.getPostById(
         id: postId,
         onResult: (post) {
-          if (!fromHistory) _searchHistoryList.unequalAdd(keyword);
           if (!mounted) return;
+          if (!fromHistory) {
+            _searchHistoryList.unequalAdd(normalizePostSearchKeyword(keyword)!);
+          }
           Navigator.popAndPushNamed(
             context,
             FeedbackRouter.detail,

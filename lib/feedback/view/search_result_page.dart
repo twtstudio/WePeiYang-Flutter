@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/feedback/util/post_search_util.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -71,16 +72,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
   bool get _canEditKeyword =>
       tagId.isEmpty && departmentId.isEmpty && lakeType == 0;
 
-  int? _postIdFromKeyword(String keyword) {
-    if (!keyword.startsWith('#MP')) return null;
-    return int.tryParse(keyword.substring(3));
-  }
-
   void _submitKeyword(String value) {
     final nextKeyword = value.trim();
     if (nextKeyword.isEmpty) return;
 
-    final postId = _postIdFromKeyword(nextKeyword);
+    final postId = parsePostSearchId(nextKeyword, requirePrefix: true);
     if (postId != null) {
       FeedbackService.getPostById(
         id: postId,
