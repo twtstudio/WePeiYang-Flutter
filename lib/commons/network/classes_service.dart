@@ -163,6 +163,8 @@ class ClassesService {
   }
 
   static Future<void> _getIdentity() async {
+    // 重新确认学期，不沿用之前登录留下的编号
+    semesterId = '';
     late Response<dynamic> ret;
     bool redirect = false;
     String url = 'https://classes.tju.edu.cn/eams/dataQuery.action';
@@ -213,11 +215,15 @@ class ClassesService {
         "id:([0-9]+),schoolYear:\"([0-9]+)-([0-9]+)\",name:\"(1|2)\"");
 
 
+    final currentSemester = _currentSemester;
     for (var arr in allSemester) {
-      if ("${arr[1]}-${arr[2]} ${arr[3]}" == _currentSemester) {
+      if ("${arr[1]}-${arr[2]} ${arr[3]}" == currentSemester) {
         semesterId = arr[0];
         break;
       }
+    }
+    if (semesterId.isEmpty) {
+      throw WpyDioException(error: '未找到当前学期（$currentSemester），课表未更新');
     }
   }
 

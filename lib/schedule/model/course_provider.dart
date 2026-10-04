@@ -200,16 +200,8 @@ class CourseProvider with ChangeNotifier {
     void Function(DioException)? onFailure,
   }) {
     ScheduleService.fetchCourses(onResult: (courses) {
-      if (courses.isEmpty) {
-        // 防止刷出来一个空课表
-        return;
-      }
-      _schoolCourses = courses;
-      notifyListeners();
-      // 通知小组件更新
-      _widgetChannel.invokeMethod("refreshScheduleWidget");
-      CommonPreferences.courseData.value =
-          json.encode(CourseTable(_schoolCourses, _customCourses));
+      // 有效空课表覆盖旧学期的数据
+      updateSchoolCourses(courses);
       onSuccess?.call();
     }, onFailure: (e) {
       onFailure?.call(e);
