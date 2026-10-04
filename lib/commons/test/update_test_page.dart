@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/download/download_item.dart';
 import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/update/update_manager.dart';
+import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import '../widgets/w_button.dart';
@@ -20,12 +21,11 @@ class UpdateTestPage extends StatefulWidget {
 class _UpdateTestPageState extends State<UpdateTestPage> {
   Future<void> _deleteAllApk() async {
     try {
-      final dir = await getApplicationDocumentsDirectory();
-      final apkDir = Directory('${dir.path}/apk');
+      final apkDir = Directory(DownloadType.apk.path);
       if (apkDir.existsSync()) {
         for (final file in apkDir.listSync()) {
           final name = file.path.split(Platform.pathSeparator).last;
-          if (name.endsWith('.apk') && name.split('-').length == 3) {
+          if (name.endsWith('.apk')) {
             file.deleteSync();
           }
         }
@@ -38,12 +38,11 @@ class _UpdateTestPageState extends State<UpdateTestPage> {
 
   Future<void> _deleteAllSo() async {
     try {
-      final dir = await getApplicationDocumentsDirectory();
-      final hotfixDir = Directory('${dir.path}/hotfix');
+      final hotfixDir = Directory('${StorageUtil.filesDir.path}/hotfix');
       if (hotfixDir.existsSync()) {
         for (final file in hotfixDir.listSync()) {
           final name = file.path.split(Platform.pathSeparator).last;
-          if (name.endsWith('.so') && name.split('-').length == 3) {
+          if (name.endsWith('.so')) {
             file.deleteSync();
           }
         }
