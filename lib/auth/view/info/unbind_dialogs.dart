@@ -190,8 +190,21 @@ class EmailUnbindDialog extends Dialog {
   }
 }
 
-class LogoffDialog extends Dialog {
+class LogoffDialog extends StatefulWidget {
+  const LogoffDialog({super.key});
+
+  @override
+  State<LogoffDialog> createState() => _LogoffDialogState();
+}
+
+class _LogoffDialogState extends State<LogoffDialog> {
   final textController = TextEditingController();
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
 
   void _logoff() {
     if (textController.text != "我确认进行账号注销") {
@@ -215,18 +228,19 @@ class LogoffDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Wrap(children: [
-        Container(
-          // height: 160,
-
-          margin: const EdgeInsets.symmetric(horizontal: 30),
+    return Dialog(
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      clipBehavior: Clip.antiAlias,
+      child: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color:
-                  WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor)),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
@@ -268,7 +282,7 @@ class LogoffDialog extends Dialog {
                 child: TextField(
                   controller: textController,
                   decoration: InputDecoration(
-                    hintText: "请输入：我确认进行账号注销",
+                    hintText: "",
                     hintStyle: TextUtil.base.noLine.sp(16),
                     isDense: true,
                     border: OutlineInputBorder(
@@ -291,8 +305,10 @@ class LogoffDialog extends Dialog {
                       WpyTheme.of(context).get(WpyColorKey.oldActionColor),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 30,
+                runSpacing: 8,
                 children: [
                   WButton(
                     onPressed: () {
@@ -308,7 +324,6 @@ class LogoffDialog extends Dialog {
                               .bold),
                     ),
                   ),
-                  SizedBox(width: 30),
                   WButton(
                     onPressed: _logoff,
                     child: Container(
@@ -322,7 +337,7 @@ class LogoffDialog extends Dialog {
             ],
           ),
         ),
-      ]),
+      ),
     );
   }
 }
