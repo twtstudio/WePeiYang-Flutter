@@ -50,51 +50,63 @@ class CustomCoursesPage extends StatelessWidget {
             ),
             titleSpacing: 0,
             leadingWidth: 40.w,
-            title: Text('我的自定义课程',
+            title: Text('课程表自定义',
                 style: TextUtil.base.PingFangSC.bold.label(context).sp(18)),
-            actions: [
-              WButton(
-                onPressed: () {
-                  var pvd = context.read<EditProvider>();
-                  pvd.init();
-                  showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20.r)),
-                    ),
-                    isDismissible: true,
-                    enableDrag: false,
-                    isScrollControlled: true,
-                    builder: (context) =>
-                        EditBottomSheet(pvd.nameSave, pvd.creditSave),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(right: 15.w),
-                  width: 24.r,
-                  height: 24.r,
-                  child: ColoredIcon("assets/images/schedule/add2.png",
-                      color: WpyTheme.of(context).primary),
-                ),
-              )
-            ],
           ),
           body: Theme(
             data: Theme.of(context).copyWith(
                 secondaryHeaderColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor)),
             child: ListView.builder(
-              itemCount: customCourses.length + 1,
+              itemCount: customCourses.length + 2,
               itemBuilder: (context, index) {
                 if (index == 0) return _dayOverrideItem(context);
+                if (index == 1) return _customCourseHeader(context);
                 return _item(
-                    context, customCourses[index - 1], index - 1);
+                    context, customCourses[index - 2], index - 2);
               },
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _customCourseHeader(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text('自定义课程',
+                style: TextUtil.base.PingFangSC.bold.label(context).sp(15)),
+          ),
+          WButton(
+            onPressed: () {
+              var pvd = context.read<EditProvider>();
+              pvd.init();
+              showModalBottomSheet(
+                context: context,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(20.r)),
+                ),
+                isDismissible: true,
+                enableDrag: false,
+                isScrollControlled: true,
+                builder: (context) =>
+                    EditBottomSheet(pvd.nameSave, pvd.creditSave),
+              );
+            },
+            child: Container(
+              width: 24.r,
+              height: 24.r,
+              child: ColoredIcon("assets/images/schedule/add2.png",
+                  color: WpyTheme.of(context).primary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
