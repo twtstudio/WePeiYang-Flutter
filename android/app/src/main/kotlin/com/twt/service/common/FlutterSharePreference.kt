@@ -3,6 +3,7 @@ package com.twt.service.common
 import android.content.Context
 import com.twt.service.WBYApplication
 import com.twt.service.push.CanPushType
+import com.twt.service.push.PushCidStore
 
 /**
  * android 原生获取 flutter sharePreference
@@ -10,10 +11,11 @@ import com.twt.service.push.CanPushType
  * https://blog.csdn.net/codekxx/article/details/102475084
  */
 object FlutterSharePreference {
-    private val flutterSharedPreferences by lazy {
-        WBYApplication.context?.get()
+    // Early SDK callbacks can run before the application context is available;
+    // do not cache a missing context/preferences instance for the process lifetime.
+    private val flutterSharedPreferences
+        get() = WBYApplication.context?.get()
             ?.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-    }
 
     const val TAG = "SHARE_PREFERENCE"
 
@@ -38,12 +40,14 @@ object FlutterSharePreference {
             return@with when (this) {
                 1 -> CanPushType.Not
                 2 -> CanPushType.Want
-                else -> CanPushType.Unknown
+                else -> WBYApplication.context?.get()?.let(PushCidStore::getUserPreference)
+                    ?: CanPushType.Unknown
             }
         }.also {
             LogUtil.d(TAG, "canPush : $it")
         }
         set(type) {
+            WBYApplication.context?.get()?.let { PushCidStore.saveUserPreference(it, type) }
             flutterSharedPreferences?.edit()?.let {
                 it.putInt(canPushKey, type.value)
                 it.commit()

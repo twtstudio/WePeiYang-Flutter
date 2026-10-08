@@ -12,6 +12,24 @@ internal object PushCidStore {
     private const val CID_KEY = "cid"
     private const val INSTALL_ID_KEY = "install_id"
     private const val REGISTRATION_ALLOWED_KEY = "registration_allowed"
+    private const val USER_PREFERENCE_KEY = "user_preference"
+
+    fun saveUserPreference(context: Context, preference: CanPushType) {
+        if (preference == CanPushType.Unknown) return
+        context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .edit()
+            .putInt(USER_PREFERENCE_KEY, preference.value)
+            .commit()
+    }
+
+    fun getUserPreference(context: Context): CanPushType {
+        return when (context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+            .getInt(USER_PREFERENCE_KEY, CanPushType.Unknown.value)) {
+            CanPushType.Not.value -> CanPushType.Not
+            CanPushType.Want.value -> CanPushType.Want
+            else -> CanPushType.Unknown
+        }
+    }
 
     fun save(context: Context, cid: String) {
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)

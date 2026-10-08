@@ -290,4 +290,7 @@ dependencies {
     implementation("com.umeng.umsdk:apm:1.6.2")
     implementation("com.umeng.umsdk:push:6.5.5")
     implementation("com.umeng.umsdk:abtest:1.0.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("org.mockito:mockito-inline:4.11.0")
 }
