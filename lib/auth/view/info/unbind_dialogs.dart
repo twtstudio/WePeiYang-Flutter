@@ -212,9 +212,13 @@ class _LogoffDialogState extends State<LogoffDialog> {
       ToastProvider.error("输入错误");
       return;
     }
-    await context.read<PushManager>().disablePushDevice();
-    AuthService.logoff(onSuccess: () {
+    final pushManager = context.read<PushManager>();
+    AuthService.logoff(onSuccess: () async {
       ToastProvider.success("注销账号成功");
+      // P17: the server disables every device inside the logoff transaction,
+      // so a rejected logoff must leave push untouched. After success this
+      // installation stays paused until the next login registers it again.
+      await pushManager.disablePushDevice();
       UmengCommonSdk.onProfileSignOff();
       CommonPreferences.clearAllPrefs();
       Navigator.pushNamedAndRemoveUntil(
@@ -222,6 +226,8 @@ class _LogoffDialogState extends State<LogoffDialog> {
           AuthRouter.login,
           (route) => false);
     }, onFailure: (e) {
+      // Nothing was paused or disabled before the request, so a failed or
+      // unconfirmed logoff keeps the current account's push registration.
       ToastProvider.error(e.error.toString());
     });
     // Clipboard.setData(ClipboardData(text: "https://i.twt.edu.cn"));

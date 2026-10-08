@@ -63,9 +63,9 @@ class AccountUpgradeDialog extends Dialog {
                   ),
                   WButton(
                     onPressed: () async {
-                      // accountUpgrade replaces the JWT; disable the old
-                      // account's installation before that token changes.
-                      await context.read<PushManager>().disablePushDevice();
+                      // P17: the device row is owned by the account id, which
+                      // account upgrade keeps. Disabling it beforehand used to
+                      // leave push turned off when the upgrade was rejected.
                       var rsp = await AuthService.accountUpgrade();
                       if (rsp) {
                         // Navigator.pop(context);
