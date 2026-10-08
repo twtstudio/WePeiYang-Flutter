@@ -63,6 +63,11 @@ class CommonPreferences {
   static final collapsedTopTabs =
       PrefsBean<List<String>>('collapsedTopTabs', []);
 
+  /// 求实论坛分区的自定义顺序，仅保存后端分区 id；空列表表示跟随后端默认顺序。
+  /// 客户端生成的“精华”分区固定在首位.
+  static final feedbackTabOrder =
+      PrefsBean<List<String>>('feedbackTabOrder', []);
+
   /// 求实论坛--等级系统
   static final levelPoint = PrefsBean<int>('levelPoint');
   static final levelName = PrefsBean<String>('levelName');
@@ -73,6 +78,8 @@ class CommonPreferences {
   /// 办公网
   static final gpaData = PrefsBean<String>('gpaData');
   static final courseData = PrefsBean<String>('courseData');
+  static final scheduleDayOverrides =
+      PrefsBean<String>('scheduleDayOverrides', '{}');
   static final examData = PrefsBean<String>('examData');
   static final customUpdatedAt =
       PrefsBean<int>('customUpdatedAt'); // 上次修改自定义课程的时间
@@ -84,6 +91,8 @@ class CommonPreferences {
   static final customCourseToken = PrefsBean<String>('customCourseToken');
   static final courseAppBarShrink = PrefsBean<bool>('courseAppBarShrink');
   static final isShowExperiment = PrefsBean<bool>('isShowExperiment', true);
+  static final includeCustomCourseHours =
+      PrefsBean<bool>('includeCustomCourseHours', false);
 
   /// 失物招领
   static final lafToken = PrefsBean<String>('lafToken');
@@ -158,7 +167,7 @@ class CommonPreferences {
         'Schedule', ScheduleRouter.course),
     CardBean('assets/svg_pics/lake_butt_icons/QR.png', 24.w, '入校码', 'Entry QR',
         HomeRouter.casQR),
-    CardBean('assets/images/account/comment.png', 24.w, '课评网', 'Course\nReview',
+    CardBean('assets/svg_pics/lake_butt_icons/kpw.png', 24.w, '课评网', 'Course\nReview',
         HomeRouter.courseReview),
     CardBean("assets/svg_pics/lake_butt_icons/news.png", 24.w, '新闻网', 'News',
         HomeRouter.news),
@@ -174,7 +183,7 @@ class CommonPreferences {
     //     HomeRouter.game)
   ]);
   static final userTool = CardBeanListPrefs('userTool', [
-    CardBean('assets/svg_pics/lake_butt_icons/sample1.png', 24.w, '图书馆',
+    CardBean('assets/images/account/building.png', 24.w, '图书馆',
         'Library', 'https://ic.lib.tju.edu.cn/'),
     CardBean('assets/svg_pics/lake_butt_icons/sample2.png', 24.w, '教务系统',
         'EAMS', 'https://classes.tju.edu.cn/'),
@@ -266,6 +275,7 @@ class CommonPreferences {
 
   /// 清除办公网缓存
   static void clearTjuPrefs() {
+    scheduleDayOverrides.clear();
     gpaData.clear();
     courseData.clear();
     examData.clear();

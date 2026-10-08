@@ -6,6 +6,7 @@ import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_day_rules.dart';
 import 'package:we_pei_yang_flutter/schedule/model/edit_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/page/edit_detail_page.dart';
 
@@ -238,7 +239,12 @@ class CourseDialog extends Dialog {
         children: [
           Text('时间', style: _hintNameStyle.copyWith(letterSpacing: 3)),
           SizedBox(height: 3.h),
-          Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle)
+          Text(getCourseTime(pair.arrange.unitList), style: _hintValueStyle),
+          if (pair.arrange.sourceDate != null) ...[
+            SizedBox(height: 3.h),
+            Text('由 ${scheduleDateKey(pair.arrange.sourceDate!)} 调入',
+                style: _hintNameStyle),
+          ],
         ],
       );
 }

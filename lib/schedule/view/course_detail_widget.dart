@@ -10,6 +10,8 @@ import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_day_rules.dart';
+import 'day_override_sheet.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 
@@ -43,36 +45,67 @@ class CourseDetailWidget extends StatelessWidget {
 class _WeekDisplayWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var selectedWeek =
-        context.select<CourseProvider, int>((p) => p.selectedWeek);
-    List<String> dates = getWeekDayString(
-        CommonPreferences.termStart.value, selectedWeek, _dayNumber);
-    var now = DateTime.now();
-    var month = now.month.toString();
-    var day = now.day.toString();
-    var nowDate =
-        "${month.length < 2 ? '0' + month : month}/${day.length < 2 ? '0' + day : day}";
+    final provider = context.watch<CourseProvider>();
+    final rules = provider.dayRules;
+    final dates = List.generate(_dayNumber,
+        (index) => rules.dateFor(provider.selectedWeek, index + 1));
+    final now = scheduleDate(DateTime.now());
     return Row(
-      children: dates.map((date) => _getCard(date, nowDate == date)).toList(),
+      children: dates.map((date) => _getCard(date, now == date,
+          rules.ruleFor(date))).toList(),
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
     );
   }
 
-  /// 因为card组件宽度会比width小一些，不好对齐，因此用container替代
-  Widget _getCard(String date, bool deep) => Builder(builder: (context) {
-        return Container(
-          height: 28.h,
-          width: _cardWidth,
-          decoration: BoxDecoration(
-              color: WpyTheme.of(context)
-                  .get(WpyColorKey.brightTextColor)
-                  .withValues(alpha: deep ? 1 : 0.25),
-              borderRadius: BorderRadius.circular(5.r)),
-          child: Center(
-            child: Text(date,
-                style: TextUtil.base.Swis.bold.sp(10).customColor(deep
-                    ? WpyTheme.of(context).get(WpyColorKey.primaryActionColor)
-                    : WpyTheme.of(context).get(WpyColorKey.brightTextColor))),
+  /// 课表更改显示
+  Widget _getCard(DateTime date, bool deep, ScheduleDayOverride? rule) =>
+      Builder(builder: (context) {
+        final label = scheduleDateKey(date).substring(5).replaceAll('-', '/');
+        final marker = rule == null ? '' : rule.isOff ? '休' : '调';
+        final theme = WpyTheme.of(context);
+        final action = theme.get(WpyColorKey.primaryActionColor);
+        final bright = theme.get(WpyColorKey.brightTextColor);
+        return Semantics(
+          label: '${scheduleDateKey(date)}$marker，长按调整课表',
+          child: GestureDetector(
+            onLongPress: () => showDayOverrideSheet(context, date: date),
+            child: Container(
+              height: 28.h,
+              width: _cardWidth,
+              decoration: BoxDecoration(
+                  color: bright.withValues(alpha: deep ? 1 : 0.25),
+                  borderRadius: BorderRadius.circular(5.r)),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(label,
+                          style: TextUtil.base.Swis.bold
+                              .sp(10)
+                              .customColor(deep ? action : bright)),
+                      if (rule != null) ...[
+                        SizedBox(width: 3.w),
+                        Container(
+                          width: 14.r,
+                          height: 14.r,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: deep ? action : bright,
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                          child: Text(marker,
+                              style: TextUtil.base.PingFangSC.bold
+                                  .sp(8)
+                                  .customColor(deep ? bright : action)),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       });

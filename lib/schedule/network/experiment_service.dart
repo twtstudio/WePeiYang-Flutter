@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
@@ -134,6 +135,18 @@ class ExperimentService {
               weekList: [parseWeek(exp.time)],
               teacherList: [exp.teacher],
             );
+
+            // 刷新失败时可能沿用旧课表，避免重复追加同一条实验课安排。
+            if (course.arrangeList.any((existing) =>
+                existing.isExperiment &&
+                existing.name == arrange.name &&
+                existing.location == arrange.location &&
+                existing.weekday == arrange.weekday &&
+                listEquals(existing.weekList, arrange.weekList) &&
+                listEquals(existing.unitList, arrange.unitList) &&
+                listEquals(existing.teacherList, arrange.teacherList))) {
+              continue;
+            }
 
             // 删除对应的站位课程
             courseList[i].arrangeList[0].weekList.remove(parseWeek(exp.time));

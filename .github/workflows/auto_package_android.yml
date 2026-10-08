@@ -3,7 +3,7 @@ name: Flutter AutoPackage Android
 on:
   push:
     branches:
-      - "Flutter3.44"
+      - "flutter3.44"
 
 jobs:
   build:
@@ -22,6 +22,8 @@ jobs:
           cache: true
 
       - uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
       - name: Extract version from pubspec.yaml
         run: |

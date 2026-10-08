@@ -1216,10 +1216,10 @@ class _ImagesGridViewState extends State<ImagesGridView> {
         child: WButton(
           onPressed: onTap,
           child: Container(
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
             decoration: BoxDecoration(
-              color: WpyTheme.of(context).get(WpyColorKey.dislikeSecondary),
+              color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
             ),

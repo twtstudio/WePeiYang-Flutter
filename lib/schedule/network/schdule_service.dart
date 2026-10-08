@@ -143,6 +143,9 @@ class ScheduleService {
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
     }
     final ids = res.data.toString().find("\"ids\",\"([^\"]+)\"");
+    if (ids.isEmpty || semesterId.isEmpty) {
+      throw WpyDioException(error: '未获取到课表信息，请重新尝试');
+    }
     _log('STEP 6: IDs found. Sending POST request for courseTable.action...');
 
     // 获取课表
@@ -158,15 +161,16 @@ class ScheduleService {
       options: Options(contentType: Headers.formUrlEncodedContentType),
     );
     _log('STEP 7: Course table data received. Starting to parse HTML...');
-    return _parseCourseHTML(res.data.toString());
+    return parseCourseHTML(res.data.toString());
   }
 
   /// 解析请求到的html课程数据
-  static List<Course> _parseCourseHTML(String data) {
+  @visibleForTesting
+  static List<Course> parseCourseHTML(String data) {
     _log('Parsing HTML data...');
 
     /// 判断会话是否过期
-    if (data.contains("本次会话已经被过期"))
+    if (data.contains("本次会话已经被过期") || data.contains('统一认证系统'))
       throw WpyDioException(error: "办公网绑定失效，请重新绑定");
 
     try {
@@ -268,6 +272,17 @@ class ScheduleService {
         });
         courseList.add(course);
       });
+      // 空结果
+      if (courseList.isEmpty) {
+        final tbody = RegExp(r'<tbody\b[^>]*>([\s\S]*?)</tbody>')
+            .firstMatch(data);
+        if (tbody == null ||
+            tbody.group(1)!.trim().isNotEmpty ||
+            !RegExp(r'\bfillTable\s*\(').hasMatch(data) ||
+            data.contains('var teachers')) {
+          throw FormatException('无法确认空课表');
+        }
+      }
       _log('HTML parsing finished. Found ${courseList.length} courses.');
 
       return courseList;

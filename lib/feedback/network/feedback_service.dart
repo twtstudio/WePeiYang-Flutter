@@ -125,6 +125,7 @@ class FeedbackService with AsyncTimer {
 
     //没匹配上，开始该评论的评论的匹配
     if(item.subFloors.isNotEmpty) {
+      final originalSubFloorCount = item.subFloors.length;
       List<Floor> subFloors = [];
       for (final subitem in item.subFloors) {
         if (!CommentBlockCheck(subitem)) {
@@ -132,6 +133,8 @@ class FeedbackService with AsyncTimer {
         }
       }
       item.subFloors = subFloors;
+      item.subFloorCnt -= originalSubFloorCount - subFloors.length;
+      if (item.subFloorCnt < 0) item.subFloorCnt = 0;
     }
 
     return false;
