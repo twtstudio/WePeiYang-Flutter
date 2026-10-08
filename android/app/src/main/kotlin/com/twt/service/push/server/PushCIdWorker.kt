@@ -10,34 +10,45 @@ import com.twt.service.push.CanPushType
 import com.twt.service.push.PushCidStore
 import com.twt.service.push.PushCidSync
 import com.twt.service.push.WbyPushPlugin
+import kotlinx.coroutines.CancellationException
 
-class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : CoroutineWorker(context, workerParams) {
+class PushCIdWorker internal constructor(
+    val context: Context,
+    workerParams: WorkerParameters,
+    private val server: WBYServerAPI,
+) : CoroutineWorker(context, workerParams) {
+    constructor(context: Context, workerParams: WorkerParameters) : this(context, workerParams, WBYServerAPI)
+
     override suspend fun doWork(): Result {
         try {
             val cid = inputData.getString("cid")?.trim()?.takeIf { it.isNotEmpty() }
                 ?: return Result.failure()
-            if (FlutterSharePreference.canPush == CanPushType.Not) {
-                WbyPushPlugin.log("CID registration skipped because push is disabled")
-                return Result.success()
+            val generation = inputData.getLong(PushCidSync.GENERATION_KEY, -1L)
+            return PushCidSync.withLifecycleLock {
+                // Logout may have happened while this task was waiting for the lock.
+                // A subsequent login must not revive that old task, even for the same account.
+                if (!PushCidStore.isCurrentRegistration(context, generation) ||
+                    FlutterSharePreference.canPush != CanPushType.Want) {
+                    WbyPushPlugin.log("CID registration skipped by lifecycle state")
+                    return@withLifecycleLock Result.success()
+                }
+                val token = FlutterSharePreference.authToken?.trim()?.takeIf { it.isNotEmpty() }
+                if (token == null) {
+                    WbyPushPlugin.log("CID registration postponed until login")
+                    return@withLifecycleLock retryOrFailure()
+                }
+                // Pass the captured token explicitly instead of reading mutable preferences
+                // again from the HTTP interceptor after another login/logout has started.
+                val response = registerDevice(cid, token)
+                WbyPushPlugin.log("CID registration response code=${response.error_code}")
+                when {
+                    response.error_code == 0 -> Result.success()
+                    response.error_code in 40000..49999 -> Result.failure()
+                    else -> retryOrFailure()
+                }
             }
-            if (!PushCidStore.isRegistrationAllowed(context)) {
-                WbyPushPlugin.log("CID registration skipped by lifecycle state")
-                return Result.success()
-            }
-            val token = FlutterSharePreference.authToken
-            if (token.isNullOrEmpty()) {
-                WbyPushPlugin.log("CID registration postponed until login")
-                return if (runAttemptCount < 5) Result.retry() else Result.failure()
-            }
-            val response = PushCidSync.withLifecycleLock {
-                registerDevice(cid)
-            }
-            WbyPushPlugin.log("CID registration response code=${response.error_code}")
-            return when {
-                response.error_code == 0 -> Result.success()
-                response.error_code in 40000..49999 -> Result.failure()
-                else -> retryOrFailure()
-            }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: retrofit2.HttpException) {
             WbyPushPlugin.log("CID registration HTTP ${e.code()}")
             return if (e.code() in 400..499) Result.failure() else retryOrFailure()
@@ -57,13 +68,14 @@ class PushCIdWorker(val context: Context, workerParams: WorkerParameters) : Coro
         return if (runAttemptCount < MAX_ATTEMPTS) Result.retry() else Result.failure()
     }
 
-    private suspend fun registerDevice(cid: String): WBYBaseData<Any> {
+    private suspend fun registerDevice(cid: String, token: String): WBYBaseData<Any> {
         val appId = BuildConfig.PUSH_APP_ID.trim()
         val environment = BuildConfig.PUSH_ENVIRONMENT.trim()
         if (appId.isEmpty() || environment.isEmpty()) {
             throw IllegalStateException("push registration metadata missing")
         }
-        return WBYServerAPI.registerPushDevice(
+        return server.registerPushDevice(
+            token = token,
             cid = cid,
             appId = appId,
             environment = environment,

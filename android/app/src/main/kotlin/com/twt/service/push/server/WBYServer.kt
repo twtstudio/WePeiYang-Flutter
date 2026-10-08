@@ -35,6 +35,7 @@ interface WBYServerAPI {
     @FormUrlEncoded
     @POST("notification/device/register")
     suspend fun registerPushDevice(
+        @Header("token") token: String,
         @Field("cid") cid: String,
         @Field("appId") appId: String,
         @Field("environment") environment: String,

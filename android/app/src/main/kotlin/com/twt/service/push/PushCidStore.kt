@@ -13,6 +13,7 @@ internal object PushCidStore {
     private const val INSTALL_ID_KEY = "install_id"
     private const val REGISTRATION_ALLOWED_KEY = "registration_allowed"
     private const val USER_PREFERENCE_KEY = "user_preference"
+    private const val REGISTRATION_GENERATION_KEY = "registration_generation"
 
     fun saveUserPreference(context: Context, preference: CanPushType) {
         if (preference == CanPushType.Unknown) return
@@ -69,10 +70,28 @@ internal object PushCidStore {
             .getBoolean(REGISTRATION_ALLOWED_KEY, true)
     }
 
-    fun setRegistrationAllowed(context: Context, allowed: Boolean) {
+    fun getRegistrationGeneration(context: Context): Long =
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(REGISTRATION_ALLOWED_KEY, allowed)
-            .commit()
+            .getLong(REGISTRATION_GENERATION_KEY, 0L)
+
+    @Synchronized
+    fun isCurrentRegistration(context: Context, generation: Long): Boolean {
+        val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        return generation >= 0 &&
+            preferences.getBoolean(REGISTRATION_ALLOWED_KEY, true) &&
+            preferences.getLong(REGISTRATION_GENERATION_KEY, 0L) == generation
+    }
+
+    @Synchronized
+    fun setRegistrationAllowed(context: Context, allowed: Boolean) {
+        val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
+        val editor = preferences.edit().putBoolean(REGISTRATION_ALLOWED_KEY, allowed)
+        if (!allowed && preferences.getBoolean(REGISTRATION_ALLOWED_KEY, true)) {
+            // Fence queued work from this session before Flutter clears its token.
+            // Resuming push must not make a cancelled session's work current again.
+            editor.putLong(REGISTRATION_GENERATION_KEY,
+                preferences.getLong(REGISTRATION_GENERATION_KEY, 0L) + 1)
+        }
+        editor.commit()
     }
 }

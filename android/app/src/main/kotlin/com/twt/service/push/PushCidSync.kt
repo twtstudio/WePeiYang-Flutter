@@ -8,6 +8,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.workDataOf
+import com.twt.service.common.FlutterSharePreference
 import com.twt.service.push.server.PushCIdWorker
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -16,17 +17,22 @@ import java.util.concurrent.TimeUnit
 /** Enqueues one replaceable CID registration task for the current install. */
 internal object PushCidSync {
     private const val WORK_NAME = "register_push_device"
+    const val GENERATION_KEY = "registration_generation"
     private val lifecycleMutex = Mutex()
 
     fun enqueue(context: Context, cid: String?) {
         val normalizedCid = cid?.trim()?.takeIf { it.isNotEmpty() } ?: return
+        val generation = PushCidStore.getRegistrationGeneration(context)
+        if (!PushCidStore.isCurrentRegistration(context, generation) ||
+            FlutterSharePreference.canPush != CanPushType.Want ||
+            !FlutterSharePreference.allowAgreement) return
         runCatching {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .setRequiresStorageNotLow(true)
                 .build()
             val request = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
-                .setInputData(workDataOf("cid" to normalizedCid))
+                .setInputData(workDataOf("cid" to normalizedCid, GENERATION_KEY to generation))
                 .setConstraints(constraints)
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
                 .addTag(WORK_NAME)
