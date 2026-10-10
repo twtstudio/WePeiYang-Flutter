@@ -292,29 +292,32 @@ class _EditDetailPageState extends State<EditDetailPage> {
                 ),
               ),
             ),
-            Material(
-              color: WpyTheme.of(context).get(WpyColorKey.errorActionColor),
-              child: InkWell(
-                onTap: () async {
-                  bool? confirm = await _showDialog("您确定要删除该课程吗?");
-                  if (confirm == true) _deleteAndQuit(context);
-                },
-                splashFactory: InkRipple.splashFactory,
-                child: Container(
-                  width: double.infinity,
-                  height: 50.h,
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset('assets/images/schedule/dust_bin.png',
-                          height: 18.r, width: 18.r),
-                      SizedBox(width: 5.w),
-                      Text('删除',
-                          style: TextUtil.base.PingFangSC.medium
-                              .bright(context)
-                              .sp(14)),
-                    ],
+            SafeArea(
+              top: false,
+              child: Material(
+                color: WpyTheme.of(context).get(WpyColorKey.errorActionColor),
+                child: InkWell(
+                  onTap: () async {
+                    bool? confirm = await _showDialog("您确定要删除该课程吗?");
+                    if (confirm == true) _deleteAndQuit(context);
+                  },
+                  splashFactory: InkRipple.splashFactory,
+                  child: Container(
+                    width: double.infinity,
+                    height: 50.h,
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset('assets/images/schedule/dust_bin.png',
+                            height: 18.r, width: 18.r),
+                        SizedBox(width: 5.w),
+                        Text('删除',
+                            style: TextUtil.base.PingFangSC.medium
+                                .bright(context)
+                                .sp(14)),
+                      ],
+                    ),
                   ),
                 ),
               ),
