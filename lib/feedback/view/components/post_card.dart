@@ -450,7 +450,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                   post.isDis = !post.isDis;
                   if (post.isLike && post.isDis) {
                     post.isLike = !post.isLike;
-                    post.likeCount--;
+                    if (post.likeCount > 0) post.likeCount--;
                     setState(() {});
                   }
                 },
@@ -458,6 +458,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
                   ToastProvider.error(e.error.toString());
                 },
               );
+              return post.isDis;
             },
           ),
           Spacer(),
@@ -920,7 +921,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
                 widget.post.isDis = !widget.post.isDis;
                 if (widget.post.isLike && widget.post.isDis) {
                   widget.post.isLike = !widget.post.isLike;
-                  widget.post.likeCount--;
+                  if (widget.post.likeCount > 0) widget.post.likeCount--;
                   setState(() {});
                 }
               },
@@ -928,6 +929,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
                 ToastProvider.error(e.error.toString());
               },
             );
+            return widget.post.isDis;
           },
         ),
         SizedBox(width: SplitUtil.w * 10)

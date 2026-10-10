@@ -1,3 +1,5 @@
+import 'dart:math' show max;
+
 enum PostVariant {
   Common,
   Vote,
@@ -124,7 +126,7 @@ class Post {
         title = json["title"] ?? '',
         content = json["content"] ?? '',
         favCount = json["fav_count"] ?? 0,
-        likeCount = json["like_count"] ?? 0,
+        likeCount = max(0, json["like_count"] as int? ?? 0),
         rating = json["rating"] ?? 0,
         tag = (json["tag"] == null) ? null : Tag.fromJson(json["tag"]),
         floors = (json["floors"] == null)
@@ -316,7 +318,7 @@ class Floor {
         rating = json["rating"] ?? 0,
         subTo = json["sub_to"] ?? 0,
         value = json["value"] ?? 0,
-        likeCount = json["like_count"] ?? 0,
+        likeCount = max(0, json["like_count"] as int? ?? 0),
         subFloors = json["sub_floors"] == null
             ? <Floor>[]
             : List<Floor>.from(

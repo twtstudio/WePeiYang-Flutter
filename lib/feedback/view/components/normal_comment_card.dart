@@ -686,7 +686,7 @@ class _NCommentCardState extends State<NCommentCard>
             widget.comment.isDis = !widget.comment.isDis;
             if (widget.comment.isDis && widget.comment.isLike) {
               widget.comment.isLike = !widget.comment.isLike;
-              widget.comment.likeCount--;
+              if (widget.comment.likeCount > 0) widget.comment.likeCount--;
               setState(() {});
             }
           },
@@ -694,6 +694,7 @@ class _NCommentCardState extends State<NCommentCard>
             ToastProvider.error(e.error.toString());
           },
         );
+        return widget.comment.isDis;
       },
     );
 

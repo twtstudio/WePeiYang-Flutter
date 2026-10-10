@@ -96,7 +96,11 @@ class IconWidget extends StatefulWidget {
       required this.isLike,
       required this.onLikePressed,
       required this.size})
-      : countNotifier = ValueNotifier(count),
+      : countNotifier = ValueNotifier(
+            (iconType == IconType.like || iconType == IconType.bottomLike) &&
+                    count < 0
+                ? 0
+                : count),
         isLikedNotifier = ValueNotifier(isLike);
 
   @override
@@ -120,6 +124,19 @@ class _IconWidgetState extends State<IconWidget> {
             }
           },
           onTap: (value) async {
+            if (widget.iconType == IconType.like ||
+                widget.iconType == IconType.bottomLike) {
+              final count = widget.countNotifier.value;
+              final nextCount = value ? (count > 0 ? count - 1 : 0) : count + 1;
+              var succeeded = false;
+              await widget.onLikePressed(value, nextCount, () {
+                succeeded = true;
+                if (!mounted) return;
+                widget.countNotifier.value = nextCount;
+                widget.isLikedNotifier.value = !value;
+              }, () {});
+              return succeeded ? !value : value;
+            }
             if (value) {
               widget.countNotifier.value--;
             } else {
@@ -165,7 +182,7 @@ class _IconWidgetState extends State<IconWidget> {
   }
 }
 
-typedef DislikeNotifierCallback = void Function(bool);
+typedef DislikeNotifierCallback = Future<bool> Function(bool);
 
 class DislikeWidget extends StatelessWidget {
   final bool isDislike;
@@ -198,8 +215,9 @@ class DislikeWidget extends StatelessWidget {
             }
           },
           onTap: (value) async {
-            onDislikePressed.call(isDislikedNotifier.value);
-            return !value;
+            final result = await onDislikePressed.call(value);
+            isDislikedNotifier.value = result;
+            return result;
           },
           isLiked: value,
           // end的值是Colors.blue[200]
