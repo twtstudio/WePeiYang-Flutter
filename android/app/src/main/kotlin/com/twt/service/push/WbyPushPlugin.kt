@@ -547,6 +547,11 @@ class WbyPushPlugin internal constructor(private val pushManager: PushSdk) :
                     EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
                     return true
                 }
+                // 进入消息中心（湖底通知）
+                intent.getStringExtra("page")?.takeIf { it == "notice" }?.let {
+                    EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackMailboxPage.type, "notice"))
+                    return true
+                }
                 // TODO：通过评论id进入相应页面
 
                 // 如果没有获取到参数，则跳到主页
@@ -596,6 +601,11 @@ class WbyPushPlugin internal constructor(private val pushManager: PushSdk) :
             "qslt_summary" -> {
                 log("jump to feedback summary from url")
                 EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
+                return true
+            }
+            "notice" -> {
+                log("jump to feedback mailbox from url")
+                EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackMailboxPage.type, "notice"))
                 return true
             }
         }

@@ -60,7 +60,8 @@ class FeedbackRouter {
     searchResult: (args) => SearchResultPage(args),
     imageView: (args) => ImageViewPage(args),
     localImageView: (args) => LocalImageViewPage(args),
-    mailbox: (_) => FeedbackMessagePage(),
+    mailbox: (args) =>
+        FeedbackMessagePage(initialTabIndex: args is int ? args : 0),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
     summary: (_) =>

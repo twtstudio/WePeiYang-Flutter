@@ -45,6 +45,12 @@ extension MessageTypeExtension on MessageType {
 //信息中心界面(2024.5.29考古)
 //日常考古
 class FeedbackMessagePage extends StatefulWidget {
+  /// 打开时默认选中的 tab（0 点赞 / 1 评论 / 2 校务回复 / 3 湖底通知）
+  final int initialTabIndex;
+
+  const FeedbackMessagePage({Key? key, this.initialTabIndex = 0})
+      : super(key: key);
+
   @override
   _FeedbackMessagePageState createState() => _FeedbackMessagePageState();
 }
@@ -65,8 +71,11 @@ class _FeedbackMessagePageState extends State<FeedbackMessagePage>
     super.initState();
     wd.clear();
     tb.clear();
-    _tabController =
-        TabController(length: types.length, vsync: this, initialIndex: 0)
+    final initialIndex =
+        widget.initialTabIndex.clamp(0, types.length - 1).toInt();
+    currentIndex.value = initialIndex;
+    _tabController = TabController(
+        length: types.length, vsync: this, initialIndex: initialIndex)
           ..addListener(() {
             ///这个if避免点击tab时回调两次
             ///https://blog.csdn.net/u010960265/article/details/104982299

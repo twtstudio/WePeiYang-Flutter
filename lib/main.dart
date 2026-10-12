@@ -44,6 +44,7 @@ import 'commons/widgets/wpy_pic.dart';
 import 'feedback/model/feedback_providers.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lost_and_found/module/lost_and_found_providers.dart';
+import 'message/feedback_message_page.dart';
 import 'message/model/message_provider.dart';
 import 'schedule/model/course_provider.dart';
 import 'schedule/model/exam_provider.dart';
@@ -211,6 +212,7 @@ class IntentEvent {
   static const SchedulePage = 4;
   static const UpdateDialog = 5;
   static const EntryQrPage = 6;
+  static const FeedbackMailboxPage = 7;
   static const NoSuchEvent = -1;
 }
 
@@ -259,6 +261,12 @@ Future<void> checkEventList(BuildContext context) async {
         if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
           navigator.pushNamed(HomeRouter.casQR);
         }
+        break;
+      case IntentEvent.FeedbackMailboxPage:
+        navigator.pushNamed(
+          FeedbackRouter.mailbox,
+          arguments: MessageType.lake.index,
+        );
         break;
       default:
     }
