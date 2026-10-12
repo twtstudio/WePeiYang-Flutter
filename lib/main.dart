@@ -216,10 +216,17 @@ class IntentEvent {
   static const NoSuchEvent = -1;
 }
 
+/// 启动页流程是否仍在进行：`SplashScreen` 挂载后置 true，其
+/// 「启动页 → 主页/登录页」的跳转会 pushNamedAndRemoveUntil / pushReplacementNamed，
+/// 期间消费原生待处理事件，点击推送打开的页面会被随后清掉。
+bool _splashFlowPending = false;
+
 Future<void> checkEventList(BuildContext context) async {
   if (Platform.isIOS) return;
   final navigator = WePeiYangApp.navigatorState.currentState;
   if (navigator == null) return;
+  final defer = _splashFlowPending && !WePeiYangApp.initialNavigationDone;
+  if (defer) return;
 
   try {
     final eventMap =
@@ -281,6 +288,11 @@ class WePeiYangApp extends StatefulWidget {
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
+
+  /// 冷启动时，主页/登录页导航完成前不消费原生待处理事件。
+  /// 否则事件页面会先被 push 出来，随后又被 _navigateHome 的
+  /// pushNamedAndRemoveUntil 清掉，点击推送最后落到主页。
+  static bool initialNavigationDone = false;
 
   @override
   WePeiYangAppState createState() => WePeiYangAppState();
@@ -530,6 +542,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // 启动页流程结束时会清栈，期间不消费原生待处理事件。
+    _splashFlowPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _appInitProcess();
       _loadSplashIcon();
@@ -614,6 +628,11 @@ class _SplashScreenState extends State<SplashScreen> {
           navigator.pushNamedAndRemoveUntil(HomeRouter.home, (route) => false),
     );
     if (!didNavigate) return;
+    // 主页就位后立刻处理一次待处理事件（推送深链），
+    // 不再依赖 push SDK/CID 的初始化时机。
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) checkEventList(context);
+    });
     if (Platform.isIOS) {
       _handleLaunchShortcut();
     }
@@ -630,6 +649,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (navigator == null) return false;
     _hasNavigated = true;
     navigate(navigator);
+    WePeiYangApp.initialNavigationDone = true;
     return true;
   }
 

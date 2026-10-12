@@ -67,13 +67,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final manager = context.read<PushManager>();
       await manager.initGeTuiSdk();
 
+      // 检查当前是否有未处理的事件；放在 CID 等待之前，避免跳转被拖住。
+      checkEventList(context);
+
       // The native callback/WorkManager path owns registration. Waiting here
       // only ensures vendor channels have time to produce a CID before the
       // rest of the home page starts loading.
       if (manager.openPush) await manager.waitForCid();
-
-      // 检查当前是否有未处理的事件
-      checkEventList(context);
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
