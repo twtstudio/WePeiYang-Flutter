@@ -64,6 +64,7 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage>
     with TickerProviderStateMixin {
+  late Post _post;
   DetailPageStatus status = DetailPageStatus.loading;
   List<Floor> _commentList = [];
   List<Floor> _officialCommentList = [];
@@ -83,8 +84,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   var _controller = ScrollController();
   bool _managerDialogVisible = false;
 
-  int preChangeId = 0;
-
   // 录音控制器
   late final RecordController _recordController;
   String _prefixText = ""; // 光标前的文字
@@ -99,7 +98,8 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   void initState() {
     super.initState();
-    FeedbackService.visitPost(id: widget.post.id, onFailure: (_) {});
+    _post = widget.post;
+    FeedbackService.visitPost(id: _post.id, onFailure: (_) {});
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _loadInitialData();
     });
@@ -119,8 +119,22 @@ class _PostDetailPageState extends State<PostDetailPage>
     _recordController.addListener(_syncVoiceToInput);
   }
 
+  @override
+  void didUpdateWidget(covariant PostDetailPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // A route rebuild can supply the original ID-only notification argument.
+    // Keep loaded data unless the parent deliberately selects another post.
+    if (oldWidget.post.id != widget.post.id ||
+        oldWidget.changeId != widget.changeId) {
+      _post = widget.post;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) initWhileChangingPost();
+      });
+    }
+  }
+
   void _loadInitialData() {
-    if (widget.post.fromNotify) {
+    if (_post.fromNotify) {
       _onRefresh(isInitial: false, updatePageStatus: true);
       return;
     }
@@ -286,12 +300,12 @@ class _PostDetailPageState extends State<PostDetailPage>
   Future<bool> _initPost(Function onFail, {bool rebuild = true}) async {
     bool success = false;
     await FeedbackService.getPostById(
-      id: widget.post.id,
+      id: _post.id,
       onResult: (Post result) {
+        if (!mounted || result.id != _post.id) return;
         success = true;
-        widget.post = result;
-        rating = widget.post.rating;
-        if (!mounted) return;
+        _post = result;
+        rating = _post.rating;
         if (rebuild) setState(() {});
       },
       onFailure: (e) {
@@ -313,7 +327,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       int? current,
       bool rebuild = true}) {
     FeedbackService.getComments(
-      id: widget.post.id,
+      id: _post.id,
       page: current ?? currentPage,
       order: order.value,
       onlyOwner: onlyOwner.value,
@@ -330,9 +344,9 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   _getOfficialComment({Function? onFail, bool rebuild = true}) {
     // 非官方贴不请求
-    if (widget.post.type != 1) return;
+    if (_post.type != 1) return;
     FeedbackService.getOfficialComment(
-      id: widget.post.id,
+      id: _post.id,
       onSuccess: (floor) {
         _officialCommentList = floor;
         if (rebuild && mounted) setState(() {});
@@ -391,7 +405,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     ToastProvider.running('生成截图中');
     String? imagePath;
     try {
-      final post = widget.post;
+      final post = _post;
       final theme = WpyTheme.of(context);
       final mediaQuery = MediaQuery.of(context);
       final width = context.size?.width ?? mediaQuery.size.width;
@@ -590,7 +604,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         children: [
           if (_showPostCard)
             PostCardNormal(
-              widget.post,
+              _post,
               outer: false,
               screenshotController: screenshotController,
               expandAll: screenshotting.value,
@@ -617,11 +631,11 @@ class _PostDetailPageState extends State<PostDetailPage>
       var list = _officialCommentList;
       if (i == 0) {
         return OfficialReplyCard.reply(
-          tag: widget.post.department?.name ?? '',
+          tag: _post.department?.name ?? '',
           comment: data,
           placeAppeared: i,
-          ratings: widget.post.rating,
-          ancestorId: widget.post.uid,
+          ratings: _post.rating,
+          ancestorId: _post.uid,
           onContentPressed: (refresh) async {
             refresh.call(list);
           },
@@ -630,8 +644,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         return OfficialReplyCard.subFloor(
           comment: data,
           placeAppeared: i,
-          ratings: widget.post.rating,
-          ancestorId: widget.post.uid,
+          ratings: _post.rating,
+          ancestorId: _post.uid,
           onContentPressed: (refresh) async {
             refresh.call(list);
           },
@@ -650,11 +664,11 @@ class _PostDetailPageState extends State<PostDetailPage>
               child: ConstrainedBox(
                   constraints: constraints,
                   child: NCommentCard(
-                    type: widget.post.type,
-                    uid: widget.post.uid,
+                    type: _post.type,
+                    uid: _post.uid,
                     comment: data,
-                    ancestorUId: widget.post.id,
-                    ancestorName: widget.post.nickname,
+                    ancestorUId: _post.id,
+                    ancestorName: _post.nickname,
                     commentFloor: i + 1,
                     isSubFloor: false,
                     isFullView: false,
@@ -812,13 +826,6 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    if (preChangeId != (widget.changeId ?? preChangeId)) {
-      preChangeId = widget.changeId!;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) initWhileChangingPost();
-      });
-    }
-
     var appBar = AppBar(
       toolbarHeight: SplitUtil.h * 40,
       titleSpacing: 0,
@@ -830,7 +837,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           (widget.split ?? false) ? Icons.clear : Icons.arrow_back,
           color: WpyTheme.of(context).get(WpyColorKey.labelTextColor),
         ),
-        onPressed: () => Navigator.pop(context, widget.post),
+        onPressed: () => Navigator.pop(context, _post),
       ),
       actions: [
         if (hasAdmin) _adminButton(context),
@@ -842,7 +849,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       title: WButton(
         onPressed: () => _refreshController.requestRefresh(),
         child: Text(
-          widget.post.type == 1 ? '校务提问：实名' : '冒泡',
+          _post.type == 1 ? '校务提问：实名' : '冒泡',
           style: TextUtil.base.NotoSansSC.label(context).w600.sp(18),
         ),
       ),
@@ -862,7 +869,7 @@ class _PostDetailPageState extends State<PostDetailPage>
         canPop: true,
         onPopInvokedWithResult: (didPop, _) {
           if (didPop) return;
-          Navigator.pop(context, widget.post);
+          Navigator.pop(context, _post);
         },
         child: GestureDetector(
           child: Padding(
@@ -883,7 +890,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           ),
           onHorizontalDragUpdate: (DragUpdateDetails details) {
             if (details.delta.dx > 20) {
-              Navigator.pop(context, widget.post);
+              Navigator.pop(context, _post);
             }
           },
         ),
@@ -896,7 +903,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       physics: NeverScrollableScrollPhysics(),
       children: [
         PostCardNormal(
-          widget.post,
+          _post,
           outer: false,
         ),
         SizedBox(height: SplitUtil.h * 10),
@@ -1029,14 +1036,14 @@ class _PostDetailPageState extends State<PostDetailPage>
                         if (!_refreshController.isLoading &&
                             !_refreshController.isRefresh) {
                           String weCo =
-                              '我在微北洋发现了个有趣的问题【${widget.post.title}】\n#MP${widget.post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${widget.post.id}';
+                              '我在微北洋发现了个有趣的问题【${_post.title}】\n#MP${_post.id} ，你也来看看吧~\n将本条微口令复制到微北洋求实论坛打开问题 wpy://school_project/${_post.id}';
                           ClipboardData data = ClipboardData(text: weCo);
                           Clipboard.setData(data);
                           CommonPreferences.feedbackLastWeCo.value =
-                              widget.post.id.toString();
+                              _post.id.toString();
                           ToastProvider.success('微口令复制成功，快去给小伙伴分享吧！');
                           FeedbackService.postShare(
-                              id: widget.post.id.toString(),
+                              id: _post.id.toString(),
                               type: 0,
                               onSuccess: () {},
                               onFailure: () {});
@@ -1080,12 +1087,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                             .sp(16),
                       ),
                     ),
-                    if (widget.post.isOwner == false)
+                    if (_post.isOwner == false)
                       CupertinoActionSheetAction(
                           onPressed: () {
                             Navigator.pushNamed(context, FeedbackRouter.report,
                                 arguments:
-                                    ReportPageArgs(widget.post.id, true));
+                                    ReportPageArgs(_post.id, true));
                           },
                           child: Text(
                             '举报',
@@ -1100,7 +1107,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                 await _showDeleteConfirmDialog('删除');
                             if (confirm ?? false) {
                               FeedbackService.deletePost(
-                                id: widget.post.id,
+                                id: _post.id,
                                 onSuccess: () {
                                   LakeUtil.currentController.refreshController
                                       ?.requestRefresh();
@@ -1369,7 +1376,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         CrossAxisAlignment.start,
                                     children: [
                                       CommentInputField(
-                                        postId: widget.post.id,
+                                        postId: _post.id,
                                         onCommentSent: _refreshAfterCommentSent,
                                         key: launchKey,
                                       ),
@@ -1534,7 +1541,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           horizontal: SplitUtil.w * 8),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
-                                        child: widget.post.type == 1
+                                        child: _post.type == 1
                                             ? Text(
                                                 '校务帖子为实名发言!!!',
                                                 style: TextUtil
@@ -1564,7 +1571,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                             ),
                           ),
                           if (!value.inputFieldEnabled)
-                            BottomLikeFavDislike(widget.post),
+                            BottomLikeFavDislike(_post),
                         ],
                       ),
                     ],
@@ -1596,7 +1603,7 @@ class _PostDetailPageState extends State<PostDetailPage>
             child: RepaintBoundary(
               child: Stack(
                 children: [
-                  ManagerPopUp(post: widget.post),
+                  ManagerPopUp(post: _post),
                 ],
               ),
             ),
