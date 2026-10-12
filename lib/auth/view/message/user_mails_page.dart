@@ -8,6 +8,7 @@ import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/post_notification_target.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/dialog_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -349,6 +350,11 @@ class _TextMailContent extends StatelessWidget {
                             .sp(14),
                       ),
                       onPressed: () async {
+                        if (data.url == 'wpy://wpy.app/open?page=notice') {
+                          Navigator.pushNamed(context, FeedbackRouter.mailbox,
+                              arguments: MessageType.lake.index);
+                          return;
+                        }
                         final postId = postIdFromNotificationUrl(data.url);
                         if (postId != null) {
                           Navigator.pushNamed(context, FeedbackRouter.detail,
