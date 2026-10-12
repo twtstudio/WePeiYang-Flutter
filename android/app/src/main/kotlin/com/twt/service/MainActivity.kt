@@ -21,6 +21,7 @@ import com.twt.service.push.WbyPushPlugin
 import com.twt.service.share.WbySharePlugin
 import com.twt.service.statistics.WbyStatisticsPlugin
 import com.twt.service.widget.WbyWidgetPlugin
+import com.twt.service.wechat.WbyWechatTestPlugin
 import io.flutter.embedding.engine.FlutterShellArgs
 import android.os.Build
 import android.os.Bundle
@@ -94,6 +95,7 @@ class MainActivity : FlutterActivity() {
                     WbyWidgetPlugin(),
                     // 点击通知，等应用进入主页面后，从 eventList 中获取事件
                     WbyMessagePlugin(),
+                    WbyWechatTestPlugin(),
                     // qq分享（图片，文字），微信分享（还没做）
                     WbySharePlugin(),
                     // 微北洋通用下载工具

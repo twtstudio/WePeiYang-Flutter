@@ -78,7 +78,7 @@ dependencies:
 
   fluttertoast: ^9.1.0
 
-#  fluwx: ^5.7.5
+  fluwx: ^6.0.4
 
   gallery_saver_plus: ^3.2.9
 
@@ -201,6 +201,12 @@ flutter:
       fonts:
         - asset: assets/fonts/en/ProductSans-Bold.ttf
         - asset: assets/fonts/en/ProductSans-Regular.ttf
+
+fluwx:
+  android:
+    flutter_activity: MainActivity
+    # Forward incoming app data to the native post router. Must be a string.
+    interrupt_wx_request: "false"
 
 #    - family: NotoSansSC
 #      fonts:

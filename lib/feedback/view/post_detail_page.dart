@@ -26,6 +26,7 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
+import 'package:we_pei_yang_flutter/commons/wechat/wechat_share.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
@@ -948,6 +949,48 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
   }
 
+  Future<void> _shareToWeChat(Post post) async {
+    if (!await WeChatShare.isWeChatInstalled()) {
+      ToastProvider.error('未检测到微信，或微信初始化失败');
+      return;
+    }
+
+    final sent = await WeChatShare.sharePost(
+      postId: post.id,
+      title: post.title.trim().isEmpty
+          ? '微北洋求实论坛'
+          : post.title.trim(),
+      description: WeChatShare.buildDescription(post.content),
+      coverImageUrl: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+    );
+    if (!sent) {
+      ToastProvider.error('调起微信失败，请稍后重试');
+      return;
+    }
+    FeedbackService.postShare(
+      id: post.id.toString(),
+      type: 0,
+      onSuccess: () {},
+      onFailure: () {},
+    );
+  }
+
+  Future<void> _shareAppMessageToWeChatForTest(Post post) async {
+    if (!await WeChatShare.isWeChatInstalled()) {
+      ToastProvider.error('未检测到微信，或微信初始化失败');
+      return;
+    }
+    final sent = await WeChatShare.sharePostAppMessageForTest(
+      postId: post.id,
+      title: post.title.trim().isEmpty ? '微北洋求实论坛' : post.title.trim(),
+      description: WeChatShare.buildDescription(post.content),
+      coverImageUrl: post.imageUrls.isNotEmpty ? post.imageUrls.first : null,
+    );
+    if (!sent) {
+      ToastProvider.error('应用消息测试发送失败，请查看微信日志');
+    }
+  }
+
   Widget _buildSelectionBar() {
     return ValueListenableBuilder<bool>(
       valueListenable: screenshotSelecting,
@@ -1044,12 +1087,40 @@ class _PostDetailPageState extends State<PostDetailPage>
                         Navigator.pop(context);
                       },
                       child: Text(
-                        '分享',
+                        '微口令分享',
                         style: TextUtil.base.normal.w400.NotoSansSC
                             .primary(context)
                             .sp(16),
                       ),
                     ),
+                    if (Platform.isAndroid)
+                      CupertinoActionSheetAction(
+                        onPressed: () async {
+                          final post = widget.post;
+                          Navigator.pop(context);
+                          await _shareToWeChat(post);
+                        },
+                        child: Text(
+                          '分享到微信',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
+                      ),
+                    if (Platform.isAndroid && WeChatShare.appMessageTestEnabled)
+                      CupertinoActionSheetAction(
+                        onPressed: () async {
+                          final post = widget.post;
+                          Navigator.pop(context);
+                          await _shareAppMessageToWeChatForTest(post);
+                        },
+                        child: Text(
+                          '微信直达测试',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
+                      ),
                     CupertinoActionSheetAction(
                       onPressed: () async {
                         screenshotting.value = true;

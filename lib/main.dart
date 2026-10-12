@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/cupertino.dart';
+import 'commons/wechat/wechat_share.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -63,6 +64,9 @@ void main() async {
 
     /// 初始化日志文件持久化（重启不丢、可导出）
     await initAppLogger();
+
+    // 初始化微信分享及微信打开应用的回调
+    unawaited(WeChatShare.register());
 
     /// 高刷
     if (Platform.isAndroid) {
@@ -219,6 +223,8 @@ Future<void> checkEventList(BuildContext context) async {
   if (Platform.isIOS) return;
   final navigator = WePeiYangApp.navigatorState.currentState;
   if (navigator == null) return;
+  // Preserve incoming post events until login has completed.
+  if (!CommonPreferences.isLogin.value) return;
 
   try {
     final eventMap =
