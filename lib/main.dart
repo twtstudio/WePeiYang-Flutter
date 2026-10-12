@@ -42,7 +42,6 @@ import 'commons/util/text_util.dart';
 import 'commons/util/toast_provider.dart';
 import 'commons/widgets/wpy_pic.dart';
 import 'feedback/model/feedback_providers.dart';
-import 'feedback/network/post.dart';
 import 'gpa/model/gpa_notifier.dart';
 import 'lost_and_found/module/lost_and_found_providers.dart';
 import 'message/model/message_provider.dart';
@@ -228,10 +227,10 @@ Future<void> checkEventList(BuildContext context) async {
     }
     switch (eventMap['event']) {
       case IntentEvent.FeedbackPostPage:
-        navigator.pushNamed(
-          FeedbackRouter.detail,
-          arguments: Post.nullExceptId(eventMap['data']),
-        );
+        final postId = eventMap['data'];
+        if (postId is int && postId > 0) {
+          FeedbackRouter.openPostFromNotification(navigator, postId);
+        }
         break;
       case IntentEvent.FeedbackSummaryPage:
         navigator.pushNamed(FeedbackRouter.summary);
