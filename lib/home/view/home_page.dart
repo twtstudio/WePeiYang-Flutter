@@ -66,6 +66,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final manager = context.read<PushManager>();
       await manager.initGeTuiSdk();
+      if (!mounted) return;
 
       // 检查当前是否有未处理的事件；放在 CID 等待之前，避免跳转被拖住。
       checkEventList(context);
@@ -74,6 +75,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // only ensures vendor channels have time to produce a CID before the
       // rest of the home page starts loading.
       if (manager.openPush) await manager.waitForCid();
+      // A notification can replace this home while CID initialization awaits.
+      if (!mounted) return;
       // 友盟统计账号信息
       UmengCommonSdk.onProfileSignIn(CommonPreferences.account.value);
       // 刷新自习室数据
@@ -81,6 +84,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
     if (widget.page != null) _tabController.animateTo(_currentIndex);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       if (CommonPreferences.accountUpgrade.value.isNotEmpty) {
         showDialog(
           context: context,
