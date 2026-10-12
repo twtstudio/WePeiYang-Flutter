@@ -127,9 +127,14 @@ android {
                     isShrinkResources = false
                 }
                 "DEVELOP" -> {
-                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
-                    buildConfigField("String", "PUSH_APP_ID", "\"bj16oBtQ3VAvqPbGtEHB69\"")
-                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"DEVELOP\"")
+                    // DEVELOP 默认使用测试推送通道；联调生产推送时显式传入
+                    // --dart-define=PUSH_ENVIRONMENT=RELEASE，包名仍保留 .develop。
+                    val productionChannel = env["PUSH_ENVIRONMENT"] == "RELEASE"
+                    val pushAppId = if (productionChannel) "43HGFmIKsnAmjrjDLr60X4" else "bj16oBtQ3VAvqPbGtEHB69"
+                    val pushEnvironment = if (productionChannel) "RELEASE" else "DEVELOP"
+                    manifestPlaceholders["GETUI_APPID"] = pushAppId
+                    buildConfigField("String", "PUSH_APP_ID", "\"$pushAppId\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"$pushEnvironment\"")
                     applicationIdSuffix = ".develop"
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     resValue("string", "label", "微北洋$environment")
@@ -197,17 +202,24 @@ android {
             }
             when (environment) {
                 "RELEASE" -> {
+                    // 自建调试包用生产推送身份（appId 43HGF/RELEASE），保留 .develop 后缀与官方版共存
+                    applicationIdSuffix = ".develop"
                     resValue("string", "label", "微北洋DEBUG_RELEASE")
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
                     buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
                     buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
                 }
                 else -> {
+                    // DEVELOP 默认使用测试推送通道；联调生产推送时显式传入
+                    // --dart-define=PUSH_ENVIRONMENT=RELEASE，包名仍保留 .develop。
+                    val productionChannel = getDartDefines()["PUSH_ENVIRONMENT"] == "RELEASE"
+                    val pushAppId = if (productionChannel) "43HGFmIKsnAmjrjDLr60X4" else "bj16oBtQ3VAvqPbGtEHB69"
+                    val pushEnvironment = if (productionChannel) "RELEASE" else "DEVELOP"
                     applicationIdSuffix = ".develop"
                     resValue("string", "label", "微北洋DEBUG_DEVELOP")
-                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
-                    buildConfigField("String", "PUSH_APP_ID", "\"bj16oBtQ3VAvqPbGtEHB69\"")
-                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"DEVELOP\"")
+                    manifestPlaceholders["GETUI_APPID"] = pushAppId
+                    buildConfigField("String", "PUSH_APP_ID", "\"$pushAppId\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"$pushEnvironment\"")
                 }
             }
         }
