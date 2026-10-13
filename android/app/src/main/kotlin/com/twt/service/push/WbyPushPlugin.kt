@@ -413,9 +413,25 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     }
 
     private fun handleUrlScheme(uri: Uri): Boolean {
-        if (uri.scheme != "wpy" || uri.host != "wpy.app") {
-            return false
+        if (uri.scheme != "wpy") return false
+
+        // 历史分享口令复用现有论坛帖子事件，冷启动和后台唤起共用此入口。
+        if (uri.host == "school_project") {
+            val id = uri.path
+                ?.takeIf { it.matches(Regex("/[0-9]+/?")) }
+                ?.trim('/')
+                ?.toIntOrNull()
+                ?.takeIf { it > 0 }
+            if (id == null) {
+                log("legacy post url invalid id: $uri")
+                return true
+            }
+            log("jump to feedback post from legacy url, id=$id")
+            EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackPostPage.type, id))
+            return true
         }
+
+        if (uri.host != "wpy.app") return false
 
         if (uri.path == "/post" || uri.getQueryParameter("page") in setOf("post", "qslt_post")) {
             val id = uri.postIdQuery()
