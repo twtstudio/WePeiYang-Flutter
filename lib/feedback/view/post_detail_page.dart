@@ -29,6 +29,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
@@ -46,6 +47,20 @@ enum DetailPageStatus {
   loading,
   idle,
   error,
+}
+
+int _commentCharacterCount(String text) {
+  return PostRichText.countCharacters(text);
+}
+
+class _CommentLengthLimitingFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return _commentCharacterCount(newValue.text) <= 200 ? newValue : oldValue;
+  }
 }
 
 // ignore: must_be_immutable
@@ -82,6 +97,28 @@ class _PostDetailPageState extends State<PostDetailPage>
   var _refreshController = RefreshController(initialRefresh: false);
   var _controller = ScrollController();
   bool _managerDialogVisible = false;
+  bool _emojiPickerVisible = false;
+
+  static const _emojiAssets = <(String, String)>[
+    ('wpn', 'w1_happy'),
+    ('wpn', 'w2_yay'),
+    ('wpn', 'w3_wordless'),
+    ('wpn', 'w4_sleepy'),
+    ('wpn', 'w5_angry'),
+    ('wpn', 'w6_amazed'),
+    ('wpn', 'w7_love'),
+    ('wpn', 'w8_confused'),
+    ('wpn', 'w9_cool'),
+    ('cloud', 'c1_smile'),
+    ('cloud', 'c2_wink'),
+    ('cloud', 'c3_laugh'),
+    ('cloud', 'c4_sleepy'),
+    ('cloud', 'c5_angry'),
+    ('cloud', 'c6_surprised'),
+    ('cloud', 'c7_happy'),
+    ('cloud', 'c8_sad'),
+    ('cloud', 'c9_cool'),
+  ];
 
   int preChangeId = 0;
 
@@ -426,7 +463,8 @@ class _PostDetailPageState extends State<PostDetailPage>
         precacheImage(AssetImage(footer), context),
         for (final url in imageUrls)
           precacheImage(
-            CachedNetworkImageProvider('${EnvConfig.QNHDPIC}download/origin/$url'),
+            CachedNetworkImageProvider(
+                '${EnvConfig.QNHDPIC}download/origin/$url'),
             context,
           ),
         for (final comment in comments) ...[
@@ -810,6 +848,55 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
   }
 
+  Widget _buildEmojiPicker() {
+    final height = MediaQuery.sizeOf(context).height * 0.4;
+    return SizedBox(
+      height: height,
+      child: GridView.builder(
+        padding: EdgeInsets.all(12.r),
+        itemCount: _emojiAssets.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+        ),
+        itemBuilder: (context, index) {
+          final (pack, name) = _emojiAssets[index];
+          return InkWell(
+            borderRadius: BorderRadius.circular(12.r),
+            onTap: () => _insertCommentEmoji('[$name]'),
+            child: Padding(
+              padding: EdgeInsets.all(4.r),
+              child: Image.asset(
+                'assets/images/emojis/$pack/$name.png',
+                fit: BoxFit.contain,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _insertCommentEmoji(String emoji) {
+    final controller = launchKey.currentState?.textEditingController;
+    if (controller == null) return;
+    final text = controller.text;
+    final selection = controller.selection;
+    final start = selection.isValid ? selection.start : text.length;
+    final end = selection.isValid ? selection.end : text.length;
+    final updated = text.replaceRange(start, end, emoji);
+    if (_commentCharacterCount(updated) > 200) return;
+    controller.value = TextEditingValue(
+      text: updated,
+      selection: TextSelection.collapsed(offset: start + emoji.length),
+    );
+    launchKey.currentState?.setState(() {
+      launchKey.currentState!.commentLengthIndicator =
+          '${_commentCharacterCount(updated)}/200';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (preChangeId != (widget.changeId ?? preChangeId)) {
@@ -966,8 +1053,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                 children: [
                   Text(
                     '已选择 ${screenshotList.list.length} 条评论',
-                    style: TextStyle(
-                        color: theme.get(WpyColorKey.labelTextColor)),
+                    style:
+                        TextStyle(color: theme.get(WpyColorKey.labelTextColor)),
                   ),
                   Spacer(),
                   TextButton(
@@ -1263,7 +1350,8 @@ class _PostDetailPageState extends State<PostDetailPage>
 
       // 更新字数统计
       inputState?.setState(() {
-        inputState.commentLengthIndicator = '${newText.length}/200';
+        inputState.commentLengthIndicator =
+            '${_commentCharacterCount(newText)}/200';
       });
     } else if (_recordController.state == RecordState.error) {
       ToastProvider.error(_recordController.errorMessage);
@@ -1357,6 +1445,13 @@ class _PostDetailPageState extends State<PostDetailPage>
                   ),
                   child: Column(
                     children: [
+                      if (_emojiPickerVisible)
+                        TapRegion(
+                          onTapOutside: (_) {
+                            setState(() => _emojiPickerVisible = false);
+                          },
+                          child: _buildEmojiPicker(),
+                        ),
                       Row(
                         children: [
                           Expanded(
@@ -1373,37 +1468,62 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         onCommentSent: _refreshAfterCommentSent,
                                         key: launchKey,
                                       ),
-                                      ImageSelectAndView(key: imageSelectionKey),
+                                      ImageSelectAndView(
+                                          key: imageSelectionKey),
                                       SizedBox(height: SplitUtil.h * 4),
                                       Row(
                                         children: [
                                           SizedBox(width: SplitUtil.h * 4),
-                                          if (value.images.isEmpty)
-                                            IconButton(
-                                              icon: Image.asset(
-                                                'assets/images/lake_butt_icons/image.png',
-                                                width: SplitUtil.w * 24,
-                                                height: SplitUtil.w * 24,
-                                                color: WpyTheme.of(context).get(
-                                                    WpyColorKey.basicTextColor),
-                                              ),
-                                              onPressed: () => imageSelectionKey
-                                                  .currentState
-                                                  ?.loadAssets(),
+                                          IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/emoji.png',
+                                              width: SplitUtil.w * 24,
+                                              height: SplitUtil.w * 24,
+                                              color: WpyTheme.of(context).get(
+                                                  WpyColorKey.basicTextColor),
                                             ),
-                                          if (value.images.isEmpty)
-                                            IconButton(
-                                              icon: Image.asset(
-                                                'assets/images/lake_butt_icons/camera.png',
-                                                width: SplitUtil.w * 24,
-                                                height: SplitUtil.w * 24,
-                                                color: WpyTheme.of(context).get(
-                                                    WpyColorKey.basicTextColor),
-                                              ),
-                                              onPressed: () => imageSelectionKey
-                                                  .currentState
-                                                  ?.shotPic(),
+                                            onPressed: () {
+                                              final input = context
+                                                  .read<NewFloorProvider>();
+                                              if (!input.inputFieldEnabled) {
+                                                input.inputFieldEnabled = true;
+                                                input.inputFieldOpenAndReplyTo(
+                                                    0);
+                                              }
+                                              input.focusNode.unfocus();
+                                              FocusScope.of(context).unfocus();
+                                              SystemChannels.textInput
+                                                  .invokeMethod<void>(
+                                                      'TextInput.hide');
+                                              setState(() =>
+                                                  _emojiPickerVisible =
+                                                      !_emojiPickerVisible);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/image.png',
+                                              width: SplitUtil.w * 24,
+                                              height: SplitUtil.w * 24,
+                                              color: WpyTheme.of(context).get(
+                                                  WpyColorKey.basicTextColor),
                                             ),
+                                            onPressed: () => imageSelectionKey
+                                                .currentState
+                                                ?.loadAssets(),
+                                          ),
+                                          IconButton(
+                                            icon: Image.asset(
+                                              'assets/images/lake_butt_icons/camera.png',
+                                              width: SplitUtil.w * 24,
+                                              height: SplitUtil.w * 24,
+                                              color: WpyTheme.of(context).get(
+                                                  WpyColorKey.basicTextColor),
+                                            ),
+                                            onPressed: () => imageSelectionKey
+                                                .currentState
+                                                ?.shotPic(),
+                                          ),
                                           IconButton(
                                             icon: Image.asset(
                                               'assets/images/lake_butt_icons/paste.png',
@@ -1680,7 +1800,8 @@ class CommentInputFieldState extends State<CommentInputField> {
       text: newText,
       selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
     );
-    setState(() => commentLengthIndicator = '${newText.characters.length}/200');
+    setState(() =>
+        commentLengthIndicator = '${_commentCharacterCount(newText)}/200');
   }
 
   void send(bool isOfficial) {
@@ -1722,7 +1843,7 @@ class CommentInputFieldState extends State<CommentInputField> {
         style: TextUtil.base.w400.NotoSansSC.sp(16).h(1.4).primary(context),
         focusNode: _commentFocus,
         controller: textEditingController,
-        maxLength: 200,
+        inputFormatters: [_CommentLengthLimitingFormatter()],
         textInputAction: TextInputAction.newline,
         decoration: InputDecoration(
           counterText: '',
@@ -1747,7 +1868,7 @@ class CommentInputFieldState extends State<CommentInputField> {
           isDense: true,
         ),
         onChanged: (text) {
-          commentLengthIndicator = '${text.characters.length}/200';
+          commentLengthIndicator = '${_commentCharacterCount(text)}/200';
           setState(() {});
         },
         minLines: 1,
@@ -1789,7 +1910,8 @@ class CommentInputFieldState extends State<CommentInputField> {
       ///将获取的粘贴板的内容进行展示
       textEditingController.text += clipboardData.text!;
       setState(() {
-        commentLengthIndicator = '${clipboardData.text!.length}/200';
+        commentLengthIndicator =
+            '${_commentCharacterCount(textEditingController.text)}/200';
       });
     }
   }
@@ -1857,10 +1979,18 @@ class ImageSelectAndView extends StatefulWidget {
 }
 
 class ImageSelectAndViewState extends State<ImageSelectAndView> {
+  static const int maxImageCount = 9;
+  static const double _thumbnailSize = 80;
+
   shotPic() async {
+    final provider = context.read<NewFloorProvider>();
+    if (provider.images.length >= maxImageCount) {
+      ToastProvider.error('最多选择$maxImageCount张图片');
+      return;
+    }
     final asset = await ImagePicker().pickImage(source: ImageSource.camera);
     if (asset == null) return;
-    File file = await File(asset.path);
+    File file = File(asset.path);
     for (int j = 0; file.lengthSync() > 2000 * 1024 && j < 10; j++) {
       final targetPath = '${file.path}_compressed.jpg';
       final r = await FlutterImageCompress.compressAndGetFile(
@@ -1872,22 +2002,33 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
         return;
       }
     }
-    Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+    if (provider.images.length >= maxImageCount) {
+      ToastProvider.error('最多选择$maxImageCount张图片');
+      return;
+    }
+    provider.images.add(file);
     if (!mounted) return 0;
     setState(() {});
   }
 
   loadAssets() async {
+    final provider = context.read<NewFloorProvider>();
+    final remaining = maxImageCount - provider.images.length;
+    if (remaining <= 0) {
+      ToastProvider.error('最多选择$maxImageCount张图片');
+      return;
+    }
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
       context,
       pickerConfig: AssetPickerConfig(
-          maxAssets: 1,
+          maxAssets: remaining,
           requestType: RequestType.image,
           themeColor:
               WpyTheme.of(context).get(WpyColorKey.primaryTextButtonColor)),
     );
     if (assets == null) return; // 取消选择的情况
     for (int i = 0; i < assets.length; i++) {
+      if (provider.images.length >= maxImageCount) break;
       File? file = await assets[i].file;
       if (file == null) {
         ToastProvider.error('选取图片异常，请重新尝试');
@@ -1904,7 +2045,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
           return;
         }
       }
-      Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+      provider.images.add(file);
     }
     if (!mounted) return 0;
     setState(() {});
@@ -1938,72 +2079,86 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
       child: Consumer<NewFloorProvider>(
         builder: (_, data, __) => data.images.isEmpty
             ? SizedBox()
-            : SizedBox(
-                height: SplitUtil.w * 80,
-                width: SplitUtil.w * 100,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: WButton(
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          FeedbackRouter.localImageView,
-                          arguments:
-                              LocalImageViewPageArgs(data.images, [], 1, 0),
-                        ),
-                        child: Container(
-                          height: SplitUtil.w * 80,
-                          width: SplitUtil.w * 80,
-                          margin: EdgeInsets.all(0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            border: Border.all(
-                                width: 1,
-                                color: WpyTheme.of(context)
-                                    .get(WpyColorKey.dislikeSecondary)),
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                              image: FileImage(
-                                data.images[0],
+            : Padding(
+                padding: EdgeInsets.symmetric(horizontal: SplitUtil.w * 8),
+                child: SizedBox(
+                  height: SplitUtil.w * _thumbnailSize,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: data.images.length,
+                    separatorBuilder: (_, __) =>
+                        SizedBox(width: SplitUtil.w * 8),
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        width: SplitUtil.w * _thumbnailSize,
+                        height: SplitUtil.w * _thumbnailSize,
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: WButton(
+                                onPressed: () => Navigator.pushNamed(
+                                  context,
+                                  FeedbackRouter.localImageView,
+                                  arguments: LocalImageViewPageArgs(
+                                    data.images,
+                                    [],
+                                    data.images.length,
+                                    index,
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      width: 1,
+                                      color: WpyTheme.of(context)
+                                          .get(WpyColorKey.dislikeSecondary),
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: FileImage(data.images[index]),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: WButton(
+                                onPressed: () async {
+                                  final result = await _showDialog();
+                                  if (result == 'ok' && mounted) {
+                                    data.images.removeAt(index);
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                  width: SplitUtil.w * 20,
+                                  height: SplitUtil.w * 20,
+                                  decoration: BoxDecoration(
+                                    color: WpyTheme.of(context)
+                                        .get(WpyColorKey.dislikeSecondary),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8),
+                                      bottomRight: Radius.circular(8),
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: SplitUtil.w * 14,
+                                    color: WpyTheme.of(context).get(
+                                        WpyColorKey.secondaryBackgroundColor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: WButton(
-                        onPressed: () async {
-                          var result = await _showDialog();
-                          if (result == 'ok') {
-                            data.images.removeAt(0);
-                            setState(() {});
-                          }
-                        },
-                        child: Container(
-                          width: SplitUtil.w * 20,
-                          height: SplitUtil.w * 20,
-                          decoration: BoxDecoration(
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.dislikeSecondary),
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                bottomRight: Radius.circular(8)),
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            size: SplitUtil.w * 14,
-                            color: WpyTheme.of(context)
-                                .get(WpyColorKey.secondaryBackgroundColor),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
               ),
       ),

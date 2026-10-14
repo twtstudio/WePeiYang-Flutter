@@ -3,6 +3,7 @@ import 'package:simple_html_css/simple_html_css.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/linkify_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 
 import '../../../../commons/widgets/w_button.dart';
 
@@ -48,7 +49,8 @@ class _ExpandableTextState extends State<ExpandableText> {
     final maxLines = widget.maxLines;
     final buttonIsShown = widget.buttonIsShown;
     // mask 标签不参与排版，测量和字数统计时去掉
-    final plainText = stripMaskTags(text);
+    final plainText = stripMaskTags(text)
+        .replaceAllMapped(PostRichText.stickerToken, (_) => '🙂');
     return LayoutBuilder(builder: (context, size) {
       final span = TextSpan(text: plainText, style: style);
       final tp = TextPainter(
@@ -58,7 +60,8 @@ class _ExpandableTextState extends State<ExpandableText> {
         final Widget content = expand
             ? (widget.isHTML
                 ? RichText(
-                    text: HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    text:
+                        HTML.toTextSpan(context, text, defaultTextStyle: style),
                     textAlign: TextAlign.justify,
                   )
                 : hasMask(text)
@@ -68,11 +71,13 @@ class _ExpandableTextState extends State<ExpandableText> {
                 ? RichText(
                     overflow: TextOverflow.clip,
                     maxLines: maxLines,
-                    text: HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    text:
+                        HTML.toTextSpan(context, text, defaultTextStyle: style),
                     textAlign: TextAlign.justify,
                   )
                 : hasMask(text)
-                    ? MaskedRichText(text: text, style: style, maxLine: maxLines)
+                    ? MaskedRichText(
+                        text: text, style: style, maxLine: maxLines)
                     : LinkText(style: style, text: text, maxLine: maxLines));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,7 +109,7 @@ class _ExpandableTextState extends State<ExpandableText> {
                               .sp(16)),
                       SizedBox(width: 6),
                       if (!expand)
-                        Text('共${plainText.length}字',
+                        Text('共${PostRichText.countCharacters(plainText)}字',
                             style: TextUtil.base
                                 .infoText(context)
                                 .w400

@@ -19,6 +19,25 @@ const String kMaskCloseTag = '</mask>';
 
 final RegExp _maskReg = RegExp(r'<mask>(.*?)</mask>', dotAll: true);
 
+List<PlaceholderDimensions> _placeholderDimensions(InlineSpan span) {
+  final dimensions = <PlaceholderDimensions>[];
+  void visit(InlineSpan current) {
+    if (current is StickerImageSpan) {
+      dimensions.add(PlaceholderDimensions(
+        size: current.imageSize,
+        alignment: current.alignment,
+      ));
+    } else if (current is TextSpan) {
+      for (final child in current.children ?? const <InlineSpan>[]) {
+        visit(child);
+      }
+    }
+  }
+
+  visit(span);
+  return dimensions;
+}
+
 /// 输入框里识别 @uid:123 提及，用于「未编辑时按渲染样式显示」。
 /// 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
 // final RegExp _mentionUidReg = RegExp(r'@uid:\d+');
@@ -193,12 +212,14 @@ class _MaskedRichTextState extends State<MaskedRichText>
       final inner = m.group(1) ?? '';
       // 被遮住时文字不渲染（透明），点开或正在揭开的那一段才显示真实文字
       final visible = _revealed.contains(seg) || _animSeg == seg;
-      spans.add(TextSpan(
-        text: inner,
-        style: visible ? style : style.copyWith(color: Colors.transparent),
-      ));
-      ranges.add(_MaskRange(seg++, plain, plain + inner.length));
-      plain += inner.length;
+      final innerSpans = PostRichText.buildStickerSpans(
+        inner,
+        visible ? style : style.copyWith(color: Colors.transparent),
+        sourceOffset: m.start + kMaskOpenTag.length,
+      );
+      spans.addAll(innerSpans.spans);
+      ranges.add(_MaskRange(seg++, plain, plain + innerSpans.renderedLength));
+      plain += innerSpans.renderedLength;
       last = m.end;
     }
     if (last < widget.text.length) {
@@ -225,7 +246,9 @@ class _MaskedRichTextState extends State<MaskedRichText>
         textDirection: TextDirection.ltr,
         maxLines: widget.maxLine,
         textScaler: textScaler,
-      )..layout(maxWidth: constraints.maxWidth);
+      )
+        ..setPlaceholderDimensions(_placeholderDimensions(rootSpan))
+        ..layout(maxWidth: constraints.maxWidth);
 
       // 收集所有未揭开遮罩段的矩形
       final coverRects = <Rect>[];
@@ -287,8 +310,8 @@ class _MaskedRichTextState extends State<MaskedRichText>
                 rect: rect,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTapDown: (d) =>
-                      _startReveal(index, rect.topLeft + d.localPosition, rects),
+                  onTapDown: (d) => _startReveal(
+                      index, rect.topLeft + d.localPosition, rects),
                 ),
               ));
             }
@@ -458,6 +481,7 @@ class MaskTextEditingController extends TextEditingController {
   set value(TextEditingValue newValue) {
     final old = value;
     var v = _repairMaskEdit(old, newValue);
+    v = _repairStickerEdit(old, v);
     // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
     // v = _autoExpandMention(old, v);
     super.value = v;
@@ -551,6 +575,52 @@ class MaskTextEditingController extends TextEditingController {
     );
   }
 
+  TextEditingValue _repairStickerEdit(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final oldText = oldValue.text;
+    final newText = newValue.text;
+    if (oldText == newText || !newValue.composing.isCollapsed) {
+      return newValue;
+    }
+
+    final minLength =
+        oldText.length < newText.length ? oldText.length : newText.length;
+    var start = 0;
+    while (start < minLength && oldText[start] == newText[start]) {
+      start++;
+    }
+    var oldEnd = oldText.length;
+    var newEnd = newText.length;
+    while (oldEnd > start &&
+        newEnd > start &&
+        oldText[oldEnd - 1] == newText[newEnd - 1]) {
+      oldEnd--;
+      newEnd--;
+    }
+    if (newEnd != start) return newValue;
+
+    var deleteStart = start;
+    var deleteEnd = oldEnd;
+    var touchedSticker = false;
+    for (final match in PostRichText.stickerToken.allMatches(oldText)) {
+      if (match.start < deleteEnd && deleteStart < match.end) {
+        touchedSticker = true;
+        if (match.start < deleteStart) deleteStart = match.start;
+        if (match.end > deleteEnd) deleteEnd = match.end;
+      }
+    }
+    if (!touchedSticker) return newValue;
+
+    final repaired =
+        oldText.substring(0, deleteStart) + oldText.substring(deleteEnd);
+    return TextEditingValue(
+      text: repaired,
+      selection: TextSelection.collapsed(offset: deleteStart),
+    );
+  }
+
   @override
   TextSpan buildTextSpan(
       {required BuildContext context,
@@ -590,21 +660,33 @@ class MaskTextEditingController extends TextEditingController {
     final spans = <InlineSpan>[];
     final t = text;
     int last = 0;
+    void appendText(String chunk, int sourceOffset, TextStyle textStyle) {
+      spans.addAll(PostRichText.buildStickerSpans(
+        chunk,
+        textStyle,
+        sourceOffset: sourceOffset,
+        preserveSourceLength: true,
+      ).spans);
+    }
+
     for (final m in _maskReg.allMatches(t)) {
       if (m.start > last) {
         // 26.8.6 暂时注释 @提及 渲染（缺少相关接口，等待后端协调 --26.8.6），按普通文本渲染
-        spans.add(TextSpan(text: t.substring(last, m.start), style: base));
+        appendText(t.substring(last, m.start), last, base);
       }
       final active = cursor != null && cursor >= m.start && cursor <= m.end;
       spans.add(TextSpan(text: kMaskOpenTag, style: tagStyle));
-      spans.add(TextSpan(
-          text: m.group(1), style: active ? activeStyle : hiddenStyle));
+      appendText(
+        m.group(1) ?? '',
+        m.start + kMaskOpenTag.length,
+        active ? activeStyle : hiddenStyle,
+      );
       spans.add(TextSpan(text: kMaskCloseTag, style: tagStyle));
       last = m.end;
     }
     if (last < t.length) {
       // 26.8.6 暂时注释 @提及 渲染（缺少相关接口，等待后端协调 --26.8.6），按普通文本渲染
-      spans.add(TextSpan(text: t.substring(last), style: base));
+      appendText(t.substring(last), last, base);
     }
     return TextSpan(style: base, children: spans);
   }
@@ -702,12 +784,15 @@ class _MaskInputParticlesState extends State<MaskInputParticles> {
       padding: widget.padding,
       child: LayoutBuilder(builder: (context, constraints) {
         // 用 controller 实际渲染的 span（标签已缩成近 0 字号）来测量，保证对齐
+        final inputSpan = widget.controller.buildTextSpan(
+            context: context, style: widget.style, withComposing: false);
         final painter = TextPainter(
-          text: widget.controller.buildTextSpan(
-              context: context, style: widget.style, withComposing: false),
+          text: inputSpan,
           textDirection: TextDirection.ltr,
           textScaler: MediaQuery.textScalerOf(context),
-        )..layout(maxWidth: constraints.maxWidth);
+        )
+          ..setPlaceholderDimensions(_placeholderDimensions(inputSpan))
+          ..layout(maxWidth: constraints.maxWidth);
 
         final rects = <Rect>[];
         for (final m in _maskReg.allMatches(text)) {

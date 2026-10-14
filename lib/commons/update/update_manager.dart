@@ -83,7 +83,7 @@ class UpdateManager extends UpdateStatusListener {
           debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
           await InstallManager.getCanGoToMarket();
 
-          if (v.versionCode <= EnvConfig.VERSIONCODE) {
+          if (v.versionCode <= EnvConfig.VERSIONCODE||v.versionCode=="Development") {
             // 如果新获取到的版本不高于现在的版本，那么就不更新
             setIdle();
             if (!_auto) ToastProvider.success('已是最新版本');

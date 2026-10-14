@@ -64,16 +64,147 @@ class RichSpanResult {
   const RichSpanResult(this.spans, this.renderedLength);
 }
 
+/// Inline sticker rendered with Flutter's built-in WidgetSpan.
+class StickerImageSpan extends WidgetSpan {
+  final Size imageSize;
+
+  StickerImageSpan({required String asset, required this.imageSize})
+      : super(
+          alignment: PlaceholderAlignment.middle,
+          child: SizedBox.fromSize(
+            size: imageSize,
+            child: Image.asset(asset, fit: BoxFit.contain),
+          ),
+        );
+}
+
 class PostRichText {
   /// 预置表情：短代码 → Unicode 表情。纯文本渲染，无需图片资源。
   static const Map<String, String> emojis = {
-    '[微笑]': '🙂', '[呲牙]': '😁', '[偷笑]': '😏', '[大笑]': '😄', '[笑哭]': '😂',
-    '[哭]': '😭', '[委屈]': '🥺', '[爱心]': '❤️', '[赞]': '👍', '[踩]': '👎',
-    '[doge]': '🐶', '[滑稽]': '🙃', '[思考]': '🤔', '[吃惊]': '😲', '[怒]': '😡',
-    '[ok]': '👌', '[抱抱]': '🤗', '[星星眼]': '🤩', '[汗]': '😓', '[捂脸]': '🤦',
-    '[鼓掌]': '👏', '[庆祝]': '🎉', '[加油]': '💪', '[咖啡]': '☕', '[月亮]': '🌙',
-    '[太阳]': '☀️', '[彩虹]': '🌈', '[问号]': '❓', '[感叹]': '❗', '[火]': '🔥',
+    '[微笑]': '🙂',
+    '[呲牙]': '😁',
+    '[偷笑]': '😏',
+    '[大笑]': '😄',
+    '[笑哭]': '😂',
+    '[哭]': '😭',
+    '[委屈]': '🥺',
+    '[爱心]': '❤️',
+    '[赞]': '👍',
+    '[踩]': '👎',
+    '[doge]': '🐶',
+    '[滑稽]': '🙃',
+    '[思考]': '🤔',
+    '[吃惊]': '😲',
+    '[怒]': '😡',
+    '[ok]': '👌',
+    '[抱抱]': '🤗',
+    '[星星眼]': '🤩',
+    '[汗]': '😓',
+    '[捂脸]': '🤦',
+    '[鼓掌]': '👏',
+    '[庆祝]': '🎉',
+    '[加油]': '💪',
+    '[咖啡]': '☕',
+    '[月亮]': '🌙',
+    '[太阳]': '☀️',
+    '[彩虹]': '🌈',
+    '[问号]': '❓',
+    '[感叹]': '❗',
+    '[火]': '🔥',
   };
+
+  static const Map<String, String> stickerAssets = {
+    '[w1_happy]': 'assets/images/emojis/wpn/w1_happy.png',
+    '[w2_yay]': 'assets/images/emojis/wpn/w2_yay.png',
+    '[w3_wordless]': 'assets/images/emojis/wpn/w3_wordless.png',
+    '[w4_sleepy]': 'assets/images/emojis/wpn/w4_sleepy.png',
+    '[w5_angry]': 'assets/images/emojis/wpn/w5_angry.png',
+    '[w6_amazed]': 'assets/images/emojis/wpn/w6_amazed.png',
+    '[w7_love]': 'assets/images/emojis/wpn/w7_love.png',
+    '[w8_confused]': 'assets/images/emojis/wpn/w8_confused.png',
+    '[w9_cool]': 'assets/images/emojis/wpn/w9_cool.png',
+    '[c1_smile]': 'assets/images/emojis/cloud/c1_smile.png',
+    '[c2_wink]': 'assets/images/emojis/cloud/c2_wink.png',
+    '[c3_laugh]': 'assets/images/emojis/cloud/c3_laugh.png',
+    '[c4_sleepy]': 'assets/images/emojis/cloud/c4_sleepy.png',
+    '[c5_angry]': 'assets/images/emojis/cloud/c5_angry.png',
+    '[c6_surprised]': 'assets/images/emojis/cloud/c6_surprised.png',
+    '[c7_happy]': 'assets/images/emojis/cloud/c7_happy.png',
+    '[c8_sad]': 'assets/images/emojis/cloud/c8_sad.png',
+    '[c9_cool]': 'assets/images/emojis/cloud/c9_cool.png',
+  };
+
+  static final RegExp stickerToken =
+      RegExp(r'\[(?:w[1-9]_[a-z]+|c[1-9]_[a-z]+)\]');
+
+  static int countCharacters(String text) {
+    var count = 0;
+    var offset = 0;
+    for (final match in stickerToken.allMatches(text)) {
+      count += text.substring(offset, match.start).characters.length + 1;
+      offset = match.end;
+    }
+    return count + text.substring(offset).characters.length;
+  }
+
+  static StickerImageSpan stickerImageSpan(
+    String shortcode,
+    TextStyle style, {
+    int start = 0,
+  }) {
+    final size = (style.fontSize ?? 14) * 1.45;
+    return StickerImageSpan(
+      asset: stickerAssets[shortcode]!,
+      imageSize: Size(size + 2, size),
+    );
+  }
+
+  /// Converts sticker shortcodes to inline image spans while preserving source
+  /// offsets for editable fields and rendered offsets for text selection.
+  static RichSpanResult buildStickerSpans(
+    String text,
+    TextStyle style, {
+    int sourceOffset = 0,
+    bool preserveSourceLength = false,
+  }) {
+    final spans = <InlineSpan>[];
+    var renderedLength = 0;
+    var last = 0;
+    for (final match in stickerToken.allMatches(text)) {
+      if (match.start > last) {
+        final plain = text.substring(last, match.start);
+        spans.add(TextSpan(text: plain, style: style));
+        renderedLength += plain.length;
+      }
+      final shortcode = match.group(0)!;
+      spans.add(stickerImageSpan(
+        shortcode,
+        style,
+        start: sourceOffset + match.start,
+      ));
+      if (preserveSourceLength) {
+        spans.add(TextSpan(
+          text: shortcode.substring(1),
+          style: style.copyWith(
+            color: Colors.transparent,
+            fontSize: 0.01,
+            height: 0.01,
+            letterSpacing: 0,
+          ),
+        ));
+        renderedLength += shortcode.length;
+      } else {
+        renderedLength++;
+      }
+      last = match.end;
+    }
+    if (last < text.length) {
+      final plain = text.substring(last);
+      spans.add(TextSpan(text: plain, style: style));
+      renderedLength += plain.length;
+    }
+    return RichSpanResult(spans, renderedLength);
+  }
 
   /// 各类内联标记的统一分词器。顺序即优先级（同一起点按列出的先后匹配）。
   static final RegExp _token = RegExp(
@@ -90,8 +221,22 @@ class PostRichText {
 
   /// 从正则命中的候选串中裁掉句末标点和未配对的右括号
   static String _normalizeUrl(String candidate) {
-    const opening = {'(': ')', '[': ']', '{': '}', '（': '）', '【': '】', '《': '》'};
-    const closing = {')': '(', ']': '[', '}': '{', '）': '（', '】': '【', '》': '《'};
+    const opening = {
+      '(': ')',
+      '[': ']',
+      '{': '}',
+      '（': '）',
+      '【': '】',
+      '《': '》'
+    };
+    const closing = {
+      ')': '(',
+      ']': '[',
+      '}': '{',
+      '）': '（',
+      '】': '【',
+      '》': '《'
+    };
     final brackets = <String>[];
     var end = candidate.length;
 
@@ -291,7 +436,13 @@ class PostRichText {
         // rendered += label.length;
         addText(g!, base);
       } else if ((g = m.namedGroup('emoji')) != null) {
-        addText(emojis[g] ?? g!, base);
+        final asset = stickerAssets[g];
+        if (asset != null) {
+          spans.add(stickerImageSpan(g!, base, start: rendered));
+          rendered++;
+        } else {
+          addText(emojis[g] ?? g!, base);
+        }
       }
       last = m.end;
     }

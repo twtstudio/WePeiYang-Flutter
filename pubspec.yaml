@@ -147,7 +147,6 @@ dependencies:
   url_launcher_android: ^6.3.32
 #  device_info_plus: ^9.1.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -185,6 +184,8 @@ flutter:
     - assets/svg_pics/ai_icons/
     - assets/svg_pics/lake_butt_icons/
     - assets/svg_pics/laf_butt_icons/
+    - assets/images/emojis/cloud/
+    - assets/images/emojis/wpn/
     - privacy/
 
   fonts:

@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/SpoilerMask.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/loading.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
@@ -483,8 +484,8 @@ class _NewVoteFormState extends State<NewVoteForm> {
                               ? Icons.add
                               : Icons.check_box_outline_blank,
                           size: 18,
-                          color:
-                              WpyTheme.of(context).get(WpyColorKey.labelTextColor),
+                          color: WpyTheme.of(context)
+                              .get(WpyColorKey.labelTextColor),
                         ),
                         SizedBox(width: 10),
                         Expanded(
@@ -1024,7 +1025,7 @@ class _ContentInputFieldState extends State<ContentInputField> {
     _contentController =
         MaskTextEditingController(text: dataModel.content, hideMasked: true);
     contentCounter =
-        ValueNotifier('${dataModel.content.characters.length}/1000')
+        ValueNotifier('${PostRichText.countCharacters(dataModel.content)}/1000')
           ..addListener(() {
             dataModel.content = _contentController.text;
           });
@@ -1041,14 +1042,13 @@ class _ContentInputFieldState extends State<ContentInputField> {
     final sel = _contentController.selection;
     if (!sel.isValid || sel.isCollapsed) return;
     final text = _contentController.text;
-    final wrapped =
-        '$kMaskOpenTag${sel.textInside(text)}$kMaskCloseTag';
+    final wrapped = '$kMaskOpenTag${sel.textInside(text)}$kMaskCloseTag';
     final newText = text.replaceRange(sel.start, sel.end, wrapped);
     _contentController.value = TextEditingValue(
       text: newText,
       selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
     );
-    contentCounter.value = '${newText.characters.length}/1000';
+    contentCounter.value = '${PostRichText.countCharacters(newText)}/1000';
   }
 
   @override
@@ -1067,16 +1067,16 @@ class _ContentInputFieldState extends State<ContentInputField> {
         hintText: '请添加正文',
       ),
       onChanged: (text) {
-        contentCounter.value = '${text.characters.length}/1000';
+        contentCounter.value = '${PostRichText.countCharacters(text)}/1000';
       },
       scrollPhysics: NeverScrollableScrollPhysics(),
       inputFormatters: [
-        CustomizedLengthTextInputFormatter(1000),
+        CustomizedLengthTextInputFormatter(1000, emojiAware: true),
       ],
       cursorColor: WpyTheme.of(context).get(WpyColorKey.profileBackgroundColor),
       contextMenuBuilder: (context, editableState) {
-        final items =
-            List<ContextMenuButtonItem>.of(editableState.contextMenuButtonItems);
+        final items = List<ContextMenuButtonItem>.of(
+            editableState.contextMenuButtonItems);
         final sel = _contentController.selection;
         if (sel.isValid && !sel.isCollapsed) {
           items.insert(
@@ -1359,8 +1359,9 @@ class _ImagePickerWidget extends StatelessWidget {
 /// https://www.jianshu.com/p/d2c50b9271d3
 class CustomizedLengthTextInputFormatter extends TextInputFormatter {
   final int maxLength;
+  final bool emojiAware;
 
-  CustomizedLengthTextInputFormatter(this.maxLength);
+  CustomizedLengthTextInputFormatter(this.maxLength, {this.emojiAware = false});
 
   @override
   TextEditingValue formatEditUpdate(
@@ -1368,6 +1369,11 @@ class CustomizedLengthTextInputFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     if (newValue.isComposingRangeValid) return newValue;
+    if (emojiAware) {
+      return PostRichText.countCharacters(newValue.text) <= maxLength
+          ? newValue
+          : oldValue;
+    }
     return LengthLimitingTextInputFormatter(maxLength)
         .formatEditUpdate(oldValue, newValue);
   }
