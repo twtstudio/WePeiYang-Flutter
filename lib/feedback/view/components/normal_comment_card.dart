@@ -75,11 +75,13 @@ class _NCommentCardState extends State<NCommentCard>
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
 
-  void _openCommentImage() {
+  void _openCommentImage([int index = 0]) {
+    final imageUrls = widget.comment.imageUrls;
+    if (imageUrls.isEmpty) return;
     Navigator.pushNamed(
       context,
       FeedbackRouter.imageView,
-      arguments: ImageViewPageArgs([widget.comment.imageUrl], 1, 0, false),
+      arguments: ImageViewPageArgs(imageUrls, imageUrls.length, index, false),
     );
   }
 
@@ -508,6 +510,40 @@ class _NCommentCardState extends State<NCommentCard>
           constraints.maxWidth.isFinite && constraints.maxWidth > 0
               ? constraints.maxWidth
               : WePeiYangApp.screenWidth;
+      final imageUrls = widget.comment.imageUrls;
+      if (imageUrls.length > 1) {
+        const spacing = 4.0;
+        final tileSize = SplitUtil.w * 68;
+        final gridWidth = min(imageWidth, tileSize * 3 + spacing * 2);
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: SizedBox(
+            width: gridWidth,
+            child: GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: imageUrls.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: spacing,
+                mainAxisSpacing: spacing,
+                childAspectRatio: 1,
+              ),
+              itemBuilder: (context, index) => WButton(
+                onPressed: () => _openCommentImage(index),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: WpyPic(
+                    '${picBaseUrl}thumb/${imageUrls[index]}',
+                    fit: BoxFit.cover,
+                    withHolder: true,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
       return Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: AnimatedSize(
@@ -735,8 +771,8 @@ class _NCommentCardState extends State<NCommentCard>
             topWidget,
             SizedBox(height: 4),
             commentContent,
-            if (widget.comment.imageUrl != '') commentImage,
-            if (_picFullView == true && widget.comment.imageUrl != '')
+            if (widget.comment.imageUrls.isNotEmpty) commentImage,
+            if (_picFullView == true && widget.comment.imageUrls.length == 1)
               Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(

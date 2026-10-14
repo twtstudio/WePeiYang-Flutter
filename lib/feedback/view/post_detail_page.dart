@@ -439,20 +439,19 @@ class _PostDetailPageState extends State<PostDetailPage>
       final imageUrls = <String>{
         ...post.imageUrls,
         for (final comment in [...officialComments, ...comments]) ...[
-          if (comment.imageUrl.isNotEmpty) comment.imageUrl,
-          for (final reply in comment.subFloors)
-            if (reply.imageUrl.isNotEmpty) reply.imageUrl,
+          ...comment.imageUrls,
+          for (final reply in comment.subFloors) ...reply.imageUrls,
         ],
       };
       Future<void> precacheCommentImage(Floor comment, double cardWidth) async {
-        if (comment.imageUrl.isEmpty) return;
+        if (comment.imageUrls.isEmpty) return;
         final imageWidth = cardWidth - 24 - 32 - 8;
         await precacheImage(
           ResizeImage.resizeIfNeeded(
             (imageWidth * mediaQuery.devicePixelRatio).round(),
             null,
             CachedNetworkImageProvider(
-                '${EnvConfig.QNHDPIC}download/origin/${comment.imageUrl}'),
+                '${EnvConfig.QNHDPIC}download/origin/${comment.imageUrls.first}'),
           ),
           context,
         );

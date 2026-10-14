@@ -47,6 +47,14 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   Future<void> checkUpdate({bool auto = true}) async {
+    // Development builds are test builds and don't participate in release
+    // update checks. Treat them as already up to date, including manual checks.
+    if (EnvConfig.VERSION == 'Development') {
+      setIdle();
+      if (!auto) ToastProvider.success('已是最新版本');
+      return;
+    }
+
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;
@@ -83,7 +91,7 @@ class UpdateManager extends UpdateStatusListener {
           debugPrint("localVersionCode  ${EnvConfig.VERSIONCODE}");
           await InstallManager.getCanGoToMarket();
 
-          if (v.versionCode <= EnvConfig.VERSIONCODE||v.versionCode=="Development") {
+          if (v.versionCode <= EnvConfig.VERSIONCODE) {
             // 如果新获取到的版本不高于现在的版本，那么就不更新
             setIdle();
             if (!_auto) ToastProvider.success('已是最新版本');

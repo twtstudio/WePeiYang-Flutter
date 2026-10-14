@@ -134,8 +134,13 @@ class PostRichText {
     '[c9_cool]': 'assets/images/emojis/cloud/c9_cool.png',
   };
 
-  static final RegExp stickerToken =
-      RegExp(r'\[(?:w[1-9]_[a-z]+|c[1-9]_[a-z]+)\]');
+  static final String _knownStickerPattern =
+      stickerAssets.keys.map(RegExp.escape).join('|');
+
+  static final RegExp stickerToken = RegExp(_knownStickerPattern);
+
+  static final String _knownEmojiPattern =
+      [...emojis.keys, ...stickerAssets.keys].map(RegExp.escape).join('|');
 
   static int countCharacters(String text) {
     var count = 0;
@@ -206,17 +211,69 @@ class PostRichText {
     return RichSpanResult(spans, renderedLength);
   }
 
+  /// Replace known sticker tokens inside an existing rich-text tree, such as
+  /// HTML formatted official comments, while retaining the surrounding styles.
+  static InlineSpan renderStickersInSpan(
+    InlineSpan span, {
+    required TextStyle fallbackStyle,
+  }) {
+    if (span is! TextSpan) return span;
+
+    final children = <InlineSpan>[];
+    var changed = false;
+    if (span.text != null) {
+      final pieces = buildStickerSpans(
+        span.text!,
+        span.style ?? fallbackStyle,
+      ).spans;
+      changed = pieces.any((piece) => piece is StickerImageSpan);
+      for (final piece in pieces) {
+        if (piece is TextSpan && span.recognizer != null) {
+          children.add(TextSpan(
+            text: piece.text,
+            style: piece.style,
+            recognizer: span.recognizer,
+            mouseCursor: span.mouseCursor,
+            onEnter: span.onEnter,
+            onExit: span.onExit,
+          ));
+        } else {
+          children.add(piece);
+        }
+      }
+    }
+    for (final child in span.children ?? const <InlineSpan>[]) {
+      final rendered = renderStickersInSpan(
+        child,
+        fallbackStyle: span.style ?? fallbackStyle,
+      );
+      changed = changed || !identical(rendered, child);
+      children.add(rendered);
+    }
+    if (!changed) return span;
+
+    return TextSpan(
+      style: span.style,
+      children: children,
+      mouseCursor: span.mouseCursor,
+      onEnter: span.onEnter,
+      onExit: span.onExit,
+      locale: span.locale,
+      spellOut: span.spellOut,
+    );
+  }
+
   /// 各类内联标记的统一分词器。顺序即优先级（同一起点按列出的先后匹配）。
   static final RegExp _token = RegExp(
-    r'(\*\*(?=\S)(?<bold>[^*]+?)(?<=\S)\*\*)' // **粗体**
-    r'|(~~(?=\S)(?<strike>.+?)(?<=\S)~~)' // ~~删除线~~
-    r'|(`(?<code>[^`]+?)`)' // `代码`
-    r'|(?<postref>#[Mm][Pp]-?\d+)' // #MP123 帖子号（大小写无关）
-    r'''|(?<url>https?://[^\s<>"'，。！？；：、”’」』》〉]+)''' // 链接
-    r'|(\*(?=\S)(?<ital>[^*\n]+?)(?<=\S)\*)' // *斜体*
-    r'|(?<mentionuid>@uid:\d+)' // @uid:123 可跳转提及（只有它会变色）
-    r'|(?<emoji>\[[^\[\]\s]{1,12}\])' // [表情]
-    r'|(?<topic>#[^\s#<]+)', // #话题
+    r'(\*\*(?=\S)(?<bold>[^*]+?)(?<=\S)\*\*)'
+    r'|(~~(?=\S)(?<strike>.+?)(?<=\S)~~)'
+    r'|(`(?<code>[^`]+?)`)'
+    r'|(?<postref>#[Mm][Pp]-?\d+)'
+    r'''|(?<url>https?://[^\s<>"'，。！？；：、”’」』》〉]+)'''
+    r'|(\*(?=\S)(?<ital>[^*\n]+?)(?<=\S)\*)'
+    r'|(?<mentionuid>@uid:\d+)'
+    '|(?<emoji>$_knownEmojiPattern)'
+    r'|(?<topic>#[^\s#<]+)',
   );
 
   /// 从正则命中的候选串中裁掉句末标点和未配对的右括号

@@ -60,8 +60,10 @@ class _ExpandableTextState extends State<ExpandableText> {
         final Widget content = expand
             ? (widget.isHTML
                 ? RichText(
-                    text:
-                        HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    text: PostRichText.renderStickersInSpan(
+                      HTML.toTextSpan(context, text, defaultTextStyle: style),
+                      fallbackStyle: style,
+                    ),
                     textAlign: TextAlign.justify,
                   )
                 : hasMask(text)
@@ -71,8 +73,10 @@ class _ExpandableTextState extends State<ExpandableText> {
                 ? RichText(
                     overflow: TextOverflow.clip,
                     maxLines: maxLines,
-                    text:
-                        HTML.toTextSpan(context, text, defaultTextStyle: style),
+                    text: PostRichText.renderStickersInSpan(
+                      HTML.toTextSpan(context, text, defaultTextStyle: style),
+                      fallbackStyle: style,
+                    ),
                     textAlign: TextAlign.justify,
                   )
                 : hasMask(text)

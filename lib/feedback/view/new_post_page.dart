@@ -1010,6 +1010,8 @@ class _TitleInputFieldState extends State<TitleInputField> {
 }
 
 class ContentInputField extends StatefulWidget {
+  const ContentInputField({super.key});
+
   @override
   _ContentInputFieldState createState() => _ContentInputFieldState();
 }
@@ -1049,6 +1051,56 @@ class _ContentInputFieldState extends State<ContentInputField> {
       selection: TextSelection.collapsed(offset: sel.start + wrapped.length),
     );
     contentCounter.value = '${PostRichText.countCharacters(newText)}/1000';
+  }
+
+  void _showEmojiPicker() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final stickers = PostRichText.stickerAssets.entries.toList();
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor:
+          WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+      builder: (sheetContext) => SafeArea(
+        child: SizedBox(
+          height: MediaQuery.sizeOf(sheetContext).height * 0.4,
+          child: GridView.builder(
+            padding: EdgeInsets.all(12.r),
+            itemCount: stickers.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+            ),
+            itemBuilder: (context, index) {
+              final sticker = stickers[index];
+              return InkWell(
+                borderRadius: BorderRadius.circular(12.r),
+                onTap: () => insertSticker(sticker.key),
+                child: Padding(
+                  padding: EdgeInsets.all(4.r),
+                  child: Image.asset(sticker.value, fit: BoxFit.contain),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void insertSticker(String shortcode) {
+    final value = _contentController.value;
+    final selection = value.selection;
+    final start = selection.isValid ? selection.start : value.text.length;
+    final end = selection.isValid ? selection.end : value.text.length;
+    final updated = value.text.replaceRange(start, end, shortcode);
+    if (PostRichText.countCharacters(updated) > 1000) return;
+    _contentController.value = TextEditingValue(
+      text: updated,
+      selection: TextSelection.collapsed(offset: start + shortcode.length),
+    );
+    contentCounter.value = '${PostRichText.countCharacters(updated)}/1000';
   }
 
   @override
@@ -1127,7 +1179,32 @@ class _ContentInputFieldState extends State<ContentInputField> {
                 : 100),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [inputField, SizedBox(height: 20), bottomTextCounter],
+          children: [
+            inputField,
+            SizedBox(height: 20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                bottomTextCounter,
+                SizedBox(width: 6.w),
+                IconButton(
+                  tooltip: '表情',
+                  onPressed: _showEmojiPicker,
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 32.w,
+                    minHeight: 32.w,
+                  ),
+                  icon: Image.asset(
+                    'assets/images/lake_butt_icons/emoji.png',
+                    width: 24.w,
+                    height: 24.w,
+                    color: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ));
   }
 }

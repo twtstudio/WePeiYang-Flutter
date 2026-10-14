@@ -16,6 +16,7 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/clip_copy.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/pop_menu_shape.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/post_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 
@@ -397,10 +398,14 @@ class _OfficialReplyCardState extends State<OfficialReplyCard> {
         var comment = RichText(
           overflow: TextOverflow.ellipsis,
           maxLines: 4,
-          text: HTML.toTextSpan(
-            context,
-            widget.comment.content,
-            defaultTextStyle:
+          text: PostRichText.renderStickersInSpan(
+            HTML.toTextSpan(
+              context,
+              widget.comment.content,
+              defaultTextStyle:
+                  TextUtil.base.w400.normal.label(context).NotoSansSC.sp(16),
+            ),
+            fallbackStyle:
                 TextUtil.base.w400.normal.label(context).NotoSansSC.sp(16),
           ),
         );

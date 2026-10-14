@@ -482,9 +482,50 @@ class MaskTextEditingController extends TextEditingController {
     final old = value;
     var v = _repairMaskEdit(old, newValue);
     v = _repairStickerEdit(old, v);
+    v = _keepCaretOutsideSticker(old, v);
     // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：
     // v = _autoExpandMention(old, v);
     super.value = v;
+  }
+
+  TextEditingValue _keepCaretOutsideSticker(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final selection = newValue.selection;
+    if (!selection.isValid || !selection.isCollapsed) return newValue;
+
+    final offset = selection.extentOffset;
+    final commonLength = oldValue.text.length < newValue.text.length
+        ? oldValue.text.length
+        : newValue.text.length;
+    var editStart = 0;
+    while (editStart < commonLength &&
+        oldValue.text[editStart] == newValue.text[editStart]) {
+      editStart++;
+    }
+
+    for (final match in PostRichText.stickerToken.allMatches(newValue.text)) {
+      if (offset < match.start || offset > match.end) continue;
+
+      if (editStart >= match.start && editStart < match.end) {
+        // When typing the closing bracket creates a sticker span, keep the
+        // caret after the complete sticker instead of inside its hidden text.
+        return newValue.copyWith(
+          selection: TextSelection.collapsed(offset: match.end),
+        );
+      }
+
+      if (offset > match.start && offset < match.end) {
+        final snapped = offset - match.start <= match.end - offset
+            ? match.start
+            : match.end;
+        return newValue.copyWith(
+          selection: TextSelection.collapsed(offset: snapped),
+        );
+      }
+    }
+    return newValue;
   }
 
   // 26.8.6 暂时注释 @提及 相关（缺少相关接口，等待后端协调 --26.8.6）：

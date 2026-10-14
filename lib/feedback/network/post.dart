@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' show max;
 
 enum PostVariant {
@@ -106,7 +107,6 @@ class Post {
 
   /// 依赖有没有 id 来判空
   bool get isNull => this.id == 0;
-
 
   Post.fromJson(Map<String, dynamic> json)
       : id = json["id"] ?? 0,
@@ -302,6 +302,32 @@ class Floor {
   bool isOwner;
   int level;
 
+  /// Comment APIs historically return one URL as a string. Also accept a
+  /// comma-separated value or a JSON/string list for comments with multiple
+  /// images.
+  List<String> get imageUrls {
+    final raw = imageUrl.trim();
+    if (raw.isEmpty) return const [];
+    if (raw.startsWith('[')) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return decoded
+              .map((item) => item.toString().trim())
+              .where((item) => item.isNotEmpty)
+              .toList();
+        }
+      } catch (_) {
+        // Fall through and treat malformed JSON as a plain URL.
+      }
+    }
+    return raw
+        .split(',')
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList();
+  }
+
   Floor.fromJson(Map<String, dynamic> json)
       : id = json["id"] ?? 0,
         createAt = json["created_at"] == ''
@@ -312,7 +338,9 @@ class Floor {
         content = json["content"] ?? '',
         nickname = json["nickname"] ?? '',
         sender = json["sender"] ?? 0,
-        imageUrl = json["image_url"] ?? '',
+        imageUrl = json["image_url"] is List
+            ? (json["image_url"] as List).join(',')
+            : json["image_url"]?.toString() ?? '',
         replyTo = json["reply_to"] ?? 0,
         replyToName = json["reply_to_name"] ?? '',
         rating = json["rating"] ?? 0,
