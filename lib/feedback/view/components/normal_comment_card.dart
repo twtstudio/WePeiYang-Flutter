@@ -75,6 +75,14 @@ class _NCommentCardState extends State<NCommentCard>
   final String picBaseUrl = '${EnvConfig.QNHDPIC}download/';
   bool _picFullView = false, _isDeleted = false;
 
+  void _openCommentImage() {
+    Navigator.pushNamed(
+      context,
+      FeedbackRouter.imageView,
+      arguments: ImageViewPageArgs([widget.comment.imageUrl], 1, 0, false),
+    );
+  }
+
   Future<bool?> _showDeleteConfirmDialog(String quote) {
     return showDialog<bool>(
       context: context,
@@ -496,9 +504,10 @@ class _NCommentCardState extends State<NCommentCard>
     }
 
     var commentImage = LayoutBuilder(builder: (context, constraints) {
-      final imageWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
-          ? constraints.maxWidth
-          : WePeiYangApp.screenWidth;
+      final imageWidth =
+          constraints.maxWidth.isFinite && constraints.maxWidth > 0
+              ? constraints.maxWidth
+              : WePeiYangApp.screenWidth;
       return Padding(
           padding: EdgeInsets.symmetric(vertical: 10),
           child: AnimatedSize(
@@ -506,21 +515,10 @@ class _NCommentCardState extends State<NCommentCard>
             curve: Curves.decelerate,
             child: widget.comment.content != ''
                 ? WButton(
-                    onPressed: () {
-                      setState(() {
-                        _picFullView = true;
-                      });
-                    },
+                    onPressed: _openCommentImage,
                     child: _picFullView
                         ? WButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                FeedbackRouter.imageView,
-                                arguments: ImageViewPageArgs(
-                                    [widget.comment.imageUrl], 1, 0, false),
-                              );
-                            },
+                            onPressed: _openCommentImage,
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
                                   maxHeight: WePeiYangApp.screenWidth * 2),
@@ -552,14 +550,7 @@ class _NCommentCardState extends State<NCommentCard>
                           ))
                 : _picFullView
                     ? WButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            FeedbackRouter.imageView,
-                            arguments: ImageViewPageArgs(
-                                [widget.comment.imageUrl], 1, 0, false),
-                          );
-                        },
+                        onPressed: _openCommentImage,
                         child: ConstrainedBox(
                           constraints:
                               BoxConstraints(maxHeight: SplitUtil.sh * 2),
@@ -575,11 +566,7 @@ class _NCommentCardState extends State<NCommentCard>
                     : Row(
                         children: [
                           WButton(
-                            onPressed: () {
-                              setState(() {
-                                _picFullView = true;
-                              });
-                            },
+                            onPressed: _openCommentImage,
                             child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(4)),
