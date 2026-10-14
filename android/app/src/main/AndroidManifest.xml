@@ -133,6 +133,18 @@
                     android:pathPrefix="/post"
                     android:scheme="wpy" />
             </intent-filter>
+            <!--        兼容历史论坛分享口令 wpy://school_project/<id>    -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="school_project"
+                    android:pathPrefix="/"
+                    android:scheme="wpy" />
+            </intent-filter>
             <!--        友盟卖点验证  -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

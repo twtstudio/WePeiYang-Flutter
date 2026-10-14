@@ -58,7 +58,8 @@ class RouterManager {
   static bool _isExternalEntryRoute(String? routeName) {
     if (routeName == null) return false;
     final uri = Uri.tryParse(routeName);
-    if (uri?.scheme == 'wpy' && uri?.host == 'wpy.app') {
+    if (uri?.scheme == 'wpy' &&
+        (uri?.host == 'wpy.app' || uri?.host == 'school_project')) {
       return true;
     }
     return routeName.startsWith('/open') ||
