@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/logic_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/extension/ui_extension.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course.dart';
+import 'package:we_pei_yang_flutter/schedule/model/course_display_segments.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/schedule_day_rules.dart';
 import 'day_override_sheet.dart';
@@ -143,17 +144,7 @@ class _CourseDisplayWidget extends StatelessWidget {
           int start = activeList[i][0].arrange.unitList.first;
           int end = activeList[i][0].arrange.unitList.last;
           int day = activeList[i][0].arrange.weekday;
-          double top = (start - 1) * (_singleCourseHeight + verStep);
           double left = (day - 1) * (_cardWidth + horStep);
-          double height =
-              (end - start + 1) * _singleCourseHeight + (end - start) * verStep;
-          // 绕开"午休"栏
-          if (start > 4) top += _middleStep;
-          if (start > 8) top += _middleStep;
-          if (start <= 4 && end > 4) height += _middleStep;
-          if (start <= 8 && end > 8) height += _middleStep;
-          // 是否需要“漂浮”显示
-          if (activeList[i][0].arrange.showMode == 1) top += 6;
           // 是否不显示内容
           var hide = (activeList[i][0].arrange.showMode == 2);
 
@@ -179,13 +170,24 @@ class _CourseDisplayWidget extends StatelessWidget {
             }
           }
 
-          tempList.add(Positioned(
-            top: top - verStep / 2,
-            left: left - verStep / 2,
-            height: height + verStep,
-            width: _cardWidth + horStep,
-            child: AnimatedActiveCourse(activeList[i], hide, warning),
-          ));
+          for (final segment in courseDisplaySegments(start, end)) {
+            double top =
+                (segment.start - 1) * (_singleCourseHeight + verStep);
+            final height = (segment.end - segment.start + 1) *
+                    _singleCourseHeight +
+                (segment.end - segment.start) * verStep;
+            if (segment.start > 4) top += _middleStep;
+            if (segment.start > 8) top += _middleStep;
+            if (activeList[i][0].arrange.showMode == 1) top += 6;
+
+            tempList.add(Positioned(
+              top: top - verStep / 2,
+              left: left - verStep / 2,
+              height: height + verStep,
+              width: _cardWidth + horStep,
+              child: AnimatedActiveCourse(activeList[i], hide, warning),
+            ));
+          }
         }
         // 靠后的课需要先加入到stack中，所以需要reverse
         positionedList.addAll(tempList.reversed);
