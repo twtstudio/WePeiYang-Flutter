@@ -15,8 +15,10 @@ class AnimatedActiveCourse extends StatelessWidget {
   final List<Pair<Course, int>> _pairs;
   final bool _hide;
   final bool _warning;
+  final bool isSinglePeriod;
 
-  AnimatedActiveCourse(this._pairs, this._hide, this._warning);
+  AnimatedActiveCourse(this._pairs, this._hide, this._warning,
+      {this.isSinglePeriod = false});
 
   _activeNameStyle(context) => TextUtil.base.bright(context).bold.sp(11);
 
@@ -29,6 +31,12 @@ class AnimatedActiveCourse extends StatelessWidget {
     // _warning = true;
     var start = _pairs[0].arrange.unitList.first;
     var day = _pairs[0].arrange.weekday;
+    final name = _hide
+        ? ''
+        : !(_pairs[0].arrange.isExperiment &
+                CommonPreferences.isShowExperiment.value)
+            ? _pairs[0].first.name
+            : _pairs[0].arrange.name!;
 
     var teacher = '';
     _pairs[0].arrange.teacherList.forEach((str) {
@@ -74,40 +82,36 @@ class AnimatedActiveCourse extends StatelessWidget {
               ? Container()
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: Column(
-                    children: [
-                      Spacer(),
-                      Text(
-                          formatText(
-                            !(_pairs[0].arrange.isExperiment &
-                                    CommonPreferences.isShowExperiment.value)
-                                ? _pairs[0].first.name
-                                : _pairs[0].arrange.name!,
-                          ),
-                          style: _activeNameStyle(context),
-                          textAlign: TextAlign.center),
-                      SizedBox(height: 2),
-                      Text(teacher,
-                          style: _activeTeacherStyle(context),
-                          textAlign: TextAlign.center),
-                      if (_pairs[0].arrange.location != "")
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2),
-                          child: Text(
-                              replaceBuildingWord(_pairs[0].arrange.location),
-                              style: _activeClassroomStyle(context),
-                              textAlign: TextAlign.center),
+                  child: isSinglePeriod
+                      ? _singlePeriodContent(context, name)
+                      : Column(
+                          children: [
+                            Spacer(),
+                            Text(formatText(name),
+                                style: _activeNameStyle(context),
+                                textAlign: TextAlign.center),
+                            SizedBox(height: 2),
+                            Text(teacher,
+                                style: _activeTeacherStyle(context),
+                                textAlign: TextAlign.center),
+                            if (_pairs[0].arrange.location != "")
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                    replaceBuildingWord(_pairs[0].arrange.location),
+                                    style: _activeClassroomStyle(context),
+                                    textAlign: TextAlign.center),
+                              ),
+                            SizedBox(height: 2),
+                            if (_warning)
+                              Image.asset(
+                                'assets/images/schedule/warning.png',
+                                width: 20,
+                                height: 20,
+                              ),
+                            Spacer()
+                          ],
                         ),
-                      SizedBox(height: 2),
-                      if (_warning)
-                        Image.asset(
-                          'assets/images/schedule/warning.png',
-                          width: 20,
-                          height: 20,
-                        ),
-                      Spacer()
-                    ],
-                  ),
                 ),
         ),
       ),
@@ -135,6 +139,43 @@ class AnimatedActiveCourse extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _singlePeriodContent(BuildContext context, String name) {
+    final location = _pairs[0].arrange.location.trim();
+    return LayoutBuilder(builder: (context, constraints) {
+      // Keep the text and conflict indicator inside even a short card or a
+      // card displayed with a large system font.
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(
+          width: constraints.maxWidth,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(name,
+                  maxLines: location.isEmpty ? 3 : 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: _activeNameStyle(context),
+                  textAlign: TextAlign.center),
+              if (location.isNotEmpty) ...[
+                SizedBox(height: 2),
+                Text(replaceBuildingWord(location),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: _activeClassroomStyle(context),
+                    textAlign: TextAlign.center),
+              ],
+              if (_warning) ...[
+                SizedBox(height: 2),
+                Image.asset('assets/images/schedule/warning.png',
+                    width: 20, height: 20),
+              ],
+            ],
+          ),
+        ),
+      );
+    });
   }
 
   Duration _stagger(int start, int day) => Duration(

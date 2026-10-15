@@ -185,7 +185,8 @@ class _CourseDisplayWidget extends StatelessWidget {
               left: left - verStep / 2,
               height: height + verStep,
               width: _cardWidth + horStep,
-              child: AnimatedActiveCourse(activeList[i], hide, warning),
+              child: AnimatedActiveCourse(activeList[i], hide, warning,
+                  isSinglePeriod: segment.start == segment.end),
             ));
           }
         }
