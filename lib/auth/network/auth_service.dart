@@ -443,23 +443,6 @@ class AuthService with AsyncTimer {
     });
   }
 
-  /// 获取cid
-  static updateCid(String cid,
-      {required OnResult<String> onResult,
-      required OnFailure onFailure}) async {
-    AsyncTimer.runRepeatChecked('updateCid', () async {
-      try {
-        var res = await authDio.post("notification/cid",
-            data: {'cid': cid},
-            options: Options(contentType: Headers.formUrlEncodedContentType));
-
-        onResult(res.data.toString());
-      } on DioException catch (e) {
-        onFailure(e);
-      }
-    });
-  }
-
   static Future<NAcidInfo> checkNuclearAcid() async {
     try {
       var rsp = await authDio.get('checkHeSuan');

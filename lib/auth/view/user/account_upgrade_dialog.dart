@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -40,7 +42,8 @@ class AccountUpgradeDialog extends Dialog {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   WButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await context.read<PushManager>().disablePushDevice();
                       UmengCommonSdk.onProfileSignOff();
                       CommonPreferences.clearAllPrefs();
                       if (CommonPreferences.lakeToken.value != '')
@@ -60,6 +63,9 @@ class AccountUpgradeDialog extends Dialog {
                   ),
                   WButton(
                     onPressed: () async {
+                      // P17: the device row is owned by the account id, which
+                      // account upgrade keeps. Disabling it beforehand used to
+                      // leave push turned off when the upgrade was rejected.
                       var rsp = await AuthService.accountUpgrade();
                       if (rsp) {
                         // Navigator.pop(context);

@@ -1,0 +1,61 @@
+package com.twt.service.push
+
+import android.content.Context
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.twt.service.common.FlutterSharePreference
+import com.twt.service.push.server.PushCIdWorker
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import java.util.concurrent.TimeUnit
+
+/** Enqueues one replaceable CID registration task for the current install. */
+internal object PushCidSync {
+    private const val WORK_NAME = "register_push_device"
+    const val GENERATION_KEY = "registration_generation"
+    private val lifecycleMutex = Mutex()
+
+    fun enqueue(context: Context, cid: String?) {
+        val normalizedCid = cid?.trim()?.takeIf { it.isNotEmpty() } ?: return
+        val generation = PushCidStore.getRegistrationGeneration(context)
+        if (!PushCidStore.isCurrentRegistration(context, generation) ||
+            FlutterSharePreference.canPush != CanPushType.Want ||
+            !FlutterSharePreference.allowAgreement) return
+        runCatching {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresStorageNotLow(true)
+                .build()
+            val request = OneTimeWorkRequest.Builder(PushCIdWorker::class.java)
+                .setInputData(workDataOf("cid" to normalizedCid, GENERATION_KEY to generation))
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+                .addTag(WORK_NAME)
+                .build()
+            WorkManager.getInstance(context.applicationContext)
+                .enqueueUniqueWork(WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+        }.onFailure {
+            // WorkManager may not be initialized during an early SDK callback;
+            // the CID remains persisted and the next foreground getCid() call
+            // will enqueue it again.
+            WbyPushPlugin.log("CID registration task unavailable")
+        }
+    }
+
+    fun cancel(context: Context) {
+        runCatching {
+            WorkManager.getInstance(context.applicationContext).cancelUniqueWork(WORK_NAME)
+        }.onFailure {
+            WbyPushPlugin.log("CID registration task cancellation unavailable")
+        }
+    }
+
+    suspend fun <T> withLifecycleLock(block: suspend () -> T): T {
+        return lifecycleMutex.withLock { block() }
+    }
+}

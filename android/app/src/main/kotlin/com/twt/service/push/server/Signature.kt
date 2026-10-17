@@ -13,15 +13,20 @@ internal const val APP_SECRET = "37b590063d593716405a2c5a382b1130b28bf8a7"
 internal const val DOMAIN = "weipeiyang.twt.edu.cn"
 
 
-internal inline val Request.signed
-    get() = with(newBuilder()) {
-        addHeader("DOMAIN", DOMAIN)
-        addHeader(
-            "ticket",
-            Base64.encodeToString("$APP_KEY.$APP_SECRET".toByteArray(), Base64.NO_WRAP)
-        )
-        addHeader("token", FlutterSharePreference.authToken.orEmpty())
-    }.build()
+internal val Request.signed: Request
+    get() {
+        val token = header("token") ?: FlutterSharePreference.authToken.orEmpty()
+        return with(newBuilder()) {
+            addHeader("DOMAIN", DOMAIN)
+            addHeader(
+                "ticket",
+                Base64.encodeToString("$APP_KEY.$APP_SECRET".toByteArray(), Base64.NO_WRAP)
+            )
+            // A lifecycle request may capture the token before Flutter clears it
+            // during logout. Preserve an explicitly supplied header in that case.
+            header("token", token)
+        }.build()
+    }
 
 internal object SignatureInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response = chain.proceed(chain.request().signed)

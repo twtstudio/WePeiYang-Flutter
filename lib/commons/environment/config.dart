@@ -3,11 +3,13 @@ import 'package:flutter/foundation.dart';
 /// 动态打包配置
 class EnvConfig {
   static void init() {
-    QNHD = isDevelop
-        // 测试服务器域名
-        ? "http://172.18.149.225:7013/"
-        // 正式服务器域名
-        : "https://qnhd.twt.edu.cn/";
+    QNHD = QNHD_BASE_URL.isNotEmpty
+        ? (QNHD_BASE_URL.endsWith("/") ? QNHD_BASE_URL : "$QNHD_BASE_URL/")
+        : isDevelop
+            // 测试服务器域名
+            ? "http://172.18.149.225:7013/"
+            // 正式服务器域名
+            : "https://qnhd.twt.edu.cn/";
     QNHDPIC = isDevelop
         // 测试服务器域名
         ? "https://qnhdpic.twt.edu.cn/"
@@ -29,6 +31,11 @@ class EnvConfig {
   /// 测试版还是正式版 "RELEASE", "DEVELOP", "ONLINE_TEST"（默认）
   static const ENVIRONMENT =
       String.fromEnvironment("ENVIRONMENT", defaultValue: "RELEASE");
+
+  /// 构建时用 --dart-define=QNHD_BASE_URL=http://ip:port/ 覆盖青年湖底地址
+  /// （留空则按 ENVIRONMENT 取默认值；结尾斜杠可不写）
+  static const QNHD_BASE_URL =
+      String.fromEnvironment("QNHD_BASE_URL", defaultValue: "");
 
   /// 微北洋版本信息，请勿修改代码，这里的默认值由脚本生成
   static const VERSION = String.fromEnvironment(
