@@ -82,36 +82,7 @@ class AnimatedActiveCourse extends StatelessWidget {
               ? Container()
               : Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: isSinglePeriod
-                      ? _singlePeriodContent(context, name)
-                      : Column(
-                          children: [
-                            Spacer(),
-                            Text(formatText(name),
-                                style: _activeNameStyle(context),
-                                textAlign: TextAlign.center),
-                            SizedBox(height: 2),
-                            Text(teacher,
-                                style: _activeTeacherStyle(context),
-                                textAlign: TextAlign.center),
-                            if (_pairs[0].arrange.location != "")
-                              Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(
-                                    replaceBuildingWord(_pairs[0].arrange.location),
-                                    style: _activeClassroomStyle(context),
-                                    textAlign: TextAlign.center),
-                              ),
-                            SizedBox(height: 2),
-                            if (_warning)
-                              Image.asset(
-                                'assets/images/schedule/warning.png',
-                                width: 20,
-                                height: 20,
-                              ),
-                            Spacer()
-                          ],
-                        ),
+                  child: _courseContent(context, name, teacher),
                 ),
         ),
       ),
@@ -141,11 +112,10 @@ class AnimatedActiveCourse extends StatelessWidget {
     );
   }
 
-  Widget _singlePeriodContent(BuildContext context, String name) {
+  Widget _courseContent(BuildContext context, String name, String teacher) {
     final location = _pairs[0].arrange.location.trim();
     return LayoutBuilder(builder: (context, constraints) {
-      // Keep the text and conflict indicator inside even a short card or a
-      // card displayed with a large system font.
+      // 按实际卡片高度缩小内容
       return FittedBox(
         fit: BoxFit.scaleDown,
         child: SizedBox(
@@ -153,16 +123,26 @@ class AnimatedActiveCourse extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(name,
-                  maxLines: location.isEmpty ? 3 : 2,
-                  overflow: TextOverflow.ellipsis,
+              Text(isSinglePeriod ? name : formatText(name),
+                  maxLines: isSinglePeriod ? (location.isEmpty ? 3 : 2) : null,
+                  overflow: isSinglePeriod
+                      ? TextOverflow.ellipsis
+                      : TextOverflow.clip,
                   style: _activeNameStyle(context),
                   textAlign: TextAlign.center),
+              if (!isSinglePeriod && teacher.isNotEmpty) ...[
+                SizedBox(height: 2),
+                Text(teacher,
+                    style: _activeTeacherStyle(context),
+                    textAlign: TextAlign.center),
+              ],
               if (location.isNotEmpty) ...[
                 SizedBox(height: 2),
                 Text(replaceBuildingWord(location),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    maxLines: isSinglePeriod ? 2 : null,
+                    overflow: isSinglePeriod
+                        ? TextOverflow.ellipsis
+                        : TextOverflow.clip,
                     style: _activeClassroomStyle(context),
                     textAlign: TextAlign.center),
               ],
