@@ -72,6 +72,13 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInt()
         versionName = flutterVersionName
+        // Keep the profile variant (which has no explicit buildType block)
+        // valid and default it to the production push application.
+        resValue("string", "label", "微北洋")
+        manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+        buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+        buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
+        buildConfigField("Boolean", "LOG_OUTPUT", "false")
         manifestPlaceholders.putAll(mapOf(
             "HUAWEI_APP_ID" to "103402255",
             "XIAOMI_APP_ID" to "2882303761517785783",
@@ -112,13 +119,22 @@ android {
             when (environment) {
                 "ONLINE_TEST" -> {
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"ONLINE_TEST\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     resValue("string", "label", "微北洋$environment")
                     isMinifyEnabled = false
                     isShrinkResources = false
                 }
                 "DEVELOP" -> {
-                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+                    // DEVELOP 默认使用测试推送通道；联调生产推送时显式传入
+                    // --dart-define=PUSH_ENVIRONMENT=RELEASE，包名仍保留 .develop。
+                    val productionChannel = env["PUSH_ENVIRONMENT"] == "RELEASE"
+                    val pushAppId = if (productionChannel) "43HGFmIKsnAmjrjDLr60X4" else "bj16oBtQ3VAvqPbGtEHB69"
+                    val pushEnvironment = if (productionChannel) "RELEASE" else "DEVELOP"
+                    manifestPlaceholders["GETUI_APPID"] = pushAppId
+                    buildConfigField("String", "PUSH_APP_ID", "\"$pushAppId\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"$pushEnvironment\"")
                     applicationIdSuffix = ".develop"
                     buildConfigField("Boolean", "LOG_OUTPUT", "true")
                     resValue("string", "label", "微北洋$environment")
@@ -127,6 +143,11 @@ android {
                 }
                 "PREVIEW" -> {
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    // opencenter currently accepts RELEASE/ONLINE_TEST/DEVELOP;
+                    // preview uses the online-test selector until it gets its
+                    // own server-side environment.
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"ONLINE_TEST\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     applicationIdSuffix = ".preview"
                     resValue("string", "label", "微北洋Preview")
@@ -140,6 +161,8 @@ android {
                 else -> {
                     environment = "RELEASE"
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
                     buildConfigField("Boolean", "LOG_OUTPUT", "false")
                     resValue("string", "label", "微北洋")
                     isMinifyEnabled = true
@@ -179,13 +202,24 @@ android {
             }
             when (environment) {
                 "RELEASE" -> {
+                    // 自建调试包用生产推送身份（appId 43HGF/RELEASE），保留 .develop 后缀与官方版共存
+                    applicationIdSuffix = ".develop"
                     resValue("string", "label", "微北洋DEBUG_RELEASE")
                     manifestPlaceholders["GETUI_APPID"] = "43HGFmIKsnAmjrjDLr60X4"
+                    buildConfigField("String", "PUSH_APP_ID", "\"43HGFmIKsnAmjrjDLr60X4\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"RELEASE\"")
                 }
                 else -> {
+                    // DEVELOP 默认使用测试推送通道；联调生产推送时显式传入
+                    // --dart-define=PUSH_ENVIRONMENT=RELEASE，包名仍保留 .develop。
+                    val productionChannel = getDartDefines()["PUSH_ENVIRONMENT"] == "RELEASE"
+                    val pushAppId = if (productionChannel) "43HGFmIKsnAmjrjDLr60X4" else "bj16oBtQ3VAvqPbGtEHB69"
+                    val pushEnvironment = if (productionChannel) "RELEASE" else "DEVELOP"
                     applicationIdSuffix = ".develop"
                     resValue("string", "label", "微北洋DEBUG_DEVELOP")
-                    manifestPlaceholders["GETUI_APPID"] = "bj16oBtQ3VAvqPbGtEHB69"
+                    manifestPlaceholders["GETUI_APPID"] = pushAppId
+                    buildConfigField("String", "PUSH_APP_ID", "\"$pushAppId\"")
+                    buildConfigField("String", "PUSH_ENVIRONMENT", "\"$pushEnvironment\"")
                 }
             }
         }
@@ -268,4 +302,7 @@ dependencies {
     implementation("com.umeng.umsdk:apm:1.6.2")
     implementation("com.umeng.umsdk:push:6.5.5")
     implementation("com.umeng.umsdk:abtest:1.0.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("org.mockito:mockito-inline:4.11.0")
 }

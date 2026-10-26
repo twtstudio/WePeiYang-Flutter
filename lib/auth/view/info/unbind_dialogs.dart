@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
@@ -206,13 +207,18 @@ class _LogoffDialogState extends State<LogoffDialog> {
     super.dispose();
   }
 
-  void _logoff() {
+  Future<void> _logoff() async {
     if (textController.text != "我确认进行账号注销") {
       ToastProvider.error("输入错误");
       return;
     }
-    AuthService.logoff(onSuccess: () {
+    final pushManager = context.read<PushManager>();
+    AuthService.logoff(onSuccess: () async {
       ToastProvider.success("注销账号成功");
+      // P17: the server disables every device inside the logoff transaction,
+      // so a rejected logoff must leave push untouched. After success this
+      // installation stays paused until the next login registers it again.
+      await pushManager.disablePushDevice();
       UmengCommonSdk.onProfileSignOff();
       CommonPreferences.clearAllPrefs();
       Navigator.pushNamedAndRemoveUntil(
@@ -220,6 +226,8 @@ class _LogoffDialogState extends State<LogoffDialog> {
           AuthRouter.login,
           (route) => false);
     }, onFailure: (e) {
+      // Nothing was paused or disabled before the request, so a failed or
+      // unconfirmed logoff keeps the current account's push registration.
       ToastProvider.error(e.error.toString());
     });
     // Clipboard.setData(ClipboardData(text: "https://i.twt.edu.cn"));

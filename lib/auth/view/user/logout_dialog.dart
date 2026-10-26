@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -12,7 +14,8 @@ import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class LogoutDialog extends Dialog {
-  void _logout(BuildContext context) {
+  Future<void> _logout(BuildContext context) async {
+    await context.read<PushManager>().disablePushDevice();
     ToastProvider.success("退出登录成功");
     UmengCommonSdk.onProfileSignOff();
     CommonPreferences.clearAllPrefs();

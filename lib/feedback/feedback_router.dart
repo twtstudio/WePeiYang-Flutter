@@ -18,6 +18,7 @@ import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/summary_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/message/feedback_notice_page.dart';
+import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class FeedbackRouter {
   static String home = 'feedback/home';
@@ -42,6 +43,12 @@ class FeedbackRouter {
   static String person = 'feedback/person';
   static String history = 'feedback/history';
 
+  /// A system notification starts a forum visit, so back returns to the forum.
+  static void openPostFromNotification(NavigatorState navigator, int postId) {
+    navigator.pushNamedAndRemoveUntil(home, (route) => false, arguments: 1);
+    navigator.pushNamed(detail, arguments: Post.nullExceptId(postId));
+  }
+
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     home: (args) => HomePage(args),
     profile: (_) => ProfilePage(),
@@ -53,7 +60,8 @@ class FeedbackRouter {
     searchResult: (args) => SearchResultPage(args),
     imageView: (args) => ImageViewPage(args),
     localImageView: (args) => LocalImageViewPage(args),
-    mailbox: (_) => FeedbackMessagePage(),
+    mailbox: (args) =>
+        FeedbackMessagePage(initialTabIndex: args is int ? args : 0),
     report: (args) => ReportQuestionPage(args),
     notice: (args) => FeedbackNoticePage(args),
     summary: (_) =>

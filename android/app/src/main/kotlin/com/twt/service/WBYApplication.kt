@@ -2,6 +2,8 @@ package com.twt.service
 
 import android.app.ActivityManager
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Process
@@ -21,6 +23,7 @@ class WBYApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ensurePushNotificationChannel()
         runOnMainProcess {
             context = WeakReference(applicationContext)
             // 初始化友盟
@@ -42,6 +45,22 @@ class WBYApplication : Application() {
             // 加载flutter
             FlutterInjector.instance().flutterLoader().startInitialization(this)
         }
+    }
+
+    /**
+     * Getui can post a notification while the Flutter engine has never been
+     * started. Create the stable high-importance channel from Application so
+     * that the provider never falls back to an undefined/default channel.
+     */
+    private fun ensurePushNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val channel = NotificationChannel("1", "通知", NotificationManager.IMPORTANCE_HIGH).apply {
+            description = "横幅，锁屏"
+            setSound(null, null)
+            enableVibration(true)
+            vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+        }
+        getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
     }
 
     // 用反射的方式重置 flutter 启动目录

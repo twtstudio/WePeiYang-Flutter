@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/feedback/view/components/widget/comment_input_size.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -253,12 +254,8 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
               padding: EdgeInsets.only(
                 bottom: MediaQuery.viewInsetsOf(context).bottom,
               ),
-              child: AnimatedSize(
-                clipBehavior: Clip.antiAlias,
-                duration: keyboardVisible
-                    ? Duration.zero
-                    : Duration(milliseconds: 300),
-                curve: Curves.easeOutSine,
+              child: CommentInputSize(
+                keyboardVisible: keyboardVisible,
                 child: Container(
                   margin: EdgeInsets.only(top: 4),
                   decoration: BoxDecoration(

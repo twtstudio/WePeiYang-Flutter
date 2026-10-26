@@ -1,14 +1,11 @@
 package com.twt.service.push
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.igexin.sdk.PushManager
 import com.twt.service.BuildConfig
 import com.twt.service.MainActivity
 import com.twt.service.common.FlutterSharePreference
@@ -16,12 +13,19 @@ import com.twt.service.common.LogUtil
 import com.twt.service.common.WbyPlugin
 import com.twt.service.message.EventDispatcher
 import com.twt.service.push.model.Event
+import com.twt.service.push.server.WBYServerAPI
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // 和产品商量后不获取这两个权限：WRITE_EXTERNAL_STORAGE , READ_PHONE_STATE
 //    sd卡权限不要可能cid会变化
@@ -44,13 +48,15 @@ import io.flutter.plugin.common.PluginRegistry
  * @author what?
  * @date 2022/3/25
  */
-class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAware {
-    // 个推服务初始化成功，拿到cId后，通过 LocalBroadcast 广播后，发送到服务器
-    private lateinit var receiver: PushBroadCastReceiver
+class WbyPushPlugin internal constructor(private val pushManager: PushSdk) :
+    WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAware {
+    constructor() : this(GetuiPushSdk())
+
     private lateinit var binding: ActivityPluginBinding
 
-    // 个推推送服务单例
-    private val pushManager by lazy { PushManager.getInstance() }
+    private val cidHandler = Handler(Looper.getMainLooper())
+    private var cidPollAttempts = 0
+    private val lifecycleScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     // 请求通知权限回调
     private var goToPushPermissionPage = false
@@ -61,39 +67,15 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         super.onAttachedToEngine(binding)
-        // 从 Android 8.0（API 26）开始，所有的 Notification 都要指定 Channel
-        createNotificationChannel()
         // 如果用户同意了条款，并且打开通知权限，就初始化个推 sdk
         runCatching(::initSdkWhenOpenApp).onFailure {
             log("init GE TUI SDK when open app failure : $it")
         }
     }
 
-    /**
-     * 创建通知 channel
-     * TODO：暂时不知道是否有自定义通知的需要，因为现在的推送全部走个推推送
-     */
-    private fun createNotificationChannel() {
-        runCatching {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = "通知"
-                val des = "横幅，锁屏"
-                //不同的重要程度会影响通知显示的方式
-                val importance = NotificationManager.IMPORTANCE_HIGH
-                val channel = NotificationChannel("1", name, importance).apply {
-                    description = des
-                    // 声音
-                    setSound(null, null)
-                    // 是否震动
-                    enableVibration(true)
-                    vibrationPattern = longArrayOf(0, 1000, 500, 1000)
-                }
-                val notificationManager = context.getSystemService(NotificationManager::class.java)
-                notificationManager.createNotificationChannel(channel)
-            }
-        }.onFailure {
-            log("创建 Notification Channel 失败")
-        }
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        cidHandler.removeCallbacksAndMessages(null)
+        super.onDetachedFromEngine(binding)
     }
 
     /**
@@ -102,16 +84,30 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      * 如果用户没有允许推送，或者没有权限，就关闭推送但只要同意了条款，就会初始化sdk，不然后台数据会出错
      */
     private fun initSdkWhenOpenApp() {
+        if (!FlutterSharePreference.allowAgreement) {
+            pauseLocalPush()
+            return
+        }
         FlutterSharePreference.takeIf { it.allowAgreement && it.canPush != CanPushType.Unknown }
             ?.apply {
                 pushManager.initialize(context)
+                val permissionGranted = isNotificationEnabled
+                val registrationAllowed =
+                    PushCidStore.isRegistrationAllowed(context) &&
+                        canPush == CanPushType.Want && permissionGranted
+                if (registrationAllowed) {
+                    pushManager.turnOnPush(context)
+                    scheduleCidRefresh()
+                } else {
+                    pauseLocalPush()
+                }
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
                 log("init push sdk success when open app")
-                if ((canPush != CanPushType.Want) || !isNotificationEnabled) {
+                if (canPush == CanPushType.Not || !permissionGranted) {
                     canPush = CanPushType.Not
-                    pushManager.turnOffPush(context)
+                    disablePushDeviceInBackground("push disabled during app initialization")
                     log("don't allow push ,so turn off push service")
                 }
             }
@@ -128,7 +124,10 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             if (goToPushPermissionPage) {
                 goToPushPermissionPage = false
                 checkAndTurnOnPushService { result ->
+                    PushCidSync.cancel(context)
                     FlutterSharePreference.canPush = CanPushType.Not
+                    PushCidStore.setRegistrationAllowed(context, false)
+                    disablePushDeviceInBackground("notification permission refused")
                     result.success("refuse open push")
                     log("don't allow permission")
                 }
@@ -138,6 +137,9 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
             // TODO：1.看看在左滑通知关闭权限是否也有效  2.告知用户推送的重要性
             if (FlutterSharePreference.canPush == CanPushType.Want && !isNotificationEnabled) {
                 FlutterSharePreference.canPush = CanPushType.Not
+                PushCidSync.cancel(context)
+                PushCidStore.setRegistrationAllowed(context, false)
+                disablePushDeviceInBackground("notification permission revoked")
                 channel.invokeMethod("refreshPushPermission", null)
             }
         }.onFailure {
@@ -158,6 +160,10 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 "canReceivePush" -> pushManager.areNotificationsEnabled(context)
                 // 获取个推 cid
                 "getCid" -> getCid(result)
+                // 获取当前安装实例 ID
+                "getInstallId" -> result.success(PushCidStore.getOrCreateInstallId(context))
+                // 禁用当前安装实例的服务端推送记录
+                "disablePushDevice" -> disablePushDevice(result)
                 // 获取个推需要跳转到指定页面的 uri
                 "getIntentUri" -> getIntentUri(call, result)
                 else -> result.notImplemented()
@@ -173,13 +179,54 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      * 所以如果返回 null，则代表广义未成功初始化推送
      */
     private fun getCid(result: MethodChannel.Result) {
-        if (pushManager.isPushTurnedOn(context)) {
-            pushManager.getClientid(context)
+        if (!canRegisterLocally()) {
+            result.success(null)
+            return
+        }
+        val pushEnabled = pushManager.isPushTurnedOn(context)
+        val cid = if (pushEnabled) {
+            pushManager.getClientid(context)?.trim()?.takeIf { it.isNotEmpty() }
+                ?: PushCidStore.get(context)
         } else {
             null
-        }.let {
-            result.success(it)
         }
+        if (pushEnabled) cid?.let {
+            PushCidStore.save(context, it)
+            PushCidSync.enqueue(context, it)
+        }
+        result.success(cid)
+    }
+
+    /**
+     * Some vendor channels deliver the CID asynchronously and may not invoke
+     * the callback until several seconds after initialize(). Poll the SDK as a
+     * fallback, while keeping the callback path as the primary source.
+     */
+    private fun scheduleCidRefresh() {
+        cidPollAttempts = 0
+        cidHandler.removeCallbacksAndMessages(null)
+        val poll = object : Runnable {
+            override fun run() {
+                if (!canRegisterLocally() || !pushManager.isPushTurnedOn(context)) {
+                    log("CID sync skipped because push is disabled")
+                    return
+                }
+                val cid = pushManager.getClientid(context)?.trim()
+                    ?.takeIf { it.isNotEmpty() }
+                if (cid != null) {
+                    PushCidStore.save(context, cid)
+                    PushCidSync.enqueue(context, cid)
+                    log("CID ready")
+                    return
+                }
+                if (cidPollAttempts++ < 12) {
+                    cidHandler.postDelayed(this, 1000L)
+                } else {
+                    log("CID unavailable after SDK initialization")
+                }
+            }
+        }
+        cidHandler.post(poll)
     }
 
     /**
@@ -191,8 +238,14 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      */
     private fun initGeTuiSdk(result: MethodChannel.Result) {
         FlutterSharePreference.apply {
+            if (!allowAgreement) {
+                pauseLocalPush()
+                result.success("refuse open push")
+                return
+            }
             // 如果用户禁止推送或默认禁止推送，则通知flutter端不允许推送
             if (canPush == CanPushType.Not) {
+                pauseLocalPush()
                 result.success("refuse open push")
                 return
             }
@@ -206,6 +259,15 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
             runCatching {
                 pushManager.initialize(context)
+                val registrationAllowed = isNotificationEnabled
+                PushCidStore.setRegistrationAllowed(context, registrationAllowed)
+                if (registrationAllowed) {
+                    // initialize() alone need not undo turnOffPush() from logout.
+                    pushManager.turnOnPush(context)
+                    scheduleCidRefresh()
+                } else {
+                    pauseLocalPush()
+                }
                 if (BuildConfig.LOG_OUTPUT) {
                     pushManager.setDebugLogger(context, ::log)
                 }
@@ -215,7 +277,6 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 if (isNotificationEnabled) {
                     result.success("open push service success")
                 } else {
-                    pushManager.turnOffPush(context)
                     requestPushPermissionBy(result) {
                         // canPush = CanPushType.Want 但是没有通知权限，
                         // 有可能是用户手动关闭了，那么久告知他推送需要开启通知权限
@@ -230,10 +291,9 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
 
     private fun turnOffPushService(result: MethodChannel.Result) {
         runCatching {
-            if (pushManager.isPushTurnedOn(context)) {
-                pushManager.turnOffPush(context)
-            }
             FlutterSharePreference.canPush = CanPushType.Not
+            pauseLocalPush()
+            disablePushDeviceInBackground("push setting disabled")
         }.onSuccess {
             log("turn off push service success")
             result.success("")
@@ -244,13 +304,117 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     }
 
     /**
+     * Best-effort lifecycle update.  Turning off a setting should not be held
+     * hostage by a transient network failure, so this path only logs errors.
+     */
+    private fun disablePushDeviceInBackground(reason: String) {
+        val token = FlutterSharePreference.authToken?.trim()?.takeIf { it.isNotEmpty() }
+        val appId = BuildConfig.PUSH_APP_ID.trim()
+        if (token == null || appId.isEmpty()) {
+            log("disable push device skipped: missing auth or app metadata ($reason)")
+            return
+        }
+        val installId = PushCidStore.getOrCreateInstallId(context)
+        lifecycleScope.launch {
+            val disabled = PushCidSync.withLifecycleLock {
+                disableRequestWithRetry(token, appId, installId)
+            }
+            if (disabled) {
+                log("push device disabled ($reason)")
+            } else {
+                log("push device disable failed after retries ($reason)")
+            }
+        }
+    }
+
+    /**
+     * Awaitable variant used by logout/account-switch flows. The caller may
+     * apply its own short timeout; the captured token is independent of later
+     * Flutter preference cleanup.
+     */
+    private fun disablePushDevice(result: MethodChannel.Result) {
+        // Stop local reception before any network request or Flutter timeout.
+        // Keep the user's preference separate from this session's pause state.
+        pauseLocalPush()
+        val token = FlutterSharePreference.authToken?.trim()?.takeIf { it.isNotEmpty() }
+        val appId = BuildConfig.PUSH_APP_ID.trim()
+        if (token == null || appId.isEmpty()) {
+            result.success(false)
+            return
+        }
+        val installId = PushCidStore.getOrCreateInstallId(context)
+        lifecycleScope.launch {
+            val disabled = PushCidSync.withLifecycleLock {
+                disableRequestWithRetry(token, appId, installId)
+            }
+            withContext(Dispatchers.Main) { result.success(disabled) }
+        }
+    }
+
+    private fun canRegisterLocally(): Boolean =
+        PushCidStore.isRegistrationAllowed(context) &&
+            FlutterSharePreference.allowAgreement &&
+            FlutterSharePreference.canPush == CanPushType.Want
+
+    private fun pauseLocalPush() {
+        PushCidStore.saveUserPreference(context, FlutterSharePreference.canPush)
+        PushCidStore.setRegistrationAllowed(context, false)
+        cidHandler.removeCallbacksAndMessages(null)
+        goToPushPermissionPage = false
+        PushCidSync.cancel(context)
+        runCatching {
+            if (pushManager.isPushTurnedOn(context)) {
+                pushManager.turnOffPush(context)
+            }
+        }.onFailure {
+            // Still attempt remote disable even if the vendor SDK is unavailable.
+            log("local push pause failed: ${it.javaClass.simpleName}")
+        }
+    }
+
+    private suspend fun disableRequestWithRetry(
+        token: String,
+        appId: String,
+        installId: String,
+    ): Boolean {
+        var lastError: Throwable? = null
+        repeat(3) { attempt ->
+            try {
+                val response = WBYServerAPI.disablePushDevice(token, appId, installId)
+                if (response.error_code == 0) return true
+                // Authentication and validation errors will not be repaired by
+                // retrying; transient server/network errors are retried below.
+                if (response.error_code in 40000..49999) {
+                    log("push device disable rejected code=${response.error_code}")
+                    return false
+                }
+                lastError = IllegalStateException("business code=${response.error_code}")
+            } catch (e: Exception) {
+                lastError = e
+            }
+            if (attempt < 2) delay(300L * (attempt + 1))
+        }
+        lastError?.let {
+            log("push device disable retry exhausted: ${it::class.java.simpleName}")
+        }
+        return false
+    }
+
+    /**
      * 开启推送，并且设置 [FlutterSharePreference.canPush] = [CanPushType.Want]
      */
     private fun turnOnPushService() {
+        PushCidStore.setRegistrationAllowed(context, true)
         if (!pushManager.isPushTurnedOn(context)) {
             pushManager.turnOnPush(context)
         }
         FlutterSharePreference.canPush = CanPushType.Want
+        // Permission may have been granted after the initial SDK callback.
+        // Re-read/poll the CID so enabling push also repairs a missed upload.
+        pushManager.getClientid(context)?.trim()?.takeIf { it.isNotEmpty() }?.let {
+            PushCidStore.save(context, it)
+            PushCidSync.enqueue(context, it)
+        } ?: scheduleCidRefresh()
     }
 
     /**
@@ -360,7 +524,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
      * false: 未拦截到对应事件
      */
     private fun handleIntent(intent: Intent): Boolean {
-        log("WbyPushPlugin handle intent : $intent")
+        log("WbyPushPlugin handle intent action=${intent.action}, dataPresent=${intent.data != null}")
 
         // 走 url scheme 打开微北洋
         intent.data?.let { uri ->
@@ -381,6 +545,11 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 // 进入年度总结页面
                 intent.getStringExtra("page")?.takeIf { it == "summary" }?.let {
                     EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
+                    return true
+                }
+                // 进入消息中心（湖底通知）
+                intent.getStringExtra("page")?.takeIf { it == "notice" }?.let {
+                    EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackMailboxPage.type, "notice"))
                     return true
                 }
                 // TODO：通过评论id进入相应页面
@@ -450,6 +619,11 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackSummaryPage.type, "null"))
                 return true
             }
+            "notice" -> {
+                log("jump to feedback mailbox from url")
+                EventDispatcher.enqueueEvent(Event(IntentEvent.FeedbackMailboxPage.type, "notice"))
+                return true
+            }
         }
         return false
     }
@@ -476,14 +650,11 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
         // 添加 intent 拦截
         binding.addOnNewIntentListener(this)
         this.binding = binding
-        // 初始化 LocalBroadcast
-        initBroadcast()
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
         runCatching {
             binding.removeOnNewIntentListener(this)
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
         }
     }
 
@@ -491,34 +662,9 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         binding.addOnNewIntentListener(this)
         this.binding = binding
-        // 初始化 LocalBroadcast
-        initBroadcast()
-    }
-
-    /**
-     * 初始化本地广播
-     *
-     * 每次 [binding] 修改后，都需要重新注册广播
-     */
-    private fun initBroadcast() {
-        // 初始化 LocalBroadcast
-        runCatching {
-            receiver = PushBroadCastReceiver(binding)
-            val intentFilter = IntentFilter().apply {
-//                addAction(DATA)
-                addAction(CID)
-                addDataScheme("wpy")
-            }
-            LocalBroadcastManager.getInstance(context).registerReceiver(receiver, intentFilter)
-            log("init local broadcast success")
-        }
     }
 
     override fun onDetachedFromActivity() {
-        // 注销 LocalBroadcast
-        kotlin.runCatching {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver)
-        }
     }
 
     /**
@@ -531,7 +677,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 // 跳转问题详情页面
                 call.argument<Int>("question_id")?.let { id ->
                     val intentUri = IntentUtil.getQsltQuestionUri(id, context)
-                    log("get feedback intent success : $intentUri")
+                    log("get feedback intent success")
                     result.success(intentUri)
                     return
                 }
@@ -539,7 +685,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                 call.argument<String>("page")?.takeIf { it == "summary" }?.let {
                     val intentUri = IntentUtil.getQsltSummaryUri(context)
 
-                    log("get feedback intent success : $intentUri")
+                    log("get feedback intent success")
                     result.success(intentUri)
                     return
                 }
@@ -565,7 +711,7 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
                     putExtra("type", "mailbox")
                 }.toUri(Intent.URI_INTENT_SCHEME)
 
-                log("get mailbox intent success : $intentUri")
+                log("get mailbox intent success")
                 result.success(intentUri)
             }
             "update" -> {
@@ -579,9 +725,6 @@ class WbyPushPlugin : WbyPlugin(), PluginRegistry.NewIntentListener, ActivityAwa
     }
 
     companion object {
-        //        const val DATA = "com.twt.service.PUSH_DATA"
-        const val CID = "com.twt.service.PUSH_TOKEN"
-
         const val REQUEST_NOTIFICATION_PERMISSION = 303
 
         // TODO
