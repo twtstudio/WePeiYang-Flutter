@@ -833,7 +833,6 @@ class _PostDetailPageState extends State<PostDetailPage>
         onPressed: () => Navigator.pop(context, widget.post),
       ),
       actions: [
-        if (hasAdmin) _adminButton(context),
         _screenshotCancel(),
         _screenshotConfirm(context),
         SizedBox(width: 10),
@@ -905,14 +904,6 @@ class _PostDetailPageState extends State<PostDetailPage>
         for (int i = 0; i < 5; i++) PostSkeleton(),
       ],
     );
-  }
-
-  IconButton _adminButton(BuildContext context) {
-    return IconButton(
-        icon: Icon(Icons.admin_panel_settings,
-            size: SplitUtil.w * 23,
-            color: WpyTheme.of(context).get(WpyColorKey.labelTextColor)),
-        onPressed: () => _showManageDialog());
   }
 
   ListenableBuilder _screenshotConfirm(BuildContext context) {
@@ -998,8 +989,8 @@ class _PostDetailPageState extends State<PostDetailPage>
               WpyTheme.of(context).get(WpyColorKey.basicTextColor),
               BlendMode.srcIn),
         ),
-        onPressed: () {
-          showCupertinoModalPopup(
+        onPressed: () async {
+          final openManager = await showCupertinoModalPopup<bool>(
             context: context,
             builder: (context) {
               return CupertinoTheme(
@@ -1008,6 +999,16 @@ class _PostDetailPageState extends State<PostDetailPage>
                 ),
                 child: CupertinoActionSheet(
                   actions: [
+                    if (hasAdmin)
+                      CupertinoActionSheetAction(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: Text(
+                          '帖子管理',
+                          style: TextUtil.base.normal.w400.NotoSansSC
+                              .primary(context)
+                              .sp(16),
+                        ),
+                      ),
                     // 拉黑按钮
                     if (Platform.isIOS && _showBlockButton)
                       // 分享按钮
@@ -1136,6 +1137,9 @@ class _PostDetailPageState extends State<PostDetailPage>
               );
             },
           );
+          if (openManager == true && mounted) {
+            _showManageDialog();
+          }
         });
   }
 
