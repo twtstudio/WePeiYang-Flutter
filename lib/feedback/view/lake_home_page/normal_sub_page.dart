@@ -8,7 +8,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:miui_long_screenshot/miui_long_screenshot.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
@@ -489,11 +488,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                               itemBuilder: _buildPostList,
                             ),
                     );
-                    return MiuiLongScreenshot(
-                      key: ValueKey('lake-miui-long-screenshot-$index'),
-                      controller: _scrollController,
-                      child: refresher,
-                    );
+                    return refresher;
                   },
                 ),
               );
