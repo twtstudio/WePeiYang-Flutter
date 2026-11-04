@@ -294,7 +294,10 @@ class _LoginPwWidgetState extends State<LoginPwWidget> {
                       .bright(context),
                   cursorColor: WpyTheme.of(context)
                       .get(WpyColorKey.primaryBackgroundColor),
-                  keyboardType: TextInputType.visiblePassword,
+                  keyboardType: TextInputType.text,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  autofillHints: const [AutofillHints.password],
                   focusNode: _passwordFocus,
                   decoration: InputDecoration(
                       focusedBorder: UnderlineInputBorder(

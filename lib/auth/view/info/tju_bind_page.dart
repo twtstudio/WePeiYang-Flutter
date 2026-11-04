@@ -150,7 +150,10 @@ class _TjuBindPageState extends State<TjuBindPage> {
                       primaryColor:
                           WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
                   child: TextField(
-                    keyboardType: TextInputType.visiblePassword,
+                    keyboardType: TextInputType.text,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    autofillHints: const [AutofillHints.password],
                     focusNode: _passwordFocus,
                     cursorColor: WpyTheme.of(context)
                         .get(WpyColorKey.defaultActionColor),
