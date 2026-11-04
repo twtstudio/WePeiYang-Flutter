@@ -339,9 +339,9 @@ class _HoursCounterWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15.r),
                     gradient: LinearGradient(
                       colors: [
-                        WpyTheme.of(context).get(WpyColorKey.brightTextColor),
                         WpyTheme.of(context)
                             .get(WpyColorKey.backgroundGradientEndColor),
+                        WpyTheme.of(context).get(WpyColorKey.brightTextColor),
                       ],
                     ),
                   ),
