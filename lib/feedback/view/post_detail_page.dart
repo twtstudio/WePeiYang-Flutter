@@ -2446,7 +2446,10 @@ class _AnimatedOptionState extends State<AnimatedOption>
                           const SizedBox(height: 10),
                           TextField(
                             controller: tc,
-                            keyboardType: TextInputType.number,
+                            keyboardType:
+                                const TextInputType.numberWithOptions(
+                              signed: true,
+                            ),
                             textInputAction: TextInputAction.done,
                             decoration: InputDecoration(
                               hintText: '置顶数值',
