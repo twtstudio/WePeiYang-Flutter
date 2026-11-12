@@ -1913,21 +1913,30 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   Future<String?> _showDialog() {
     return showDialog<String>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('是否要删除此图片'),
-        actions: [
-          WButton(
-              onPressed: () {
-                Navigator.of(context).pop('cancel');
-              },
-              child: Text('取消')),
-          WButton(
-              onPressed: () {
-                Navigator.of(context).pop('ok');
-              },
-              child: Text('确定')),
-        ],
-      ),
+      builder: (dialogContext) {
+        final theme = WpyTheme.of(dialogContext);
+
+        return LakeDialogWidget(
+          title: '删除图片',
+          content: Text(
+            '是否要删除此图片？',
+            style: TextStyle(color: theme.get(WpyColorKey.basicTextColor)),
+          ),
+          cancelText: '取消',
+          confirmText: '确定',
+          gradient: LinearGradient(
+            colors: [
+              theme.get(WpyColorKey.primaryActionColor),
+              theme.get(WpyColorKey.primaryLightActionColor),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: const [0, 0.99],
+          ),
+          cancelFun: () => Navigator.of(dialogContext).pop('cancel'),
+          confirmFun: () => Navigator.of(dialogContext).pop('ok'),
+        );
+      },
     );
   }
 
