@@ -288,17 +288,18 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
                               Row(
                                 children: [
                                   SizedBox(width: 4),
-                                  IconButton(
-                                      icon: Image.asset(
-                                        'assets/images/lake_butt_icons/image.png',
-                                        width: 24,
-                                        height: 24,
-                                        color: WpyTheme.of(context)
-                                            .get(WpyColorKey.basicTextColor),
-                                      ),
-                                      onPressed: () => imageSelectionKey
-                                          .currentState
-                                          ?.loadAssets()),
+                                  if (value.images.isEmpty)
+                                    IconButton(
+                                        icon: Image.asset(
+                                          'assets/images/lake_butt_icons/image.png',
+                                          width: 24,
+                                          height: 24,
+                                          color: WpyTheme.of(context)
+                                              .get(WpyColorKey.basicTextColor),
+                                        ),
+                                        onPressed: () => imageSelectionKey
+                                            .currentState
+                                            ?.loadAssets()),
                                   if (context
                                           .read<NewFloorProvider>()
                                           .images

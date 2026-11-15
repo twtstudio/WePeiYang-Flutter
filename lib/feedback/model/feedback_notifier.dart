@@ -57,6 +57,10 @@ class NewFloorProvider extends ChangeNotifier {
   bool inputFieldEnabled = false;
   FocusNode focusNode = FocusNode();
 
+  void update() {
+    notifyListeners();
+  }
+
   void inputFieldOpenAndReplyTo(int rep) {
     inputFieldEnabled = true;
     replyTo = rep;

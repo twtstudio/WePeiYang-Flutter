@@ -1872,9 +1872,10 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
         return;
       }
     }
-    Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
     if (!mounted) return 0;
-    setState(() {});
+    final data = context.read<NewFloorProvider>();
+    data.images.add(file);
+    data.update();
   }
 
   loadAssets() async {
@@ -1904,10 +1905,11 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
           return;
         }
       }
-      Provider.of<NewFloorProvider>(context, listen: false).images.add(file);
+      if (!mounted) return 0;
+      final data = context.read<NewFloorProvider>();
+      data.images.add(file);
+      data.update();
     }
-    if (!mounted) return 0;
-    setState(() {});
   }
 
   Future<String?> _showDialog() {
@@ -1988,9 +1990,9 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                       child: WButton(
                         onPressed: () async {
                           var result = await _showDialog();
-                          if (result == 'ok') {
+                          if (result == 'ok' && data.images.isNotEmpty) {
                             data.images.removeAt(0);
-                            setState(() {});
+                            data.update();
                           }
                         },
                         child: Container(
