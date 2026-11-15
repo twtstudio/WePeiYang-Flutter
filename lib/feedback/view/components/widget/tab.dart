@@ -33,8 +33,8 @@ class DaTab extends StatelessWidget {
             SizedBox(width: _tabPaddingWidth),
             Text(text),
             InkWell(
-              onTap: onTap, // Kích hoạt hàm mở/đóng TagsWrap
-              customBorder: const CircleBorder(), // Tạo hiệu ứng chạm hình tròn
+              onTap: onTap, // 启用 TagsWrap 的打开/关闭功能
+              customBorder: const CircleBorder(), // 创建圆形触摸效果
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
