@@ -1,0 +1,3 @@
+enum TapGroup{
+  SCHOOL_AFFAIR_EXPANSION;
+}

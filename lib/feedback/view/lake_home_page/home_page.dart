@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/tapping/tapGroup.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -37,10 +38,13 @@ class FeedbackHomePage extends StatefulWidget {
   @override
   FeedbackHomePageState createState() => FeedbackHomePageState();
 }
-final _fbKey = new GlobalKey<FbTagsWrapState>();
+
 class FeedbackHomePageState extends State<FeedbackHomePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
 
+  final _fbKey = new GlobalKey<FbTagsWrapState>();
+
+  bool _schoolAffairsExpanded=false;
 
   bool initializeRefresh = false;
 
@@ -168,8 +172,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         ? 0
         : LakeUtil.tabList.indexWhere((tab) => tab.id == selectedTabId);
     if (newIndex < 0) newIndex = 0;
-
-    //oldController.removeListener(_onTabChange);
+    oldController.removeListener(_onTabChange);
     setState(() {
       tabController = _createTabController(
         LakeUtil.tabList.length,
@@ -180,18 +183,18 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
     oldController.dispose();
   }
 
-  // void _onTabChange() {
-  //   LakeUtil.currentTab.value = tabController!.index;
-  //   if (tabController != null && LakeUtil.tabList.isNotEmpty) {
-  //     final currentTabIndex = tabController!.index;
-  //     final isSchoolAffairsTab =
-  //         LakeUtil.tabList[currentTabIndex].name == '校务专区';
-  //
-  //     if (!isSchoolAffairsTab) {
-  //       fbKey.currentState?.hide();
-  //     }
-  //   }
-  // }
+  void _onTabChange() {
+    LakeUtil.currentTab.value = tabController!.index;
+    // if (tabController != null && LakeUtil.tabList.isNotEmpty) {
+    //   final currentTabIndex = tabController!.index;
+    //   final isSchoolAffairsTab =
+    //       LakeUtil.tabList[currentTabIndex].name == '校务专区';
+    //
+    //   if (!isSchoolAffairsTab) {
+    //     fbKey.currentState?.hide();
+    //   }
+    // }
+  }
 
   TabController _createTabController(int length, {int? initialIndex}) {
     return TabController(
@@ -199,9 +202,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
       vsync: this,
       initialIndex: min(max(0, length - 1),initialIndex ?? LakeUtil.currentTab.value,
       ),
-      );//..addListener(() {
-  //     _onTabChange();
-  // });
+      )..addListener(() {
+       _onTabChange();
+   });
   }
 
   void _initializeTabController(int length) {
@@ -390,6 +393,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             selected: isSelected,
             text: tabList[index].shortname,
             withDropDownButton: isSchoolAffairs,
+            dropdownOpen: _schoolAffairsExpanded,
             onTap: isSchoolAffairs ? () => _fbKey.currentState?.tap() : null,
           );
         }),
@@ -572,7 +576,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                               calculatedTop -
                               (Platform.isWindows ? 0 : 52.h) -
                               MediaQuery.of(context).padding.bottom,
-                        ),
+                          onExpandedChanged: (value){
+                            setState(() {
+                              _schoolAffairsExpanded=value;
+                            });
+                          }),
                       );
                     },
                   ),
@@ -686,9 +694,9 @@ class BannerWidget extends StatelessWidget {
 }
 
 class FbTagsWrap extends StatefulWidget {
+  final ValueChanged<bool> onExpandedChanged;
   final double maxHeight;
-  const FbTagsWrap({Key? key, required this.maxHeight}) : super(key: key);
-
+  const FbTagsWrap({Key? key, required this.maxHeight, required this.onExpandedChanged}) : super(key: key);
   @override
   FbTagsWrapState createState() => FbTagsWrapState();
 }
@@ -761,7 +769,10 @@ class FbTagsWrapState extends State<FbTagsWrap>
       ),
     );
     return TapRegion(
-      onTapOutside: (PointerDownEvent evt){_fbKey.currentState?.hide();},
+      groupId: TapGroup.SCHOOL_AFFAIR_EXPANSION,
+      onTapOutside: (PointerDownEvent evt){
+        hide();
+      },
       child:Stack(
         children: [
           Offstage(
@@ -792,11 +803,13 @@ class FbTagsWrapState extends State<FbTagsWrap>
         _tagsWrapIsShow = true;
         _tagsContainerBackgroundIsShow = true;
         _tagsContainerBackgroundOpacity = 1.0;
+        widget.onExpandedChanged(_tagsWrapIsShow);
       });
     else
       setState(() {
         _tagsContainerBackgroundOpacity = 0;
         _tagsWrapIsShow = false;
+        widget.onExpandedChanged(_tagsWrapIsShow);
       });
   }
 
@@ -806,6 +819,7 @@ class FbTagsWrapState extends State<FbTagsWrap>
       setState(() {
         _tagsContainerBackgroundOpacity = 0;
         _tagsWrapIsShow = false;
+        widget.onExpandedChanged(_tagsWrapIsShow);
       });
     }
   }
