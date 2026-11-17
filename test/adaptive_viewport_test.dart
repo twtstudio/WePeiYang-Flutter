@@ -43,6 +43,9 @@ void main() {
       'desktop narrow': Size(700, 900),
       'small tablet portrait': Size(600, 960),
       'tall narrow window': Size(290, 1500),
+      'wide fold outer': Size(474, 696),
+      'wide fold inner': Size(661, 813),
+      'wide fold landscape': Size(904, 640),
       'desktop huge': Size(2560, 1440),
     };
     for (final e in others.entries) {

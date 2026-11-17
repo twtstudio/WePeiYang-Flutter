@@ -25,6 +25,7 @@ import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.d
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
+import '../components/feed_card.dart';
 import '../../../commons/widgets/w_button.dart';
 
 class NSubPage extends StatefulWidget {
@@ -360,7 +361,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             // 第一个是横幅，其余是帖子；多列时每条帖子单独成卡片，便于区分边界
             itemBuilder: (context, i) => i == 0
                 ? _buildPostList(context, 2)
-                : _FeedCard(child: _buildPostList(context, i + 3)),
+                : FeedCard(child: _buildPostList(context, i + 3)),
           ),
         ),
       ],
@@ -504,8 +505,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   void _revealPost(int id, {bool animate = false, int attempt = 0}) {
     if (!mounted || !_scrollController.hasClients) return;
     final anchor = _postAnchors[id];
-    if (anchor != null && anchor.mounted) {
-      Scrollable.ensureVisible(anchor,
+    final box = anchor != null && anchor.mounted ? anchor.findRenderObject() : null;
+    if (box != null && box.attached) {
+      // 只滚动帖子列表自身。Scrollable.ensureVisible 会逐级滚动所有外层可滚动组件，
+      // 包括首页分页和湖底分区的横向 TabBarView，折叠屏展开时会把首页切到湖底
+      _scrollController.position.ensureVisible(box,
           alignment: 0.05,
           duration:
               animate ? const Duration(milliseconds: 380) : Duration.zero,
@@ -640,35 +644,6 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             }(),
           );
         });
-  }
-}
-
-/// 瀑布流中的帖子卡片：圆角 + 细边框，与相邻帖子区分开
-class _FeedCard extends StatelessWidget {
-  const _FeedCard({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    // 折叠的置顶帖占位不需要卡片
-    final c = child;
-    if (c is SizedBox && c.height == 0) return c;
-    final theme = WpyTheme.of(context);
-    final radius = BorderRadius.circular(16.r);
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.get(WpyColorKey.primaryBackgroundColor),
-        borderRadius: radius,
-      ),
-      // 边框画在内容之上，避免被帖子自身的背景盖住
-      foregroundDecoration: BoxDecoration(
-        borderRadius: radius,
-        border: Border.all(color: theme.get(WpyColorKey.lightBorderColor)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: child,
-    );
   }
 }
 

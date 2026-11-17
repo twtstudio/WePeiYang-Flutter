@@ -30,6 +30,7 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import android.content.ComponentName
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -55,6 +56,27 @@ class MainActivity : FlutterActivity() {
         "com.twt.service.ICONSpring",
     )
 
+    /**
+     * 与 Dart 侧 AdaptiveViewport 的规则一致：手机尺寸的屏幕（最短边 < 600dp）锁竖屏，
+     * 平板/折叠屏展开或设置里强制允许旋转时不锁。在 Flutter 启动前设置，避免横握启动时
+     * 启动画面先横屏再转回竖屏；之后的变化（折叠屏开合、修改设置）由 Dart 侧处理。
+     */
+    private fun applyOrientationLock() {
+        val forceAllow = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            .getBoolean("flutter.allowRotation", false)
+        val shortestSideDp = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val bounds = windowManager.maximumWindowMetrics.bounds
+            minOf(bounds.width(), bounds.height()) / resources.displayMetrics.density
+        } else {
+            resources.configuration.smallestScreenWidthDp.toFloat()
+        }
+        requestedOrientation = if (!forceAllow && shortestSideDp < 600) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Aligns the Flutter view vertically with the window.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false)
@@ -64,6 +86,8 @@ class MainActivity : FlutterActivity() {
             // a flicker before the similar frame is drawn in Flutter.
             splashScreen.setOnExitAnimationListener { splashScreenView -> splashScreenView.remove() }
         }
+
+        applyOrientationLock()
 
         log("onCreate action=${intent?.action} data=${intent?.dataString} component=${intent?.component}")
         EventDispatcher.enqueueShortcutIntent(intent)

@@ -1,7 +1,10 @@
+import 'dart:io' show Platform;
 import 'dart:math' as math;
 import 'dart:ui' show DisplayFeature, DisplayFeatureType;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 全局自适应视口。
@@ -10,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// 桌面窗口里 ScreenUtil 会按宽、高两个不同的比例拉伸（例如 1600x900 的窗口里 `.w` 放大 4 倍
 /// 而 `.h` 只放大 1.07 倍），导致文字截断、溢出、变形。这里按 Material 3 的大屏规范统一处理：
 ///
-/// * **竖屏手机**（宽 <= 480 且高宽比 1.4 ~ 2.6）：与原来完全一致，设计稿 390x844、铺满屏幕；
+/// * **竖屏手机**（宽 <= 480 且高宽比 1.7 ~ 2.6）：与原来完全一致，设计稿 390x844、铺满屏幕；
 /// * **单栏**（平板竖屏、较窄的桌面窗口）：铺满整个窗口，宽高使用同一个缩放比例，
 ///   设计稿高度 >= 844、宽度 >= 390，页面按实际宽度自适应；
 /// * **可分栏 / 平行视界**（折叠屏内屏、平板横屏、桌面宽窗口，且设置中开启了平行视界）：
@@ -64,13 +67,15 @@ class ViewportSpec {
   /// `.w` 的缩放比例（非手机布局下宽高一致）
   double get scale => window.width / designSize.width;
 
-  /// 竖屏手机：宽度 <= 480（大屏手机、折叠屏外屏约 344~430），高宽比 1.4 ~ 2.6
+  /// 竖屏手机：宽度 <= 480（大屏手机、折叠屏外屏约 344~430），高宽比 1.7 ~ 2.6。
+  /// 手机都在 16:9（1.78）以上；更"矮胖"的屏幕（阔折叠外屏约 1.47 等）如果仍按 390x844
+  /// 非等比拉伸，宽度方向放大而高度方向缩小，文字会撑破按 .h 计算的高度，所以改为等比缩放
   /// （最细长的折叠屏外屏约 2.56）。
   /// 超出这个范围的窗口（小平板、桌面窄窗口、极细长的窗口）按等比缩放处理，
   /// 否则宽高缩放比例相差过大，文字会被横向放大或纵向拉长。
   static bool isPhoneSize(Size screen) {
     final aspect = screen.height / screen.width;
-    return screen.width <= 480 && aspect >= 1.4 && aspect <= 2.6;
+    return screen.width <= 480 && aspect >= 1.7 && aspect <= 2.6;
   }
 
   static ViewportSpec resolve(Size window,
@@ -158,12 +163,20 @@ class ViewportSpec {
 /// flutter_screenutil 5.9（目前最新正式版）的 ScreenUtilInit 只会按整个窗口、
 /// 宽高两个独立比例缩放，这里改为自己计算设计稿尺寸后调用 [ScreenUtil.configure]。
 class AdaptiveViewport extends StatefulWidget {
-  const AdaptiveViewport({super.key, required this.child, this.allowSplit = true});
+  const AdaptiveViewport({
+    super.key,
+    required this.child,
+    this.allowSplit = true,
+    this.forceAllowRotation = false,
+  });
 
   final Widget child;
 
   /// 是否允许平行视界分栏（设置项）
   final bool allowSplit;
+
+  /// 手机上也允许旋转（设置里的手动开关）；为 false 时按屏幕尺寸自动决定
+  final bool forceAllowRotation;
 
   /// 当前视口布局。路由（`PaneRoute`）需要在 build 之外读取并监听它。
   static final ValueNotifier<ViewportSpec> spec = ValueNotifier(
@@ -182,6 +195,21 @@ class AdaptiveViewport extends StatefulWidget {
 
 class _AdaptiveViewportState extends State<AdaptiveViewport> {
   ViewportSpec? _spec;
+  bool? _portraitOnly;
+
+  /// 手机尺寸的屏幕（最短边 < 600dp）保持竖屏；平板、折叠屏展开后允许旋转。
+  /// 按物理屏幕而不是窗口判断，分屏/小窗不会改变结果；折叠屏开合时自动切换。
+  /// 启动时由原生 MainActivity 按同样的规则先设置一次，这里负责之后的变化。
+  void _updateOrientationLock() {
+    if (kIsWeb || !(Platform.isAndroid || Platform.isIOS)) return;
+    final display = View.of(context).display;
+    final portraitOnly = !widget.forceAllowRotation &&
+        display.size.shortestSide / display.devicePixelRatio < 600;
+    if (_portraitOnly == portraitOnly) return;
+    _portraitOnly = portraitOnly;
+    SystemChrome.setPreferredOrientations(
+        portraitOnly ? const [DeviceOrientation.portraitUp] : const []);
+  }
 
   static void _markNeedsBuild(Element el) {
     el.markNeedsBuild();
@@ -202,6 +230,8 @@ class _AdaptiveViewportState extends State<AdaptiveViewport> {
       splitScreenMode: false,
       fontSizeResolver: FontSizeResolvers.width,
     );
+
+    _updateOrientationLock();
 
     if (_spec != spec) {
       // 只用了 .w/.h/.sp 的组件并不依赖 MediaQuery，尺寸变化时需要主动标记重建

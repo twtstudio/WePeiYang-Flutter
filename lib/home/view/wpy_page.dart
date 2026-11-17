@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -234,7 +235,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
               children: [
                 TodayCoursesWidget(),
                 SizedBox(
-                  height: viewport.maxHeight,
+                  height: math.max(viewport.maxHeight, _minSheetHeight.h),
                   child: _buildSheet(
                     margin: EdgeInsets.only(top: 20.h),
                     // 一直延伸到屏幕底部，只有上方是圆角
@@ -260,6 +261,10 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  /// 卡片的最小高度（设计稿单位）。窗口很矮（如手机横屏）时保证自习室/GPA/考表
+  /// 仍有足够空间，整页继续向下滚动；竖屏手机的一屏高度总是大于它，不受影响
+  static const _minSheetHeight = 600.0;
 
   /// 宽度达到这个值（设计稿单位）时功能卡片换行铺开，不再横向滚动
   static const _largeMinWidth = 600.0;

@@ -22,6 +22,7 @@ import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
 import '../feedback_router.dart';
 import 'components/change_nickname_dialog.dart';
+import 'components/feed_card.dart';
 import 'components/post_card.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -118,8 +119,10 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         maxCrossAxisExtent: 585.w,
         crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.w,
         itemCount: postLists.length,
-        itemBuilder: (context, i) => postLists[i],
+        // 与湖底首页一致：多列时每条帖子单独成卡片
+        itemBuilder: (context, i) => FeedCard(child: postLists[i]),
       );
     } else {
       postListShow = Column(

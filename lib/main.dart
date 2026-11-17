@@ -398,6 +398,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                   globalTheme,
                   CommonPreferences.predictiveBackNotifier,
                   CommonPreferences.parallelViewNotifier,
+                  CommonPreferences.allowRotationNotifier,
                 ]),
             builder: (context, _) {
               return WpyTheme(
@@ -406,6 +407,8 @@ class WePeiYangAppState extends State<WePeiYangApp>
                 // 宽屏时开启平行视界（左栏首页、右栏二级页面），见 AdaptiveViewport / PaneRoute
                 child: AdaptiveViewport(
                     allowSplit: CommonPreferences.parallelViewNotifier.value,
+                    forceAllowRotation:
+                        CommonPreferences.allowRotationNotifier.value,
                     child: Builder(builder: (context) {
                       const child = SplashScreen();
                       return RefreshConfiguration(

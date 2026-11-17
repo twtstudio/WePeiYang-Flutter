@@ -830,6 +830,52 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   ],
                 ),
               ),
+              // iOS 的 Info.plist 只声明了竖屏，开关无效，只在 Android 上显示
+              if (Platform.isAndroid) ...[
+                SizedBox(height: 10.h),
+                Container(
+                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                  decoration: BoxDecoration(
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('强制允许旋转', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('默认手机保持竖屏，平板和展开的折叠屏可以旋转；开启后手机也可以横屏',
+                                style: hintTextStyle)
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: CommonPreferences.allowRotation.value,
+                        onChanged: (value) {
+                          setState(() {
+                            CommonPreferences.allowRotation.value = value;
+                            CommonPreferences.allowRotationNotifier.value =
+                                value;
+                          });
+                        },
+                        activeThumbColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSecondaryActionColor),
+                        inactiveThumbColor:
+                            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                        activeTrackColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSwitchBarColor),
+                        inactiveTrackColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSwitchBarColor),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
