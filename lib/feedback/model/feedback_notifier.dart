@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 
 class NewPostProvider {
@@ -62,6 +63,11 @@ class NewFloorProvider extends ChangeNotifier {
   }
 
   void inputFieldOpenAndReplyTo(int rep) {
+    // 负数是刚发送、还没拿到真实 id 的本地楼层，此时回复必然失败
+    if (rep < 0) {
+      ToastProvider.running('评论正在发送，请稍后再回复');
+      return;
+    }
     inputFieldEnabled = true;
     replyTo = rep;
     notifyListeners();

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart' show DioException;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -200,15 +202,90 @@ class _PostDetailPageState extends State<PostDetailPage>
     );
   }
 
+  /// 评论发送成功后静默刷新：不清空列表、不显示下拉刷新，拿到数据后直接替换，
+  /// 用服务端返回的真实楼层替换本地乐观插入的楼层
   void _refreshAfterCommentSent() {
-    if (!mounted) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted ||
-          _refreshController.isRefresh ||
-          _refreshController.isLoading) {
-        return;
+    if (!mounted ||
+        _refreshController.isRefresh ||
+        _refreshController.isLoading) {
+      return;
+    }
+    _getOfficialComment(onFail: () {}, rebuild: false);
+    _loadVisibleComments(
+      startPage: 1,
+      minimumCount: math.max(10, _commentList.length),
+      onSuccess: (comments, lastPage, hasReachedEnd) {
+        if (!mounted) return;
+        setState(() {
+          _commentList = comments;
+          currentPage = lastPage;
+          _hasReachedLastCommentPage = hasReachedEnd;
+        });
+        if (hasReachedEnd) {
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.resetNoData();
+        }
+      },
+      onFail: () {},
+    );
+  }
+
+  /// 发送评论时立即在列表中显示（乐观更新），返回本地楼层用于失败时撤回
+  Floor _insertPendingComment(
+      String content, int replyTo, List<String> images) {
+    final myUid = int.tryParse(CommonPreferences.lakeUid.value) ?? 0;
+    final parent = replyTo == 0
+        ? null
+        : _commentList
+            .where((f) =>
+                f.id == replyTo || f.subFloors.any((s) => s.id == replyTo))
+            .firstOrNull;
+    final target = parent?.id == replyTo
+        ? parent
+        : parent?.subFloors.where((s) => s.id == replyTo).firstOrNull;
+    final floor = Floor.fromJson({
+      // 负数 id 表示尚未发送成功的本地楼层
+      'id': -DateTime.now().microsecondsSinceEpoch,
+      'created_at': DateTime.now().toIso8601String(),
+      'uid': myUid,
+      'post_id': widget.post.id,
+      'content': content,
+      'nickname': CommonPreferences.lakeNickname.value,
+      'image_url': images.where((e) => e.isNotEmpty).join(','),
+      'reply_to': replyTo,
+      'reply_to_name': target?.nickname ?? '',
+      'sub_to': parent?.id ?? 0,
+      'is_owner': myUid != 0 && myUid == widget.post.uid,
+      'user_info': {
+        'avatar': CommonPreferences.avatar.value,
+        'avatar_frame': CommonPreferences.avatarBoxMyUrl.value,
+        'level': CommonPreferences.level.value,
+      },
+    });
+    setState(() {
+      if (parent == null) {
+        _commentList.insert(0, floor);
+      } else {
+        // 楼中楼按时间倒序展示，新回复放在最前
+        parent.subFloors.insert(0, floor);
+        parent.subFloorCnt++;
       }
-      _refreshController.requestRefresh();
+    });
+    return floor;
+  }
+
+  /// 发送失败：撤回本地楼层
+  void _removePendingComment(Floor floor) {
+    if (!mounted) return;
+    setState(() {
+      if (_commentList.remove(floor)) return;
+      for (final parent in _commentList) {
+        if (parent.subFloors.remove(floor)) {
+          parent.subFloorCnt = math.max(0, parent.subFloorCnt - 1);
+          return;
+        }
+      }
     });
   }
 
@@ -1370,6 +1447,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                       CommentInputField(
                                         postId: widget.post.id,
                                         onCommentSent: _refreshAfterCommentSent,
+                                        onCommentPending: _insertPendingComment,
+                                        onCommentFailed: _removePendingComment,
                                         key: launchKey,
                                       ),
                                       ImageSelectAndView(key: imageSelectionKey),
@@ -1647,10 +1726,19 @@ class CommentInputField extends StatefulWidget {
   final int postId;
   final VoidCallback? onCommentSent;
 
+  /// 发送时立即在列表中插入本地楼层（乐观更新），返回该楼层
+  final Floor Function(String content, int replyTo, List<String> images)?
+      onCommentPending;
+
+  /// 发送失败时撤回 [onCommentPending] 插入的楼层
+  final void Function(Floor floor)? onCommentFailed;
+
   const CommentInputField({
     Key? key,
     required this.postId,
     this.onCommentSent,
+    this.onCommentPending,
+    this.onCommentFailed,
   }) : super(key: key);
 
   @override
@@ -1682,35 +1770,107 @@ class CommentInputFieldState extends State<CommentInputField> {
     setState(() => commentLengthIndicator = '${newText.characters.length}/200');
   }
 
+  /// 是否有评论正在发送（接口层会丢弃并发的重复请求，这里先拦住）
+  bool _sending = false;
+
+  /// 发送评论：立即清空并收起输入框，评论马上显示在列表中，请求完成后静默刷新；
+  /// 失败时撤回这条评论并把内容放回输入框
   void send(bool isOfficial) {
-    if (textEditingController.text.isNotEmpty ||
-        (textEditingController.text.isEmpty &&
-            context.read<NewFloorProvider>().images.isNotEmpty)) {
-      if (context.read<NewFloorProvider>().images.isNotEmpty) {
-        FeedbackService.postPic(
-            images: context.read<NewFloorProvider>().images,
-            onResult: (images) {
-              context.read<NewFloorProvider>().floorSentContent =
-                  textEditingController.text;
-              context.read<NewFloorProvider>().images.clear();
-              if (context.read<NewFloorProvider>().replyTo == 0) {
-                _sendFloor(images);
-              } else {
-                _replyFloor(images, isOfficial);
-              }
-            },
-            onFailure: (e) {
-              ToastProvider.error(e.error.toString());
-            });
-      } else if (context.read<NewFloorProvider>().replyTo == 0) {
-        context.read<NewFloorProvider>().images.clear();
-        _sendFloor([]);
-      } else {
-        _replyFloor([], isOfficial);
-      }
-    } else
+    final provider = context.read<NewFloorProvider>();
+    final content = textEditingController.text;
+    final images = List<File>.of(provider.images);
+    final replyTo = provider.replyTo;
+    if (content.isEmpty && images.isEmpty) {
       ToastProvider.error('评论/回复不能为空哦');
-    Provider.of<NewFloorProvider>(context, listen: false).inputFieldClose();
+      provider.inputFieldClose();
+      return;
+    }
+    if (_sending) {
+      ToastProvider.running('上一条评论还在发送中');
+      return;
+    }
+    _sending = true;
+    _resetInput();
+    if (images.isEmpty) {
+      _submit(content, replyTo, const [], isOfficial);
+      return;
+    }
+    // 图片需要先上传拿到地址
+    FeedbackService.postPic(
+      images: images,
+      onResult: (urls) => _submit(content, replyTo, urls, isOfficial),
+      onFailure: (e) {
+        _sending = false;
+        _restoreInput(content, replyTo, images);
+        ToastProvider.error(e.error.toString());
+      },
+    );
+  }
+
+  void _resetInput() {
+    textEditingController.text = '';
+    setState(() => commentLengthIndicator = '0/200');
+    FocusManager.instance.primaryFocus?.unfocus();
+    context.read<NewFloorProvider>().clearAndClose();
+  }
+
+  /// 发送失败：把内容放回输入框（用户还没输入新内容时），方便重试
+  void _restoreInput(String content, int replyTo, [List<File>? images]) {
+    if (!mounted) return;
+    final provider = context.read<NewFloorProvider>();
+    if (textEditingController.text.isEmpty) {
+      textEditingController.text = content;
+      setState(
+          () => commentLengthIndicator = '${content.characters.length}/200');
+    }
+    if (images != null && provider.images.isEmpty) provider.images = images;
+    provider.inputFieldOpenAndReplyTo(replyTo);
+  }
+
+  void _submit(
+      String content, int replyTo, List<String> images, bool isOfficial) {
+    // 官方回复在单独的列表里，不做乐观插入，发送成功后静默刷新即可
+    final pending = isOfficial
+        ? null
+        : widget.onCommentPending?.call(content, replyTo, images);
+    final payloadImages = images.isEmpty ? [''] : images;
+    void onSuccess() {
+      _sending = false;
+      widget.onCommentSent?.call();
+    }
+
+    void onFailure(DioException e) {
+      _sending = false;
+      if (pending != null) widget.onCommentFailed?.call(pending);
+      _restoreInput(content, replyTo);
+      ToastProvider.error('发送失败，内容已放回输入框：${e.error}');
+    }
+
+    if (replyTo == 0) {
+      FeedbackService.sendFloor(
+        id: widget.postId.toString(),
+        content: content,
+        images: payloadImages,
+        onSuccess: onSuccess,
+        onFailure: onFailure,
+      );
+    } else if (isOfficial) {
+      FeedbackService.replyOfficialFloor(
+        id: replyTo.toString(),
+        content: content,
+        images: payloadImages,
+        onSuccess: onSuccess,
+        onFailure: onFailure,
+      );
+    } else {
+      FeedbackService.replyFloor(
+        id: replyTo.toString(),
+        content: content,
+        images: payloadImages,
+        onSuccess: onSuccess,
+        onFailure: onFailure,
+      );
+    }
   }
 
   @override
@@ -1793,59 +1953,6 @@ class CommentInputFieldState extends State<CommentInputField> {
     }
   }
 
-  _sendFloor(List<String> list) {
-    FeedbackService.sendFloor(
-      id: widget.postId.toString(),
-      content: textEditingController.text,
-      images: list.isEmpty ? [''] : list,
-      onSuccess: () {
-        setState(() => commentLengthIndicator = '0/200');
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<NewFloorProvider>().clearAndClose();
-        textEditingController.text = '';
-        widget.onCommentSent?.call();
-      },
-      onFailure: (e) => ToastProvider.error(
-        '好像出错了(っ °Д °;)っ...错误信息：' + e.error.toString(),
-      ),
-    );
-  }
-
-  _replyFloor(List<String> list, bool isOfficial) {
-    if (isOfficial == false) {
-      FeedbackService.replyFloor(
-        id: context.read<NewFloorProvider>().replyTo.toString(),
-        content: textEditingController.text,
-        images: list.isEmpty ? [''] : list,
-        onSuccess: () {
-          setState(() => commentLengthIndicator = '0/200');
-          FocusManager.instance.primaryFocus?.unfocus();
-          context.read<NewFloorProvider>().clearAndClose();
-          textEditingController.text = '';
-          widget.onCommentSent?.call();
-        },
-        onFailure: (e) => ToastProvider.error(
-          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-        ),
-      );
-    } else {
-      FeedbackService.replyOfficialFloor(
-        id: context.read<NewFloorProvider>().replyTo.toString(),
-        content: textEditingController.text,
-        images: list.isEmpty ? [''] : list,
-        onSuccess: () {
-          setState(() => commentLengthIndicator = '0/200');
-          FocusManager.instance.primaryFocus?.unfocus();
-          context.read<NewFloorProvider>().clearAndClose();
-          textEditingController.text = '';
-          widget.onCommentSent?.call();
-        },
-        onFailure: (e) => ToastProvider.error(
-          '好像出错了（；´д｀）ゞ...错误信息：' + e.error.toString(),
-        ),
-      );
-    }
-  }
 }
 
 class ImageSelectAndView extends StatefulWidget {

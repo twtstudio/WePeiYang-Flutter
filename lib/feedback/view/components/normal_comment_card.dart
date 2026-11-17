@@ -139,6 +139,14 @@ class _NCommentCardState extends State<NCommentCard>
 
   @override
   Widget build(BuildContext context) {
+    final card = _buildCard(context);
+    // 刚发送、服务器还没返回真实 id 的本地楼层（id < 0）：半透明显示且不响应操作，
+    // 避免用临时 id 回复、点赞导致请求失败；静默刷新后会被真实楼层替换
+    if (widget.comment.id >= 0) return card;
+    return IgnorePointer(child: Opacity(opacity: 0.6, child: card));
+  }
+
+  Widget _buildCard(BuildContext context) {
     _picFullView = widget.expandAll || _picFullView;
     var commentMenuButton = WButton(
         child: Padding(
