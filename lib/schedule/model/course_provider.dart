@@ -139,6 +139,12 @@ class CourseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// 仅调试用（--dart-define=MOCK_DATA=true）：只在内存中替换课表，不写入本地缓存
+  void debugSetSchoolCourses(List<Course> courses) {
+    _schoolCourses = courses;
+    notifyListeners();
+  }
+
   // 同步被实验课Merge之后的课表
   void updateSchoolCourses(List<Course> courses) {
     _schoolCourses = courses;

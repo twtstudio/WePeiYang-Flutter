@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
@@ -171,8 +170,20 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
         });
   }
 
+  /// 头像：取可用空间内最大的正方形
   Widget getAvatar() {
-    var width = WePeiYangApp.screenWidth - 30;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: LayoutBuilder(
+            builder: (context, constraints) =>
+                _avatarOfSize(constraints.maxWidth)),
+      ),
+    );
+  }
+
+  Widget _avatarOfSize(double width) {
     if (file != null) {
       return CircleAvatar(
         radius: width / 2,
@@ -210,9 +221,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
             color: WpyTheme.of(context).get(WpyColorKey.reverseBackgroundColor),
             child: Column(
               children: [
-                Spacer(),
-                getAvatar(),
-                Spacer(),
+                Expanded(child: Center(child: getAvatar())),
                 Divider(
                     height: 1.0,
                     color: WpyTheme.of(context)

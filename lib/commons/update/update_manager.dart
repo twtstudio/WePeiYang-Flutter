@@ -47,6 +47,12 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   Future<void> checkUpdate({bool auto = true}) async {
+    // 更新通道只有 Android（apk/热修复）和 iOS（App Store），
+    // 桌面端没有对应的版本信息，继续执行会访问未初始化的 _iosVersion
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      if (!auto) ToastProvider.error("当前平台暂不支持检查更新");
+      return;
+    }
     switch (status) {
       case UpdateStatus.idle:
         _auto = auto;

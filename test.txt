@@ -1,0 +1,40 @@
+[http-response] [GET] https://selfstudy.twt.edu.cn/campus/2/building
+Status: 200
+Time: 265 ms
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/posts/user?page=1&page_size=10
+[http-response] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+Status: 200
+Time: 267 ms
+[http-response] [GET] https://qnhd.twt.edu.cn/api/v1/f/posts/user?page=1&page_size=10
+Status: 200
+Time: 267 ms
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/posts/user?page=1&page_size=10
+[http-response] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+Status: 200
+Time: 1279 ms
+[http-error] [GET] https://qnhd.twt.edu.cn/api/v1/f/posts/user?page=1&page_size=10
+Time: 5004 ms
+Message: The request connection took longer than 0:00:05.000000 and it was aborted. To get rid of this exception, try raising the RequestOptions.connectTimeout above the duration of 0:00:05.000000 or improve the response time of the server.
+[exception] | 21:11:30 235ms | network
+DioException [unknown]: The request connection took longer than 0:00:05.000000 and it was aborted. To get rid of this exception, try raising the RequestOptions.connectTimeout above the duration of 0:00:05.000000 or improve the response time of the server.
+Error: 网络连接超时
+StackTrace: *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+pid: 6199, tid: 529326657816, name 1.ui
+os: android arch: arm64 comp: yes sim: no
+build_id: 'b718850932f1baf31ab806426e6a0782'
+isolate_dso_base: 77cd908000, vm_dso_base: 77cd908000
+isolate_instructions: 77cdbcea80, vm_instructions: 77cdbb8000
+    #00 abs 00000077ce2f0d13 virt 00000000009e8d13 _kDartIsolateSnapshotInstructions+0x722293
+<asynchronous suspension>
+    #01 abs 00000077ce2f030f virt 00000000009e830f _kDartIsolateSnapshotInstructions+0x72188f
+<asynchronous suspension>
+    #02 abs 00000077ce34d0c3 virt 0000000000a450c3 _kDartIsolateSnapshotInstructions+0x77e643
+<asynchronous suspension>
+
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+[http-request] [GET] https://qnhd.twt.edu.cn/api/v1/f/posts/user?page=1&page_size=10
+[http-response] [GET] https://qnhd.twt.edu.cn/api/v1/f/user
+Status: 200
+Time: 279 ms

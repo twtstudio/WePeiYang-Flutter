@@ -21,11 +21,11 @@ class CustomCoursesPage extends StatelessWidget {
     var customCourses = context.watch<CourseProvider>().customCourses;
     return Stack(
       children: [
-        Image.asset(
-          "assets/images/schedule/custom_courses_bg.png",
-          width: 1.sw,
-          height: 1.sh,
-          fit: BoxFit.cover,
+        Positioned.fill(
+          child: Image.asset(
+            "assets/images/schedule/custom_courses_bg.png",
+            fit: BoxFit.cover,
+          ),
         ),
         Scaffold(
           backgroundColor:

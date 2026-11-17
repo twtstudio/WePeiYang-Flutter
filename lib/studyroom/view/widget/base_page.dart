@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/time_picker_widget.dart';
 
 import '../../../commons/widgets/w_button.dart';
@@ -89,8 +88,8 @@ class _StudyroomBasePageState extends State<StudyroomBasePage> {
       return Stack(
         children: [
           Container(
-            width: WePeiYangApp.screenWidth,
-            height: WePeiYangApp.screenHeight,
+            width: double.infinity,
+            height: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,

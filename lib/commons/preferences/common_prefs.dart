@@ -21,6 +21,7 @@ class CommonPreferences {
     sharedPref = await SharedPreferences.getInstance();
     showXiaotianTabNotifier.value = showXiaotianTab.value;
     predictiveBackNotifier.value = predictiveBack.value;
+    parallelViewNotifier.value = parallelView.value;
   }
 
   /// 天外天账号系统
@@ -128,6 +129,10 @@ class CommonPreferences {
   static final showXiaotianTabNotifier = ValueNotifier<bool>(true);
   static final predictiveBack = PrefsBean<bool>('predictiveBack', false);
   static final predictiveBackNotifier = ValueNotifier<bool>(false);
+
+  /// 平行视界：折叠屏/平板/电脑等宽屏下，帖子等详情页在右侧分栏打开；关闭则全屏打开
+  static final parallelView = PrefsBean<bool>('parallelView', true);
+  static final parallelViewNotifier = ValueNotifier<bool>(true);
   static final nightMode = PrefsBean<bool>('nightMode', true); // 开启夜猫子模式
   static final useClassesBackend =
       PrefsBean<bool>('useClassesBackend', false); // 用后端爬虫代替前端爬虫（课表、考表、GPA）

@@ -22,7 +22,7 @@ class TimePickerWidget extends StatelessWidget {
     final okButton = WButton(
       onPressed: () => Navigator.pop(context),
       child: Container(
-          width: 1.sw,
+          width: double.infinity,
           height: 54.h + ScreenUtil().bottomBarHeight,
           color: WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
           child: SafeArea(

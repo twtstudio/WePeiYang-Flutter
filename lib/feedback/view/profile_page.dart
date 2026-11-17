@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart'
     hide RefreshIndicator, RefreshIndicatorState;
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/adaptive_viewport.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -108,6 +110,17 @@ class _ProfilePageState extends State<ProfilePage> {
           height: 430,
           alignment: Alignment.center,
           child: Text("暂无冒泡", style: TextUtil.base.oldThirdAction(context)));
+    } else if (context.paneDesignWidth > 390.0 * 2) {
+      // 宽屏放得下两列时按瀑布流排布，每列 390~585，由框架决定列数
+      postListShow = MasonryGridView.extent(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        maxCrossAxisExtent: 585.w,
+        crossAxisSpacing: 12.w,
+        itemCount: postLists.length,
+        itemBuilder: (context, i) => postLists[i],
+      );
     } else {
       postListShow = Column(
         children: postLists,
@@ -121,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             SizedBox(height: 4.h),
             SizedBox(
-              height: 144.h - 0.125.sw,
+              height: 144.h - 48.75.w,
               child: Row(
                 children: [
                   Spacer(),
@@ -153,18 +166,16 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             SizedBox(
-              height: 0.125.sw,
+              height: 48.75.w,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      SizedBox(width: 18.w + 0.3.sw),
-                      ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: 0.33.sw,
-                          ),
+                      SizedBox(width: 135.w),
+                      // 昵称按剩余宽度自适应省略
+                      Flexible(
                           child: Text(CommonPreferences.lakeNickname.value,
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
@@ -218,12 +229,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   SizedBox(height: 8.h),
                   SizedBox(
-                    height: 0.125.sw + 12.h,
+                    height: 48.75.w + 12.h,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 18.w + 0.3.sw),
+                        SizedBox(width: 135.w),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -328,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         Positioned(
-          top: 148.h - 0.15.sw,
+          top: 148.h - 58.5.w,
           left: 12.w,
           child: WButton(
             onPressed: () {
@@ -339,7 +350,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Hero(
               tag: 'avatar',
               child: UserAvatarImage(
-                size: 0.3.sw,
+                size: 117.w,
                 iconColor: WpyTheme.of(context)
                     .get(WpyColorKey.primaryBackgroundColor),
                 context: context,

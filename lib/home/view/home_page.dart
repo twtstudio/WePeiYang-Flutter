@@ -9,7 +9,10 @@ import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/util/mock_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/adaptive_viewport.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/view/profile_page.dart';
@@ -36,6 +39,7 @@ enum _HomeTabId { home, feedback, ai, profile }
 class _HomeTabItem {
   const _HomeTabItem({
     required this.id,
+    required this.label,
     required this.page,
     required this.activeIcon,
     required this.inactiveIcon,
@@ -43,6 +47,7 @@ class _HomeTabItem {
   });
 
   final _HomeTabId id;
+  final String label;
   final Widget page;
   final String activeIcon;
   final String inactiveIcon;
@@ -56,6 +61,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   DateTime? _lastPressedAt;
   late TabController _tabController;
   final feedbackKey = GlobalKey<FeedbackHomePageState>();
+
+  /// 底部导航栏 ↔ 侧边导航栏切换时保留各个分页的状态
+  final _bodyKey = GlobalKey();
 
   @override
   void initState() {
@@ -96,6 +104,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       context.read<CampusProvider>().init();
     });
     if (widget.page != null) _tabController.animateTo(_currentIndex);
+    // 调试：--dart-define=MOCK_DATA=true 时填充模拟数据（等真实数据加载完再覆盖）
+    if (kMockData) {
+      Future.delayed(const Duration(seconds: 3), () {
+        if (mounted) injectMockData(context);
+      });
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (CommonPreferences.accountUpgrade.value.isNotEmpty) {
         showDialog(
@@ -111,6 +125,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return [
       _HomeTabItem(
         id: _HomeTabId.home,
+        label: '首页',
         page: WPYPage(),
         activeIcon: 'assets/images/home.png',
         inactiveIcon: 'assets/images/home_grey.png',
@@ -118,6 +133,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       _HomeTabItem(
         id: _HomeTabId.feedback,
+        label: '湖底',
         page: FeedbackHomePage(key: feedbackKey),
         activeIcon: 'assets/images/lake.png',
         inactiveIcon: 'assets/images/lake_grey.png',
@@ -126,6 +142,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       if (CommonPreferences.showXiaotianTab.value)
         _HomeTabItem(
           id: _HomeTabId.ai,
+          label: 'AI',
           page: AiPage(),
           activeIcon: 'assets/images/ai.png',
           inactiveIcon: 'assets/images/ai_grey.png',
@@ -133,6 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       _HomeTabItem(
         id: _HomeTabId.profile,
+        label: '我的',
         page: ProfilePage(),
         activeIcon: 'assets/images/my.png',
         inactiveIcon: 'assets/images/my_grey.png',
@@ -222,6 +240,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
 
+    final useRail = context.windowClass != WindowClass.compact;
+    final body = PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        // 如果是通过系统返回键触发的 pop，且已经 pop，则直接返回
+        if (didPop) return;
+
+        // 重置最后一次显示对话框的时间
+        CommonPreferences.lastActivityDialogShownDate.value = "";
+
+        // _tabController 是控制 主页/论坛/个人页面 的 TabBarView 的 TabController
+        // 如果是主页，则判断是否需要退出程序
+        if (_tabController.index == 0) {
+          // 检查是否为首次点击或点击间隔超过1秒
+          if (_lastPressedAt == null ||
+              DateTime.now().difference(_lastPressedAt!) >
+                  Duration(seconds: 1)) {
+            // 更新最后一次点击时间
+            _lastPressedAt = DateTime.now();
+            ToastProvider.running('再按一次退出程序'); // 提示用户再按一次以退出程序
+          } else {
+            SystemNavigator.pop(); // 退出程序
+          }
+        } else {
+          // 如果已经在第一个 Tab，重新动画到第一个 Tab
+          _tabController.animateTo(0);
+        }
+      },
+      child: TabBarView(
+        controller: _tabController,
+        physics: NeverScrollableScrollPhysics(), // 禁止用户手动滑动 Tab
+        children: _tabs.map((tab) => tab.page).toList(growable: false),
+      ),
+    );
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: (() {
         if (currentTabId == _HomeTabId.feedback) {
@@ -245,41 +298,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       })(),
       child: Scaffold(
         extendBody: true,
-        bottomNavigationBar: bottomNavigationBar,
-        body: PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, _) {
-            // 如果是通过系统返回键触发的 pop，且已经 pop，则直接返回
-            if (didPop) return;
-
-            // 重置最后一次显示对话框的时间
-            CommonPreferences.lastActivityDialogShownDate.value = "";
-
-            // _tabController 是控制 主页/论坛/个人页面 的 TabBarView 的 TabController
-            // 如果是主页，则判断是否需要退出程序
-            if (_tabController.index == 0) {
-              // 检查是否为首次点击或点击间隔超过1秒
-              if (_lastPressedAt == null ||
-                  DateTime.now().difference(_lastPressedAt!) >
-                      Duration(seconds: 1)) {
-                // 更新最后一次点击时间
-                _lastPressedAt = DateTime.now();
-                ToastProvider.running('再按一次退出程序'); // 提示用户再按一次以退出程序
-              } else {
-                SystemNavigator.pop(); // 退出程序
-              }
-            } else {
-              // 如果已经在第一个 Tab，重新动画到第一个 Tab
-              _tabController.animateTo(0);
-            }
-          },
-          child: TabBarView(
-            controller: _tabController,
-            physics: NeverScrollableScrollPhysics(), // 禁止用户手动滑动 Tab
-            children: _tabs.map((tab) => tab.page).toList(growable: false),
-          ),
+        // 宽屏（Material 3 medium 及以上）使用侧边导航栏
+        bottomNavigationBar: useRail ? null : bottomNavigationBar,
+        body: Row(
+          children: [
+            if (useRail) ...[
+              _buildNavigationRail(),
+              VerticalDivider(
+                width: 1,
+                thickness: 1,
+                color: WpyTheme.of(context).get(WpyColorKey.lightBorderColor),
+              ),
+            ],
+            Expanded(child: KeyedSubtree(key: _bodyKey, child: body)),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNavigationRail() {
+    final theme = WpyTheme.of(context);
+    return NavigationRail(
+      selectedIndex: _currentIndex.clamp(0, _tabs.length - 1),
+      backgroundColor: theme.get(WpyColorKey.primaryBackgroundColor),
+      labelType: NavigationRailLabelType.all,
+      groupAlignment: -0.6,
+      indicatorColor: theme.get(WpyColorKey.primaryActionColor).withValues(alpha: 0.12),
+      selectedLabelTextStyle:
+          TextUtil.base.w600.sp(12).copyWith(color: theme.primary),
+      unselectedLabelTextStyle: TextUtil.base.w400
+          .sp(12)
+          .copyWith(color: theme.get(WpyColorKey.secondaryTextColor)),
+      onDestinationSelected: (index) => _onTabTap(_tabs[index], index),
+      destinations: [
+        for (var i = 0; i < _tabs.length; i++)
+          NavigationRailDestination(
+            icon: ColoredIcon(_tabs[i].inactiveIcon,
+                key: ValueKey('${_tabs[i].id}-false'),
+                width: _tabs[i].iconWidth.w),
+            selectedIcon: ColoredIcon(_tabs[i].activeIcon,
+                key: ValueKey('${_tabs[i].id}-true'),
+                width: _tabs[i].iconWidth.w,
+                color: theme.primary),
+            label: Text(_tabs[i].label),
+          ),
+      ],
     );
   }
 
@@ -299,17 +363,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             color: selected ? WpyTheme.of(context).primary : null,
           ),
           color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          onPressed: () {
-            if (tab.id == _HomeTabId.feedback && selected) {
-              feedbackKey.currentState?.listToTop();
-              LakeUtil.getClipboardWeKoContents(context);
-              return;
-            }
-
-            _tabController.animateTo(index);
-          },
+          onPressed: () => _onTabTap(tab, index),
         ),
       ),
     );
+  }
+
+  void _onTabTap(_HomeTabItem tab, int index) {
+    // 再次点击湖底：回到顶部
+    if (tab.id == _HomeTabId.feedback && _currentIndex == index) {
+      feedbackKey.currentState?.listToTop();
+      LakeUtil.getClipboardWeKoContents(context);
+      return;
+    }
+    _tabController.animateTo(index);
   }
 }

@@ -25,7 +25,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
@@ -598,7 +597,7 @@ class _PostDetailPageState extends State<PostDetailPage>
             PostSkeleton(),
             Divider(),
           ],
-          SizedBox(height: SplitUtil.h * 10),
+          SizedBox(height: 10.h),
           _buildSortSelection(context),
           SizedBox(height: 10), //topCard,
         ],
@@ -789,7 +788,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                   ),
                 ),
               ),
-              SizedBox(height: SplitUtil.h * 60),
+              SizedBox(height: 60.h),
             ],
           ),
           AnimatedOpacity(
@@ -816,7 +815,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     }
 
     var appBar = AppBar(
-      toolbarHeight: SplitUtil.h * 40,
+      toolbarHeight: 40.h,
       titleSpacing: 0,
       backgroundColor:
           WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
@@ -894,7 +893,7 @@ class _PostDetailPageState extends State<PostDetailPage>
           widget.post,
           outer: false,
         ),
-        SizedBox(height: SplitUtil.h * 10),
+        SizedBox(height: 10.h),
         _buildSortSelection(context),
         SizedBox(height: 10), //t
         for (int i = 0; i < 5; i++) PostSkeleton(),
@@ -980,7 +979,7 @@ class _PostDetailPageState extends State<PostDetailPage>
     return IconButton(
         icon: SvgPicture.asset(
           'assets/svg_pics/lake_butt_icons/more_horizontal.svg',
-          width: SplitUtil.w * 25,
+          width: 25.w,
           colorFilter: ColorFilter.mode(
               WpyTheme.of(context).get(WpyColorKey.basicTextColor),
               BlendMode.srcIn),
@@ -1142,7 +1141,7 @@ class _PostDetailPageState extends State<PostDetailPage>
   Row _buildSortSelection(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: SplitUtil.w * 15),
+        SizedBox(width: 15.w),
         // 这里是‘默认’选项即根据点赞数量 ： order.value = 2
         GestureDetector(
             onTap: () {
@@ -1163,7 +1162,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 );
               },
             )),
-        SizedBox(width: SplitUtil.w * 15),
+        SizedBox(width: 15.w),
         // 这里为时间⇅
         GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -1210,7 +1209,7 @@ class _PostDetailPageState extends State<PostDetailPage>
               child: value == 1
                   ? Container(
                       padding: EdgeInsets.fromLTRB(
-                          0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
+                          0, 2.h, 0, 1.h),
                       decoration: BoxDecoration(
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.primaryActionColor),
@@ -1221,7 +1220,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     )
                   : Container(
                       padding: EdgeInsets.fromLTRB(
-                          0, SplitUtil.h * 2, 0, SplitUtil.h * 1),
+                          0, 2.h, 0, 1.h),
                       decoration: BoxDecoration(
                         color: WpyTheme.of(context)
                             .get(WpyColorKey.secondaryBackgroundColor),
@@ -1305,7 +1304,7 @@ class _PostDetailPageState extends State<PostDetailPage>
       },
       child: SvgPicture.asset(
         'assets/svg_pics/lake_butt_icons/send.svg',
-        width: SplitUtil.w * 20,
+        width: 20.w,
         colorFilter: ColorFilter.mode(
           WpyTheme.of(context).get(WpyColorKey.basicTextColor),
           BlendMode.srcIn,
@@ -1374,16 +1373,16 @@ class _PostDetailPageState extends State<PostDetailPage>
                                         key: launchKey,
                                       ),
                                       ImageSelectAndView(key: imageSelectionKey),
-                                      SizedBox(height: SplitUtil.h * 4),
+                                      SizedBox(height: 4.h),
                                       Row(
                                         children: [
-                                          SizedBox(width: SplitUtil.h * 4),
+                                          SizedBox(width: 4.h),
                                           if (value.images.isEmpty)
                                             IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/image.png',
-                                                width: SplitUtil.w * 24,
-                                                height: SplitUtil.w * 24,
+                                                width: 24.w,
+                                                height: 24.w,
                                                 color: WpyTheme.of(context).get(
                                                     WpyColorKey.basicTextColor),
                                               ),
@@ -1395,8 +1394,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                             IconButton(
                                               icon: Image.asset(
                                                 'assets/images/lake_butt_icons/camera.png',
-                                                width: SplitUtil.w * 24,
-                                                height: SplitUtil.w * 24,
+                                                width: 24.w,
+                                                height: 24.w,
                                                 color: WpyTheme.of(context).get(
                                                     WpyColorKey.basicTextColor),
                                               ),
@@ -1407,8 +1406,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           IconButton(
                                             icon: Image.asset(
                                               'assets/images/lake_butt_icons/paste.png',
-                                              width: SplitUtil.w * 24,
-                                              height: SplitUtil.w * 24,
+                                              width: 24.w,
+                                              height: 24.w,
                                               color: WpyTheme.of(context).get(
                                                   WpyColorKey.basicTextColor),
                                             ),
@@ -1476,8 +1475,8 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           IconButton(
                                             icon: Image.asset(
                                               'assets/images/lake_butt_icons/x.png',
-                                              width: SplitUtil.w * 24,
-                                              height: SplitUtil.w * 24,
+                                              width: 24.w,
+                                              height: 24.w,
                                               color: WpyTheme.of(context).get(
                                                   WpyColorKey.basicTextColor),
                                             ),
@@ -1505,10 +1504,10 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           ),
                                           Spacer(),
                                           checkButton,
-                                          SizedBox(width: SplitUtil.w * 16),
+                                          SizedBox(width: 16.w),
                                         ],
                                       ),
-                                      SizedBox(height: SplitUtil.h * 10),
+                                      SizedBox(height: 10.h),
                                     ],
                                   ),
                                 ),
@@ -1524,14 +1523,14 @@ class _PostDetailPageState extends State<PostDetailPage>
                                           .requestFocus(value.focusNode);
                                     },
                                     child: Container(
-                                      height: SplitUtil.h * 36,
+                                      height: 36.h,
                                       margin: EdgeInsets.fromLTRB(
-                                          SplitUtil.w * 8,
-                                          SplitUtil.h * 13,
+                                          8.w,
+                                          13.h,
                                           0,
-                                          SplitUtil.h * 13),
+                                          13.h),
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: SplitUtil.w * 8),
+                                          horizontal: 8.w),
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: widget.post.type == 1
@@ -1737,7 +1736,7 @@ class CommentInputFieldState extends State<CommentInputField> {
             borderSide: BorderSide.none,
           ),
           contentPadding: EdgeInsets.symmetric(
-              vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 20),
+              vertical: 8.h, horizontal: 20.w),
           fillColor:
               WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
           hintStyle: TextStyle(
@@ -1778,7 +1777,7 @@ class CommentInputFieldState extends State<CommentInputField> {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: SplitUtil.h * 8, horizontal: SplitUtil.w * 10),
+          vertical: 8.h, horizontal: 10.w),
       child: inputField,
     );
   }
@@ -1945,13 +1944,13 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: SplitUtil.w * 400),
+      constraints: BoxConstraints(maxWidth: 400.w),
       child: Consumer<NewFloorProvider>(
         builder: (_, data, __) => data.images.isEmpty
             ? SizedBox()
             : SizedBox(
-                height: SplitUtil.w * 80,
-                width: SplitUtil.w * 100,
+                height: 80.w,
+                width: 100.w,
                 child: Stack(
                   children: [
                     Align(
@@ -1964,8 +1963,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                               LocalImageViewPageArgs(data.images, [], 1, 0),
                         ),
                         child: Container(
-                          height: SplitUtil.w * 80,
-                          width: SplitUtil.w * 80,
+                          height: 80.w,
+                          width: 80.w,
                           margin: EdgeInsets.all(0),
                           decoration: BoxDecoration(
                             shape: BoxShape.rectangle,
@@ -1996,8 +1995,8 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           }
                         },
                         child: Container(
-                          width: SplitUtil.w * 20,
-                          height: SplitUtil.w * 20,
+                          width: 20.w,
+                          height: 20.w,
                           decoration: BoxDecoration(
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.dislikeSecondary),
@@ -2007,7 +2006,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
                           ),
                           child: Icon(
                             Icons.close,
-                            size: SplitUtil.w * 14,
+                            size: 14.w,
                             color: WpyTheme.of(context)
                                 .get(WpyColorKey.secondaryBackgroundColor),
                           ),

@@ -144,9 +144,9 @@ class SolveOrNotWidget extends StatelessWidget {
   }
 }
 
+/// 标签。宽度由父组件决定（放在 Row 里时请包一层 Flexible），放不下时自动省略。
 class TagShowWidget extends StatelessWidget {
   final String tag;
-  final double width;
 
   ///0 湖底 1 校务 2 分区
   final int type;
@@ -154,8 +154,7 @@ class TagShowWidget extends StatelessWidget {
   final int tar;
   final int lakeType;
 
-  TagShowWidget(
-      this.tag, this.width, this.type, this.id, this.tar, this.lakeType);
+  TagShowWidget(this.tag, this.type, this.id, this.tar, this.lakeType);
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +191,7 @@ class TagShowWidget extends StatelessWidget {
         height: 20,
         child: (tag != '')
             ? Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     height: 14,
@@ -222,10 +222,10 @@ class TagShowWidget extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: type == 0 ? 0 : 2),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(maxWidth: width - 30),
+                  Flexible(
                     child: Text(
                       tag,
+                      maxLines: 1,
                       style: TextUtil.base.NotoSansSC.w400
                           .sp(14)
                           .primaryAction(context),

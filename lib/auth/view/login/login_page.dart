@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/widgets/auth_widgets.dart';
 import 'package:we_pei_yang_flutter/commons/channel/statistics/umeng_statistics.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 
 import '../../../commons/preferences/common_prefs.dart';
 import '../../../commons/themes/wpy_theme.dart';
@@ -49,123 +49,95 @@ class _LoginHomeWidgetState extends State<LoginHomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
+    final bright = WpyTheme.of(context).get(WpyColorKey.brightTextColor);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
+      value: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.transparent,
           systemNavigationBarColor:
               WpyTheme.of(context).get(WpyColorKey.primaryLightActionColor)),
       child: Scaffold(
-        body: Container(
-          width: width,
-          height: height,
-          decoration: BoxDecoration(
-            gradient: WpyTheme.of(context)
-                .getGradient(WpyColorSetKey.primaryGradientAllScreen),
-          ),
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.fromLTRB(30, 70, 0, 0),
-                child: Text.rich(TextSpan(children: [
-                  TextSpan(
-                      text: "Welcome\n\n",
-                      style: TextUtil.base.normal.NotoSansSC
-                          .sp(40)
-                          .w700
-                          .bright(context)),
-                  TextSpan(
-                      text: "微北洋",
-                      style: TextUtil.base.normal.NotoSansSC
-                          .sp(40)
-                          .w400
-                          .bright(context)),
-                ])),
-              ),
-              Spacer(
-                flex: 6,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 48,
-                    width: 120,
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, AuthRouter.loginPw),
-                      child: Text.rich(TextSpan(
-                          text: "登录",
-                          style: TextUtil.base.bold.NotoSansSC
-                              .sp(16)
-                              .w400
-                              .primaryAction(context))),
-                      style: ButtonStyle(
-                        elevation: WidgetStateProperty.all(0),
-                        //水波纹颜色暂时没确定
-                        overlayColor:
-                            WidgetStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(WidgetState.pressed))
-                            return WpyTheme.of(context)
-                                .get(WpyColorKey.oldActionRippleColor);
-                          return WpyTheme.of(context)
-                              .get(WpyColorKey.oldThirdActionColor);
-                        }),
-                        //暂时把Mycolors.deepblue改成默认白色
-                        backgroundColor: WidgetStateProperty.all(
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.primaryBackgroundColor)),
-                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24))),
+        body: AuthBackground(
+          child: SafeArea(
+            // 窗口足够高时撑满，高度不够时（桌面端缩小窗口、横屏）可滚动，避免溢出
+            child: LayoutBuilder(
+              builder: (context, constraints) => SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                          maxWidth: AuthLayout.maxContentWidth),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 32),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.18),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(22),
+                                  child: Image.asset('assets/app_icon.png',
+                                      width: 84, height: 84),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 28),
+                            Text('Welcome',
+                                style: authText(context, 18,
+                                    weight: FontWeight.w500,
+                                    color: bright.withValues(alpha: 0.8))),
+                            const SizedBox(height: 2),
+                            Text('微北洋',
+                                style: authText(context, 44,
+                                        weight: FontWeight.w700, color: bright)
+                                    .copyWith(height: 1.2)),
+                            const SizedBox(height: 10),
+                            Text('天津大学一站式校园服务',
+                                style: authText(context, 15,
+                                    color: bright.withValues(alpha: 0.85))),
+                            const SizedBox(height: 40),
+                            AuthOnGradientButton(
+                              text: '登录',
+                              onPressed: () => Navigator.pushNamed(
+                                  context, AuthRouter.loginPw),
+                            ),
+                            const SizedBox(height: 14),
+                            AuthOnGradientButton(
+                              text: '注册新账号',
+                              filled: false,
+                              onPressed: () => Navigator.pushNamed(
+                                  context, AuthRouter.register1),
+                            ),
+                            const SizedBox(height: 24),
+                            Text(
+                              '首次登录微北洋请使用天外天账号密码登录\n在登录后绑定手机号码即可手机验证登录',
+                              textAlign: TextAlign.center,
+                              style: authText(context, 12,
+                                  color: bright.withValues(alpha: 0.75)),
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 30),
-                  SizedBox(
-                    height: 48,
-                    width: 120,
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, AuthRouter.register1),
-                      child: Text.rich(TextSpan(
-                          text: "注册",
-                          style: TextUtil.base.bold.NotoSansSC
-                              .sp(16)
-                              .w400
-                              .primaryAction(context))),
-                      style: ButtonStyle(
-                        elevation: WidgetStateProperty.all(0),
-                        overlayColor:
-                            WidgetStateProperty.resolveWith<Color>((states) {
-                          if (states.contains(WidgetState.pressed))
-                            return WpyTheme.of(context)
-                                .get(WpyColorKey.oldActionRippleColor);
-                          return WpyTheme.of(context)
-                              .get(WpyColorKey.oldThirdActionColor);
-                        }),
-                        backgroundColor: WidgetStateProperty.all(
-                            WpyTheme.of(context)
-                                .get(WpyColorKey.primaryBackgroundColor)),
-                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30))),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              SizedBox(height: 30),
-              RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: "首次登录微北洋请使用天外天账号密码登录\n在登录后绑定手机号码即可手机验证登录",
-                      style: TextUtil.base.normal.NotoSansSC
-                          .sp(12)
-                          .w400
-                          .bright(context))),
-              Spacer(flex: 9),
-            ],
+            ),
           ),
         ),
       ),

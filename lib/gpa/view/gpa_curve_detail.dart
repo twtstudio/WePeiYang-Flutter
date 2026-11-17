@@ -33,7 +33,7 @@ class GPAPreview extends StatelessWidget {
       GestureDetector(
         onTap: () => Navigator.pushNamed(context, GPARouter.gpa),
         child: Container(
-          width: 1.sw - 60.w,
+          width: double.infinity,
           height: 300.h,
           child: ColoredIcon(
             "assets/images/schedule_empty.png",

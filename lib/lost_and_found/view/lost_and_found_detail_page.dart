@@ -19,7 +19,6 @@ import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
 import 'package:we_pei_yang_flutter/home/view/lost_and_found_home_page.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../feedback/feedback_router.dart';
@@ -159,29 +158,34 @@ class _LostAndFoundDetailPageState extends State<LostAndFoundDetailPage> {
     return completer.future;
   }
 
+  /// 多张图片等分一行，每张为正方形
   Widget MultipleImage(LostAndFoundPost post) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(
-          post.imageUrls.length,
-          (index) => GestureDetector(
-            onTap: () => Navigator.pushNamed(
-              context,
-              FeedbackRouter.imageView,
-              arguments: ImageViewPageArgs(
-                  post.imageUrls, post.imageUrls.length, index, false),
+        children: [
+          for (var index = 0; index < post.imageUrls.length; index++) ...[
+            if (index > 0) SizedBox(width: 10.w),
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    FeedbackRouter.imageView,
+                    arguments: ImageViewPageArgs(
+                        post.imageUrls, post.imageUrls.length, index, false),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                    child: WpyPic(post.imageUrls[index],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        withHolder: true),
+                  ),
+                ),
+              ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(8.r)),
-              child: WpyPic(post.imageUrls[index],
-                  fit: BoxFit.cover,
-                  width: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
-                      post.imageUrls.length,
-                  height: (1.sw - 40.w - (post.imageUrls.length - 1) * 10.w) /
-                      post.imageUrls.length,
-                  withHolder: true),
-            ),
-          ),
-        ),
+          ],
+        ],
       );
 
   // 构建UI
@@ -985,8 +989,9 @@ class _SingleImageWidgetState extends State<SingleImageWidget> {
                     ],
                   );
                 } else {
-                  return SizedBox(
-                      height: WePeiYangApp.screenWidth * 1.2,
+                  // 收起状态下按 5:6 的比例显示
+                  return AspectRatio(
+                      aspectRatio: 1 / 1.2,
                       child: ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(12.r)),
                         child: Stack(children: [

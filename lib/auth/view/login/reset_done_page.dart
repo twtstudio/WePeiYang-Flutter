@@ -1,62 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/widgets/auth_widgets.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
-
-import '../../../commons/themes/wpy_theme.dart';
 
 class ResetDoneWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: WButton(
-                child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.oldThirdActionColor),
-                    size: 35),
-                onPressed: () => Navigator.pop(context)),
-          )),
-      body: Column(
-        children: [
-          SizedBox(height: 180),
-          Center(
-            child: Text('密码修改完成',
-                style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
-          ),
-          SizedBox(height: 20),
-          SizedBox(
-            height: 55,
-            width: 140,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                  context, AuthRouter.login, (route) => false),
-              child: Text('前往登录',
-                  style: TextUtil.base.regular.reverse(context).sp(13)),
-              style: ButtonStyle(
-                elevation: WidgetStateProperty.all(5),
-                overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
-                  if (states.contains(WidgetState.pressed))
-                    return WpyTheme.of(context)
-                        .get(WpyColorKey.oldActionRippleColor);
-                  return WpyTheme.of(context).get(WpyColorKey.oldActionColor);
-                }),
-                backgroundColor: WidgetStateProperty.all(
-                    WpyTheme.of(context).get(WpyColorKey.oldActionColor)),
-                shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30))),
-              ),
+    final theme = WpyTheme.of(context);
+    final success = theme.get(WpyColorKey.primaryActionColor);
+    return AuthScaffold(
+      title: '密码修改完成',
+      subtitle: '请使用新密码重新登录',
+      children: [
+        const SizedBox(height: 8),
+        Center(
+          child: Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: success.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
             ),
+            child: Icon(Icons.check_rounded, color: success, size: 40),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+        Text('你的天外天账号密码已重置成功',
+            textAlign: TextAlign.center,
+            style: authText(context, 14,
+                color: theme.get(WpyColorKey.secondaryTextColor))),
+        const SizedBox(height: 24),
+        AuthPrimaryButton(
+          text: '前往登录',
+          onPressed: () => Navigator.pushNamedAndRemoveUntil(
+              context, AuthRouter.login, (route) => false),
+        ),
+      ],
     );
   }
 }

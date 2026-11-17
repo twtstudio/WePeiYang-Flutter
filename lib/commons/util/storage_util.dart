@@ -22,7 +22,7 @@ class StorageUtil {
                 .first)
         : await getApplicationDocumentsDirectory();
     filesDir = await getApplicationSupportDirectory();
-    tempDir = await getTemporaryDirectory();
+    tempDir = await _appTempDir();
     photoDir = Platform.isAndroid
         ? (await getExternalStorageDirectories(
                 type: StorageDirectory.pictures))!
@@ -48,9 +48,23 @@ class StorageUtil {
     return file.path;
   }
 
+  /// 应用自己的临时目录。
+  ///
+  /// Android/iOS 的临时目录是应用沙盒内的，直接使用即可；
+  /// 桌面端（Linux 为 /tmp，Windows 为 %TEMP%）是全系统共享目录，
+  /// 必须用独立子目录，否则统计/清理缓存时会扫描甚至删除其他程序的文件。
+  static Future<Directory> _appTempDir() async {
+    final tmp = await getTemporaryDirectory();
+    if (Platform.isAndroid || Platform.isIOS) return tmp;
+    final dir =
+        Directory('${tmp.path}${Platform.pathSeparator}we_pei_yang_flutter');
+    if (!await dir.exists()) await dir.create(recursive: true);
+    return dir;
+  }
+
   /// 统计临时缓存目录中文件的总字节数
   static Future<int> getTemporaryCacheSize() async {
-    final cacheDir = await getTemporaryDirectory();
+    final cacheDir = await _appTempDir();
     if (!await cacheDir.exists()) return 0;
 
     var totalBytes = 0;
@@ -65,7 +79,7 @@ class StorageUtil {
 
   /// 清除应用临时缓存。返回false表示有文件正在使用，未能完全清除。
   static Future<bool> clearTemporaryCache() async {
-    final cacheDir = await getTemporaryDirectory();
+    final cacheDir = await _appTempDir();
     if (!await cacheDir.exists()) return true;
 
     var cleared = true;

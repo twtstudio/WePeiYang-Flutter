@@ -13,7 +13,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/official_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../commons/themes/template/wpy_theme_data.dart';
 import '../../commons/themes/wpy_theme.dart';
@@ -195,7 +194,7 @@ class _OfficialReplyDetailPageState extends State<OfficialReplyDetailPage>
                   ancestorId: widget.floor[0].postId,
                 ),
               Container(
-                  width: WePeiYangApp.screenWidth - 60,
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
                   height: 1,
                   color: WpyTheme.of(context)
                       .get(WpyColorKey.iconAnimationStartColor))

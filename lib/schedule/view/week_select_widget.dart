@@ -23,6 +23,9 @@ const double _canvasHeight = _cubeSideLength * 5 + _spacingLength * 4;
 
 /// 星期切换栏
 class WeekSelectWidget extends StatelessWidget {
+  /// 一行完整显示的周数
+  static const _visibleWeeks = 4;
+
   @override
   Widget build(BuildContext context) {
     var listView = Builder(
@@ -31,18 +34,18 @@ class WeekSelectWidget extends StatelessWidget {
         var current = provider.currentWeek;
         if (current == 1) current++;
 
-        double offset = 0.25.sw - _canvasWidth.w - 25.w;
-        if (offset < 0) offset = 0;
-        return ListView.builder(
+        // 一屏均分显示 [_visibleWeeks] 周，每周在自己的格子里居中，可自由横向滚动
+        return PageView.builder(
+            controller: PageController(
+                viewportFraction: 1 / _visibleWeeks, initialPage: current - 2),
+            padEnds: false,
+            pageSnapping: false,
             itemCount: provider.weekCount,
-            scrollDirection: Axis.horizontal,
-            controller: ScrollController(
-                initialScrollOffset:
-                    (current - 2) * (_canvasWidth + 25 + offset)),
             itemBuilder: (context, i) {
               /// 为了让splash起到遮挡的效果,故而把InkWell放在Stack顶层
-              return Padding(
-                padding: EdgeInsets.only(left: offset),
+              return Center(
+                child: FittedBox(
+                fit: BoxFit.scaleDown,
                 child: Stack(
                   children: [
                     _getContent(provider, i),
@@ -65,6 +68,7 @@ class WeekSelectWidget extends StatelessWidget {
                       ),
                     )
                   ],
+                ),
                 ),
               );
             });

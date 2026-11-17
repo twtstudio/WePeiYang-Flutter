@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -19,7 +19,7 @@ class UserAgreementDialog extends Dialog {
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(
-            horizontal: 30, vertical: WePeiYangApp.screenHeight / 10),
+            horizontal: 30, vertical: 84.4.h),
         padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

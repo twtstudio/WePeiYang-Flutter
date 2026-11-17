@@ -3,6 +3,9 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/adaptive_viewport.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +22,6 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/hot_rank_car
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggings.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/home_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
 import '../../../commons/themes/wpy_theme.dart';
@@ -36,8 +38,6 @@ class NSubPage extends StatefulWidget {
 
 class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   int index;
-
-  bool get needHorizontalView => 1.sw > 1.sh;
 
   NSubPageState(this.index);
 
@@ -60,6 +60,11 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
+    // 手动滚动后，阅读位置以屏幕上的帖子为准，不再定位到上次打开的帖子
+    if (scrollInfo is UserScrollNotification &&
+        scrollInfo.direction != ScrollDirection.idle) {
+      PostCardNormal.lastOpenedPostId = null;
+    }
     final pixels = scrollInfo.metrics.pixels;
     final maxScrollExtent = scrollInfo.metrics.maxScrollExtent;
     final threshold = 12.h + FeedbackHomePageState.searchBarHeight;
@@ -218,6 +223,8 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
 
   @override
   void dispose() {
+    _settleTimer?.cancel();
+    _highlightPost.dispose();
     pageController.detachControllers(_scrollController, _refreshController);
     _refreshController.dispose();
     _scrollController.dispose();
@@ -319,6 +326,47 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
   }
 
   // Listview.builder 的builder, 单独写在外面， 比较好看
+  /// 每列帖子至少一屏手机宽度（390），放得下两列时才使用瀑布流
+  static const _wideFeedMinWidth = 390.0 * 2;
+
+  bool _isWideFeed(BuildContext context) {
+    final wide = context.paneDesignWidth > _wideFeedMinWidth;
+    _keepReadingPosition(MediaQuery.sizeOf(context).width, wide);
+    return wide;
+  }
+
+  int get _postCount => _postRefreshSkeleton
+      ? 5
+      : pageController.postHolder.postsList.length;
+
+  /// 宽屏：欢迎栏、热榜、排序选择器横向撑满，横幅和帖子按瀑布流多列排布。
+  /// 每列最宽 585（1.5 屏手机宽度），总宽度超过 780 才使用瀑布流，
+  /// 因此列宽始终在 390~585 之间，由框架决定列数（约 1170 起为三列）。
+  Widget _buildWideFeed() {
+    return CustomScrollView(
+      key: PageStorageKey("$index"),
+      physics: NeverScrollableScrollPhysics(),
+      slivers: [
+        SliverToBoxAdapter(child: _buildPostList(context, 0)),
+        SliverToBoxAdapter(child: _buildPostList(context, 1)),
+        SliverToBoxAdapter(child: _buildPostList(context, 3)),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          sliver: SliverMasonryGrid.extent(
+            maxCrossAxisExtent: 585.w,
+            crossAxisSpacing: 12.w,
+            mainAxisSpacing: 12.w,
+            childCount: _postCount + 1,
+            // 第一个是横幅，其余是帖子；多列时每条帖子单独成卡片，便于区分边界
+            itemBuilder: (context, i) => i == 0
+                ? _buildPostList(context, 2)
+                : _FeedCard(child: _buildPostList(context, i + 3)),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildPostList(context, ind) {
     // Welcome 栏
     if (ind == 0) return AnnouncementBannerWidget();
@@ -348,7 +396,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
       final isFirstTop = postsList.take(ind).every((p) => p.eTag != 'top');
       return isFirstTop ? _buildCollapsedTopBar(index) : const SizedBox.shrink();
     }
-    return AnimatedSwitcher(
+    final card = AnimatedSwitcher(
       duration: const Duration(milliseconds: 260),
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
@@ -379,6 +427,104 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
         key: ValueKey('${LakeUtil.sortSeq.value}-$_listVersion-${post.id}'),
       ),
     );
+    return _PostAnchor(
+        id: post.id,
+        registry: _postAnchors,
+        highlight: _highlightPost,
+        child: card);
+  }
+
+  /// 已构建的帖子所在位置（帖子 id -> context），用于保持阅读位置
+  final Map<int, BuildContext> _postAnchors = {};
+
+  /// 需要闪烁提示的帖子
+  final ValueNotifier<int?> _highlightPost = ValueNotifier(null);
+
+  double? _lastFeedWidth;
+  bool? _lastWideFeed;
+  Timer? _settleTimer;
+
+  /// 宽度变化时保持阅读位置（在 build 中调用，此时帖子仍是上一帧的位置）：
+  /// * 多列/单列切换且刚打开过帖子（平行视界展开/收起）：把这条帖子滚动到顶部附近，
+  ///   等分栏动画结束后平滑对齐并闪烁提示；
+  /// * 其它情况（拖动改变窗口大小）：保持屏幕顶部正在阅读的帖子与列表顶部的距离不变。
+  void _keepReadingPosition(double width, bool wideFeed) {
+    final widthChanged = _lastFeedWidth != null && _lastFeedWidth != width;
+    final modeChanged = _lastWideFeed != null && _lastWideFeed != wideFeed;
+    _lastFeedWidth = width;
+    _lastWideFeed = wideFeed;
+    if (!widthChanged) return;
+
+    final opened = PostCardNormal.lastOpenedPostId;
+    if (modeChanged && opened != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _revealPost(opened));
+      _settleTimer?.cancel();
+      _settleTimer = Timer(const Duration(milliseconds: 320),
+          () => _revealPost(opened, animate: true));
+      return;
+    }
+    final reading = _readingAnchor();
+    if (reading == null) return;
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _restoreAnchor(reading.id, reading.top));
+  }
+
+  /// 帖子相对列表顶部的位置
+  double? _postTop(int id) {
+    final list = context.findRenderObject();
+    final box = _postAnchors[id]?.findRenderObject();
+    if (list is! RenderBox || box is! RenderBox) return null;
+    if (!list.attached || !box.attached || !box.hasSize) return null;
+    return box.localToGlobal(Offset.zero, ancestor: list).dy;
+  }
+
+  /// 屏幕上正在阅读的帖子：最靠上、且仍有一部分露在列表顶部以下的帖子
+  ({int id, double top})? _readingAnchor() {
+    ({int id, double top})? best;
+    for (final entry in _postAnchors.entries) {
+      final top = _postTop(entry.key);
+      final box = entry.value.findRenderObject();
+      if (top == null || box is! RenderBox) continue;
+      if (top + box.size.height <= 40) continue;
+      if (best == null || top < best.top) best = (id: entry.key, top: top);
+    }
+    return best;
+  }
+
+  void _restoreAnchor(int id, double oldTop) {
+    if (!mounted || !_scrollController.hasClients) return;
+    final top = _postTop(id);
+    if (top == null) return;
+    final position = _scrollController.position;
+    _scrollController.jumpTo((position.pixels + top - oldTop)
+        .clamp(0.0, position.maxScrollExtent));
+  }
+
+  /// 把帖子滚动到列表顶部附近；[animate] 时平滑滚动并闪烁提示
+  void _revealPost(int id, {bool animate = false, int attempt = 0}) {
+    if (!mounted || !_scrollController.hasClients) return;
+    final anchor = _postAnchors[id];
+    if (anchor != null && anchor.mounted) {
+      Scrollable.ensureVisible(anchor,
+          alignment: 0.05,
+          duration:
+              animate ? const Duration(milliseconds: 380) : Duration.zero,
+          curve: Curves.easeOutCubic);
+      if (animate) {
+        _highlightPost.value = null;
+        _highlightPost.value = id;
+      }
+      return;
+    }
+    // 帖子还没有构建：按它在列表中的位置估算偏移，跳过去后再精确对齐
+    final posts = pageController.postHolder.postsList;
+    final index = posts.indexWhere((p) => p.id == id);
+    if (index < 0 || attempt >= 3) return;
+    final position = _scrollController.position;
+    final estimate = position.maxScrollExtent * index / posts.length;
+    _scrollController.jumpTo(estimate.clamp(0.0, position.maxScrollExtent));
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _revealPost(id, animate: animate, attempt: attempt + 1));
   }
 
   /// 折叠置顶帖后的统一"展开置顶帖"栏（不显示任何标题，极简）
@@ -462,7 +608,7 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                         completeText: '刷新完成 (ﾉ*･ω･)ﾉ',
                         failedText: '刷新失败（；´д｀）ゞ',
                       ),
-                      cacheExtent: 1.sh,
+                      cacheExtent: context.sh(),
                       enablePullDown: true,
                       onRefresh: _onRefresh,
                       footer: ClassicFooter(
@@ -473,18 +619,17 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
                       ),
                       enablePullUp: true,
                       onLoading: _onLoading,
-                      child: ListView.builder(
+                      // 宽屏放得下两列帖子时改为瀑布流，手机上保持原来的列表
+                      child: _isWideFeed(context)
+                          ? _buildWideFeed()
+                          : ListView.builder(
                               // 根据要求， Listview必须紧挨着SmartRefresher，不能包装任何东西
                               key: PageStorageKey("$index"),
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
                               // 4是因为前面有4个widget，
                               // Welcome, 热榜， Banner, 排序选择器
-                              itemCount: (_postRefreshSkeleton
-                                      ? 5
-                                      : pageController
-                                          .postHolder.postsList.length) +
-                                  4,
+                              itemCount: _postCount + 4,
                               itemBuilder: _buildPostList,
                             ),
                     );
@@ -495,6 +640,103 @@ class NSubPageState extends State<NSubPage> with AutomaticKeepAliveClientMixin {
             }(),
           );
         });
+  }
+}
+
+/// 瀑布流中的帖子卡片：圆角 + 细边框，与相邻帖子区分开
+class _FeedCard extends StatelessWidget {
+  const _FeedCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    // 折叠的置顶帖占位不需要卡片
+    final c = child;
+    if (c is SizedBox && c.height == 0) return c;
+    final theme = WpyTheme.of(context);
+    final radius = BorderRadius.circular(16.r);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: radius,
+      ),
+      // 边框画在内容之上，避免被帖子自身的背景盖住
+      foregroundDecoration: BoxDecoration(
+        borderRadius: radius,
+        border: Border.all(color: theme.get(WpyColorKey.lightBorderColor)),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: child,
+    );
+  }
+}
+
+/// 记录帖子在列表中的 context（帖子被回收时自动移除），
+/// 并在 [highlight] 指向自己时闪烁一下，帮助找到刚才阅读的帖子
+class _PostAnchor extends StatefulWidget {
+  const _PostAnchor({
+    required this.id,
+    required this.registry,
+    required this.highlight,
+    required this.child,
+  });
+
+  final int id;
+  final Map<int, BuildContext> registry;
+  final ValueNotifier<int?> highlight;
+  final Widget child;
+
+  @override
+  State<_PostAnchor> createState() => _PostAnchorState();
+}
+
+class _PostAnchorState extends State<_PostAnchor>
+    with SingleTickerProviderStateMixin {
+  late final _flash = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 1400));
+
+  @override
+  void initState() {
+    super.initState();
+    widget.highlight.addListener(_onHighlight);
+  }
+
+  void _onHighlight() {
+    if (widget.highlight.value == widget.id) _flash.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    widget.highlight.removeListener(_onHighlight);
+    _flash.dispose();
+    if (widget.registry[widget.id] == context) {
+      widget.registry.remove(widget.id);
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    widget.registry[widget.id] = context;
+    final color = WpyTheme.of(context).get(WpyColorKey.primaryActionColor);
+    // 结构保持不变（始终有 DecoratedBox），避免帖子被重建
+    return AnimatedBuilder(
+      animation: _flash,
+      child: widget.child,
+      builder: (context, child) {
+        final t = _flash.value;
+        // 快速亮起、缓慢消失
+        final strength = (t < 0.15 ? t / 0.15 : (1 - t) / 0.85).clamp(0.0, 1.0);
+        return DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.16 * strength),
+          ),
+          child: child,
+        );
+      },
+    );
   }
 }
 
@@ -650,14 +892,18 @@ class BannerSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Colors.black12,
+        // 与活动横幅相同比例的骨架
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+          child: AspectRatio(
+            aspectRatio: ActivityCard.aspectRatio,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                color: Colors.black12,
+              ),
+            ),
           ),
-          margin: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-          height: 0.32 * WePeiYangApp.screenWidth,
-          width: double.infinity,
         ),
         period: Duration(milliseconds: 1000),
         baseColor: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
@@ -678,18 +924,19 @@ class AdCardWidget extends StatelessWidget {
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 300),
         child: _len > 0
-            ? ActivityCard(1.sw - 40.w)
+            ? ActivityCard()
             : Shimmer.fromColors(
                 baseColor: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
                 highlightColor: WpyTheme.of(context)
                     .get(WpyColorKey.secondaryInfoTextColor),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                    color: Colors.black12,
+                child: AspectRatio(
+                  aspectRatio: ActivityCard.aspectRatio,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                      color: Colors.black12,
+                    ),
                   ),
-                  width: 1.sw - 40.w,
-                  height: (1.sw - 40.w) * 0.32,
                 ),
               ),
       ),
@@ -753,7 +1000,7 @@ class _HomeErrorContainerState extends State<HomeErrorContainer>
       mini: true,
     );
 
-    var paddingBox = SizedBox(height: WePeiYangApp.screenHeight / 16);
+    var paddingBox = SizedBox(height: 52.75.h);
 
     return Center(
       child: SingleChildScrollView(
@@ -790,92 +1037,75 @@ class AnnouncementBannerWidget extends StatelessWidget {
       return '晚上好';
   }
 
+  /// 公告标题：去掉换行，过长时截断（跑马灯里需要固定长度的文字）
+  String _shortTitle(String title) {
+    final oneLine = title.replaceAll('\n', ' ');
+    return oneLine.length > 21 ? '${oneLine.substring(0, 20)}...' : oneLine;
+  }
+
+  Widget _buildNotices(BuildContext context) {
+    final notices = context.read<NoticeProvider>().noticeList;
+    final style =
+        TextUtil.base.primaryAction(context).w400.NotoSansSC.sp(15);
+    if (notices.length == 1) {
+      return Text(notices.first.title.replaceAll('\n', ' '),
+          maxLines: 1, overflow: TextOverflow.ellipsis, style: style);
+    }
+    return TextScroller(
+      stepOffset: 500,
+      duration: Duration(seconds: 20),
+      paddingLeft: 0.0,
+      children: [
+        for (final notice in notices)
+          Text('· ${_shortTitle(notice.title)}           ', style: style),
+      ],
+    );
+  }
+
+  Widget _buildGreeting(BuildContext context) {
+    final nickname = CommonPreferences.lakeNickname.value;
+    final name = nickname == '无昵称' ? '微友' : nickname;
+    return Text(
+      '${_getGreetText}, $name',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextUtil.base.primaryAction(context).w600.NotoSansSC.sp(16),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasNotice = context.read<NoticeProvider>().noticeList.isNotEmpty;
     return Container(
       height: 35.h,
       margin: EdgeInsets.only(
           top: FeedbackHomePageState.searchBarHeight, left: 14.w, right: 14.w),
-      padding: EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(100)),
           color: WpyTheme.of(context)
               .get(WpyColorKey.primaryActionColor)
               .withAlpha(12)),
+      // 文字占满剩余宽度，放不下时省略/滚动
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(width: 12),
-            context.read<NoticeProvider>().noticeList.length > 0
-                ? WButton(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/svg_pics/lake_butt_icons/la_ba.svg",
-                          width: 20,
-                          colorFilter: ColorFilter.mode(
-                              WpyTheme.of(context)
-                                  .get(WpyColorKey.primaryActionColor),
-                              BlendMode.srcIn),
-                        ),
-                        SizedBox(width: 6),
-                        SizedBox(
-                            width: WePeiYangApp.screenWidth - 83,
-                            child: context
-                                        .read<NoticeProvider>()
-                                        .noticeList
-                                        .length >
-                                    1
-                                ? TextScroller(
-                                    stepOffset: 500,
-                                    duration: Duration(seconds: 20),
-                                    paddingLeft: 0.0,
-                                    children: List.generate(
-                                      context
-                                          .read<NoticeProvider>()
-                                          .noticeList
-                                          .length,
-                                      (index) => Text(
-                                          '· ${context.read<NoticeProvider>().noticeList[index].title.length > 21 ? context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[index].title.replaceAll('\n', ' ')}           ',
-                                          style: TextUtil.base
-                                              .primaryAction(context)
-                                              .w400
-                                              .NotoSansSC
-                                              .sp(15)),
-                                    ),
-                                  )
-                                : Text(
-                                    '${context.read<NoticeProvider>().noticeList[0].title.length > 21 ? context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ').substring(0, 20) + '...' : context.read<NoticeProvider>().noticeList[0].title.replaceAll('\n', ' ')}',
-                                    style: TextUtil.base
-                                        .primaryAction(context)
-                                        .w400
-                                        .NotoSansSC
-                                        .sp(15))),
-                      ],
-                    ),
-                    // onPressed: () =>
-                    //     Navigator.pushNamed(context, HomeRouter.notice),
-                  )
-                : WButton(
-                    child: SizedBox(
-                      child: Text(
-                        '${_getGreetText}, ${CommonPreferences.lakeNickname.value == '无昵称' ? '微友' : CommonPreferences.lakeNickname.value.toString()}',
-                        style: TextUtil.base
-                            .primaryAction(context)
-                            .w600
-                            .NotoSansSC
-                            .sp(16),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    // onPressed: () =>
-                    //     Navigator.pushNamed(context, HomeRouter.notice),
-                  ),
-            Spacer()
-          ]),
+        children: [
+          if (hasNotice) ...[
+            SvgPicture.asset(
+              "assets/svg_pics/lake_butt_icons/la_ba.svg",
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                  WpyTheme.of(context).get(WpyColorKey.primaryActionColor),
+                  BlendMode.srcIn),
+            ),
+            SizedBox(width: 6),
+          ],
+          Expanded(
+            child: hasNotice
+                ? _buildNotices(context)
+                : _buildGreeting(context),
+          ),
+        ],
+      ),
     );
   }
 }

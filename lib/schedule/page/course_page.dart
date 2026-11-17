@@ -304,12 +304,10 @@ class _HoursCounterWidget extends StatelessWidget {
     int currentHours = getCurrentHours(
         provider.currentWeek, DateTime.now().weekday, courses);
     int totalHours = getTotalHours(courses);
-    double totalWidth = 1.sw - 2 * 15.w;
-    double leftWidth = totalWidth * currentHours / totalHours;
-    if (leftWidth > totalWidth) leftWidth = totalWidth;
-
-    /// 如果学期还没开始，则不显示学时
-    if (isBeforeTermStart) leftWidth = 0;
+    /// 已上学时占比；学期还没开始或没有课时显示为 0
+    final hasProgress = !isBeforeTermStart && totalHours > 0;
+    final progress =
+        hasProgress ? (currentHours / totalHours).clamp(0.0, 1.0) : 0.0;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Column(
@@ -324,16 +322,16 @@ class _HoursCounterWidget extends StatelessWidget {
             children: [
               Container(
                 height: 12.h,
-                width: totalWidth,
+                width: double.infinity,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
                     color: WpyTheme.of(context)
                         .get(WpyColorKey.iconAnimationStartColor)),
               ),
-              if (!leftWidth.isNaN) // Avoid No Class in a semester
-                Container(
+              FractionallySizedBox(
+                widthFactor: progress,
+                child: Container(
                   height: 8.h,
-                  width: leftWidth,
                   margin: EdgeInsets.only(left: 2.w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
@@ -345,7 +343,8 @@ class _HoursCounterWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                )
+                ),
+              ),
             ],
           ),
           SizedBox(height: 45.h)

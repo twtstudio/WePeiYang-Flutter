@@ -115,7 +115,15 @@ class GPANotifier with ChangeNotifier {
     notifyListeners();
   }
 
-  bool get hideGPA => CommonPreferences.hideGPA.value;
+  bool get hideGPA => !_debugShowGPA && CommonPreferences.hideGPA.value;
+
+  bool _debugShowGPA = false;
+
+  /// 仅调试用（--dart-define=MOCK_DATA=true）：只在内存中显示 GPA，不修改设置
+  void debugShowGPA() {
+    _debugShowGPA = true;
+    notifyListeners();
+  }
 
   /// 使用后端爬虫（无需填写图形验证码）
   /// [CommonPreferences.useClassesBackend.value]决定了爬虫方式

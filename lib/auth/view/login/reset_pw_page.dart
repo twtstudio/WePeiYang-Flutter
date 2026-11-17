@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
-import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
+import 'package:we_pei_yang_flutter/auth/view/login/widgets/auth_widgets.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-
-import '../../../commons/themes/wpy_theme.dart';
-import '../../../commons/widgets/w_button.dart';
 
 class ResetPwWidget extends StatefulWidget {
   @override
   _ResetPwWidgetState createState() => _ResetPwWidgetState();
 }
 
-class _ResetPwWidgetState extends State<ResetPwWidget> {
+class _ResetPwWidgetState extends State<ResetPwWidget> with AuthLoadingMixin {
   String password1 = "";
   String password2 = "";
 
-  _reset() async {
+  final FocusNode _pwInput1 = FocusNode();
+  final FocusNode _pwInput2 = FocusNode();
+
+  @override
+  void dispose() {
+    _pwInput1.dispose();
+    _pwInput2.dispose();
+    super.dispose();
+  }
+
+  void _reset() {
+    FocusScope.of(context).unfocus();
     if (password1 == "") {
       ToastProvider.error("密码不能为空");
       return;
@@ -29,108 +36,49 @@ class _ResetPwWidgetState extends State<ResetPwWidget> {
       return;
     }
     String phone = ModalRoute.of(context)?.settings.arguments as String;
-    AuthService.resetPwByPhone(phone, password1,
-        onSuccess: () => Navigator.pushNamed(context, AuthRouter.resetDone),
-        onFailure: (e) => ToastProvider.error(e.error.toString()));
+    startLoading();
+    AuthService.resetPwByPhone(phone, password1, onSuccess: () {
+      stopLoading();
+      if (!mounted) return;
+      Navigator.pushNamed(context, AuthRouter.resetDone);
+    }, onFailure: (e) {
+      stopLoading();
+      ToastProvider.error(e.error.toString());
+    });
   }
-
-  final FocusNode _pwInput1 = FocusNode();
-  final FocusNode _pwInput2 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle _hintStyle =
-        TextUtil.base.regular.sp(13).oldHintDarker(context);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: WButton(
-                child: Icon(Icons.arrow_back,
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.oldThirdActionColor),
-                    size: 35),
-                onPressed: () => Navigator.pop(context)),
-          )),
-      body: Column(
-        children: [
-          Center(
-            child: Text('天外天账号密码找回',
-                style: TextUtil.base.bold.sp(16).oldThirdAction(context)),
-          ),
-          SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: 55,
-              ),
-              child: TextField(
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.next,
-                focusNode: _pwInput1,
-                decoration: InputDecoration(
-                    hintText: '请输入新密码',
-                    hintStyle: _hintStyle,
-                    filled: true,
-                    fillColor:
-                        WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-                    isCollapsed: true,
-                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none)),
-                obscureText: true,
-                onChanged: (input) => setState(() => password1 = input),
-                onEditingComplete: () {
-                  _pwInput1.unfocus();
-                  FocusScope.of(context).requestFocus(_pwInput2);
-                },
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: 55,
-              ),
-              child: TextField(
-                keyboardType: TextInputType.visiblePassword,
-                focusNode: _pwInput2,
-                decoration: InputDecoration(
-                    hintText: '再次输入密码',
-                    hintStyle: _hintStyle,
-                    filled: true,
-                    fillColor:
-                        WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-                    isCollapsed: true,
-                    contentPadding: const EdgeInsets.fromLTRB(15, 18, 0, 18),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none)),
-                obscureText: true,
-                onChanged: (input) => setState(() => password2 = input),
-              ),
-            ),
-          ),
-          Spacer(),
-          Container(
-            height: 50,
-            alignment: Alignment.bottomRight,
-            margin: const EdgeInsets.all(30),
-            child: WButton(
-              onPressed: _reset,
-              child: Image(image: AssetImage('assets/images/arrow_round.png')),
-            ),
-          ),
-        ],
-      ),
+    return AuthScaffold(
+      title: '设置新密码',
+      subtitle: '请输入新的天外天账号密码',
+      children: [
+        AuthTextField(
+          label: '新密码',
+          hint: '请输入新密码',
+          icon: Icons.lock_outline_rounded,
+          obscure: true,
+          focusNode: _pwInput1,
+          nextFocus: _pwInput2,
+          keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [AutofillHints.newPassword],
+          onChanged: (v) => password1 = v,
+        ),
+        const SizedBox(height: 16),
+        AuthTextField(
+          label: '确认密码',
+          hint: '请再次输入密码',
+          icon: Icons.lock_outline_rounded,
+          obscure: true,
+          focusNode: _pwInput2,
+          keyboardType: TextInputType.visiblePassword,
+          autofillHints: const [AutofillHints.newPassword],
+          onChanged: (v) => password2 = v,
+          onSubmitted: (_) => _reset(),
+        ),
+        const SizedBox(height: 24),
+        AuthPrimaryButton(text: '确认修改', loading: loading, onPressed: _reset),
+      ],
     );
   }
 }

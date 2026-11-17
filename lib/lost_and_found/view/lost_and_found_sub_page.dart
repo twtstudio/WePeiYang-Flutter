@@ -17,7 +17,6 @@ import 'package:we_pei_yang_flutter/lost_and_found/lost_and_found_router.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_post.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_notifier.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/view/lost_and_found_search_notifier.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 class LostAndFoundSubPage extends StatefulWidget {
   final String type;
@@ -158,12 +157,12 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
             ),
           ),
           SizedBox(width: 5.w),
-          Consumer<FbHotTagsProvider>(
+          // 推荐词按搜索框剩余宽度自适应省略
+          Expanded(
+            child: Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(
                     children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth: WePeiYangApp.screenWidth - 260),
+                      Flexible(
                         child: Text(
                           data.recTag == null
                               ? '天大不能没有微北洋'
@@ -178,7 +177,7 @@ class LostAndFoundSubPageState extends State<LostAndFoundSubPage>
                       ),
                     ],
                   )),
-          Spacer()
+          ),
         ]),
       ),
     );

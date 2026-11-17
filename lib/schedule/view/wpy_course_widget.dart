@@ -13,6 +13,9 @@ import '../../commons/preferences/common_prefs.dart';
 import '../../commons/widgets/w_button.dart';
 
 class TodayCoursesWidget extends StatelessWidget {
+  /// 宽度达到这个值（设计稿单位）时今日课程才分多列显示
+  static const _multiColumnMinWidth = 390.0 * 3;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CourseProvider>(builder: (context, provider, _) {
@@ -39,19 +42,26 @@ class TodayCoursesWidget extends StatelessWidget {
     /// 给本日课程排序
     todayPairs.sort(
         (a, b) => a.arrange.unitList.first.compareTo(b.arrange.unitList.first));
-    var height = todayPairs.length * 90.h;
-    //if (todayPairs.length > 3) height = 270.h; 此注释为了在多于三节课的时候显示全部课程。
-    return SizedBox(
-      height: height,
-      child: ListView.builder(
-        scrollDirection: Axis.vertical,
+    // 平时按时间线单列显示；只有超宽屏（至少三屏手机宽度）才分多列，
+    // 每列 390~780 设计稿单位，保证时间、地点完整显示
+    return LayoutBuilder(
+      builder: (context, constraints) => GridView.builder(
+        shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 30.w),
+        gridDelegate: constraints.maxWidth >= _multiColumnMinWidth.w
+            ? SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 780.w,
+                mainAxisExtent: 90.h,
+                crossAxisSpacing: 16.w,
+              )
+            : SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                mainAxisExtent: 90.h,
+              ),
         itemCount: todayPairs.length,
         itemBuilder: (context, i) {
           return Container(
-            height: 80.h,
-            width: 330.w,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             child: Material(
               color:

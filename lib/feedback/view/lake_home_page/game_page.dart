@@ -3,7 +3,6 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/widgets/w_button.dart';
 
@@ -50,8 +49,7 @@ class GameCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                    width: WePeiYangApp.screenWidth - 160,
+                Expanded(
                     child: Text(
                       this.title,
                       style:

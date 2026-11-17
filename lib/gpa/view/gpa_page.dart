@@ -77,22 +77,44 @@ class _GPAPageState extends State<GPAPage> {
               children: [
                 RadarChartWidget(_gpaColors),
                 GPAStatsWidget(_gpaColors),
-                SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            maxWidth:
-                                context.watch<GPANotifier>().curveData.length >
-                                        4
-                                    ? 800.w
-                                    : 1.sw),
-                        child: GPACurve(_gpaColors, isPreview: false))),
+                _ScrollableGPACurve(_gpaColors),
                 CourseListWidget(_gpaColors)
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// GPA 曲线：至少占满可视宽度；学期较多时加宽，超出可视宽度的部分横向滚动
+class _ScrollableGPACurve extends StatelessWidget {
+  const _ScrollableGPACurve(this.gpaColors);
+
+  final List<Color> gpaColors;
+
+  /// 超过这个学期数时加宽曲线，避免数据点挤在一起
+  static const _maxPointsWithoutScroll = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final pointCount = context.watch<GPANotifier>().curveData.length;
+    final needsScroll = pointCount > _maxPointsWithoutScroll;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final curveWidth = needsScroll ? 800.w : constraints.maxWidth;
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            child: SizedBox(
+              width: curveWidth,
+              child: GPACurve(gpaColors, isPreview: false),
+            ),
+          ),
+        );
+      },
     );
   }
 }

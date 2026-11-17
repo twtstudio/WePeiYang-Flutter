@@ -22,9 +22,6 @@ const double horStep = 6;
 
 int get _dayNumber => CommonPreferences.dayNumber.value;
 
-double get _width => 1.sw - 15 * 2.w;
-
-double get _cardWidth => (_width - (_dayNumber - 1) * horStep) / _dayNumber;
 
 /// 这个Widget包括日期栏和下方的具体课程
 class CourseDetailWidget extends StatelessWidget {
@@ -51,10 +48,17 @@ class _WeekDisplayWidget extends StatelessWidget {
     final dates = List.generate(_dayNumber,
         (index) => rules.dateFor(provider.selectedWeek, index + 1));
     final now = scheduleDate(DateTime.now());
+    // 每天一格，等分整行
     return Row(
-      children: dates.map((date) => _getCard(date, now == date,
-          rules.ruleFor(date))).toList(),
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (var i = 0; i < dates.length; i++) ...[
+          if (i > 0) SizedBox(width: horStep),
+          Expanded(
+            child:
+                _getCard(dates[i], now == dates[i], rules.ruleFor(dates[i])),
+          ),
+        ],
+      ],
     );
   }
 
@@ -72,7 +76,6 @@ class _WeekDisplayWidget extends StatelessWidget {
             onLongPress: () => showDayOverrideSheet(context, date: date),
             child: Container(
               height: 28.h,
-              width: _cardWidth,
               decoration: BoxDecoration(
                   color: bright.withValues(alpha: deep ? 1 : 0.25),
                   borderRadius: BorderRadius.circular(5.r)),
@@ -114,10 +117,10 @@ class _WeekDisplayWidget extends StatelessWidget {
 
 class _CourseDisplayWidget extends StatelessWidget {
   /// 每一节小课对应的高度（据此，每一节大课的高度应为其两倍再加上step）
-  static double _singleCourseHeight = 65.h;
+  static double get _singleCourseHeight => 65.h;
 
   /// "午休"提示栏的高度
-  static double _middleStep = 40.h;
+  static double get _middleStep => 40.h;
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +133,9 @@ class _CourseDisplayWidget extends StatelessWidget {
             child: Stack(children: [child!]),
           );
         }
-        var positionedList = <Widget>[];
         var activeList = getMergedActiveCourses(provider, _dayNumber);
-        var tempList = <Widget>[];
+        // 每天一列，列宽由下方的 Row + Expanded 均分；这里只按节次计算纵向位置
+        final coursesByDay = List.generate(_dayNumber, (_) => <Widget>[]);
         // 添加本周课程
         for (int i = 0; i < activeList.length; i++) {
           // 更新verNum
@@ -144,7 +147,7 @@ class _CourseDisplayWidget extends StatelessWidget {
           int start = activeList[i][0].arrange.unitList.first;
           int end = activeList[i][0].arrange.unitList.last;
           int day = activeList[i][0].arrange.weekday;
-          double left = (day - 1) * (_cardWidth + horStep);
+          if (day < 1 || day > _dayNumber) continue;
           // 是否不显示内容
           var hide = (activeList[i][0].arrange.showMode == 2);
 
@@ -180,25 +183,37 @@ class _CourseDisplayWidget extends StatelessWidget {
             if (segment.start > 8) top += _middleStep;
             if (activeList[i][0].arrange.showMode == 1) top += 6;
 
-            tempList.add(Positioned(
+            coursesByDay[day - 1].add(Positioned(
               top: top - verStep / 2,
-              left: left - verStep / 2,
+              left: -horStep / 2,
+              right: -horStep / 2,
               height: height + verStep,
-              width: _cardWidth + horStep,
               child: AnimatedActiveCourse(activeList[i], hide, warning,
                   isSinglePeriod: segment.start == segment.end),
             ));
           }
         }
-        // 靠后的课需要先加入到stack中，所以需要reverse
-        positionedList.addAll(tempList.reversed);
-
         return SizedBox(
           height: (_singleCourseHeight + verStep) * verNum + _middleStep * 2,
           child: Stack(
             children: [
               child!,
-              ...positionedList,
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    for (var d = 0; d < _dayNumber; d++) ...[
+                      if (d > 0) SizedBox(width: horStep),
+                      Expanded(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          // 靠后的课需要先加入到stack中，所以需要reverse
+                          children: coursesByDay[d].reversed.toList(),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ],
           ),
         );
@@ -208,8 +223,8 @@ class _CourseDisplayWidget extends StatelessWidget {
           Positioned(
             left: 0,
             top: 4 * (_singleCourseHeight + verStep),
+            right: 0,
             height: _middleStep,
-            width: 1.sw - 30.w,
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -226,8 +241,8 @@ class _CourseDisplayWidget extends StatelessWidget {
           Positioned(
             left: 0,
             top: 8 * (_singleCourseHeight + verStep) + _middleStep,
+            right: 0,
             height: _middleStep,
-            width: 1.sw - 30.w,
             child: Container(
               alignment: Alignment.center,
               decoration: BoxDecoration(

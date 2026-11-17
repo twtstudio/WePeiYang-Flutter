@@ -3,6 +3,7 @@ import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/auth/view/message/message_router.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/test/test_router.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/pane_route.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/gpa/gpa_router.dart';
 import 'package:we_pei_yang_flutter/home/home_router.dart';
@@ -21,6 +22,9 @@ class RouterManager {
   static final Map<String, Widget Function(dynamic arguments)> _routers = {};
 
   static Route<dynamic> create(RouteSettings settings) {
+    // 平行视界：宽屏时从首页打开的页面在右栏显示，首页收缩到左栏
+    PaneNavigatorObserver.anchorRouteName = HomeRouter.home;
+
     /// 这里添加其他模块的routers
     if (_routers.isEmpty) {
       _routers.addAll(AuthRouter.routers);
@@ -36,13 +40,13 @@ class RouterManager {
     final routeName = settings.name;
     final builder = routeName == null ? null : _routers[routeName];
     if (builder != null) {
-      return MaterialPageRoute(
+      return PaneRoute(
           builder: (ctx) => builder(settings.arguments), settings: settings);
     }
 
     if (!_isExternalEntryRoute(routeName)) {
       debugPrint('Unknown route: $routeName');
-      return MaterialPageRoute(
+      return PaneRoute(
           builder: (_) => _UnknownRoutePage(routeName: routeName),
           settings: settings);
     }
@@ -50,7 +54,7 @@ class RouterManager {
     final fallbackName =
         CommonPreferences.isLogin.value ? HomeRouter.home : AuthRouter.login;
     debugPrint('Unknown external route: $routeName, fallback to $fallbackName');
-    return MaterialPageRoute(
+    return PaneRoute(
         builder: (ctx) => _routers[fallbackName]!(null),
         settings: RouteSettings(name: fallbackName));
   }

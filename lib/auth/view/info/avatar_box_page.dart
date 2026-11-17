@@ -61,8 +61,8 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
         child: Column(
           children: [
             Container(
-              width: 1.sw,
-              height: 0.3.sh,
+              width: double.infinity,
+              height: 253.h,
               child: Stack(
                 children: [
                   ValueListenableBuilder<String>(
@@ -72,7 +72,7 @@ class _AvatarBoxPageState extends State<AvatarBoxPage> {
                           child: Hero(
                             tag: 'avatar',
                             child: UserAvatarImage(
-                              size: 0.3.sw,
+                              size: 117.w,
                               iconColor: WpyTheme.of(context)
                                   .get(WpyColorKey.primaryBackgroundColor),
                               tempUrl: _valueNotifier.value,

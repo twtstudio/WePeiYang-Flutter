@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:io';
 import 'dart:math';
 
@@ -19,7 +20,6 @@ import 'package:we_pei_yang_flutter/feedback/model/feedback_notifier.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/tag_grid_view.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../commons/themes/template/wpy_theme_data.dart';
 import '../../commons/themes/wpy_theme.dart';
@@ -1120,11 +1120,11 @@ class _ContentInputFieldState extends State<ContentInputField> {
       },
     );
 
+    // 输入区至少占满页面除去上下其它区域（约 700）后的高度
+    final minInputHeight =
+        math.max(100.0, MediaQuery.sizeOf(context).height - 700);
     return Container(
-        constraints: BoxConstraints(
-            minHeight: WePeiYangApp.screenHeight > 800
-                ? WePeiYangApp.screenHeight - 700
-                : 100),
+        constraints: BoxConstraints(minHeight: minInputHeight),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [inputField, SizedBox(height: 20), bottomTextCounter],

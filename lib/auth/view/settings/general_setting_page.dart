@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,10 +27,29 @@ class GeneralSettingPage extends StatefulWidget {
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
   late Future<int> _cacheSize;
 
+  /// 预见性返回动画只在 Android 14（API 34）及以上生效，其它平台不显示该选项
+  bool _supportsPredictiveBack = false;
+
+  static const _deviceChannel = MethodChannel('com.twt.service/device_info');
+
   @override
   void initState() {
     super.initState();
     _cacheSize = StorageUtil.getTemporaryCacheSize();
+    _checkPredictiveBack();
+  }
+
+  Future<void> _checkPredictiveBack() async {
+    if (!Platform.isAndroid) return;
+    try {
+      final info = await _deviceChannel.invokeMethod<Map>('getDeviceInfo');
+      final sdkInt = int.tryParse('${info?['sdkInt']}') ?? 0;
+      if (mounted && sdkInt >= 34) {
+        setState(() => _supportsPredictiveBack = true);
+      }
+    } catch (_) {
+      // 获取不到系统版本时不显示该选项
+    }
   }
 
   String _formatCacheSize(int bytes) {
@@ -766,7 +786,7 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
               SizedBox(height: 15.h),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Text('动画设置', style: titleTextStyle),
+                child: Text('大屏布局', style: titleTextStyle),
               ),
               SizedBox(height: 10.h),
               Container(
@@ -783,19 +803,19 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('预见性返回动画', style: mainTextStyle),
+                          Text('平行视界', style: mainTextStyle),
                           SizedBox(height: 3.h),
-                          Text('实验性功能，仅在Android 14+生效', style: hintTextStyle)
+                          Text('折叠屏、平板、电脑等宽屏下，帖子等详情页在右侧分栏打开；关闭后全屏打开',
+                              style: hintTextStyle)
                         ],
                       ),
                     ),
                     Switch(
-                      value: CommonPreferences.predictiveBack.value,
+                      value: CommonPreferences.parallelView.value,
                       onChanged: (value) {
                         setState(() {
-                          CommonPreferences.predictiveBack.value = value;
-                          CommonPreferences.predictiveBackNotifier.value =
-                              value;
+                          CommonPreferences.parallelView.value = value;
+                          CommonPreferences.parallelViewNotifier.value = value;
                         });
                       },
                       activeThumbColor: WpyTheme.of(context)
@@ -810,7 +830,56 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                   ],
                 ),
               ),
+              SizedBox(height: 15.h),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('动画设置', style: titleTextStyle),
+              ),
               SizedBox(height: 10.h),
+              if (_supportsPredictiveBack) ...[
+              Container(
+                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
+                  decoration: BoxDecoration(
+                    color: WpyTheme.of(context)
+                        .get(WpyColorKey.primaryBackgroundColor),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('预见性返回动画', style: mainTextStyle),
+                            SizedBox(height: 3.h),
+                            Text('实验性功能，仅在Android 14+生效', style: hintTextStyle)
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: CommonPreferences.predictiveBack.value,
+                        onChanged: (value) {
+                          setState(() {
+                            CommonPreferences.predictiveBack.value = value;
+                            CommonPreferences.predictiveBackNotifier.value =
+                                value;
+                          });
+                        },
+                        activeThumbColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSecondaryActionColor),
+                        inactiveThumbColor:
+                            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
+                        activeTrackColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSwitchBarColor),
+                        inactiveTrackColor: WpyTheme.of(context)
+                            .get(WpyColorKey.oldSwitchBarColor),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10.h),
+              ],
               Container(
                 padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
                 decoration: BoxDecoration(

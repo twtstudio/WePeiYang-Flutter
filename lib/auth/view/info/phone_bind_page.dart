@@ -5,7 +5,6 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 
 import '../../../commons/themes/wpy_theme.dart';
 import '../../../commons/widgets/w_button.dart';
@@ -50,7 +49,6 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
 
   Widget _detail(BuildContext context) {
     final hintStyle = TextUtil.base.regular.sp(13).oldHintDarker(context);
-    double width = WePeiYangApp.screenWidth - 80;
     if (CommonPreferences.phone.value != "")
       return Column(children: [
         SizedBox(height: 70),
@@ -117,9 +115,11 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               children: [
-                ConstrainedBox(
-                  constraints:
-                      BoxConstraints(maxHeight: 55, maxWidth: width / 2 + 20),
+                // 验证码输入框与获取按钮按比例分配整行宽度
+                Expanded(
+                  flex: 9,
+                  child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: 55),
                   child: TextField(
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
@@ -137,10 +137,12 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                     onChanged: (input) => setState(() => code = input),
                   ),
                 ),
-                Container(
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  flex: 7,
+                  child: Container(
                   height: 55,
-                  width: width / 2 - 20,
-                  margin: const EdgeInsets.only(left: 20),
                   child: isPress
                       ? StreamBuilder<int>(
                           stream: Stream.periodic(
@@ -198,6 +200,7 @@ class _PhoneBindPageState extends State<PhoneBindPage> {
                             ),
                           ),
                         ),
+                ),
                 ),
               ],
             ),

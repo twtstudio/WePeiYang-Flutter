@@ -190,5 +190,5 @@ class LostAndFoundAppBar extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => Size(ScreenUtil().screenWidth, 60.h);
+  Size get preferredSize => Size.fromHeight(60.h);
 }

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -15,6 +14,8 @@ import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/adaptive_viewport.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/pane_route.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
@@ -76,7 +77,8 @@ void main() async {
       await windowManager.ensureInitialized();
 
       WindowOptions windowOptions = WindowOptions(
-        minimumSize: Size(640, 400),
+        // 页面按竖屏手机设计，高度太小会放不下
+        minimumSize: Size(360, 640),
         center: true,
         backgroundColor: Colors.transparent,
         skipTaskbar: false,
@@ -86,6 +88,10 @@ void main() async {
         await windowManager.show();
         await windowManager.focus();
       });
+    } else if (Platform.isLinux) {
+      // Linux runner 在首帧渲染后自行显示窗口，这里只限制最小尺寸
+      await windowManager.ensureInitialized();
+      await windowManager.setMinimumSize(const Size(360, 640));
     }
 
     /// 临时缓存超过1GB时，打开应用自动清理缓存
@@ -269,8 +275,6 @@ Future<void> checkEventList(BuildContext context) async {
 }
 
 class WePeiYangApp extends StatefulWidget {
-  static late double screenWidth;
-  static late double screenHeight;
 
   /// 用于全局获取当前context
   static final GlobalKey<NavigatorState> navigatorState = GlobalKey();
@@ -294,13 +298,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var baseContext =
           WePeiYangApp.navigatorState.currentState?.overlay?.context ?? context;
-      var mediaQueryData = MediaQuery.of(baseContext);
-      WePeiYangApp.screenWidth = mediaQueryData.size.width;
-      WePeiYangApp.screenHeight = mediaQueryData.size.height;
-      // 判断屏幕状态
-      bool isInnerScreen =
-          (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
-      TextUtil.updateScreenState(isInnerScreen);
 
       WbyFontLoader.initFonts();
       ToastProvider.init(baseContext);
@@ -313,19 +310,6 @@ class WePeiYangAppState extends State<WePeiYangApp>
         _onBrightnessChanged;
     _listenForIosShortcutActions();
     _listenForNativeEvents(context);
-  }
-
-  @override
-  void didChangeMetrics() {
-    super.didChangeMetrics();
-    if (!mounted) return;
-    var mediaQueryData = MediaQuery.of(context);
-
-    bool isInnerScreen =
-        (mediaQueryData.size.height / mediaQueryData.size.width) < 1.4;
-    TextUtil.updateScreenState(isInnerScreen);
-    // 触发重新渲染
-    setState(() {});
   }
 
   void _onBrightnessChanged() async {
@@ -410,17 +394,20 @@ class WePeiYangAppState extends State<WePeiYangApp>
 
         return ListenableBuilder(
             listenable: Listenable.merge(
-                [globalTheme, CommonPreferences.predictiveBackNotifier]),
+                [
+                  globalTheme,
+                  CommonPreferences.predictiveBackNotifier,
+                  CommonPreferences.parallelViewNotifier,
+                ]),
             builder: (context, _) {
               return WpyTheme(
                 themeData: globalTheme.value,
-                child: ScreenUtilInit(
-                    key: ValueKey(1),
-                    designSize: const Size(390, 844),
-                    useInheritedMediaQuery: true,
-                    minTextAdapt: true,
-                    child: SplashScreen(),
-                    builder: ((context, child) {
+                // 手机竖屏保持原 390x844 设计稿；平板/折叠屏/桌面按 Material 3 大屏规范等比缩放，
+                // 宽屏时开启平行视界（左栏首页、右栏二级页面），见 AdaptiveViewport / PaneRoute
+                child: AdaptiveViewport(
+                    allowSplit: CommonPreferences.parallelViewNotifier.value,
+                    child: Builder(builder: (context) {
+                      const child = SplashScreen();
                       return RefreshConfiguration(
                         // https://docs.fluttercn.cn/release/breaking-changes/spring-description-underdamped
                         // Flutter 3.32 修复了欠阻尼弹簧公式(issue#163858/PR#165017)，
@@ -467,6 +454,7 @@ class WePeiYangAppState extends State<WePeiYangApp>
                         navigatorKey: WePeiYangApp.navigatorState,
                         onGenerateRoute: RouterManager.create,
                         navigatorObservers: [
+                          PaneNavigatorObserver.instance,
                           AppRouteAnalysis(),
                           PageStackObserver(),
                           FlutterSmartDialog.observer

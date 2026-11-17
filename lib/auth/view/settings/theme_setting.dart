@@ -399,7 +399,7 @@ class _ThemeSettingState extends State<ThemeSetting>
       builder: (context, child) {
         final clipValue = _clipAnim.value;
         return Container(
-          height: 0.45.sw,
+          height: 175.5.w,
           margin: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 8.h),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.r),

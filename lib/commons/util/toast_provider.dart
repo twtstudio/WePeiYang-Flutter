@@ -47,7 +47,7 @@ class ToastProvider with AsyncTimer {
   ///     return Positioned(
   ///       left: 16.0, // 左右填一样的值可以居中
   ///       right: 16.0,
-  ///       top: 0.6.sh,
+  ///       top: 506.4.h,
   ///       child: child,
   ///     );
   ///   },
@@ -115,8 +115,8 @@ class ToastProvider with AsyncTimer {
                         width: 15,
                       )),
               SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              // 文字按 Toast 可用宽度自适应
+              Flexible(
                 child: Text(
                   msg,
                   style:
@@ -133,7 +133,7 @@ class ToastProvider with AsyncTimer {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,
-          bottom: 0.1.sh,
+          bottom: 84.4.h,
           child: child,
         );
       },
@@ -157,8 +157,8 @@ class ToastProvider with AsyncTimer {
                 width: 15,
               ),
               SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              // 文字按 Toast 可用宽度自适应
+              Flexible(
                 child: Text(
                   msg,
                   style:
@@ -175,7 +175,7 @@ class ToastProvider with AsyncTimer {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,
-          bottom: 0.1.sh,
+          bottom: 84.4.h,
           child: child,
         );
       },
@@ -199,8 +199,8 @@ class ToastProvider with AsyncTimer {
                 width: 15,
               ),
               SizedBox(width: 10),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 1.sw - 90),
+              // 文字按 Toast 可用宽度自适应
+              Flexible(
                 child: Text(
                   msg,
                   style:
@@ -217,7 +217,7 @@ class ToastProvider with AsyncTimer {
         return Positioned(
           left: 16.0, // 左右填一样的值可以居中
           right: 16.0,
-          bottom: 0.1.sh,
+          bottom: 84.4.h,
           child: child,
         );
       },

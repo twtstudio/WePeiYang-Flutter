@@ -175,7 +175,7 @@ class _PersonPageState extends State<PersonPage> {
 
 //静态header，头像和资料以及appbar
     Widget appBar = Padding(
-        padding: EdgeInsets.only(top: 10.h, left: 20.w, bottom: 10.h),
+        padding: EdgeInsets.only(top: 10.h, left: 20.w, right: 10.w, bottom: 10.h),
         child: Row(children: [
           WButton(
             onPressed: () {
@@ -214,21 +214,19 @@ class _PersonPageState extends State<PersonPage> {
             ),
           ),
           SizedBox(width: 10.w),
-          Column(
+          Expanded(
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: 1.sw - 140.w,
-                child: Text('${nickName ?? ''}',
-                    textAlign: TextAlign.start,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextUtil.base.ProductSans
-                        .infoText(context)
-                        .w400
-                        .sp(20)),
-              ),
+              Text('${nickName ?? ''}',
+                  textAlign: TextAlign.start,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextUtil.base.ProductSans
+                      .infoText(context)
+                      .w400
+                      .sp(20)),
               Text('uid: ${uid}',
                   textAlign: TextAlign.start,
                   style:
@@ -238,6 +236,7 @@ class _PersonPageState extends State<PersonPage> {
                 style: TextUtil.base.bright(context).bold.sp(9),
               ),
             ],
+          ),
           )
         ]));
 
@@ -370,22 +369,27 @@ class _PersonPageState extends State<PersonPage> {
                   children: [
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: WpyPic(
-                        avatar == ""
-                            ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
-                            : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
-                        width: 1.sw,
-                        height: 1.sw,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
+                      // 正方形背景，宽度撑满
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: WpyPic(
+                          avatar == ""
+                              ? '${EnvConfig.QNHD}avatar/beam/20/${uid}.svg'
+                              : 'https://qnhdpic.twt.edu.cn/download/origin/${avatar}',
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                        ),
                       ),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: InkWell(
                         onTap: () => Navigator.pop(context),
-                        child: Container(
-                          height: 1.sw,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -403,6 +407,7 @@ class _PersonPageState extends State<PersonPage> {
                               end: Alignment(0, 1),
                             ),
                           ),
+                        ),
                         ),
                       ),
                     ),

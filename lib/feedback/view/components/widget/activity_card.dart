@@ -15,10 +15,11 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/round_taggin
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/lake_notifier.dart';
 import 'package:we_pei_yang_flutter/home/view/web_views/festival_page.dart';
 
+/// 活动横幅：宽度撑满父组件，高度按 [aspectRatio] 自适应
 class ActivityCard extends StatefulWidget {
-  final double width;
+  static const aspectRatio = 1 / 0.32;
 
-  ActivityCard(this.width);
+  ActivityCard();
 
   @override
   _ActivityCardState createState() => _ActivityCardState();
@@ -41,8 +42,8 @@ class _ActivityCardState extends State<ActivityCard> {
     // 图片， 带有淡入淡出效果
     final banner = WpyPic(
       context.read<FestivalProvider>().nonePopupList[index].image,
-      width: widget.width,
-      height: widget.width * 0.32,
+      width: double.infinity,
+      height: double.infinity,
       fit: BoxFit.cover,
       withHolder: false,
       withCache: true,
@@ -96,9 +97,8 @@ class _ActivityCardState extends State<ActivityCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: widget.width * 0.32,
+    return AspectRatio(
+      aspectRatio: ActivityCard.aspectRatio,
       child: Consumer<FestivalProvider>(
           builder: (BuildContext context, value, Widget? child) {
         final length = context.read<FestivalProvider>().nonePopupList.length;

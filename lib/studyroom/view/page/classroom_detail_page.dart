@@ -318,8 +318,8 @@ class _CourseDisplayWidget extends StatelessWidget {
       list.add(Positioned(
           left: 0,
           top: 8 * (courseHeight + _cardStep) + _cardStep + middleStep,
+          right: 0,
           height: middleStep,
-          width: 1.sw - 30.w,
           child: Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -335,8 +335,8 @@ class _CourseDisplayWidget extends StatelessWidget {
     list.add(Positioned(
         left: 0,
         top: 4 * (courseHeight + _cardStep),
+        right: 0,
         height: middleStep,
-        width: 1.sw - 30.w,
         child: Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(

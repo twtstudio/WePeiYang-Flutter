@@ -26,13 +26,14 @@ class ActivityDialog extends Dialog {
     final data = banners;
     if (data.isEmpty) return SizedBox.shrink();
 
+    // 活动图上方与下方（关闭按钮区域）按 2:3 分配剩余空间
     return Column(
       children: [
-        Spacer(),
+        Spacer(flex: 2),
         if (data.length == 1)
           SizedBox(
-            width: 0.81.sw,
-            height: 1.08.sw,
+            width: 316.w,
+            height: 421.w,
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               child: WButton(
@@ -68,7 +69,7 @@ class ActivityDialog extends Dialog {
           )
         else
           SizedBox(
-            height: 1.08.sw,
+            height: 421.w,
             child: Swiper(
               loop: true,
               autoplay: true,
@@ -110,13 +111,14 @@ class ActivityDialog extends Dialog {
               },
             ),
           ),
-        WButton(
+        Expanded(
+          flex: 3,
+          child: WButton(
             onPressed: () {
               Navigator.pop(context);
             },
             child: SizedBox(
-              width: 1.sw,
-              height: 0.55.sh - 0.54.sw,
+              width: double.infinity,
               child: Align(
                 alignment: Alignment.topCenter,
                 child: Image.asset(
@@ -126,7 +128,9 @@ class ActivityDialog extends Dialog {
                   color: WpyTheme.of(context).get(WpyColorKey.reverseTextColor),
                 ),
               ),
-            ))
+            ),
+          ),
+        ),
       ],
     );
   }

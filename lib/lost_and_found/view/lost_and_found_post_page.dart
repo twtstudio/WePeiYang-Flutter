@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -13,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../commons/themes/wpy_theme.dart';
@@ -432,11 +432,11 @@ class _LostAndFoundContentInputFieldState
               style: TextUtil.base.NotoSansSC.w500.sp(12).infoText(context));
         });
 
+    // 输入区至少占满页面除去上下其它区域（约 800）后的高度
+    final minInputHeight =
+        math.max(100.0, MediaQuery.sizeOf(context).height - 800);
     return Container(
-        constraints: BoxConstraints(
-            minHeight: WePeiYangApp.screenHeight > 900
-                ? WePeiYangApp.screenHeight - 800
-                : 100),
+        constraints: BoxConstraints(minHeight: minInputHeight),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           inputField,
           SizedBox(height: 30.h),

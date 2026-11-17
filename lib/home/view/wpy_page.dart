@@ -146,159 +146,232 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        _buildBackground(),
+        SafeArea(
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildGreeting(),
+              // 按首页自身的宽度选择布局（不含侧边导航栏）
+              Expanded(
+                child: LayoutBuilder(builder: (context, constraints) {
+                  final width = constraints.maxWidth;
+                  return _buildScrollBody(
+                    wrapTools: width >= _largeMinWidth.w,
+                    sideBySide: width >= _panelsMinWidth.w,
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 顶部渐变背景：滚到底部时切换为普通背景色
+  Widget _buildBackground() {
+    return ListenableBuilder(
+      listenable: showSchedule,
+      builder: (context, _) => AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+        decoration: BoxDecoration(
+          gradient: WpyTheme.of(context).getGradient(
+              showSchedule.value && !Platform.isWindows
+                  ? WpyColorSetKey.primaryGradient
+                  : WpyColorSetKey.gradientPrimaryBackground),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGreeting() {
+    final nickname = CommonPreferences.lakeNickname.value;
+    final greeting = nickname.isEmpty ? 'HELLO' : 'HELLO, $nickname';
+    return Container(
+      height: 60.h,
+      margin: EdgeInsets.fromLTRB(30.w, 10.h, 30.w, 0),
+      alignment: Alignment.centerLeft,
+      child: ListenableBuilder(
+        listenable: showSchedule,
+        builder: (context, _) => AnimatedDefaultTextStyle(
+          style: showSchedule.value && !Platform.isWindows
+              ? TextUtil.base.bright(context).w400.sp(22)
+              : TextUtil.base.primary(context).w400.sp(22),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+          onEnd: () => useRound.value = showSchedule.value,
+          child: Text(greeting, maxLines: 1, overflow: TextOverflow.ellipsis),
+        ),
+      ),
+    );
+  }
+
+  /// 今日课程在上，下方白色卡片恰好占满一屏，自习室/GPA/考表填满卡片剩余高度
+  /// （不再露出底部的背景色）。手机上与原来一致；较宽时功能卡片换行铺开，
+  /// 足够宽时自习室/GPA/考表三栏并排。
+  Widget _buildScrollBody({bool wrapTools = false, bool sideBySide = false}) {
     return Provider<ScrollSynchronizer>(
       create: (_) => ScrollSynchronizer.fromExist(_sc),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ListenableBuilder(
-              listenable: showSchedule,
-              builder: (context, _) {
-                return AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeIn,
-                    decoration: BoxDecoration(
-                        gradient: WpyTheme.of(context).getGradient(
-                            showSchedule.value && !Platform.isWindows
-                                ? WpyColorSetKey.primaryGradient
-                                : WpyColorSetKey.gradientPrimaryBackground)));
-              }),
-          SafeArea(
-            bottom: false,
-            child: Stack(
+      child: ListenableBuilder(
+        listenable: useRound,
+        builder: (context, child) => ClipRRect(
+          borderRadius: useRound.value
+              ? BorderRadius.vertical(top: Radius.circular(40.r))
+              : BorderRadius.zero,
+          child: child,
+        ),
+        child: ScrollConfiguration(
+          behavior: WPYScrollBehavior(),
+          child: LayoutBuilder(
+            builder: (context, viewport) => ListView(
+              controller: _sc,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 70.h),
-                  child: ListenableBuilder(
-                    listenable: useRound,
-                    builder: (context, oldChild) {
-                      return ClipRRect(
-                        borderRadius: useRound.value
-                            ? BorderRadius.only(
-                                topLeft: Radius.circular(40.r),
-                                topRight: Radius.circular(40.r))
-                            : BorderRadius.zero,
-                        child: oldChild!,
-                      );
-                    },
-                    child: ScrollConfiguration(
-                      behavior: WPYScrollBehavior(),
-                      child: ListView(
-                        controller: _sc,
-                        children: <Widget>[
-                          TodayCoursesWidget(),
-                          AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeIn,
-                              margin: EdgeInsets.only(top: 20.h),
-                              padding: EdgeInsets.only(top: 40.h),
-                              decoration: BoxDecoration(
-                                  color: WpyTheme.of(context)
-                                      .get(WpyColorKey.primaryBackgroundColor),
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(40.r),
-                                      topRight: Radius.circular(40.r))),
-                              child: _functionCardsView()),
-                        ],
-                      ),
+                TodayCoursesWidget(),
+                SizedBox(
+                  height: viewport.maxHeight,
+                  child: _buildSheet(
+                    margin: EdgeInsets.only(top: 20.h),
+                    // 一直延伸到屏幕底部，只有上方是圆角
+                    radius: BorderRadius.vertical(top: Radius.circular(40.r)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 40.h),
+                        ..._buildTools(wrap: wrapTools),
+                        Expanded(
+                          child: sideBySide
+                              ? _buildInfoPanels()
+                              : _buildInfoTabs(),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Container(
-                  height: 60.h,
-                  margin: EdgeInsets.only(left: 30.w, top: 10.h),
-                  alignment: Alignment.centerLeft,
-                  child: ListenableBuilder(
-                      listenable: showSchedule,
-                      builder: (context, lastChild) {
-                        return AnimatedDefaultTextStyle(
-                          style: showSchedule.value && !Platform.isWindows
-                              ? TextUtil.base.bright(context).w400.sp(22)
-                              : TextUtil.base.primary(context).w400.sp(22),
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                          onEnd: () => useRound.value = showSchedule.value,
-                          child: SizedBox(
-                            width: 1.sw - 60.w,
-                            child: Text(
-                              'HELLO${(CommonPreferences.lakeNickname.value == '') ? '' : ', ${CommonPreferences.lakeNickname.value}'}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        );
-                      }),
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// 宽度达到这个值（设计稿单位）时功能卡片换行铺开，不再横向滚动
+  static const _largeMinWidth = 600.0;
+
+  /// 宽度达到这个值时自习室 / GPA / 考表三栏并排（每栏至少一屏手机宽度）
+  static const _panelsMinWidth = 390.0 * 3;
+
+  static const _infoTitles = ['Study Room', 'GPA Curves', 'Exam Detail'];
+
+  List<Widget> get _infoPages =>
+      [MainPageStudyRoomWidget(), GPAPreview(), WpyExamWidget()];
+
+  /// 三栏并排：每栏一个标题 + 占满高度的内容
+  Widget _buildInfoPanels() {
+    final theme = WpyTheme.of(context);
+    final pages = _infoPages;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+          14.w, 0, 14.w, MediaQuery.paddingOf(context).bottom),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < pages.length; i++)
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 10.w),
+                      margin: EdgeInsets.symmetric(vertical: 12.h),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                              color: theme.get(WpyColorKey.warningColor),
+                              width: 4),
+                        ),
+                      ),
+                      child: Text(_infoTitles[i],
+                          style: TextUtil.base.w400
+                              .sp(14)
+                              .copyWith(
+                                  color:
+                                      theme.get(WpyColorKey.basicTextColor))),
+                    ),
+                    Expanded(child: pages[i]),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _functionCardsView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// 功能跳转卡片
-        SliverCardsWidget(CommonPreferences.displayedTool.value),
+  /// 白色圆角卡片
+  Widget _buildSheet(
+      {required Widget child,
+      required BorderRadius radius,
+      EdgeInsets? margin}) {
+    return Container(
+      margin: margin,
+      decoration: BoxDecoration(
+        color: WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
+        borderRadius: radius,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: child,
+    );
+  }
+
+  /// 功能跳转卡片与地图校历
+  List<Widget> _buildTools({bool wrap = false}) => [
+        SliverCardsWidget(CommonPreferences.displayedTool.value, wrap: wrap),
         if (CommonPreferences.showMap.value) const MapAndCalender(),
+      ];
+
+  /// 自习室 / GPA / 考表：标签栏 + 占满剩余高度的内容区。
+  /// 底部留出导航栏的高度（导航栏浮在页面之上）。
+  Widget _buildInfoTabs() {
+    final theme = WpyTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: TabBar(
               controller: _tc,
               dividerHeight: 0,
               labelStyle: TextUtil.base.w400.sp(14),
               labelPadding: EdgeInsets.zero,
-              labelColor: WpyTheme.of(context).get(WpyColorKey.basicTextColor),
-              unselectedLabelColor:
-                  WpyTheme.of(context).get(WpyColorKey.secondaryTextColor),
+              labelColor: theme.get(WpyColorKey.basicTextColor),
+              unselectedLabelColor: theme.get(WpyColorKey.secondaryTextColor),
               indicator: CustomIndicator(
                   left: true,
                   borderSide: BorderSide(
-                      color: WpyTheme.of(context).get(WpyColorKey.warningColor),
-                      width: 4)),
+                      color: theme.get(WpyColorKey.warningColor), width: 4)),
               tabs: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Study Room')),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tab(text: 'GPA Curves')),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Tab(text: 'Exam Detail')),
+                for (final label in _infoTitles)
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child: Tab(text: label)),
               ]),
         ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height - 365.h,
+        Expanded(
           child: TabBarView(
               controller: _tc,
               physics: BouncingScrollPhysics(),
-              children: [
-                // Container(
-                //   width: 1.sw - 60.w,
-                //   height: 300.h,
-                //   child: MainPageStudyRoomWidget(),
-                // ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: MainPageStudyRoomWidget(),
-                ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: GPAPreview(),
-                ),
-                Container(
-                  width: 1.sw - 60.w,
-                  height: 300.h,
-                  child: WpyExamWidget(),
-                ),
-              ]),
+              children: _infoPages),
         ),
+        SizedBox(height: MediaQuery.paddingOf(context).bottom),
       ],
     );
   }
@@ -319,12 +392,43 @@ class SliverCardsWidget extends StatelessWidget {
     // '失物招领'
   ];
 
-  SliverCardsWidget(this.cards)
+  /// 宽屏时换行铺开显示全部卡片（手机上为可拖动排序的横向列表）
+  final bool wrap;
+
+  SliverCardsWidget(this.cards, {this.wrap = false})
       : order = CommonPreferences.sanitizedDisplayOrder();
+
+  Widget _buildItem(BuildContext context, int i) {
+    final cardBean = cards[order[i]];
+    final isWeb = !peiyangLabel.contains(cardBean.label);
+    return WButton(
+      key: ValueKey(cardBean.route),
+      onPressed: () async {
+        if (!isWeb) {
+          Navigator.pushNamed(context, cardBean.route);
+        } else if (await canLaunchUrl(Uri.parse(cardBean.route))) {
+          await launchUrl(Uri.parse(cardBean.route),
+              mode: LaunchMode.externalApplication);
+        } else {
+          ToastProvider.error('请检查网络状态');
+        }
+      },
+      child: generateCard(context, cardBean),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (wrap) {
+      return Padding(
+        padding: EdgeInsets.only(left: 16.h),
+        child: Wrap(children: [
+          for (var i = 0; i < order.length; i++) _buildItem(context, i),
+        ]),
+      );
+    }
     Widget cardList = ReorderableListView.builder(
+      buildDefaultDragHandles: false,
       proxyDecorator: (Widget child, int index, Animation<double> animation) {
         return child;
       },
@@ -333,31 +437,12 @@ class SliverCardsWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       clipBehavior: Clip.none,
       itemCount: order.length,
-      itemBuilder: (context, i) {
-        final cardBean = cards[order[i]];
-        if (!peiyangLabel.contains(cardBean.label)) {
-          return WButton(
-            key: ValueKey(cardBean.route),
-            onPressed: () async {
-              if (await canLaunchUrl(Uri.parse(cardBean.route))) {
-                await launchUrl(Uri.parse(cardBean.route),
-                    mode: LaunchMode.externalApplication);
-              } else {
-                ToastProvider.error('请检查网络状态');
-              }
-            },
-            child: generateCard(context, cardBean),
-          );
-        } else {
-          return WButton(
-            key: ValueKey(cardBean.route),
-            onPressed: () {
-              Navigator.pushNamed(context, cardBean.route);
-            },
-            child: generateCard(context, cardBean),
-          );
-        }
-      },
+      // 与手机上一致：长按卡片拖动排序
+      itemBuilder: (context, i) => ReorderableDelayedDragStartListener(
+        key: ValueKey(cards[order[i]].route),
+        index: i,
+        child: _buildItem(context, i),
+      ),
       onReorderItem: (int oldIndex, int newIndex) {
         final int movedIndex = order.removeAt(oldIndex);
         order.insert(newIndex, movedIndex);

@@ -13,7 +13,6 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 import 'package:we_pei_yang_flutter/feedback/network/post.dart';
-import 'package:we_pei_yang_flutter/feedback/util/splitscreen_util.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/icon_widget.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/long_text_shower.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_text.dart';
@@ -26,6 +25,10 @@ import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart'
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 
 class PostCardNormal extends StatefulWidget {
+  /// 最近一次打开的帖子：宽屏切换平行视界、列表在多列/单列间切换时，
+  /// 列表据此把这条帖子滚动回可见位置，保证阅读连贯
+  static int? lastOpenedPostId;
+
   /// 标准 PostCard
   ///
   /// 包括论坛首页展示的 (outer = true / null) 和 详情页展示的 (outer = false)
@@ -104,10 +107,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
         child: ExpandableText(
           text: post.content,
           maxLines: 8,
-          style: TextUtil.base.NotoSansSC.w400
-              .sp(14)
-              .primary(context)
-              .h(1.6),
+          style: TextUtil.base.NotoSansSC.w400.sp(14).primary(context).h(1.6),
           expand: widget.expandAll,
           buttonIsShown: true,
           isHTML: false,
@@ -122,9 +122,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
 
     /// 头像昵称时间MP已解决
     var avatarAndSolve = SizedBox(
-        height: SplitUtil.w * 32 > SplitUtil.h * 56
-            ? SplitUtil.w * 32
-            : SplitUtil.h * 56,
+        height: 32.w > 56.h ? 32.w : 56.h,
         child: Row(children: [
           IgnorePointer(
             ignoring: !widget.avatarClickable,
@@ -153,11 +151,8 @@ class _PostCardNormalState extends State<PostCardNormal> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: (SplitUtil.sw - SplitUtil.w * 24) / 2 -
-                                  SplitUtil.w * 16,
-                            ),
+                          // 按实际可用宽度省略，卡片放在多列/分栏里也不会溢出
+                          Flexible(
                             child: Text(
                               post.nickname == '' ? '没名字的微友' : post.nickname,
                               maxLines: 1,
@@ -167,14 +162,14 @@ class _PostCardNormalState extends State<PostCardNormal> {
                                   .primary(context),
                             ),
                           ),
-                          SizedBox(width: SplitUtil.w * 4),
+                          SizedBox(width: 4.w),
                           LevelUtil(
                             style: TextUtil.base.bright(context).bold.sp(7),
                             level: post.level.toString(),
                           ),
                         ],
                       ),
-                      SizedBox(height: SplitUtil.h * 4),
+                      SizedBox(height: 4.h),
                       Text(
                         post.createAt == null
                             ? ''
@@ -237,7 +232,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
       if (post.variant != PostVariant.Vote) eTagAndTitle,
       if (post.variant == PostVariant.Vote || post.content.isNotEmpty) content,
       // 行数的区别在内部判断
-      SizedBox(height: SplitUtil.h * 10)
+      SizedBox(height: 10.h)
     ];
 
     /////////////////////////////////////////////////////////
@@ -252,6 +247,7 @@ class _PostCardNormalState extends State<PostCardNormal> {
           if (widget.outer) {
             return GestureDetector(
               onTap: () {
+                PostCardNormal.lastOpenedPostId = post.id;
                 Navigator.pushNamed(
                   context,
                   FeedbackRouter.detail,
@@ -307,96 +303,78 @@ class _PostCardNormalState extends State<PostCardNormal> {
     /////////////////////////////////////////////////////////
   }
 
-  Row _buildTagFooter() {
+  Widget _buildTagFooter() {
     final campus = post.campus;
     final hasCampus = campus > 0 && campus < 3;
+    final iconBox = Container(
+      height: 14,
+      width: 14,
+      alignment: Alignment.center,
+      margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
+      padding: EdgeInsets.symmetric(vertical: 2),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: WpyTheme.of(context).get(WpyColorKey.tagLabelColor)),
+      child: SvgPicture.asset("assets/svg_pics/lake_butt_icons/hashtag.svg"),
+    );
+    // 左侧标签组按剩余空间自适应（Flexible + 省略号），浏览量固定在右侧
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (post.tag != null)
-            TagShowWidget(
-                post.tag!.name,
-                (SplitUtil.sw - SplitUtil.w * 24) / 2 -
-                    (hasCampus ? SplitUtil.w * 100 : SplitUtil.w * 60),
-                post.type,
-                post.tag!.id,
-                0,
-                post.type),
-          if (post.tag != null) SizedBox(width: SplitUtil.w * 8),
-          TagShowWidget(getTypeName(post.type), 100, 0, 0, post.type, 0),
-          if (hasCampus)
-            Container(
-              height: 14,
-              width: 14,
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-              padding: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: WpyTheme.of(context).get(WpyColorKey.tagLabelColor)),
-              child: SvgPicture.asset(
-                  "assets/svg_pics/lake_butt_icons/hashtag.svg"),
-            ),
-          if (hasCampus) SizedBox(width: SplitUtil.w * 2),
-          if (hasCampus)
-            ConstrainedBox(
-              constraints: BoxConstraints(),
-              child: Text(
-                const ['', '卫津路', '北洋园'][campus],
-                style:
-                    TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              if (post.tag != null) ...[
+                Flexible(
+                  flex: 2,
+                  child: TagShowWidget(post.tag!.name, post.type,
+                      post.tag!.id, 0, post.type),
+                ),
+                SizedBox(width: 8.w),
+              ],
+              Flexible(
+                child: TagShowWidget(
+                    getTypeName(post.type), 0, 0, post.type, 0),
               ),
-            ),
-          SizedBox(width: 8),
-          if (post.department != null) ...[
-            Container(
-              height: 14,
-              width: 14,
-              alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(3, 3, 2, 3),
-              padding: EdgeInsets.symmetric(vertical: 2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
-              ),
-              child: SvgPicture.asset(
-                "assets/svg_pics/lake_butt_icons/hashtag.svg",
-              ),
-            ),
-            SizedBox(width: SplitUtil.w * 2),
-            // Text(
-            //   "部门: ",
-            //   style:
-            //       TextUtil.base.NotoSansSC.w400.sp(14).primaryAction(context),
-            // ),
-            ConstrainedBox(
-              constraints: BoxConstraints(),
-              child: Text(
-                post.department!.name,
-                style: TextUtil.base.NotoSansSC.w400
-                    .sp(14)
-                    .primaryAction(context)
-                    .copyWith(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-          SizedBox(width: 8),
-          Spacer(),
-          Text(
-            post.visitCount.toString() + "次浏览",
-            style: TextUtil.base.ProductSans
-                .secondaryInfo(context)
-                .normal
-                .sp(10)
-                .w400,
-          )
-        ]);
+              if (hasCampus) ...[
+                iconBox,
+                SizedBox(width: 2.w),
+                Text(
+                  const ['', '卫津路', '北洋园'][campus],
+                  style: TextUtil.base.NotoSansSC.w400
+                      .sp(14)
+                      .primaryAction(context),
+                ),
+              ],
+              if (post.department != null) ...[
+                SizedBox(width: 8),
+                iconBox,
+                SizedBox(width: 2.w),
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    post.department!.name,
+                    maxLines: 1,
+                    style: TextUtil.base.NotoSansSC.w400
+                        .sp(14)
+                        .primaryAction(context)
+                        .copyWith(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(width: 8),
+        Text(
+          post.visitCount.toString() + "次浏览",
+          style:
+              TextUtil.base.ProductSans.secondaryInfo(context).normal.sp(10).w400,
+        )
+      ],
+    );
   }
+
 
   Row _buildActionFooter() {
     return Row(
@@ -863,7 +841,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(width: SplitUtil.w * 10),
+        SizedBox(width: 10.w),
         IconWidget(
           IconType.bottomLike,
           count: widget.post.likeCount,
@@ -932,7 +910,7 @@ class _BottomLikeFavDislikeState extends State<BottomLikeFavDislike> {
             return widget.post.isDis;
           },
         ),
-        SizedBox(width: SplitUtil.w * 10)
+        SizedBox(width: 10.w)
       ],
     );
   }

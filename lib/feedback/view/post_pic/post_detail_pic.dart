@@ -9,7 +9,6 @@ import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_pic/post_preview_pic.dart';
 import '../../../commons/environment/config.dart';
 import '../../../commons/util/text_util.dart';
-import '../../../main.dart';
 import '../../feedback_router.dart';
 import '../components/widget/round_taggings.dart';
 import '../image_view/image_view_page.dart';
@@ -168,8 +167,9 @@ class _InnerSinglePostPicState extends State<InnerSinglePostPic> {
   }
 
   Widget _buildCollapsedImageView(BuildContext context, Widget image) {
-    return SizedBox(
-      height: (WePeiYangApp.screenWidth * 1.2).clamp(100.0, double.infinity),
+    // 收起状态下按 5:6 的比例显示
+    return AspectRatio(
+      aspectRatio: 1 / 1.2,
       child: ClipRRect(
         borderRadius: BorderRadius.all(Radius.circular(radius)),
         child: Stack(

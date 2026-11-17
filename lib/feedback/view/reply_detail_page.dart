@@ -14,7 +14,6 @@ import 'package:we_pei_yang_flutter/feedback/network/post.dart';
 import 'package:we_pei_yang_flutter/feedback/view/components/normal_comment_card.dart';
 import 'package:we_pei_yang_flutter/feedback/view/post_detail_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
-import 'package:we_pei_yang_flutter/main.dart';
 import 'package:we_pei_yang_flutter/message/model/message_provider.dart';
 import 'package:we_pei_yang_flutter/message/network/message_service.dart';
 
@@ -185,7 +184,7 @@ class _ReplyDetailPageState extends State<ReplyDetailPage> {
                 type: widget.args.type,
               ),
               Container(
-                width: WePeiYangApp.screenWidth - 30.w,
+                margin: EdgeInsets.symmetric(horizontal: 15.w),
                 height: 1,
                 color: WpyTheme.of(context)
                     .get(WpyColorKey.iconAnimationStartColor),

@@ -96,7 +96,7 @@ class TimeFrameWidget extends StatelessWidget {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
                       // 弹出的选择框高度为220，如果超出屏幕高度，则让外部ListView向上jump
-                      if (top + 220 > 1.sh) {
+                      if (top + 220 > MediaQuery.sizeOf(context).height) {
                         // 计算jump的目标位置
                         var jumpPos = min(parentController.offset + 220,
                             parentController.position.maxScrollExtent);
@@ -147,7 +147,7 @@ class TimeFrameWidget extends StatelessWidget {
                     onPressed: () {
                       var renderBox = context.findRenderObject() as RenderBox;
                       var top = renderBox.localToGlobal(Offset.zero).dy;
-                      if (top + 150 > 1.sh) {
+                      if (top + 150 > MediaQuery.sizeOf(context).height) {
                         var jumpPos = min(parentController.offset + 150,
                             parentController.position.maxScrollExtent);
                         var jumpDis = jumpPos - parentController.offset;
@@ -391,7 +391,7 @@ class UnitPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: 0.66.sw,
+        width: 257.4.w,
         height: 150.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
@@ -400,9 +400,9 @@ class UnitPicker extends Dialog {
           elevation: 5,
           child: Center(
             child: Container(
-              width: 0.5.sw,
+              width: 195.w,
               padding: EdgeInsets.all(5.r),
-              margin: EdgeInsets.only(right: 0.05.sw),
+              margin: EdgeInsets.only(right: 19.5.w),
               child: Row(children: children),
             ),
           ),
@@ -541,7 +541,7 @@ class WeekPicker extends Dialog {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
-        width: 0.8.sw,
+        width: 312.w,
         height: 220.h,
         margin: EdgeInsets.only(top: _top + 10.w),
         child: Material(
@@ -553,9 +553,9 @@ class WeekPicker extends Dialog {
             children: [
               Container(
                 height: 150.h,
-                width: 0.65.sw,
+                width: 253.5.w,
                 padding: EdgeInsets.all(10.r),
-                margin: EdgeInsets.only(right: 0.05.sw),
+                margin: EdgeInsets.only(right: 19.5.w),
                 child: Row(children: children),
               ),
               Row(

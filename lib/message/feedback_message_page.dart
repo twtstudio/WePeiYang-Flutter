@@ -821,10 +821,11 @@ class _FloorMessageItemState extends State<FloorMessageItem> {
           children: [
             Row(
               children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 0.3.sw),
+                // 昵称按剩余宽度自适应省略
+                Flexible(
                   child: Text(
                     widget.data.floor.nickname + ' ',
+                    maxLines: 1,
                     style:
                         TextUtil.base.primary(context).bold.sp(16).PingFangSC,
                     overflow: TextOverflow.ellipsis,

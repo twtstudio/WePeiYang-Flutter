@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
+import 'package:we_pei_yang_flutter/commons/widgets/adaptive_viewport.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -51,6 +52,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
   bool showFBDropdown = false;
 
   // double get _safeTop => MediaQuery.of(context).padding.top;
+
+  /// 被底部导航栏遮住的高度：手机布局有悬浮的底部导航栏；
+  /// 宽屏使用侧边导航栏，底部没有遮挡
+  double get _bottomBarInset =>
+      Platform.isWindows || context.windowClass != WindowClass.compact
+          ? 0
+          : 52.h;
   /// 42.h
   static double get searchBarHeight => 42.h;
 
@@ -229,10 +237,11 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
             color: WpyTheme.of(context).get(WpyColorKey.infoTextColor),
           ),
           SizedBox(width: 12.h),
-          Consumer<FbHotTagsProvider>(
+          // 推荐词按搜索框剩余宽度自适应省略
+          Expanded(
+            child: Consumer<FbHotTagsProvider>(
               builder: (_, data, __) => Row(children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 1.sw - 260),
+                    Flexible(
                       child: Text(
                         data.recTag == null ? '搜索发现' : '#${data.recTag?.name}#',
                         overflow: TextOverflow.ellipsis,
@@ -256,8 +265,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             .sp(15),
                       ),
                     ],
-                  ])),
-          Spacer(),
+                  ]),
+            ),
+          ),
           SizedBox(width: 14.h),
         ]),
       ),
@@ -287,14 +297,14 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(width: 0.9.sw, child: _buildSearchBar()),
+                    Expanded(child: _buildSearchBar()),
                     _buildMessageButton()
                   ],
                 ),
                 SizedBox(height: 16),
                 SizedBox(
                   height: tabBarHeight - 14,
-                  width: 1.sw,
+                  width: double.infinity,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -334,7 +344,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
               // 因为上面的空要藏住搜索框
               top: max(MediaQuery.of(context).padding.top + searchBarHeight,
                   searchBarHeight + tabBarHeight),
-              bottom: Platform.isWindows ? 0 : 52.h),
+              bottom: _bottomBarInset),
           child: RefreshSkeleton(),
         ),
       ],
@@ -421,8 +431,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
         onPressed: () {
           Navigator.pushNamed(context, FeedbackRouter.mailbox);
         },
+        // 右侧留出与搜索框左侧相同的边距，未读角标画在图标右上角外侧，不能贴边
         child: Container(
-          margin: EdgeInsets.only(top: 8.h),
+          margin: EdgeInsets.only(top: 8.h, right: 15.w),
           child: count == 0
               ? MailIcon
               : badges.Badge(
@@ -478,7 +489,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                             MediaQuery.of(context).padding.top +
                                 searchBarHeight,
                             searchBarHeight + tabBarHeight),
-                        bottom: Platform.isWindows ? 0 : 52.h),
+                        bottom: _bottomBarInset),
                     child: _buildForumView(LakeUtil.tabList),
                   ),
 
@@ -490,13 +501,13 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Container(width: 0.9.sw, child: _buildSearchBar()),
+                            Expanded(child: _buildSearchBar()),
                             _buildMessageButton()
                           ],
                         ),
                         SizedBox(
                           height: tabBarHeight,
-                          width: 1.sw,
+                          width: double.infinity,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
@@ -574,7 +585,7 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
                           key: _fbKey,
                           maxHeight: MediaQuery.of(context).size.height -
                               calculatedTop -
-                              (Platform.isWindows ? 0 : 52.h) -
+                              _bottomBarInset -
                               MediaQuery.of(context).padding.bottom,
                           onExpandedChanged: (value){
                             setState(() {
@@ -587,7 +598,9 @@ class FeedbackHomePageState extends State<FeedbackHomePage>
 
                   // 发帖按钮 addPost
                   Positioned(
-                    bottom: ScreenUtil().bottomBarHeight + 90.h,
+                    bottom: ScreenUtil().bottomBarHeight +
+                        _bottomBarInset +
+                        38.h,
                     right: 20.w,
                     child: Hero(
                       tag: "addNewPost",
@@ -719,15 +732,18 @@ class FbTagsWrapState extends State<FbTagsWrap>
   Widget build(BuildContext context) {
     var tagsWrap = Consumer<FbDepartmentsProvider>(
       builder: (_, provider, __) {
+        // 左右与搜索框对齐，标签横纵间距一致
         return Padding(
-          padding: EdgeInsets.fromLTRB(12.h, 0, 12.h, 8.h),
+          padding: EdgeInsets.fromLTRB(15.w, 4.h, 15.w, 12.h),
           child: Wrap(
-            spacing: 6,
+            spacing: 8,
+            runSpacing: 8,
             children: List.generate(provider.departmentList.length, (index) {
               return InkResponse(
                 radius: 30,
                 highlightColor: Colors.transparent,
                 child: Chip(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   backgroundColor:
                       WpyTheme.of(context).get(WpyColorKey.tagLabelColor),
                   label: Text(provider.departmentList[index].name,

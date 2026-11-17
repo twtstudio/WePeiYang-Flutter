@@ -50,37 +50,18 @@ class BuildingGrid extends StatelessWidget {
 
   final ScrollController _sc2 = ScrollController();
 
-  void handleDetail(ScrollSynchronizer synchronizer, details) {
-    final dy = details.primaryDelta!;
-    if (!synchronizer.firstAtBottom ||
-        (synchronizer.secondAtTop(_sc2) && dy > 0)) {
-      synchronizer.controller1.jumpTo(
-        (synchronizer.controller1.position.pixels - dy)
-            .clamp(0.0, synchronizer.controller1.position.maxScrollExtent),
-      );
-    } else {
-      _sc2.jumpTo(
-        (_sc2.position.pixels - dy).clamp(0, _sc2.position.maxScrollExtent),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final ScrollSynchronizer synchronizer = Provider.of<ScrollSynchronizer>(
-      context,
-      listen: false,
-    );
-    return GestureDetector(
-      onVerticalDragUpdate: (details) => handleDetail(synchronizer, details),
-      child: GridView.builder(
+    return SynchronizedScrollArea(
+      inner: _sc2,
+      builder: (context, physics) => GridView.builder(
         controller: _sc2,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 5,
+        // 每格最宽 80 设计稿单位：手机上正好一行 5 个，宽屏自动增加列数
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 80.w,
           childAspectRatio: 0.7,
         ),
-        // physics: list.length <= 15 ? NeverScrollableScrollPhysics() : null,
-        physics: NeverScrollableScrollPhysics(),
+        physics: physics,
         itemCount: list.length,
         itemBuilder: (context, index) {
           return Align(
@@ -102,6 +83,8 @@ class _BuildingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget buildingName = Text(
       building.name,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       style: TextUtil.base.Swis.primaryAction(context).w400.sp(10),
       textAlign: TextAlign.center,
     );
@@ -122,20 +105,22 @@ class _BuildingItem extends StatelessWidget {
           arguments: building.id,
         );
       },
+      // 图标可以在格子里收缩，保证文字总能放下
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (building.name != '南开大学')
-            buildingImage
-          else
-            Container(
-              height: 54.h,
-              child: ColoredIcon(
-                key: ValueKey(building.name),
-                StudyroomImages.collectedBuilding,
-                color: Color.fromRGBO(126, 12, 110, 1),
-              ),
-            ),
+          Flexible(
+            child: building.name != '南开大学'
+                ? buildingImage
+                : Container(
+                    height: 54.h,
+                    child: ColoredIcon(
+                      key: ValueKey(building.name),
+                      StudyroomImages.collectedBuilding,
+                      color: Color.fromRGBO(126, 12, 110, 1),
+                    ),
+                  ),
+          ),
           SizedBox(height: 8.h),
           buildingName,
         ],
