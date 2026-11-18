@@ -24,6 +24,7 @@ import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
+import 'package:we_pei_yang_flutter/canteen/view/canteen_panel.dart';
 
 import 'dialogs/acid_check_dialog.dart';
 import 'dialogs/activity_dialog.dart';
@@ -75,7 +76,7 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tc = TabController(length: 3, vsync: this);
+    _tc = TabController(length: _infoTitles.length, vsync: this);
     _sc.addListener(_handleScroll);
     //隐私政策部分挪到了app一打开就会显示的部分（login_page.dart里面
     // if (CommonPreferences.firstPrivacy.value == true) {
@@ -270,12 +271,16 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   static const _largeMinWidth = 600.0;
 
   /// 宽度达到这个值时自习室 / GPA / 考表三栏并排（每栏至少一屏手机宽度）
-  static const _panelsMinWidth = 390.0 * 3;
+  static double get _panelsMinWidth => 390.0 * _infoTitles.length;
 
-  static const _infoTitles = ['Study Room', 'GPA Curves', 'Exam Detail'];
+  static const _infoTitles = ['Study Room', 'GPA Curves', 'Exam Detail','Canteen',];
 
-  List<Widget> get _infoPages =>
-      [MainPageStudyRoomWidget(), GPAPreview(), WpyExamWidget()];
+  List<Widget> get _infoPages => [
+    MainPageStudyRoomWidget(),
+    GPAPreview(),
+    WpyExamWidget(),
+    const CanteenPanel(),
+  ];
 
   /// 三栏并排：每栏一个标题 + 占满高度的内容
   Widget _buildInfoPanels() {
@@ -353,10 +358,12 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.w),
           child: TabBar(
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              labelPadding: EdgeInsets.symmetric(horizontal: 10.w),
               controller: _tc,
               dividerHeight: 0,
               labelStyle: TextUtil.base.w400.sp(14),
-              labelPadding: EdgeInsets.zero,
               labelColor: theme.get(WpyColorKey.basicTextColor),
               unselectedLabelColor: theme.get(WpyColorKey.secondaryTextColor),
               indicator: CustomIndicator(
