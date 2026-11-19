@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' show Widget;
 import "package:flutter/src/widgets/basic.dart";
 import 'package:we_pei_yang_flutter/home/view/cas_qr_page.dart';
+import 'package:we_pei_yang_flutter/canteen/view/canteen_page.dart';
 
 import 'view/home_page.dart';
 import 'view/lost_and_found_home_page.dart';
@@ -12,6 +13,7 @@ import 'view/web_views/news_page.dart';
 import 'view/web_views/notices_page.dart';
 import 'view/web_views/wiki_page.dart';
 
+
 class HomeRouter {
   static String home = 'home/home';
   static String wiki = 'home/wiki';
@@ -22,6 +24,7 @@ class HomeRouter {
   static String news = 'home/news';
   static String courseReview = 'home/courseReview';
   static String casQR = 'home/casQR';
+  static const canteen = 'home/canteen';
   static String game = ''; //'home/game'(虚空索引一下.jpg
   static final Map<String, Widget Function(dynamic arguments)> routers = {
     home: (args) => HomePage(args),
@@ -33,5 +36,6 @@ class HomeRouter {
     courseReview: (_) => CourseReviewPage(),
     game: (_) => GamePage(),
     casQR: (_) => CasQRPage(),
+    canteen: (_) => const CanteenPage(),
   };
 }
