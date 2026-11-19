@@ -396,6 +396,7 @@ class SliverCardsWidget extends StatelessWidget {
   static List<String> peiyangLabel = [
     '课程表',
     '入校码',
+    '食堂',
     '新闻网',
     '课评网',
     '地图·校历',

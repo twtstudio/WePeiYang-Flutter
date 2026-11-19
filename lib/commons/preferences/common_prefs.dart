@@ -173,6 +173,14 @@ class CommonPreferences {
   static final toolbarOrderMigrated =
       PrefsBean<bool>('toolbarOrderMigrated', false);
 
+  static CardBean get canteenTool => CardBean(
+    'assets/images/lake_butt_icons/canteen.png',
+    24.w,
+    '食堂',
+    'Canteen',
+    HomeRouter.canteen,
+  );
+
   static final displayedTool = CardBeanListPrefs('displayedTool', [
     CardBean("assets/svg_pics/lake_butt_icons/daily.png", 21.w, '课程表',
         'Schedule', ScheduleRouter.course),
@@ -189,7 +197,7 @@ class CommonPreferences {
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '成绩', 'GPA',
         GPARouter.gpa),
     CardBean('assets/svg_pics/lake_butt_icons/gpa.png', 24.w, '失物招领', 'laf',
-        HomeRouter.laf),
+        HomeRouter.laf),    canteenTool,
     // CardBean('assets/svg_pics/lake_butt_icons/game.png', 33.w, '小游戏', 'Game',
     //     HomeRouter.game)
   ]);
@@ -231,6 +239,21 @@ class CommonPreferences {
     }
 
     if (order.isEmpty && toolsLength > 0) order.add(0);
+
+    if (!sharedPref.containsKey('displayOrder')) {
+      final tools = displayedTool.value;
+      final qrIndex =
+      tools.indexWhere((tool) => tool.route == HomeRouter.casQR);
+      final canteenIndex =
+      tools.indexWhere((tool) => tool.route == HomeRouter.canteen);
+      final qrPosition = order.indexOf(qrIndex);
+
+      if (qrPosition >= 0 &&
+          canteenIndex >= 0 &&
+          !order.contains(canteenIndex)) {
+        order.insert(qrPosition + 1, canteenIndex);
+      }
+    }
 
     final sanitizedOrder = order.join(',');
     if (sanitizedOrder != rawOrder) displayOrder.value = sanitizedOrder;
