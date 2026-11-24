@@ -41,6 +41,7 @@ class _TjuBindPageState extends State<TjuBindPage> {
     CommonPreferences.tjuuname.value = tjuuname;
     CommonPreferences.tjupasswd.value = tjupasswd;
     CommonPreferences.isBindTju.value = true;
+
     context.read<CourseProvider>().refreshCourseByBackend(context);
     setState(() {});
   }

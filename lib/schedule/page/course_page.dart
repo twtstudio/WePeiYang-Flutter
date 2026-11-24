@@ -37,6 +37,7 @@ class CoursePage extends StatefulWidget {
 }
 
 class _CoursePageState extends State<CoursePage> {
+  static bool _firstEnter=true;
   /// 进入课程表页面后重设选中周并自动刷新自定义课程
   _CoursePageState() {
     var provider =
@@ -69,8 +70,14 @@ class _CoursePageState extends State<CoursePage> {
       // 绑定
       if (!CommonPreferences.isBindTju.value) {
         Navigator.pushNamed(context, AuthRouter.tjuBind);
+        return;
+      }
+      if(_firstEnter) {
+        context.read<CourseProvider>().refreshCourseByBackend(context);
+        _firstEnter=false;
       }
     });
+
   }
 
   ///生成当前显示页面课程表截图

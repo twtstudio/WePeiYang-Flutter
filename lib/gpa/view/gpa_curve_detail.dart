@@ -156,6 +156,7 @@ class _GPACurveState extends State<GPACurve>
     super.initState();
     _popupCardColor = widget._gpaColors[3];
     _popupTextColor = widget._gpaColors[0];
+
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
+import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam.dart';
 import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
 
@@ -36,6 +37,11 @@ class _ExamPageState extends State<ExamPage> {
       // 绑定办公网判断
       if (!CommonPreferences.isBindTju.value) {
         Navigator.pushNamed(context, AuthRouter.tjuBind);
+        return;
+      }
+      if(WPYPage.examDetailFirstLoad) {
+        context.read<ExamProvider>().refreshExamByBackend(context);
+        WPYPage.examDetailFirstLoad=false;
       }
     });
   }

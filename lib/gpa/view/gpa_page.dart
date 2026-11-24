@@ -15,6 +15,7 @@ import 'package:we_pei_yang_flutter/gpa/model/gpa_model.dart';
 import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/classes_need_vpn_dialog.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
+import 'package:we_pei_yang_flutter/home/view/wpy_page.dart';
 
 import '../../commons/themes/wpy_theme.dart';
 import '../../commons/widgets/w_button.dart';
@@ -42,6 +43,11 @@ class _GPAPageState extends State<GPAPage> {
       // 绑定办公网判断
       if (!CommonPreferences.isBindTju.value) {
         Navigator.pushNamed(context, AuthRouter.tjuBind);
+        return;
+      }
+      if(WPYPage.GPAFirstLoad) {
+        context.read<GPANotifier>().refreshGPABackend(context);
+        WPYPage.GPAFirstLoad=false;
       }
     });
   }

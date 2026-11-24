@@ -19,8 +19,11 @@ import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/scroll_synchronizer.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
+import 'package:we_pei_yang_flutter/gpa/model/gpa_notifier.dart';
 import 'package:we_pei_yang_flutter/gpa/view/gpa_curve_detail.dart';
 import 'package:we_pei_yang_flutter/message/feedback_message_page.dart';
+import 'package:we_pei_yang_flutter/schedule/model/exam_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/page/exam_page.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_course_widget.dart';
 import 'package:we_pei_yang_flutter/schedule/view/wpy_exam_widget.dart';
 import 'package:we_pei_yang_flutter/studyroom/view/widget/main_page_widget.dart';
@@ -30,6 +33,8 @@ import 'dialogs/activity_dialog.dart';
 import 'map_calendar_page.dart';
 
 class WPYPage extends StatefulWidget {
+  static bool GPAFirstLoad=false;
+  static bool examDetailFirstLoad=false;
   @override
   WPYPageState createState() => WPYPageState();
 }
@@ -54,6 +59,20 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
         showSchedule.value == false) showSchedule.value = true;
   }
 
+  void _autoRefresh(){
+    if(CommonPreferences.isBindTju.value&&_tc.index==1&&WPYPage.GPAFirstLoad){
+      WPYPage.GPAFirstLoad=false;
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        context.read<GPANotifier>().refreshGPABackend(context);
+      });
+    }else if(CommonPreferences.isBindTju.value&&_tc.index==2&&WPYPage.examDetailFirstLoad){
+      WPYPage.examDetailFirstLoad=false;
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        context.read<ExamProvider>().refreshExamByBackend(context);
+      });
+    }
+  }
+
   Future<void> showActivityDialog(List<BannerPic> banners) async {
     if (!mounted || banners.isEmpty) return;
     await showDialog(
@@ -75,8 +94,14 @@ class WPYPageState extends State<WPYPage> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tc = TabController(length: 3, vsync: this);
+    if(CommonPreferences.isBindTju.value){
+      WPYPage.GPAFirstLoad=true;
+      WPYPage.examDetailFirstLoad=true;
+    }
+    _tc = TabController(length: 3, vsync: this)
+      ..addListener(_autoRefresh);
     _sc.addListener(_handleScroll);
+    
     //隐私政策部分挪到了app一打开就会显示的部分（login_page.dart里面
     // if (CommonPreferences.firstPrivacy.value == true) {
     //   rootBundle.loadString('privacy/privacy_content.md').then((str) {
