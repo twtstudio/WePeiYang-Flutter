@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import Flutter
 import WidgetKit
+import UserNotifications
 
 fileprivate struct KGTInfo {
     static let kGtAppId = "43HGFmIKsnAmjrjDLr60X4"
@@ -13,6 +14,12 @@ fileprivate struct KGTInfo {
 @objc
 class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
     var flutterChannels: [WChannel] = []
+
+    var pushAppId: String { KGTInfo.kGtAppId }
+
+    func startPushSdk() {
+        GeTuiSdk.start(withAppId: KGTInfo.kGtAppId, appKey: KGTInfo.kGtAppKey, appSecret: KGTInfo.kGtAppSecret, delegate: self)
+    }
 
     override func application(
         _ application: UIApplication,
@@ -29,12 +36,9 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
         UMCommonSwift.setLogEnabled(bFlag: false)
         UMCommonSwift.initWithAppkey(appKey: "605440876ee47d382b8b74c3", channel: "App Store")
 
-        // [ GTSDK ]：使用APPID/APPKEY/APPSECRENT启动个推
-        GeTuiSdk.start(withAppId: KGTInfo.kGtAppId, appKey: KGTInfo.kGtAppKey, appSecret: KGTInfo.kGtAppSecret, delegate: self)
-        // [ GTSDK ]: 注册远程通知
-        GeTuiSdk.registerRemoteNotification([.alert, .badge, .sound])
-
         GeneratedPluginRegistrant.register(with: self)
+        // Capture cold-start taps before login/Flutter initializes the SDK.
+        UNUserNotificationCenter.current().delegate = self
         
         if let shortcutItem = launchOptions?[.shortcutItem] as? UIApplicationShortcutItem {
             // 延迟1.5秒执行，等app初始化好
@@ -45,6 +49,22 @@ class AppDelegate: FlutterAppDelegate, GeTuiSdkDelegate {
             }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+
+    override func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                         didReceive response: UNNotificationResponse,
+                                         withCompletionHandler completionHandler: @escaping () -> Void) {
+        IosPushService.shared.receiveClick(response)
+        super.userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
+    }
+
+    override func application(_ app: UIApplication, open url: URL,
+                              options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        if url.scheme == "wpy", url.host == "wpy.app" {
+            IosPushService.shared.enqueue(url.absoluteString)
+            return true
+        }
+        return super.application(app, open: url, options: options)
     }
 
     override func applicationWillResignActive(_ application: UIApplication) {

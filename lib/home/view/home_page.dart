@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // 检查当前是否有未处理的事件；放在 CID 等待之前，避免跳转被拖住。
       checkEventList(context);
 
-      // The native callback/WorkManager path owns registration. Waiting here
-      // only ensures vendor channels have time to produce a CID before the
+      // Registration is driven by CID callbacks (Android also uses WorkManager).
+      // Waiting here gives vendor channels time to produce a CID before the
       // rest of the home page starts loading.
       if (manager.openPush) await manager.waitForCid();
       // A notification can replace this home while CID initialization awaits.

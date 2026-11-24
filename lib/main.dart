@@ -16,7 +16,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/colored_icon.dart';
-import 'package:we_pei_yang_flutter/commons/widgets/wpy_pic.dart';
 import 'package:we_pei_yang_flutter/studyroom/model/studyroom_provider.dart';
 import 'package:we_pei_yang_flutter/xiaotian/model/xiaotian_state.dart';
 import 'package:window_manager/window_manager.dart';
@@ -26,6 +25,7 @@ import 'auth/network/message_service.dart';
 import 'auth/network/splash_service.dart';
 import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
+import 'commons/channel/push/ios_notification_target.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
 import 'commons/environment/config.dart';
@@ -190,7 +190,7 @@ final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
 void _listenForNativeEvents(BuildContext context) {
-  if (!Platform.isAndroid) return;
+  if (!Platform.isAndroid && !Platform.isIOS) return;
   _messageChannel.setMethodCallHandler((call) async {
     switch (call.method) {
       case 'eventChanged':
@@ -198,6 +198,7 @@ void _listenForNativeEvents(BuildContext context) {
           if (!context.mounted) return;
           checkEventList(context);
         });
+        WidgetsBinding.instance.ensureVisualUpdate();
         break;
       default:
         print('No action for ${call.method}');
@@ -222,15 +223,19 @@ class IntentEvent {
 bool _splashFlowPending = false;
 
 Future<void> checkEventList(BuildContext context) async {
-  if (Platform.isIOS) return;
+  // Leave iOS cold-start notifications queued until login has completed.
+  if (Platform.isIOS && CommonPreferences.token.value.isEmpty) return;
   final navigator = WePeiYangApp.navigatorState.currentState;
   if (navigator == null) return;
   final defer = _splashFlowPending && !WePeiYangApp.initialNavigationDone;
   if (defer) return;
 
   try {
-    final eventMap =
+    var eventMap =
         await _messageChannel.invokeMapMethod<String, dynamic>("getLastEvent");
+    if (Platform.isIOS && eventMap?['event'] == 8) {
+      eventMap = iosNotificationEvent(eventMap?['data']);
+    }
     if (eventMap == null) {
       return;
     }

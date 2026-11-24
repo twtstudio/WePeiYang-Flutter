@@ -1,23 +1,33 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart'
+    show AuthDio;
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 
 import 'push_intent.dart';
+import 'ios_push_registration.dart';
 import 'request_push_dialog.dart';
 
 export 'push_intent.dart';
 
-class PushManager extends ChangeNotifier {
-  PushManager() {
+class PushManager extends ChangeNotifier with WidgetsBindingObserver {
+  PushManager({bool? isIOS, IosPushRegistration? iosRegistration})
+      : _isIOS = isIOS ?? Platform.isIOS,
+        _registrationOverride = iosRegistration {
+    if (_isIOS) WidgetsBinding.instance.addObserver(this);
     _pushChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'refreshPushPermission':
           openPush = false;
+          break;
+        case 'cidChanged':
+          if (_isIOS && openPush) unawaited(_iosRegistration.refresh());
           break;
         default:
           break;
@@ -26,7 +36,104 @@ class PushManager extends ChangeNotifier {
     });
   }
 
-  bool _openPush = Platform.isIOS ? true : false;
+  final bool _isIOS;
+  final IosPushRegistration? _registrationOverride;
+  bool _openPush = false;
+  bool _iosReady = false;
+  bool _iosBusy = false;
+  bool _disposed = false;
+  int _iosGeneration = 0;
+  late final _iosApi = IosPushDeviceApi(applicationHeaders: {
+    'DOMAIN': AuthDio.DOMAIN,
+    'ticket': AuthDio.ticket,
+  });
+  late final _iosRegistration = _registrationOverride ??
+      IosPushRegistration(
+        currentToken: () => CommonPreferences.token.value,
+        deviceInfo: () async =>
+            await _pushChannel
+                .invokeMapMethod<String, String>('getDeviceInfo') ??
+            {},
+        request: _iosApi.request,
+        // Backend audience environment, independent of the APNs sandbox setting.
+        environment: const String.fromEnvironment('PUSH_ENVIRONMENT',
+            defaultValue: 'RELEASE'),
+      );
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_isIOS &&
+        state == AppLifecycleState.resumed &&
+        _iosReady &&
+        !_iosBusy &&
+        CommonPreferences.token.value.isNotEmpty) {
+      unawaited(_initIos(showDialog: false));
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    ++_iosGeneration;
+    if (_isIOS) {
+      WidgetsBinding.instance.removeObserver(this);
+      _iosRegistration.dispose();
+    }
+    _pushChannel.setMethodCallHandler(null);
+    super.dispose();
+  }
+
+  Future<String?> _activateIos(String method) async {
+    if (_disposed) return null;
+    final generation = ++_iosGeneration;
+    _iosBusy = false;
+    if (CommonPreferences.token.value.isEmpty) return 'refuse open push';
+    _iosReady = true;
+    _iosBusy = true;
+    try {
+      final result = await _pushChannel.invokeMethod<String>(method);
+      if (!_isCurrentIos(generation)) return null;
+      openPush = result == 'open push service success';
+      if (openPush) {
+        unawaited(_iosRegistration.enable());
+      } else if (result == 'refuse open push') {
+        unawaited(_iosRegistration.disable());
+      }
+      return result;
+    } finally {
+      if (_isCurrentIos(generation)) _iosBusy = false;
+    }
+  }
+
+  bool _isCurrentIos(int generation) =>
+      !_disposed && generation == _iosGeneration;
+
+  Future<void> _initIos({bool showDialog = true}) async {
+    final activation = _activateIos('initGeTuiSdk');
+    final generation = _iosGeneration;
+    try {
+      final result = await activation;
+      if (!_isCurrentIos(generation)) return;
+      if (showDialog && result == 'showRequestNotificationDialog') {
+        showRequestNotificationDialog();
+      }
+    } catch (_) {
+      if (_isCurrentIos(generation)) {
+        Log.w('iOS 推送初始化失败，将在回到前台时重试', tag: 'push');
+      }
+    }
+  }
+
+  Future<bool> _stopIos(String method, Duration timeout) async {
+    if (_disposed) return false;
+    ++_iosGeneration;
+    _iosBusy = false;
+    openPush = false;
+    // Invalidates callbacks and captures the token BEFORE any asynchronous wait.
+    final disabled = _iosRegistration.disable();
+    await _pushChannel.invokeMethod<void>(method);
+    return disabled.timeout(timeout, onTimeout: () => false);
+  }
 
   bool get openPush => _openPush;
 
@@ -50,10 +157,6 @@ class PushManager extends ChangeNotifier {
 
   void closeDialogAndRetryTurnOnPush() {
     SmartDialog.dismiss(status: SmartStatus.dialog, tag: Tag);
-    if (Platform.isIOS) {
-      openAppSettings();
-      return;
-    }
     turnOnPushService(() {
       openPush = true;
     }, () {
@@ -73,7 +176,6 @@ class PushManager extends ChangeNotifier {
   }
 
   // 在用户同意隐私协议后，开启个推
-  // TODO: iOS逻辑还可以完善
   Future<void> initGeTuiSdk() async {
     if (Platform.isAndroid) {
       try {
@@ -112,17 +214,22 @@ class PushManager extends ChangeNotifier {
       } catch (e) {
         // TODO
       }
-    } else if (Platform.isIOS) {
-      final canPush = await Permission.notification.isGranted;
-      if (!canPush) showRequestNotificationDialog();
+    } else if (_isIOS) {
+      await _initIos();
     }
   }
 
   // 在设置里，可以手动打开推送
   Future<void> turnOnPushService(
       Function success, Function failure, Function error) async {
+    int? generation;
     try {
-      final result = await _pushChannel.invokeMethod("turnOnPushService");
+      final activation = _isIOS
+          ? _activateIos('turnOnPushService')
+          : _pushChannel.invokeMethod("turnOnPushService");
+      if (_isIOS) generation = _iosGeneration;
+      final result = await activation;
+      if (generation != null && !_isCurrentIos(generation)) return;
       switch (result) {
         case 'open push service success':
           openPush = true;
@@ -134,6 +241,7 @@ class PushManager extends ChangeNotifier {
           break;
       }
     } on PlatformException catch (e) {
+      if (generation != null && !_isCurrentIos(generation)) return;
       switch (e.code) {
         case "OPEN_PUSH_SERVICE_ERROR":
           break;
@@ -150,16 +258,27 @@ class PushManager extends ChangeNotifier {
       }
       error();
     } catch (e) {
+      if (generation != null && !_isCurrentIos(generation)) return;
       error();
     }
   }
 
   Future<void> turnOffPushService(Function success, Function error) async {
+    int? generation;
     try {
-      await _pushChannel.invokeMethod("turnOffPushService");
+      if (_isIOS) {
+        final stopping =
+            _stopIos('turnOffPushService', const Duration(seconds: 3));
+        generation = _iosGeneration;
+        await stopping;
+        if (!_isCurrentIos(generation)) return;
+      } else {
+        await _pushChannel.invokeMethod("turnOffPushService");
+      }
       openPush = false;
       success();
     } catch (e) {
+      if (generation != null && !_isCurrentIos(generation)) return;
       error();
     }
   }
@@ -187,9 +306,9 @@ class PushManager extends ChangeNotifier {
     }
   }
 
-  /// Returns the stable ID for this app installation (Android only).
+  /// Returns the stable ID for this app installation, across account changes.
   Future<String?> getInstallId() async {
-    if (!Platform.isAndroid) return null;
+    if (!Platform.isAndroid && !_isIOS) return null;
     try {
       return await _pushChannel.invokeMethod<String>('getInstallId');
     } catch (e, stack) {
@@ -205,6 +324,14 @@ class PushManager extends ChangeNotifier {
   /// the caller clears local credentials.
   Future<bool> disablePushDevice(
       {Duration timeout = const Duration(seconds: 3)}) async {
+    if (_isIOS) {
+      _iosReady = false;
+      try {
+        return await _stopIos('pausePushService', timeout);
+      } catch (_) {
+        return false;
+      }
+    }
     if (!Platform.isAndroid) return false;
     try {
       final result = await _pushChannel

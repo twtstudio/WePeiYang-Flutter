@@ -12,6 +12,7 @@ enum Channel: CaseIterable {
     case localSetting,
          // 推送
          push,
+         message,
          // 友盟分析
          umengStatistics,
          // 小组件
@@ -32,6 +33,7 @@ extension Channel {
         [
             .localSetting: "local_setting",
             .push: "push",
+            .message: "message",
             .umengStatistics: "umeng_statistics",
             .widget: "widget",
             .theme: "theme",
@@ -49,6 +51,8 @@ extension Channel {
             return localSettingHandler()
         case .push:
             return pushSettingHandler()
+        case .message:
+            return messageHandler()
         case .umengStatistics:
             return umengStatisticsHandler()
         case .widget:
