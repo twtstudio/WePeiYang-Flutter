@@ -412,12 +412,15 @@ class FeedbackService with AsyncTimer {
     return Tuple2(list, response.data['data']['total']);
   }
 
-  static getMyPosts({
+  static void getMyPosts({
     required OnResult<List<Post>> onResult,
     required page,
     required page_size,
     required OnFailure onFailure,
   }) async {
+    if(!CommonPreferences.isLogin.value){
+      return;
+    }
     try {
       var response = await feedbackDio.get(
         'posts/user',
@@ -713,10 +716,13 @@ class FeedbackService with AsyncTimer {
     });
   }
 
-  static getUserInfo({
+  static Future<void> getUserInfo({
     required OnSuccess onSuccess,
     required OnFailure onFailure,
   }) async {
+    if(!CommonPreferences.isLogin.value){
+      return;
+    }
     try {
       var response = await feedbackDio.get('user');
       CommonPreferences.lakeUid.value =
