@@ -33,57 +33,66 @@ class ClassesService {
   static String semesterId = '';
 
   static final spiderDio = _SpiderDio();
-
+  static bool _inProgress =false;
   /// 获取办公网GPA、课表、考表信息
   /// [code] 为空说明用户没有手动填图形验证码
   static Future<void> getClasses(BuildContext context, {String? code}) async {
-    var name = CommonPreferences.tjuuname.value;
-    var pw = CommonPreferences.tjupasswd.value;
-    await login(name, pw, code: code);
-    var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
-    var courseProvider = Provider.of<CourseProvider>(context, listen: false);
-    var examProvider = Provider.of<ExamProvider>(context, listen: false);
-    Future.sync(() async {
-      var mtx = Mutex();
+    if(_inProgress)return;
+    _inProgress=true;
+    ToastProvider.running("刷新数据中……");
+    try {
+      var name = CommonPreferences.tjuuname.value;
+      var pw = CommonPreferences.tjupasswd.value;
+      await login(name, pw, code: code);
+      var gpaProvider = Provider.of<GPANotifier>(context, listen: false);
+      var courseProvider = Provider.of<CourseProvider>(context, listen: false);
+      var examProvider = Provider.of<ExamProvider>(context, listen: false);
+      await Future.sync(() async {
+        var mtx = Mutex();
 
-      await mtx.acquire();
-      gpaProvider.refreshGPA(
-        onSuccess: () {
-          mtx.release();
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-          mtx.release();
-        },
-      );
+        await mtx.acquire();
+        gpaProvider.refreshGPA(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
 
-      await mtx.acquire();
-      courseProvider.refreshCourse(
-        onSuccess: () {
-          mtx.release();
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-          mtx.release();
-        },
-      );
+        await mtx.acquire();
+        courseProvider.refreshCourse(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
 
-      await mtx.acquire();
-      examProvider.refreshExam(
-        onSuccess: () {
-          mtx.release();
-        },
-        onFailure: (e) {
-          ToastProvider.error(e.error.toString());
-          mtx.release();
-        },
-      );
+        await mtx.acquire();
+        examProvider.refreshExam(
+          onSuccess: () {
+            mtx.release();
+          },
+          onFailure: (e) {
+            ToastProvider.error(e.error.toString());
+            mtx.release();
+          },
+        );
 
-      await mtx.acquire();
-      ExperimentService.refreshExperiment(courseProvider)
-          .whenComplete(() => mtx.release());
-      ToastProvider.success("已刷新！");
-    });
+        await mtx.acquire();
+        ExperimentService.refreshExperiment(courseProvider)
+            .whenComplete(() => mtx.release());
+        ToastProvider.success("已刷新！");
+        _inProgress = false;
+      });
+    }catch(e){
+      _inProgress=false;
+      rethrow;
+    }
   }
 
   /// 检查办公网连通

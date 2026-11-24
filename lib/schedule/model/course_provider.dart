@@ -181,7 +181,6 @@ class CourseProvider with ChangeNotifier {
   ///   --false: 仅使用后端ocr接口识别验证码
   /// 若失败则弹出TjuRebindDialog，用户手动填写图形验证码
   void refreshCourseByBackend(BuildContext context) async {
-    ToastProvider.running("刷新数据中……");
     try {
       // 後端爬蟲沒了 天天出問題 暫時關閉 一方之後可能要用先這樣臨時處理
       // if (CommonPreferences.useClassesBackend.value && false) {
