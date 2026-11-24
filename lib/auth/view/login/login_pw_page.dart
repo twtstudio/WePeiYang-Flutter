@@ -7,6 +7,7 @@ import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
 import 'package:we_pei_yang_flutter/commons/token/lake_token_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
+import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
 
 class LoginPwWidget extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class _LoginPwWidgetState extends State<LoginPwWidget> with AuthLoadingMixin {
     super.dispose();
   }
 
-  void _onLoginResult(Map result) {
+  Future<void> _onLoginResult(Map result) async {
     stopLoading();
     if (!mounted) return;
     if (result['telephone'] == null || result['email'] == null) {
@@ -44,6 +45,9 @@ class _LoginPwWidgetState extends State<LoginPwWidget> with AuthLoadingMixin {
       // 第一次登录的时候载入用户资料
       // TODO: 应该统一管理 token 而不是想到刷新一下就重新请求
       LakeTokenManager().refreshToken();
+      await FeedbackService.getUserInfo(onSuccess: (){}, onFailure:(e) {
+        ToastProvider.error(e.error.toString());
+      });
       Navigator.pushNamedAndRemoveUntil(
           context, HomeRouter.home, (route) => false);
     }
