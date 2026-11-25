@@ -37,17 +37,24 @@ class _LoginPwWidgetState extends State<LoginPwWidget> with AuthLoadingMixin {
   }
 
   Future<void> _onLoginResult(Map result) async {
-    stopLoading();
     if (!mounted) return;
     if (result['telephone'] == null || result['email'] == null) {
+      stopLoading();
       Navigator.pushNamed(context, AuthRouter.addInfo);
     } else {
       // 第一次登录的时候载入用户资料
       // TODO: 应该统一管理 token 而不是想到刷新一下就重新请求
-      LakeTokenManager().refreshToken();
-      await FeedbackService.getUserInfo(onSuccess: (){}, onFailure:(e) {
-        ToastProvider.error(e.error.toString());
-      });
+      try {
+        await LakeTokenManager().refreshToken();
+        await FeedbackService.getUserInfo(onSuccess: () {}, onFailure: (e) {
+          ToastProvider.error(e.error.toString());
+        });
+      } catch (e) {
+        ToastProvider.error(e.toString());
+      } finally {
+        stopLoading();
+      }
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, HomeRouter.home, (route) => false);
     }

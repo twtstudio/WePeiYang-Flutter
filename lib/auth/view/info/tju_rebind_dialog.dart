@@ -37,6 +37,7 @@ class _TjuRebindWidget extends StatefulWidget {
 
 class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   String captcha = '';
+  bool _submitting = false;
 
   TextEditingController codeController = TextEditingController();
   final GlobalKey<CaptchaWidgetState> captchaKey = GlobalKey();
@@ -57,21 +58,27 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
   }
 
   void _bind() async {
+    if (_submitting) return;
     FocusScope.of(context).requestFocus(FocusNode());
     if (captcha == '') {
       ToastProvider.error('验证码不能为空');
       return;
     }
+    setState(() => _submitting = true);
     try {
       await ClassesService.getClasses(context, code: captcha);
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     } on DioException catch (e) {
       var str = e.error.toString();
       if (str == '网络连接超时') str = '请连接校园网后再次尝试';
       ToastProvider.error(str);
+      if (mounted) {
+        captcha = '';
+        codeController.clear();
+        captchaKey.currentState?.refresh();
+      }
     } finally {
-      codeController.clear();
-      captchaKey.currentState?.refresh();
+      if (mounted) setState(() => _submitting = false);
     }
   }
 
@@ -142,7 +149,7 @@ class _TjuRebindWidgetState extends State<_TjuRebindWidget> {
             width: 400,
             margin: const EdgeInsets.fromLTRB(25, 30, 25, 10),
             child: ElevatedButton(
-              onPressed: _bind,
+              onPressed: _submitting ? null : _bind,
               child: Text('登录',
                   style: TextUtil.base.regular.reverse(context).sp(13)),
               style: ButtonStyle(

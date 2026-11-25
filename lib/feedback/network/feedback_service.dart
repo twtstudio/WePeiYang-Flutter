@@ -418,9 +418,7 @@ class FeedbackService with AsyncTimer {
     required page_size,
     required OnFailure onFailure,
   }) async {
-    if(!CommonPreferences.isLogin.value){
-      return;
-    }
+    if (!CommonPreferences.isLogin.value) return;
     try {
       var response = await feedbackDio.get(
         'posts/user',
@@ -720,9 +718,7 @@ class FeedbackService with AsyncTimer {
     required OnSuccess onSuccess,
     required OnFailure onFailure,
   }) async {
-    if(!CommonPreferences.isLogin.value){
-      return;
-    }
+    if (!CommonPreferences.isLogin.value) return;
     try {
       var response = await feedbackDio.get('user');
       CommonPreferences.lakeUid.value =
