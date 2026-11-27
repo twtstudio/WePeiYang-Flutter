@@ -24,7 +24,10 @@ import 'package:we_pei_yang_flutter/auth/view/user/about_twt_page.dart';
 import 'package:we_pei_yang_flutter/auth/view/user/debug_page.dart';
 
 import 'view/message/user_mails_page.dart';
+import 'view/settings/animation_setting_page.dart';
+import 'view/settings/appearance_setting_page.dart';
 import 'view/settings/debug_info_page.dart';
+import 'view/settings/home_display_setting_page.dart';
 import 'view/settings/theme_setting.dart';
 
 class AuthRouter {
@@ -53,6 +56,9 @@ class AuthRouter {
   /// 个人页 & 设置页
   static String setting = 'setting/home';
   static String generalSetting = 'setting/general_setting';
+  static const appearanceSetting = 'setting/appearance';
+  static const homeDisplaySetting = 'setting/home_display';
+  static const animationSetting = 'setting/animation';
   static String shieldSetting = 'setting/shield_setting';
   static String languageSetting = 'setting/language_setting';
   static String scheduleSetting = 'setting/schedule_setting';
@@ -95,9 +101,12 @@ class AuthRouter {
     avatarCrop: (_) => AvatarCropPage(),
     avatarBox: (_) => AvatarBoxPage(),
     setting: (_) => SettingPage(),
-    generalSetting: (_) => GeneralSettingPage(),
+    generalSetting: (_) => const GeneralSettingPage(),
+    appearanceSetting: (_) => const AppearanceSettingPage(),
+    homeDisplaySetting: (_) => const HomeDisplaySettingPage(),
+    animationSetting: (_) => const AnimationSettingPage(),
     shieldSetting: (_) => ShieldSettingPage(),
-    scheduleSetting: (_) => ScheduleSettingPage(),
+    scheduleSetting: (_) => const ScheduleSettingPage(),
     mailbox: (_) => UserMailboxPage(),
     aboutTwt: (_) => AboutTwtPage(),
     debug: (_) => DebugPage(),

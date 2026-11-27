@@ -1,55 +1,28 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:flutter/scheduler.dart' show timeDilation;
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:we_pei_yang_flutter/auth/auth_router.dart';
 import 'package:we_pei_yang_flutter/commons/channel/push/push_manager.dart';
-import 'package:we_pei_yang_flutter/commons/font/font_reload_sheet.dart';
-import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
-import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
-import 'package:we_pei_yang_flutter/commons/util/router_manager.dart';
 import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
-import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
-import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
 
-import '../../../commons/local/animation_provider.dart';
-import '../../../commons/themes/wpy_theme.dart';
-import '../../../commons/widgets/w_button.dart';
-import '../../../gpa/model/gpa_notifier.dart';
+import 'app_settings_widgets.dart';
 
 class GeneralSettingPage extends StatefulWidget {
+  const GeneralSettingPage({super.key});
+
   @override
-  _GeneralSettingPageState createState() => _GeneralSettingPageState();
+  State<GeneralSettingPage> createState() => _GeneralSettingPageState();
 }
 
 class _GeneralSettingPageState extends State<GeneralSettingPage> {
   late Future<int> _cacheSize;
-
-  /// 预见性返回动画只在 Android 14（API 34）及以上生效，其它平台不显示该选项
-  bool _supportsPredictiveBack = false;
-
-  static const _deviceChannel = MethodChannel('com.twt.service/device_info');
+  bool _clearingCache = false;
 
   @override
   void initState() {
     super.initState();
     _cacheSize = StorageUtil.getTemporaryCacheSize();
-    _checkPredictiveBack();
-  }
-
-  Future<void> _checkPredictiveBack() async {
-    if (!Platform.isAndroid) return;
-    try {
-      final info = await _deviceChannel.invokeMethod<Map>('getDeviceInfo');
-      final sdkInt = int.tryParse('${info?['sdkInt']}') ?? 0;
-      if (mounted && sdkInt >= 34) {
-        setState(() => _supportsPredictiveBack = true);
-      }
-    } catch (_) {
-      // 获取不到系统版本时不显示该选项
-    }
   }
 
   String _formatCacheSize(int bytes) {
@@ -63,928 +36,114 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
     return '${size.toStringAsFixed(unit == 0 ? 0 : 1)} ${units[unit]}';
   }
 
+  Future<void> _clearCache() async {
+    setState(() => _clearingCache = true);
+    ToastProvider.running('正在清除缓存...');
+    try {
+      final cleared = await StorageUtil.clearTemporaryCache();
+      if (cleared) {
+        ToastProvider.success('应用缓存已清除');
+      } else {
+        ToastProvider.error('部分缓存正在使用，未能完全清除');
+      }
+    } catch (e) {
+      ToastProvider.error('清除缓存失败: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _clearingCache = false;
+          _cacheSize = StorageUtil.getTemporaryCacheSize();
+        });
+      }
+    }
+  }
+
+  void _changePush(bool value) {
+    final pushManager = context.read<PushManager>();
+    if (value) {
+      pushManager.turnOnPushService(
+        () => ToastProvider.success('开启推送成功'),
+        () => ToastProvider.success('开启推送需要通知权限'),
+        () => ToastProvider.error('打开失败'),
+      );
+    } else {
+      pushManager.turnOffPushService(
+        () => ToastProvider.success('关闭推送成功'),
+        () => ToastProvider.error('关闭失败'),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = TextUtil.base.bold.sp(14).oldListGroupTitle(context);
-    final hintTextStyle = TextUtil.base.regular.sp(12).oldHint(context);
-    final arrow = Icon(Icons.arrow_forward_ios,
-        color: WpyTheme.of(context).get(WpyColorKey.oldListActionColor),
-        size: 22);
-    final mainTextStyle = TextUtil.base.bold.sp(14).oldThirdAction(context);
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: WpyTheme.of(context).brightness.uiOverlay.copyWith(
-          systemNavigationBarColor:
-              WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor)),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('应用设置',
-              style: TextUtil.base.bold.sp(16).oldActionColor(context)),
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor:
-              WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-          leading: Padding(
-            padding: EdgeInsets.only(left: 15.w),
-            child: WButton(
-              child: Icon(Icons.arrow_back,
-                  color: WpyTheme.of(context).get(WpyColorKey.oldActionColor),
-                  size: 32),
-              onPressed: () => Navigator.pop(context),
+    final openPush = context.select((PushManager manager) => manager.openPush);
+    return AppSettingsPage(
+      title: '应用设置',
+      children: [
+        AppSettingsSection(
+          title: '外观与主页',
+          children: [
+            AppSettingsLink(
+              title: '主题与外观',
+              subtitle: '主题、导航栏自定义、字体文件',
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.appearanceSetting),
             ),
-          ),
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+            AppSettingsLink(
+              title: '主页展示定制',
+              subtitle: '地图校历、GPA、小天老师、分区顺序',
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.homeDisplaySetting),
+            ),
+          ],
         ),
-        backgroundColor:
-            WpyTheme.of(context).get(WpyColorKey.secondaryBackgroundColor),
-        body: SafeArea(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            children: [
-              SizedBox(height: 15.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('通用', style: titleTextStyle),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 20.h, 15.w, 20.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () => showFontReloadSheet(context),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('重新加载字体文件', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text('查看下载进度与文件位置', style: hintTextStyle),
-                          ],
-                        ),
-                      ),
-                      arrow,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AuthRouter.feedbackTabOrder);
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('论坛分区顺序', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text('拖动调整湖底、校务等分区', style: hintTextStyle),
-                          ],
-                        ),
-                      ),
-                      arrow,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('底栏显示小天老师', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('默认开启', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: CommonPreferences.showXiaotianTab.value,
-                      onChanged: (value) {
-                        setState(() {
-                          CommonPreferences.showXiaotianTab.value = value;
-                          CommonPreferences.showXiaotianTabNotifier.value =
-                              value;
-                        });
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('主页显示校园地图和校历', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('默认关闭', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: CommonPreferences.showMap.value,
-                      onChanged: (value) {
-                        setState(() => CommonPreferences.showMap.value = value);
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('主页显示GPA', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('默认关闭', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: !CommonPreferences.hideGPA.value,
-                      onChanged: (value) {
-                        setState(
-                            () => CommonPreferences.hideGPA.value = !value);
-                        context.read<GPANotifier>().hideGPA = !value;
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              // SizedBox(height: 10.h),
-              // Container(
-              //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-              //   decoration: BoxDecoration(
-              //     color:
-              //         WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-              //     borderRadius: BorderRadius.circular(12.r),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       Expanded(
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text('开启深色模式', style: mainTextStyle),
-              //             SizedBox(height: 3.h),
-              //             Text('Beta功能 Bug乱飞', style: hintTextStyle)
-              //           ],
-              //         ),
-              //       ),
-              //       Switch(
-              //         value: CommonPreferences.useDarkMode.value,
-              //         onChanged: (value) {
-              //           setState(() => CommonPreferences.useDarkMode.value = value);
-              //           globalTheme.value =
-              //               value ? WpyThemeData.dark() : WpyThemeData.light();
-              //         },
-              //         activeThumbColor: WpyTheme.of(context)
-              //             .get(WpyColorKey.oldSecondaryActionColor),
-              //         inactiveThumbColor:
-              //             WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-              //         activeTrackColor:
-              //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-              //         inactiveTrackColor:
-              //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, AuthRouter.themeSetting),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('主题设置', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text(WpyTheme.of(context).name,
-                                style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      arrow,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AuthRouter.toolbarManage);
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('高级编辑导航栏', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text("自定义&增删改 或重置", style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      Icon(Icons.edit,
-                          color: WpyTheme.of(context)
-                              .get(WpyColorKey.oldListActionColor),
-                          size: 22),
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () async {
-                    ToastProvider.running("正在清除缓存...");
-                    try {
-                      final cleared = await StorageUtil.clearTemporaryCache();
-                      if (cleared) {
-                        ToastProvider.success("应用缓存已清除");
-                      } else {
-                        ToastProvider.error("部分缓存正在使用，未能完全清除");
-                      }
-                    } catch (e) {
-                      ToastProvider.error("清除缓存失败: $e");
-                    } finally {
-                      if (mounted) {
-                        setState(() {
-                          _cacheSize = StorageUtil.getTemporaryCacheSize();
-                        });
-                      }
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('清除应用缓存', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text('清除所有临时缓存', style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      FutureBuilder<int>(
-                        future: _cacheSize,
-                        builder: (context, snapshot) {
-                          final text = snapshot.hasData
-                              ? _formatCacheSize(snapshot.data!)
-                              : '—';
-                          return Text(text, style: hintTextStyle);
-                        },
-                      ),
-                      SizedBox(width: 8.w),
-                      arrow,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              // SizedBox(height: 10.h),
-              // Container(
-              //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     borderRadius: BorderRadius.circular(12.r),
-              //   ),
-              //   child: WButton(
-              //     onPressed: () => Navigator.pushNamed(context, AuthRouter.themeSetting)
-              //         .then((_) {
-              //       /// 使用pop返回此页面时进行rebuild
-              //       this.setState(() {});
-              //     }),
-              //     child: Row(
-              //       children: [
-              //         Expanded(
-              //           child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               Text('主题', style: mainTextStyle),
-              //               SizedBox(height: 3.h),
-              //               Text('联网获取全部已获得主题', style: hintTextStyle)
-              //             ],
-              //           ),
-              //         ),
-              //         arrow,
-              //         SizedBox(width: 15.w),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: 10.h),
-              // Container(
-              //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     borderRadius: BorderRadius.circular(12.r),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       Expanded(
-              //           child: Text(S.current.setting_gpa, style: mainTextStyle)),
-              //       Switch(
-              //         value: CommonPreferences.hideGPA.value,
-              //         onChanged: (value) {
-              //           setState(() => CommonPreferences.hideGPA.value = value);
-              //           Provider.of<GPANotifier>(context, listen: false).hideGPA =
-              //               value;
-              //         },
-              //         activeThumbColor: Color.fromRGBO(105, 109, 127, 1),
-              //         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-              //         activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-              //         inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              // SizedBox(height: 10.h),
-              // Container(
-              //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white,
-              //     borderRadius: BorderRadius.circular(12.r),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       Expanded(
-              //           child: Text(S.current.setting_exam, style: mainTextStyle)),
-              //       Switch(
-              //         value: CommonPreferences.hideExam.value,
-              //         onChanged: (value) {
-              //           setState(() => CommonPreferences.hideExam.value = value);
-              //           Provider.of<ExamProvider>(context, listen: false).hideExam =
-              //               value;
-              //         },
-              //         activeThumbColor: Color.fromRGBO(105, 109, 127, 1),
-              //         inactiveThumbColor: Color.fromRGBO(205, 206, 212, 1),
-              //         activeTrackColor: Color.fromRGBO(240, 241, 242, 1),
-              //         inactiveTrackColor: Color.fromRGBO(240, 241, 242, 1),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              SizedBox(height: 15.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('课程表', style: titleTextStyle),
-              ),
-              // SizedBox(height: 10.h),
-              // // Container(
-              // //   padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-              // //   decoration: BoxDecoration(
-              // //     color:
-              // //         WpyTheme.of(context).get(WpyColorKey.primaryBackgroundColor),
-              // //     borderRadius: BorderRadius.circular(12.r),
-              // //   ),
-              // //   child: Row(
-              // //     children: [
-              // //       Expanded(
-              // //         child: Column(
-              // //           mainAxisAlignment: MainAxisAlignment.center,
-              // //           crossAxisAlignment: CrossAxisAlignment.start,
-              // //           children: [
-              // //             Text('智能云端服务（BETA）', style: mainTextStyle),
-              // //             SizedBox(height: 3.h),
-              // //             Text('获取课表、GPA、考表无需输入图形验证码', style: hintTextStyle)
-              // //           ],
-              // //         ),
-              // //       ),
-              // //       Switch(
-              // //         value: CommonPreferences.useClassesBackend.value,
-              // //         onChanged: (value) {
-              // //           setState(() =>
-              // //               CommonPreferences.useClassesBackend.value = value);
-              // //         },
-              // //         activeThumbColor: WpyTheme.of(context)
-              // //             .get(WpyColorKey.oldSecondaryActionColor),
-              // //         inactiveThumbColor:
-              // //             WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-              // //         activeTrackColor:
-              // //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-              // //         inactiveTrackColor:
-              // //             WpyTheme.of(context).get(WpyColorKey.oldSwitchBarColor),
-              // //       ),
-              // //     ],
-              // //   ),
-              // // ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('开启夜猫子模式', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('晚上9:00以后首页课表将展示第二天课程安排', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: CommonPreferences.nightMode.value,
-                      onChanged: (value) {
-                        setState(
-                            () => CommonPreferences.nightMode.value = value);
-                        Provider.of<CourseDisplayProvider>(context,
-                                listen: false)
-                            .nightMode = value;
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('实验课显示详细内容', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('若开启时遇到课表显示问题，可在此处关闭', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: CommonPreferences.isShowExperiment.value,
-                      onChanged: (value) {
-                        setState(() =>
-                            CommonPreferences.isShowExperiment.value = value);
-                        Provider.of<CourseDisplayProvider>(context,
-                                listen: false)
-                            .showExperiment = value;
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: WButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, AuthRouter.scheduleSetting)
-                          .then((_) => this.setState(() {})),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('每周显示天数', style: mainTextStyle),
-                            SizedBox(height: 5.h),
-                            Text('${CommonPreferences.dayNumber.value}',
-                                style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      arrow,
-                      SizedBox(width: 15.w),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text('自定义课程计入学时统计', style: mainTextStyle),
-                    ),
-                    Switch(
-                      value: context.watch<CourseProvider>()
-                          .includeCustomCourseHours,
-                      onChanged: (value) {
-                        context.read<CourseProvider>()
-                            .includeCustomCourseHours = value;
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                      WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('消息通知', style: titleTextStyle),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('求是论坛和信箱消息通知', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('应用消息通知', style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Builder(builder: (context) {
-                      return Switch(
-                        value: context
-                            .select((PushManager manger) => manger.openPush),
-                        onChanged: (value) {
-                          if (value) {
-                            context.read<PushManager>().turnOnPushService(() {
-                              ToastProvider.success("开启推送成功");
-                            }, () {
-                              ToastProvider.success("开启推送需要通知权限");
-                            }, () {
-                              ToastProvider.error("打开失败");
-                            });
-                          } else {
-                            context.read<PushManager>().turnOffPushService(() {
-                              ToastProvider.success("关闭推送成功");
-                            }, () {
-                              ToastProvider.error("关闭失败");
-                            });
-                          }
-                        },
-                        activeThumbColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSecondaryActionColor),
-                        inactiveThumbColor:
-                            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                        activeTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                        inactiveTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-              SizedBox(height: 15.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('大屏布局', style: titleTextStyle),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('平行视界', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text('折叠屏、平板、电脑等宽屏下，帖子等详情页在右侧分栏打开；关闭后全屏打开',
-                              style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Switch(
-                      value: CommonPreferences.parallelView.value,
-                      onChanged: (value) {
-                        setState(() {
-                          CommonPreferences.parallelView.value = value;
-                          CommonPreferences.parallelViewNotifier.value = value;
-                        });
-                      },
-                      activeThumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveThumbColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      activeTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      inactiveTrackColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                    ),
-                  ],
-                ),
-              ),
-              // iOS 的 Info.plist 只声明了竖屏，开关无效，只在 Android 上显示
-              if (Platform.isAndroid) ...[
-                SizedBox(height: 10.h),
-                Container(
-                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                  decoration: BoxDecoration(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('强制允许旋转', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text('默认手机保持竖屏，平板和展开的折叠屏可以旋转；开启后手机也可以横屏',
-                                style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: CommonPreferences.allowRotation.value,
-                        onChanged: (value) {
-                          setState(() {
-                            CommonPreferences.allowRotation.value = value;
-                            CommonPreferences.allowRotationNotifier.value =
-                                value;
-                          });
-                        },
-                        activeThumbColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSecondaryActionColor),
-                        inactiveThumbColor:
-                            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                        activeTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                        inactiveTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              SizedBox(height: 15.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('动画设置', style: titleTextStyle),
-              ),
-              SizedBox(height: 10.h),
-              if (_supportsPredictiveBack) ...[
-              Container(
-                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                  decoration: BoxDecoration(
-                    color: WpyTheme.of(context)
-                        .get(WpyColorKey.primaryBackgroundColor),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('预见性返回动画', style: mainTextStyle),
-                            SizedBox(height: 3.h),
-                            Text('实验性功能，仅在Android 14+生效', style: hintTextStyle)
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: CommonPreferences.predictiveBack.value,
-                        onChanged: (value) {
-                          setState(() {
-                            CommonPreferences.predictiveBack.value = value;
-                            CommonPreferences.predictiveBackNotifier.value =
-                                value;
-                          });
-                        },
-                        activeThumbColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSecondaryActionColor),
-                        inactiveThumbColor:
-                            WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                        activeTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                        inactiveTrackColor: WpyTheme.of(context)
-                            .get(WpyColorKey.oldSwitchBarColor),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10.h),
-              ],
-              Container(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 15.w, 10.h),
-                decoration: BoxDecoration(
-                  color: WpyTheme.of(context)
-                      .get(WpyColorKey.primaryBackgroundColor),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('动画速度', style: mainTextStyle),
-                          SizedBox(height: 3.h),
-                          Text(
-                              '速度: ${[
-                                "极快",
-                                "较快",
-                                "正常",
-                                "较慢",
-                                "极慢"
-                              ][context.watch<AnimationProvider>().speedIndex]}',
-                              style: hintTextStyle)
-                        ],
-                      ),
-                    ),
-                    Slider(
-                      activeColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSecondaryActionColor),
-                      inactiveColor:
-                          WpyTheme.of(context).get(WpyColorKey.oldHintColor),
-                      thumbColor: WpyTheme.of(context)
-                          .get(WpyColorKey.oldSwitchBarColor),
-                      value: context
-                          .watch<AnimationProvider>()
-                          .speedIndex
-                          .toDouble(),
-                      onChanged: (e) {
-                        final v = e.toInt();
-                        const speed = <double>[0.1, 0.5, 1, 1.5, 2];
-                        context.read<AnimationProvider>().speed = speed[v];
-                        context.read<AnimationProvider>().speedIndex = v;
-                        timeDilation = speed[v];
-                      },
-                      min: 0,
-                      max: 4,
-                      divisions: 4,
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: 15.h),
-            ],
-          ),
+        SizedBox(height: 16.h),
+        AppSettingsSection(
+          title: '课程表',
+          children: [
+            AppSettingsLink(
+              title: '课程表设置',
+              subtitle: '夜猫子模式、实验课、天数',
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.scheduleSetting),
+            ),
+          ],
         ),
-      ),
+        SizedBox(height: 16.h),
+        AppSettingsSection(
+          title: '通知与体验',
+          children: [
+            AppSettingsToggle(
+              title: '消息通知',
+              subtitle: '论坛与信箱推送',
+              value: openPush,
+              onChanged: _changePush,
+            ),
+            AppSettingsLink(
+              title: '动画',
+              subtitle: '动画速度、返回动画',
+              onTap: () =>
+                  Navigator.pushNamed(context, AuthRouter.animationSetting),
+            ),
+          ],
+        ),
+        SizedBox(height: 32.h),
+        AppSettingsSection(
+          children: [
+            FutureBuilder<int>(
+              future: _cacheSize,
+              builder: (context, snapshot) => AppSettingsLink(
+                title: '清除应用缓存',
+                subtitle: '清除所有临时缓存',
+                value: snapshot.hasData
+                    ? _formatCacheSize(snapshot.data!)
+                    : '—',
+                onTap: _clearingCache ? null : _clearCache,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
