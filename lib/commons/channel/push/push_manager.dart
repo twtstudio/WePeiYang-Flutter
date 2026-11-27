@@ -1,9 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:we_pei_yang_flutter/auth/network/auth_service.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
+import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
+import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
 import 'push_intent.dart';
@@ -11,12 +16,16 @@ import 'request_push_dialog.dart';
 
 export 'push_intent.dart';
 
-class PushManager extends ChangeNotifier {
+class PushManager extends ChangeNotifier with WidgetsBindingObserver {
   PushManager() {
+    if (isOhos) WidgetsBinding.instance.addObserver(this);
     _pushChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case 'refreshPushPermission':
           openPush = false;
+          break;
+        case 'pushCidChanged':
+          if (isOhos) await _syncOhosPush(cidChanged: true);
           break;
         default:
           break;
@@ -26,12 +35,26 @@ class PushManager extends ChangeNotifier {
   }
 
   bool _openPush = Platform.isIOS ? true : false;
+  bool _disposed = false;
+  Future<void>? _ohosSync;
+  bool _ohosCidChanged = false;
 
   bool get openPush => _openPush;
 
   set openPush(bool value) {
+    if (_disposed) return;
     _openPush = value;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    if (isOhos) {
+      _disposed = true;
+      WidgetsBinding.instance.removeObserver(this);
+      _pushChannel.setMethodCallHandler(null);
+    }
+    super.dispose();
   }
 
   static const Tag = 'PushManager_RequestNotification';
@@ -74,6 +97,10 @@ class PushManager extends ChangeNotifier {
   // 在用户同意隐私协议后，开启个推
   // TODO: iOS逻辑还可以完善
   Future<void> initGeTuiSdk() async {
+    if (isOhos) {
+      await _syncOhosPush();
+      return;
+    }
     if (Platform.isAndroid) {
       try {
         final result = await _pushChannel.invokeMethod<String>("initGeTuiSdk");
@@ -124,7 +151,16 @@ class PushManager extends ChangeNotifier {
       final result = await _pushChannel.invokeMethod("turnOnPushService");
       switch (result) {
         case 'open push service success':
-          openPush = true;
+          if (isOhos) {
+            await CommonPreferences.sharedPref.setBool('can_push', true);
+            await _syncOhosPush();
+            if (!openPush) {
+              failure();
+              return;
+            }
+          } else {
+            openPush = true;
+          }
           success();
           break;
         case 'refuse open push':
@@ -155,12 +191,85 @@ class PushManager extends ChangeNotifier {
 
   Future<void> turnOffPushService(Function success, Function error) async {
     try {
+      if (isOhos) {
+        // 先撤销推送意愿，让正在执行的同步在下一次检查时退出。
+        await CommonPreferences.sharedPref.setBool('can_push', false);
+        await _ohosSync;
+      }
       await _pushChannel.invokeMethod("turnOffPushService");
       openPush = false;
       success();
     } catch (e) {
       error();
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) unawaited(_syncOhosPush());
+  }
+
+  Future<void> _syncOhosPush({bool cidChanged = false}) async {
+    if (_disposed) return;
+    final activeSync = _ohosSync;
+    if (activeSync != null) {
+      if (cidChanged) _ohosCidChanged = true;
+      return activeSync;
+    }
+    final nextSync = _syncLatestOhosCid();
+    _ohosSync = nextSync;
+    return nextSync;
+  }
+
+  Future<void> _syncLatestOhosCid() async {
+    try {
+      // 上报期间收到的 CID 变更合并到下一轮，重新读取 SDK 的最新值。
+      do {
+        _ohosCidChanged = false;
+        await _registerOhosCid();
+      } while (_ohosCidChanged && !_disposed);
+    } finally {
+      _ohosSync = null;
+    }
+  }
+
+  Future<void> _registerOhosCid() async {
+    final account = CommonPreferences.userNumber.value;
+    bool canRegister() =>
+        !_disposed &&
+        account.isNotEmpty &&
+        CommonPreferences.isLogin.value &&
+        CommonPreferences.canPush.value &&
+        account == CommonPreferences.userNumber.value;
+
+    if (!canRegister()) {
+      openPush = false;
+      return;
+    }
+    try {
+      final cid = await getCid();
+      if (!canRegister()) return;
+      if (cid == null || cid.isEmpty) {
+        openPush = false;
+        return;
+      }
+      if (cid != CommonPreferences.pushCid.value ||
+          account != CommonPreferences.pushUser.value) {
+        await AuthService.bindPushCid(cid);
+        if (!canRegister()) return;
+        CommonPreferences.pushCid.value = cid;
+        CommonPreferences.pushUser.value = account;
+      }
+      openPush = true;
+    } catch (error, stack) {
+      openPush = false;
+      Log.e(error, stack, 'push');
+    }
+  }
+
+  Future<String?> getLegacyCid() async {
+    if (isOhos) return null;
+    return (await getCid()) ?? '';
   }
 
   Future<void> getCurrentCanReceivePush(

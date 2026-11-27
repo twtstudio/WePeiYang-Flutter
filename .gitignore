@@ -36,6 +36,7 @@ CMakeFiles/
 .packages
 .gradle/
 /pubspec.lock
+/pubspec_overrides.yaml
 .pub-cache/
 .pub/
 /build/

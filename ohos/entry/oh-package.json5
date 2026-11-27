@@ -1,0 +1,15 @@
+
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@getui/push": "1.0.10",
+    "@umeng/common": "1.1.12",
+    "@umeng/analytics": "1.2.12"
+  },
+}
+

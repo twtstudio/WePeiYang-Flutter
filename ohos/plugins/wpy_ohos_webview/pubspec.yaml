@@ -1,0 +1,25 @@
+name: wpy_ohos_webview
+description: HarmonyOS WebView implementation for WePeiYang.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+  flutter: ">=3.44.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_inappwebview_ohos:
+    git:
+      url: https://gitcode.com/CPF-Flutter/flutter_inappwebview.git
+      ref: aaebf895abbf824ef295c446f7210e17bebcea02
+      path: flutter_inappwebview_ohos
+  flutter_inappwebview_platform_interface: ^1.3.0+1
+  webview_flutter_platform_interface: ^2.15.1
+
+flutter:
+  plugin:
+    platforms:
+      ohos:
+        dartPluginClass: WpyOhosWebView

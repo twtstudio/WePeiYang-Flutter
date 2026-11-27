@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 
 class UmengCommonSdk {
@@ -9,7 +10,7 @@ class UmengCommonSdk {
       const MethodChannel('com.twt.service/umeng_statistics');
 
   static Future<void> initCommon() async {
-    if (Platform.isAndroid)
+    if (Platform.isAndroid || isOhos)
       await _channel.invokeMethod('initCommon').catchError(printError);
     // iOS自动初始化
   }

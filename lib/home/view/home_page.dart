@@ -77,14 +77,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       context.read<PushManager>().initGeTuiSdk();
 
       final manager = context.read<PushManager>();
-      final cid = (await manager.getCid()) ?? '';
+      final cid = await manager.getLegacyCid();
       final now = DateTime.now();
       final lastTime = DateTime.tryParse(CommonPreferences.pushTime.value) ??
           now.subtract(Duration(days: 3));
-      if (cid != CommonPreferences.pushCid.value ||
-          CommonPreferences.userNumber.value !=
-              CommonPreferences.pushUser.value ||
-          now.difference(lastTime).inDays >= 3) {
+      if (cid != null &&
+          (cid != CommonPreferences.pushCid.value ||
+              CommonPreferences.userNumber.value !=
+                  CommonPreferences.pushUser.value ||
+              now.difference(lastTime).inDays >= 3)) {
         AuthService.updateCid(cid, onResult: (_) {
           debugPrint('cid $cid 更新成功');
           CommonPreferences.pushCid.value = cid;

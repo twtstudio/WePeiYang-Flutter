@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 
@@ -46,7 +47,7 @@ class WbyFontLoader {
           }
         },
       );
-    } else if (Platform.isIOS) {
+    } else if (Platform.isIOS || isOhos) {
       List<DownloadTask> taskToDownload = [];
 
       final dio = Dio();

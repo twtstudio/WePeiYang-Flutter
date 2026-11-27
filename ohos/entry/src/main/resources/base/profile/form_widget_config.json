@@ -1,0 +1,17 @@
+{
+  "forms": [
+    {
+      "name": "ScheduleForm",
+      "displayName": "$string:form_name_schedule",
+      "description": "$string:form_name_schedule",
+      "src": "./ets/widget/pages/ScheduleFormCard.ets",
+      "uiSyntax": "arkts",
+      "window": { "designWidth": 320, "autoDesignWidth": true },
+      "isDefault": true,
+      "updateEnabled": true,
+      "updateDuration": 1,
+      "defaultDimension": "2*4",
+      "supportDimensions": ["2*2", "2*4", "4*4"]
+    }
+  ]
+}

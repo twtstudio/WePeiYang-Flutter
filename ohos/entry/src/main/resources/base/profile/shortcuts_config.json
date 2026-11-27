@@ -1,0 +1,26 @@
+{
+  "shortcuts": [
+    {
+      "shortcutId": "schedule",
+      "label": "$string:form_name_schedule",
+      "icon": "$media:app_icon",
+      "wants": [{
+        "bundleName": "com.weipeiyang.cn",
+        "moduleName": "entry",
+        "abilityName": "EntryAbility",
+        "parameters": { "wpyUri": "wpy://wpy.app/schedule" }
+      }]
+    },
+    {
+      "shortcutId": "entry_qr",
+      "label": "$string:shortcut_entry_qr",
+      "icon": "$media:app_icon",
+      "wants": [{
+        "bundleName": "com.weipeiyang.cn",
+        "moduleName": "entry",
+        "abilityName": "EntryAbility",
+        "parameters": { "wpyUri": "wpy://wpy.app/entryQr" }
+      }]
+    }
+  ]
+}

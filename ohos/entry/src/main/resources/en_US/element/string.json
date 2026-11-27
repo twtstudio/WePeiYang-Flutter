@@ -1,0 +1,13 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "WePeiYang"
+    },
+    { "name": "form_name_schedule", "value": "Course Schedule" },
+    { "name": "shortcut_entry_qr", "value": "Campus Entry Code" },
+    { "name": "analytics_reason", "value": "Used for authorized app analytics and push notifications" },
+    { "name": "microphone_reason", "value": "Used for Xiaotian voice input" },
+    { "name": "clipboard_reason", "value": "Used to paste text and recognize WePeiYang share codes" }
+  ]
+}

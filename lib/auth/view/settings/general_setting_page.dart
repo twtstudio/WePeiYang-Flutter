@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter/scheduler.dart' show timeDilation;
@@ -13,6 +14,7 @@ import 'package:we_pei_yang_flutter/commons/util/storage_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/text_util.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/schedule/model/course_provider.dart';
+import 'package:we_pei_yang_flutter/schedule/model/schedule_widget.dart';
 
 import '../../../commons/local/animation_provider.dart';
 import '../../../commons/themes/wpy_theme.dart';
@@ -604,6 +606,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         Provider.of<CourseDisplayProvider>(context,
                                 listen: false)
                             .nightMode = value;
+                        unawaited(syncOhosScheduleWidget(
+                            context.read<CourseProvider>()));
                       },
                       activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),
@@ -646,6 +650,8 @@ class _GeneralSettingPageState extends State<GeneralSettingPage> {
                         Provider.of<CourseDisplayProvider>(context,
                                 listen: false)
                             .showExperiment = value;
+                        unawaited(syncOhosScheduleWidget(
+                            context.read<CourseProvider>()));
                       },
                       activeThumbColor: WpyTheme.of(context)
                           .get(WpyColorKey.oldSecondaryActionColor),

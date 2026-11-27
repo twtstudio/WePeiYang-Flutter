@@ -9,6 +9,7 @@ import 'package:we_pei_yang_flutter/auth/view/user/user_avatar_image.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
 import 'package:we_pei_yang_flutter/commons/widgets/w_button.dart';
 import 'package:we_pei_yang_flutter/feedback/network/feedback_service.dart';
+import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../commons/themes/template/wpy_theme_data.dart';
@@ -24,7 +25,7 @@ class _AvatarCropPageState extends State<AvatarCropPage> {
   File? file;
 
   loadAssets() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
+    final assets = await ImageSave.pickImages(context,
         pickerConfig: AssetPickerConfig(
             maxAssets: 1,
             requestType: RequestType.image,

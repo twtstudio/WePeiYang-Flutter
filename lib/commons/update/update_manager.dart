@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:we_pei_yang_flutter/commons/channel/download/download_manager.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/hotfix.dart';
 import 'package:we_pei_yang_flutter/commons/channel/install/install.dart';
 import 'package:we_pei_yang_flutter/commons/channel/local_setting/local_setting.dart';
 import 'package:we_pei_yang_flutter/commons/environment/config.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/commons/util/toast_provider.dart';
@@ -47,6 +49,10 @@ class UpdateManager extends UpdateStatusListener {
   }
 
   Future<void> checkUpdate({bool auto = true}) async {
+    if (isOhos) {
+      if (!auto && status.isIdle) await _checkAppGalleryUpdate();
+      return;
+    }
     // 更新通道只有 Android（apk/热修复）和 iOS（App Store），
     // 桌面端没有对应的版本信息，继续执行会访问未初始化的 _iosVersion
     if (!Platform.isAndroid && !Platform.isIOS) {
@@ -139,6 +145,27 @@ class UpdateManager extends UpdateStatusListener {
       case UpdateStatus.error:
         UpdateDialog.failure.show();
         break;
+    }
+  }
+
+  Future<void> _checkAppGalleryUpdate() async {
+    const channel = MethodChannel('com.twt.service/update');
+    setGetVersion();
+    try {
+      final available = await channel.invokeMethod<bool>('checkAppUpdate')
+          .timeout(const Duration(seconds: 10));
+      if (available == true) {
+        await channel.invokeMethod<void>('showAppUpdateDialog');
+      } else if (available == false) {
+        ToastProvider.success('已是最新版本');
+      } else {
+        ToastProvider.error('暂时无法从华为应用市场检查更新');
+      }
+    } catch (error, stack) {
+      Log.e(error, stack, 'update');
+      ToastProvider.error('暂时无法从华为应用市场检查更新');
+    } finally {
+      setIdle();
     }
   }
 

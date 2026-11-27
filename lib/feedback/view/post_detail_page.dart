@@ -32,6 +32,7 @@ import 'package:we_pei_yang_flutter/feedback/view/components/widget/masked_rich_
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/lake_home_page/normal_sub_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/report_question_page.dart';
+import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -1985,7 +1986,7 @@ class ImageSelectAndViewState extends State<ImageSelectAndView> {
   }
 
   loadAssets() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+    final assets = await ImageSave.pickImages(
       context,
       pickerConfig: AssetPickerConfig(
           maxAssets: 1,

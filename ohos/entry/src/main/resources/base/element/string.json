@@ -1,0 +1,13 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "微北洋"
+    },
+    { "name": "form_name_schedule", "value": "课程表" },
+    { "name": "shortcut_entry_qr", "value": "进校码" },
+    { "name": "analytics_reason", "value": "用于经授权的应用统计与推送服务" },
+    { "name": "microphone_reason", "value": "用于小天语音输入" },
+    { "name": "clipboard_reason", "value": "用于粘贴文字及识别微北洋分享口令" }
+  ]
+}

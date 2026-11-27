@@ -1,0 +1,97 @@
+
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "srcEntry": "./ets/statistics/EntryAbilityStage.ets",
+    "deviceTypes": [
+      "phone",
+      "tablet"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "metadata": [
+      { "name": "GETUI_APPID", "value": "CONFIGURE_GETUI_APP_ID" },
+      { "name": "client_id", "value": "CONFIGURE_HUAWEI_CLIENT_ID" }
+    ],
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "$string:module_desc",
+        "icon": "$media:app_icon",
+        "label": "$string:module_desc",
+        "startWindowIcon": "$media:app_icon",
+        "startWindowBackground": "$color:start_window_background",
+        "launchType": "singleton",
+        "exported": true,
+        "metadata": [
+          { "name": "ohos.ability.shortcuts", "resource": "$profile:shortcuts_config" }
+        ],
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          },
+          {
+            "entities": ["entity.system.browsable"],
+            "actions": ["ohos.want.action.viewData"],
+            "uris": [
+              { "scheme": "wpy", "host": "wpy.app" },
+              { "scheme": "wpy", "host": "school_project" }
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      { "name": "ohos.permission.INTERNET" },
+      { "name": "ohos.permission.GET_NETWORK_INFO" },
+      { "name": "ohos.permission.GET_WIFI_INFO" },
+      {
+        "name": "ohos.permission.APP_TRACKING_CONSENT",
+        "reason": "$string:analytics_reason",
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+      },
+      {
+        "name": "ohos.permission.READ_PASTEBOARD",
+        "reason": "$string:clipboard_reason",
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+      },
+      {
+        "name": "ohos.permission.MICROPHONE",
+        "reason": "$string:microphone_reason",
+        "usedScene": { "abilities": ["EntryAbility"], "when": "inuse" }
+      }
+    ],
+    "extensionAbilities": [
+      {
+        "name": "EntryQrFormAbility",
+        "srcEntry": "./ets/widget/EntryQrFormAbility.ets",
+        "label": "$string:shortcut_entry_qr",
+        "description": "$string:shortcut_entry_qr",
+        "type": "form",
+        "metadata": [
+          { "name": "ohos.extension.form", "resource": "$profile:entry_qr_form_config" }
+        ]
+      },
+      {
+        "name": "ScheduleFormAbility",
+        "srcEntry": "./ets/widget/ScheduleFormAbility.ets",
+        "label": "$string:form_name_schedule",
+        "description": "$string:form_name_schedule",
+        "type": "form",
+        "metadata": [
+          { "name": "ohos.extension.form", "resource": "$profile:form_widget_config" }
+        ]
+      }
+    ]
+  }
+}

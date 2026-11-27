@@ -14,6 +14,7 @@ import 'package:we_pei_yang_flutter/feedback/feedback_router.dart';
 import 'package:we_pei_yang_flutter/feedback/view/image_view/local_image_view_page.dart';
 import 'package:we_pei_yang_flutter/feedback/view/new_post_page.dart';
 import 'package:we_pei_yang_flutter/lost_and_found/network/lost_and_found_service.dart';
+import 'package:we_pei_yang_flutter/commons/channel/image_save/image_save.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../commons/themes/wpy_theme.dart';
@@ -457,7 +458,7 @@ class _LostAndFoundImagesGridViewState
   static const maxImage = 3;
 
   loadAssets() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+    final assets = await ImageSave.pickImages(
       context,
       pickerConfig: AssetPickerConfig(
           maxAssets: maxImage -

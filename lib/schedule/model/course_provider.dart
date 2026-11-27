@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel;
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/auth/view/info/tju_rebind_dialog.dart';
 import 'package:we_pei_yang_flutter/commons/network/classes_service.dart';
 import 'package:we_pei_yang_flutter/commons/network/wpy_dio.dart';
@@ -13,6 +15,7 @@ import 'package:we_pei_yang_flutter/schedule/model/schedule_day_rules.dart';
 import 'package:we_pei_yang_flutter/commons/util/log/log.dart';
 import 'package:we_pei_yang_flutter/schedule/network/custom_course_service.dart';
 import 'package:we_pei_yang_flutter/schedule/network/schdule_service.dart';
+import 'schedule_widget.dart';
 
 class CourseProvider with ChangeNotifier {
   ScheduleDayRules get dayRules => ScheduleDayRules.restore(
@@ -66,9 +69,9 @@ class CourseProvider with ChangeNotifier {
         rules.encode(CommonPreferences.termName.value, CommonPreferences.tjuuname.value));
     if (!saved) throw StateError('日期调整保存失败');
     notifyListeners();
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || isOhos) {
       try {
-        await _widgetChannel.invokeMethod('refreshScheduleWidget');
+        await _refreshScheduleWidget();
       } catch (e, stack) {
         Log.e(e, stack, 'schedule');
       }
@@ -119,7 +122,7 @@ class CourseProvider with ChangeNotifier {
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
     CommonPreferences.customUpdatedAt.value = time;
-    _widgetChannel.invokeMethod("refreshScheduleWidget");
+    unawaited(_refreshScheduleWidget());
     // remote
     CustomCourseService.postCustomTable(_customCourses, time);
   }
@@ -148,7 +151,7 @@ class CourseProvider with ChangeNotifier {
   void updateSchoolCourses(List<Course> courses) {
     _schoolCourses = courses;
     notifyListeners();
-    _widgetChannel.invokeMethod("refreshScheduleWidget");
+    unawaited(_refreshScheduleWidget());
     CommonPreferences.courseData.value =
         json.encode(CourseTable(_schoolCourses, _customCourses));
   }
@@ -173,6 +176,10 @@ class CourseProvider with ChangeNotifier {
   }
 
   final _widgetChannel = MethodChannel('com.twt.service/widget');
+
+  Future<void> _refreshScheduleWidget() => isOhos
+      ? syncOhosScheduleWidget(this)
+      : _widgetChannel.invokeMethod<void>('refreshScheduleWidget');
 
   /// 使用后端爬虫（无需填写图形验证码）
   /// [CommonPreferences.useClassesBackend.value]决定了爬虫方式
@@ -227,7 +234,7 @@ class CourseProvider with ChangeNotifier {
             notifyListeners();
             CommonPreferences.courseData.value =
                 json.encode(CourseTable(_schoolCourses, _customCourses));
-            _widgetChannel.invokeMethod("refreshScheduleWidget");
+            unawaited(_refreshScheduleWidget());
           }
         });
       });
@@ -238,11 +245,15 @@ class CourseProvider with ChangeNotifier {
 
   /// 从缓存中读课表的数据，进入主页之前调用
   void readPref() {
-    if (CommonPreferences.courseData.value == '') return;
+    if (CommonPreferences.courseData.value == '') {
+      unawaited(clearOhosScheduleWidget());
+      return;
+    }
     CourseTable table =
         CourseTable.fromJson(json.decode(CommonPreferences.courseData.value));
     _schoolCourses = table.schoolCourses;
     _customCourses = table.customCourses;
+    unawaited(syncOhosScheduleWidget(this));
     notifyListeners();
   }
 

@@ -1,0 +1,17 @@
+{
+  "forms": [
+    {
+      "name": "EntryQrForm",
+      "displayName": "$string:shortcut_entry_qr",
+      "description": "$string:shortcut_entry_qr",
+      "src": "./ets/widget/pages/EntryQrFormCard.ets",
+      "uiSyntax": "arkts",
+      "window": { "designWidth": 320, "autoDesignWidth": true },
+      "isDefault": true,
+      "updateEnabled": false,
+      "updateDuration": 0,
+      "defaultDimension": "2*2",
+      "supportDimensions": ["2*2", "2*4"]
+    }
+  ]
+}

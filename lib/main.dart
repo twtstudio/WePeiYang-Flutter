@@ -10,6 +10,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/commons/font/font_loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
@@ -29,6 +30,7 @@ import 'auth/view/message/message_router.dart';
 import 'commons/channel/local_setting/local_setting.dart';
 import 'commons/channel/push/push_manager.dart';
 import 'commons/channel/remote_config/remote_config_manager.dart';
+import 'commons/channel/statistics/umeng_statistics.dart';
 import 'commons/environment/config.dart';
 import 'commons/local/animation_provider.dart';
 import 'commons/network/wpy_dio.dart';
@@ -57,6 +59,8 @@ final _entry = WePeiYangApp();
 void main() async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+    // 在应用首次读取偏好和目录前，先注册鸿蒙平台实现。
+    await initializeOhosPlatform(WePeiYangApp.navigatorState);
 
     /// 初始化环境变量
     EnvConfig.init();
@@ -107,6 +111,9 @@ void main() async {
 
     /// 初始化sharedPreference
     await CommonPreferences.init();
+    if (isOhos && !CommonPreferences.firstPrivacy.value) {
+      await UmengCommonSdk.initCommon();
+    }
 
     /// 初始化Connectivity
     NetStatusListener.init();
@@ -196,7 +203,7 @@ final _messageChannel = MethodChannel('com.twt.service/message');
 final _pushChannel = MethodChannel('com.twt.service/push');
 
 void _listenForNativeEvents(BuildContext context) {
-  if (!Platform.isAndroid) return;
+  if (!Platform.isAndroid && !isOhos) return;
   _messageChannel.setMethodCallHandler((call) async {
     switch (call.method) {
       case 'eventChanged':
@@ -204,6 +211,7 @@ void _listenForNativeEvents(BuildContext context) {
           if (!context.mounted) return;
           checkEventList(context);
         });
+        if (isOhos) WidgetsBinding.instance.ensureVisualUpdate();
         break;
       default:
         print('No action for ${call.method}');
@@ -218,6 +226,7 @@ class IntentEvent {
   static const SchedulePage = 4;
   static const UpdateDialog = 5;
   static const EntryQrPage = 6;
+  static const MailboxPage = 7;
   static const NoSuchEvent = -1;
 }
 
@@ -225,6 +234,12 @@ Future<void> checkEventList(BuildContext context) async {
   if (Platform.isIOS) return;
   final navigator = WePeiYangApp.navigatorState.currentState;
   if (navigator == null) return;
+  // 首页就绪后再取走原生事件，避免冷启动时丢失卡片或通知跳转。
+  if (isOhos &&
+      (!CommonPreferences.isLogin.value ||
+          !PageStackObserver.pageStack.contains(HomeRouter.home))) {
+    return;
+  }
 
   try {
     final eventMap =
@@ -265,6 +280,11 @@ Future<void> checkEventList(BuildContext context) async {
       case IntentEvent.EntryQrPage:
         if (!PageStackObserver.pageStack.contains(HomeRouter.casQR)) {
           navigator.pushNamed(HomeRouter.casQR);
+        }
+        break;
+      case IntentEvent.MailboxPage:
+        if (!PageStackObserver.pageStack.contains(AuthRouter.mailbox)) {
+          navigator.pushNamed(AuthRouter.mailbox);
         }
         break;
       default:

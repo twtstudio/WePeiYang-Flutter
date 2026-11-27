@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_barcodes/barcodes.dart';
 import 'package:we_pei_yang_flutter/commons/network/cas_service.dart';
+import 'package:we_pei_yang_flutter/commons/platform/ohos.dart';
 import 'package:we_pei_yang_flutter/commons/preferences/common_prefs.dart';
 import 'package:we_pei_yang_flutter/commons/themes/template/wpy_theme_data.dart';
 import 'package:we_pei_yang_flutter/commons/themes/wpy_theme.dart';
@@ -180,14 +181,31 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
   int buzyCnt = 0;
 
   void _refresh() async {
+    if (!mounted) return;
     if (lastRefresh != null &&
         DateTime.now().difference(lastRefresh!) < Duration(seconds: 1)) return;
 
     ToastProvider.running('正在刷新');
     _refreshEntryQrWidget();
     final sid = CommonPreferences.userNumber.value;
+    // 取码期间可能退出或切换账号，发布到桌面前要复核当前会话。
+    final session = isOhos ? CommonPreferences.token.value : null;
+    // 从请求开始计时，避免网络耗时延长卡片上的有效期。
+    final requestedAt = DateTime.now();
     if (mounted) setState(() => qrContent = null);
     final content = await CasService.getQRContent(sid);
+    if (mounted &&
+        session?.isNotEmpty == true &&
+        session == CommonPreferences.token.value &&
+        CommonPreferences.isLogin.value &&
+        sid == CommonPreferences.userNumber.value) {
+      unawaited(_widgetChannel.invokeMethod<void>('publishEntryQr', {
+        'account': sid,
+        'code': content,
+        'expiresAt':
+            requestedAt.add(const Duration(minutes: 3)).millisecondsSinceEpoch,
+      }).catchError((_) {}));
+    }
     qrContent = content;
     lastRefresh = DateTime.now();
     if (mounted) setState(() {});
@@ -202,14 +220,15 @@ class _QRRegionWidgetState extends State<QRRegionWidget> {
 
   @override
   void dispose() {
-    super.dispose();
+    refreshNotifier.removeListener(_refresh);
     _periodUpdateCycle.cancel();
+    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    refreshNotifier.addListener(() => _refresh());
+    refreshNotifier.addListener(_refresh);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _refresh());
   }
 

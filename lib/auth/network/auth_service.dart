@@ -443,17 +443,22 @@ class AuthService with AsyncTimer {
     });
   }
 
-  /// 获取cid
+  static Future<String> bindPushCid(String cid) async {
+    final response = await authDio.post(
+      'notification/cid',
+      data: {'cid': cid},
+      options: Options(contentType: Headers.formUrlEncodedContentType),
+    );
+    return response.data.toString();
+  }
+
+  /// 上报个推 CID
   static updateCid(String cid,
       {required OnResult<String> onResult,
       required OnFailure onFailure}) async {
     AsyncTimer.runRepeatChecked('updateCid', () async {
       try {
-        var res = await authDio.post("notification/cid",
-            data: {'cid': cid},
-            options: Options(contentType: Headers.formUrlEncodedContentType));
-
-        onResult(res.data.toString());
+        onResult(await bindPushCid(cid));
       } on DioException catch (e) {
         onFailure(e);
       }
